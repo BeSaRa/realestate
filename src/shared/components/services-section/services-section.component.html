@@ -1,0 +1,28 @@
+<div
+  class="relative flex gap-12 justify-start items-center overflow-hidden px-10 py-16 rounded-xl border-2 border-pink-700"
+>
+  <div
+    style="background-image: url(../../../assets/images/DSC_71671.jpg)"
+    class="absolute w-full h-full right-0 bg-cover bg-right"
+  ></div>
+  <div
+    style="
+      background: linear-gradient(
+        90deg,
+        rgba(162, 148, 117, 0) 18.85%,
+        rgba(1, 1, 1, 0.62) 84.36%
+      );
+    "
+    class="absolute w-full h-full top-0 right-0"
+  ></div>
+  <app-title class="relative text-4xl text-white font-bold me-16"
+    >الأكثر استخداماً</app-title
+  >
+  <div
+    class="relative flex justify-between items-center w-72 py-4 px-3.5 rounded-md border-2 border-pink-600 bg-pink-900"
+    *ngFor="let link of links"
+  >
+    <span class="text-white text-xl font-bold">{{ link }}</span
+    ><img class="w-7" src="../../../assets/images/ChevronLeft.png" alt="" />
+  </div>
+</div>

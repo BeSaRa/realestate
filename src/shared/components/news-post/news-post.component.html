@@ -1,0 +1,57 @@
+<div class="grid grid-cols-2 gap-8 items-center">
+  <div
+    class="self-stretch relative flex flex-col justify-end overflow-hidden rounded-xl"
+  >
+    <div
+      style="
+        background-image: url('{{ post.imgUrl }}');
+      "
+      class="absolute w-full h-full bg-cover bg-center"
+    ></div>
+    <div
+      style="
+        background: linear-gradient(0deg, #000000 0%, rgba(0, 0, 0, 0) 100%);
+      "
+      class="absolute w-full h-full"
+    ></div>
+    <div class="p-3 relative">
+      <h4 class="text-white text-2xl font-bold mb-4">{{ post.title }}</h4>
+      <app-chip bgColor="bg-pink-700"
+        ><div class="text-white flex gap-2 justify-center items-center">
+          <mat-icon
+            class="text-sm !w-3.5 !h-3.5 !flex justify-center items-center"
+            fontIcon="watch_later"
+          ></mat-icon
+          ><span class="text-xs">{{ post.date }}</span>
+        </div></app-chip
+      >
+    </div>
+  </div>
+  <div class="py-3">
+    <div>
+      <app-chip
+        class="text-sm text-black font-bold me-2"
+        bgColor="bg-pink-300"
+        *ngFor="let tag of post.tags"
+        >{{ tag }}</app-chip
+      >
+    </div>
+    <p class="text-xl leading-9 my-6">{{ post.body }}</p>
+    <app-button bgColor="bg-green-400"
+      ><div class="flex gap-2 justify-center items-center text-white">
+        <span class="font-bold">المزيد</span>
+        <mat-icon
+          class="text-xl font-extralight !w-5 !h-5 !flex justify-center items-center"
+          fontIcon="keyboard_arrow_left"
+        ></mat-icon></div
+    ></app-button>
+    <div class="w-full mt-8 border-b border-opacity-40 border-pink-400"></div>
+    <div class="py-2">
+      <mat-icon
+        class="text-pink-400 text-3xl !w-max !h-max me-2"
+        *ngFor="let link of post.links"
+        [fontIcon]="link.icon"
+      ></mat-icon>
+    </div>
+  </div>
+</div>

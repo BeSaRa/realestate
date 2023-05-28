@@ -1,0 +1,25 @@
+<label class="group block relative {{ !noMargin ? marginBottom : '' }}">
+  <span [ngClass]="labelColor" class="block font-medium">{{ label }}</span>
+  <div
+    [ngClass]="size"
+    class="group/input-wrapper input-form {{
+      inputColor
+    }} flex items-center justify-start"
+  >
+    <ng-content select="[appInputPrefix]"></ng-content>
+    <span
+      [ngClass]="{ prefix: inputPrefix, suffix: inputSuffix }"
+      class="peer absolute hidden pointer-events-none"
+    ></span>
+
+    <input
+      [readonly]="disabled"
+      [ngClass]="tailwindClass"
+      autocomplete="off"
+      [type]="type"
+      [placeholder]="placeholder"
+    />
+
+    <ng-content select="[appInputSuffix]"></ng-content>
+  </div>
+</label>

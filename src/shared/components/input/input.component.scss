@@ -1,0 +1,11 @@
+.input-form {
+  @apply w-full rounded-md overflow-hidden bg-transparent border
+  border-white shadow-sm placeholder-white focus-within:outline-none
+  focus-within:border-white focus-within:ring-1 focus-within:ring-white
+  disabled:bg-slate-50 disabled:text-slate-500 disabled:border-slate-200
+  disabled:shadow-none group-[.has-error]:border-red-500 group-[.has-error]:text-red-600
+  group-[.has-error]:focus-within:border-red-500 group-[.has-error]:focus-within:ring-red-500;
+}
+.input-form > input {
+  @apply rounded-md max-w-full bg-transparent;
+}

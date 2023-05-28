@@ -1,0 +1,27 @@
+<div class="relative">
+  <div class="absolute z-10 top-0 right-0 w-full">
+    <app-top-bar></app-top-bar><app-nav-bar></app-nav-bar>
+  </div>
+  <app-hero></app-hero>
+  <div class="pt-32 px-16">
+    <app-services-section></app-services-section>
+  </div>
+  <div class="pt-32 px-16">
+    <app-news-section></app-news-section>
+  </div>
+  <div class="py-32 px-44">
+    <div
+      class="forms grid grid-cols-5 gap-12 items-center rounded-xl py-14 px-20"
+    >
+      <div class="col-span-3">
+        <app-news-letter class="block mb-10"></app-news-letter
+        ><app-poll></app-poll>
+      </div>
+      <div class="col-span-2">
+        <app-address-inquiry class="block mb-10"></app-address-inquiry
+        ><app-cadastral-inquiry></app-cadastral-inquiry>
+      </div>
+    </div>
+  </div>
+  <div class="mt-32"><app-footer></app-footer></div>
+</div>

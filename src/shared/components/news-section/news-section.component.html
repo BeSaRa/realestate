@@ -1,0 +1,14 @@
+<app-title class="text-4xl font-bold">أحدث الأخبار</app-title>
+<div class="grid grid-cols-2 gap-20 items-center mt-20">
+  <app-news-post *ngFor="let post of newsPosts" [post]="post"></app-news-post>
+</div>
+<div class="text-center mt-12">
+  <app-button bgColor="bg-green-400"
+    ><div class="flex gap-2 justify-center items-center text-white">
+      <span class="font-bold text-lg">المزيد من الأخبار</span>
+      <mat-icon
+        class="text-xl font-extralight !w-5 !h-5 !flex justify-center items-center"
+        fontIcon="keyboard_arrow_left"
+      ></mat-icon></div
+  ></app-button>
+</div>
