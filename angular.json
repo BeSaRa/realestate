@@ -3,7 +3,7 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "realestate": {
+    "real-estate": {
       "projectType": "application",
       "schematics": {
         "@schematics/angular:component": {
@@ -24,7 +24,7 @@
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
-            "outputPath": "dist/realestate/browser",
+            "outputPath": "dist/real-estate/browser",
             "index": "src/index.html",
             "main": "src/main.ts",
             "polyfills": [
@@ -72,10 +72,10 @@
           "builder": "@angular-devkit/build-angular:dev-server",
           "configurations": {
             "production": {
-              "browserTarget": "realestate:build:production"
+              "browserTarget": "real-estate:build:production"
             },
             "development": {
-              "browserTarget": "realestate:build:development"
+              "browserTarget": "real-estate:build:development"
             }
           },
           "defaultConfiguration": "development"
@@ -83,7 +83,7 @@
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "realestate:build"
+            "browserTarget": "real-estate:build"
           }
         },
         "test": {
@@ -108,7 +108,7 @@
         "server": {
           "builder": "@angular-devkit/build-angular:server",
           "options": {
-            "outputPath": "dist/realestate/server",
+            "outputPath": "dist/real-estate/server",
             "main": "server.ts",
             "tsConfig": "tsconfig.server.json",
             "inlineStyleLanguage": "scss"
@@ -131,12 +131,12 @@
           "builder": "@nguniversal/builders:ssr-dev-server",
           "configurations": {
             "development": {
-              "browserTarget": "realestate:build:development",
-              "serverTarget": "realestate:server:development"
+              "browserTarget": "real-estate:build:development",
+              "serverTarget": "real-estate:server:development"
             },
             "production": {
-              "browserTarget": "realestate:build:production",
-              "serverTarget": "realestate:server:production"
+              "browserTarget": "real-estate:build:production",
+              "serverTarget": "real-estate:server:production"
             }
           },
           "defaultConfiguration": "development"
@@ -150,12 +150,12 @@
           },
           "configurations": {
             "production": {
-              "browserTarget": "realestate:build:production",
-              "serverTarget": "realestate:server:production"
+              "browserTarget": "real-estate:build:production",
+              "serverTarget": "real-estate:server:production"
             },
             "development": {
-              "browserTarget": "realestate:build:development",
-              "serverTarget": "realestate:server:development"
+              "browserTarget": "real-estate:build:development",
+              "serverTarget": "real-estate:server:development"
             }
           },
           "defaultConfiguration": "production"

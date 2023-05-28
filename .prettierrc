@@ -1,0 +1,25 @@
+{
+  "endOfLine": "lf",
+  "overrides": [
+    {
+      "files": "*.ts",
+      "options": {
+        "singleQuote": true,
+        "endOfLine": "lf",
+        "tabWidth": 2,
+        "useTabs": false,
+        "semi": true,
+        "printWidth": 120
+      }
+    },
+    {
+      "files": "*.html",
+      "options": {
+        "parser": "angular",
+        "printWidth": 120,
+        "bracketSameLine": true,
+        "endOfLine": "lf"
+      }
+    }
+  ]
+}
