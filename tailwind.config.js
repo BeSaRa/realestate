@@ -7,9 +7,14 @@ module.exports = {
         primary: "#8A1538",
         secondary: "#A29475",
       },
-      backgroundImage: {
-        // "top-pattern": "url('')",
-        // "bottom-pattern": "",
+      animation: {
+        sticky: "sticky .65s cubic-bezier(0.23, 1, 0.32, 1) both",
+      },
+      keyframes: {
+        sticky: {
+          "0%": { transform: "translateY(-100%)" },
+          "100%": { transform: "translateY(0)" },
+        },
       },
     },
   },

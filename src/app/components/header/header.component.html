@@ -1,31 +1,5 @@
-<div id="top-header" class="h-12 flex justify-between items-center bg-primary w-full text-white px-4">
-  <div class="w-72"></div>
-  <div id="search-header" class="flex relative items-center bg-secondary/20 h-10 w-80 rounded">
-    <input type="text" class="bg-transparent border-b-white/50 outline-none px-5" />
-    <div class="absolute rtl:left-0 ltr:right-0">
-      <button mat-icon-button>
-        <mat-icon>search</mat-icon>
-      </button>
-    </div>
-  </div>
-  <!-- search header-->
-  <ul
-    id="top-header-menu"
-    class="flex items-center gap-x-3 [&>li:not(:last-child)]:before:-left-1.5 [&>li:not(:last-child)]:before:to-primary [&>li:not(:last-child)]:before:from-primary [&>li:not(:last-child)]:before:via-secondary [&>li:not(:last-child)]:before:bg-gradient-to-b [&>li]:relative [&>li:not(:last-child)]:before:absolute [&>li:not(:last-child)]:before:w-px [&>li:not(:last-child)]:before:h-full">
-    <li>
-      <button mat-icon-button>
-        <mat-icon>text_increase</mat-icon>
-      </button>
-    </li>
-    <li>
-      <button mat-icon-button>
-        <mat-icon>text_decrease</mat-icon>
-      </button>
-    </li>
-    <li><a class="text-white" mat-button href="#">تسجيل الدخول</a></li>
-    <li><a mat-button href="#">دخول الموظفين</a></li>
-    <li><a mat-button href="#">EN</a></li>
-  </ul>
-  <!-- top-header-menu -->
-</div>
-<div id="bottom-header" class="h-20 bg-primary border-t border-t-secondary/50 w-full px-4"></div>
+<app-top-header />
+<div *ngIf="isSticky()" class="h-20 w-full"></div>
+<app-main-header
+  class="[&.fixed]:left-0 [&.fixed]:right-0 [&.fixed]:top-0"
+  [ngClass]="{ 'animate-sticky': isSticky(), fixed: isSticky() }" />

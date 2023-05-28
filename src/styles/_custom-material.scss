@@ -3,11 +3,12 @@
   --mdc-text-button-label-text-color: none
 }
 
-#top-header {
-  .mat-mdc-button, .mat-mdc-outlined-button , .mat-mdc-icon-button {
+#top-header, #main-menu {
+  .mat-mdc-button, .mat-mdc-outlined-button, .mat-mdc-icon-button {
     --mat-mdc-button-persistent-ripple-color: white;
     --mat-mdc-button-ripple-color: theme('colors.secondary/0.4')
   }
+
   .mat-mdc-icon-button.mat-mdc-button-base {
     --mdc-icon-button-state-layer-size: theme('space.10');
     padding: 8px;
