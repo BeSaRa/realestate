@@ -16,6 +16,9 @@ module.exports = {
           "100%": { transform: "translateY(0)" },
         },
       },
+      backgroundImage: {
+        header: "url(assets/images/header-bg.jpg)",
+      },
     },
   },
   plugins: [],
