@@ -12,3 +12,7 @@ body {
   font-family: Roboto, "Helvetica Neue", sans-serif;
   min-height: 100vh;
 }
+
+.divide-items {
+  @apply [&>li:not(:last-child)]:before:-left-1.5 [&>li:not(:last-child)]:before:from-transparent [&>li:not(:last-child)]:before:via-secondary [&>li:not(:last-child)]:before:bg-gradient-to-b [&>li]:relative [&>li:not(:last-child)]:before:absolute [&>li:not(:last-child)]:before:w-px [&>li:not(:last-child)]:before:h-full
+}

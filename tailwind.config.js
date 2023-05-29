@@ -18,7 +18,9 @@ module.exports = {
       },
       backgroundImage: {
         header: "url(assets/images/header-bg.jpg)",
-      },
+        footer: "url(assets/images/footer-bg.png)",
+        pattern: "url(assets/images/pattern.png)",
+      }
     },
   },
   plugins: [],
