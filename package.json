@@ -27,7 +27,9 @@
     "@angular/platform-server": "^16.0.0",
     "@angular/router": "^16.0.0",
     "@nguniversal/express-engine": "^16.0.2",
+    "apexcharts": "^3.40.0",
     "express": "^4.15.2",
+    "ng-apexcharts": "^1.7.6",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0",
     "zone.js": "~0.13.0"
