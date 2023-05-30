@@ -3,7 +3,7 @@
   --mdc-text-button-label-text-color: none
 }
 
-#top-header, #main-menu , #bottom-footer , #top-footer , #main-banner {
+#top-header, #main-menu, #bottom-footer, #top-footer, #main-banner {
   .mat-mdc-button, .mat-mdc-outlined-button, .mat-mdc-icon-button {
     --mat-mdc-button-persistent-ripple-color: white;
     --mat-mdc-button-ripple-color: theme('colors.secondary/0.4')
@@ -13,4 +13,15 @@
     --mdc-icon-button-state-layer-size: theme('space.10');
     padding: 8px;
   }
+}
+
+.mat-mdc-radio-button.mat-accent {
+  --mdc-radio-selected-icon-color: theme('colors.primary');
+  --mdc-radio-selected-pressed-icon-color: var(--mdc-radio-selected-icon-color);
+  --mdc-radio-selected-focus-icon-color: var(--mdc-radio-selected-icon-color);
+  --mdc-radio-selected-hover-icon-color: var(--mdc-radio-selected-icon-color);
+  --mat-radio-checked-ripple-color: var(--mdc-radio-selected-icon-color);
+}
+:root {
+  --mdc-theme-text-primary-on-background: theme('colors.primary')
 }
