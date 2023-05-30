@@ -8,7 +8,7 @@ describe('VotingFormComponent', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [VotingFormComponent]
+      imports: [VotingFormComponent],
     });
     fixture = TestBed.createComponent(VotingFormComponent);
     component = fixture.componentInstance;
