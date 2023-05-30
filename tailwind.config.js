@@ -21,6 +21,7 @@ module.exports = {
         footer: "url(assets/images/footer-bg.png)",
         pattern: "url(assets/images/pattern.png)",
         banner: "url(assets/images/banner.png)",
+        news : "url(assets/images/news-image.png)",
       }
     },
   },
