@@ -1,11 +1,12 @@
 import { Component } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { CommonModule, NgOptimizedImage } from '@angular/common';
 import { ExtraHeaderComponent } from '../../components/extra-header/extra-header.component';
+import { MatButtonModule } from '@angular/material/button';
 
 @Component({
   selector: 'app-landing-page',
   standalone: true,
-  imports: [CommonModule, ExtraHeaderComponent],
+  imports: [CommonModule, ExtraHeaderComponent, NgOptimizedImage, MatButtonModule],
   templateUrl: './landing-page.component.html',
   styleUrls: ['./landing-page.component.scss'],
 })

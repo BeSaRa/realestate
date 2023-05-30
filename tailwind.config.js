@@ -20,6 +20,7 @@ module.exports = {
         header: "url(assets/images/header-bg.jpg)",
         footer: "url(assets/images/footer-bg.png)",
         pattern: "url(assets/images/pattern.png)",
+        banner: "url(assets/images/banner.png)",
       }
     },
   },
