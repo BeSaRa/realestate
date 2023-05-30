@@ -3,7 +3,7 @@
   --mdc-text-button-label-text-color: none
 }
 
-#top-header, #main-menu , #bottom-footer , #top-footer {
+#top-header, #main-menu , #bottom-footer , #top-footer , #main-banner {
   .mat-mdc-button, .mat-mdc-outlined-button, .mat-mdc-icon-button {
     --mat-mdc-button-persistent-ripple-color: white;
     --mat-mdc-button-ripple-color: theme('colors.secondary/0.4')
