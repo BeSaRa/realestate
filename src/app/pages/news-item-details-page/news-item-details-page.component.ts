@@ -1,37 +1,59 @@
 import { CommonModule, NgOptimizedImage } from '@angular/common';
 import { Component, Input, OnDestroy, OnInit, inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
+import { ActivatedRoute } from '@angular/router';
 import { ExtraHeaderComponent } from '@components/extra-header/extra-header.component';
+import { RelatedNewsListComponent } from '@components/related-news-list/related-news-list.component';
 import { News } from '@models/news';
 import { SafeHtmlPipe } from '@pipes/safe-html.pipe';
 import { NewsService } from '@services/news.service';
-import { Subject, takeUntil, tap } from 'rxjs';
+import { Subject, map, switchMap, takeUntil, tap } from 'rxjs';
 
 @Component({
   selector: 'app-news-item-details-page',
   standalone: true,
-  imports: [CommonModule, NgOptimizedImage, ExtraHeaderComponent, SafeHtmlPipe, MatButtonModule],
+  imports: [
+    CommonModule,
+    NgOptimizedImage,
+    ExtraHeaderComponent,
+    SafeHtmlPipe,
+    MatButtonModule,
+    RelatedNewsListComponent,
+  ],
   templateUrl: './news-item-details-page.component.html',
   styleUrls: ['./news-item-details-page.component.scss'],
 })
 export default class NewsItemDetailsPageComponent implements OnInit, OnDestroy {
-  @Input() id!: number;
+  @Input() newsItemData!: News;
 
-  newsItemData?: News;
+  route = inject(ActivatedRoute);
+
   newsService = inject(NewsService);
+  relatedNews!: News[];
 
-  private _destroy$: Subject<void> = new Subject<void>();
+  destroy$: Subject<void> = new Subject<void>();
 
   ngOnInit(): void {
-    this.newsService
-      .loadById(this.id)
-      .pipe(takeUntil(this._destroy$), tap(console.log))
-      .subscribe((newsItem) => (this.newsItemData = newsItem));
+    this.route.params
+      .pipe(
+        takeUntil(this.destroy$),
+        switchMap((_) => this._loadRelatedNews())
+      )
+      .subscribe();
+  }
+
+  private _loadRelatedNews() {
+    return this.newsService.load().pipe(
+      map((items) => items ?? []),
+      map((items) => items.filter((item) => item.id !== this.newsItemData.id)),
+      map((items) => items.slice(0, 3)),
+      tap((newsData) => (this.relatedNews = newsData))
+    );
   }
 
   ngOnDestroy(): void {
-    this._destroy$.next();
-    this._destroy$.complete();
-    this._destroy$.unsubscribe();
+    this.destroy$.next();
+    this.destroy$.complete();
+    this.destroy$.unsubscribe();
   }
 }

@@ -13,5 +13,5 @@ import { NewsItemComponent } from '../news-item/news-item.component';
 })
 export class NewsListComponent {
   @Input({ required: true }) title!: string;
-  @Input({ required: true }) newsData!: News[] | null;
+  @Input({ required: true }) newsData!: News[];
 }
