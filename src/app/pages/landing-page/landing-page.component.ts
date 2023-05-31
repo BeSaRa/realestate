@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { CommonModule, NgOptimizedImage } from '@angular/common';
 import { ExtraHeaderComponent } from '../../components/extra-header/extra-header.component';
 import { MatButtonModule } from '@angular/material/button';
@@ -8,12 +8,15 @@ import { NewsletterFormComponent } from '../../components/newsletter-form/newsle
 import { VotingFormComponent } from '../../components/voting-form/voting-form.component';
 import { MatRadioModule } from '@angular/material/radio';
 import { InquiriesComponent } from '../../components/inquiries/inquiries.component';
+import { NewsService } from '@services/news.service';
+import { RouterModule } from '@angular/router';
 
 @Component({
   selector: 'app-landing-page',
   standalone: true,
   imports: [
     CommonModule,
+    RouterModule,
     ExtraHeaderComponent,
     NgOptimizedImage,
     MatButtonModule,
@@ -27,4 +30,7 @@ import { InquiriesComponent } from '../../components/inquiries/inquiries.compone
   templateUrl: './landing-page.component.html',
   styleUrls: ['./landing-page.component.scss'],
 })
-export default class LandingPageComponent {}
+export default class LandingPageComponent {
+  newsService = inject(NewsService);
+  newsData = this.newsService.load({ limit: 4 });
+}

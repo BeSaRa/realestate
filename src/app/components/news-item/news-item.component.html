@@ -1,12 +1,17 @@
 <div class="news-item flex h-72">
   <div class="h-72 shadow-xl rounded-xl group w-2/6">
-    <a (click)="$event.preventDefault()" href="#" class="news-background overflow-hidden inline-flex w-full h-full bg-primary relative rounded-xl">
-      <div class="bg-news w-full h-full bg-cover bg-center group-hover:scale-125 transition-transform"></div>
+    <a
+      [routerLink]="['/news', newsItemData.id]"
+      href="#"
+      class="news-background overflow-hidden inline-flex w-full h-full bg-primary relative rounded-xl">
+      <div
+        style="background-image: url('{{ newsItemData.imageUrl }}');"
+        class="w-full h-full bg-cover bg-center group-hover:scale-125 transition-transform"></div>
       <div class="bg-gradient-to-t w-full h-full from-black/80 absolute bottom-0 right-0 left-0"></div>
       <div class="news-title flex flex-col items-start absolute bottom-0 right-0 left-0 px-2">
         <span class="flex flex-auto"></span>
         <h2 class="text-lg text-white text-ellipsis line-clamp-3">
-          وزارة البلدية تطلق المرحلة الأولى من مشروع المنصة العقارية لدولة قطر
+          {{ newsItemData.title }}
         </h2>
         <span class="news-date mb-2 items-center flex text-sm text-white py-1 px-2 bg-primary rounded-xl gap-x-2">
           <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24">
@@ -14,7 +19,9 @@
               fill="currentColor"
               d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10s10-4.5 10-10S17.5 2 12 2M7.7 15.5L7 14.2l4-2.3V7h1.5v5.8l-4.8 2.7Z" />
           </svg>
-          <span class="inline-block align-bottom">05 مارس 2023</span>
+          <span class="inline-block align-bottom">{{
+            newsItemData.date_created | date : "longDate" : "UTC" : "ar"
+          }}</span>
         </span>
       </div>
     </a>
@@ -22,16 +29,10 @@
   <div class="news-content w-4/6 px-2 flex flex-col">
     <div
       class="news-tags flex gap-x-2 [&>a]:bg-gray-200 [&>a]:px-1 [&>a]:text-sm [&>a]:py-1 [&>a:hover]:bg-gray-400 [&>a]:rounded">
-      <a (click)="$event.preventDefault()" href="#">وطني</a>
-      <a (click)="$event.preventDefault()" href="#">وطني</a>
+      <a *ngFor="let tag of newsItemData.tags" (click)="$event.preventDefault()" href="#">{{ tag }}</a>
     </div>
     <p class="news-excerpt text-lg overflow-hidden flex-auto text-ellipsis line-clamp-[7] mt-5">
-      أعلنت وزارة البلدية، اليوم، عن تفاصيل مشروع تطوير وإطلاق المرحلة الأولى من المنصة العقارية لدولة قطر التي تقوم على
-      جمع البيانات العقارية من مصادرها المختلفة، بهدف تخزين البيانات ضمن منصة مركزية لتحقيق الأهداف المستقبلية
-      والاستراتيجية للقطاع العقاري في دولة قطر. وأكدت الوزارة سعيها، من خلال هذا المشروع، إلى تطوير منصة مركزية عقارية
-      توفر مؤشرات للمعنيين في القطاع العقاري عن طريق جمع وتحليل البيانات العقارية من مختلف الجهات المعنية في الدولة،
-      مشيرة إلى أن المرحلة الأولى من المنصة تعد بمثابة الركيزة الأساسية التي تبنى عليها المراحل التالية لاستكمال أعمال
-      تطوير المنصة العقارية.
+      {{ newsItemData.excerpt }}
     </p>
     <div class="news-social-shares flex items-center text-primary">
       <a mat-icon-button (click)="$event.preventDefault()" href="#">

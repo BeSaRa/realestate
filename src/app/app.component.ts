@@ -1,10 +1,11 @@
 import { Component, HostListener, inject } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { CommonModule, registerLocaleData } from '@angular/common';
 import { RouterOutlet } from '@angular/router';
 import { HeaderComponent } from '@components/header/header.component';
 import { FooterComponent } from '@components/footer/footer.component';
 import { StickyService } from '@services/sticky.service';
 import { NewsService } from '@services/news.service';
+import localeAr from '@angular/common/locales/ar';
 
 @Component({
   selector: 'app-root',
@@ -15,15 +16,9 @@ import { NewsService } from '@services/news.service';
 })
 export class AppComponent {
   stickyService = inject(StickyService);
-  newsService = inject(NewsService);
 
   constructor() {
-    this.newsService.load({ limit: 4 }).subscribe((list) => {
-      console.log(list);
-    });
-    this.newsService.loadById(1).subscribe((one: any) => {
-      console.log(one);
-    });
+    registerLocaleData(localeAr, 'ar');
   }
 
   @HostListener('window:scroll')

@@ -11,9 +11,11 @@ export abstract class CmsService<T, PrimaryType = number>
   extends RegisterServiceMixin(class {})
   implements ServiceContract
 {
+  abstract serviceName: string;
+  abstract collectionName: string;
+
   private urlService = inject(UrlService);
   private http = inject(HttpClient);
-  abstract collectionName: string;
 
   @CastResponse(undefined, { unwrap: 'data', fallback: '$default' })
   load(options: OptionsContract = { limit: 50 }): Observable<T[]> {
@@ -32,6 +34,4 @@ export abstract class CmsService<T, PrimaryType = number>
   loadImage(fileId: string): string {
     return this.urlService.URLS.BASE_URL + 'assets/' + fileId;
   }
-
-  abstract serviceName: string;
 }

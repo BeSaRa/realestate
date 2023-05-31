@@ -8,6 +8,11 @@ const { send, receive } = new NewsInterceptor();
 @InterceptModel({ send, receive })
 export class News extends BaseModel<NewsService> {
   $$__service_name__$$ = 'NewsService';
+  title!: string;
+  excerpt!: string;
+  content!: string;
+  status!: string;
   image!: string;
   imageUrl!: string;
+  tags!: string[];
 }

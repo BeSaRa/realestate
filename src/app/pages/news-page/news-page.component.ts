@@ -1,8 +1,9 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { CommonModule, NgOptimizedImage } from '@angular/common';
 import { ExtraHeaderComponent } from 'src/app/components/extra-header/extra-header.component';
 import { MatButtonModule } from '@angular/material/button';
 import { NewsListComponent } from 'src/app/components/news-list/news-list.component';
+import { NewsService } from '@services/news.service';
 
 @Component({
   selector: 'app-news-page',
@@ -11,4 +12,7 @@ import { NewsListComponent } from 'src/app/components/news-list/news-list.compon
   templateUrl: './news-page.component.html',
   styleUrls: ['./news-page.component.scss'],
 })
-export default class NewsPageComponent {}
+export default class NewsPageComponent {
+  newsService = inject(NewsService);
+  newsData = this.newsService.load();
+}

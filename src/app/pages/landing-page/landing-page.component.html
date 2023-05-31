@@ -10,7 +10,11 @@
   <app-banner />
   <br />
   <br />
-  <app-news-list />
+  <app-news-list title="آخر الأخبار" [newsData]="newsData | async" />
+  <div class="text-center mt-10">
+    <button routerLink="/news" class="self-center !bg-secondary !text-white !shadow-xl" mat-button>المزيد ...</button>
+  </div>
+
   <br />
   <br />
   <div class="flex justify-center">
