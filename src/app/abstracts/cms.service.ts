@@ -1,21 +1,37 @@
 import { inject } from '@angular/core';
 import { UrlService } from '@services/url.service';
 import { Observable } from 'rxjs';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { CastResponse } from 'cast-response';
+import { OptionsContract } from '@contracts/options-contract';
+import { RegisterServiceMixin } from '@mixins/register-service-mixin';
+import { ServiceContract } from '@contracts/service-contract';
 
-export abstract class CmsService<T, PrimaryType = number> {
+export abstract class CmsService<T, PrimaryType = number>
+  extends RegisterServiceMixin(class {})
+  implements ServiceContract
+{
   private urlService = inject(UrlService);
   private http = inject(HttpClient);
   abstract collectionName: string;
 
-  @CastResponse(undefined, { unwrap: 'data' })
-  load(): Observable<T[]> {
-    return this.http.get<T[]>(this.urlService.URLS.BASE_URL + 'items/' + this.collectionName);
+  @CastResponse(undefined, { unwrap: 'data', fallback: '$default' })
+  load(options: OptionsContract = { limit: 50 }): Observable<T[]> {
+    return this.http.get<T[]>(this.urlService.URLS.BASE_URL + 'items/' + this.collectionName, {
+      params: new HttpParams({
+        fromObject: { ...options },
+      }),
+    });
   }
 
-  @CastResponse(undefined, { unwrap: 'data' })
+  @CastResponse(undefined, { unwrap: 'data', fallback: '$default' })
   loadById(id: PrimaryType): Observable<T> {
     return this.http.get<T>(this.urlService.URLS.BASE_URL + 'items/' + this.collectionName + '/' + id);
   }
+
+  loadImage(fileId: string): string {
+    return this.urlService.URLS.BASE_URL + 'assets/' + fileId;
+  }
+
+  abstract serviceName: string;
 }

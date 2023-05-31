@@ -18,10 +18,10 @@ export class AppComponent {
   newsService = inject(NewsService);
 
   constructor() {
-    this.newsService.load().subscribe((list) => {
+    this.newsService.load({ limit: 4 }).subscribe((list) => {
       console.log(list);
     });
-    this.newsService.loadById(1).subscribe((one) => {
+    this.newsService.loadById(1).subscribe((one: any) => {
       console.log(one);
     });
   }
