@@ -1,15 +1,16 @@
-import { Component, Input, OnDestroy, OnInit, inject } from '@angular/core';
 import { CommonModule, NgOptimizedImage } from '@angular/common';
+import { Component, Input, OnDestroy, OnInit, inject } from '@angular/core';
+import { MatButtonModule } from '@angular/material/button';
 import { ExtraHeaderComponent } from '@components/extra-header/extra-header.component';
-import { NewsService } from '@services/news.service';
 import { News } from '@models/news';
-import { Observable, Subject, takeUntil, tap } from 'rxjs';
 import { SafeHtmlPipe } from '@pipes/safe-html.pipe';
+import { NewsService } from '@services/news.service';
+import { Subject, takeUntil, tap } from 'rxjs';
 
 @Component({
   selector: 'app-news-item-details-page',
   standalone: true,
-  imports: [CommonModule, NgOptimizedImage, ExtraHeaderComponent, SafeHtmlPipe],
+  imports: [CommonModule, NgOptimizedImage, ExtraHeaderComponent, SafeHtmlPipe, MatButtonModule],
   templateUrl: './news-item-details-page.component.html',
   styleUrls: ['./news-item-details-page.component.scss'],
 })
