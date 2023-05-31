@@ -15,19 +15,19 @@
     class="px-10 pt-16 h-60 w-full bg-gradient-to-r from-primary/90 to-gray-800/90 clipped-footer absolute top-0 right-0 left-0 flex items-center justify-between">
     <ul id="top-footer-menu">
       <li><a mat-button href="#">من نحن</a></li>
-      <li><a mat-button href="#">الاستطلاعات</a></li>
-      <li><a mat-button href="#">أسئلة متكرره</a></li>
+      <li><a mat-button (click)="$event.preventDefault()" href="#">الاستطلاعات</a></li>
+      <li><a mat-button (click)="$event.preventDefault()" href="#">أسئلة متكرره</a></li>
     </ul>
     <div id="top-footer-downloads" class="flex flex-col items-center">
       <p class="mb-3">ابقى على اطلاع واحصل على أخر المستجدات</p>
       <ul class="flex gap-x-3">
         <li>
-          <a class="w-32 block" href="#">
+          <a class="w-32 block" (click)="$event.preventDefault()" href="#">
             <img class="h-auto w-auto" ngSrc="assets/images/apple.png" height="90" width="303" alt="apple-app" />
           </a>
         </li>
         <li>
-          <a class="w-32 block" href="#">
+          <a class="w-32 block" (click)="$event.preventDefault()" href="#">
             <img class="h-auto w-auto" ngSrc="assets/images/google.png" height="90" width="302" alt="apple-app" />
           </a>
         </li>
@@ -37,17 +37,17 @@
     <div id="useful-links">
       <ul id="useful-links-menu" class="flex gap-x-3">
         <li class="bg-gradient-to-b from-white via-gray-300 to-white rounded-2xl p-2">
-          <a class="w-32 h-full flex items-center justify-center" href="#">
+          <a class="w-32 h-full flex items-center justify-center" target="_blank" href="https://www.mme.gov.qa">
             <img class="h-auto w-auto" ngSrc="assets/images/mme.png" height="35" width="112" alt="MME site" />
           </a>
         </li>
         <li class="bg-gradient-to-b from-white via-gray-300 to-white rounded-2xl p-2">
-          <a class="w-32 h-full flex items-center justify-center" href="#">
+          <a class="w-32 h-full flex items-center justify-center" target="_blank" href="https://hukoomi.gov.qa">
             <img class="h-auto w-auto" ngSrc="assets/images/hukoomi.png" height="29" width="94" alt="hukoomi site" />
           </a>
         </li>
         <li class="bg-gradient-to-b from-white via-gray-300 to-white rounded-2xl p-2">
-          <a class="w-32 h-full flex items-center justify-center" href="#">
+          <a class="w-32 h-full flex items-center justify-center" target="_blank" href="https://www.dohaexpo2023.gov.qa">
             <img class="h-auto w-auto" ngSrc="assets/images/expo.png" height="40" width="71" alt="expo site" />
           </a>
         </li>
@@ -101,8 +101,8 @@
     id="bottom-footer"
     class="flex items-center justify-between h-12 absolute bottom-0 right-0 left-0 bg-[#666666] px-10 w-full">
     <ul class="flex gap-x-3 divide-items">
-      <li><a mat-button href="#">الخصوصية والحقوق</a></li>
-      <li><a mat-button href="#">خريطة الموقع</a></li>
+      <li><a mat-button (click)="$event.preventDefault()" href="#">الخصوصية والحقوق</a></li>
+      <li><a mat-button (click)="$event.preventDefault()" href="#">خريطة الموقع</a></li>
     </ul>
     <div>
       <span>البلدية غير مسؤولة عن أي اقتباس من الموقع - جميع الحقوق محفوظة لوزارة البلديــــة © 2023</span>

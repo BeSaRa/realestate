@@ -1,6 +1,6 @@
 <div class="news-item flex h-72">
   <div class="h-72 shadow-xl rounded-xl group w-2/6">
-    <a href="#" class="news-background overflow-hidden inline-flex w-full h-full bg-primary relative rounded-xl">
+    <a (click)="$event.preventDefault()" href="#" class="news-background overflow-hidden inline-flex w-full h-full bg-primary relative rounded-xl">
       <div class="bg-news w-full h-full bg-cover bg-center group-hover:scale-125 transition-transform"></div>
       <div class="bg-gradient-to-t w-full h-full from-black/80 absolute bottom-0 right-0 left-0"></div>
       <div class="news-title flex flex-col items-start absolute bottom-0 right-0 left-0 px-2">
@@ -22,8 +22,8 @@
   <div class="news-content w-4/6 px-2 flex flex-col">
     <div
       class="news-tags flex gap-x-2 [&>a]:bg-gray-200 [&>a]:px-1 [&>a]:text-sm [&>a]:py-1 [&>a:hover]:bg-gray-400 [&>a]:rounded">
-      <a href="#">وطني</a>
-      <a href="#">وطني</a>
+      <a (click)="$event.preventDefault()" href="#">وطني</a>
+      <a (click)="$event.preventDefault()" href="#">وطني</a>
     </div>
     <p class="news-excerpt text-lg overflow-hidden flex-auto text-ellipsis line-clamp-[7] mt-5">
       أعلنت وزارة البلدية، اليوم، عن تفاصيل مشروع تطوير وإطلاق المرحلة الأولى من المنصة العقارية لدولة قطر التي تقوم على
@@ -34,21 +34,21 @@
       تطوير المنصة العقارية.
     </p>
     <div class="news-social-shares flex items-center text-primary">
-      <a mat-icon-button href="#">
+      <a mat-icon-button (click)="$event.preventDefault()" href="#">
         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
           <path
             fill="currentColor"
             d="M18 3H6v4h12m1 5a1 1 0 0 1-1-1a1 1 0 0 1 1-1a1 1 0 0 1 1 1a1 1 0 0 1-1 1m-3 7H8v-5h8m3-6H5a3 3 0 0 0-3 3v6h4v4h12v-4h4v-6a3 3 0 0 0-3-3Z" />
         </svg>
       </a>
-      <a mat-icon-button href="#">
+      <a mat-icon-button (click)="$event.preventDefault()" href="#">
         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
           <path
             fill="currentColor"
             d="M12 2.04c-5.5 0-10 4.49-10 10.02c0 5 3.66 9.15 8.44 9.9v-7H7.9v-2.9h2.54V9.85c0-2.51 1.49-3.89 3.78-3.89c1.09 0 2.23.19 2.23.19v2.47h-1.26c-1.24 0-1.63.77-1.63 1.56v1.88h2.78l-.45 2.9h-2.33v7a10 10 0 0 0 8.44-9.9c0-5.53-4.5-10.02-10-10.02Z" />
         </svg>
       </a>
-      <a mat-icon-button href="#">
+      <a mat-icon-button (click)="$event.preventDefault()" href="#">
         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
           <path
             fill="currentColor"

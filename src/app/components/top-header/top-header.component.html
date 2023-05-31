@@ -12,7 +12,7 @@
   </div>
   <!-- search header-->
   <ul id="top-header-menu" class="flex items-center gap-x-3 divide-items">
-    <li>
+    <!-- <li>
       <button mat-icon-button>
         <mat-icon>text_increase</mat-icon>
       </button>
@@ -21,15 +21,15 @@
       <button mat-icon-button>
         <mat-icon>text_decrease</mat-icon>
       </button>
-    </li>
+    </li> -->
     <li>
-      <button mat-icon-button>
+      <button mat-icon-button  (click)="toggleFilter()">
         <mat-icon>visibility</mat-icon>
       </button>
     </li>
-    <li><a class="text-white" mat-button href="#">تسجيل الدخول</a></li>
-    <li><a mat-button href="#">دخول الموظفين</a></li>
-    <li><a mat-button href="#">EN</a></li>
+    <li><a class="text-white" (click)="$event.preventDefault()" mat-button href="#">تسجيل الدخول</a></li>
+    <li><a mat-button (click)="$event.preventDefault()" href="#">دخول الموظفين</a></li>
+    <li><a mat-button (click)="$event.preventDefault()" href="#">EN</a></li>
   </ul>
   <!-- top-header-menu -->
 </div>
