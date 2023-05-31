@@ -4,7 +4,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { TopHeaderComponent } from '../top-header/top-header.component';
 import { MainHeaderComponent } from '../main-header/main-header.component';
-import { StickyService } from '../../services/sticky.service';
+import { StickyService } from '@services/sticky.service';
 
 @Component({
   selector: 'app-header',

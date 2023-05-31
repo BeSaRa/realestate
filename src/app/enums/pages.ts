@@ -1,3 +1,3 @@
 export enum Pages {
-  ABOUT_US = 'about-us',
+  ABOUT_US = 'about',
 }
