@@ -8,7 +8,7 @@
 </app-extra-header>
 <div class="content-wrapper p-10">
   <div class="flex justify-center">
-    <div *ngIf="newsItemData" class="w-5/6 grid grid-cols-4">
+    <div *ngIf="newsItemData" class="w-5/6 grid grid-cols-4 gap-5">
       <div class="col-span-3 p-10 shadow-sm rounded-xl border">
         <h1 class="heading text-3xl self-start text-primary border-secondary font-semibold inline-block mb-5">
           {{ newsItemData.title }}
@@ -56,6 +56,10 @@
           </a>
         </div>
       </div>
+      <ng-container *ngIf="relatedNews.length">
+        <div class="col-span-1 self-baseline py-4 px-2 shadow-sm rounded-xl border">
+          <app-related-news-list title="أخبار ذات صلة" [newsData]="relatedNews"></app-related-news-list></div
+      ></ng-container>
     </div>
   </div>
 </div>

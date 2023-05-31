@@ -7,5 +7,5 @@
   </div>
 </app-extra-header>
 <div class="content-wrapper p-10">
-  <app-news-list title="الأخبار" [newsData]="newsData | async" />
+  <app-news-list title="الأخبار" [newsData]="(newsData | async) ?? []" />
 </div>
