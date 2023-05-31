@@ -2,3 +2,7 @@
 @import "styles/material";
 @import "styles/custom-material";
 @import "styles/tailwind";
+
+.root-filter{
+  filter: invert(1);
+}
