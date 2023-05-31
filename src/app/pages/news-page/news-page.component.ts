@@ -11,4 +11,4 @@ import { NewsListComponent } from 'src/app/components/news-list/news-list.compon
   templateUrl: './news-page.component.html',
   styleUrls: ['./news-page.component.scss'],
 })
-export class NewsPageComponent {}
+export default class NewsPageComponent {}

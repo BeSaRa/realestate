@@ -5,6 +5,6 @@ export const routes: Routes = [
   { path: 'home', loadComponent: () => import('./pages/landing-page/landing-page.component') },
   {
     path: 'news',
-    loadComponent: () => import('./pages/news-page/news-page.component').then((mod) => mod.NewsPageComponent),
+    loadComponent: () => import('./pages/news-page/news-page.component'),
   },
 ];
