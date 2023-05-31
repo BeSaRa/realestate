@@ -33,11 +33,11 @@
   <div class="flex justify-center items-start flex-col">
     <ul
       id="main-menu"
-      class="flex gap-x-3 [&>li>a:hover]:!border-white group-[.fixed]:[&>li>a:hover]:!border-primary group-[.fixed]:[&>li.active>a]:!border-primary group-[.fixed]:text-primary text-white [&>li>a]:!border-2 [&>li>a]:!border-solid [&>li>a]:!border-transparent [&>li.active>a]:!border-white">
-      <li class="active"><a mat-button class="active" href="#">الرئيسية</a></li>
+      class="flex gap-x-3 [&>li>a:hover]:!border-white group-[.fixed]:[&>li>a:hover]:!border-primary group-[.fixed]:[&>li>a.active]:!border-primary group-[.fixed]:text-primary text-white [&>li>a]:!border-2 [&>li>a]:!border-solid [&>li>a]:!border-transparent [&>li>a.active]:!border-white">
+      <li><a mat-button routerLink="/home" routerLinkActive="active">الرئيسية</a></li>
       <li><a mat-button href="#">مؤشر البيع</a></li>
       <li><a mat-button href="#">مؤشر الرهن</a></li>
-      <li><a mat-button href="#">الأخبار</a></li>
+      <li><a mat-button routerLink="/news" routerLinkActive="active">الأخبار</a></li>
       <li><a mat-button href="#">من نحن</a></li>
       <li><a mat-button href="#">القوانين والقرارات</a></li>
     </ul>
