@@ -14,7 +14,7 @@
     id="top-footer"
     class="px-10 pt-16 h-60 w-full bg-gradient-to-r from-primary/90 to-gray-800/90 clipped-footer absolute top-0 right-0 left-0 flex items-center justify-between">
     <ul id="top-footer-menu">
-      <li><a mat-button href="#">من نحن</a></li>
+      <li><a mat-button routerLink="/about-us" routerLinkActive="active">من نحن</a></li>
       <li><a mat-button (click)="$event.preventDefault()" href="#">الاستطلاعات</a></li>
       <li><a mat-button (click)="$event.preventDefault()" href="#">أسئلة متكرره</a></li>
     </ul>
@@ -47,7 +47,10 @@
           </a>
         </li>
         <li class="bg-gradient-to-b from-white via-gray-300 to-white rounded-2xl p-2">
-          <a class="w-32 h-full flex items-center justify-center" target="_blank" href="https://www.dohaexpo2023.gov.qa">
+          <a
+            class="w-32 h-full flex items-center justify-center"
+            target="_blank"
+            href="https://www.dohaexpo2023.gov.qa">
             <img class="h-auto w-auto" ngSrc="assets/images/expo.png" height="40" width="71" alt="expo site" />
           </a>
         </li>
