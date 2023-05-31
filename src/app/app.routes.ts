@@ -16,7 +16,7 @@ export const routes: Routes = [
     resolve: { newsItemData: newsItemResolver },
   },
   {
-    path: Pages.ABOUT_US,
+    path: 'about-us',
     loadComponent: () => import('./pages/page/page.component'),
     data: { page: Pages.ABOUT_US },
     resolve: { pageData: pageResolver },
