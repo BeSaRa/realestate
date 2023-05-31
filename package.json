@@ -28,6 +28,7 @@
     "@angular/router": "^16.0.0",
     "@nguniversal/express-engine": "^16.0.2",
     "apexcharts": "^3.40.0",
+    "cast-response": "^1.0.7",
     "express": "^4.15.2",
     "ng-apexcharts": "^1.7.6",
     "rxjs": "~7.8.0",

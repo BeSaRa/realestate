@@ -2,6 +2,74 @@
 {
   "compileOnSave": false,
   "compilerOptions": {
+    "paths": {
+      "@services/*": [
+        "./src/app/services/*"
+      ],
+      "@models/*": [
+        "./src/app/models/*"
+      ],
+      "@modules/*": [
+        "./src/app/modules/*"
+      ],
+      "@contracts/*": [
+        "./src/app/contracts/*"
+      ],
+      "@mixins/*": [
+        "./src/app/mixins/*"
+      ],
+      "@enums/*": [
+        "./src/app/enums/*"
+      ],
+      "@model-interceptors/*": [
+        "./src/app/model-interceptors/*"
+      ],
+      "@http-interceptors/*": [
+        "./src/app/http-interceptors/*"
+      ],
+      "@http-contexts/*": [
+        "./src/app/http-contexts/*"
+      ],
+      "@pipes/*": [
+        "./src/app/pipes/*"
+      ],
+      "@guards/*": [
+        "./src/app/guards/*"
+      ],
+      "@resolvers/*": [
+        "./src/app/resolvers/*"
+      ],
+      "@validators/*": [
+        "./src/app/validators/*"
+      ],
+      "@tokens/*": [
+        "./src/app/tokens/*"
+      ],
+      "@utils/*": [
+        "./src/app/utils/*"
+      ],
+      "@standalone/*": [
+        "./src/app/standalone/*"
+      ],
+      "@constants/*": [
+        "./src/app/constants/*"
+      ],
+      "@abstracts/*": [
+        "./src/app/abstracts/*"
+      ],
+      "@app-types/*": [
+        "./src/app/app-types/*"
+      ],
+      "@animations/*": [
+        "./src/app/animations/*"
+      ],
+      "@components/*": [
+        "./src/app/components/*"
+      ],
+      "@pages/*": [
+        "./src/app/pages/*"
+      ]
+    },
     "baseUrl": "./",
     "outDir": "./dist/out-tsc",
     "forceConsistentCasingInFileNames": true,
