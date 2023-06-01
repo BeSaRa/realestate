@@ -1,15 +1,17 @@
-<div class="relative bg-pattern w-full h-[26rem]">
+<div class="relative bg-pattern w-full h-[500px]">
   <svg width="0" class="fixed" height="0">
     <defs>
       <clipPath id="header-clip-path" clipPathUnits="objectBoundingBox">
-        <path d="M1,0 L0,0 V0.99 C0.6,1,0.457,0.707,1,0.99"></path>
+        <path
+          d="M0,0.9 C0.4,1,0.6,0.7,1,0.9 L1,0 H0
+        "></path>
       </clipPath>
     </defs>
   </svg>
   <div class="bg-gradient-to-b from-transparent w-full h-full via-transparent to-100% to-white">
-    <div class="clipped-header bg-header absolute inset-0 bg-cover bg-center h-96 w-full"></div>
+    <div class="clipped-header bg-header absolute inset-0 bg-cover bg-center h-[450px] w-full"></div>
     <div
-      class="clipped-header bg-gradient-to-l from-primary/90 to-gray-800/90 absolute inset-0 bg-cover bg-center h-96 w-full pt-32 px-10">
+      class="clipped-header bg-gradient-to-l from-primary/90 to-gray-800/90 absolute inset-0 bg-cover bg-center h-[450px] w-full pt-32 px-10">
       <ng-content></ng-content>
     </div>
   </div>
