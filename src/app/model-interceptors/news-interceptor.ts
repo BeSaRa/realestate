@@ -3,7 +3,7 @@ import { News } from '@models/news';
 
 export class NewsInterceptor implements ModelInterceptorContract<News> {
   receive(model: News): News {
-    model.imageUrl = model.getService().loadImage(model.image);
+    model.imageUrl = model.getService().loadFile(model.image);
     return model;
   }
 
