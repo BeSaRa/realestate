@@ -29,7 +29,7 @@ export default class NewsItemDetailsPageComponent implements OnInit, OnDestroy {
   route = inject(ActivatedRoute);
 
   newsService = inject(NewsService);
-  relatedNews!: News[];
+  relatedNews: News[] = [];
 
   destroy$: Subject<void> = new Subject<void>();
 
