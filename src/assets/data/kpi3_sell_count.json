@@ -1,0 +1,1202 @@
+[
+  {
+    "year": 2006,
+    "municipality": "الشمال",
+    "avg_value_mt": 213,
+    "code": 1
+  },
+  {
+    "year": 2007,
+    "municipality": "الشمال",
+    "avg_value_mt": 240,
+    "code": 1,
+    "previosyear": 213,
+    "Yoy_diff": 27,
+    "yoy": 11.25
+  },
+  {
+    "year": 2008,
+    "municipality": "الشمال",
+    "avg_value_mt": 259,
+    "code": 1,
+    "previosyear": 240,
+    "Yoy_diff": 19,
+    "yoy": 7.33590733590734
+  },
+  {
+    "year": 2009,
+    "municipality": "الشمال",
+    "avg_value_mt": 131,
+    "code": 1,
+    "previosyear": 259,
+    "Yoy_diff": -128,
+    "yoy": -97.70992366412214
+  },
+  {
+    "year": 2010,
+    "municipality": "الشمال",
+    "avg_value_mt": 86,
+    "code": 1,
+    "previosyear": 131,
+    "Yoy_diff": -45,
+    "yoy": -52.32558139534884
+  },
+  {
+    "year": 2011,
+    "municipality": "الشمال",
+    "avg_value_mt": 141,
+    "code": 1,
+    "previosyear": 86,
+    "Yoy_diff": 55,
+    "yoy": 39.00709219858156
+  },
+  {
+    "year": 2012,
+    "municipality": "الشمال",
+    "avg_value_mt": 197,
+    "code": 1,
+    "previosyear": 141,
+    "Yoy_diff": 56,
+    "yoy": 28.42639593908629
+  },
+  {
+    "year": 2013,
+    "municipality": "الشمال",
+    "avg_value_mt": 339,
+    "code": 1,
+    "previosyear": 197,
+    "Yoy_diff": 142,
+    "yoy": 41.88790560471976
+  },
+  {
+    "year": 2014,
+    "municipality": "الشمال",
+    "avg_value_mt": 297,
+    "code": 1,
+    "previosyear": 339,
+    "Yoy_diff": -42,
+    "yoy": -14.14141414141414
+  },
+  {
+    "year": 2015,
+    "municipality": "الشمال",
+    "avg_value_mt": 297,
+    "code": 1,
+    "previosyear": 297,
+    "Yoy_diff": 0,
+    "yoy": 0
+  },
+  {
+    "year": 2016,
+    "municipality": "الشمال",
+    "avg_value_mt": 115,
+    "code": 1,
+    "previosyear": 297,
+    "Yoy_diff": -182,
+    "yoy": -158.26086956521738
+  },
+  {
+    "year": 2017,
+    "municipality": "الشمال",
+    "avg_value_mt": 130,
+    "code": 1,
+    "previosyear": 115,
+    "Yoy_diff": 15,
+    "yoy": 11.53846153846154
+  },
+  {
+    "year": 2018,
+    "municipality": "الشمال",
+    "avg_value_mt": 166,
+    "code": 1,
+    "previosyear": 130,
+    "Yoy_diff": 36,
+    "yoy": 21.68674698795181
+  },
+  {
+    "year": 2019,
+    "municipality": "الشمال",
+    "avg_value_mt": 120,
+    "code": 1,
+    "previosyear": 166,
+    "Yoy_diff": -46,
+    "yoy": -38.33333333333333
+  },
+  {
+    "year": 2020,
+    "municipality": "الشمال",
+    "avg_value_mt": 388,
+    "code": 1,
+    "previosyear": 120,
+    "Yoy_diff": 268,
+    "yoy": 69.0721649484536
+  },
+  {
+    "year": 2021,
+    "municipality": "الشمال",
+    "avg_value_mt": 234,
+    "code": 1,
+    "previosyear": 388,
+    "Yoy_diff": -154,
+    "yoy": -65.8119658119658
+  },
+  {
+    "year": 2022,
+    "municipality": "الشمال",
+    "avg_value_mt": 134,
+    "code": 1,
+    "previosyear": 234,
+    "Yoy_diff": -100,
+    "yoy": -74.6268656716418
+  },
+  {
+    "year": 2023,
+    "municipality": "الشمال",
+    "avg_value_mt": 51,
+    "code": 1,
+    "previosyear": 134,
+    "Yoy_diff": -83,
+    "yoy": -162.7450980392157
+  },
+  {
+    "year": 2006,
+    "municipality": "الخور والذخيرة",
+    "avg_value_mt": 328,
+    "code": 2
+  },
+  {
+    "year": 2007,
+    "municipality": "الخور والذخيرة",
+    "avg_value_mt": 555,
+    "code": 2,
+    "previosyear": 328,
+    "Yoy_diff": 227,
+    "yoy": 40.9009009009009
+  },
+  {
+    "year": 2008,
+    "municipality": "الخور والذخيرة",
+    "avg_value_mt": 542,
+    "code": 2,
+    "previosyear": 555,
+    "Yoy_diff": -13,
+    "yoy": -2.39852398523985
+  },
+  {
+    "year": 2009,
+    "municipality": "الخور والذخيرة",
+    "avg_value_mt": 150,
+    "code": 2,
+    "previosyear": 542,
+    "Yoy_diff": -392,
+    "yoy": -261.3333333333333
+  },
+  {
+    "year": 2010,
+    "municipality": "الخور والذخيرة",
+    "avg_value_mt": 342,
+    "code": 2,
+    "previosyear": 150,
+    "Yoy_diff": 192,
+    "yoy": 56.14035087719298
+  },
+  {
+    "year": 2011,
+    "municipality": "الخور والذخيرة",
+    "avg_value_mt": 489,
+    "code": 2,
+    "previosyear": 342,
+    "Yoy_diff": 147,
+    "yoy": 30.06134969325153
+  },
+  {
+    "year": 2012,
+    "municipality": "الخور والذخيرة",
+    "avg_value_mt": 595,
+    "code": 2,
+    "previosyear": 489,
+    "Yoy_diff": 106,
+    "yoy": 17.81512605042017
+  },
+  {
+    "year": 2013,
+    "municipality": "الخور والذخيرة",
+    "avg_value_mt": 598,
+    "code": 2,
+    "previosyear": 595,
+    "Yoy_diff": 3,
+    "yoy": 0.50167224080268
+  },
+  {
+    "year": 2014,
+    "municipality": "الخور والذخيرة",
+    "avg_value_mt": 548,
+    "code": 2,
+    "previosyear": 598,
+    "Yoy_diff": -50,
+    "yoy": -9.12408759124088
+  },
+  {
+    "year": 2015,
+    "municipality": "الخور والذخيرة",
+    "avg_value_mt": 424,
+    "code": 2,
+    "previosyear": 548,
+    "Yoy_diff": -124,
+    "yoy": -29.24528301886792
+  },
+  {
+    "year": 2016,
+    "municipality": "الخور والذخيرة",
+    "avg_value_mt": 226,
+    "code": 2,
+    "previosyear": 424,
+    "Yoy_diff": -198,
+    "yoy": -87.61061946902655
+  },
+  {
+    "year": 2017,
+    "municipality": "الخور والذخيرة",
+    "avg_value_mt": 233,
+    "code": 2,
+    "previosyear": 226,
+    "Yoy_diff": 7,
+    "yoy": 3.00429184549356
+  },
+  {
+    "year": 2018,
+    "municipality": "الخور والذخيرة",
+    "avg_value_mt": 209,
+    "code": 2,
+    "previosyear": 233,
+    "Yoy_diff": -24,
+    "yoy": -11.48325358851675
+  },
+  {
+    "year": 2019,
+    "municipality": "الخور والذخيرة",
+    "avg_value_mt": 203,
+    "code": 2,
+    "previosyear": 209,
+    "Yoy_diff": -6,
+    "yoy": -2.95566502463054
+  },
+  {
+    "year": 2020,
+    "municipality": "الخور والذخيرة",
+    "avg_value_mt": 347,
+    "code": 2,
+    "previosyear": 203,
+    "Yoy_diff": 144,
+    "yoy": 41.4985590778098
+  },
+  {
+    "year": 2021,
+    "municipality": "الخور والذخيرة",
+    "avg_value_mt": 302,
+    "code": 2,
+    "previosyear": 347,
+    "Yoy_diff": -45,
+    "yoy": -14.90066225165563
+  },
+  {
+    "year": 2022,
+    "municipality": "الخور والذخيرة",
+    "avg_value_mt": 249,
+    "code": 2,
+    "previosyear": 302,
+    "Yoy_diff": -53,
+    "yoy": -21.285140562249
+  },
+  {
+    "year": 2023,
+    "municipality": "الخور والذخيرة",
+    "avg_value_mt": 91,
+    "code": 2,
+    "previosyear": 249,
+    "Yoy_diff": -158,
+    "yoy": -173.62637362637363
+  },
+  {
+    "year": 2006,
+    "municipality": "أم صلال",
+    "avg_value_mt": 427,
+    "code": 3
+  },
+  {
+    "year": 2007,
+    "municipality": "أم صلال",
+    "avg_value_mt": 868,
+    "code": 3,
+    "previosyear": 427,
+    "Yoy_diff": 441,
+    "yoy": 50.80645161290323
+  },
+  {
+    "year": 2008,
+    "municipality": "أم صلال",
+    "avg_value_mt": 855,
+    "code": 3,
+    "previosyear": 868,
+    "Yoy_diff": -13,
+    "yoy": -1.52046783625731
+  },
+  {
+    "year": 2009,
+    "municipality": "أم صلال",
+    "avg_value_mt": 351,
+    "code": 3,
+    "previosyear": 855,
+    "Yoy_diff": -504,
+    "yoy": -143.5897435897436
+  },
+  {
+    "year": 2010,
+    "municipality": "أم صلال",
+    "avg_value_mt": 530,
+    "code": 3,
+    "previosyear": 351,
+    "Yoy_diff": 179,
+    "yoy": 33.77358490566038
+  },
+  {
+    "year": 2011,
+    "municipality": "أم صلال",
+    "avg_value_mt": 559,
+    "code": 3,
+    "previosyear": 530,
+    "Yoy_diff": 29,
+    "yoy": 5.18783542039356
+  },
+  {
+    "year": 2012,
+    "municipality": "أم صلال",
+    "avg_value_mt": 905,
+    "code": 3,
+    "previosyear": 559,
+    "Yoy_diff": 346,
+    "yoy": 38.23204419889503
+  },
+  {
+    "year": 2013,
+    "municipality": "أم صلال",
+    "avg_value_mt": 1058,
+    "code": 3,
+    "previosyear": 905,
+    "Yoy_diff": 153,
+    "yoy": 14.46124763705104
+  },
+  {
+    "year": 2014,
+    "municipality": "أم صلال",
+    "avg_value_mt": 1011,
+    "code": 3,
+    "previosyear": 1058,
+    "Yoy_diff": -47,
+    "yoy": -4.648862512364
+  },
+  {
+    "year": 2015,
+    "municipality": "أم صلال",
+    "avg_value_mt": 733,
+    "code": 3,
+    "previosyear": 1011,
+    "Yoy_diff": -278,
+    "yoy": -37.92633015006821
+  },
+  {
+    "year": 2016,
+    "municipality": "أم صلال",
+    "avg_value_mt": 433,
+    "code": 3,
+    "previosyear": 733,
+    "Yoy_diff": -300,
+    "yoy": -69.28406466512702
+  },
+  {
+    "year": 2017,
+    "municipality": "أم صلال",
+    "avg_value_mt": 448,
+    "code": 3,
+    "previosyear": 433,
+    "Yoy_diff": 15,
+    "yoy": 3.34821428571429
+  },
+  {
+    "year": 2018,
+    "municipality": "أم صلال",
+    "avg_value_mt": 429,
+    "code": 3,
+    "previosyear": 448,
+    "Yoy_diff": -19,
+    "yoy": -4.42890442890443
+  },
+  {
+    "year": 2019,
+    "municipality": "أم صلال",
+    "avg_value_mt": 518,
+    "code": 3,
+    "previosyear": 429,
+    "Yoy_diff": 89,
+    "yoy": 17.18146718146718
+  },
+  {
+    "year": 2020,
+    "municipality": "أم صلال",
+    "avg_value_mt": 505,
+    "code": 3,
+    "previosyear": 518,
+    "Yoy_diff": -13,
+    "yoy": -2.57425742574257
+  },
+  {
+    "year": 2021,
+    "municipality": "أم صلال",
+    "avg_value_mt": 503,
+    "code": 3,
+    "previosyear": 505,
+    "Yoy_diff": -2,
+    "yoy": -0.39761431411531
+  },
+  {
+    "year": 2022,
+    "municipality": "أم صلال",
+    "avg_value_mt": 489,
+    "code": 3,
+    "previosyear": 503,
+    "Yoy_diff": -14,
+    "yoy": -2.86298568507157
+  },
+  {
+    "year": 2023,
+    "municipality": "أم صلال",
+    "avg_value_mt": 118,
+    "code": 3,
+    "previosyear": 489,
+    "Yoy_diff": -371,
+    "yoy": -314.40677966101697
+  },
+  {
+    "year": 2006,
+    "municipality": "الدوحة",
+    "avg_value_mt": 965,
+    "code": 4
+  },
+  {
+    "year": 2007,
+    "municipality": "الدوحة",
+    "avg_value_mt": 1861,
+    "code": 4,
+    "previosyear": 965,
+    "Yoy_diff": 896,
+    "yoy": 48.14615797958087
+  },
+  {
+    "year": 2008,
+    "municipality": "الدوحة",
+    "avg_value_mt": 1391,
+    "code": 4,
+    "previosyear": 1861,
+    "Yoy_diff": -470,
+    "yoy": -33.78864126527678
+  },
+  {
+    "year": 2009,
+    "municipality": "الدوحة",
+    "avg_value_mt": 793,
+    "code": 4,
+    "previosyear": 1391,
+    "Yoy_diff": -598,
+    "yoy": -75.40983606557377
+  },
+  {
+    "year": 2010,
+    "municipality": "الدوحة",
+    "avg_value_mt": 1180,
+    "code": 4,
+    "previosyear": 793,
+    "Yoy_diff": 387,
+    "yoy": 32.79661016949153
+  },
+  {
+    "year": 2011,
+    "municipality": "الدوحة",
+    "avg_value_mt": 1665,
+    "code": 4,
+    "previosyear": 1180,
+    "Yoy_diff": 485,
+    "yoy": 29.12912912912913
+  },
+  {
+    "year": 2012,
+    "municipality": "الدوحة",
+    "avg_value_mt": 1590,
+    "code": 4,
+    "previosyear": 1665,
+    "Yoy_diff": -75,
+    "yoy": -4.71698113207547
+  },
+  {
+    "year": 2013,
+    "municipality": "الدوحة",
+    "avg_value_mt": 1500,
+    "code": 4,
+    "previosyear": 1590,
+    "Yoy_diff": -90,
+    "yoy": -6
+  },
+  {
+    "year": 2014,
+    "municipality": "الدوحة",
+    "avg_value_mt": 1368,
+    "code": 4,
+    "previosyear": 1500,
+    "Yoy_diff": -132,
+    "yoy": -9.64912280701754
+  },
+  {
+    "year": 2015,
+    "municipality": "الدوحة",
+    "avg_value_mt": 1131,
+    "code": 4,
+    "previosyear": 1368,
+    "Yoy_diff": -237,
+    "yoy": -20.95490716180371
+  },
+  {
+    "year": 2016,
+    "municipality": "الدوحة",
+    "avg_value_mt": 825,
+    "code": 4,
+    "previosyear": 1131,
+    "Yoy_diff": -306,
+    "yoy": -37.09090909090909
+  },
+  {
+    "year": 2017,
+    "municipality": "الدوحة",
+    "avg_value_mt": 914,
+    "code": 4,
+    "previosyear": 825,
+    "Yoy_diff": 89,
+    "yoy": 9.73741794310722
+  },
+  {
+    "year": 2018,
+    "municipality": "الدوحة",
+    "avg_value_mt": 942,
+    "code": 4,
+    "previosyear": 914,
+    "Yoy_diff": 28,
+    "yoy": 2.9723991507431
+  },
+  {
+    "year": 2019,
+    "municipality": "الدوحة",
+    "avg_value_mt": 963,
+    "code": 4,
+    "previosyear": 942,
+    "Yoy_diff": 21,
+    "yoy": 2.18068535825545
+  },
+  {
+    "year": 2020,
+    "municipality": "الدوحة",
+    "avg_value_mt": 1130,
+    "code": 4,
+    "previosyear": 963,
+    "Yoy_diff": 167,
+    "yoy": 14.7787610619469
+  },
+  {
+    "year": 2021,
+    "municipality": "الدوحة",
+    "avg_value_mt": 1147,
+    "code": 4,
+    "previosyear": 1130,
+    "Yoy_diff": 17,
+    "yoy": 1.4821272885789
+  },
+  {
+    "year": 2022,
+    "municipality": "الدوحة",
+    "avg_value_mt": 1186,
+    "code": 4,
+    "previosyear": 1147,
+    "Yoy_diff": 39,
+    "yoy": 3.28836424957841
+  },
+  {
+    "year": 2023,
+    "municipality": "الدوحة",
+    "avg_value_mt": 358,
+    "code": 4,
+    "previosyear": 1186,
+    "Yoy_diff": -828,
+    "yoy": -231.2849162011173
+  },
+  {
+    "year": 2006,
+    "municipality": "الريان",
+    "avg_value_mt": 899,
+    "code": 5
+  },
+  {
+    "year": 2007,
+    "municipality": "الريان",
+    "avg_value_mt": 1821,
+    "code": 5,
+    "previosyear": 899,
+    "Yoy_diff": 922,
+    "yoy": 50.63152114222954
+  },
+  {
+    "year": 2008,
+    "municipality": "الريان",
+    "avg_value_mt": 1435,
+    "code": 5,
+    "previosyear": 1821,
+    "Yoy_diff": -386,
+    "yoy": -26.89895470383275
+  },
+  {
+    "year": 2009,
+    "municipality": "الريان",
+    "avg_value_mt": 769,
+    "code": 5,
+    "previosyear": 1435,
+    "Yoy_diff": -666,
+    "yoy": -86.60598179453837
+  },
+  {
+    "year": 2010,
+    "municipality": "الريان",
+    "avg_value_mt": 915,
+    "code": 5,
+    "previosyear": 769,
+    "Yoy_diff": 146,
+    "yoy": 15.95628415300546
+  },
+  {
+    "year": 2011,
+    "municipality": "الريان",
+    "avg_value_mt": 1083,
+    "code": 5,
+    "previosyear": 915,
+    "Yoy_diff": 168,
+    "yoy": 15.51246537396122
+  },
+  {
+    "year": 2012,
+    "municipality": "الريان",
+    "avg_value_mt": 1026,
+    "code": 5,
+    "previosyear": 1083,
+    "Yoy_diff": -57,
+    "yoy": -5.55555555555556
+  },
+  {
+    "year": 2013,
+    "municipality": "الريان",
+    "avg_value_mt": 1383,
+    "code": 5,
+    "previosyear": 1026,
+    "Yoy_diff": 357,
+    "yoy": 25.81344902386117
+  },
+  {
+    "year": 2014,
+    "municipality": "الريان",
+    "avg_value_mt": 1437,
+    "code": 5,
+    "previosyear": 1383,
+    "Yoy_diff": 54,
+    "yoy": 3.75782881002088
+  },
+  {
+    "year": 2015,
+    "municipality": "الريان",
+    "avg_value_mt": 1193,
+    "code": 5,
+    "previosyear": 1437,
+    "Yoy_diff": -244,
+    "yoy": -20.45264040234702
+  },
+  {
+    "year": 2016,
+    "municipality": "الريان",
+    "avg_value_mt": 877,
+    "code": 5,
+    "previosyear": 1193,
+    "Yoy_diff": -316,
+    "yoy": -36.03192702394527
+  },
+  {
+    "year": 2017,
+    "municipality": "الريان",
+    "avg_value_mt": 880,
+    "code": 5,
+    "previosyear": 877,
+    "Yoy_diff": 3,
+    "yoy": 0.34090909090909
+  },
+  {
+    "year": 2018,
+    "municipality": "الريان",
+    "avg_value_mt": 819,
+    "code": 5,
+    "previosyear": 880,
+    "Yoy_diff": -61,
+    "yoy": -7.44810744810745
+  },
+  {
+    "year": 2019,
+    "municipality": "الريان",
+    "avg_value_mt": 990,
+    "code": 5,
+    "previosyear": 819,
+    "Yoy_diff": 171,
+    "yoy": 17.27272727272727
+  },
+  {
+    "year": 2020,
+    "municipality": "الريان",
+    "avg_value_mt": 1111,
+    "code": 5,
+    "previosyear": 990,
+    "Yoy_diff": 121,
+    "yoy": 10.89108910891089
+  },
+  {
+    "year": 2021,
+    "municipality": "الريان",
+    "avg_value_mt": 1362,
+    "code": 5,
+    "previosyear": 1111,
+    "Yoy_diff": 251,
+    "yoy": 18.4287812041116
+  },
+  {
+    "year": 2022,
+    "municipality": "الريان",
+    "avg_value_mt": 1136,
+    "code": 5,
+    "previosyear": 1362,
+    "Yoy_diff": -226,
+    "yoy": -19.8943661971831
+  },
+  {
+    "year": 2023,
+    "municipality": "الريان",
+    "avg_value_mt": 356,
+    "code": 5,
+    "previosyear": 1136,
+    "Yoy_diff": -780,
+    "yoy": -219.1011235955056
+  },
+  {
+    "year": 2006,
+    "municipality": "الوكرة",
+    "avg_value_mt": 169,
+    "code": 6
+  },
+  {
+    "year": 2007,
+    "municipality": "الوكرة",
+    "avg_value_mt": 604,
+    "code": 6,
+    "previosyear": 169,
+    "Yoy_diff": 435,
+    "yoy": 72.01986754966887
+  },
+  {
+    "year": 2008,
+    "municipality": "الوكرة",
+    "avg_value_mt": 943,
+    "code": 6,
+    "previosyear": 604,
+    "Yoy_diff": 339,
+    "yoy": 35.949098621421
+  },
+  {
+    "year": 2009,
+    "municipality": "الوكرة",
+    "avg_value_mt": 280,
+    "code": 6,
+    "previosyear": 943,
+    "Yoy_diff": -663,
+    "yoy": -236.78571428571428
+  },
+  {
+    "year": 2010,
+    "municipality": "الوكرة",
+    "avg_value_mt": 571,
+    "code": 6,
+    "previosyear": 280,
+    "Yoy_diff": 291,
+    "yoy": 50.96322241681261
+  },
+  {
+    "year": 2011,
+    "municipality": "الوكرة",
+    "avg_value_mt": 843,
+    "code": 6,
+    "previosyear": 571,
+    "Yoy_diff": 272,
+    "yoy": 32.26571767497034
+  },
+  {
+    "year": 2012,
+    "municipality": "الوكرة",
+    "avg_value_mt": 1182,
+    "code": 6,
+    "previosyear": 843,
+    "Yoy_diff": 339,
+    "yoy": 28.68020304568528
+  },
+  {
+    "year": 2013,
+    "municipality": "الوكرة",
+    "avg_value_mt": 1390,
+    "code": 6,
+    "previosyear": 1182,
+    "Yoy_diff": 208,
+    "yoy": 14.96402877697842
+  },
+  {
+    "year": 2014,
+    "municipality": "الوكرة",
+    "avg_value_mt": 944,
+    "code": 6,
+    "previosyear": 1390,
+    "Yoy_diff": -446,
+    "yoy": -47.24576271186441
+  },
+  {
+    "year": 2015,
+    "municipality": "الوكرة",
+    "avg_value_mt": 648,
+    "code": 6,
+    "previosyear": 944,
+    "Yoy_diff": -296,
+    "yoy": -45.67901234567901
+  },
+  {
+    "year": 2016,
+    "municipality": "الوكرة",
+    "avg_value_mt": 362,
+    "code": 6,
+    "previosyear": 648,
+    "Yoy_diff": -286,
+    "yoy": -79.00552486187846
+  },
+  {
+    "year": 2017,
+    "municipality": "الوكرة",
+    "avg_value_mt": 309,
+    "code": 6,
+    "previosyear": 362,
+    "Yoy_diff": -53,
+    "yoy": -17.15210355987055
+  },
+  {
+    "year": 2018,
+    "municipality": "الوكرة",
+    "avg_value_mt": 398,
+    "code": 6,
+    "previosyear": 309,
+    "Yoy_diff": 89,
+    "yoy": 22.36180904522613
+  },
+  {
+    "year": 2019,
+    "municipality": "الوكرة",
+    "avg_value_mt": 548,
+    "code": 6,
+    "previosyear": 398,
+    "Yoy_diff": 150,
+    "yoy": 27.37226277372263
+  },
+  {
+    "year": 2020,
+    "municipality": "الوكرة",
+    "avg_value_mt": 484,
+    "code": 6,
+    "previosyear": 548,
+    "Yoy_diff": -64,
+    "yoy": -13.22314049586777
+  },
+  {
+    "year": 2021,
+    "municipality": "الوكرة",
+    "avg_value_mt": 616,
+    "code": 6,
+    "previosyear": 484,
+    "Yoy_diff": 132,
+    "yoy": 21.42857142857143
+  },
+  {
+    "year": 2022,
+    "municipality": "الوكرة",
+    "avg_value_mt": 375,
+    "code": 6,
+    "previosyear": 616,
+    "Yoy_diff": -241,
+    "yoy": -64.26666666666667
+  },
+  {
+    "year": 2023,
+    "municipality": "الوكرة",
+    "avg_value_mt": 229,
+    "code": 6,
+    "previosyear": 375,
+    "Yoy_diff": -146,
+    "yoy": -63.75545851528384
+  },
+  {
+    "year": 2006,
+    "municipality": "الظعاين",
+    "avg_value_mt": 157,
+    "code": 7
+  },
+  {
+    "year": 2007,
+    "municipality": "الظعاين",
+    "avg_value_mt": 481,
+    "code": 7,
+    "previosyear": 157,
+    "Yoy_diff": 324,
+    "yoy": 67.35966735966736
+  },
+  {
+    "year": 2008,
+    "municipality": "الظعاين",
+    "avg_value_mt": 342,
+    "code": 7,
+    "previosyear": 481,
+    "Yoy_diff": -139,
+    "yoy": -40.64327485380117
+  },
+  {
+    "year": 2009,
+    "municipality": "الظعاين",
+    "avg_value_mt": 209,
+    "code": 7,
+    "previosyear": 342,
+    "Yoy_diff": -133,
+    "yoy": -63.63636363636364
+  },
+  {
+    "year": 2010,
+    "municipality": "الظعاين",
+    "avg_value_mt": 269,
+    "code": 7,
+    "previosyear": 209,
+    "Yoy_diff": 60,
+    "yoy": 22.30483271375465
+  },
+  {
+    "year": 2011,
+    "municipality": "الظعاين",
+    "avg_value_mt": 465,
+    "code": 7,
+    "previosyear": 269,
+    "Yoy_diff": 196,
+    "yoy": 42.1505376344086
+  },
+  {
+    "year": 2012,
+    "municipality": "الظعاين",
+    "avg_value_mt": 1555,
+    "code": 7,
+    "previosyear": 465,
+    "Yoy_diff": 1090,
+    "yoy": 70.09646302250805
+  },
+  {
+    "year": 2013,
+    "municipality": "الظعاين",
+    "avg_value_mt": 1321,
+    "code": 7,
+    "previosyear": 1555,
+    "Yoy_diff": -234,
+    "yoy": -17.71385314155942
+  },
+  {
+    "year": 2014,
+    "municipality": "الظعاين",
+    "avg_value_mt": 1304,
+    "code": 7,
+    "previosyear": 1321,
+    "Yoy_diff": -17,
+    "yoy": -1.30368098159509
+  },
+  {
+    "year": 2015,
+    "municipality": "الظعاين",
+    "avg_value_mt": 815,
+    "code": 7,
+    "previosyear": 1304,
+    "Yoy_diff": -489,
+    "yoy": -60
+  },
+  {
+    "year": 2016,
+    "municipality": "الظعاين",
+    "avg_value_mt": 771,
+    "code": 7,
+    "previosyear": 815,
+    "Yoy_diff": -44,
+    "yoy": -5.70687418936446
+  },
+  {
+    "year": 2017,
+    "municipality": "الظعاين",
+    "avg_value_mt": 536,
+    "code": 7,
+    "previosyear": 771,
+    "Yoy_diff": -235,
+    "yoy": -43.84328358208955
+  },
+  {
+    "year": 2018,
+    "municipality": "الظعاين",
+    "avg_value_mt": 782,
+    "code": 7,
+    "previosyear": 536,
+    "Yoy_diff": 246,
+    "yoy": 31.45780051150895
+  },
+  {
+    "year": 2019,
+    "municipality": "الظعاين",
+    "avg_value_mt": 786,
+    "code": 7,
+    "previosyear": 782,
+    "Yoy_diff": 4,
+    "yoy": 0.5089058524173
+  },
+  {
+    "year": 2020,
+    "municipality": "الظعاين",
+    "avg_value_mt": 1454,
+    "code": 7,
+    "previosyear": 786,
+    "Yoy_diff": 668,
+    "yoy": 45.94222833562586
+  },
+  {
+    "year": 2021,
+    "municipality": "الظعاين",
+    "avg_value_mt": 1171,
+    "code": 7,
+    "previosyear": 1454,
+    "Yoy_diff": -283,
+    "yoy": -24.16737830913749
+  },
+  {
+    "year": 2022,
+    "municipality": "الظعاين",
+    "avg_value_mt": 742,
+    "code": 7,
+    "previosyear": 1171,
+    "Yoy_diff": -429,
+    "yoy": -57.8167115902965
+  },
+  {
+    "year": 2023,
+    "municipality": "الظعاين",
+    "avg_value_mt": 216,
+    "code": 7,
+    "previosyear": 742,
+    "Yoy_diff": -526,
+    "yoy": -243.51851851851853
+  },
+  {
+    "year": 2009,
+    "municipality": "الشيحانية",
+    "avg_value_mt": 1,
+    "code": 8
+  },
+  {
+    "year": 2011,
+    "municipality": "الشيحانية",
+    "avg_value_mt": 1,
+    "code": 8
+  },
+  {
+    "year": 2013,
+    "municipality": "الشيحانية",
+    "avg_value_mt": 1,
+    "code": 8
+  },
+  {
+    "year": 2016,
+    "municipality": "الشيحانية",
+    "avg_value_mt": 5,
+    "code": 8
+  },
+  {
+    "year": 2017,
+    "municipality": "الشيحانية",
+    "avg_value_mt": 1,
+    "code": 8,
+    "previosyear": 5,
+    "Yoy_diff": -4,
+    "yoy": -400
+  },
+  {
+    "year": 2018,
+    "municipality": "الشيحانية",
+    "avg_value_mt": 6,
+    "code": 8,
+    "previosyear": 1,
+    "Yoy_diff": 5,
+    "yoy": 83.33333333333333
+  },
+  {
+    "year": 2019,
+    "municipality": "الشيحانية",
+    "avg_value_mt": 8,
+    "code": 8,
+    "previosyear": 6,
+    "Yoy_diff": 2,
+    "yoy": 25
+  },
+  {
+    "year": 2020,
+    "municipality": "الشيحانية",
+    "avg_value_mt": 16,
+    "code": 8,
+    "previosyear": 8,
+    "Yoy_diff": 8,
+    "yoy": 50
+  },
+  {
+    "year": 2021,
+    "municipality": "الشيحانية",
+    "avg_value_mt": 22,
+    "code": 8,
+    "previosyear": 16,
+    "Yoy_diff": 6,
+    "yoy": 27.27272727272727
+  },
+  {
+    "year": 2022,
+    "municipality": "الشيحانية",
+    "avg_value_mt": 10,
+    "code": 8,
+    "previosyear": 22,
+    "Yoy_diff": -12,
+    "yoy": -120
+  },
+  {
+    "year": 2023,
+    "municipality": "الشيحانية",
+    "avg_value_mt": 3,
+    "code": 8,
+    "previosyear": 10,
+    "Yoy_diff": -7,
+    "yoy": -233.33333333333334
+  }
+]

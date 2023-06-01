@@ -11,8 +11,7 @@ import { MatIconModule } from '@angular/material/icon';
   styleUrls: ['./top-header.component.scss'],
 })
 export class TopHeaderComponent {
-
-  toggleFilter(){
-    document.documentElement.classList.toggle('root-filter')
+  toggleFilter() {
+    document.documentElement.classList.toggle('root-filter');
   }
 }

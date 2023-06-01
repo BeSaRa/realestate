@@ -1,0 +1,156 @@
+<app-extra-header class="flex -mt-32 relative text-white">
+  <div class="flex justify-between items-center h-60">
+    <div id="logo-side">
+      <h1 class="text-5xl font-semibold -mt-20">المنصة العقارية لدولة قطر</h1>
+      <span class="text-xl">مؤشر البيع</span>
+    </div>
+  </div>
+</app-extra-header>
+<div class="content-wrapper p-10">
+  <div class="flex justify-center">
+    <div class="flex flex-col w-3/4 gap-y-5">
+      <h1 class="heading text-3xl self-start text-primary border-secondary font-semibold inline-block">مؤشرات البيع</h1>
+      <div [formGroup]="form" class="selections flex gap-x-5">
+        <div class="w-3/4">
+          <label for="year">السنة</label>
+          <div class="flex border-secondary border-2 w-full h-14 rounded-xl overflow-hidden relative">
+            <input
+              id="year"
+              type="text"
+              (keydown)="$event.preventDefault()"
+              formControlName="year"
+              placeholder="السنة"
+              [matAutocomplete]="auto"
+              class="input" />
+            <mat-autocomplete #auto="matAutocomplete">
+              <mat-option *ngFor="let option of dataService.years" [value]="option">
+                {{ option }}
+              </mat-option>
+            </mat-autocomplete>
+          </div>
+        </div>
+        <div class="w-3/4">
+          <label for="code">البلدية</label>
+          <div class="flex border-secondary border-2 w-3/4 h-14 rounded-xl overflow-hidden relative">
+            <input
+              type="text"
+              id="code"
+              (keydown)="$event.preventDefault()"
+              formControlName="code"
+              placeholder="البلدية"
+              [matAutocomplete]="municipality"
+              class="input" />
+            <mat-autocomplete [displayWith]="displayFn" #municipality="matAutocomplete">
+              <mat-option *ngFor="let option of dataService.municipalities" [value]="option">
+                {{ option.name }}
+              </mat-option>
+            </mat-autocomplete>
+          </div>
+        </div>
+        <div class="w-3/4">
+          <label for="type">نوع العقار</label>
+          <div class="flex border-secondary border-2 w-3/4 h-14 rounded-xl overflow-hidden relative">
+            <input
+              id="type"
+              disabled
+              type="text"
+              placeholder="نوع العقار"
+              [matAutocomplete]="municipality"
+              class="input" />
+            <mat-autocomplete [displayWith]="displayFn" #municipality="matAutocomplete">
+              <mat-option *ngFor="let option of dataService.municipalities" [value]="option">
+                {{ option.name }}
+              </mat-option>
+            </mat-autocomplete>
+          </div>
+        </div>
+        <div class="w-3/4">
+          <label for="sellBy">بيعت بواسطة</label>
+          <div class="flex border-secondary border-2 w-3/4 h-14 rounded-xl overflow-hidden relative">
+            <input
+              id="sellBy"
+              disabled
+              type="text"
+              placeholder="بيعت بواسطة"
+              [matAutocomplete]="municipality"
+              class="input" />
+            <mat-autocomplete [displayWith]="displayFn" #municipality="matAutocomplete">
+              <mat-option *ngFor="let option of dataService.municipalities" [value]="option">
+                {{ option.name }}
+              </mat-option>
+            </mat-autocomplete>
+          </div>
+        </div>
+        <div class="w-3/4">
+          <label for="building_status">حالة العقار</label>
+          <div class="flex border-secondary border-2 w-3/4 h-14 rounded-xl overflow-hidden relative">
+            <input id="building_status" disabled type="text" placeholder="حالة العقار" class="input" />
+          </div>
+        </div>
+      </div>
+      <div class="flex justify-center gap-x-5">
+        <div
+          *ngIf="sqrF; else loading"
+          class="shadow-xl p-5 self-start items-center flex flex-col border border-secondary rounded-xl">
+          <div class="text-2xl font-semibold text-primary">متسوسط السعر لكل قدم مربع</div>
+          <div class="text-2xl font-semibold">{{ sqrF.avg_value_sqrf }} QAR</div>
+          <div
+            *ngIf="sqrF.yoy"
+            [class.text-red-500]="sqrF.yoy < 0"
+            [class.text-green-500]="sqrF.yoy > 0"
+            class="text-lg">
+            {{ sqrF.yoy.toPrecision(4) }} %
+          </div>
+        </div>
+        <div
+          *ngIf="avgUnit; else loading"
+          class="shadow-xl p-5 self-start items-center flex flex-col border border-secondary rounded-xl">
+          <div class="text-2xl font-semibold text-primary">متوسط سعر الوحدة</div>
+          <div class="text-2xl font-semibold">{{ avgUnit.avg_value_mt }} QAR</div>
+          <div
+            *ngIf="avgUnit.yoy"
+            [class.text-red-500]="avgUnit.yoy < 0"
+            [class.text-green-500]="avgUnit.yoy > 0"
+            class="text-lg">
+            {{ avgUnit.yoy.toPrecision(4) }} %
+          </div>
+        </div>
+        <div
+          *ngIf="sellCount; else loading"
+          class="shadow-xl p-5 self-start items-center flex flex-col border border-secondary rounded-xl">
+          <div class="text-2xl font-semibold text-primary">عدد المعاملات</div>
+          <div class="text-2xl font-semibold">{{ sellCount.avg_value_mt }}</div>
+          <div
+            *ngIf="sellCount.yoy"
+            [class.text-red-500]="sellCount.yoy < 0"
+            [class.text-green-500]="sellCount.yoy > 0"
+            class="text-lg">
+            {{ sellCount.yoy.toPrecision(4) }} %
+          </div>
+        </div>
+      </div>
+
+      <ng-template #loading>
+        <div role="status" class="max-w-sm animate-pulse">
+          <div class="h-2.5 bg-gray-200 rounded-full dark:bg-gray-700 w-48 mb-4"></div>
+          <div class="h-2 bg-gray-200 rounded-full dark:bg-gray-700 max-w-[360px] mb-2.5"></div>
+          <div class="h-2 bg-gray-200 rounded-full dark:bg-gray-700 mb-2.5"></div>
+          <div class="h-2 bg-gray-200 rounded-full dark:bg-gray-700 max-w-[330px] mb-2.5"></div>
+          <div class="h-2 bg-gray-200 rounded-full dark:bg-gray-700 max-w-[300px] mb-2.5"></div>
+          <div class="h-2 bg-gray-200 rounded-full dark:bg-gray-700 max-w-[360px]"></div>
+          <span class="sr-only">Loading...</span>
+        </div>
+      </ng-template>
+      <div *ngIf="sellCount && avgUnit && sqrF; else loading" dir="ltr">
+        <apx-chart
+          [series]="chartOptions.series"
+          [chart]="chartOptions.chart"
+          [xaxis]="chartOptions.xaxis"
+          [dataLabels]="chartOptions.dataLabels"
+          [grid]="chartOptions.grid"
+          [stroke]="chartOptions.stroke"
+          [title]="chartOptions.title"></apx-chart>
+      </div>
+    </div>
+  </div>
+</div>

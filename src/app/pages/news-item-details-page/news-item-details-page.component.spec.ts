@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { NewsItemDetailsPageComponent } from './news-item-details-page.component';
+import NewsItemDetailsPageComponent from './news-item-details-page.component';
 
 describe('NewsItemDetailsPageComponent', () => {
   let component: NewsItemDetailsPageComponent;
@@ -8,7 +8,7 @@ describe('NewsItemDetailsPageComponent', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [NewsItemDetailsPageComponent]
+      imports: [NewsItemDetailsPageComponent],
     });
     fixture = TestBed.createComponent(NewsItemDetailsPageComponent);
     component = fixture.componentInstance;

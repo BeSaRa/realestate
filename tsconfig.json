@@ -48,8 +48,8 @@
       "@utils/*": [
         "./src/app/utils/*"
       ],
-      "@standalone/*": [
-        "./src/app/standalone/*"
+      "@directives/*": [
+        "./src/app/directives/*"
       ],
       "@constants/*": [
         "./src/app/constants/*"

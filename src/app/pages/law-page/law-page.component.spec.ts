@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { LawPageComponent } from './law-page.component';
+import LawPageComponent from './law-page.component';
 
 describe('LawPageComponent', () => {
   let component: LawPageComponent;
@@ -8,7 +8,7 @@ describe('LawPageComponent', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [LawPageComponent]
+      imports: [LawPageComponent],
     });
     fixture = TestBed.createComponent(LawPageComponent);
     component = fixture.componentInstance;

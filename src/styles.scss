@@ -6,3 +6,8 @@
 .root-filter{
   filter: invert(1);
 }
+
+
+.input {
+  @apply w-full placeholder-primary/50 text-xl h-full outline-none pe-10 px-5 text-primary disabled:bg-gray-300
+}

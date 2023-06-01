@@ -1,0 +1,1339 @@
+[
+  {
+    "year": 2006,
+    "municipality": "الشمال",
+    "avg_value_mt": 316681.8592,
+    "avg_value_sqrf": 24.9299,
+    "code": 1
+  },
+  {
+    "year": 2007,
+    "municipality": "الشمال",
+    "avg_value_mt": 588980.8667,
+    "avg_value_sqrf": 47.894,
+    "code": 1,
+    "previosyear": 316681.8592,
+    "Yoy_diff": 272299.0075,
+    "yoy": 46.23223314972245
+  },
+  {
+    "year": 2008,
+    "municipality": "الشمال",
+    "avg_value_mt": 1037317.8919,
+    "avg_value_sqrf": 102.0906,
+    "code": 1,
+    "previosyear": 588980.8667,
+    "Yoy_diff": 448337.0252,
+    "yoy": 43.22079361600569
+  },
+  {
+    "year": 2009,
+    "municipality": "الشمال",
+    "avg_value_mt": 522465.1985,
+    "avg_value_sqrf": 45.7789,
+    "code": 1,
+    "previosyear": 1037317.8919,
+    "Yoy_diff": -514852.6934,
+    "yoy": -98.54296417792888
+  },
+  {
+    "year": 2010,
+    "municipality": "الشمال",
+    "avg_value_mt": 463528.686,
+    "avg_value_sqrf": 45.5042,
+    "code": 1,
+    "previosyear": 522465.1985,
+    "Yoy_diff": -58936.5125,
+    "yoy": -12.71474976200286
+  },
+  {
+    "year": 2011,
+    "municipality": "الشمال",
+    "avg_value_mt": 688344.6879,
+    "avg_value_sqrf": 68.2025,
+    "code": 1,
+    "previosyear": 463528.686,
+    "Yoy_diff": 224816.0019,
+    "yoy": 32.66038161576695
+  },
+  {
+    "year": 2012,
+    "municipality": "الشمال",
+    "avg_value_mt": 938844.0102,
+    "avg_value_sqrf": 96.4772,
+    "code": 1,
+    "previosyear": 688344.6879,
+    "Yoy_diff": 250499.3223,
+    "yoy": 26.68167657017236
+  },
+  {
+    "year": 2013,
+    "municipality": "الشمال",
+    "avg_value_mt": 1371228.4867,
+    "avg_value_sqrf": 121.3987,
+    "code": 1,
+    "previosyear": 938844.0102,
+    "Yoy_diff": 432384.4765,
+    "yoy": 31.53263520221761
+  },
+  {
+    "year": 2014,
+    "municipality": "الشمال",
+    "avg_value_mt": 1355974.2963,
+    "avg_value_sqrf": 168.644,
+    "code": 1,
+    "previosyear": 1371228.4867,
+    "Yoy_diff": -15254.1904,
+    "yoy": -1.12496161923007
+  },
+  {
+    "year": 2015,
+    "municipality": "الشمال",
+    "avg_value_mt": 1558023.9798,
+    "avg_value_sqrf": 169.8094,
+    "code": 1,
+    "previosyear": 1355974.2963,
+    "Yoy_diff": 202049.6835,
+    "yoy": 12.96832950709376
+  },
+  {
+    "year": 2016,
+    "municipality": "الشمال",
+    "avg_value_mt": 1362792.9565,
+    "avg_value_sqrf": 158.5253,
+    "code": 1,
+    "previosyear": 1558023.9798,
+    "Yoy_diff": -195231.0233,
+    "yoy": -14.32580219679173
+  },
+  {
+    "year": 2017,
+    "municipality": "الشمال",
+    "avg_value_mt": 1322783.1,
+    "avg_value_sqrf": 151.655,
+    "code": 1,
+    "previosyear": 1362792.9565,
+    "Yoy_diff": -40009.8565,
+    "yoy": -3.02467248787802
+  },
+  {
+    "year": 2018,
+    "municipality": "الشمال",
+    "avg_value_mt": 1092653.5,
+    "avg_value_sqrf": 131.1499,
+    "code": 1,
+    "previosyear": 1322783.1,
+    "Yoy_diff": -230129.6,
+    "yoy": -21.0615350612065
+  },
+  {
+    "year": 2019,
+    "municipality": "الشمال",
+    "avg_value_mt": 1219527.0917,
+    "avg_value_sqrf": 157.3913,
+    "code": 1,
+    "previosyear": 1092653.5,
+    "Yoy_diff": 126873.5917,
+    "yoy": 10.40350743853836
+  },
+  {
+    "year": 2020,
+    "municipality": "الشمال",
+    "avg_value_mt": 1885358.2474,
+    "avg_value_sqrf": 144.6036,
+    "code": 1,
+    "previosyear": 1219527.0917,
+    "Yoy_diff": 665831.1557,
+    "yoy": 35.31589588441418
+  },
+  {
+    "year": 2021,
+    "municipality": "الشمال",
+    "avg_value_mt": 1435443.4957,
+    "avg_value_sqrf": 142.5648,
+    "code": 1,
+    "previosyear": 1885358.2474,
+    "Yoy_diff": -449914.7517,
+    "yoy": -31.34325754010939
+  },
+  {
+    "year": 2022,
+    "municipality": "الشمال",
+    "avg_value_mt": 1405743.0299,
+    "avg_value_sqrf": 165.6299,
+    "code": 1,
+    "previosyear": 1435443.4957,
+    "Yoy_diff": -29700.4658,
+    "yoy": -2.11279481158891
+  },
+  {
+    "year": 2023,
+    "municipality": "الشمال",
+    "avg_value_mt": 1442863.549,
+    "avg_value_sqrf": 168.9062,
+    "code": 1,
+    "previosyear": 1405743.0299,
+    "Yoy_diff": 37120.5191,
+    "yoy": 2.57269782203085
+  },
+  {
+    "year": 2006,
+    "municipality": "الخور والذخيرة",
+    "avg_value_mt": 716352.3415,
+    "avg_value_sqrf": 2.6099,
+    "code": 2
+  },
+  {
+    "year": 2007,
+    "municipality": "الخور والذخيرة",
+    "avg_value_mt": 1280590.0973,
+    "avg_value_sqrf": 100.135,
+    "code": 2,
+    "previosyear": 716352.3415,
+    "Yoy_diff": 564237.7558,
+    "yoy": 44.06076206505427
+  },
+  {
+    "year": 2008,
+    "municipality": "الخور والذخيرة",
+    "avg_value_mt": 1933238.7048,
+    "avg_value_sqrf": 187.0598,
+    "code": 2,
+    "previosyear": 1280590.0973,
+    "Yoy_diff": 652648.6075,
+    "yoy": 33.75933897244824
+  },
+  {
+    "year": 2009,
+    "municipality": "الخور والذخيرة",
+    "avg_value_mt": 884223.4333,
+    "avg_value_sqrf": 57.3103,
+    "code": 2,
+    "previosyear": 1933238.7048,
+    "Yoy_diff": -1049015.2715,
+    "yoy": -118.63690013111079
+  },
+  {
+    "year": 2010,
+    "municipality": "الخور والذخيرة",
+    "avg_value_mt": 1077496.7807,
+    "avg_value_sqrf": 136.384,
+    "code": 2,
+    "previosyear": 884223.4333,
+    "Yoy_diff": 193273.3474,
+    "yoy": 17.93725520687303
+  },
+  {
+    "year": 2011,
+    "municipality": "الخور والذخيرة",
+    "avg_value_mt": 1384099.6462,
+    "avg_value_sqrf": 167.6726,
+    "code": 2,
+    "previosyear": 1077496.7807,
+    "Yoy_diff": 306602.8655,
+    "yoy": 22.15179133538312
+  },
+  {
+    "year": 2012,
+    "municipality": "الخور والذخيرة",
+    "avg_value_mt": 1467662.9647,
+    "avg_value_sqrf": 191.9476,
+    "code": 2,
+    "previosyear": 1384099.6462,
+    "Yoy_diff": 83563.3185,
+    "yoy": 5.69363133838298
+  },
+  {
+    "year": 2013,
+    "municipality": "الخور والذخيرة",
+    "avg_value_mt": 1693892.9866,
+    "avg_value_sqrf": 230.9148,
+    "code": 2,
+    "previosyear": 1467662.9647,
+    "Yoy_diff": 226230.0219,
+    "yoy": 13.35562657674682
+  },
+  {
+    "year": 2014,
+    "municipality": "الخور والذخيرة",
+    "avg_value_mt": 2154286.6296,
+    "avg_value_sqrf": 296.2998,
+    "code": 2,
+    "previosyear": 1693892.9866,
+    "Yoy_diff": 460393.643,
+    "yoy": 21.37104861879425
+  },
+  {
+    "year": 2015,
+    "municipality": "الخور والذخيرة",
+    "avg_value_mt": 2236608.8467,
+    "avg_value_sqrf": 301.6041,
+    "code": 2,
+    "previosyear": 2154286.6296,
+    "Yoy_diff": 82322.2171,
+    "yoy": 3.6806711741958
+  },
+  {
+    "year": 2016,
+    "municipality": "الخور والذخيرة",
+    "avg_value_mt": 2914787.4336,
+    "avg_value_sqrf": 354.45,
+    "code": 2,
+    "previosyear": 2236608.8467,
+    "Yoy_diff": 678178.5869,
+    "yoy": 23.2668282799063
+  },
+  {
+    "year": 2017,
+    "municipality": "الخور والذخيرة",
+    "avg_value_mt": 1902731.8197,
+    "avg_value_sqrf": 265.9368,
+    "code": 2,
+    "previosyear": 2914787.4336,
+    "Yoy_diff": -1012055.6139,
+    "yoy": -53.18960893078294
+  },
+  {
+    "year": 2018,
+    "municipality": "الخور والذخيرة",
+    "avg_value_mt": 1793480.6077,
+    "avg_value_sqrf": 264.9566,
+    "code": 2,
+    "previosyear": 1902731.8197,
+    "Yoy_diff": -109251.212,
+    "yoy": -6.09157475865358
+  },
+  {
+    "year": 2019,
+    "municipality": "الخور والذخيرة",
+    "avg_value_mt": 3629338.2365,
+    "avg_value_sqrf": 408.9103,
+    "code": 2,
+    "previosyear": 1793480.6077,
+    "Yoy_diff": 1835857.6288,
+    "yoy": 50.58381195604501
+  },
+  {
+    "year": 2020,
+    "municipality": "الخور والذخيرة",
+    "avg_value_mt": 2264688.3314,
+    "avg_value_sqrf": 226.9009,
+    "code": 2,
+    "previosyear": 3629338.2365,
+    "Yoy_diff": -1364649.9051,
+    "yoy": -60.2577355205602
+  },
+  {
+    "year": 2021,
+    "municipality": "الخور والذخيرة",
+    "avg_value_mt": 1890857.8642,
+    "avg_value_sqrf": 252.2014,
+    "code": 2,
+    "previosyear": 2264688.3314,
+    "Yoy_diff": -373830.4672,
+    "yoy": -19.77041607821555
+  },
+  {
+    "year": 2022,
+    "municipality": "الخور والذخيرة",
+    "avg_value_mt": 1845668.3454,
+    "avg_value_sqrf": 248.7936,
+    "code": 2,
+    "previosyear": 1890857.8642,
+    "Yoy_diff": -45189.5188,
+    "yoy": -2.44840948335202
+  },
+  {
+    "year": 2023,
+    "municipality": "الخور والذخيرة",
+    "avg_value_mt": 1837590.6484,
+    "avg_value_sqrf": 269.4461,
+    "code": 2,
+    "previosyear": 1845668.3454,
+    "Yoy_diff": -8077.697,
+    "yoy": -0.4395808722162
+  },
+  {
+    "year": 2006,
+    "municipality": "أم صلال",
+    "avg_value_mt": 1322084.0632,
+    "avg_value_sqrf": 48.6041,
+    "code": 3
+  },
+  {
+    "year": 2007,
+    "municipality": "أم صلال",
+    "avg_value_mt": 1932476.2961,
+    "avg_value_sqrf": 92.898,
+    "code": 3,
+    "previosyear": 1322084.0632,
+    "Yoy_diff": 610392.2329,
+    "yoy": 31.58601397242774
+  },
+  {
+    "year": 2008,
+    "municipality": "أم صلال",
+    "avg_value_mt": 3662865.6737,
+    "avg_value_sqrf": 184.0009,
+    "code": 3,
+    "previosyear": 1932476.2961,
+    "Yoy_diff": 1730389.3776,
+    "yoy": 47.24140964339727
+  },
+  {
+    "year": 2009,
+    "municipality": "أم صلال",
+    "avg_value_mt": 1255066.0627,
+    "avg_value_sqrf": 97.2589,
+    "code": 3,
+    "previosyear": 3662865.6737,
+    "Yoy_diff": -2407799.611,
+    "yoy": -191.8464439887846
+  },
+  {
+    "year": 2010,
+    "municipality": "أم صلال",
+    "avg_value_mt": 1394679.283,
+    "avg_value_sqrf": 127.18,
+    "code": 3,
+    "previosyear": 1255066.0627,
+    "Yoy_diff": 139613.2203,
+    "yoy": 10.0104175921856
+  },
+  {
+    "year": 2011,
+    "municipality": "أم صلال",
+    "avg_value_mt": 2279442.0036,
+    "avg_value_sqrf": 167.4612,
+    "code": 3,
+    "previosyear": 1394679.283,
+    "Yoy_diff": 884762.7206,
+    "yoy": 38.81488185278082
+  },
+  {
+    "year": 2012,
+    "municipality": "أم صلال",
+    "avg_value_mt": 2618843.5569,
+    "avg_value_sqrf": 187.6182,
+    "code": 3,
+    "previosyear": 2279442.0036,
+    "Yoy_diff": 339401.5533,
+    "yoy": 12.95997817073729
+  },
+  {
+    "year": 2013,
+    "municipality": "أم صلال",
+    "avg_value_mt": 2925253.896,
+    "avg_value_sqrf": 258.7404,
+    "code": 3,
+    "previosyear": 2618843.5569,
+    "Yoy_diff": 306410.3391,
+    "yoy": 10.47465792692341
+  },
+  {
+    "year": 2014,
+    "municipality": "أم صلال",
+    "avg_value_mt": 3386666.7379,
+    "avg_value_sqrf": 290.5807,
+    "code": 3,
+    "previosyear": 2925253.896,
+    "Yoy_diff": 461412.8419,
+    "yoy": 13.6243946514239
+  },
+  {
+    "year": 2015,
+    "municipality": "أم صلال",
+    "avg_value_mt": 3748099.3438,
+    "avg_value_sqrf": 374.8461,
+    "code": 3,
+    "previosyear": 3386666.7379,
+    "Yoy_diff": 361432.6059,
+    "yoy": 9.64309034385312
+  },
+  {
+    "year": 2016,
+    "municipality": "أم صلال",
+    "avg_value_mt": 4234560.7159,
+    "avg_value_sqrf": 393.364,
+    "code": 3,
+    "previosyear": 3748099.3438,
+    "Yoy_diff": 486461.3721,
+    "yoy": 11.48788279911601
+  },
+  {
+    "year": 2017,
+    "municipality": "أم صلال",
+    "avg_value_mt": 3155583.1406,
+    "avg_value_sqrf": 346.9405,
+    "code": 3,
+    "previosyear": 4234560.7159,
+    "Yoy_diff": -1078977.5753,
+    "yoy": -34.19265242667142
+  },
+  {
+    "year": 2018,
+    "municipality": "أم صلال",
+    "avg_value_mt": 2999056.4709,
+    "avg_value_sqrf": 340.0646,
+    "code": 3,
+    "previosyear": 3155583.1406,
+    "Yoy_diff": -156526.6697,
+    "yoy": -5.21919714479492
+  },
+  {
+    "year": 2019,
+    "municipality": "أم صلال",
+    "avg_value_mt": 3184629.3494,
+    "avg_value_sqrf": 264.4313,
+    "code": 3,
+    "previosyear": 2999056.4709,
+    "Yoy_diff": 185572.8785,
+    "yoy": 5.8271421298985
+  },
+  {
+    "year": 2020,
+    "municipality": "أم صلال",
+    "avg_value_mt": 3803119.2653,
+    "avg_value_sqrf": 278.3159,
+    "code": 3,
+    "previosyear": 3184629.3494,
+    "Yoy_diff": 618489.9159,
+    "yoy": 16.26270102920929
+  },
+  {
+    "year": 2021,
+    "municipality": "أم صلال",
+    "avg_value_mt": 3820825.8151,
+    "avg_value_sqrf": 283.0003,
+    "code": 3,
+    "previosyear": 3803119.2653,
+    "Yoy_diff": 17706.5498,
+    "yoy": 0.46342206258195
+  },
+  {
+    "year": 2022,
+    "municipality": "أم صلال",
+    "avg_value_mt": 4222015.1022,
+    "avg_value_sqrf": 292.2464,
+    "code": 3,
+    "previosyear": 3820825.8151,
+    "Yoy_diff": 401189.2871,
+    "yoy": 9.50231767032167
+  },
+  {
+    "year": 2023,
+    "municipality": "أم صلال",
+    "avg_value_mt": 2599381.0932,
+    "avg_value_sqrf": 328.8286,
+    "code": 3,
+    "previosyear": 4222015.1022,
+    "Yoy_diff": -1622634.009,
+    "yoy": -62.42385978896371
+  },
+  {
+    "year": 2006,
+    "municipality": "الدوحة",
+    "avg_value_mt": 10399697.6446,
+    "avg_value_sqrf": 714.846,
+    "code": 4
+  },
+  {
+    "year": 2007,
+    "municipality": "الدوحة",
+    "avg_value_mt": 7467970.583,
+    "avg_value_sqrf": 556.7182,
+    "code": 4,
+    "previosyear": 10399697.6446,
+    "Yoy_diff": -2931727.0616,
+    "yoy": -39.25734614265553
+  },
+  {
+    "year": 2008,
+    "municipality": "الدوحة",
+    "avg_value_mt": 8754125.5363,
+    "avg_value_sqrf": 734.7244,
+    "code": 4,
+    "previosyear": 7467970.583,
+    "Yoy_diff": 1286154.9533,
+    "yoy": 14.69198662923908
+  },
+  {
+    "year": 2009,
+    "municipality": "الدوحة",
+    "avg_value_mt": 7105594.5435,
+    "avg_value_sqrf": 561.6115,
+    "code": 4,
+    "previosyear": 8754125.5363,
+    "Yoy_diff": -1648530.9928,
+    "yoy": -23.20046524900622
+  },
+  {
+    "year": 2010,
+    "municipality": "الدوحة",
+    "avg_value_mt": 7860548.3525,
+    "avg_value_sqrf": 614.8304,
+    "code": 4,
+    "previosyear": 7105594.5435,
+    "Yoy_diff": 754953.809,
+    "yoy": 9.60434024631235
+  },
+  {
+    "year": 2011,
+    "municipality": "الدوحة",
+    "avg_value_mt": 6625188.2264,
+    "avg_value_sqrf": 582.6152,
+    "code": 4,
+    "previosyear": 7860548.3525,
+    "Yoy_diff": -1235360.1261,
+    "yoy": -18.64641552638982
+  },
+  {
+    "year": 2012,
+    "municipality": "الدوحة",
+    "avg_value_mt": 8280500.5679,
+    "avg_value_sqrf": 753.8982,
+    "code": 4,
+    "previosyear": 6625188.2264,
+    "Yoy_diff": 1655312.3415,
+    "yoy": 19.99048641958852
+  },
+  {
+    "year": 2013,
+    "municipality": "الدوحة",
+    "avg_value_mt": 9909901.0207,
+    "avg_value_sqrf": 919.9176,
+    "code": 4,
+    "previosyear": 8280500.5679,
+    "Yoy_diff": 1629400.4528,
+    "yoy": 16.44214659053078
+  },
+  {
+    "year": 2014,
+    "municipality": "الدوحة",
+    "avg_value_mt": 12560679.5073,
+    "avg_value_sqrf": 1097.5758,
+    "code": 4,
+    "previosyear": 9909901.0207,
+    "Yoy_diff": 2650778.4866,
+    "yoy": 21.10378252274826
+  },
+  {
+    "year": 2015,
+    "municipality": "الدوحة",
+    "avg_value_mt": 18540123.1406,
+    "avg_value_sqrf": 1506.7049,
+    "code": 4,
+    "previosyear": 12560679.5073,
+    "Yoy_diff": 5979443.6333,
+    "yoy": 32.25136957265372
+  },
+  {
+    "year": 2016,
+    "municipality": "الدوحة",
+    "avg_value_mt": 14973661.4752,
+    "avg_value_sqrf": 1269.1502,
+    "code": 4,
+    "previosyear": 18540123.1406,
+    "Yoy_diff": -3566461.6654,
+    "yoy": -23.81823357838643
+  },
+  {
+    "year": 2017,
+    "municipality": "الدوحة",
+    "avg_value_mt": 37206101.372,
+    "avg_value_sqrf": 1115.8446,
+    "code": 4,
+    "previosyear": 14973661.4752,
+    "Yoy_diff": 22232439.8968,
+    "yoy": 59.75482266876623
+  },
+  {
+    "year": 2018,
+    "municipality": "الدوحة",
+    "avg_value_mt": 9321579.9087,
+    "avg_value_sqrf": 796.3181,
+    "code": 4,
+    "previosyear": 37206101.372,
+    "Yoy_diff": -27884521.4633,
+    "yoy": -299.1394349071113
+  },
+  {
+    "year": 2019,
+    "municipality": "الدوحة",
+    "avg_value_mt": 10361376.352,
+    "avg_value_sqrf": 856.692,
+    "code": 4,
+    "previosyear": 9321579.9087,
+    "Yoy_diff": 1039796.4433,
+    "yoy": 10.03531198921554
+  },
+  {
+    "year": 2020,
+    "municipality": "الدوحة",
+    "avg_value_mt": 16583677.3363,
+    "avg_value_sqrf": 898.4987,
+    "code": 4,
+    "previosyear": 10361376.352,
+    "Yoy_diff": 6222300.9843,
+    "yoy": 37.5206346464545
+  },
+  {
+    "year": 2021,
+    "municipality": "الدوحة",
+    "avg_value_mt": 8597594.7751,
+    "avg_value_sqrf": 659.9722,
+    "code": 4,
+    "previosyear": 16583677.3363,
+    "Yoy_diff": -7986082.5612,
+    "yoy": -92.88740362977985
+  },
+  {
+    "year": 2022,
+    "municipality": "الدوحة",
+    "avg_value_mt": 9834642.1914,
+    "avg_value_sqrf": 653.3442,
+    "code": 4,
+    "previosyear": 8597594.7751,
+    "Yoy_diff": 1237047.4163,
+    "yoy": 12.57846896943285
+  },
+  {
+    "year": 2023,
+    "municipality": "الدوحة",
+    "avg_value_mt": 8838007.8184,
+    "avg_value_sqrf": 918.7425,
+    "code": 4,
+    "previosyear": 9834642.1914,
+    "Yoy_diff": -996634.373,
+    "yoy": -11.27668580384247
+  },
+  {
+    "year": 2006,
+    "municipality": "الريان",
+    "avg_value_mt": 2940003.9021,
+    "avg_value_sqrf": 66.5523,
+    "code": 5
+  },
+  {
+    "year": 2007,
+    "municipality": "الريان",
+    "avg_value_mt": 4133756.4756,
+    "avg_value_sqrf": 140.8314,
+    "code": 5,
+    "previosyear": 2940003.9021,
+    "Yoy_diff": 1193752.5735,
+    "yoy": 28.87815430217696
+  },
+  {
+    "year": 2008,
+    "municipality": "الريان",
+    "avg_value_mt": 4773111.3275,
+    "avg_value_sqrf": 274.0142,
+    "code": 5,
+    "previosyear": 4133756.4756,
+    "Yoy_diff": 639354.8519,
+    "yoy": 13.3949285493593
+  },
+  {
+    "year": 2009,
+    "municipality": "الريان",
+    "avg_value_mt": 2501022.1808,
+    "avg_value_sqrf": 135.2901,
+    "code": 5,
+    "previosyear": 4773111.3275,
+    "Yoy_diff": -2272089.1467,
+    "yoy": -90.84642128096715
+  },
+  {
+    "year": 2010,
+    "municipality": "الريان",
+    "avg_value_mt": 3181099.5454,
+    "avg_value_sqrf": 144.5276,
+    "code": 5,
+    "previosyear": 2501022.1808,
+    "Yoy_diff": 680077.3646,
+    "yoy": 21.37868856016844
+  },
+  {
+    "year": 2011,
+    "municipality": "الريان",
+    "avg_value_mt": 4081760.5679,
+    "avg_value_sqrf": 195.4446,
+    "code": 5,
+    "previosyear": 3181099.5454,
+    "Yoy_diff": 900661.0225,
+    "yoy": 22.06550353744476
+  },
+  {
+    "year": 2012,
+    "municipality": "الريان",
+    "avg_value_mt": 4360549.7261,
+    "avg_value_sqrf": 227.8903,
+    "code": 5,
+    "previosyear": 4081760.5679,
+    "Yoy_diff": 278789.1582,
+    "yoy": 6.3934406373424
+  },
+  {
+    "year": 2013,
+    "municipality": "الريان",
+    "avg_value_mt": 4203210.7231,
+    "avg_value_sqrf": 335.4581,
+    "code": 5,
+    "previosyear": 4360549.7261,
+    "Yoy_diff": -157339.003,
+    "yoy": -3.74330513898093
+  },
+  {
+    "year": 2014,
+    "municipality": "الريان",
+    "avg_value_mt": 6455752.5581,
+    "avg_value_sqrf": 408.2168,
+    "code": 5,
+    "previosyear": 4203210.7231,
+    "Yoy_diff": 2252541.835,
+    "yoy": 34.89201010614552
+  },
+  {
+    "year": 2015,
+    "municipality": "الريان",
+    "avg_value_mt": 17547699.6035,
+    "avg_value_sqrf": 462.9674,
+    "code": 5,
+    "previosyear": 6455752.5581,
+    "Yoy_diff": 11091947.0454,
+    "yoy": 63.21026286082331
+  },
+  {
+    "year": 2016,
+    "municipality": "الريان",
+    "avg_value_mt": 6830154.7959,
+    "avg_value_sqrf": 517.6472,
+    "code": 5,
+    "previosyear": 17547699.6035,
+    "Yoy_diff": -10717544.8076,
+    "yoy": -156.91510848382995
+  },
+  {
+    "year": 2017,
+    "municipality": "الريان",
+    "avg_value_mt": 11630874.067,
+    "avg_value_sqrf": 381.8568,
+    "code": 5,
+    "previosyear": 6830154.7959,
+    "Yoy_diff": 4800719.2711,
+    "yoy": 41.27565343279716
+  },
+  {
+    "year": 2018,
+    "municipality": "الريان",
+    "avg_value_mt": 7781541.254,
+    "avg_value_sqrf": 314.8912,
+    "code": 5,
+    "previosyear": 11630874.067,
+    "Yoy_diff": -3849332.813,
+    "yoy": -49.46748577630814
+  },
+  {
+    "year": 2019,
+    "municipality": "الريان",
+    "avg_value_mt": 4621723.6303,
+    "avg_value_sqrf": 373.7202,
+    "code": 5,
+    "previosyear": 7781541.254,
+    "Yoy_diff": -3159817.6237,
+    "yoy": -68.36881381189151
+  },
+  {
+    "year": 2020,
+    "municipality": "الريان",
+    "avg_value_mt": 6753336.1467,
+    "avg_value_sqrf": 362.1886,
+    "code": 5,
+    "previosyear": 4621723.6303,
+    "Yoy_diff": 2131612.5164,
+    "yoy": 31.56384444807485
+  },
+  {
+    "year": 2021,
+    "municipality": "الريان",
+    "avg_value_mt": 4642640.3194,
+    "avg_value_sqrf": 358.8872,
+    "code": 5,
+    "previosyear": 6753336.1467,
+    "Yoy_diff": -2110695.8273,
+    "yoy": -45.46326404998739
+  },
+  {
+    "year": 2022,
+    "municipality": "الريان",
+    "avg_value_mt": 5261390.919,
+    "avg_value_sqrf": 407.2648,
+    "code": 5,
+    "previosyear": 4642640.3194,
+    "Yoy_diff": 618750.5996,
+    "yoy": 11.76020959335221
+  },
+  {
+    "year": 2023,
+    "municipality": "الريان",
+    "avg_value_mt": 5543953.5084,
+    "avg_value_sqrf": 396.6948,
+    "code": 5,
+    "previosyear": 5261390.919,
+    "Yoy_diff": 282562.5894,
+    "yoy": 5.09677054419506
+  },
+  {
+    "year": 2006,
+    "municipality": "الوكرة",
+    "avg_value_mt": 1722697.5385,
+    "avg_value_sqrf": 65.4067,
+    "code": 6
+  },
+  {
+    "year": 2007,
+    "municipality": "الوكرة",
+    "avg_value_mt": 2167245.2235,
+    "avg_value_sqrf": 79.7729,
+    "code": 6,
+    "previosyear": 1722697.5385,
+    "Yoy_diff": 444547.685,
+    "yoy": 20.51210819060319
+  },
+  {
+    "year": 2008,
+    "municipality": "الوكرة",
+    "avg_value_mt": 4401993.3796,
+    "avg_value_sqrf": 147.3105,
+    "code": 6,
+    "previosyear": 2167245.2235,
+    "Yoy_diff": 2234748.1561,
+    "yoy": 50.7667314189161
+  },
+  {
+    "year": 2009,
+    "municipality": "الوكرة",
+    "avg_value_mt": 2286065.975,
+    "avg_value_sqrf": 52.6673,
+    "code": 6,
+    "previosyear": 4401993.3796,
+    "Yoy_diff": -2115927.4046,
+    "yoy": -92.5575826655659
+  },
+  {
+    "year": 2010,
+    "municipality": "الوكرة",
+    "avg_value_mt": 1808369.4063,
+    "avg_value_sqrf": 79.5319,
+    "code": 6,
+    "previosyear": 2286065.975,
+    "Yoy_diff": -477696.5687,
+    "yoy": -26.41587316373524
+  },
+  {
+    "year": 2011,
+    "municipality": "الوكرة",
+    "avg_value_mt": 2535420.4187,
+    "avg_value_sqrf": 115.9036,
+    "code": 6,
+    "previosyear": 1808369.4063,
+    "Yoy_diff": 727051.0124,
+    "yoy": 28.67575756027022
+  },
+  {
+    "year": 2012,
+    "municipality": "الوكرة",
+    "avg_value_mt": 2185264.5457,
+    "avg_value_sqrf": 214.3093,
+    "code": 6,
+    "previosyear": 2535420.4187,
+    "Yoy_diff": -350155.873,
+    "yoy": -16.02350038987319
+  },
+  {
+    "year": 2013,
+    "municipality": "الوكرة",
+    "avg_value_mt": 2571911.341,
+    "avg_value_sqrf": 231.9695,
+    "code": 6,
+    "previosyear": 2185264.5457,
+    "Yoy_diff": 386646.7953,
+    "yoy": 15.03344182734019
+  },
+  {
+    "year": 2014,
+    "municipality": "الوكرة",
+    "avg_value_mt": 4499710.7182,
+    "avg_value_sqrf": 343.8277,
+    "code": 6,
+    "previosyear": 2571911.341,
+    "Yoy_diff": 1927799.3772,
+    "yoy": 42.84274029889569
+  },
+  {
+    "year": 2015,
+    "municipality": "الوكرة",
+    "avg_value_mt": 5825428.037,
+    "avg_value_sqrf": 439.1071,
+    "code": 6,
+    "previosyear": 4499710.7182,
+    "Yoy_diff": 1325717.3188,
+    "yoy": 22.75742332374125
+  },
+  {
+    "year": 2016,
+    "municipality": "الوكرة",
+    "avg_value_mt": 10050115.3702,
+    "avg_value_sqrf": 294.7672,
+    "code": 6,
+    "previosyear": 5825428.037,
+    "Yoy_diff": 4224687.3332,
+    "yoy": 42.03620732282129
+  },
+  {
+    "year": 2017,
+    "municipality": "الوكرة",
+    "avg_value_mt": 3825634.7638,
+    "avg_value_sqrf": 326.7561,
+    "code": 6,
+    "previosyear": 10050115.3702,
+    "Yoy_diff": -6224480.6064,
+    "yoy": -162.70451809197877
+  },
+  {
+    "year": 2018,
+    "municipality": "الوكرة",
+    "avg_value_mt": 3632752.4799,
+    "avg_value_sqrf": 196.8728,
+    "code": 6,
+    "previosyear": 3825634.7638,
+    "Yoy_diff": -192882.2839,
+    "yoy": -5.3095355372329
+  },
+  {
+    "year": 2019,
+    "municipality": "الوكرة",
+    "avg_value_mt": 3607426.2281,
+    "avg_value_sqrf": 252.0292,
+    "code": 6,
+    "previosyear": 3632752.4799,
+    "Yoy_diff": -25326.2518,
+    "yoy": -0.70205875875497
+  },
+  {
+    "year": 2020,
+    "municipality": "الوكرة",
+    "avg_value_mt": 4341064.5083,
+    "avg_value_sqrf": 236.4087,
+    "code": 6,
+    "previosyear": 3607426.2281,
+    "Yoy_diff": 733638.2802,
+    "yoy": 16.89996264274127
+  },
+  {
+    "year": 2021,
+    "municipality": "الوكرة",
+    "avg_value_mt": 3135580.6575,
+    "avg_value_sqrf": 272.6814,
+    "code": 6,
+    "previosyear": 4341064.5083,
+    "Yoy_diff": -1205483.8508,
+    "yoy": -38.44531467932746
+  },
+  {
+    "year": 2022,
+    "municipality": "الوكرة",
+    "avg_value_mt": 4314665.6987,
+    "avg_value_sqrf": 240.9402,
+    "code": 6,
+    "previosyear": 3135580.6575,
+    "Yoy_diff": 1179085.0412,
+    "yoy": 27.32737884085101
+  },
+  {
+    "year": 2023,
+    "municipality": "الوكرة",
+    "avg_value_mt": 2398820.2271,
+    "avg_value_sqrf": 222.4139,
+    "code": 6,
+    "previosyear": 4314665.6987,
+    "Yoy_diff": -1915845.4716,
+    "yoy": -79.86615461868597
+  },
+  {
+    "year": 2006,
+    "municipality": "الظعاين",
+    "avg_value_mt": 1614250.4841,
+    "avg_value_sqrf": 62.5496,
+    "code": 7
+  },
+  {
+    "year": 2007,
+    "municipality": "الظعاين",
+    "avg_value_mt": 2075028.9231,
+    "avg_value_sqrf": 97.242,
+    "code": 7,
+    "previosyear": 1614250.4841,
+    "Yoy_diff": 460778.439,
+    "yoy": 22.20588030703773
+  },
+  {
+    "year": 2008,
+    "municipality": "الظعاين",
+    "avg_value_mt": 5255697.2135,
+    "avg_value_sqrf": 183.7003,
+    "code": 7,
+    "previosyear": 2075028.9231,
+    "Yoy_diff": 3180668.2904,
+    "yoy": 60.51848425038651
+  },
+  {
+    "year": 2009,
+    "municipality": "الظعاين",
+    "avg_value_mt": 1233317.0239,
+    "avg_value_sqrf": 84.7512,
+    "code": 7,
+    "previosyear": 5255697.2135,
+    "Yoy_diff": -4022380.1896,
+    "yoy": -326.143247166119
+  },
+  {
+    "year": 2010,
+    "municipality": "الظعاين",
+    "avg_value_mt": 2173509.9888,
+    "avg_value_sqrf": 126.5232,
+    "code": 7,
+    "previosyear": 1233317.0239,
+    "Yoy_diff": 940192.9649,
+    "yoy": 43.25689643685892
+  },
+  {
+    "year": 2011,
+    "municipality": "الظعاين",
+    "avg_value_mt": 3332471.8667,
+    "avg_value_sqrf": 88.2116,
+    "code": 7,
+    "previosyear": 2173509.9888,
+    "Yoy_diff": 1158961.8779,
+    "yoy": 34.77784432273899
+  },
+  {
+    "year": 2012,
+    "municipality": "الظعاين",
+    "avg_value_mt": 3456807.8553,
+    "avg_value_sqrf": 150.8873,
+    "code": 7,
+    "previosyear": 3332471.8667,
+    "Yoy_diff": 124335.9886,
+    "yoy": 3.59684407709752
+  },
+  {
+    "year": 2013,
+    "municipality": "الظعاين",
+    "avg_value_mt": 3239144.4073,
+    "avg_value_sqrf": 241.6897,
+    "code": 7,
+    "previosyear": 3456807.8553,
+    "Yoy_diff": -217663.448,
+    "yoy": -6.71978215943247
+  },
+  {
+    "year": 2014,
+    "municipality": "الظعاين",
+    "avg_value_mt": 3176156.7055,
+    "avg_value_sqrf": 294.6943,
+    "code": 7,
+    "previosyear": 3239144.4073,
+    "Yoy_diff": -62987.7018,
+    "yoy": -1.983142131839
+  },
+  {
+    "year": 2015,
+    "municipality": "الظعاين",
+    "avg_value_mt": 7484170.2049,
+    "avg_value_sqrf": 340.1374,
+    "code": 7,
+    "previosyear": 3176156.7055,
+    "Yoy_diff": 4308013.4994,
+    "yoy": 57.56167192161768
+  },
+  {
+    "year": 2016,
+    "municipality": "الظعاين",
+    "avg_value_mt": 11097644.9261,
+    "avg_value_sqrf": 298.7026,
+    "code": 7,
+    "previosyear": 7484170.2049,
+    "Yoy_diff": 3613474.7212,
+    "yoy": 32.56073468976871
+  },
+  {
+    "year": 2017,
+    "municipality": "الظعاين",
+    "avg_value_mt": 2728216.1157,
+    "avg_value_sqrf": 290.0664,
+    "code": 7,
+    "previosyear": 11097644.9261,
+    "Yoy_diff": -8369428.8104,
+    "yoy": -306.7729408325333
+  },
+  {
+    "year": 2018,
+    "municipality": "الظعاين",
+    "avg_value_mt": 6651679.0013,
+    "avg_value_sqrf": 285.7932,
+    "code": 7,
+    "previosyear": 2728216.1157,
+    "Yoy_diff": 3923462.8856,
+    "yoy": 58.98454938720285
+  },
+  {
+    "year": 2019,
+    "municipality": "الظعاين",
+    "avg_value_mt": 4298863.6972,
+    "avg_value_sqrf": 311.4205,
+    "code": 7,
+    "previosyear": 6651679.0013,
+    "Yoy_diff": -2352815.3041,
+    "yoy": -54.73109802556594
+  },
+  {
+    "year": 2020,
+    "municipality": "الظعاين",
+    "avg_value_mt": 7860322.9195,
+    "avg_value_sqrf": 307.4588,
+    "code": 7,
+    "previosyear": 4298863.6972,
+    "Yoy_diff": 3561459.2223,
+    "yoy": 45.30932455032708
+  },
+  {
+    "year": 2021,
+    "municipality": "الظعاين",
+    "avg_value_mt": 5730854.0777,
+    "avg_value_sqrf": 317.1271,
+    "code": 7,
+    "previosyear": 7860322.9195,
+    "Yoy_diff": -2129468.8418,
+    "yoy": -37.15796656010186
+  },
+  {
+    "year": 2022,
+    "municipality": "الظعاين",
+    "avg_value_mt": 5188927.7695,
+    "avg_value_sqrf": 267.6998,
+    "code": 7,
+    "previosyear": 5730854.0777,
+    "Yoy_diff": -541926.3082,
+    "yoy": -10.44389770436561
+  },
+  {
+    "year": 2023,
+    "municipality": "الظعاين",
+    "avg_value_mt": 3397904.3287,
+    "avg_value_sqrf": 330.9648,
+    "code": 7,
+    "previosyear": 5188927.7695,
+    "Yoy_diff": -1791023.4408,
+    "yoy": -52.70964887599485
+  },
+  {
+    "year": 2009,
+    "municipality": "الشيحانية",
+    "avg_value_mt": 400000,
+    "avg_value_sqrf": 65.6553,
+    "code": 8
+  },
+  {
+    "year": 2011,
+    "municipality": "الشيحانية",
+    "avg_value_mt": 450000,
+    "avg_value_sqrf": 73.8622,
+    "code": 8
+  },
+  {
+    "year": 2013,
+    "municipality": "الشيحانية",
+    "avg_value_mt": 1000000,
+    "avg_value_sqrf": 95.4802,
+    "code": 8
+  },
+  {
+    "year": 2016,
+    "municipality": "الشيحانية",
+    "avg_value_mt": 1992953,
+    "avg_value_sqrf": 223.665,
+    "code": 8
+  },
+  {
+    "year": 2017,
+    "municipality": "الشيحانية",
+    "avg_value_mt": 2600000,
+    "avg_value_sqrf": 248.2486,
+    "code": 8,
+    "previosyear": 1992953,
+    "Yoy_diff": 607047,
+    "yoy": 23.34796153846154
+  },
+  {
+    "year": 2018,
+    "municipality": "الشيحانية",
+    "avg_value_mt": 3291531.3333,
+    "avg_value_sqrf": 359.5423,
+    "code": 8,
+    "previosyear": 2600000,
+    "Yoy_diff": 691531.3333,
+    "yoy": 21.00941061395546
+  },
+  {
+    "year": 2019,
+    "municipality": "الشيحانية",
+    "avg_value_mt": 1937183.125,
+    "avg_value_sqrf": 183.0113,
+    "code": 8,
+    "previosyear": 3291531.3333,
+    "Yoy_diff": -1354348.2083,
+    "yoy": -69.91327721275705
+  },
+  {
+    "year": 2020,
+    "municipality": "الشيحانية",
+    "avg_value_mt": 1599450.125,
+    "avg_value_sqrf": 179.2431,
+    "code": 8,
+    "previosyear": 1937183.125,
+    "Yoy_diff": -337733,
+    "yoy": -21.11556932730241
+  },
+  {
+    "year": 2021,
+    "municipality": "الشيحانية",
+    "avg_value_mt": 1615305.1364,
+    "avg_value_sqrf": 163.9979,
+    "code": 8,
+    "previosyear": 1599450.125,
+    "Yoy_diff": 15855.0114,
+    "yoy": 0.98154899917769
+  },
+  {
+    "year": 2022,
+    "municipality": "الشيحانية",
+    "avg_value_mt": 1565394.7,
+    "avg_value_sqrf": 191.9344,
+    "code": 8,
+    "previosyear": 1615305.1364,
+    "Yoy_diff": -49910.4364,
+    "yoy": -3.1883611462336
+  },
+  {
+    "year": 2023,
+    "municipality": "الشيحانية",
+    "avg_value_mt": 1447758,
+    "avg_value_sqrf": 191.8688,
+    "code": 8,
+    "previosyear": 1565394.7,
+    "Yoy_diff": -117636.7,
+    "yoy": -8.12543947261904
+  }
+]
