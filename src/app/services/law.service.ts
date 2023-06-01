@@ -12,6 +12,6 @@ import { CastResponseContainer } from 'cast-response';
   providedIn: 'root',
 })
 export class LawService extends CmsService<Law> {
-  serviceName = 'lawService';
+  serviceName = 'LawService';
   collectionName = 'laws';
 }

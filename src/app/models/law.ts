@@ -1,9 +1,9 @@
 import { BaseModel } from '@abstracts/base-model';
-import { NewsInterceptor } from '@model-interceptors/news-interceptor';
+import { LawInterceptor } from '@model-interceptors/law-interceptor';
 import { LawService } from '@services/law.service';
 import { InterceptModel } from 'cast-response';
 
-const { send, receive } = new NewsInterceptor();
+const { send, receive } = new LawInterceptor();
 
 @InterceptModel({ send, receive })
 export class Law extends BaseModel<LawService> {

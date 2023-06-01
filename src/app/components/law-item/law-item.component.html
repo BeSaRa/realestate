@@ -1,8 +1,20 @@
-<div class="flex items-center justify-between p-5 border-1 border-primary rounded-lg">
+<div class="flex items-center justify-between p-3 border border-primary/25 rounded-lg">
   <div class="flex items-center justify-start gap-5">
-    <div class="h-20 overflow-hidden bg-sand rounded-lg">
+    <div class="h-24 overflow-hidden bg-sand rounded-lg">
       <img class="h-full" src="../../../assets/images/doc.png" alt="" />
     </div>
-    <div><h3 class=""></h3></div>
+    <div>
+      <h3 class="mb-1 text-xl font-bold">{{ lawItemData.title }}</h3>
+      <div class="flex justify-start items-center gap-5 text-sm text-gray-500">
+        <span>سنة الإصدار: {{ lawItemData.issue_date | date : "yyyy" }}</span>
+        <span>رقم القانون: {{ lawItemData.law_number }}</span>
+      </div>
+    </div>
   </div>
+  <a
+    class="flex justify-center items-center h-16 w-12 rounded-lg bg-primary hover:bg-secondary text-white"
+    [href]="lawItemData.fileUrl"
+    target="_blank">
+    <mat-icon>cloud_download</mat-icon>
+  </a>
 </div>
