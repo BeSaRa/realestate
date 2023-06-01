@@ -2,17 +2,37 @@
   id="top-header"
   class="h-12 flex justify-between items-center border-b border-b-secondary/50 w-full text-white px-10">
   <div class="w-72"></div>
-  <div id="search-header" class="flex relative items-center bg-secondary/20 h-10 w-80 rounded">
+  <div
+    id="search-header"
+    class="flex relative items-center bg-secondary/20 h-10 w-80 rounded"
+    matAutocompleteOrigin
+    #origin="matAutocompleteOrigin">
     <input
       type="text"
       placeholder="بحث..."
       id="top-search-input"
+      [matAutocomplete]="auto"
+      [matAutocompleteConnectedTo]="origin"
+      [formControl]="search"
+      (focus)="onFocus()"
       class="bg-transparent w-full border-b-white/50 outline-none pe-10 px-5 placeholder:text-white/80" />
     <div class="absolute rtl:left-0 ltr:right-0">
       <button mat-icon-button>
         <mat-icon>search</mat-icon>
       </button>
     </div>
+    <mat-autocomplete #auto="matAutocomplete"
+      ><mat-option *ngFor="let item of filteredNews">
+        <div class="py-2 px-2 rounded-md hover:bg-gray-100">
+          <app-news-item type="concise" [newsItemData]="item" />
+        </div>
+        <div class="my-1 w-full h-0 border-b border-b-primary last-of-type:hidden"></div
+      ></mat-option>
+      <ng-container *ngIf="!filteredNews.length && search.value">
+        <mat-option class="!hidden"></mat-option>
+        <p class="px-4 text-xl">لا يوجد أخبار مطابقة!!</p>
+      </ng-container>
+    </mat-autocomplete>
   </div>
   <!-- search header-->
   <ul id="top-header-menu" class="flex items-center gap-x-3 divide-items">
