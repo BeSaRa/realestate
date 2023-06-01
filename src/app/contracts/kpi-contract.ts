@@ -7,4 +7,6 @@ export interface KpiContract {
   previosyear: number;
   Yoy_diff: number;
   yoy: number;
+  categoryName: string;
+  categoryCode: number;
 }

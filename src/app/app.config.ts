@@ -20,12 +20,13 @@ export const appConfig: ApplicationConfig = {
         return () =>
           forkJoin([
             config.load(),
+            dataService.loadCategories(),
+            dataService.loadMunicipalities(),
             dataService.loadKPIPricePerSqrf(),
             dataService.loadKPIAvgUnitPrice(),
             dataService.loadKPISellCount(),
           ])
             .pipe(tap(() => url.setConfigService(config)))
-            .pipe(tap(([, kpis]) => dataService.prepareYearsAndMunicipalities(kpis)))
             .pipe(tap(() => url.prepareUrls()));
       },
       deps: [ConfigService, UrlService, DataService],

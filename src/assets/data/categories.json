@@ -1,0 +1,30 @@
+[
+  {
+    "REAL_ESTATE_CATEGORY": "فلل",
+    "REAL_ESTATE_CATEGORY_CODE": 1
+  },
+  {
+    "REAL_ESTATE_CATEGORY": "عمارات",
+    "REAL_ESTATE_CATEGORY_CODE": 2
+  },
+  {
+    "REAL_ESTATE_CATEGORY": "أبراج",
+    "REAL_ESTATE_CATEGORY_CODE": 3
+  },
+  {
+    "REAL_ESTATE_CATEGORY": "مجمعات سكنية",
+    "REAL_ESTATE_CATEGORY_CODE": 4
+  },
+  {
+    "REAL_ESTATE_CATEGORY": "شقق سكنية",
+    "REAL_ESTATE_CATEGORY_CODE": 5
+  },
+  {
+    "REAL_ESTATE_CATEGORY": "أرض فضاء",
+    "REAL_ESTATE_CATEGORY_CODE": 6
+  },
+  {
+    "REAL_ESTATE_CATEGORY": "محلات تجارية",
+    "REAL_ESTATE_CATEGORY_CODE": 7
+  }
+]

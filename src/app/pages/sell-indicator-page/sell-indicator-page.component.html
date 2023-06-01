@@ -42,7 +42,7 @@
               class="input" />
             <mat-autocomplete [displayWith]="displayFn" #municipality="matAutocomplete">
               <mat-option *ngFor="let option of dataService.municipalities" [value]="option">
-                {{ option.name }}
+                {{ option.MUNICIPALITY_New }}
               </mat-option>
             </mat-autocomplete>
           </div>
@@ -52,39 +52,16 @@
           <div class="flex border-secondary border-2 w-3/4 h-14 rounded-xl overflow-hidden relative">
             <input
               id="type"
-              disabled
               type="text"
+              formControlName="category"
               placeholder="نوع العقار"
-              [matAutocomplete]="municipality"
+              [matAutocomplete]="category"
               class="input" />
-            <mat-autocomplete [displayWith]="displayFn" #municipality="matAutocomplete">
-              <mat-option *ngFor="let option of dataService.municipalities" [value]="option">
-                {{ option.name }}
+            <mat-autocomplete [displayWith]="displayCatFn" #category="matAutocomplete">
+              <mat-option *ngFor="let option of dataService.categories" [value]="option">
+                {{ option.REAL_ESTATE_CATEGORY }}
               </mat-option>
             </mat-autocomplete>
-          </div>
-        </div>
-        <div class="w-3/4">
-          <label for="sellBy">بيعت بواسطة</label>
-          <div class="flex border-secondary border-2 w-3/4 h-14 rounded-xl overflow-hidden relative">
-            <input
-              id="sellBy"
-              disabled
-              type="text"
-              placeholder="بيعت بواسطة"
-              [matAutocomplete]="municipality"
-              class="input" />
-            <mat-autocomplete [displayWith]="displayFn" #municipality="matAutocomplete">
-              <mat-option *ngFor="let option of dataService.municipalities" [value]="option">
-                {{ option.name }}
-              </mat-option>
-            </mat-autocomplete>
-          </div>
-        </div>
-        <div class="w-3/4">
-          <label for="building_status">حالة العقار</label>
-          <div class="flex border-secondary border-2 w-3/4 h-14 rounded-xl overflow-hidden relative">
-            <input id="building_status" disabled type="text" placeholder="حالة العقار" class="input" />
           </div>
         </div>
       </div>
@@ -141,15 +118,29 @@
           <span class="sr-only">Loading...</span>
         </div>
       </ng-template>
-      <div *ngIf="sellCount && avgUnit && sqrF; else loading" dir="ltr">
+      <div dir="ltr">
         <apx-chart
-          [series]="chartOptions.series"
-          [chart]="chartOptions.chart"
-          [xaxis]="chartOptions.xaxis"
-          [dataLabels]="chartOptions.dataLabels"
-          [grid]="chartOptions.grid"
-          [stroke]="chartOptions.stroke"
-          [title]="chartOptions.title"></apx-chart>
+          #sqrChart
+          [series]="sqrChartOptions.series"
+          [chart]="sqrChartOptions.chart"
+          [xaxis]="sqrChartOptions.xaxis"
+          [dataLabels]="sqrChartOptions.dataLabels"
+          [grid]="sqrChartOptions.grid"
+          [stroke]="sqrChartOptions.stroke"
+          [colors]="sqrChartOptions.colors"
+          [title]="sqrChartOptions.title"></apx-chart>
+      </div>
+      <div dir="ltr">
+        <apx-chart
+          #sellVolume
+          [colors]="sellVolumeChartOptions.colors"
+          [series]="sellVolumeChartOptions.series"
+          [chart]="sellVolumeChartOptions.chart"
+          [xaxis]="sellVolumeChartOptions.xaxis"
+          [dataLabels]="sellVolumeChartOptions.dataLabels"
+          [grid]="sellVolumeChartOptions.grid"
+          [stroke]="sellVolumeChartOptions.stroke"
+          [title]="sellVolumeChartOptions.title"></apx-chart>
       </div>
     </div>
   </div>

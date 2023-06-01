@@ -1,4 +1,4 @@
-import { Component, inject, ViewChild } from '@angular/core';
+import { Component, inject, OnInit, ViewChild } from '@angular/core';
 import { CommonModule, NgOptimizedImage } from '@angular/common';
 import { ExtraHeaderComponent } from '@components/extra-header/extra-header.component';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
@@ -18,6 +18,7 @@ import {
 } from 'ng-apexcharts';
 import { delay, merge, startWith, tap } from 'rxjs';
 import { KpiContract } from '@contracts/kpi-contract';
+import { CategoryContract } from '@contracts/category-contract';
 
 export type ChartOptions = {
   chart: ApexChart;
@@ -27,6 +28,7 @@ export type ChartOptions = {
   stroke: ApexStroke;
   title: ApexTitleSubtitle;
   xaxis: ApexXAxis;
+  colors: string[];
 };
 
 @Component({
@@ -43,7 +45,7 @@ export type ChartOptions = {
   templateUrl: './sell-indicator-page.component.html',
   styleUrls: ['./sell-indicator-page.component.scss'],
 })
-export default class SellIndicatorPageComponent {
+export default class SellIndicatorPageComponent implements OnInit {
   dataService = inject(DataService);
   control = new FormControl('', { nonNullable: true });
   fb = inject(UntypedFormBuilder);
@@ -51,15 +53,22 @@ export default class SellIndicatorPageComponent {
   form = this.fb.group({
     year: [this.dataService.years[0]],
     code: [this.dataService.municipalities[0]],
+    category: [this.dataService.categories[0]],
   });
 
   displayFn(option: MunicipalityContract) {
-    return option.name;
+    return option.MUNICIPALITY_New;
   }
 
-  @ViewChild(ChartComponent, { static: true }) chart!: ChartComponent;
+  displayCatFn(option: CategoryContract) {
+    return option.REAL_ESTATE_CATEGORY;
+  }
 
-  public chartOptions: ChartOptions;
+  @ViewChild('sqrChart', { static: true }) sqrChart!: ChartComponent;
+  @ViewChild('sellVolume', { static: true }) sellVolumeChart!: ChartComponent;
+
+  public sqrChartOptions!: ChartOptions;
+  public sellVolumeChartOptions!: ChartOptions;
 
   sqrF?: KpiContract;
   avgUnit?: KpiContract;
@@ -75,15 +84,14 @@ export default class SellIndicatorPageComponent {
     return this.form.get('code')!;
   }
 
-  constructor() {
-    this.listenToInputChanges();
-    this.chartOptions = {
-      series: [
-        {
-          name: 'Price',
-          data: [10, 41, 35, 51, 49, 62, 69, 91, 148],
-        },
-      ],
+  get category(): AbstractControl {
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    return this.form.get('category')!;
+  }
+
+  ngOnInit() {
+    this.sqrChartOptions = {
+      series: [],
       chart: {
         height: 350,
         type: 'line',
@@ -91,14 +99,15 @@ export default class SellIndicatorPageComponent {
           enabled: true,
         },
       },
+      colors: ['#00E396'],
       dataLabels: {
-        enabled: false,
+        enabled: true,
       },
       stroke: {
-        curve: 'straight',
+        curve: 'smooth',
       },
       title: {
-        text: 'Sale Trend Value (Yearly)',
+        text: 'متوسط السعر للقدم مربع ( سنوي )',
         align: 'left',
       },
       grid: {
@@ -108,14 +117,46 @@ export default class SellIndicatorPageComponent {
         },
       },
       xaxis: {
-        categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep'],
+        categories: [],
       },
     };
+    this.sellVolumeChartOptions = {
+      series: [],
+      chart: {
+        height: 350,
+        type: 'line',
+        zoom: {
+          enabled: true,
+        },
+      },
+      colors: ['#008FFB'],
+      dataLabels: {
+        enabled: true,
+      },
+      stroke: {
+        curve: 'smooth',
+      },
+      title: {
+        text: 'عدد معاملات البيع ( سنوي ) ',
+        align: 'left',
+      },
+      grid: {
+        row: {
+          colors: ['#f3f3f3', 'transparent'], // takes an array which will be repeated on columns
+          opacity: 0.5,
+        },
+      },
+      xaxis: {
+        categories: [],
+      },
+    };
+
+    this.listenToInputChanges();
   }
 
   listenToInputChanges(): void {
-    merge(this.year.valueChanges, this.code.valueChanges)
-      .pipe(startWith([this.year.value, this.code.value]))
+    merge(this.year.valueChanges, this.code.valueChanges, this.category.valueChanges)
+      .pipe(startWith([this.year.value, this.code.value, this.category.value]))
       .pipe(
         tap(() => {
           this.sellCount = undefined;
@@ -133,33 +174,83 @@ export default class SellIndicatorPageComponent {
     this.getSQRF();
     this.getUnitAvg();
     this.getSellCount();
+    this.filterResult();
   }
 
   private getSQRF(): void {
-    const { code, year } = this.getValues();
+    const { code, year, category } = this.getValues();
     this.sqrF = this.dataService.pricePerSQRF.find((item) => {
-      return item.year === year && item.code === code;
+      return item.year === year && item.code === code && item.categoryCode === category;
     });
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    this.sqrF!.avg_value_sqrf = Math.round(this.sqrF!.avg_value_sqrf);
   }
 
   private getUnitAvg(): void {
-    const { code, year } = this.getValues();
+    const { code, year, category } = this.getValues();
     this.avgUnit = this.dataService.avgUnitPrice.find((item) => {
-      return item.year === year && item.code === code;
+      return item.year === year && item.code === code && item.categoryCode === category;
     });
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    this.avgUnit!.avg_value_mt = Math.round(this.avgUnit!.avg_value_mt);
   }
 
   private getSellCount(): void {
-    const { code, year } = this.getValues();
+    const { code, year, category } = this.getValues();
     this.sellCount = this.dataService.sellCount.find((item) => {
-      return item.year === year && item.code === code;
+      return item.year === year && item.code === code && item.categoryCode === category;
     });
   }
 
   private getValues() {
     return {
-      code: this.code.value.code,
+      code: this.code.value.MUNICIPALITY_CODE,
       year: this.year.value,
+      category: this.category.value.REAL_ESTATE_CATEGORY_CODE,
     };
+  }
+
+  private filterResult() {
+    const { category, code } = this.getValues();
+    const perSqrFoot = this.dataService.pricePerSQRF.filter((item) => {
+      return item.code === code && item.categoryCode === category;
+    });
+    const sellCount = this.dataService.sellCount.filter((item) => {
+      return item.code === code && item.categoryCode === category;
+    });
+
+    this.sqrChart
+      .updateOptions({
+        chart: {
+          type: 'line',
+        },
+        series: [
+          {
+            name: 'متوسط سعر القدم المربع',
+            data: perSqrFoot.map((item) => Math.round(item.avg_value_sqrf)),
+          },
+        ],
+        xaxis: {
+          categories: perSqrFoot.map((item) => item.year),
+        },
+      })
+      .then();
+
+    this.sellVolumeChart
+      .updateOptions({
+        chart: {
+          type: 'line',
+        },
+        series: [
+          {
+            name: 'عدد المعاملات',
+            data: sellCount.map((item) => item.avg_value_mt),
+          },
+        ],
+        xaxis: {
+          categories: sellCount.map((item) => item.year),
+        },
+      })
+      .then();
   }
 }

@@ -1,4 +1,4 @@
 export interface MunicipalityContract {
-  name: string;
-  code: number;
+  MUNICIPALITY_New: string;
+  MUNICIPALITY_CODE: number;
 }
