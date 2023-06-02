@@ -70,7 +70,8 @@
           *ngIf="sqrF; else loading"
           class="shadow-xl p-5 self-start items-center flex flex-col border border-secondary rounded-xl">
           <div class="text-2xl font-semibold text-primary">متوسط السعر لكل قدم مربع</div>
-          <div class="text-2xl font-semibold">{{ sqrF.avg_value_sqrf }} QAR</div>
+          <div *ngIf="sqrF.avg_value_sqrf" class="text-2xl font-semibold">{{ sqrF.avg_value_sqrf }} QAR</div>
+          <div *ngIf="!sqrF.avg_value_sqrf" class="text-2xl font-semibold">لا يوجد</div>
           <div
             *ngIf="sqrF.yoy"
             [class.text-red-500]="sqrF.yoy < 0"
@@ -83,7 +84,8 @@
           *ngIf="avgUnit; else loading"
           class="shadow-xl p-5 self-start items-center flex flex-col border border-secondary rounded-xl">
           <div class="text-2xl font-semibold text-primary">متوسط سعر الوحدة</div>
-          <div class="text-2xl font-semibold">{{ avgUnit.avg_value_mt }} QAR</div>
+          <div *ngIf="avgUnit.avg_value_mt" class="text-2xl font-semibold">{{ avgUnit.avg_value_mt }} QAR</div>
+          <div *ngIf="!avgUnit.avg_value_mt" class="text-2xl font-semibold">لا يوجد</div>
           <div
             *ngIf="avgUnit.yoy"
             [class.text-red-500]="avgUnit.yoy < 0"
@@ -96,7 +98,8 @@
           *ngIf="sellCount; else loading"
           class="shadow-xl p-5 self-start items-center flex flex-col border border-secondary rounded-xl">
           <div class="text-2xl font-semibold text-primary">عدد المعاملات</div>
-          <div class="text-2xl font-semibold">{{ sellCount.avg_value_mt }}</div>
+          <div *ngIf="sellCount.avg_value_mt" class="text-2xl font-semibold">{{ sellCount.avg_value_mt }}</div>
+          <div *ngIf="!sellCount.avg_value_mt" class="text-2xl font-semibold">لا يوجد</div>
           <div
             *ngIf="sellCount.yoy"
             [class.text-red-500]="sellCount.yoy < 0"
