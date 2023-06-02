@@ -10,8 +10,8 @@
   <div class="flex justify-center">
     <div class="flex flex-col w-3/4 gap-y-5">
       <h1 class="heading text-3xl self-start text-primary border-secondary font-semibold inline-block">مؤشرات البيع</h1>
-      <div [formGroup]="form" class="selections flex gap-x-5">
-        <div class="w-3/4">
+      <div [formGroup]="form" class="selections justify-center flex w-full gap-x-5">
+        <div>
           <label for="year">السنة</label>
           <div class="flex border-secondary border-2 w-full h-14 rounded-xl overflow-hidden relative">
             <input
@@ -29,9 +29,9 @@
             </mat-autocomplete>
           </div>
         </div>
-        <div class="w-3/4">
+        <div>
           <label for="code">البلدية</label>
-          <div class="flex border-secondary border-2 w-3/4 h-14 rounded-xl overflow-hidden relative">
+          <div class="flex border-secondary border-2 w-full h-14 rounded-xl overflow-hidden relative">
             <input
               type="text"
               id="code"
@@ -47,9 +47,9 @@
             </mat-autocomplete>
           </div>
         </div>
-        <div class="w-3/4">
+        <div>
           <label for="type">نوع العقار</label>
-          <div class="flex border-secondary border-2 w-3/4 h-14 rounded-xl overflow-hidden relative">
+          <div class="flex border-secondary border-2 w-full h-14 rounded-xl overflow-hidden relative">
             <input
               id="type"
               type="text"
@@ -69,7 +69,7 @@
         <div
           *ngIf="sqrF; else loading"
           class="shadow-xl p-5 self-start items-center flex flex-col border border-secondary rounded-xl">
-          <div class="text-2xl font-semibold text-primary">متسوسط السعر لكل قدم مربع</div>
+          <div class="text-2xl font-semibold text-primary">متوسط السعر لكل قدم مربع</div>
           <div class="text-2xl font-semibold">{{ sqrF.avg_value_sqrf }} QAR</div>
           <div
             *ngIf="sqrF.yoy"
@@ -118,6 +118,7 @@
           <span class="sr-only">Loading...</span>
         </div>
       </ng-template>
+
       <div dir="ltr">
         <apx-chart
           #sqrChart
