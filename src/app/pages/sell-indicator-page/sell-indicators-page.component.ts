@@ -12,6 +12,7 @@ import {
   ApexGrid,
   ApexStroke,
   ApexTitleSubtitle,
+  ApexTooltip,
   ApexXAxis,
   ChartComponent,
   NgApexchartsModule,
@@ -29,6 +30,7 @@ export type ChartOptions = {
   title: ApexTitleSubtitle;
   xaxis: ApexXAxis;
   colors: string[];
+  tooltip: ApexTooltip;
 };
 
 @Component({
@@ -119,6 +121,12 @@ export default class SellIndicatorsPageComponent implements OnInit {
       xaxis: {
         categories: [],
       },
+      tooltip: {
+        theme: 'dark',
+        x: {
+          show: false,
+        },
+      },
     };
     this.sellVolumeChartOptions = {
       series: [],
@@ -148,6 +156,12 @@ export default class SellIndicatorsPageComponent implements OnInit {
       },
       xaxis: {
         categories: [],
+      },
+      tooltip: {
+        theme: 'dark',
+        x: {
+          show: false,
+        },
       },
     };
 

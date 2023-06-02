@@ -122,6 +122,7 @@
       <div dir="ltr">
         <apx-chart
           #sqrChart
+          [tooltip]="sqrChartOptions.tooltip"
           [series]="sqrChartOptions.series"
           [chart]="sqrChartOptions.chart"
           [xaxis]="sqrChartOptions.xaxis"
@@ -134,6 +135,7 @@
       <div dir="ltr">
         <apx-chart
           #sellVolume
+          [tooltip]="sellVolumeChartOptions.tooltip"
           [colors]="sellVolumeChartOptions.colors"
           [series]="sellVolumeChartOptions.series"
           [chart]="sellVolumeChartOptions.chart"
