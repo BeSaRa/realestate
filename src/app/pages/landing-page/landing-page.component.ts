@@ -10,6 +10,7 @@ import { MatRadioModule } from '@angular/material/radio';
 import { InquiriesComponent } from '@components/inquiries/inquiries.component';
 import { NewsService } from '@services/news.service';
 import { RouterModule } from '@angular/router';
+import { InwaniComponent } from '@components/inwani/inwani.component';
 
 @Component({
   selector: 'app-landing-page',
@@ -26,6 +27,7 @@ import { RouterModule } from '@angular/router';
     VotingFormComponent,
     MatRadioModule,
     InquiriesComponent,
+    InwaniComponent,
   ],
   templateUrl: './landing-page.component.html',
   styleUrls: ['./landing-page.component.scss'],
