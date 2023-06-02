@@ -198,8 +198,12 @@ export default class SellIndicatorsPageComponent implements OnInit {
     this.sqrF = this.dataService.pricePerSQRF.find((item) => {
       return item.year === year && item.code === code && item.categoryCode === category;
     });
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    this.sqrF!.avg_value_sqrf = Math.round(this.sqrF!.avg_value_sqrf);
+    if (this.sqrF) {
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      this.sqrF!.avg_value_sqrf = Math.round(this.sqrF!.avg_value_sqrf);
+    } else {
+      this.sqrF = {} as KpiContract;
+    }
   }
 
   private getUnitAvg(): void {
@@ -207,8 +211,13 @@ export default class SellIndicatorsPageComponent implements OnInit {
     this.avgUnit = this.dataService.avgUnitPrice.find((item) => {
       return item.year === year && item.code === code && item.categoryCode === category;
     });
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    this.avgUnit!.avg_value_mt = Math.round(this.avgUnit!.avg_value_mt);
+
+    if (this.avgUnit) {
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      this.avgUnit!.avg_value_mt = Math.round(this.avgUnit!.avg_value_mt);
+    } else {
+      this.avgUnit = {} as KpiContract;
+    }
   }
 
   private getSellCount(): void {
@@ -216,6 +225,10 @@ export default class SellIndicatorsPageComponent implements OnInit {
     this.sellCount = this.dataService.sellCount.find((item) => {
       return item.year === year && item.code === code && item.categoryCode === category;
     });
+
+    if (!this.sellCount) {
+      this.sellCount = {} as KpiContract;
+    }
   }
 
   private getValues() {
