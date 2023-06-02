@@ -25,6 +25,10 @@ export const appConfig: ApplicationConfig = {
             dataService.loadKPIPricePerSqrf(),
             dataService.loadKPIAvgUnitPrice(),
             dataService.loadKPISellCount(),
+            dataService.loadKPIMortCount(),
+            dataService.loadKPIMortValue(),
+            dataService.loadKPIMortVsSellCount(),
+            dataService.loadKPIMortVsSellValue(),
           ])
             .pipe(tap(() => url.setConfigService(config)))
             .pipe(tap(() => url.prepareUrls()));

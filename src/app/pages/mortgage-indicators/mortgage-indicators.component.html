@@ -1,0 +1,144 @@
+<app-extra-header class="flex -mt-32 relative text-white">
+  <div class="flex justify-between items-center h-60">
+    <div id="logo-side">
+      <h1 class="text-5xl font-semibold -mt-20">المنصة العقارية لدولة قطر</h1>
+      <span class="text-xl">مؤشر الرهن</span>
+    </div>
+  </div>
+</app-extra-header>
+<div class="content-wrapper p-10">
+  <div class="flex justify-center">
+    <div class="flex flex-col w-3/4 gap-y-5">
+      <h1 class="heading text-3xl self-start text-primary border-secondary font-semibold inline-block">مؤشرات الرهن</h1>
+      <div [formGroup]="form" class="selections justify-center flex w-full gap-x-5">
+        <div>
+          <label for="year">السنة</label>
+          <div class="flex border-secondary border-2 w-full h-14 rounded-xl overflow-hidden relative">
+            <input
+              id="year"
+              type="text"
+              (keydown)="$event.preventDefault()"
+              formControlName="year"
+              placeholder="السنة"
+              [matAutocomplete]="auto"
+              class="input" />
+            <mat-autocomplete #auto="matAutocomplete">
+              <mat-option *ngFor="let option of dataService.years" [value]="option">
+                {{ option }}
+              </mat-option>
+            </mat-autocomplete>
+          </div>
+        </div>
+        <div>
+          <label for="code">البلدية</label>
+          <div class="flex border-secondary border-2 w-full h-14 rounded-xl overflow-hidden relative">
+            <input
+              type="text"
+              id="code"
+              (keydown)="$event.preventDefault()"
+              formControlName="code"
+              placeholder="البلدية"
+              [matAutocomplete]="municipality"
+              class="input" />
+            <mat-autocomplete [displayWith]="displayFn" #municipality="matAutocomplete">
+              <mat-option *ngFor="let option of dataService.municipalities" [value]="option">
+                {{ option.MUNICIPALITY_New }}
+              </mat-option>
+            </mat-autocomplete>
+          </div>
+        </div>
+        <div>
+          <label for="type">نوع العقار</label>
+          <div class="flex border-secondary border-2 w-full h-14 rounded-xl overflow-hidden relative">
+            <input
+              id="type"
+              type="text"
+              formControlName="category"
+              placeholder="نوع العقار"
+              [matAutocomplete]="category"
+              class="input" />
+            <mat-autocomplete [displayWith]="displayCatFn" #category="matAutocomplete">
+              <mat-option *ngFor="let option of dataService.categories" [value]="option">
+                {{ option.REAL_ESTATE_CATEGORY }}
+              </mat-option>
+            </mat-autocomplete>
+          </div>
+        </div>
+      </div>
+      <div class="flex justify-center [&>div]:w-80 gap-x-5">
+        <div
+          *ngIf="mortgageCounts; else loading"
+          class="shadow-xl p-5 self-start items-center flex flex-col border border-secondary rounded-xl">
+          <div class="text-2xl font-semibold text-primary">عدد المعاملات</div>
+          <div *ngIf="mortgageCounts.avg_value_mt" class="text-2xl font-semibold">
+            {{ mortgageCounts.avg_value_mt }}
+          </div>
+          <div *ngIf="!mortgageCounts.avg_value_mt" class="text-2xl font-semibold">لا يوجد</div>
+          <div
+            *ngIf="mortgageCounts.yoy"
+            [class.text-red-500]="mortgageCounts.yoy < 0"
+            [class.text-green-500]="mortgageCounts.yoy > 0"
+            class="text-lg">
+            {{ mortgageCounts.yoy.toPrecision(4) }} %
+          </div>
+        </div>
+        <div
+          *ngIf="mortgageValues; else loading"
+          class="shadow-xl p-5 self-start items-center flex flex-col border border-secondary rounded-xl">
+          <div class="text-2xl font-semibold text-primary">قيمة المعاملات</div>
+          <div *ngIf="mortgageValues.avg_value_mt" class="text-2xl font-semibold">
+            {{ mortgageValues.avg_value_mt }} QAR
+          </div>
+          <div *ngIf="!mortgageValues.avg_value_mt" class="text-2xl font-semibold">لا يوجد</div>
+          <div
+            *ngIf="mortgageValues.yoy"
+            [class.text-red-500]="mortgageValues.yoy < 0"
+            [class.text-green-500]="mortgageValues.yoy > 0"
+            class="text-lg">
+            {{ mortgageValues.yoy.toPrecision(4) }} %
+          </div>
+        </div>
+      </div>
+
+      <ng-template #loading>
+        <div role="status" class="max-w-sm animate-pulse">
+          <div class="h-2.5 bg-gray-200 rounded-full dark:bg-gray-700 w-48 mb-4"></div>
+          <div class="h-2 bg-gray-200 rounded-full dark:bg-gray-700 max-w-[360px] mb-2.5"></div>
+          <div class="h-2 bg-gray-200 rounded-full dark:bg-gray-700 mb-2.5"></div>
+          <div class="h-2 bg-gray-200 rounded-full dark:bg-gray-700 max-w-[330px] mb-2.5"></div>
+          <div class="h-2 bg-gray-200 rounded-full dark:bg-gray-700 max-w-[300px] mb-2.5"></div>
+          <div class="h-2 bg-gray-200 rounded-full dark:bg-gray-700 max-w-[360px]"></div>
+          <span class="sr-only">Loading...</span>
+        </div>
+      </ng-template>
+
+      <div dir="ltr">
+        <apx-chart
+          #mortCountsChart
+          [tooltip]="mortVsSellCountsOptions.tooltip"
+          [series]="mortVsSellCountsOptions.series"
+          [chart]="mortVsSellCountsOptions.chart"
+          [xaxis]="mortVsSellCountsOptions.xaxis"
+          [dataLabels]="mortVsSellCountsOptions.dataLabels"
+          [grid]="mortVsSellCountsOptions.grid"
+          [stroke]="mortVsSellCountsOptions.stroke"
+          [colors]="mortVsSellCountsOptions.colors"
+          [plotOptions]="mortVsSellCountsOptions.plotOptions!"
+          [title]="mortVsSellCountsOptions.title"></apx-chart>
+      </div>
+      <div dir="ltr">
+        <apx-chart
+          #mortValuesChart
+          [tooltip]="mortVsSellValuesOptions.tooltip"
+          [colors]="mortVsSellValuesOptions.colors"
+          [series]="mortVsSellValuesOptions.series"
+          [chart]="mortVsSellValuesOptions.chart"
+          [xaxis]="mortVsSellValuesOptions.xaxis"
+          [dataLabels]="mortVsSellValuesOptions.dataLabels"
+          [grid]="mortVsSellValuesOptions.grid"
+          [stroke]="mortVsSellValuesOptions.stroke"
+          [title]="mortVsSellValuesOptions.title"></apx-chart>
+      </div>
+    </div>
+  </div>
+</div>

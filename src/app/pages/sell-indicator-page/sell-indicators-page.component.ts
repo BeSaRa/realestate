@@ -10,6 +10,7 @@ import {
   ApexChart,
   ApexDataLabels,
   ApexGrid,
+  ApexPlotOptions,
   ApexStroke,
   ApexTitleSubtitle,
   ApexTooltip,
@@ -31,6 +32,7 @@ export type ChartOptions = {
   xaxis: ApexXAxis;
   colors: string[];
   tooltip: ApexTooltip;
+  plotOptions?: ApexPlotOptions;
 };
 
 @Component({

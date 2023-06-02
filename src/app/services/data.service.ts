@@ -11,14 +11,17 @@ import { range } from '@utils/utils';
 })
 export class DataService {
   http = inject(HttpClient);
-  yearsMap: Record<number, number> = {};
-  municipalitiesMap: Record<number, string> = {};
   years: number[] = range(2006, 2023);
   municipalities: MunicipalityContract[] = [];
   categories: CategoryContract[] = [];
   pricePerSQRF: KpiContract[] = [];
   avgUnitPrice: KpiContract[] = [];
   sellCount: KpiContract[] = [];
+
+  mortCounts: KpiContract[] = [];
+  mortValues: KpiContract[] = [];
+  mortVsSellCounts: KpiContract[] = [];
+  mortVsSellValues: KpiContract[] = [];
 
   private load<T>(fileName: string): Observable<T> {
     return this.http.get<T>('assets/data/' + fileName);
@@ -42,5 +45,25 @@ export class DataService {
 
   loadKPISellCount(): Observable<KpiContract[]> {
     return this.load<KpiContract[]>('kpi3_sell_count.json').pipe(tap((data) => (this.sellCount = data)));
+  }
+
+  loadKPIMortCount(): Observable<KpiContract[]> {
+    return this.load<KpiContract[]>('kpi1_mort_transactions_count.json').pipe(tap((data) => (this.mortCounts = data)));
+  }
+
+  loadKPIMortValue(): Observable<KpiContract[]> {
+    return this.load<KpiContract[]>('kpi2_mort_transactions_value.json').pipe(tap((data) => (this.mortValues = data)));
+  }
+
+  loadKPIMortVsSellCount(): Observable<KpiContract[]> {
+    return this.load<KpiContract[]>('chart_mort_vs_sell_transaction_count.json').pipe(
+      tap((data) => (this.mortVsSellCounts = data))
+    );
+  }
+
+  loadKPIMortVsSellValue(): Observable<KpiContract[]> {
+    return this.load<KpiContract[]>('chart_mort_vs_sell_transaction_value.json').pipe(
+      tap((data) => (this.mortVsSellValues = data))
+    );
   }
 }

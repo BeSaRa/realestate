@@ -29,4 +29,8 @@ export const routes: Routes = [
     path: 'sell-indicators',
     loadComponent: () => import('@pages/sell-indicator-page/sell-indicators-page.component'),
   },
+  {
+    path: 'mortgage-indicators',
+    loadComponent: () => import('@pages/mortgage-indicators/mortgage-indicators.component'),
+  },
 ];

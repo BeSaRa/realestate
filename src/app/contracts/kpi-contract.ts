@@ -9,4 +9,5 @@ export interface KpiContract {
   yoy: number;
   categoryName: string;
   categoryCode: number;
+  TType: 'Sell' | 'Mort';
 }

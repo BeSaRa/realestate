@@ -1,0 +1,312 @@
+import { Component, inject, OnInit, ViewChild } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { BidiModule } from '@angular/cdk/bidi';
+import { ExtraHeaderComponent } from '@components/extra-header/extra-header.component';
+import { AbstractControl, FormControl, ReactiveFormsModule, UntypedFormBuilder } from '@angular/forms';
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
+import { MatOptionModule } from '@angular/material/core';
+import { ChartComponent, NgApexchartsModule } from 'ng-apexcharts';
+import { DataService } from '@services/data.service';
+import { MunicipalityContract } from '@contracts/municipality-contract';
+import { CategoryContract } from '@contracts/category-contract';
+import { KpiContract } from '@contracts/kpi-contract';
+import { delay, merge, startWith, tap } from 'rxjs';
+import { ChartOptions } from '@pages/sell-indicator-page/sell-indicators-page.component';
+
+@Component({
+  selector: 'app-mortgage-indicators',
+  standalone: true,
+  imports: [
+    CommonModule,
+    BidiModule,
+    ExtraHeaderComponent,
+    MatAutocompleteModule,
+    MatOptionModule,
+    NgApexchartsModule,
+    ReactiveFormsModule,
+  ],
+  templateUrl: './mortgage-indicators.component.html',
+  styleUrls: ['./mortgage-indicators.component.scss'],
+})
+export default class MortgageIndicatorsComponent implements OnInit {
+  dataService = inject(DataService);
+  control = new FormControl('', { nonNullable: true });
+  fb = inject(UntypedFormBuilder);
+
+  form = this.fb.group({
+    year: [this.dataService.years[0]],
+    code: [this.dataService.municipalities[0]],
+    category: [this.dataService.categories[0]],
+  });
+
+  displayFn(option: MunicipalityContract) {
+    return option.MUNICIPALITY_New;
+  }
+
+  displayCatFn(option: CategoryContract) {
+    return option.REAL_ESTATE_CATEGORY;
+  }
+
+  @ViewChild('mortCountsChart', { static: true }) mortCountChart!: ChartComponent;
+  @ViewChild('mortValuesChart', { static: true }) mortValueChart!: ChartComponent;
+
+  public mortVsSellCountsOptions!: ChartOptions;
+  public mortVsSellValuesOptions!: ChartOptions;
+
+  mortgageCounts?: KpiContract;
+  mortgageValues?: KpiContract;
+  sellCount?: KpiContract;
+
+  get year(): AbstractControl {
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    return this.form.get('year')!;
+  }
+
+  get code(): AbstractControl {
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    return this.form.get('code')!;
+  }
+
+  get category(): AbstractControl {
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    return this.form.get('category')!;
+  }
+
+  ngOnInit() {
+    this.mortVsSellCountsOptions = {
+      series: [],
+      chart: {
+        height: 350,
+        type: 'bar',
+        zoom: {
+          enabled: true,
+        },
+      },
+      colors: ['#0081ff', '#ff0000'],
+      dataLabels: {
+        background: {
+          enabled: false,
+        },
+        enabled: true,
+        offsetX: 0,
+        style: {
+          fontSize: '12px',
+          colors: ['#fff'],
+        },
+      },
+      stroke: {
+        curve: 'smooth',
+        show: true,
+        width: 1,
+        colors: ['#fff'],
+      },
+      title: {
+        text: 'عدد معاملات ( الرهن ) مقابل ( البيع ) - سنوي',
+        align: 'left',
+      },
+      grid: {
+        row: {
+          colors: ['#f3f3f3', 'transparent'], // takes an array which will be repeated on columns
+          opacity: 0.5,
+        },
+      },
+      xaxis: {
+        categories: [],
+      },
+      tooltip: {
+        followCursor: false,
+        theme: 'dark',
+        shared: true,
+        intersect: false,
+        inverseOrder: true,
+      },
+      plotOptions: {
+        bar: {
+          dataLabels: {
+            position: 'top',
+          },
+        },
+      },
+    };
+
+    this.mortVsSellValuesOptions = {
+      series: [],
+      chart: {
+        height: 350,
+        type: 'bar',
+        zoom: {
+          enabled: true,
+        },
+      },
+      colors: ['#0081ff', '#ff0000'],
+      dataLabels: {
+        background: {
+          enabled: false,
+        },
+        enabled: false,
+        offsetX: 0,
+        style: {
+          fontSize: '12px',
+          colors: ['#fff'],
+        },
+      },
+      stroke: {
+        curve: 'smooth',
+      },
+      title: {
+        text: 'قيم معاملات ( الرهن ) مقابل ( البيع ) - سنوي ',
+        align: 'left',
+      },
+      grid: {
+        row: {
+          colors: ['#f3f3f3', 'transparent'], // takes an array which will be repeated on columns
+          opacity: 0.5,
+        },
+      },
+      xaxis: {
+        categories: [],
+      },
+      tooltip: {
+        followCursor: false,
+        theme: 'dark',
+        shared: true,
+        intersect: false,
+        inverseOrder: true,
+      },
+      plotOptions: {
+        bar: {
+          dataLabels: {
+            position: 'top',
+          },
+        },
+      },
+    };
+
+    this.listenToInputChanges();
+  }
+
+  listenToInputChanges(): void {
+    merge(this.year.valueChanges, this.code.valueChanges, this.category.valueChanges)
+      .pipe(startWith([this.year.value, this.code.value, this.category.value]))
+      .pipe(
+        tap(() => {
+          this.sellCount = undefined;
+          this.mortgageValues = undefined;
+          this.mortgageCounts = undefined;
+        }),
+        delay(500)
+      )
+      .subscribe(() => {
+        this.updateChart();
+      });
+  }
+
+  private updateChart() {
+    this.getTransactionCounts();
+    this.getTransactionValues();
+    this.filterResult();
+  }
+
+  private getTransactionCounts(): void {
+    const { code, year, category } = this.getValues();
+    this.mortgageCounts = this.dataService.mortCounts.find((item) => {
+      return item.year === year && item.code === code && item.categoryCode === category;
+    });
+    if (this.mortgageCounts) {
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      this.mortgageCounts!.avg_value_mt = Math.round(this.mortgageCounts!.avg_value_mt);
+    } else {
+      this.mortgageCounts = {} as KpiContract;
+    }
+  }
+
+  private getTransactionValues(): void {
+    const { code, year, category } = this.getValues();
+    this.mortgageValues = this.dataService.mortValues.find((item) => {
+      return item.year === year && item.code === code && item.categoryCode === category;
+    });
+    if (this.mortgageValues) {
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      this.mortgageValues!.avg_value_mt = Math.round(this.mortgageValues!.avg_value_mt);
+    } else {
+      this.mortgageValues = {} as KpiContract;
+    }
+  }
+
+  private getValues() {
+    return {
+      code: this.code.value.MUNICIPALITY_CODE,
+      year: this.year.value,
+      category: this.category.value.REAL_ESTATE_CATEGORY_CODE,
+    };
+  }
+
+  private filterResult() {
+    const { category, code } = this.getValues();
+    const mortCounts = this.dataService.mortVsSellCounts
+      .filter((item) => {
+        return item.code === code && item.categoryCode === category;
+      })
+      .reduce(
+        (acc, current) => {
+          current.TType === 'Sell' ? (acc.sell = [...acc.sell, current]) : (acc.mort = [...acc.mort, current]);
+          return acc;
+        },
+        {
+          mort: [],
+          sell: [],
+        } as { mort: KpiContract[]; sell: KpiContract[] }
+      );
+
+    const mortValues = this.dataService.mortVsSellValues
+      .filter((item) => {
+        return item.code === code && item.categoryCode === category;
+      })
+      .reduce(
+        (acc, current) => {
+          current.TType === 'Sell' ? (acc.sell = [...acc.sell, current]) : (acc.mort = [...acc.mort, current]);
+          return acc;
+        },
+        {
+          mort: [],
+          sell: [],
+        } as { mort: KpiContract[]; sell: KpiContract[] }
+      );
+
+    this.mortCountChart
+      .updateOptions({
+        series: [
+          {
+            name: 'الرهن',
+            data: mortCounts.mort.map((item) => Math.round(item.avg_value_mt)),
+          },
+          {
+            name: 'البيع',
+            data: mortCounts.sell.map((item) => Math.round(item.avg_value_mt)),
+          },
+        ],
+        xaxis: {
+          categories: mortCounts.mort.map((item) => item.year),
+        },
+      })
+      .then();
+
+    this.mortValueChart
+      .updateOptions({
+        series: [
+          {
+            name: 'الرهن',
+            data: mortValues.mort.map((item) => Math.round(item.avg_value_mt)),
+          },
+          {
+            name: 'البيع',
+            data: mortValues.sell.map((item) => Math.round(item.avg_value_mt)),
+          },
+        ],
+        xaxis: {
+          categories: mortValues.sell.map((item) => item.year),
+        },
+      })
+      .then();
+  }
+}
