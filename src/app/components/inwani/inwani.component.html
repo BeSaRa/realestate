@@ -1,11 +1,49 @@
-<div class="bg-[#2F4775] border-8 border-sand py-10 px-6 rounded-xl">
-  <form [formGroup]="form">
-    <div class="flex border-secondary border-2 w-full h-28 rounded-xl overflow-hidden relative">
-      <textarea
-        type="text"
-        formControlName="building"
-        rows="3"
-        class="w-full placeholder-primary/50 text-xl h-full outline-none py-10 px-5 text-primary"></textarea>
+<div class="bg-[#2F4775] border-8 border-sand py-5 rounded-xl">
+  <form [formGroup]="form" (ngSubmit)="searchLink.elementReference.click()">
+    <div class="px-7">
+      <div class="flex justify-between text-lg text-white mb-2"><span>رقم المبنى</span><span>Building</span></div>
+      <div class="flex border-secondary border-2 w-full h-28 rounded-xl overflow-hidden relative">
+        <textarea
+          type="text"
+          formControlName="building"
+          rows="3"
+          class="w-full placeholder-primary/50 text-xl h-full outline-none py-5 px-5 text-primary resize-none overflow-hidden"></textarea>
+      </div>
+    </div>
+    <div class="h-0 w-full mt-5 border-b-[6px] border-sand"></div>
+    <div class="grid grid-cols-2 gap-2 mt-5 px-7">
+      <div>
+        <div class="flex justify-between text-lg text-white mb-2"><span>شارع</span><span>Street</span></div>
+        <div class="flex border-secondary border-2 w-full h-16 rounded-xl overflow-hidden relative">
+          <input
+            type="text"
+            formControlName="street"
+            rows="3"
+            class="w-full placeholder-primary/50 text-xl h-full outline-none py-5 px-5 text-primary" />
+        </div>
+      </div>
+      <div>
+        <div class="flex justify-between text-lg text-white mb-2"><span>منطقة</span><span>Zone</span></div>
+        <div class="flex border-secondary border-2 w-full h-16 rounded-xl overflow-hidden relative">
+          <input
+            type="text"
+            formControlName="zone"
+            rows="3"
+            class="w-full placeholder-primary/50 text-xl h-full outline-none py-5 px-5 text-primary" />
+        </div>
+      </div>
+    </div>
+    <div class="mt-5 text-center">
+      <a
+        appElementReference
+        #searchLink="appElementReference"
+        (click)="form.invalid ? $event.preventDefault() : null"
+        [href]="href"
+        target="_blank"
+        class="self-center !bg-secondary !text-white !shadow-xl"
+        mat-button
+        >بحث</a
+      >
     </div>
   </form>
 </div>

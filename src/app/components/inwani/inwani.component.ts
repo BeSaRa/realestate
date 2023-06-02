@@ -1,11 +1,13 @@
 import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { NonNullableFormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import { MatButtonModule } from '@angular/material/button';
+import { ElementReferenceDirective } from '@directives/element-reference.directive';
 
 @Component({
   selector: 'app-inwani',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [CommonModule, ReactiveFormsModule, MatButtonModule, ElementReferenceDirective],
   templateUrl: './inwani.component.html',
   styleUrls: ['./inwani.component.scss'],
 })
@@ -27,5 +29,9 @@ export class InwaniComponent {
   }
   get street() {
     return this.form.controls.street;
+  }
+
+  get href() {
+    return `https://geoportal.gisqatar.org.qa/inwani/index.html?zone=${this.zone.value}&street=${this.street.value}&building=${this.building.value}`;
   }
 }
