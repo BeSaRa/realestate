@@ -10,7 +10,7 @@
       </svg>
     </div>
     <div>
-      <h3 class="mb-1 text-xl font-bold">{{ lawItemData.title }}</h3>
+      <a [href]="lawItemData.fileUrl" class="mb-1 text-xl text-primary font-bold">{{ lawItemData.title }}</a>
       <div class="flex justify-start items-center gap-5 text-sm text-gray-500">
         <span>سنة الإصدار: {{ lawItemData.issue_date | date : "yyyy" }}</span>
         <span>رقم القانون: {{ lawItemData.law_number }}</span>

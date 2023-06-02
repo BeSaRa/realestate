@@ -12,7 +12,4 @@ import { Law } from '@models/law';
 })
 export class LawItemComponent {
   @Input({ required: true }) lawItemData!: Law;
-  ngOnInit(): void {
-    console.log(this.lawItemData);
-  }
 }

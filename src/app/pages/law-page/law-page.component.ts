@@ -3,7 +3,6 @@ import { Component, inject } from '@angular/core';
 import { ExtraHeaderComponent } from '@components/extra-header/extra-header.component';
 import { LawListComponent } from '@components/law-list/law-list.component';
 import { LawService } from '@services/law.service';
-import { tap } from 'rxjs';
 
 @Component({
   selector: 'app-law-page',
