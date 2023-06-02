@@ -22,7 +22,7 @@ export const routes: Routes = [
     resolve: { pageData: pageResolver },
   },
   {
-    path: 'law',
+    path: 'laws',
     loadComponent: () => import('./pages/law-page/law-page.component'),
   },
   {
