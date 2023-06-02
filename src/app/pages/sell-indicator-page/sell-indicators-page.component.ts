@@ -32,7 +32,7 @@ export type ChartOptions = {
 };
 
 @Component({
-  selector: 'app-sell-indicator-page',
+  selector: 'app-sell-indicators-page',
   standalone: true,
   imports: [
     CommonModule,
@@ -42,10 +42,10 @@ export type ChartOptions = {
     ReactiveFormsModule,
     NgApexchartsModule,
   ],
-  templateUrl: './sell-indicator-page.component.html',
-  styleUrls: ['./sell-indicator-page.component.scss'],
+  templateUrl: './sell-indicators-page.component.html',
+  styleUrls: ['./sell-indicators-page.component.scss'],
 })
-export default class SellIndicatorPageComponent implements OnInit {
+export default class SellIndicatorsPageComponent implements OnInit {
   dataService = inject(DataService);
   control = new FormControl('', { nonNullable: true });
   fb = inject(UntypedFormBuilder);

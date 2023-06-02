@@ -1,13 +1,13 @@
 import { Component, inject } from '@angular/core';
 import { CommonModule, NgOptimizedImage } from '@angular/common';
-import { ExtraHeaderComponent } from '../../components/extra-header/extra-header.component';
+import { ExtraHeaderComponent } from '@components/extra-header/extra-header.component';
 import { MatButtonModule } from '@angular/material/button';
-import { BannerComponent } from '../../components/banner/banner.component';
-import { NewsListComponent } from '../../components/news-list/news-list.component';
-import { NewsletterFormComponent } from '../../components/newsletter-form/newsletter-form.component';
-import { VotingFormComponent } from '../../components/voting-form/voting-form.component';
+import { BannerComponent } from '@components/banner/banner.component';
+import { NewsListComponent } from '@components/news-list/news-list.component';
+import { NewsletterFormComponent } from '@components/newsletter-form/newsletter-form.component';
+import { VotingFormComponent } from '@components/voting-form/voting-form.component';
 import { MatRadioModule } from '@angular/material/radio';
-import { InquiriesComponent } from '../../components/inquiries/inquiries.component';
+import { InquiriesComponent } from '@components/inquiries/inquiries.component';
 import { NewsService } from '@services/news.service';
 import { RouterModule } from '@angular/router';
 

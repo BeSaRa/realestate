@@ -1,16 +1,16 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import SellIndicatorPageComponent from './sell-indicator-page.component';
+import SellIndicatorsPageComponent from './sell-indicators-page.component';
 
 describe('SellIndicatorPageComponent', () => {
-  let component: SellIndicatorPageComponent;
-  let fixture: ComponentFixture<SellIndicatorPageComponent>;
+  let component: SellIndicatorsPageComponent;
+  let fixture: ComponentFixture<SellIndicatorsPageComponent>;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [SellIndicatorPageComponent],
+      imports: [SellIndicatorsPageComponent],
     });
-    fixture = TestBed.createComponent(SellIndicatorPageComponent);
+    fixture = TestBed.createComponent(SellIndicatorsPageComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

@@ -26,7 +26,7 @@ export const routes: Routes = [
     loadComponent: () => import('./pages/law-page/law-page.component'),
   },
   {
-    path: 'sell-indicator',
-    loadComponent: () => import('./pages/sell-indicator-page/sell-indicator-page.component'),
+    path: 'sell-indicators',
+    loadComponent: () => import('@pages/sell-indicator-page/sell-indicators-page.component'),
   },
 ];
