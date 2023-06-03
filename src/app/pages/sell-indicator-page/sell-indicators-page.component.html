@@ -70,7 +70,7 @@
           *ngIf="sqrF; else loading"
           class="shadow-xl p-3 self-start items-center flex flex-col border border-secondary rounded-xl">
           <div class="text-xl font-semibold text-primary">متوسط السعر لكل قدم مربع ( QR )</div>
-          <div *ngIf="sqrF.avg_value_sqrf" class="text-xl font-semibold">{{ sqrF.avg_value_sqrf }} QR</div>
+          <div *ngIf="sqrF.avg_value_sqrf" class="text-xl font-semibold">{{ sqrF.avg_value_sqrf }}</div>
           <div *ngIf="!sqrF.avg_value_sqrf" class="text-xl font-semibold">لا يوجد</div>
           <div
             *ngIf="sqrF.yoy"
@@ -84,7 +84,7 @@
           *ngIf="avgUnit; else loading"
           class="shadow-xl p-3 self-start items-center flex flex-col border border-secondary rounded-xl">
           <div class="text-xl font-semibold text-primary">متوسط سعر الوحدة ( QR )</div>
-          <div *ngIf="avgUnit.avg_value_mt" class="text-xl font-semibold">{{ avgUnit.avg_value_mt }} QR</div>
+          <div *ngIf="avgUnit.avg_value_mt" class="text-xl font-semibold">{{ avgUnit.avg_value_mt }}</div>
           <div *ngIf="!avgUnit.avg_value_mt" class="text-xl font-semibold">لا يوجد</div>
           <div
             *ngIf="avgUnit.yoy"

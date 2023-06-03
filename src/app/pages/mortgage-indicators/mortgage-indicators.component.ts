@@ -56,7 +56,6 @@ export default class MortgageIndicatorsComponent implements OnInit {
 
   mortgageCounts?: KpiContract;
   mortgageValues?: KpiContract;
-  sellCount?: KpiContract;
 
   get year(): AbstractControl {
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
@@ -134,7 +133,7 @@ export default class MortgageIndicatorsComponent implements OnInit {
         },
         labels: {
           formatter(val: number) {
-            return formatNumber(val, 0) as string;
+            return formatNumber(val) as string;
           },
           minWidth: 50,
         },
@@ -159,7 +158,7 @@ export default class MortgageIndicatorsComponent implements OnInit {
       dataLabels: {
         enabled: true,
         formatter(val: string | number | number[]): string {
-          return formatNumber(Number(val), 0) as string;
+          return formatNumber(Number(val)) as string;
         },
         style: {
           fontSize: '12px',
@@ -189,7 +188,7 @@ export default class MortgageIndicatorsComponent implements OnInit {
         },
         labels: {
           formatter(val: number) {
-            return formatNumber(val, 0) as string;
+            return formatNumber(val) as string;
           },
           minWidth: 50,
         },
@@ -218,7 +217,6 @@ export default class MortgageIndicatorsComponent implements OnInit {
       .pipe(startWith([this.year.value, this.code.value, this.category.value]))
       .pipe(
         tap(() => {
-          this.sellCount = undefined;
           this.mortgageValues = undefined;
           this.mortgageCounts = undefined;
         }),

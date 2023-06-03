@@ -10,6 +10,7 @@ import { delay, merge, startWith, tap } from 'rxjs';
 import { KpiContract } from '@contracts/kpi-contract';
 import { CategoryContract } from '@contracts/category-contract';
 import { ChartOptions } from '@app-types/ChartOptions';
+import { formatNumber } from '@utils/utils';
 
 @Component({
   selector: 'app-sell-indicators-page',
@@ -188,7 +189,7 @@ export default class SellIndicatorsPageComponent implements OnInit {
 
     if (this.avgUnit) {
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      this.avgUnit!.avg_value_mt = Math.round(this.avgUnit!.avg_value_mt);
+      this.avgUnit!.avg_value_mt = formatNumber(Math.round(this.avgUnit!.avg_value_mt)) as number;
     } else {
       this.avgUnit = {} as KpiContract;
     }
