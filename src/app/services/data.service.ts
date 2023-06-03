@@ -22,13 +22,16 @@ export class DataService {
   mortValues: KpiContract[] = [];
   mortVsSellCounts: KpiContract[] = [];
   mortVsSellValues: KpiContract[] = [];
+  doha?: MunicipalityContract;
 
   private load<T>(fileName: string): Observable<T> {
     return this.http.get<T>('assets/data/' + fileName);
   }
 
   loadMunicipalities(): Observable<MunicipalityContract[]> {
-    return this.load<MunicipalityContract[]>('municipalities.json').pipe(tap((value) => (this.municipalities = value)));
+    return this.load<MunicipalityContract[]>('municipalities.json')
+      .pipe(tap((value) => (this.municipalities = value)))
+      .pipe(tap((value) => (this.doha = value.find((i) => i.MUNICIPALITY_CODE === 4))));
   }
 
   loadCategories(): Observable<CategoryContract[]> {

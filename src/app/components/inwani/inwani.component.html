@@ -2,7 +2,7 @@
   <form [formGroup]="form" (ngSubmit)="searchLink.elementReference.click()">
     <div class="px-7">
       <div class="flex justify-between text-lg text-white mb-2"><span>رقم المبنى</span><span>Building</span></div>
-      <div class="flex border-secondary border-2 w-full h-28 rounded-xl overflow-hidden relative">
+      <div class="flex border-secondary border-2 w-full h-16 rounded-xl overflow-hidden relative">
         <textarea
           type="text"
           formControlName="building"
@@ -18,7 +18,6 @@
           <input
             type="text"
             formControlName="street"
-            rows="3"
             class="w-full placeholder-primary/50 text-xl h-full outline-none py-5 px-5 text-primary" />
         </div>
       </div>
@@ -28,7 +27,6 @@
           <input
             type="text"
             formControlName="zone"
-            rows="3"
             class="w-full placeholder-primary/50 text-xl h-full outline-none py-5 px-5 text-primary" />
         </div>
       </div>

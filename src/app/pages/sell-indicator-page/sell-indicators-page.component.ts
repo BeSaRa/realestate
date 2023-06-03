@@ -5,35 +5,11 @@ import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { DataService } from '@services/data.service';
 import { AbstractControl, FormControl, ReactiveFormsModule, UntypedFormBuilder } from '@angular/forms';
 import { MunicipalityContract } from '@contracts/municipality-contract';
-import {
-  ApexAxisChartSeries,
-  ApexChart,
-  ApexDataLabels,
-  ApexGrid,
-  ApexPlotOptions,
-  ApexStroke,
-  ApexTitleSubtitle,
-  ApexTooltip,
-  ApexXAxis,
-  ChartComponent,
-  NgApexchartsModule,
-} from 'ng-apexcharts';
+import { ChartComponent, NgApexchartsModule } from 'ng-apexcharts';
 import { delay, merge, startWith, tap } from 'rxjs';
 import { KpiContract } from '@contracts/kpi-contract';
 import { CategoryContract } from '@contracts/category-contract';
-
-export type ChartOptions = {
-  chart: ApexChart;
-  dataLabels: ApexDataLabels;
-  grid: ApexGrid;
-  series: ApexAxisChartSeries;
-  stroke: ApexStroke;
-  title: ApexTitleSubtitle;
-  xaxis: ApexXAxis;
-  colors: string[];
-  tooltip: ApexTooltip;
-  plotOptions?: ApexPlotOptions;
-};
+import { ChartOptions } from '@app-types/ChartOptions';
 
 @Component({
   selector: 'app-sell-indicators-page',
@@ -55,8 +31,8 @@ export default class SellIndicatorsPageComponent implements OnInit {
   fb = inject(UntypedFormBuilder);
 
   form = this.fb.group({
-    year: [this.dataService.years[0]],
-    code: [this.dataService.municipalities[0]],
+    year: [2022],
+    code: [this.dataService.doha],
     category: [this.dataService.categories[0]],
   });
 
@@ -111,8 +87,8 @@ export default class SellIndicatorsPageComponent implements OnInit {
         curve: 'smooth',
       },
       title: {
-        text: 'متوسط السعر للقدم مربع ( سنوي )',
-        align: 'left',
+        text: 'متوسط السعر للقدم مربع ( QR )',
+        align: 'center',
       },
       grid: {
         row: {
@@ -124,7 +100,6 @@ export default class SellIndicatorsPageComponent implements OnInit {
         categories: [],
       },
       tooltip: {
-        theme: 'dark',
         x: {
           show: false,
         },
@@ -148,7 +123,7 @@ export default class SellIndicatorsPageComponent implements OnInit {
       },
       title: {
         text: 'عدد معاملات البيع ( سنوي ) ',
-        align: 'left',
+        align: 'center',
       },
       grid: {
         row: {
@@ -160,7 +135,6 @@ export default class SellIndicatorsPageComponent implements OnInit {
         categories: [],
       },
       tooltip: {
-        theme: 'dark',
         x: {
           show: false,
         },

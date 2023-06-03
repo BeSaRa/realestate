@@ -11,7 +11,8 @@ import { MunicipalityContract } from '@contracts/municipality-contract';
 import { CategoryContract } from '@contracts/category-contract';
 import { KpiContract } from '@contracts/kpi-contract';
 import { delay, merge, startWith, tap } from 'rxjs';
-import { ChartOptions } from '@pages/sell-indicator-page/sell-indicators-page.component';
+import { ChartOptions } from '@app-types/ChartOptions';
+import { formatNumber } from '@utils/utils';
 
 @Component({
   selector: 'app-mortgage-indicators',
@@ -34,8 +35,8 @@ export default class MortgageIndicatorsComponent implements OnInit {
   fb = inject(UntypedFormBuilder);
 
   form = this.fb.group({
-    year: [this.dataService.years[0]],
-    code: [this.dataService.municipalities[0]],
+    year: [2022],
+    code: [this.dataService.doha],
     category: [this.dataService.categories[0]],
   });
 
@@ -102,7 +103,7 @@ export default class MortgageIndicatorsComponent implements OnInit {
       },
       title: {
         text: 'عدد معاملات ( الرهن ) مقابل ( البيع ) - سنوي',
-        align: 'left',
+        align: 'center',
       },
       grid: {
         row: {
@@ -112,10 +113,10 @@ export default class MortgageIndicatorsComponent implements OnInit {
       },
       xaxis: {
         categories: [],
+        tickPlacement: 'on',
       },
       tooltip: {
-        followCursor: false,
-        theme: 'dark',
+        theme: 'light',
         shared: true,
         intersect: false,
         inverseOrder: true,
@@ -125,6 +126,17 @@ export default class MortgageIndicatorsComponent implements OnInit {
           dataLabels: {
             position: 'top',
           },
+        },
+      },
+      yaxis: {
+        title: {
+          text: 'عدد المعاملات',
+        },
+        labels: {
+          formatter(val: number) {
+            return formatNumber(val, 0) as string;
+          },
+          minWidth: 50,
         },
       },
     };
@@ -137,14 +149,18 @@ export default class MortgageIndicatorsComponent implements OnInit {
         zoom: {
           enabled: true,
         },
+        toolbar: {
+          tools: {
+            zoom: true,
+          },
+        },
       },
       colors: ['#0081ff', '#ff0000'],
       dataLabels: {
-        background: {
-          enabled: false,
+        enabled: true,
+        formatter(val: string | number | number[]): string {
+          return formatNumber(Number(val), 0) as string;
         },
-        enabled: false,
-        offsetX: 0,
         style: {
           fontSize: '12px',
           colors: ['#fff'],
@@ -154,8 +170,8 @@ export default class MortgageIndicatorsComponent implements OnInit {
         curve: 'smooth',
       },
       title: {
-        text: 'قيم معاملات ( الرهن ) مقابل ( البيع ) - سنوي ',
-        align: 'left',
+        text: 'QR - قيم معاملات ( الرهن ) مقابل ( البيع )',
+        align: 'center',
       },
       grid: {
         row: {
@@ -165,13 +181,18 @@ export default class MortgageIndicatorsComponent implements OnInit {
       },
       xaxis: {
         categories: [],
+        tickPlacement: 'on',
       },
-      tooltip: {
-        followCursor: false,
-        theme: 'dark',
-        shared: true,
-        intersect: false,
-        inverseOrder: true,
+      yaxis: {
+        title: {
+          text: 'السعر بالريال القطري',
+        },
+        labels: {
+          formatter(val: number) {
+            return formatNumber(val, 0) as string;
+          },
+          minWidth: 50,
+        },
       },
       plotOptions: {
         bar: {
@@ -179,6 +200,13 @@ export default class MortgageIndicatorsComponent implements OnInit {
             position: 'top',
           },
         },
+      },
+      tooltip: {
+        followCursor: false,
+        theme: 'light',
+        shared: true,
+        intersect: false,
+        inverseOrder: true,
       },
     };
 
@@ -227,7 +255,7 @@ export default class MortgageIndicatorsComponent implements OnInit {
     });
     if (this.mortgageValues) {
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      this.mortgageValues!.avg_value_mt = Math.round(this.mortgageValues!.avg_value_mt);
+      this.mortgageValues!.avg_value_mt = formatNumber(Math.round(this.mortgageValues!.avg_value_mt)) as number;
     } else {
       this.mortgageValues = {} as KpiContract;
     }
@@ -242,10 +270,10 @@ export default class MortgageIndicatorsComponent implements OnInit {
   }
 
   private filterResult() {
-    const { category, code } = this.getValues();
+    const { category, code /*, year*/ } = this.getValues();
     const mortCounts = this.dataService.mortVsSellCounts
       .filter((item) => {
-        return item.code === code && item.categoryCode === category;
+        return item.code === code && item.categoryCode === category /*&& item.year <= year && item.year >= year - 10*/;
       })
       .reduce(
         (acc, current) => {
@@ -260,7 +288,7 @@ export default class MortgageIndicatorsComponent implements OnInit {
 
     const mortValues = this.dataService.mortVsSellValues
       .filter((item) => {
-        return item.code === code && item.categoryCode === category;
+        return item.code === code && item.categoryCode === category /*&& item.year <= year && item.year >= year - 10*/;
       })
       .reduce(
         (acc, current) => {
@@ -272,6 +300,8 @@ export default class MortgageIndicatorsComponent implements OnInit {
           sell: [],
         } as { mort: KpiContract[]; sell: KpiContract[] }
       );
+
+    console.log(mortCounts.mort);
 
     this.mortCountChart
       .updateOptions({

@@ -68,12 +68,12 @@
       <div class="flex justify-center [&>div]:w-80 gap-x-5">
         <div
           *ngIf="mortgageCounts; else loading"
-          class="shadow-xl p-5 self-start items-center flex flex-col border border-secondary rounded-xl">
-          <div class="text-2xl font-semibold text-primary">عدد المعاملات</div>
-          <div *ngIf="mortgageCounts.avg_value_mt" class="text-2xl font-semibold">
+          class="shadow-xl p-3 self-start items-center flex flex-col border border-secondary rounded-xl">
+          <div class="text-xl font-semibold text-primary">عدد المعاملات</div>
+          <div *ngIf="mortgageCounts.avg_value_mt" class="text-xl font-semibold">
             {{ mortgageCounts.avg_value_mt }}
           </div>
-          <div *ngIf="!mortgageCounts.avg_value_mt" class="text-2xl font-semibold">لا يوجد</div>
+          <div *ngIf="!mortgageCounts.avg_value_mt" class="text-xl font-semibold">لا يوجد</div>
           <div
             *ngIf="mortgageCounts.yoy"
             [class.text-red-500]="mortgageCounts.yoy < 0"
@@ -84,12 +84,12 @@
         </div>
         <div
           *ngIf="mortgageValues; else loading"
-          class="shadow-xl p-5 self-start items-center flex flex-col border border-secondary rounded-xl">
-          <div class="text-2xl font-semibold text-primary">قيمة المعاملات</div>
-          <div *ngIf="mortgageValues.avg_value_mt" class="text-2xl font-semibold">
-            {{ mortgageValues.avg_value_mt }} QAR
+          class="shadow-xl p-3 self-start items-center flex flex-col border border-secondary rounded-xl">
+          <div class="text-xl font-semibold text-primary">قيمة المعاملات ( QR )</div>
+          <div *ngIf="mortgageValues.avg_value_mt" class="text-xl font-semibold">
+            {{ mortgageValues.avg_value_mt }}
           </div>
-          <div *ngIf="!mortgageValues.avg_value_mt" class="text-2xl font-semibold">لا يوجد</div>
+          <div *ngIf="!mortgageValues.avg_value_mt" class="text-xl font-semibold">لا يوجد</div>
           <div
             *ngIf="mortgageValues.yoy"
             [class.text-red-500]="mortgageValues.yoy < 0"
@@ -123,6 +123,7 @@
           [grid]="mortVsSellCountsOptions.grid"
           [stroke]="mortVsSellCountsOptions.stroke"
           [colors]="mortVsSellCountsOptions.colors"
+          [yaxis]="mortVsSellCountsOptions.yaxis!"
           [plotOptions]="mortVsSellCountsOptions.plotOptions!"
           [title]="mortVsSellCountsOptions.title"></apx-chart>
       </div>
@@ -137,6 +138,8 @@
           [dataLabels]="mortVsSellValuesOptions.dataLabels"
           [grid]="mortVsSellValuesOptions.grid"
           [stroke]="mortVsSellValuesOptions.stroke"
+          [plotOptions]="mortVsSellValuesOptions.plotOptions!"
+          [yaxis]="mortVsSellValuesOptions.yaxis!"
           [title]="mortVsSellValuesOptions.title"></apx-chart>
       </div>
     </div>

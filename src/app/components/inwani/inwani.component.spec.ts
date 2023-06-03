@@ -8,7 +8,7 @@ describe('InwaniComponent', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [InwaniComponent]
+      imports: [InwaniComponent],
     });
     fixture = TestBed.createComponent(InwaniComponent);
     component = fixture.componentInstance;
