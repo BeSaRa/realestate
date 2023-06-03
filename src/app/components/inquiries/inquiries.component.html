@@ -9,13 +9,13 @@
     </svg>
     <h2 class="text-2xl font-semibold heading border-secondary text-primary">الاستعلام بالرقم المساحي</h2>
   </div>
-  <div class="flex border-secondary border-2 w-3/4 h-14 rounded-xl overflow-hidden relative">
+  <div class="flex border-secondary border-2 w-full h-14 rounded-xl overflow-hidden relative">
     <input
       type="text"
       [formControl]="search"
       (keyup.enter)="searchLink.elementReference.click()"
       placeholder="أدخل الرقم المساحي هنا"
-      class="w-full placeholder-primary/50 text-xl h-full outline-none pe-10 px-5 text-primary" />
+      class="w-full placeholder-primary/50 h-full outline-none pe-10 px-5 text-primary" />
 
     <div class="absolute end-0 top-px">
       <a
