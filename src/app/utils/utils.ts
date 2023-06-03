@@ -26,7 +26,7 @@ export function generateUUID() {
 
 export const range = (start: number, stop: number) => Array.from({ length: stop - start + 1 }, (_, i) => start + i);
 
-export function formatNumber(num: number, precision = 2): string | number {
+export function formatNumber(num: number, precision = 1): string | number {
   const map = [
     { suffix: 'T', threshold: 1e12 },
     { suffix: 'B', threshold: 1e9 },
