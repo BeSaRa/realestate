@@ -6,7 +6,7 @@ import { Observable } from 'rxjs';
   providedIn: 'root',
 })
 export class ChatGptService {
-  API = 'http://127.0.0.1:3333/';
+  API = 'http://localhost:3333/';
   http = inject(HttpClient);
 
   ask(message: string): Observable<never[]> {
