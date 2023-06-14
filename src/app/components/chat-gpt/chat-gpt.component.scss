@@ -1,0 +1,15 @@
+.me {
+  @apply bg-primary self-start rounded text-white p-2
+}
+
+.boot {
+  @apply bg-secondary self-end rounded text-white p-2
+}
+
+.full-screen {
+  width: 80vw;
+  height: 80vh;
+  position: fixed;
+  top: calc(20vh/2);
+  left: calc(20vw/2);
+}
