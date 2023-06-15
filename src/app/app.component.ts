@@ -8,6 +8,7 @@ import localeAr from '@angular/common/locales/ar';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { ChatGptComponent } from '@components/chat-gpt/chat-gpt.component';
+import { TranslationService } from '@services/translation.service';
 
 @Component({
   selector: 'app-root',
@@ -26,9 +27,11 @@ import { ChatGptComponent } from '@components/chat-gpt/chat-gpt.component';
 })
 export class AppComponent {
   stickyService = inject(StickyService);
+  translation = inject(TranslationService);
 
   constructor() {
     registerLocaleData(localeAr, 'ar');
+    this.translation.load().subscribe(console.log);
   }
 
   @HostListener('window:scroll')
