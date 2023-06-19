@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { NonNullableFormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { ElementReferenceDirective } from '@directives/element-reference.directive';
+import { TranslationService } from '@services/translation.service';
 
 @Component({
   selector: 'app-inwani',
@@ -13,6 +14,8 @@ import { ElementReferenceDirective } from '@directives/element-reference.directi
 })
 export class InwaniComponent {
   fb = inject(NonNullableFormBuilder);
+
+  lang = inject(TranslationService);
 
   numberPattern = /^\d+$/;
   form = this.fb.group({

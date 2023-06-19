@@ -5,12 +5,14 @@
         fill="currentColor"
         d="M21 3a1 1 0 0 1 1 1v16.007a1 1 0 0 1-.992.993H2.992A.993.993 0 0 1 2 20.007V19h18V7.3l-8 7.2l-10-9V4a1 1 0 0 1 1-1h18ZM8 15v2H0v-2h8Zm-3-5v2H0v-2h5Zm14.566-5H4.434L12 11.81L19.566 5Z" />
     </svg>
-    <h2 class="text-2xl font-semibold heading border-secondary text-primary">الاشتراك فى النشرة البريدية</h2>
+    <h2 class="text-2xl font-semibold heading border-secondary text-primary">
+      {{ lang.map.subscribe_to_the_newsletter.toCapital() }}
+    </h2>
   </div>
   <div class="flex border-secondary border-2 w-full h-14 rounded-xl overflow-hidden relative">
     <input
       type="text"
-      placeholder="ادخل بريدك الالكتروني ليصلك كل ما هو جديد"
+      [placeholder]="lang.map.enter_your_email_to_receive_all_new.toCapital()"
       class="w-full placeholder-primary/50 h-full outline-none pe-10 px-5 text-primary" />
     <div class="absolute end-0 top-px">
       <button class="!text-primary" mat-icon-button>

@@ -1,3 +1,6 @@
 .clipped-header {
-  clip-path: url('#header-clip-path');
+  clip-path: url("#header-clip-path");
+}
+.clipped-header-ltr {
+  clip-path: url("#header-clip-path-ltr");
 }

@@ -4,6 +4,7 @@ import { ExtraHeaderComponent } from 'src/app/components/extra-header/extra-head
 import { MatButtonModule } from '@angular/material/button';
 import { NewsListComponent } from 'src/app/components/news-list/news-list.component';
 import { NewsService } from '@services/news.service';
+import { TranslationService } from '@services/translation.service';
 
 @Component({
   selector: 'app-news-page',
@@ -15,4 +16,6 @@ import { NewsService } from '@services/news.service';
 export default class NewsPageComponent {
   newsService = inject(NewsService);
   newsData = this.newsService.load();
+
+  lang = inject(TranslationService);
 }

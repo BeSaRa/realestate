@@ -1,3 +1,10 @@
 .clipped-footer {
-  clip-path: url('#footer-clip-path');
+  clip-path: url("#footer-clip-path");
+}
+.clipped-footer-ltr {
+  clip-path: url("#footer-clip-path-ltr");
+}
+
+.mdc-button {
+  justify-content: start !important;
 }

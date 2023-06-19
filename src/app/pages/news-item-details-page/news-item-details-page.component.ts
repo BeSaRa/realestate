@@ -7,6 +7,7 @@ import { RelatedNewsListComponent } from '@components/related-news-list/related-
 import { News } from '@models/news';
 import { SafeHtmlPipe } from '@pipes/safe-html.pipe';
 import { NewsService } from '@services/news.service';
+import { TranslationService } from '@services/translation.service';
 import { Subject, map, switchMap, takeUntil, tap } from 'rxjs';
 
 @Component({
@@ -30,6 +31,8 @@ export default class NewsItemDetailsPageComponent implements OnInit, OnDestroy {
 
   newsService = inject(NewsService);
   relatedNews: News[] = [];
+
+  lang = inject(TranslationService);
 
   destroy$: Subject<void> = new Subject<void>();
 

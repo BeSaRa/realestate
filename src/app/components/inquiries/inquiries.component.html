@@ -7,14 +7,16 @@
         stroke-width="2"
         d="M17.5 6.5L23 9v13l-7-3l-8 3l-7-3V6l5 2m10 11v-7M8 22V12m4 4.273S6 11.5 6 7c0-3.75 3-6 6-6s6 2.25 6 6c0 4.5-6 9.273-6 9.273ZM13 7a1 1 0 1 0-2 0a1 1 0 0 0 2 0Z" />
     </svg>
-    <h2 class="text-2xl font-semibold heading border-secondary text-primary">الاستعلام بالرقم المساحي</h2>
+    <h2 class="text-2xl font-semibold heading border-secondary text-primary">
+      {{ lang.map.inquiry_by_cadastral_number.toCapital() }}
+    </h2>
   </div>
   <div class="flex border-secondary border-2 w-full h-14 rounded-xl overflow-hidden relative">
     <input
       type="text"
       [formControl]="search"
       (keyup.enter)="searchLink.elementReference.click()"
-      placeholder="أدخل الرقم المساحي هنا"
+      [placeholder]="lang.map.enter_the_cadastral_number_here.toCapital()"
       class="w-full placeholder-primary/50 h-full outline-none pe-10 px-5 text-primary" />
 
     <div class="absolute end-0 top-px">

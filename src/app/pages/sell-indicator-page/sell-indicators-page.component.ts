@@ -11,6 +11,7 @@ import { KpiContract } from '@contracts/kpi-contract';
 import { CategoryContract } from '@contracts/category-contract';
 import { ChartOptions } from '@app-types/ChartOptions';
 import { formatNumber } from '@utils/utils';
+import { TranslationService } from '@services/translation.service';
 
 @Component({
   selector: 'app-sell-indicators-page',
@@ -30,6 +31,8 @@ export default class SellIndicatorsPageComponent implements OnInit {
   dataService = inject(DataService);
   control = new FormControl('', { nonNullable: true });
   fb = inject(UntypedFormBuilder);
+
+  lang = inject(TranslationService);
 
   form = this.fb.group({
     year: [2022],
@@ -71,6 +74,19 @@ export default class SellIndicatorsPageComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.listenToInputChanges();
+    this._listenToLangChanges();
+    this.setAxis();
+  }
+
+  private _listenToLangChanges() {
+    this.lang.change$.subscribe(() => {
+      this.listenToInputChanges();
+      this.setAxis();
+    });
+  }
+
+  setAxis() {
     this.sqrChartOptions = {
       series: [],
       chart: {
@@ -88,7 +104,7 @@ export default class SellIndicatorsPageComponent implements OnInit {
         curve: 'smooth',
       },
       title: {
-        text: 'متوسط السعر للقدم مربع ( QR )',
+        text: `${this.lang.map.average_price_per_square_foot.toCapitalAll()} ( QR )`,
         align: 'center',
       },
       grid: {
@@ -123,7 +139,7 @@ export default class SellIndicatorsPageComponent implements OnInit {
         curve: 'smooth',
       },
       title: {
-        text: 'عدد معاملات البيع ( سنوي ) ',
+        text: `${this.lang.map.number_of_sales_transactions.toCapitalAll()} ( ${this.lang.map.annual.toCapital()} )`,
         align: 'center',
       },
       grid: {
@@ -141,8 +157,6 @@ export default class SellIndicatorsPageComponent implements OnInit {
         },
       },
     };
-
-    this.listenToInputChanges();
   }
 
   listenToInputChanges(): void {
@@ -230,7 +244,7 @@ export default class SellIndicatorsPageComponent implements OnInit {
         },
         series: [
           {
-            name: 'متوسط سعر القدم المربع',
+            name: this.lang.map.average_price_per_square_foot.toCapital(),
             data: perSqrFoot.map((item) => Math.round(item.avg_value_sqrf)),
           },
         ],
@@ -247,7 +261,7 @@ export default class SellIndicatorsPageComponent implements OnInit {
         },
         series: [
           {
-            name: 'عدد المعاملات',
+            name: this.lang.map.number_of_transactions.toCapital(),
             data: sellCount.map((item) => item.avg_value_mt),
           },
         ],

@@ -9,21 +9,33 @@ html {
 
 body {
   margin: 0;
-  font-family: 'Open Sans', sans-serif;
+  font-family: "Open Sans", sans-serif;
   min-height: 100vh;
 }
 
-html[dir='rtl'] body {
-  font-family: 'Lusail', 'Open Sans', sans-serif !important;
+html[dir="rtl"] body {
+  font-family: "Lusail", "Open Sans", sans-serif !important;
 }
 
 .divide-items {
-  @apply [&>li:not(:last-child)]:before:-left-1.5 [&>li:not(:last-child)]:before:from-transparent [&>li:not(:last-child)]:before:via-secondary [&>li:not(:last-child)]:before:bg-gradient-to-b [&>li]:relative [&>li:not(:last-child)]:before:absolute [&>li:not(:last-child)]:before:w-px [&>li:not(:last-child)]:before:h-full
+  @apply rtl:[&>li:not(:last-child)]:before:-left-1.5
+   ltr:[&>li:not(:last-child)]:before:-right-1.5
+   [&>li:not(:last-child)]:before:from-transparent
+ [&>li:not(:last-child)]:before:via-secondary
+   [&>li:not(:last-child)]:before:bg-gradient-to-b
+   [&>li]:relative [&>li:not(:last-child)]:before:absolute
+   [&>li:not(:last-child)]:before:w-px
+   [&>li:not(:last-child)]:before:h-full;
 }
 
-h1, h2, h3, h4, h5, h6 {
-  @apply drop-shadow-xl
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  @apply drop-shadow-xl;
 }
 .heading {
-  @apply border-b-2
+  @apply border-b-2;
 }
