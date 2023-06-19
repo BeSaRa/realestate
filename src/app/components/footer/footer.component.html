@@ -9,17 +9,33 @@
       </clipPath>
     </defs>
   </svg>
-  <div class="px-10 h-60 w-full bg-footer bg-cover clipped-footer absolute top-8 right-0 left-0"></div>
+  <svg width="0" class="fixed" height="0">
+    <defs>
+      <clipPath id="footer-clip-path-ltr" clipPathUnits="objectBoundingBox">
+        <path d="M1,1.01 L0,1.01 V0.2 C0.4,0,0.6,0.4,1,0.2"></path>
+      </clipPath>
+    </defs>
+  </svg>
+  <div
+    [ngClass]="{ 'clipped-footer': !lang.isLtr, 'clipped-footer-ltr': lang.isLtr }"
+    class="px-10 h-60 w-full bg-footer ltr:bg-footer-ltr bg-cover absolute top-8 right-0 left-0"></div>
   <div
     id="top-footer"
-    class="px-10 pt-16 h-60 w-full bg-gradient-to-r from-primary/90 to-gray-800/90 clipped-footer absolute top-8 right-0 left-0 flex items-center justify-between">
+    [ngClass]="{ 'clipped-footer': !lang.isLtr, 'clipped-footer-ltr': lang.isLtr }"
+    class="px-10 pt-16 h-60 w-full bg-gradient-to-r ltr:bg-gradient-to-l from-primary/90 to-gray-800/90 absolute top-8 right-0 left-0 flex items-center justify-between">
     <ul id="top-footer-menu">
-      <li><a mat-button routerLink="/about" routerLinkActive="active">من نحن</a></li>
-      <li><a mat-button (click)="$event.preventDefault()" href="#">الاستطلاعات</a></li>
-      <li><a mat-button (click)="$event.preventDefault()" href="#">أسئلة متكرره</a></li>
+      <li>
+        <a mat-button routerLink="/about" routerLinkActive="active">{{ lang.map.about_us.toCapitalAll() }}</a>
+      </li>
+      <li>
+        <a mat-button (click)="$event.preventDefault()" href="#">{{ lang.map.surveys.toCapitalAll() }}</a>
+      </li>
+      <li>
+        <a mat-button (click)="$event.preventDefault()" href="#">{{ lang.map.faq.toUpperCase() }}</a>
+      </li>
     </ul>
     <div id="top-footer-downloads" class="flex flex-col items-center">
-      <p class="mb-3">ابقى على اطلاع واحصل على أخر المستجدات</p>
+      <p class="mb-3">{{ lang.map.stay_informed_and_get_the_latest_developments.toCapital() }}</p>
       <ul class="flex gap-x-3">
         <li>
           <a class="w-32 block" (click)="$event.preventDefault()" href="#">
@@ -58,7 +74,7 @@
     </div>
     <!-- useful-links-->
     <div id="follow-us" class="flex flex-col">
-      <p>تابعنا على</p>
+      <p>{{ lang.map.follow_us.toCapitalAll() }}</p>
       <ul class="flex" id="follow-us-menu">
         <li>
           <button mat-icon-button>
@@ -104,11 +120,18 @@
     id="bottom-footer"
     class="flex items-center justify-between h-12 absolute bottom-0 right-0 left-0 bg-[#666666] px-10 w-full">
     <ul class="flex gap-x-3 divide-items">
-      <li><a mat-button (click)="$event.preventDefault()" href="#">الخصوصية والحقوق</a></li>
-      <li><a mat-button (click)="$event.preventDefault()" href="#">خريطة الموقع</a></li>
+      <li>
+        <a mat-button (click)="$event.preventDefault()" href="#">{{ lang.map.privacy_and_rights.toCapitalAll() }}</a>
+      </li>
+      <li>
+        <a mat-button (click)="$event.preventDefault()" href="#">{{ lang.map.location_map.toCapitalAll() }}</a>
+      </li>
     </ul>
     <div>
-      <span>البلدية غير مسؤولة عن أي اقتباس من الموقع - جميع الحقوق محفوظة لوزارة البلديــــة © 2023</span>
+      <span
+        >{{ lang.map.municipality_is_not_responsible_for_any_citation_from_the_site.toCapital() }} -
+        {{ lang.map.all_rights_reserved_to_the_ministry_of_municipality.toCapital() }} © 2023</span
+      >
     </div>
   </div>
   <!-- bottom-footer-->

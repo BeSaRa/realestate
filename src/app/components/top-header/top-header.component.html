@@ -9,7 +9,7 @@
     #origin="matAutocompleteOrigin">
     <input
       type="text"
-      placeholder="بحث..."
+      [placeholder]="lang.map.search.toCapital() + '...'"
       id="top-search-input"
       [matAutocomplete]="auto"
       [matAutocompleteConnectedTo]="origin"
@@ -22,16 +22,18 @@
       </button>
     </div>
     <mat-autocomplete #auto="matAutocomplete"
-      ><mat-option *ngFor="let item of filteredNews">
-        <div class="py-2 px-2 rounded-md hover:bg-gray-100">
-          <app-news-item type="concise" [newsItemData]="item" />
-        </div>
-        <div class="my-1 w-full h-0 border-b border-b-primary last-of-type:hidden"></div
-      ></mat-option>
-      <ng-container *ngIf="!filteredNews.length && search.value">
-        <mat-option class="!hidden"></mat-option>
-        <p class="px-4 text-xl">لا يوجد أخبار مطابقة!!</p>
-      </ng-container>
+      ><div [dir]="lang.getCurrent().direction">
+        <mat-option *ngFor="let item of filteredNews">
+          <div class="py-2 px-2 rounded-md hover:bg-gray-100">
+            <app-news-item type="concise" [newsItemData]="item" />
+          </div>
+          <div class="my-1 w-full h-0 border-b border-b-primary last-of-type:hidden"></div
+        ></mat-option>
+        <ng-container *ngIf="!filteredNews.length && search.value">
+          <mat-option class="!hidden"></mat-option>
+          <p class="px-4 text-xl">{{ lang.map.there_are_no_matching_results.toCapital() }}!</p>
+        </ng-container>
+      </div>
     </mat-autocomplete>
   </div>
   <!-- search header-->
@@ -51,9 +53,17 @@
         <mat-icon>visibility</mat-icon>
       </button>
     </li>
-    <li><a class="text-white" (click)="$event.preventDefault()" mat-button href="#">تسجيل الدخول</a></li>
-    <li><a mat-button (click)="$event.preventDefault()" href="#">دخول الموظفين</a></li>
-    <li><a mat-button (click)="$event.preventDefault()" href="#">EN</a></li>
+    <li>
+      <a class="text-white" (click)="$event.preventDefault()" mat-button href="#">{{
+        lang.map.login.toCapitalAll()
+      }}</a>
+    </li>
+    <li>
+      <a mat-button (click)="$event.preventDefault()" href="#">{{ lang.map.staff_login.toCapitalAll() }}</a>
+    </li>
+    <li>
+      <a mat-button (click)="changeLang($event)" href="#">{{ lang.getCurrent().toggleTo.toUpperCase() }}</a>
+    </li>
   </ul>
   <!-- top-header-menu -->
 </div>

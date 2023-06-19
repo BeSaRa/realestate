@@ -13,6 +13,7 @@ import { KpiContract } from '@contracts/kpi-contract';
 import { delay, merge, startWith, tap } from 'rxjs';
 import { ChartOptions } from '@app-types/ChartOptions';
 import { formatNumber } from '@utils/utils';
+import { TranslationService } from '@services/translation.service';
 
 @Component({
   selector: 'app-mortgage-indicators',
@@ -31,6 +32,8 @@ import { formatNumber } from '@utils/utils';
 })
 export default class MortgageIndicatorsComponent implements OnInit {
   dataService = inject(DataService);
+  lang = inject(TranslationService);
+
   control = new FormControl('', { nonNullable: true });
   fb = inject(UntypedFormBuilder);
 
@@ -73,6 +76,19 @@ export default class MortgageIndicatorsComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.listenToInputChanges();
+    this._listenToLangChanges();
+    this.setAxis();
+  }
+
+  private _listenToLangChanges() {
+    this.lang.change$.subscribe(() => {
+      this.listenToInputChanges();
+      this.setAxis();
+    });
+  }
+
+  setAxis() {
     this.mortVsSellCountsOptions = {
       series: [],
       chart: {
@@ -101,7 +117,8 @@ export default class MortgageIndicatorsComponent implements OnInit {
         colors: ['#fff'],
       },
       title: {
-        text: 'عدد معاملات ( الرهن ) مقابل ( البيع ) - سنوي',
+        text: `${this.lang.map.number_of_transactions.toCapitalAll()} ( ${this.lang.map.mortgage.toCapital()} )
+       ${this.lang.map.versus} ( ${this.lang.map.sell.toCapital()} ) - ${this.lang.map.annual.toCapital()}`,
         align: 'center',
       },
       grid: {
@@ -129,7 +146,7 @@ export default class MortgageIndicatorsComponent implements OnInit {
       },
       yaxis: {
         title: {
-          text: 'عدد المعاملات',
+          text: this.lang.map.number_of_transactions.toCapitalAll(),
         },
         labels: {
           formatter(val: number) {
@@ -169,7 +186,8 @@ export default class MortgageIndicatorsComponent implements OnInit {
         curve: 'smooth',
       },
       title: {
-        text: 'QR - قيم معاملات ( الرهن ) مقابل ( البيع )',
+        text: `${this.lang.map.transactions_value.toCapitalAll()} ( ${this.lang.map.mortgage.toCapital()} )
+        ${this.lang.map.versus} ( ${this.lang.map.sell.toCapital()} ) - QR`,
         align: 'center',
       },
       grid: {
@@ -184,7 +202,7 @@ export default class MortgageIndicatorsComponent implements OnInit {
       },
       yaxis: {
         title: {
-          text: 'السعر بالريال القطري',
+          text: this.lang.map.price_in_qatari_riyals.toCapitalAll(),
         },
         labels: {
           formatter(val: number) {
@@ -208,8 +226,6 @@ export default class MortgageIndicatorsComponent implements OnInit {
         inverseOrder: true,
       },
     };
-
-    this.listenToInputChanges();
   }
 
   listenToInputChanges(): void {
@@ -305,11 +321,11 @@ export default class MortgageIndicatorsComponent implements OnInit {
       .updateOptions({
         series: [
           {
-            name: 'الرهن',
+            name: this.lang.map.mortgage.toCapital(),
             data: mortCounts.mort.map((item) => Math.round(item.avg_value_mt)),
           },
           {
-            name: 'البيع',
+            name: this.lang.map.sell.toCapital(),
             data: mortCounts.sell.map((item) => Math.round(item.avg_value_mt)),
           },
         ],
@@ -323,11 +339,11 @@ export default class MortgageIndicatorsComponent implements OnInit {
       .updateOptions({
         series: [
           {
-            name: 'الرهن',
+            name: this.lang.map.mortgage.toCapital(),
             data: mortValues.mort.map((item) => Math.round(item.avg_value_mt)),
           },
           {
-            name: 'البيع',
+            name: this.lang.map.sell.toCapital(),
             data: mortValues.sell.map((item) => Math.round(item.avg_value_mt)),
           },
         ],

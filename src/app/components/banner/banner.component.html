@@ -1,19 +1,22 @@
 <div class="flex justify-center">
   <div
     id="main-banner"
-    class="w-3/4 h-48 overflow-hidden rounded-2xl border-2 border-primary bg-banner bg-cover bg-center">
-    <div class="bg-gradient-to-r from-transparent to-gray-800/80 h-48 w-full p-10 flex gap-x-2 items-center">
-      <h2 class="text-2xl border-b-2 border-secondary font-semibold text-white">الأكثر استخداماً</h2>
-      <div class="flex flex-auto items-center justify-center gap-x-10">
+    class="w-3/4 h-48 overflow-hidden rounded-2xl border-2 border-primary bg-banner ltr:bg-banner-ltr bg-cover bg-center">
+    <div
+      class="bg-gradient-to-r ltr:bg-gradient-to-l from-transparent to-gray-800/80 h-48 w-full p-10 flex gap-x-2 items-center">
+      <h2 class="text-2xl border-b-2 border-secondary font-semibold text-white">
+        {{ lang.map.most_used.toCapitalAll() }}
+      </h2>
+      <div class="flex flex-auto items-center justify-center gap-x-5">
         <button
           routerLink="/sell-indicators"
           routerLinkActive="active"
-          class="relative [&_span]:!static !bg-primary w-52 !shadow-2xl !text-white !border-2 !border-solid !border-secondary !rounded-xl hover:!border-white !h-14 text-2xl"
+          class="relative [&_span]:!static !bg-primary min-w-max w-72 !shadow-2xl !text-white !border-2 !border-solid !border-secondary !rounded-xl hover:!border-white !h-14 text-2xl"
           mat-button>
           <div>
-            <span>مؤشر البيع</span>
+            <span>{{ lang.map.sell_indicator.toCapitalAll() }}</span>
             <svg
-              class="absolute left-2 top-1/2 -translate-y-1/2"
+              class="absolute rtl:left-2 ltr:right-2 top-1/2 -translate-y-1/2"
               xmlns="http://www.w3.org/2000/svg"
               width="30"
               height="30"
@@ -27,12 +30,12 @@
         <button
           routerLink="/mortgage-indicators"
           routerLinkActive="active"
-          class="relative [&_span]:!static !bg-primary w-52 !shadow-2xl !text-white !border-2 !border-solid !border-secondary !rounded-xl hover:!border-white !h-14 text-2xl"
+          class="relative [&_span]:!static !bg-primary min-w-max w-72 !shadow-2xl !text-white !border-2 !border-solid !border-secondary !rounded-xl hover:!border-white !h-14 text-2xl"
           mat-button>
           <div>
-            <span>مؤشر الرهن</span>
+            <span>{{ lang.map.mortgage_indicator.toCapitalAll() }}</span>
             <svg
-              class="absolute left-2 top-1/2 -translate-y-1/2"
+              class="absolute rtl:left-2 ltr:right-2 top-1/2 -translate-y-1/2"
               xmlns="http://www.w3.org/2000/svg"
               width="30"
               height="30"
@@ -45,12 +48,12 @@
         </button>
         <button
           routerLink="/news"
-          class="relative [&_span]:!static !bg-primary w-52 !shadow-2xl !text-white !border-2 !border-solid !border-secondary !rounded-xl hover:!border-white !h-14 text-2xl"
+          class="relative [&_span]:!static !bg-primary min-w-max w-72 !shadow-2xl !text-white !border-2 !border-solid !border-secondary !rounded-xl hover:!border-white !h-14 text-2xl"
           mat-button>
           <div>
-            <span>الأخبار</span>
+            <span>{{ lang.map.news.toCapitalAll() }}</span>
             <svg
-              class="absolute left-2 top-1/2 -translate-y-1/2"
+              class="absolute rtl:left-2 ltr:right-2 top-1/2 -translate-y-1/2"
               xmlns="http://www.w3.org/2000/svg"
               width="30"
               height="30"

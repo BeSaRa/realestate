@@ -8,10 +8,22 @@
       </clipPath>
     </defs>
   </svg>
+  <svg width="0" class="fixed" height="0">
+    <defs>
+      <clipPath id="header-clip-path-ltr" clipPathUnits="objectBoundingBox">
+        <path
+          d="M1,0.9 C0.6,1,0.4,0.7,0,0.9 L0,0 H1
+        "></path>
+      </clipPath>
+    </defs>
+  </svg>
   <div class="bg-gradient-to-b from-transparent w-full h-full via-transparent to-100% to-white">
-    <div class="clipped-header bg-header absolute inset-0 bg-cover bg-center h-[450px] w-full"></div>
     <div
-      class="clipped-header bg-gradient-to-l from-primary/90 to-gray-800/90 absolute inset-0 bg-cover bg-center h-[450px] w-full pt-32 px-10">
+      [ngClass]="{ 'clipped-header': !lang.isLtr, 'clipped-header-ltr': lang.isLtr }"
+      class="bg-header ltr:bg-header-ltr absolute inset-0 bg-cover bg-center h-[450px] w-full"></div>
+    <div
+      [ngClass]="{ 'clipped-header': !lang.isLtr, 'clipped-header-ltr': lang.isLtr }"
+      class="bg-gradient-to-l ltr:bg-gradient-to-r from-primary/90 to-gray-800/90 absolute inset-0 bg-cover bg-center h-[450px] w-full pt-32 px-10">
       <ng-content></ng-content>
     </div>
   </div>
