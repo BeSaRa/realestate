@@ -83,8 +83,10 @@ export default class MortgageIndicatorsComponent implements OnInit {
 
   private _listenToLangChanges() {
     this.lang.change$.subscribe(() => {
-      this.listenToInputChanges();
-      this.setAxis();
+      setTimeout(() => {
+        this.listenToInputChanges();
+        this.setAxis();
+      }, 0);
     });
   }
 
@@ -314,8 +316,6 @@ export default class MortgageIndicatorsComponent implements OnInit {
           sell: [],
         } as { mort: KpiContract[]; sell: KpiContract[] }
       );
-
-    console.log(mortCounts.mort);
 
     this.mortCountChart
       .updateOptions({
