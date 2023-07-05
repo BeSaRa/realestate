@@ -1,8 +1,9 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, inject } from '@angular/core';
 import { CommonModule, NgOptimizedImage } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
 import { News } from '@models/news';
 import { RouterModule } from '@angular/router';
+import { TranslationService } from '@services/translation.service';
 
 @Component({
   selector: 'app-news-item',
@@ -14,4 +15,6 @@ import { RouterModule } from '@angular/router';
 export class NewsItemComponent {
   @Input({ required: true }) newsItemData!: News;
   @Input() type: 'concise' | 'full' = 'full';
+
+  lang = inject(TranslationService);
 }

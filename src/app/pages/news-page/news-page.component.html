@@ -1,11 +1,12 @@
 <app-extra-header class="flex -mt-32 relative text-white text-center">
   <div class="h-60 flex flex-col justify-center" id="logo-side">
-    <h1 class="text-5xl font-semibold">المنصة العقارية لدولة قطر</h1>
+    <h1 class="text-5xl font-semibold">{{ lang.map.qatar_real_estate_platform.toCapitalAll() }}</h1>
     <h2 class="text-3xl font-semibold">
-      Qatar Real Estate Platform - <span class="text-gray-400 font-normal">(تشغيل تجريبي)</span>
+      {{ lang.toggleMap.qatar_real_estate_platform.toCapitalAll() }} -
+      <span class="text-gray-400 font-normal">({{ lang.map.trial_run.toCapitalAll() }})</span>
     </h2>
   </div>
 </app-extra-header>
 <div class="content-wrapper p-10">
-  <app-news-list title="الأخبار" [newsData]="(newsData | async) ?? []" />
+  <app-news-list [title]="lang.map.news.toCapital()" [newsData]="(newsData | async) ?? []" />
 </div>

@@ -1,3 +1,4 @@
+import '@utils/prototypes/custom-prototypes';
 import { Component, HostListener, inject } from '@angular/core';
 import { CommonModule, registerLocaleData } from '@angular/common';
 import { RouterOutlet } from '@angular/router';
@@ -27,11 +28,9 @@ import { TranslationService } from '@services/translation.service';
 })
 export class AppComponent {
   stickyService = inject(StickyService);
-  translation = inject(TranslationService);
 
   constructor() {
     registerLocaleData(localeAr, 'ar');
-    this.translation.load().subscribe(console.log);
   }
 
   @HostListener('window:scroll')

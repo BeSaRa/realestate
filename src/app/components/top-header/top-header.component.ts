@@ -5,9 +5,10 @@ import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { NewsItemComponent } from '@components/news-item/news-item.component';
-import { RelatedNewsListComponent } from '@components/related-news-list/related-news-list.component';
+import { LangContract } from '@contracts/lang-contract';
 import { News } from '@models/news';
 import { NewsService } from '@services/news.service';
+import { TranslationService } from '@services/translation.service';
 import { Subject, debounceTime, takeUntil, tap } from 'rxjs';
 
 @Component({
@@ -33,9 +34,11 @@ export class TopHeaderComponent implements OnInit, OnDestroy {
   destroy$: Subject<void> = new Subject<void>();
 
   newsService = inject(NewsService);
+  lang = inject(TranslationService);
 
   ngOnInit(): void {
     this._listenToSearchChanges();
+    this.onFocus(true);
   }
 
   private _listenToSearchChanges() {
@@ -44,7 +47,7 @@ export class TopHeaderComponent implements OnInit, OnDestroy {
         takeUntil(this.destroy$),
         debounceTime(200),
         tap((searchText) => {
-          if (!searchText) this.filteredNews = [];
+          if (!searchText) this.filteredNews = this.news;
           else
             this.filteredNews = this.news.filter((newsItem) =>
               newsItem.title.toLowerCase().includes(searchText.toLowerCase())
@@ -54,19 +57,26 @@ export class TopHeaderComponent implements OnInit, OnDestroy {
       .subscribe();
   }
 
-  onFocus() {
+  onFocus(isInit = false) {
     this.newsService
       .load()
       .pipe(
         takeUntil(this.destroy$),
         tap((news) => (this.news = news)),
-        tap((news) => (this.filteredNews = news))
+        tap((news) => {
+          if (isInit) this.filteredNews = news;
+        })
       )
       .subscribe();
   }
 
   toggleFilter() {
     document.documentElement.classList.toggle('root-filter');
+  }
+
+  changeLang(event: Event) {
+    event.preventDefault();
+    this.lang.toggleLang();
   }
 
   ngOnDestroy(): void {

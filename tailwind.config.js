@@ -19,9 +19,12 @@ module.exports = {
       },
       backgroundImage: {
         header: "url(assets/images/header-bg.jpg)",
+        "header-ltr": "url(assets/images/header-bg-ltr.jpg)",
         footer: "url(assets/images/footer-bg.png)",
+        "footer-ltr": "url(assets/images/footer-bg-ltr.png)",
         pattern: "url(assets/images/pattern.png)",
         banner: "url(assets/images/banner.png)",
+        "banner-ltr": "url(assets/images/banner-ltr.png)",
         news: "url(assets/images/news-image.png)",
       },
     },

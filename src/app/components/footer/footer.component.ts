@@ -1,7 +1,8 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { CommonModule, NgOptimizedImage } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
 import { RouterModule } from '@angular/router';
+import { TranslationService } from '@services/translation.service';
 
 @Component({
   selector: 'app-footer',
@@ -10,4 +11,6 @@ import { RouterModule } from '@angular/router';
   templateUrl: './footer.component.html',
   styleUrls: ['./footer.component.scss'],
 })
-export class FooterComponent {}
+export class FooterComponent {
+  lang = inject(TranslationService);
+}

@@ -11,6 +11,7 @@ import { InquiriesComponent } from '@components/inquiries/inquiries.component';
 import { NewsService } from '@services/news.service';
 import { RouterModule } from '@angular/router';
 import { InwaniComponent } from '@components/inwani/inwani.component';
+import { TranslationService } from '@services/translation.service';
 
 @Component({
   selector: 'app-landing-page',
@@ -35,4 +36,6 @@ import { InwaniComponent } from '@components/inwani/inwani.component';
 export default class LandingPageComponent {
   newsService = inject(NewsService);
   newsData = this.newsService.load({ limit: 4 });
+
+  lang = inject(TranslationService);
 }

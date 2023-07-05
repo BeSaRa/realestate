@@ -1,8 +1,9 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, inject } from '@angular/core';
 import { CommonModule, NgOptimizedImage } from '@angular/common';
 import { Page } from '@models/page';
 import { ExtraHeaderComponent } from '@components/extra-header/extra-header.component';
 import { SafeHtmlPipe } from '@pipes/safe-html.pipe';
+import { TranslationService } from '@services/translation.service';
 
 @Component({
   selector: 'app-page',
@@ -13,4 +14,6 @@ import { SafeHtmlPipe } from '@pipes/safe-html.pipe';
 })
 export default class PageComponent {
   @Input() pageData!: Page;
+
+  lang = inject(TranslationService);
 }

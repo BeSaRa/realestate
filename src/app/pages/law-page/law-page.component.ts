@@ -3,6 +3,7 @@ import { Component, inject } from '@angular/core';
 import { ExtraHeaderComponent } from '@components/extra-header/extra-header.component';
 import { LawListComponent } from '@components/law-list/law-list.component';
 import { LawService } from '@services/law.service';
+import { TranslationService } from '@services/translation.service';
 
 @Component({
   selector: 'app-law-page',
@@ -14,4 +15,6 @@ import { LawService } from '@services/law.service';
 export default class LawPageComponent {
   lawService = inject(LawService);
   lawData$ = this.lawService.load();
+
+  lang = inject(TranslationService);
 }
