@@ -50,4 +50,11 @@ export interface LangKeysContract {
   average_price_per_square_foot_of_vacant_land_in_doha_since_the_beginning_of_the_year_until_now: string;
   average_price_per_square_foot_of_villas_in_doha_since_the_beginning_of_the_year_until_now: string;
   there_are_no_matching_results: string;
+  add_translation: string;
+  save: string;
+  add: string;
+  close: string;
+  localization_key: string;
+  arabic_translation: string;
+  english_translation: string;
 }

@@ -10,6 +10,8 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { ChatGptComponent } from '@components/chat-gpt/chat-gpt.component';
 import { TranslationService } from '@services/translation.service';
+import { MatDialog } from '@angular/material/dialog';
+import { TranslationPopupComponent } from '@components/translation-popup/translation-popup.component';
 
 @Component({
   selector: 'app-root',
@@ -28,6 +30,7 @@ import { TranslationService } from '@services/translation.service';
 })
 export class AppComponent {
   stickyService = inject(StickyService);
+  dialog = inject(MatDialog);
 
   constructor() {
     registerLocaleData(localeAr, 'ar');
@@ -36,5 +39,10 @@ export class AppComponent {
   @HostListener('window:scroll')
   windowScroll(): void {
     this.stickyService.isSticky.set(window.scrollY > 120);
+  }
+
+  @HostListener('window:keydown.control.alt.a')
+  openTranslationPopup() {
+    this.dialog.open(TranslationPopupComponent);
   }
 }

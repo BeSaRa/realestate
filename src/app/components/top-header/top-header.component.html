@@ -62,7 +62,9 @@
       <a mat-button (click)="$event.preventDefault()" href="#">{{ lang.map.staff_login.toCapitalAll() }}</a>
     </li>
     <li>
-      <a mat-button (click)="changeLang($event)" href="#">{{ lang.getCurrent().toggleTo.toUpperCase() }}</a>
+      <a mat-button (click)="changeLang($event)" href="#">{{
+        lang.getCurrent().toggleTo.substring(0, 2).toUpperCase()
+      }}</a>
     </li>
   </ul>
   <!-- top-header-menu -->
