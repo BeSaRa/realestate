@@ -1,3 +1,5 @@
+import { NgModel } from '@angular/forms';
+
 export function objectHasOwnProperty<O, P extends PropertyKey>(
   object: O,
   property: P
@@ -40,4 +42,8 @@ export function formatNumber(num: number, precision = 1): string | number {
     return (num / found.threshold).toFixed(precision) + found.suffix;
   }
   return num;
+}
+
+export function isNgModel(control: unknown): control is NgModel {
+  return control instanceof NgModel;
 }

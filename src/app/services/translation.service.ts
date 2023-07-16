@@ -4,7 +4,7 @@ import { inject, Injectable, OnInit } from '@angular/core';
 import { LangContract } from '@contracts/lang-contract';
 import { LangKeysContract } from '@contracts/lang-keys-contract';
 import { ServiceContract } from '@contracts/service-contract';
-import { TranslationContract } from '@contracts/translation-contract';
+import { TranslationAddContract, TranslationContract } from '@contracts/translation-contract';
 import { LangChangeProcess } from '@enums/lang-change-process';
 import { LangCodes } from '@enums/lang-codes';
 import { RegisterServiceMixin } from '@mixins/register-service-mixin';
@@ -46,7 +46,7 @@ export class TranslationService extends RegisterServiceMixin(class {}) implement
     return { ...acc, [item.code]: item };
   }, {} as Record<LangCodes, LangContract>);
 
-  private current: LangContract = this.languages[0];
+  private current: LangContract = this.languages[1];
   isLtr = this.current.direction === 'ltr';
 
   private change = new BehaviorSubject<LangContract>(this.current);
@@ -58,6 +58,13 @@ export class TranslationService extends RegisterServiceMixin(class {}) implement
   constructor() {
     super();
     this.setDirection(this.current.direction);
+  }
+
+  add(translations: TranslationAddContract[]) {
+    return this.http
+      .post<{ data: TranslationContract[] }>(this.urlService.URLS.TRANSLATION, translations)
+      .pipe(map((res) => res.data))
+      .pipe(tap(this.prepareTranslations));
   }
 
   load(): Observable<TranslationContract[]> {

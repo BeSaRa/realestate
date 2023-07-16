@@ -1,4 +1,4 @@
 export enum LangCodes {
-  AR = 'ar',
-  EN = 'en',
+  AR = 'ar-SA',
+  EN = 'en-US',
 }
