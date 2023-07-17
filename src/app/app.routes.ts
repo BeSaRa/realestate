@@ -1,5 +1,6 @@
 import { Routes } from '@angular/router';
 import { Pages } from '@enums/pages';
+import { lawResolver } from '@resolvers/law.resolver';
 import { newsItemResolver } from '@resolvers/news-item.resolver';
 import { pageResolver } from '@resolvers/page.resolver';
 
@@ -24,6 +25,11 @@ export const routes: Routes = [
   {
     path: 'laws',
     loadComponent: () => import('./pages/law-page/law-page.component'),
+  },
+  {
+    path: 'laws/:id',
+    loadComponent: () => import('./pages/law-details-page/law-details-page.component'),
+    resolve: { lawData: lawResolver },
   },
   {
     path: 'sell-indicators',

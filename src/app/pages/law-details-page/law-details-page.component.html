@@ -1,0 +1,51 @@
+<app-extra-header class="flex -mt-32 relative text-white text-center">
+  <div class="h-60 flex flex-col justify-center" id="logo-side">
+    <h1 class="text-5xl font-semibold">{{ lang.map.qatar_real_estate_platform.toCapitalAll() }}</h1>
+    <h2 class="text-3xl font-semibold">
+      {{ lang.toggleMap.qatar_real_estate_platform.toCapitalAll() }} -
+      <span class="text-gray-400 font-normal">({{ lang.map.trial_run.toCapitalAll() }})</span>
+    </h2>
+  </div>
+</app-extra-header>
+
+<div class="content-wrapper p-10">
+  <h2 class="heading text-3xl self-start text-primary border-secondary font-semibold inline-block">
+    {{ lang.map.law_details.toCapitalAll() }}
+  </h2>
+  <div class="flex justify-between items-center gap-20 my-12">
+    <div class="flex-1 bg-sand p-10">
+      <h3 class="mb-1 text-2xl text-primary font-bold">{{ lawData.title }}</h3>
+      <div class="text-lg text-gray-500">
+        <p>سنة الإصدار: {{ lawData.issue_date | date : "yyyy" }}</p>
+        <p>رقم القانون: {{ lawData.law_number }}</p>
+      </div>
+    </div>
+    <div class="flex flex-col w-30 items-center">
+      <div class="h-24 overflow-hidden text-primary rounded-lg">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-24 w-24" viewBox="0 0 14 14">
+          <g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M9.5 1.5H11a1 1 0 0 1 1 1v10a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1v-10a1 1 0 0 1 1-1h1.5" />
+            <rect width="5" height="2.5" x="4.5" y=".5" rx="1" />
+            <path d="M4.5 5.5h5M4.5 8h5m-5 2.5h5" />
+          </g>
+        </svg>
+      </div>
+      <a
+        class="bg-primary hover:bg-secondary transition text-white mt-2 px-2 py-1 rounded-md"
+        [href]="lawData.fileUrl"
+        target="_blank">
+        {{ lang.map.download_file.toCapital() }}
+      </a>
+    </div>
+  </div>
+  <mat-accordion *ngIf="lawData.articles">
+    <mat-expansion-panel *ngFor="let article of lawData.articles">
+      <mat-expansion-panel-header>
+        <mat-panel-title class="text-primary text-xl font-semibold">{{ article.title }}</mat-panel-title>
+      </mat-expansion-panel-header>
+      <ng-template matExpansionPanelContent>
+        <div [innerHTML]="article.content"></div>
+      </ng-template>
+    </mat-expansion-panel>
+  </mat-accordion>
+</div>

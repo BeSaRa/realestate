@@ -1,4 +1,6 @@
-<div class="flex items-center justify-between p-3 border border-primary/25 rounded-lg">
+<div
+  [routerLink]="['/laws', lawItemData.id]"
+  class="flex items-center justify-between p-3 border border-primary/25 rounded-lg hover:bg-sand cursor-pointer transition">
   <div class="flex items-center justify-start gap-5">
     <div class="h-24 overflow-hidden text-primary bg-sand rounded-lg">
       <svg xmlns="http://www.w3.org/2000/svg" class="h-24 w-24" viewBox="0 0 14 14">
@@ -10,7 +12,11 @@
       </svg>
     </div>
     <div>
-      <a [href]="lawItemData.fileUrl" class="mb-1 text-xl text-primary font-bold">{{ lawItemData.title }}</a>
+      <a
+        [routerLink]="['/laws', lawItemData.id]"
+        class="mb-1 text-xl text-primary hover:text-secondary transition font-bold"
+        >{{ lawItemData.title }}</a
+      >
       <div class="flex justify-start items-center gap-5 text-sm text-gray-500">
         <span>سنة الإصدار: {{ lawItemData.issue_date | date : "yyyy" }}</span>
         <span>رقم القانون: {{ lawItemData.law_number }}</span>

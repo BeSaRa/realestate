@@ -1,12 +1,13 @@
 import { CommonModule } from '@angular/common';
 import { Component, Input } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
+import { RouterModule } from '@angular/router';
 import { Law } from '@models/law';
 
 @Component({
   selector: 'app-law-item',
   standalone: true,
-  imports: [CommonModule, MatIconModule],
+  imports: [CommonModule, MatIconModule, RouterModule],
   templateUrl: './law-item.component.html',
   styleUrls: ['./law-item.component.scss'],
 })

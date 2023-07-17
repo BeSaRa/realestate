@@ -1,4 +1,5 @@
 import { BaseModel } from '@abstracts/base-model';
+import { ArticleContract } from '@contracts/article-contract';
 import { LawInterceptor } from '@model-interceptors/law-interceptor';
 import { LawService } from '@services/law.service';
 import { InterceptModel } from 'cast-response';
@@ -13,4 +14,5 @@ export class Law extends BaseModel<LawService> {
   law_number!: string;
   file!: string;
   fileUrl!: string;
+  articles?: ArticleContract[];
 }
