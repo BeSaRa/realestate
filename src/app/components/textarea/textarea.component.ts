@@ -6,7 +6,9 @@ import {
   inject,
   Injector,
   Input,
+  OnChanges,
   OnInit,
+  SimpleChanges,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { debounceTime, map, Observable, of, takeUntil } from 'rxjs';
@@ -39,8 +41,65 @@ import { ValidationErrorsComponent } from '@components/validation-errors/validat
 })
 export class TextareaComponent
   extends OnDestroyMixin(class {})
-  implements ControlValueAccessor, OnInit, AfterContentInit
+  implements ControlValueAccessor, OnInit, AfterContentInit, OnChanges
 {
+  @Input() disabled = false;
+  @Input() displayErrors = true;
+  @Input() name = generateUUID();
+  @Input() placeholder = '';
+  @Input() label = 'Please Provide Label';
+  @Input() labelColor = 'text-slate-700';
+  @Input() inputColor = 'text-slate-700';
+  @Input() bgColor = 'bg-white';
+  @Input() borderColor = 'border-slate-300';
+  @Input() placeholderColor = 'placeholder-slate-400';
+  @Input() caretColor = 'caret-black';
+  @Input() size: 'sm' | 'md' | 'lg' | 'xl' = 'md';
+  @Input() rows: string | number = 4;
+  @Input() marginBottom = 'mb-5';
+  @Input() noMargin = false;
+
+  @ContentChild(ControlDirective) template?: ControlDirective;
+
+  private injector = inject(Injector);
+  private cdr = inject(ChangeDetectorRef);
+
+  private ctrl!: NgControl | null;
+
+  control = new FormControl('');
+
+  hasCustomControl = false;
+
+  tailwindClass = `flex-auto outline-none rounded-md max-w-full
+     group-[.xl]/text-area-wrapper:text-xl group-[.lg]/text-area-wrapper:text-lg
+     group-[.md]/text-area-wrapper:text-base group-[.sm]/text-area-wrapper:text-sm
+     group-[.sm]/text-area-wrapper:px-2 group-[.sm]/text-area-wrapper:py-1
+     group-[.md]/text-area-wrapper:px-3 group-[.md]/text-area-wrapper:py-1.5
+     group-[.lg]/text-area-wrapper:px-4 group-[.lg]/text-area-wrapper:py-2
+     group-[.xl]/text-area-wrapper:px-5 group-[.xl]/text-area-wrapper:py-2.5`;
+
+  get errors(): Observable<ValidationErrors | null | undefined> {
+    return of(null).pipe(
+      debounceTime(200),
+      map(() => (this.ctrl?.dirty || this.ctrl?.touched ? this.ctrl?.errors : undefined))
+    );
+  }
+
+  ngOnInit(): void {
+    this.ctrl = this.injector.get(NgControl, null, {
+      self: true,
+      optional: true,
+    });
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['disabled'] && changes['disabled'].currentValue !== changes['disabled'].previousValue) {
+      (changes['disabled'].currentValue as boolean)
+        ? this.control.disable({ emitEvent: false })
+        : this.control.enable({ emitEvent: false });
+    }
+  }
+
   ngAfterContentInit(): void {
     this.hasCustomControl = !!this.template;
     Promise.resolve().then(() => {
@@ -54,61 +113,8 @@ export class TextareaComponent
     });
   }
 
-  tailwindClass =
-    'flex-auto outline-none group-[.lg]/text-area-wrapper:text-lg group-[.md]/text-area-wrapper:text-base group-[.sm]/text-area-wrapper:text-sm group-[.sm]/text-area-wrapper:px-2 group-[.sm]/text-area-wrapper:py-1 group-[.md]/text-area-wrapper:px-3 group-[.md]/text-area-wrapper:py-2 group-[.lg]/text-area-wrapper:px-5 group-[.lg]/text-area-wrapper:py-3';
-  @Input()
-  disabled = false;
-  @Input()
-  displayErrors = true;
-  @Input()
-  name = generateUUID();
-  @ContentChild(ControlDirective)
-  template?: ControlDirective;
-  @Input()
-  placeholder = '';
-  @Input()
-  label = 'Please Provide Label';
-  @Input()
-  labelColor = 'text-slate-700';
-  @Input()
-  inputColor = 'text-slate-700';
-  @Input()
-  size: 'sm' | 'md' | 'lg' = 'md';
-  @Input()
-  rows: string | number = 4;
-  @Input()
-  marginBottom = 'mb-5';
-  @Input()
-  noMargin = false;
-
-  private injector = inject(Injector);
-  private cdr = inject(ChangeDetectorRef);
-
-  private ctrl!: NgControl | null;
-
-  get errors(): Observable<ValidationErrors | null | undefined> {
-    return of(null).pipe(
-      debounceTime(200),
-      map(() => (this.ctrl?.dirty || this.ctrl?.touched ? this.ctrl?.errors : undefined))
-    );
-  }
-
   onChange!: (value: string | null) => void;
   onTouch!: () => void;
-
-  control = new FormControl('');
-  hasCustomControl = false;
-  // noinspection JSUnusedLocalSymbols
-  private values = this.control.valueChanges
-    .pipe(takeUntil(this.destroy$))
-    .subscribe((value) => this.onChange && this.onChange(value));
-
-  ngOnInit(): void {
-    this.ctrl = this.injector.get(NgControl, null, {
-      self: true,
-      optional: true,
-    });
-  }
 
   writeValue(value: string): void {
     this.control.setValue(value, { emitEvent: false });

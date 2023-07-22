@@ -1,63 +1,84 @@
 .btn {
-  @apply flex gap-2 items-center disabled:text-white/70 px-4 py-2 rounded outline-0 focus:ring-2 ring-offset-1 text-white;
-}
-
-.btn.md {
-  @apply text-base px-3 py-2;
+  @apply flex gap-2 items-center disabled:text-white/70 px-4 py-2 rounded outline-0 transition
+  [&.none]:hover:ring-1 [&.none-primary]:hover:ring-1 [&.active]:ring-1 focus:ring-1 ring-offset-1 text-white;
 }
 
 .btn.sm {
-  @apply text-xs px-2 py-1 focus:ring-1;
+  @apply text-sm px-2 py-1 [&.primary]:py-[5px] [&.secondary]:py-[5px];
+}
+
+.btn.md {
+  @apply text-base px-2.5 py-1.5 [&.primary]:py-[7px] [&.secondary]:py-[7px];
 }
 
 .btn.lg {
-  @apply text-lg px-5 py-3;
+  @apply text-xl px-3 py-2 focus:ring-2 [&.active]:ring-2 [&.none]:hover:ring-2 [&.none-primary]:hover:ring-2
+  [&.primary]:py-2.5 [&.secondary]:py-2.5;
+}
+
+.btn.xl {
+  @apply text-2xl px-3.5 py-2.5 focus:ring-2 [&.active]:ring-2 [&.none]:hover:ring-2 [&.none-primary]:hover:ring-2
+  [&.primary]:py-3 [&.secondary]:py-3;
 }
 
 .btn.primary {
-  @apply disabled:bg-primary/60 bg-primary/80 hover:bg-primary/90 active:bg-primary ring-primary/50;
+  @apply disabled:bg-primary/40 bg-primary hover:bg-primary/80 [&.active]:bg-primary ring-primary/50;
 }
 
 .btn.primary-outline {
-  @apply disabled:text-primary/30 disabled:bg-slate-100 disabled:border-primary/30 bg-white text-primary/70 hover:text-primary/80 active:text-primary border border-primary/50 focus:ring-primary/50;
-}
-
-.btn.success {
-  @apply disabled:bg-green-500/60 bg-green-500/80 hover:bg-green-500/90 active:bg-green-500 ring-green-500/50;
-}
-
-.btn.success-outline {
-  @apply disabled:text-green-500/30 disabled:bg-slate-100 disabled:border-green-500/30 bg-white text-green-500/70 hover:text-green-500/80 active:text-green-500 border border-green-500/50 focus:ring-green-500/50;
-}
-
-.btn.error {
-  @apply disabled:bg-red-500/60 bg-red-500/80 hover:bg-red-500/90 active:bg-red-500 ring-red-500/50;
-}
-
-.btn.error-outline {
-  @apply disabled:text-red-500/30 disabled:bg-slate-100 disabled:border-red-500/30 bg-white text-red-500/70 hover:text-red-500/80 active:text-red-500 border border-red-500/50 focus:ring-red-500/50;
-}
-
-.btn.info {
-  @apply disabled:bg-sky-500/60 bg-sky-500/80 hover:bg-sky-500/90 active:bg-sky-500 ring-sky-500/50;
-}
-
-.btn.info-outline {
-  @apply disabled:text-sky-500/30 disabled:bg-slate-100 disabled:border-sky-500/30 bg-white text-sky-500/70 hover:text-sky-500/80 active:text-sky-500 border border-sky-500/50 focus:ring-sky-500/50;
-}
-
-.btn.warning {
-  @apply disabled:bg-yellow-500/60 bg-yellow-500/80 hover:bg-yellow-500/90 active:bg-yellow-500 ring-yellow-500/50;
-}
-
-.btn.warning-outline {
-  @apply disabled:text-yellow-500/30 disabled:bg-slate-100 disabled:border-yellow-500/30 bg-white text-yellow-500/70 hover:text-yellow-500/80 active:text-yellow-500 border border-yellow-500/50 focus:ring-yellow-500/50;
+  @apply disabled:text-primary/40 disabled:bg-slate-100/10 disabled:border-primary/40 bg-transparent text-primary
+  hover:text-primary/70 [&.active]:text-primary border [&.lg]:border-2 [&.xl]:border-2 border-primary
+  hover:border-primary/70 ring-primary/50;
 }
 
 .btn.secondary {
-  @apply disabled:bg-secondary/60 bg-secondary/80 hover:bg-secondary/90 active:bg-secondary ring-secondary/50;
+  @apply disabled:bg-secondary/40 bg-secondary hover:bg-secondary/80 [&.active]:bg-secondary ring-secondary/50;
 }
 
 .btn.secondary-outline {
-  @apply disabled:text-secondary/30 disabled:bg-slate-100 disabled:border-secondary/30 bg-white text-secondary/70 hover:text-secondary/80 active:text-secondary border border-secondary/50 focus:ring-secondary/50;
+  @apply disabled:text-secondary/40 disabled:bg-slate-100/10 disabled:border-secondary/40 bg-transparent text-secondary
+  hover:text-secondary/70 [&.active]:text-secondary border [&.lg]:border-2 [&.xl]:border-2 border-secondary
+  hover:border-secondary/70 ring-secondary/50;
+}
+
+.btn.none {
+  @apply disabled:bg-slate-100/10 disabled:text-white/30 bg-transparent
+  hover:bg-white/5 [&.active]:bg-white/5 ring-white;
+}
+
+.btn.none-primary {
+  @apply disabled:bg-slate-100/10 disabled:text-primary/40 bg-transparent text-primary
+  hover:bg-primary/5 [&.active]:bg-primary/5 ring-primary;
+}
+
+.with-icon {
+  @apply flex justify-between items-center w-full;
+}
+
+.sm .with-icon {
+  @apply gap-2;
+}
+.md .with-icon {
+  @apply gap-3;
+}
+.lg .with-icon {
+  @apply gap-4;
+}
+.xl .with-icon {
+  @apply gap-5;
+}
+
+.sm .btn-icon {
+  @apply w-5;
+}
+.md .btn-icon {
+  @apply w-6;
+}
+.lg .btn-icon {
+  @apply w-7 ltr:-translate-x-1/2 rtl:translate-x-1/2;
+  transform: scale(1.1) !important;
+}
+.xl .btn-icon {
+  @apply w-7 ltr:-translate-x-3 rtl:translate-x-3;
+  transform: scale(1.4) !important;
 }

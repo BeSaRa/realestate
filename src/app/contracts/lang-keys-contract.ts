@@ -59,4 +59,6 @@ export interface LangKeysContract {
   localization_key: string;
   arabic_translation: string;
   english_translation: string;
+  required_field: string;
+  filter: string;
 }

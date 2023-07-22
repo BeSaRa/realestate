@@ -1,9 +1,9 @@
-import { ChangeDetectionStrategy, Component, Input, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { ChangeDetectionStrategy, Component, Input, inject } from '@angular/core';
 import { ValidationErrors } from '@angular/forms';
 import { ValidationMessages, ValidationMessagesType } from '@constants/validation-messages';
-import { TranslationService } from '@services/translation.service';
 import { LangKeysContract } from '@contracts/lang-keys-contract';
+import { TranslationService } from '@services/translation.service';
 
 @Component({
   selector: 'app-validation-errors',

@@ -1,0 +1,105 @@
+<app-extra-header class="flex -mt-32 relative text-white text-center">
+  <div class="h-60 flex flex-col justify-center" id="logo-side">
+    <h1 class="text-5xl font-semibold">{{ lang.map.qatar_real_estate_platform.toCapitalAll() }}</h1>
+    <h2 class="text-3xl font-semibold">
+      {{ lang.toggleMap.qatar_real_estate_platform.toCapitalAll() }} -
+      <span class="text-gray-400 font-normal">({{ lang.map.trial_run.toCapitalAll() }})</span>
+    </h2>
+  </div>
+</app-extra-header>
+
+<div class="content-wrapper grid grid-cols-4 gap-5 p-10">
+  <div>
+    <app-input label="input-sm" placeholder="input-sm" size="sm"></app-input>
+    <app-input label="input-md" placeholder="input-md" size="md"></app-input>
+    <app-input [disabled]="true" label="input-lg" placeholder="input-lg" size="lg"></app-input>
+    <app-input label="input-xl" placeholder="input-xl" size="xl"></app-input>
+
+    <app-input label="input-sm" placeholder="input-sm" size="sm"
+      ><mat-icon class="mx-2" appInputSuffix svgIcon="magnify"></mat-icon
+    ></app-input>
+    <app-input label="input-md" placeholder="input-md" size="md"
+      ><mat-icon class="mx-2" appInputSuffix svgIcon="magnify"></mat-icon
+    ></app-input>
+    <app-input [disabled]="true" label="input-lg" placeholder="input-lg" size="lg"
+      ><mat-icon class="mx-2" appInputSuffix svgIcon="magnify"></mat-icon
+    ></app-input>
+    <app-input label="input-xl" placeholder="input-xl" size="xl"
+      ><mat-icon class="mx-2" appInputSuffix svgIcon="magnify"></mat-icon
+    ></app-input>
+  </div>
+
+  <div>
+    <app-textarea label="textarea-sm" placeholder="textarea-sm" size="sm"></app-textarea>
+    <app-textarea label="textarea-md" placeholder="textarea-md" size="md"></app-textarea>
+    <app-textarea [disabled]="true" label="textarea-lg" placeholder="textarea-lg" size="lg"></app-textarea>
+    <app-textarea label="textarea-xl" placeholder="textarea-xl" size="xl"></app-textarea>
+  </div>
+  <div class="grid grid-cols-2 gap-5">
+    <div class="flex flex-col gap-4">
+      <app-button buttonStyle="primary" icon="RELOAD" size="sm">primary-sm</app-button>
+      <app-button buttonStyle="primary" icon="RELOAD" size="md">primary-md</app-button>
+      <app-button buttonStyle="primary" icon="RELOAD" [disabled]="true" size="lg">primary-lg</app-button>
+      <app-button buttonStyle="primary" icon="RELOAD" size="xl">primary-xl</app-button>
+    </div>
+    <div class="flex flex-col gap-4">
+      <app-button buttonStyle="primary-outline" icon="RELOAD" size="sm">primary-sm</app-button>
+      <app-button buttonStyle="primary-outline" icon="RELOAD" size="md">primary-md</app-button>
+      <app-button buttonStyle="primary-outline" icon="RELOAD" [disabled]="true" size="lg">primary-lg</app-button>
+      <app-button buttonStyle="primary-outline" icon="RELOAD" size="xl">primary-xl</app-button>
+    </div>
+    <div class="flex flex-col gap-4">
+      <app-button buttonStyle="secondary" size="sm">secondary-sm</app-button>
+      <app-button buttonStyle="secondary" size="md">secondary-md</app-button>
+      <app-button buttonStyle="secondary" [disabled]="true" size="lg">secondary-lg</app-button>
+      <app-button buttonStyle="secondary" size="xl">secondary-xl</app-button>
+    </div>
+    <div class="flex flex-col gap-4">
+      <app-button buttonStyle="secondary-outline" size="sm">secondary-sm</app-button>
+      <app-button buttonStyle="secondary-outline" size="md">secondary-md</app-button>
+      <app-button buttonStyle="secondary-outline" [disabled]="true" size="lg">secondary-lg</app-button>
+      <app-button buttonStyle="secondary-outline" size="xl">secondary-xl</app-button>
+    </div>
+  </div>
+  <div>
+    <app-select-input
+      [options]="['aaa', 'bbb', 'ccc', 'ddd']"
+      label="select-sm"
+      placeholder="select-sm"
+      size="sm"></app-select-input>
+    <app-select-input
+      [options]="['aaa', 'bbb', 'ccc', 'ddd']"
+      label="select-md"
+      placeholder="select-md"
+      size="md"></app-select-input>
+    <app-select-input
+      [disabled]="true"
+      [options]="['aaa', 'bbb', 'ccc', 'ddd']"
+      label="select-lg"
+      placeholder="select-lg"
+      size="lg"></app-select-input>
+    <app-select-input
+      [options]="['aaa', 'bbb', 'ccc', 'ddd']"
+      label="select-xl"
+      placeholder="select-xl"
+      size="xl"></app-select-input>
+
+    <app-select-input [options]="['aaa', 'bbb', 'ccc', 'ddd']" label="select-sm" placeholder="select-sm" size="sm"
+      ><mat-icon class="mx-2" appInputSuffix svgIcon="magnify"></mat-icon
+    ></app-select-input>
+    <app-select-input [options]="['aaa', 'bbb', 'ccc', 'ddd']" label="select-md" placeholder="select-md" size="md"
+      ><mat-icon class="mx-2" appInputSuffix svgIcon="magnify"></mat-icon
+    ></app-select-input>
+    <app-select-input
+      [disabled]="true"
+      [options]="['aaa', 'bbb', 'ccc', 'ddd']"
+      label="select-lg"
+      placeholder="select-lg"
+      size="lg"
+      ><mat-icon class="mx-2" appInputSuffix svgIcon="magnify"></mat-icon
+    ></app-select-input>
+    <app-select-input [options]="['aaa', 'bbb', 'ccc', 'ddd']" label="select-xl" placeholder="select-xl" size="xl"
+      ><mat-icon class="mx-2" appInputSuffix svgIcon="magnify"></mat-icon
+    ></app-select-input>
+  </div>
+</div>

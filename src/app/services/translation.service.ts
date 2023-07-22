@@ -46,7 +46,7 @@ export class TranslationService extends RegisterServiceMixin(class {}) implement
     return { ...acc, [item.code]: item };
   }, {} as Record<LangCodes, LangContract>);
 
-  private current: LangContract = this.languages[1];
+  private current: LangContract = this.languages[0];
   isLtr = this.current.direction === 'ltr';
 
   private change = new BehaviorSubject<LangContract>(this.current);

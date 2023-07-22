@@ -1,8 +1,16 @@
 <button
   [disabled]="disabled"
   (click)="clickEvent($event)"
-  [ngClass]="buttonType"
-  class="flex items-center justify-center w-full btn {{ size }}">
-  <mat-icon *ngIf="inProgress" class="animate-spin duration-200 size-18" svgIcon="dots-circle"></mat-icon>
-  <ng-content></ng-content>
+  [ngClass]="{ active: isActive, 'cursor-not-allowed': disabled }"
+  class="flex items-center justify-center w-full btn {{ size }} {{ buttonStyle }}">
+  <mat-icon *ngIf="inProgress" class="animate-spin duration-200 size-18">dots-circle</mat-icon>
+  <div *ngIf="icon" class="with-icon">
+    <div><ng-container [ngTemplateOutlet]="content"></ng-container></div>
+    <mat-icon class="btn-icon" [svgIcon]="selectedIcon"></mat-icon>
+  </div>
+  <ng-container *ngIf="!icon" [ngTemplateOutlet]="content"></ng-container>
 </button>
+
+<ng-template #content>
+  <ng-content></ng-content>
+</ng-template>

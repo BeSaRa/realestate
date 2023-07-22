@@ -1,7 +1,16 @@
-import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  DoCheck,
+  ElementRef,
+  Input,
+  OnInit,
+  Renderer2,
+  inject,
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
-import { ButtonTypeContract } from '@contracts/button-type-contract';
+import { AppIcons, AppIconsType } from '@constants/app-icons';
 
 @Component({
   selector: 'app-button',
@@ -11,17 +20,26 @@ import { ButtonTypeContract } from '@contracts/button-type-contract';
   styleUrls: ['./button.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class ButtonComponent {
-  @Input()
-  disabled = false;
-  @Input()
-  inProgress = false;
-  @Input()
-  size: 'md' | 'sm' | 'lg' = 'md';
-  @Input()
-  buttonType: keyof ButtonTypeContract = 'primary';
+export class ButtonComponent implements DoCheck {
+  @Input() disabled = false;
+  @Input() inProgress = false;
+  @Input() size: 'sm' | 'md' | 'lg' | 'xl' = 'md';
+  @Input() buttonStyle: 'none' | 'none-primary' | 'primary' | 'primary-outline' | 'secondary' | 'secondary-outline' =
+    'none';
+  @Input() icon?: keyof AppIconsType;
+
+  host = inject(ElementRef);
+  isActive = false;
+
+  ngDoCheck(): void {
+    this.isActive = this.host.nativeElement.classList.contains('active');
+  }
 
   clickEvent($event: MouseEvent) {
     this.disabled && $event.stopPropagation();
+  }
+
+  get selectedIcon() {
+    return AppIcons[this.icon ?? 'RELOAD'];
   }
 }

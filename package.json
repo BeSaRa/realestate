@@ -26,6 +26,7 @@
     "@angular/platform-browser-dynamic": "^16.0.0",
     "@angular/platform-server": "^16.0.0",
     "@angular/router": "^16.0.0",
+    "@mdi/angular-material": "^7.2.96",
     "@nguniversal/express-engine": "^16.0.2",
     "apexcharts": "^3.40.0",
     "as-table": "^1.0.55",
@@ -33,6 +34,7 @@
     "currency.js": "^2.0.4",
     "express": "^4.15.2",
     "ng-apexcharts": "^1.7.6",
+    "ngx-mask": "^16.2.4",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0",
     "zone.js": "~0.13.0"

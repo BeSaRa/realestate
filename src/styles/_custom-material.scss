@@ -30,3 +30,7 @@
 :root {
   --mdc-theme-text-primary-on-background: theme("colors.primary");
 }
+
+.cdk-overlay-pane:has(> .app-select-input) {
+  @apply translate-x-3 translate-y-2.5 [&.mat-mdc-select-panel-above]:-translate-y-2.5;
+}

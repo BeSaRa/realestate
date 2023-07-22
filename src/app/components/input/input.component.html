@@ -1,15 +1,30 @@
+<!-- eslint-disable @angular-eslint/template/label-has-associated-control -->
 <label
-  [ngClass]="{ 'has-error': !!(errors | async) && displayErrors }"
+  [ngClass]="{
+    'has-error': !!(errors | async) && displayErrors,
+    'text-sm': size === 'sm',
+    'text-base': size === 'md',
+    'text-lg': size === 'lg',
+    'text-xl': size === 'xl',
+    'cursor-not-allowed': disabled,
+
+  }"
   class="group block relative {{ !noMargin ? marginBottom : '' }}">
   <span [ngClass]="labelColor" class="block font-medium">{{ label }}</span>
-  <div [ngClass]="size" class="group/input-wrapper input-form {{ inputColor }} flex items-center justify-start">
+  <div
+    [ngClass]="{ disabled: disabled }"
+    class="{{ size }} group/input-wrapper input-form {{ inputColor }} {{ bgColor }} {{
+      borderColor
+    }}  flex items-center justify-start">
     <ng-content select="[appInputPrefix]"></ng-content>
     <span
       [ngClass]="{ prefix: inputPrefix, suffix: inputSuffix }"
       class="peer absolute hidden pointer-events-none"></span>
     <ng-container *ngIf="!hasCustomControl">
       <input
-        [readonly]="disabled"
+        class="{{ disabled ? 'bg-slate-50' : bgColor }} {{ caretColor }} disabled:cursor-not-allowed {{
+          placeholderColor
+        }}"
         [ngClass]="tailwindClass"
         autocomplete="off"
         [type]="type"
