@@ -47,3 +47,14 @@ export function formatNumber(num: number, precision = 1): string | number {
 export function isNgModel(control: unknown): control is NgModel {
   return control instanceof NgModel;
 }
+
+export function isValidValue(value: unknown): boolean {
+  return typeof value === 'string' ? value.trim() !== '' : typeof value !== 'undefined' && value !== null;
+}
+
+export function hasValidLength(value: unknown): boolean {
+  if (!isValidValue(value)) {
+    return false;
+  }
+  return typeof value === 'string' || typeof value === 'number';
+}

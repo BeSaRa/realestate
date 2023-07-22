@@ -39,3 +39,30 @@ h6 {
 .heading {
   @apply border-b-2;
 }
+
+.input {
+  @apply w-full placeholder-primary/50 text-xl h-full outline-none pe-10 px-5 text-primary disabled:bg-gray-300;
+}
+
+.dialog-footer {
+  @apply border border-t p-4 space-x-4 rtl:space-x-reverse flex;
+}
+
+.dialog-header {
+  @apply p-4 bg-primary text-white flex justify-between items-center;
+  h1 {
+    @apply text-xl;
+  }
+}
+
+.dialog-content {
+  @apply p-4;
+}
+
+.dialog-container {
+  @apply max-w-full lg:min-w-[600px] md:min-w-[400px];
+}
+
+.close-btn {
+  @apply absolute rtl:left-0 ltr:right-0 mx-2;
+}

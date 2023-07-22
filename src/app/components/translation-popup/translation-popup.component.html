@@ -1,7 +1,7 @@
 <div class="dialog-container">
   <div class="dialog-header bg-primary">
     <h1>{{ lang.map.add_translation.toCapitalAll() }}</h1>
-    <app-icon-button tabindex="-1" mat-dialog-close class="close-btn" icon="close-circle"></app-icon-button>
+    <app-icon-button tabindex="-1" mat-dialog-close class="close-btn" icon="CLOSE"></app-icon-button>
   </div>
   <div class="dialog-content">
     <div class="grid grid-cols-2 gap-4 [&>*]:col-span-2">
@@ -13,7 +13,7 @@
     </div>
   </div>
   <div class="dialog-footer justify-end">
-    <app-button (click)="onAdd()" buttonType="primary">{{ lang.map.add.toCapital() }}</app-button>
-    <app-button mat-dialog-close buttonType="primary-outline">{{ lang.map.close.toCapital() }}</app-button>
+    <app-button (click)="onAdd()" buttonStyle="primary">{{ lang.map.add.toCapital() }}</app-button>
+    <app-button mat-dialog-close buttonStyle="primary-outline">{{ lang.map.close.toCapital() }}</app-button>
   </div>
 </div>

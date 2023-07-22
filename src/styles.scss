@@ -7,29 +7,22 @@
   filter: invert(1);
 }
 
-.input {
-  @apply w-full placeholder-primary/50 text-xl h-full outline-none pe-10 px-5 text-primary disabled:bg-gray-300;
+* {
+  //noinspection CssUnknownProperty
+  scrollbar-color: rgba(138, 21, 56, 0.5) rgba(162, 148, 117, 0.2);
+  //noinspection CssUnknownProperty
+  scrollbar-width: thin;
 }
 
-.dialog-footer {
-  @apply border border-t p-4 space-x-4 rtl:space-x-reverse flex;
+::-webkit-scrollbar {
+  width: 6px !important;
+  height: 6px !important;
 }
 
-.dialog-header {
-  @apply p-4 bg-primary text-white flex justify-between items-center;
-  h1 {
-    @apply text-xl;
-  }
+::-webkit-scrollbar-thumb {
+  background-color: rgba(138, 21, 56, 0.5);
 }
 
-.dialog-content {
-  @apply p-4;
-}
-
-.dialog-container {
-  @apply max-w-full lg:min-w-[600px] md:min-w-[400px];
-}
-
-.close-btn {
-  @apply absolute rtl:left-0 ltr:right-0 mx-2;
+::-webkit-scrollbar-track {
+  background: rgba(162, 148, 117, 0.2);
 }

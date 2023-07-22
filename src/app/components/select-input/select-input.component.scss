@@ -1,9 +1,10 @@
 .input-form {
   @apply w-full rounded-md overflow-hidden box-border border shadow-sm focus-within:outline-none focus-within:border-2
+  [&.disabled]:bg-slate-50 [&.disabled]:text-slate-500 [&.disabled_.mat-mdc-select-placeholder]:text-slate-500 [&.disabled]:border-slate-200 [&.disabled]:shadow-none
   group-[.has-error]:border-red-500 group-[.has-error]:text-red-600
   group-[.has-error]:focus-within:border-red-500 group-[.has-error]:focus-within:ring-red-500;
 }
 
-.input-form textarea:disabled {
-  @apply placeholder:text-slate-300;
+:host ::ng-deep .input-form.disabled .mat-mdc-select-placeholder {
+  @apply text-slate-300;
 }

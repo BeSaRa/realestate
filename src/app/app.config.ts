@@ -11,6 +11,8 @@ import { DataService } from '@services/data.service';
 import { TranslationService } from '@services/translation.service';
 import { TokenInterceptor } from './interceptors/token.interceptor';
 import { MatDialogModule } from '@angular/material/dialog';
+import { DomSanitizer } from '@angular/platform-browser';
+import { MatIconRegistry } from '@angular/material/icon';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -21,6 +23,14 @@ export const appConfig: ApplicationConfig = {
     {
       provide: HTTP_INTERCEPTORS,
       useClass: TokenInterceptor,
+      multi: true,
+    },
+    {
+      provide: APP_INITIALIZER,
+      useFactory: (registry: MatIconRegistry, domSanitizer: DomSanitizer) => {
+        return () => registry.addSvgIconSet(domSanitizer.bypassSecurityTrustResourceUrl('./assets/mdi/mdi.svg'));
+      },
+      deps: [MatIconRegistry, DomSanitizer],
       multi: true,
     },
     {

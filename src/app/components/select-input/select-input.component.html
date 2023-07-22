@@ -1,0 +1,58 @@
+<!-- eslint-disable @angular-eslint/template/interactive-supports-focus -->
+<!-- eslint-disable @angular-eslint/template/click-events-have-key-events -->
+<!-- eslint-disable-next-line @angular-eslint/template/interactive-supports-focus -->
+<label
+  (click)="delegateFocus()"
+  [for]="name"
+  [ngClass]="{
+    'has-error': !!(errors | async) && displayErrors,
+    'text-sm': size === 'sm',
+    'text-base': size === 'md',
+    'text-lg': size === 'lg',
+    'text-xl': size === 'xl',
+    'pointer-events-none': disabled,
+    'cursor-not-allowed': disabled,
+  }"
+  class="group block relative {{ !noMargin ? marginBottom : '' }}">
+  <span [ngClass]="labelColor" class="block font-medium">{{ label }}</span>
+  <div
+    [ngClass]="{ disabled: disabled }"
+    class="group/input-wrapper input-form {{ size }}  {{ bgColor }} {{ borderColor }}  flex items-center justify-start">
+    <ng-content select="[appInputPrefix]"></ng-content>
+    <span
+      [ngClass]="{ prefix: inputPrefix, suffix: inputSuffix }"
+      class="peer absolute hidden pointer-events-none"></span>
+    <mat-select
+      #selectInput
+      panelClass="app-select-input"
+      [disabled]="disabled"
+      [placeholder]="placeholder"
+      [formControl]="control"
+      (blur)="inputTouch()"
+      [id]="name"
+      [ngClass]="tailwindClass"
+      [multiple]="isMultiple">
+      <div class="px-2 pb-2" *ngIf="enableFilter">
+        <app-input
+          [formControl]="filterControl"
+          label=""
+          [displayErrors]="false"
+          [noMargin]="true"
+          [placeholder]="lang.map.filter"
+          ><mat-icon appInputSuffix class="mx-1 !h-10" svgIcon="magnify"></mat-icon
+        ></app-input>
+      </div>
+      <ng-container
+        *ngFor="let option of options | FilterArray : bindFilter : (filterTxt$ | async)"
+        [ngTemplateOutlet]="optionTemplate?.templateRef || defaultTemplate"
+        [ngTemplateOutletContext]="{ $implicit: option }"></ng-container>
+      <ng-template #defaultTemplate let-option>
+        <mat-option [value]="getBindValue(option)">{{ getBindLabel(option) }}</mat-option>
+      </ng-template>
+    </mat-select>
+    <ng-content select="[appInputSuffix]"></ng-content>
+  </div>
+  <ng-container *ngIf="displayErrors">
+    <app-validation-errors [errors]="errors | async"></app-validation-errors>
+  </ng-container>
+</label>

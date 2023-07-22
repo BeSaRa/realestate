@@ -39,13 +39,15 @@
     </div>
   </div>
   <mat-accordion *ngIf="lawData.articles">
-    <mat-expansion-panel *ngFor="let article of lawData.articles">
-      <mat-expansion-panel-header>
-        <mat-panel-title class="text-primary text-xl font-semibold">{{ article.title }}</mat-panel-title>
-      </mat-expansion-panel-header>
-      <ng-template matExpansionPanelContent>
-        <div [innerHTML]="article.content"></div>
-      </ng-template>
-    </mat-expansion-panel>
+    <div *ngFor="let article of lawData.articles" class="mb-2">
+      <mat-expansion-panel>
+        <mat-expansion-panel-header>
+          <mat-panel-title class="text-primary text-xl font-semibold">{{ article.title }}</mat-panel-title>
+        </mat-expansion-panel-header>
+        <ng-template matExpansionPanelContent>
+          <div [innerHTML]="article.content"></div>
+        </ng-template>
+      </mat-expansion-panel>
+    </div>
   </mat-accordion>
 </div>

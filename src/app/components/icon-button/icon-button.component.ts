@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
-// import { AppIcons, AppIconsType } from '@constants/app-icons';
+import { AppIcons, AppIconsType } from '@constants/app-icons';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { coerceBooleanProperty } from '@angular/cdk/coercion';
@@ -15,7 +15,7 @@ import { coerceBooleanProperty } from '@angular/cdk/coercion';
 })
 export class IconButtonComponent {
   @Input()
-  icon = 'reload';
+  icon: keyof AppIconsType = 'RELOAD';
   _disabled = false;
   @Input()
   tabindex = '1';
@@ -36,7 +36,7 @@ export class IconButtonComponent {
     }
   }
 
-  // get selectedIcon() {
-  //   return AppIcons[this.icon];
-  // }
+  get selectedIcon() {
+    return AppIcons[this.icon];
+  }
 }

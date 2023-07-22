@@ -1,7 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit, inject } from '@angular/core';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { ReactiveFormsModule, UntypedFormBuilder, Validators } from '@angular/forms';
+import { ReactiveFormsModule, UntypedFormBuilder } from '@angular/forms';
 import { MatDialogModule } from '@angular/material/dialog';
 import { ButtonComponent } from '@components/button/button.component';
 import { IconButtonComponent } from '@components/icon-button/icon-button.component';
@@ -10,6 +9,7 @@ import { TextareaComponent } from '@components/textarea/textarea.component';
 import { TranslationAddContract } from '@contracts/translation-contract';
 import { LangCodes } from '@enums/lang-codes';
 import { TranslationService } from '@services/translation.service';
+import { CustomValidators } from '@validators/custom-validators';
 
 @Component({
   selector: 'app-translation-popup',
@@ -31,9 +31,9 @@ export class TranslationPopupComponent implements OnInit {
   fb = inject(UntypedFormBuilder);
 
   form = this.fb.nonNullable.group({
-    localizationKey: ['', [Validators.required]],
-    arName: ['', [Validators.required]],
-    enName: ['', [Validators.required]],
+    localizationKey: ['', [CustomValidators.required]],
+    arName: ['', [CustomValidators.required]],
+    enName: ['', [CustomValidators.required]],
   });
 
   ngOnInit(): void {
