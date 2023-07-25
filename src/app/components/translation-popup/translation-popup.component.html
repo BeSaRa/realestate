@@ -5,11 +5,11 @@
   </div>
   <div class="dialog-content">
     <div class="grid grid-cols-2 gap-4 [&>*]:col-span-2">
-      <ng-container [formGroup]="form">
+      <div [formGroup]="form">
         <app-input formControlName="localizationKey" [label]="lang.map.localization_key.toCapital()"></app-input>
         <app-textarea formControlName="enName" [label]="lang.map.english_translation.toCapital()"></app-textarea>
         <app-textarea formControlName="arName" [label]="lang.map.arabic_translation.toCapital()"></app-textarea>
-      </ng-container>
+      </div>
     </div>
   </div>
   <div class="dialog-footer justify-end">

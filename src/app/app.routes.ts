@@ -40,6 +40,10 @@ export const routes: Routes = [
     loadComponent: () => import('@pages/mortgage-indicators/mortgage-indicators.component'),
   },
   {
+    path: 'rental-indicators',
+    loadComponent: () => import('@pages/rental-indicators-page/rental-indicators-page.component'),
+  },
+  {
     path: 'inputs',
     loadComponent: () => import('@pages/inputs-page/inputs-page.component'),
   },

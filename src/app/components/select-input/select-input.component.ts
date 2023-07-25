@@ -33,7 +33,7 @@ import { OptionTemplateDirective } from '@directives/option-template.directive';
 import { FilterArrayPipe } from '@pipes/filter-array.pipe';
 import { TranslationService } from '@services/translation.service';
 import { generateUUID, objectHasOwnProperty } from '@utils/utils';
-import { debounceTime, map, Observable, of, Subject } from 'rxjs';
+import { debounceTime, map, Observable, of, Subject, takeUntil } from 'rxjs';
 import { InputComponent } from '../input/input.component';
 
 @Component({
@@ -65,9 +65,9 @@ export class SelectInputComponent implements ControlValueAccessor, OnInit, OnCha
   @Input() size: 'sm' | 'md' | 'lg' | 'xl' = 'md';
   @Input() placeholder = '';
   @Input() label = 'Please Provide Label';
-  @Input() labelColor = 'text-slate-700';
+  @Input() labelColor = 'text-black';
   @Input() bgColor = 'bg-white';
-  @Input() borderColor = 'border-slate-300';
+  @Input() borderColor = 'border-black';
   @Input() marginBottom = 'mb-5';
   @Input() noMargin = false;
   @Input() isMultiple = false;
@@ -96,11 +96,15 @@ export class SelectInputComponent implements ControlValueAccessor, OnInit, OnCha
 
   filterControl = new FormControl('');
 
-  tailwindClass = `flex-auto rounded-md max-w-full outline-none px-3 py-1.5
+  tailwindClass = `flex-auto rounded-md max-w-full outline-none
     ltr:peer-[.suffix]:pr-0 rtl:peer-[.suffix]:pl-0
     ltr:peer-[.prefix]:pl-0 rtl:peer-[.prefix]:pr-0
     group-[.xl]/input-wrapper:!text-xl group-[.lg]/input-wrapper:!text-lg
-    group-[.md]/input-wrapper:!text-base group-[.sm]/input-wrapper:!text-sm`;
+    group-[.md]/input-wrapper:!text-base group-[.sm]/input-wrapper:!text-sm
+    group-[.sm]/input-wrapper:px-1.5 group-[.sm]/input-wrapper:py-0.5
+    group-[.md]/input-wrapper:px-2 group-[.md]/input-wrapper:py-1
+    group-[.lg]/input-wrapper:px-3 group-[.lg]/input-wrapper:py-1.5
+    group-[.xl]/input-wrapper:px-4 group-[.xl]/input-wrapper:py-2`;
 
   get filterTxt$() {
     return this.filterControl.valueChanges;
@@ -118,6 +122,10 @@ export class SelectInputComponent implements ControlValueAccessor, OnInit, OnCha
       self: true,
       optional: true,
     });
+    this.control.valueChanges
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((value) => this.onChange && this.onChange(value));
+    this._onDisabled();
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -135,6 +143,7 @@ export class SelectInputComponent implements ControlValueAccessor, OnInit, OnCha
       this.selectInput?.options.reset(options);
       this.selectInput?.options.notifyOnChanges();
     });
+    this._changeSelectArrow();
   }
 
   onChange!: (value: string | null) => void;
@@ -155,6 +164,7 @@ export class SelectInputComponent implements ControlValueAccessor, OnInit, OnCha
   setDisabledState?(isDisabled: boolean): void {
     this.disabled = isDisabled;
     this.disabled ? this.control.disable({ emitEvent: false }) : this.control.enable({ emitEvent: false });
+    this._onDisabled();
   }
 
   inputTouch() {
@@ -162,8 +172,8 @@ export class SelectInputComponent implements ControlValueAccessor, OnInit, OnCha
   }
 
   delegateFocus() {
-    const select = 'mat-select';
-    this.elementRef.nativeElement.querySelector(select).focus();
+    (this.selectInput?._elementRef.nativeElement as HTMLElement).focus();
+    this.selectInput?.open();
   }
 
   getBindValue(option: unknown): unknown {
@@ -188,6 +198,34 @@ export class SelectInputComponent implements ControlValueAccessor, OnInit, OnCha
       : this.bindLabel && typeof this.bindLabel === 'function'
       ? this.bindLabel(option)
       : option;
+  }
+
+  compareOptionsWith(value1: unknown, value2: unknown) {
+    return value1 == value2;
+  }
+
+  private _changeSelectArrow() {
+    const selectArrowElement = (this.elementRef.nativeElement as HTMLElement).querySelector('.mat-mdc-select-arrow');
+    const width = this.size == 'sm' ? '14px' : this.size == 'md' ? '17px' : this.size == 'lg' ? '20px' : '24px';
+    if (selectArrowElement) {
+      selectArrowElement.innerHTML = `
+      <svg viewBox="0 0 24 24" class="font-light" width="${width}" height="${width}" focusable="false">
+        <title>chevron-down-circle-outline</title>
+        <path d="M22,12A10,10 0 0,1 12,22A10,10 0 0,1 2,12A10,10 0 0,1 12,2A10,10 0 0,1 22,12M20,12A8,8 0 0,0 12,4A8,8 0 0,0 4,12A8,8 0 0,0 12,20A8,8 0 0,0 20,12M6,10L12,16L18,10L16.6,8.6L12,13.2L7.4,8.6L6,10Z" />
+      </svg>
+    `;
+    }
+  }
+
+  private _onDisabled() {
+    const selectArrowElement = (this.elementRef.nativeElement as HTMLElement).querySelector('.mat-mdc-select-arrow');
+    if (this.disabled) {
+      selectArrowElement?.classList.remove(this.labelColor);
+      selectArrowElement?.classList.add('text-slate-300');
+    } else {
+      selectArrowElement?.classList.remove('text-slate-300');
+      selectArrowElement?.classList.add(this.labelColor);
+    }
   }
 
   ngOnDestroy(): void {

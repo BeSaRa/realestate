@@ -48,11 +48,11 @@ export class TextareaComponent
   @Input() name = generateUUID();
   @Input() placeholder = '';
   @Input() label = 'Please Provide Label';
-  @Input() labelColor = 'text-slate-700';
-  @Input() inputColor = 'text-slate-700';
+  @Input() labelColor = 'text-black';
+  @Input() inputColor = 'text-black';
   @Input() bgColor = 'bg-white';
-  @Input() borderColor = 'border-slate-300';
-  @Input() placeholderColor = 'placeholder-slate-400';
+  @Input() borderColor = 'border-black';
+  @Input() placeholderColor = 'placeholder-black/50';
   @Input() caretColor = 'caret-black';
   @Input() size: 'sm' | 'md' | 'lg' | 'xl' = 'md';
   @Input() rows: string | number = 4;
@@ -90,6 +90,9 @@ export class TextareaComponent
       self: true,
       optional: true,
     });
+    this.control.valueChanges
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((value) => this.onChange && this.onChange(value));
   }
 
   ngOnChanges(changes: SimpleChanges): void {

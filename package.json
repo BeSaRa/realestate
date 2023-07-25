@@ -34,6 +34,7 @@
     "currency.js": "^2.0.4",
     "express": "^4.15.2",
     "ng-apexcharts": "^1.7.6",
+    "ngx-countup": "^13.1.0",
     "ngx-mask": "^16.2.4",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0",

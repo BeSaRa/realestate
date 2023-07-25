@@ -14,7 +14,7 @@
     <app-input label="input-md" placeholder="input-md" size="md"></app-input>
     <app-input [disabled]="true" label="input-lg" placeholder="input-lg" size="lg"></app-input>
     <app-input label="input-xl" placeholder="input-xl" size="xl"></app-input>
-
+    <br /><br />
     <app-input label="input-sm" placeholder="input-sm" size="sm"
       ><mat-icon class="mx-2" appInputSuffix svgIcon="magnify"></mat-icon
     ></app-input>
@@ -48,17 +48,31 @@
       <app-button buttonStyle="primary-outline" icon="RELOAD" [disabled]="true" size="lg">primary-lg</app-button>
       <app-button buttonStyle="primary-outline" icon="RELOAD" size="xl">primary-xl</app-button>
     </div>
-    <div class="flex flex-col gap-4">
+    <div class="flex flex-col gap-4 mt-10">
       <app-button buttonStyle="secondary" size="sm">secondary-sm</app-button>
       <app-button buttonStyle="secondary" size="md">secondary-md</app-button>
       <app-button buttonStyle="secondary" [disabled]="true" size="lg">secondary-lg</app-button>
       <app-button buttonStyle="secondary" size="xl">secondary-xl</app-button>
     </div>
-    <div class="flex flex-col gap-4">
+    <div class="flex flex-col gap-4 mt-10">
       <app-button buttonStyle="secondary-outline" size="sm">secondary-sm</app-button>
       <app-button buttonStyle="secondary-outline" size="md">secondary-md</app-button>
       <app-button buttonStyle="secondary-outline" [disabled]="true" size="lg">secondary-lg</app-button>
       <app-button buttonStyle="secondary-outline" size="xl">secondary-xl</app-button>
+    </div>
+    <div class="flex flex-col gap-4 mt-10">
+      <app-button [isRounded]="true" buttonStyle="primary" icon="RELOAD" size="sm">rounded-sm</app-button>
+      <app-button [isRounded]="true" buttonStyle="primary" icon="RELOAD" size="md">rounded-md</app-button>
+      <app-button [isRounded]="true" buttonStyle="primary" icon="RELOAD" [disabled]="true" size="lg"
+        >rounded-lg</app-button
+      >
+      <app-button [isRounded]="true" buttonStyle="primary" icon="RELOAD" size="xl">rounded-xl</app-button>
+    </div>
+    <div class="flex flex-col gap-4 mt-10">
+      <app-button [isRounded]="true" buttonStyle="secondary" size="sm">rounded-sm</app-button>
+      <app-button [isRounded]="true" buttonStyle="secondary" size="md">rounded-md</app-button>
+      <app-button [isRounded]="true" buttonStyle="secondary" [disabled]="true" size="lg">rounded-lg</app-button>
+      <app-button [isRounded]="true" buttonStyle="secondary" size="xl">rounded-xl</app-button>
     </div>
   </div>
   <div>
@@ -83,12 +97,12 @@
       label="select-xl"
       placeholder="select-xl"
       size="xl"></app-select-input>
-
+    <br /><br />
     <app-select-input [options]="['aaa', 'bbb', 'ccc', 'ddd']" label="select-sm" placeholder="select-sm" size="sm"
-      ><mat-icon class="mx-2" appInputSuffix svgIcon="magnify"></mat-icon
+      ><mat-icon class="mx-2" appInputPrefix svgIcon="magnify"></mat-icon
     ></app-select-input>
     <app-select-input [options]="['aaa', 'bbb', 'ccc', 'ddd']" label="select-md" placeholder="select-md" size="md"
-      ><mat-icon class="mx-2" appInputSuffix svgIcon="magnify"></mat-icon
+      ><mat-icon class="mx-2" appInputPrefix svgIcon="magnify"></mat-icon
     ></app-select-input>
     <app-select-input
       [disabled]="true"
@@ -96,10 +110,10 @@
       label="select-lg"
       placeholder="select-lg"
       size="lg"
-      ><mat-icon class="mx-2" appInputSuffix svgIcon="magnify"></mat-icon
+      ><mat-icon class="mx-2" appInputPrefix svgIcon="magnify"></mat-icon
     ></app-select-input>
     <app-select-input [options]="['aaa', 'bbb', 'ccc', 'ddd']" label="select-xl" placeholder="select-xl" size="xl"
-      ><mat-icon class="mx-2" appInputSuffix svgIcon="magnify"></mat-icon
+      ><mat-icon class="mx-2" appInputPrefix svgIcon="magnify"></mat-icon
     ></app-select-input>
   </div>
 </div>

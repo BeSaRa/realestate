@@ -1,18 +1,20 @@
 import { APP_INITIALIZER, ApplicationConfig, importProvidersFrom } from '@angular/core';
 import { provideRouter, withComponentInputBinding } from '@angular/router';
 
-import { routes } from './app.routes';
-import { provideAnimations } from '@angular/platform-browser/animations';
 import { HTTP_INTERCEPTORS, provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
-import { forkJoin, switchMap, tap } from 'rxjs';
+import { MatDialogModule } from '@angular/material/dialog';
+import { MatIconRegistry } from '@angular/material/icon';
+import { MAT_SNACK_BAR_DEFAULT_OPTIONS } from '@angular/material/snack-bar';
+import { DomSanitizer } from '@angular/platform-browser';
+import { provideAnimations } from '@angular/platform-browser/animations';
 import { ConfigService } from '@services/config.service';
-import { UrlService } from '@services/url.service';
 import { DataService } from '@services/data.service';
 import { TranslationService } from '@services/translation.service';
+import { UrlService } from '@services/url.service';
+import { forkJoin, switchMap, tap } from 'rxjs';
+import { routes } from './app.routes';
 import { TokenInterceptor } from './interceptors/token.interceptor';
-import { MatDialogModule } from '@angular/material/dialog';
-import { DomSanitizer } from '@angular/platform-browser';
-import { MatIconRegistry } from '@angular/material/icon';
+import { NGX_COUNTUP_OPTIONS } from '@constants/injection-tokens';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -60,6 +62,17 @@ export const appConfig: ApplicationConfig = {
       },
       deps: [ConfigService, UrlService, DataService, TranslationService],
       multi: true,
+    },
+    {
+      provide: MAT_SNACK_BAR_DEFAULT_OPTIONS,
+      useValue: {
+        duration: 2000,
+        horizontalPosition: 'right',
+      },
+    },
+    {
+      provide: NGX_COUNTUP_OPTIONS,
+      useValue: { enableScrollSpy: true, scrollSpyOnce: true },
     },
   ],
 };
