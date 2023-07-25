@@ -61,4 +61,18 @@ export interface LangKeysContract {
   english_translation: string;
   required_field: string;
   filter: string;
+  translation_added_successfully: string;
+  translation_adding_failed: string;
+  rental_indicator: string;
+  rental_transactions_measuring_dashboard: string;
+  real_estate_area: string;
+  use_of_real_estate: string;
+  number_of_rooms: string;
+  duration: string;
+  view_all_options: string;
+  clear_options: string;
+  priceless_indicators: string;
+  pricefull_indicators: string;
+  qr: string;
+  total_rental_contracts_number: string;
 }

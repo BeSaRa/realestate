@@ -1,5 +1,10 @@
-<div (click)="clicked($event)" class="relative">
-  <button [tabindex]="tabindex" [disabled]="disabled" (click)="clicked($event)" mat-icon-button>
-    <mat-icon (click)="clicked($event)" [svgIcon]="selectedIcon"></mat-icon>
-  </button>
-</div>
+<!-- eslint-disable @angular-eslint/template/click-events-have-key-events -->
+<!-- eslint-disable-next-line @angular-eslint/template/interactive-supports-focus -->
+<button
+  class="{{ iconColor }} {{ backgroundColor }}"
+  [tabindex]="tabindex"
+  [disabled]="disabled"
+  (click)="clicked($event)"
+  mat-icon-button>
+  <mat-icon (click)="clicked($event)" [svgIcon]="selectedIcon"></mat-icon>
+</button>

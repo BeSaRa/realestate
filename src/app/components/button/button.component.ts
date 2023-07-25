@@ -26,6 +26,7 @@ export class ButtonComponent implements DoCheck {
   @Input() size: 'sm' | 'md' | 'lg' | 'xl' = 'md';
   @Input() buttonStyle: 'none' | 'none-primary' | 'primary' | 'primary-outline' | 'secondary' | 'secondary-outline' =
     'none';
+  @Input() isRounded = false;
   @Input() icon?: keyof AppIconsType;
 
   host = inject(ElementRef);

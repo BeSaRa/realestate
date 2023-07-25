@@ -1,5 +1,5 @@
 .btn {
-  @apply flex gap-2 items-center disabled:text-white/70 px-4 py-2 rounded outline-0 transition
+  @apply flex gap-2 items-center disabled:text-white/70 px-4 py-2 outline-0 transition
   [&.none]:hover:ring-1 [&.none-primary]:hover:ring-1 [&.active]:ring-1 focus:ring-1 ring-offset-1 text-white;
 }
 
@@ -12,12 +12,12 @@
 }
 
 .btn.lg {
-  @apply text-xl px-3 py-2 focus:ring-2 [&.active]:ring-2 [&.none]:hover:ring-2 [&.none-primary]:hover:ring-2
+  @apply text-xl px-3 py-2 focus:ring-2 [&.rounded]:rounded-md [&.active]:ring-2 [&.none]:hover:ring-2 [&.none-primary]:hover:ring-2
   [&.primary]:py-2.5 [&.secondary]:py-2.5;
 }
 
 .btn.xl {
-  @apply text-2xl px-3.5 py-2.5 focus:ring-2 [&.active]:ring-2 [&.none]:hover:ring-2 [&.none-primary]:hover:ring-2
+  @apply text-2xl px-3.5 py-2.5 focus:ring-2 [&.rounded]:rounded-md [&.active]:ring-2 [&.none]:hover:ring-2 [&.none-primary]:hover:ring-2
   [&.primary]:py-3 [&.secondary]:py-3;
 }
 

@@ -7,6 +7,7 @@ import { ExtraHeaderComponent } from '@components/extra-header/extra-header.comp
 import { InputComponent } from '@components/input/input.component';
 import { SelectInputComponent } from '@components/select-input/select-input.component';
 import { TextareaComponent } from '@components/textarea/textarea.component';
+import { InputPrefixDirective } from '@directives/input-prefix.directive';
 import { InputSuffixDirective } from '@directives/input-suffix.directive';
 import { TranslationService } from '@services/translation.service';
 
@@ -20,6 +21,7 @@ import { TranslationService } from '@services/translation.service';
     TextareaComponent,
     ButtonComponent,
     ReactiveFormsModule,
+    InputPrefixDirective,
     InputSuffixDirective,
     MatIconModule,
     SelectInputComponent,

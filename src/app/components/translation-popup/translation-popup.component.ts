@@ -2,6 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component, OnInit, inject } from '@angular/core';
 import { ReactiveFormsModule, UntypedFormBuilder } from '@angular/forms';
 import { MatDialogModule } from '@angular/material/dialog';
+import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { ButtonComponent } from '@components/button/button.component';
 import { IconButtonComponent } from '@components/icon-button/icon-button.component';
 import { InputComponent } from '@components/input/input.component';
@@ -10,6 +11,7 @@ import { TranslationAddContract } from '@contracts/translation-contract';
 import { LangCodes } from '@enums/lang-codes';
 import { TranslationService } from '@services/translation.service';
 import { CustomValidators } from '@validators/custom-validators';
+import { catchError, tap, throwError } from 'rxjs';
 
 @Component({
   selector: 'app-translation-popup',
@@ -22,6 +24,7 @@ import { CustomValidators } from '@validators/custom-validators';
     TextareaComponent,
     ButtonComponent,
     IconButtonComponent,
+    MatSnackBarModule,
   ],
   templateUrl: './translation-popup.component.html',
   styleUrls: ['./translation-popup.component.scss'],
@@ -29,6 +32,7 @@ import { CustomValidators } from '@validators/custom-validators';
 export class TranslationPopupComponent implements OnInit {
   lang = inject(TranslationService);
   fb = inject(UntypedFormBuilder);
+  snackbar = inject(MatSnackBar);
 
   form = this.fb.nonNullable.group({
     localizationKey: ['', [CustomValidators.required]],
@@ -77,7 +81,18 @@ export class TranslationPopupComponent implements OnInit {
       },
     ];
 
-    this.lang.add(translations).subscribe();
+    this.lang
+      .add(translations)
+      .pipe(
+        tap(() => {
+          this.snackbar.open(this.lang.map.translation_added_successfully);
+        }),
+        catchError((err) => {
+          this.snackbar.open(this.lang.map.translation_adding_failed);
+          throw err;
+        })
+      )
+      .subscribe();
     this.form.reset();
   }
 }

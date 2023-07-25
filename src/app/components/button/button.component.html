@@ -1,7 +1,7 @@
 <button
   [disabled]="disabled"
   (click)="clickEvent($event)"
-  [ngClass]="{ active: isActive, 'cursor-not-allowed': disabled }"
+  [ngClass]="{ active: isActive, 'cursor-not-allowed': disabled, 'rounded-full': isRounded, rounded: !isRounded }"
   class="flex items-center justify-center w-full btn {{ size }} {{ buttonStyle }}">
   <mat-icon *ngIf="inProgress" class="animate-spin duration-200 size-18">dots-circle</mat-icon>
   <div *ngIf="icon" class="with-icon">

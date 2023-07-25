@@ -19,6 +19,8 @@ export class IconButtonComponent {
   _disabled = false;
   @Input()
   tabindex = '1';
+  @Input() iconColor = 'text-primary';
+  @Input() backgroundColor = 'bg-transparent';
 
   @Input()
   set disabled(value: boolean | unknown) {

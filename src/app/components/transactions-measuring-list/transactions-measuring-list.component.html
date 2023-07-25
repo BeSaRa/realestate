@@ -1,0 +1,41 @@
+<div *ngIf="type === 'normal'" class="flex gap-4">
+  <app-transactions-measuring-item
+    class="flex-1"
+    *ngFor="let item of list"
+    [item]="item"></app-transactions-measuring-item>
+</div>
+
+<div
+  *ngIf="type === 'small'"
+  class="grid grid-cols-3 xl:grid-cols-6 border-2 border-secondary overflow-hidden rounded-xl">
+  <app-transactions-measuring-item
+    *ngFor="let item of list; let i = index"
+    class="border-e-2 border-secondary last-of-type:border-e-0 {{ i > 2 ? 'border-t-2 xl:border-t-0' : '' }} {{
+      i % 3 === 2 ? 'border-e-0 xl:border-e-2' : ''
+    }}"
+    [item]="item"
+    type="small"></app-transactions-measuring-item>
+</div>
+
+<div *ngIf="type === 'carousel'" class="flex items-center gap-6 text-primary">
+  <!-- <app-icon-button
+    iconColor="!text-white"
+    backgroundColor="!bg-secondary"
+    [icon]="lang.isLtr ? 'CHEVRON_LEFT' : 'CHEVRON_RIGHT'"></app-icon-button> -->
+  <button class="flex items-center justify-center text-2xl font-bold !text-white !bg-secondary" mat-icon-button>
+    {{ !lang.isLtr ? "<" : ">" }}
+  </button>
+  <div class="flex flex-1 gap-4">
+    <app-transactions-measuring-item
+      class="flex-1"
+      *ngFor="let item of list"
+      [item]="item"></app-transactions-measuring-item>
+  </div>
+  <!-- <app-icon-button
+    iconColor="!text-white"
+    backgroundColor="!bg-secondary"
+    [icon]="!lang.isLtr ? 'CHEVRON_LEFT' : 'CHEVRON_RIGHT'"></app-icon-button> -->
+  <button class="flex items-center justify-center text-2xl font-bold !text-white !bg-secondary" mat-icon-button>
+    {{ lang.isLtr ? "<" : ">" }}
+  </button>
+</div>

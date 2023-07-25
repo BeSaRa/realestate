@@ -5,7 +5,8 @@ export const AppIcons = {
   TRANSLATE: 'translate',
   SETTINGS: 'cog',
   PLUS: 'plus',
-  CLOSE: 'close-circle',
+  CLOSE_CIRCLE: 'close-circle',
+  CLOSE: 'close',
   EDIT: 'pencil',
   VIEW: 'eye',
   DELETE: 'delete',
@@ -27,6 +28,11 @@ export const AppIcons = {
   HISTORY: 'history',
   ARROW_LEFT: 'arrow-left-circle-outline',
   ARROW_RIGHT: 'arrow-right-circle-outline',
+  CHEVRON_DOWN: 'chevron-down',
+  CHEVRON_LEFT: 'chevron-left',
+  CHEVRON_RIGHT: 'chevron-right',
+  TRIANGLE_DOWN: 'triangle-down',
+  TRIANGLE_UP: 'triangle',
 };
 
 export type AppIconsType = typeof AppIcons;

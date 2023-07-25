@@ -1,0 +1,45 @@
+<div class="grid grid-cols-3 xl:grid-cols-6 gap-4">
+  <ng-container [formGroup]="filtersForm">
+    <app-select-input
+      size="lg"
+      formControlName="municipal"
+      [label]="lang.map.municipal.toCapital()"
+      [options]="municipalOptions"></app-select-input>
+    <app-select-input
+      size="lg"
+      formControlName="realestateArea"
+      [label]="lang.map.real_estate_area.toCapital()"
+      [options]="realestateAreaOptions"></app-select-input>
+    <app-select-input
+      size="lg"
+      formControlName="realestateType"
+      [label]="lang.map.real_estate_type.toCapital()"
+      [options]="realestateTypeOptions"></app-select-input>
+    <app-select-input
+      size="lg"
+      formControlName="realestateUse"
+      [label]="lang.map.use_of_real_estate.toCapital()"
+      [options]="realestateUseOptions"></app-select-input>
+    <app-select-input
+      size="lg"
+      formControlName="numberOfRooms"
+      [label]="lang.map.number_of_rooms.toCapital()"
+      [options]="numberOfRoomsOptions"></app-select-input>
+    <app-select-input
+      size="lg"
+      formControlName="duration"
+      [label]="lang.map.duration.toCapital()"
+      [options]="durationOptions"></app-select-input>
+  </ng-container>
+</div>
+<div class="flex justify-center xl:justify-end gap-3 mt-5 xl:mt-0">
+  <app-button size="md" buttonStyle="secondary" [isRounded]="true" icon="CHEVRON_DOWN">{{
+    lang.map.view_all_options.toCapital()
+  }}</app-button>
+  <app-button size="md" buttonStyle="secondary" [isRounded]="true" icon="CLOSE">{{
+    lang.map.clear_options.toCapital()
+  }}</app-button>
+  <app-button size="md" buttonStyle="secondary" [isRounded]="true" icon="SEARCH">{{
+    lang.map.search.toCapital()
+  }}</app-button>
+</div>

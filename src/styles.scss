@@ -26,3 +26,13 @@
 ::-webkit-scrollbar-track {
   background: rgba(162, 148, 117, 0.2);
 }
+
+.custom-shadow {
+  box-shadow: 1px 1px 10px var(--tw-shadow-color),
+    -1px -1px 10px var(--tw-shadow-color);
+}
+
+.hover-shadow:hover {
+  box-shadow: 1px 1px 10px var(--tw-shadow-color),
+    -1px -1px 10px var(--tw-shadow-color);
+}

@@ -1,0 +1,16 @@
+<div class="relative pt-3 px-2">
+  <mat-icon
+    class="absolute top-0 left-0 scale-150 transition"
+    [ngClass]="{
+      'text-[#D6D6D6]': !isHovered,
+      'text-green-500': isHovered && value > 0,
+      'text-red-500': isHovered && value < 0
+    }"
+    [svgIcon]="value > 0 ? icons.TRIANGLE_UP : icons.TRIANGLE_DOWN"></mat-icon>
+  <span
+    dir="ltr"
+    class="relative text-lg font-bold transition"
+    [ngClass]="{ 'text-secondary': !isHovered, 'text-white': isHovered }"
+    >{{ value | percent : ".2" }} YoY</span
+  >
+</div>
