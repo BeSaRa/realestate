@@ -17,25 +17,13 @@
     type="small"></app-transactions-measuring-item>
 </div>
 
-<div *ngIf="type === 'carousel'" class="flex items-center gap-6 text-primary">
-  <!-- <app-icon-button
-    iconColor="!text-white"
-    backgroundColor="!bg-secondary"
-    [icon]="lang.isLtr ? 'CHEVRON_LEFT' : 'CHEVRON_RIGHT'"></app-icon-button> -->
-  <button class="flex items-center justify-center text-2xl font-bold !text-white !bg-secondary" mat-icon-button>
-    {{ !lang.isLtr ? "<" : ">" }}
-  </button>
-  <div class="flex flex-1 gap-4">
-    <app-transactions-measuring-item
-      class="flex-1"
-      *ngFor="let item of list"
-      [item]="item"></app-transactions-measuring-item>
+<div dir="ltr" *ngIf="type === 'carousel'" class="flex justify-center gap-6 text-primary">
+  <div class="w-11/12">
+    <carousel [arrowsOutside]="true" [margin]="20" [cellWidth]="350">
+      <app-transactions-measuring-item
+        class="carousel-cell"
+        *ngFor="let item of list"
+        [item]="item"></app-transactions-measuring-item>
+    </carousel>
   </div>
-  <!-- <app-icon-button
-    iconColor="!text-white"
-    backgroundColor="!bg-secondary"
-    [icon]="!lang.isLtr ? 'CHEVRON_LEFT' : 'CHEVRON_RIGHT'"></app-icon-button> -->
-  <button class="flex items-center justify-center text-2xl font-bold !text-white !bg-secondary" mat-icon-button>
-    {{ lang.isLtr ? "<" : ">" }}
-  </button>
 </div>

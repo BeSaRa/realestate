@@ -13,13 +13,14 @@
 
 <div
   *ngIf="type === 'normal' && item.imageUrl"
+  [dir]="lang.isLtr ? 'ltr' : 'rtl'"
   (mouseenter)="isHovered = true"
   (mouseleave)="isHovered = false"
-  class="group px-4 py-6 h-full flex gap-2 justify-between items-center text-center rounded-lg bg-white custom-shadow shadow-slate-200 transition {{
+  class="group px-4 py-6 h-full grid grid-cols-2 gap-2 justify-between items-center text-center rounded-lg bg-white custom-shadow shadow-slate-200 transition {{
     lang.isLtr ? 'ltr-gradient' : 'gradient'
   }}">
-  <img [src]="item.imageUrl" [alt]="item.title" />
-  <div class="w-1/2 flex flex-col items-center">
+  <img class="!h-4/5 !w-4/5" [src]="item.imageUrl" [alt]="item.title" />
+  <div class="flex flex-col items-center">
     <app-change-indicator [value]="item.relativeChange" [isHovered]="isHovered"></app-change-indicator>
     <span class="my-2 h-0 w-full border-t border-primary/50 group-hover:border-white"></span>
     <span class="flex-1 text-3xl text-black font-bold group-hover:text-white transition">{{ item.title }}</span>

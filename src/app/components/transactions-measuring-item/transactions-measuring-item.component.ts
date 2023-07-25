@@ -1,4 +1,4 @@
-import { Component, Input, inject } from '@angular/core';
+import { Component, HostBinding, Input, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { TransactionsMeasuringContract } from '@contracts/transactions-measuring-contract';
 import { TranslationService } from '@services/translation.service';
