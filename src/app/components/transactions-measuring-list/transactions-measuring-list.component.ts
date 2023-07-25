@@ -6,11 +6,19 @@ import { IconButtonComponent } from '@components/icon-button/icon-button.compone
 import { TranslationService } from '@services/translation.service';
 import { ButtonComponent } from '@components/button/button.component';
 import { MatButtonModule } from '@angular/material/button';
+import { IvyCarouselModule } from 'angular-responsive-carousel2';
 
 @Component({
   selector: 'app-transactions-measuring-list',
   standalone: true,
-  imports: [CommonModule, TransactionsMeasuringItemComponent, IconButtonComponent, ButtonComponent, MatButtonModule],
+  imports: [
+    CommonModule,
+    TransactionsMeasuringItemComponent,
+    IconButtonComponent,
+    ButtonComponent,
+    MatButtonModule,
+    IvyCarouselModule,
+  ],
   templateUrl: './transactions-measuring-list.component.html',
   styleUrls: ['./transactions-measuring-list.component.scss'],
 })
