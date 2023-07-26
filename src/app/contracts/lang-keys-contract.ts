@@ -75,4 +75,14 @@ export interface LangKeysContract {
   pricefull_indicators: string;
   qr: string;
   total_rental_contracts_number: string;
+  list_of_rental_transactions: string;
+  paginator_page_label: string;
+  paginator_of_label: string;
+  paginator_first_page_label: string;
+  paginator_items_per_page_label: string;
+  paginator_last_page_label: string;
+  paginator_next_page_label: string;
+  paginator_previous_page_label: string;
+  ///////////////////////////////////////////////
+  paginator_show_label: string;
 }

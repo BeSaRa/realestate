@@ -66,3 +66,15 @@ h6 {
 .close-btn {
   @apply absolute rtl:left-0 ltr:right-0 mx-2;
 }
+
+carousel {
+  @apply z-0 #{!important};
+}
+
+.table-style thead tr th:first-child {
+  border-radius: 0 10px 10px 0;
+}
+
+.table-style thead tr th:last-child {
+  border-radius: 10px 0 0 10px;
+}

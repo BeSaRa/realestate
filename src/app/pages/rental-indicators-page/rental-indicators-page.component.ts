@@ -5,6 +5,7 @@ import { TranslationService } from '@services/translation.service';
 import { RentalTransactionsMeasuringComponent } from '@components/rental-transactions-measuring/rental-transactions-measuring.component';
 import { TransactionsFilterComponent } from '@components/transactions-filter/transactions-filter.component';
 import { RentalContractsComponent } from '@components/rental-contracts/rental-contracts.component';
+import { RentalTransactionsListComponent } from '@components/rental-transactions-list/rental-transactions-list.component';
 
 @Component({
   selector: 'app-rental-indicators-page',
@@ -15,6 +16,7 @@ import { RentalContractsComponent } from '@components/rental-contracts/rental-co
     TransactionsFilterComponent,
     RentalTransactionsMeasuringComponent,
     RentalContractsComponent,
+    RentalTransactionsListComponent,
   ],
   templateUrl: './rental-indicators-page.component.html',
   styleUrls: ['./rental-indicators-page.component.scss'],
