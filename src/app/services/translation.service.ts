@@ -1,6 +1,6 @@
 import { DOCUMENT } from '@angular/common';
 import { HttpClient, HttpParams } from '@angular/common/http';
-import { inject, Injectable, OnInit } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { LangContract } from '@contracts/lang-contract';
 import { LangKeysContract } from '@contracts/lang-keys-contract';
 import { ServiceContract } from '@contracts/service-contract';
@@ -9,7 +9,7 @@ import { LangChangeProcess } from '@enums/lang-change-process';
 import { LangCodes } from '@enums/lang-codes';
 import { RegisterServiceMixin } from '@mixins/register-service-mixin';
 import { UrlService } from '@services/url.service';
-import { distinctUntilChanged, map, Observable, of, Subject, BehaviorSubject, tap } from 'rxjs';
+import { BehaviorSubject, Observable, Subject, distinctUntilChanged, map, of, tap } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
@@ -114,6 +114,18 @@ export class TranslationService extends RegisterServiceMixin(class {}) implement
 
   getCurrent() {
     return this.current;
+  }
+
+  getArabicTranslation(langKey: keyof LangKeysContract) {
+    return this.arabic[langKey] || `messing Lang Key ${langKey}`;
+  }
+
+  getEnglishTranslation(langKey: keyof LangKeysContract) {
+    return this.english[langKey] || `messing Lang Key ${langKey}`;
+  }
+
+  getTranslate(langKey: keyof LangKeysContract): string {
+    return this.map[langKey] || `messing Lang Key ${langKey}`;
   }
 
   private setDirection(direction: 'rtl' | 'ltr'): void {

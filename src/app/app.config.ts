@@ -15,6 +15,8 @@ import { forkJoin, switchMap, tap } from 'rxjs';
 import { routes } from './app.routes';
 import { TokenInterceptor } from './interceptors/token.interceptor';
 import { NGX_COUNTUP_OPTIONS } from '@constants/injection-tokens';
+import { MatPaginatorIntl } from '@angular/material/paginator';
+import { PaginatorLocal } from '@constants/paginator-local';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -73,6 +75,10 @@ export const appConfig: ApplicationConfig = {
     {
       provide: NGX_COUNTUP_OPTIONS,
       useValue: { enableScrollSpy: true, scrollSpyOnce: true },
+    },
+    {
+      provide: MatPaginatorIntl,
+      useClass: PaginatorLocal,
     },
   ],
 };

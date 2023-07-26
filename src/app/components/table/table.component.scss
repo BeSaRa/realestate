@@ -1,0 +1,7 @@
+th:first-child {
+  @apply ltr:rounded-l-lg rtl:rounded-r-lg;
+}
+
+th:last-child {
+  @apply ltr:rounded-r-lg rtl:rounded-l-lg;
+}
