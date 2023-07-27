@@ -101,10 +101,10 @@ export class SelectInputComponent implements ControlValueAccessor, OnInit, OnCha
     ltr:peer-[.prefix]:pl-0 rtl:peer-[.prefix]:pr-0
     group-[.xl]/input-wrapper:!text-xl group-[.lg]/input-wrapper:!text-lg
     group-[.md]/input-wrapper:!text-base group-[.sm]/input-wrapper:!text-sm
-    group-[.sm]/input-wrapper:px-1.5 group-[.sm]/input-wrapper:py-0.5
-    group-[.md]/input-wrapper:px-2 group-[.md]/input-wrapper:py-1
-    group-[.lg]/input-wrapper:px-3 group-[.lg]/input-wrapper:py-1.5
-    group-[.xl]/input-wrapper:px-4 group-[.xl]/input-wrapper:py-2`;
+    group-[.sm]/input-wrapper:px-1.5 group-[.sm]/input-wrapper:py-1
+    group-[.md]/input-wrapper:px-2 group-[.md]/input-wrapper:py-1.5
+    group-[.lg]/input-wrapper:px-3 group-[.lg]/input-wrapper:py-2
+    group-[.xl]/input-wrapper:px-4 group-[.xl]/input-wrapper:py-2.5`;
 
   get filterTxt$() {
     return this.filterControl.valueChanges;

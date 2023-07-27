@@ -73,10 +73,10 @@ export class TextareaComponent
   tailwindClass = `flex-auto outline-none rounded-md max-w-full
      group-[.xl]/text-area-wrapper:text-xl group-[.lg]/text-area-wrapper:text-lg
      group-[.md]/text-area-wrapper:text-base group-[.sm]/text-area-wrapper:text-sm
-     group-[.sm]/text-area-wrapper:px-2 group-[.sm]/text-area-wrapper:py-1
-     group-[.md]/text-area-wrapper:px-3 group-[.md]/text-area-wrapper:py-1.5
-     group-[.lg]/text-area-wrapper:px-4 group-[.lg]/text-area-wrapper:py-2
-     group-[.xl]/text-area-wrapper:px-5 group-[.xl]/text-area-wrapper:py-2.5`;
+     group-[.sm]/text-area-wrapper:px-1.5 group-[.sm]/text-area-wrapper:py-1
+     group-[.md]/text-area-wrapper:px-2 group-[.md]/text-area-wrapper:py-1.5
+     group-[.lg]/text-area-wrapper:px-3 group-[.lg]/text-area-wrapper:py-2
+     group-[.xl]/text-area-wrapper:px-4 group-[.xl]/text-area-wrapper:py-2.5`;
 
   get errors(): Observable<ValidationErrors | null | undefined> {
     return of(null).pipe(
