@@ -21,6 +21,7 @@
       [options]="propertyTypes" />
     <app-select-input
       formControlName="rentPurposeList"
+      [isMultiple]="true"
       bindLabel="getNames"
       bindValue="lookupKey"
       [label]="lang.map.property_usage"
@@ -40,18 +41,19 @@
     <app-select-input formControlName="issueDateYear" [label]="lang.map.year" [options]="years" />
     <app-select-input
       formControlName="halfYearDuration"
+      *ngIf="displayHalf"
       bindLabel="getNames"
       bindValue="lookupKey"
       [label]="lang.map.select_half"
       [options]="halfYearDurations" />
     <app-select-input
-      size="md"
+      *ngIf="displayQuarter"
       formControlName="quarterYearDuration"
       bindLabel="getNames"
       bindValue="lookupKey"
       [label]="lang.map.select_quarter"
       [options]="quarterYearDurations" />
-    <app-input size="md"></app-input>
+    <app-input *ngIf="displayRange" size="md"></app-input>
   </ng-container>
 </div>
 <div class="flex justify-center xl:justify-end gap-3 mt-5 xl:mt-0">

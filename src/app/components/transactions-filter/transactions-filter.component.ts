@@ -25,7 +25,7 @@ export class TransactionsFilterComponent implements OnInit, OnDestroy {
 
   municipalities = this.lookupService.lookups.municipalityList;
   propertyTypes = this.lookupService.lookups.propertyTypeList;
-  propertyUsages = this.lookupService.lookups.rentPurposeList;
+  propertyUsages = this.lookupService.lookups.rentPurposeList.slice().sort((a, b) => a.lookupKey - b.lookupKey);
   zones = this.lookupService.lookups.zoneList;
   rooms = this.lookupService.lookups.rooms;
   filteredZones: Lookup[] = [];
@@ -78,6 +78,8 @@ export class TransactionsFilterComponent implements OnInit, OnDestroy {
     this.listenToRentPurposeListChange();
     this.listenToDurationTypeChange();
     this.setDefaultValues();
+
+    console.log(this.propertyUsages);
   }
 
   get municipalityId(): AbstractControl {
@@ -123,7 +125,7 @@ export class TransactionsFilterComponent implements OnInit, OnDestroy {
 
   listenToRentPurposeListChange(): void {
     this.rentPurposeList.valueChanges.pipe(takeUntil(this.destroy$)).subscribe((value: number[]) => {
-      this.propertyTypes.forEach((item) => {
+      this.propertyUsages.forEach((item) => {
         (value ?? []).includes(-1)
           ? item.lookupKey !== -1
             ? (item.disabled = true)
@@ -139,9 +141,9 @@ export class TransactionsFilterComponent implements OnInit, OnDestroy {
   private setDefaultValues() {
     this.form.patchValue({
       municipalityId: this.municipalities[0].lookupKey,
-      zoneId: 4,
       propertyTypeList: [-1],
       rentPurposeList: [-1],
+      zoneId: 4,
       bedRoomsCount: 0,
       durationType: 1,
       issueDateYear: 2019,
