@@ -73,9 +73,9 @@ export class SelectInputComponent implements ControlValueAccessor, OnInit, OnCha
   @Input() isMultiple = false;
   @Input() name = generateUUID();
   @Input({ required: true }) options: unknown[] = [];
-  @Input() bindValue?: string | ((item: any) => any);
-  @Input() bindLabel?: string | ((item: any) => any);
-  @Input() bindFilter?: string | ((item: any) => any);
+  @Input() bindValue?: string | ((item: unknown) => unknown);
+  @Input() bindLabel?: string | ((item: unknown) => unknown);
+  @Input() bindFilter?: string | ((item: unknown) => unknown);
   @Input() enableFilter = false;
 
   @ContentChild(OptionTemplateDirective) optionTemplate?: OptionTemplateDirective;
@@ -198,6 +198,10 @@ export class SelectInputComponent implements ControlValueAccessor, OnInit, OnCha
       : this.bindLabel && typeof this.bindLabel === 'function'
       ? this.bindLabel(option)
       : option;
+  }
+
+  isOptionDisabled(item: unknown): boolean {
+    return (item as { disabled: boolean }).disabled;
   }
 
   compareOptionsWith(value1: unknown, value2: unknown) {

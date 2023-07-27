@@ -5,4 +5,6 @@ export interface LookupsContract {
   rentPurposeList: Lookup[];
   zoneList: Lookup[];
   municipalityList: Lookup[];
+  rooms: Lookup[];
+  durations: Lookup[];
 }

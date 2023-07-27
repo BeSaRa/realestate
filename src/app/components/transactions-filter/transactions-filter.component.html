@@ -1,10 +1,36 @@
-<div class="grid grid-cols-3 xl:grid-cols-6 gap-4">
-  <ng-container>
-    <app-select-input bindLabel="getNames" [label]="lang.map.municipal" [options]="municipalities" />
-    <app-select-input bindLabel="getNames" [label]="lang.map.zone" [options]="realestateUseOptions" />
-    <app-select-input [label]="lang.map.property_type" bindLabel="getNames" [options]="realestateAreaOptions" />
-    <app-select-input bindLabel="getNames" [label]="lang.map.property_usage" [options]="realestateTypeOptions" />
-    <app-select-input [label]="lang.map.number_of_rooms" [options]="numberOfRoomsOptions" />
+<div class="grid grid-cols-4 gap-4">
+  <ng-container [formGroup]="form">
+    <app-select-input
+      formControlName="municipalityId"
+      bindLabel="getNames"
+      bindValue="lookupKey"
+      [label]="lang.map.municipal"
+      [options]="municipalities" />
+    <app-select-input
+      formControlName="zoneId"
+      bindValue="lookupKey"
+      bindLabel="getNames"
+      [label]="lang.map.zone"
+      [options]="filteredZones" />
+    <app-select-input
+      formControlName="propertyTypeList"
+      [isMultiple]="true"
+      bindValue="lookupKey"
+      [label]="lang.map.property_type"
+      bindLabel="getNames"
+      [options]="propertyTypes" />
+    <app-select-input
+      formControlName="rentPurposeList"
+      bindLabel="getNames"
+      bindValue="lookupKey"
+      [label]="lang.map.property_usage"
+      [options]="propertyUsages" />
+    <app-select-input
+      formControlName="bedRoomsCount"
+      bindLabel="getNames"
+      bindValue="lookupKey"
+      [label]="lang.map.number_of_rooms"
+      [options]="rooms" />
     <app-select-input [label]="lang.map.duration" [options]="durationOptions" />
   </ng-container>
 </div>
