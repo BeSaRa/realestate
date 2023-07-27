@@ -11,7 +11,7 @@ export class UrlService {
   config!: ConfigService;
 
   static hasTrailingSlash(url: string): boolean {
-    return (url + '').indexOf('/') === (url + '').length - 1;
+    return (url + '').lastIndexOf('/') === (url + '').length - 1;
   }
 
   static hasPrefixSlash(url: string): boolean {
@@ -42,10 +42,27 @@ export class UrlService {
     const external = (this.config.CONFIG.EXTERNAL_PROTOCOLS ?? []).some((protocol) => {
       return url.toLowerCase().indexOf(protocol) === 0;
     });
-    return external ? url : this.URLS.BASE_URL + '/' + UrlService.removePrefixSlash(url);
+    return external
+      ? url
+      : this.hasSpecificPrefix(url)
+      ? this.applySpecificPrefix(url)
+      : this.URLS.BASE_URL + '/' + UrlService.removePrefixSlash(url);
   }
 
   setConfigService(service: ConfigService): void {
     this.config = service;
+  }
+
+  hasSpecificPrefix(url: string): boolean {
+    return url.split('|').length > 1;
+  }
+
+  applySpecificPrefix(url: string): string {
+    const segments = url.split('|');
+    return (
+      UrlService.removeTrailingSlash(this.URLS[segments.shift() as keyof EndpointsType]) +
+      '/' +
+      UrlService.removePrefixSlash(segments.pop() || '')
+    );
   }
 }

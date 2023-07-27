@@ -19,7 +19,7 @@ export abstract class CmsService<T, PrimaryType = number>
 
   @CastResponse(undefined, { unwrap: 'data', fallback: '$default' })
   load(options: OptionsContract = { limit: 50 }): Observable<T[]> {
-    return this.http.get<T[]>(this.urlService.URLS.BASE_URL + 'items/' + this.collectionName, {
+    return this.http.get<T[]>(this.urlService.URLS.BASE_URL + '/items/' + this.collectionName, {
       params: new HttpParams({
         fromObject: { ...options },
       }),

@@ -17,6 +17,7 @@ import { TokenInterceptor } from './interceptors/token.interceptor';
 import { NGX_COUNTUP_OPTIONS } from '@constants/injection-tokens';
 import { MatPaginatorIntl } from '@angular/material/paginator';
 import { PaginatorLocal } from '@constants/paginator-local';
+import { LookupService } from '@services/lookup.service';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -43,7 +44,8 @@ export const appConfig: ApplicationConfig = {
         config: ConfigService,
         url: UrlService,
         dataService: DataService,
-        translation: TranslationService
+        translation: TranslationService,
+        lookups: LookupService
       ) => {
         return () =>
           forkJoin([
@@ -60,9 +62,11 @@ export const appConfig: ApplicationConfig = {
           ])
             .pipe(tap(() => url.setConfigService(config)))
             .pipe(tap(() => url.prepareUrls()))
+            .pipe(tap(() => url.prepareUrls()))
+            .pipe(switchMap(() => lookups.load()))
             .pipe(switchMap(() => translation.load()));
       },
-      deps: [ConfigService, UrlService, DataService, TranslationService],
+      deps: [ConfigService, UrlService, DataService, TranslationService, LookupService],
       multi: true,
     },
     {

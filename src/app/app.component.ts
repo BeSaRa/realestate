@@ -9,7 +9,6 @@ import localeAr from '@angular/common/locales/ar';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { ChatGptComponent } from '@components/chat-gpt/chat-gpt.component';
-import { TranslationService } from '@services/translation.service';
 import { MatDialog } from '@angular/material/dialog';
 import { TranslationPopupComponent } from '@components/translation-popup/translation-popup.component';
 
