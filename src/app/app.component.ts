@@ -1,16 +1,16 @@
-import '@utils/prototypes/custom-prototypes';
-import { Component, HostListener, inject } from '@angular/core';
 import { CommonModule, registerLocaleData } from '@angular/common';
-import { RouterOutlet } from '@angular/router';
-import { HeaderComponent } from '@components/header/header.component';
-import { FooterComponent } from '@components/footer/footer.component';
-import { StickyService } from '@services/sticky.service';
 import localeAr from '@angular/common/locales/ar';
+import { Component, HostListener, inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
+import { RouterOutlet } from '@angular/router';
 import { ChatGptComponent } from '@components/chat-gpt/chat-gpt.component';
-import { MatDialog } from '@angular/material/dialog';
+import { FooterComponent } from '@components/footer/footer.component';
+import { HeaderComponent } from '@components/header/header.component';
 import { TranslationPopupComponent } from '@components/translation-popup/translation-popup.component';
+import { DialogService } from '@services/dialog.service';
+import { StickyService } from '@services/sticky.service';
+import '@utils/prototypes/custom-prototypes';
 
 @Component({
   selector: 'app-root',
@@ -29,7 +29,7 @@ import { TranslationPopupComponent } from '@components/translation-popup/transla
 })
 export class AppComponent {
   stickyService = inject(StickyService);
-  dialog = inject(MatDialog);
+  dialog = inject(DialogService);
 
   constructor() {
     registerLocaleData(localeAr, 'ar');

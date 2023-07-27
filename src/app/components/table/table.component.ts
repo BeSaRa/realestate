@@ -1,10 +1,11 @@
 import { CommonModule } from '@angular/common';
-import { Component, ContentChildren, Input, OnInit, QueryList } from '@angular/core';
+import { Component, ContentChildren, Input, OnInit, QueryList, inject } from '@angular/core';
 import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
 import { MatTableModule } from '@angular/material/table';
 import { DisplayedColumnContract } from '@contracts/displayed-column-contract';
 import { TableColumnTemplateDirective } from '@directives/table-column-template.directive';
 import { AppTableDataSource } from '@models/app-table-data-source';
+import { TranslationService } from '@services/translation.service';
 import { Observable, isObservable, map, tap } from 'rxjs';
 
 @Component({
@@ -17,17 +18,18 @@ import { Observable, isObservable, map, tap } from 'rxjs';
 export class TableComponent implements OnInit {
   @Input({ required: true }) data!: unknown[] | Observable<unknown[]>;
   @Input({ required: true }) displayedColumns!: DisplayedColumnContract[];
+  @Input() pageSize = 5;
 
   @ContentChildren(TableColumnTemplateDirective) columnsTemplates!: QueryList<TableColumnTemplateDirective>;
 
   dataSource!: AppTableDataSource<unknown>;
 
-  pageSize = 5;
   length!: number;
   pageSizeOptions: number[] = [2, 5, 10];
   showFirstLastButtons = true;
-  limit = 5;
   offset = 0;
+
+  lang = inject(TranslationService);
 
   get displayedColumnsNames() {
     return this.displayedColumns.map((c) => c.columnName);
@@ -44,7 +46,7 @@ export class TableComponent implements OnInit {
 
   paginate($event: PageEvent) {
     this.offset = $event.pageSize * $event.pageIndex;
-    this.limit = $event.pageSize;
+    this.pageSize = $event.pageSize;
     this._initializeDataSource();
   }
 
@@ -61,13 +63,13 @@ export class TableComponent implements OnInit {
     if (isObservable(this.data)) {
       paginatedData = this.data.pipe(
         map((data) => {
-          if (this.offset + this.limit > this.length) return data.slice(this.offset);
-          else return data.slice(this.offset, this.offset + this.limit);
+          if (this.offset + this.pageSize > this.length) return data.slice(this.offset);
+          else return data.slice(this.offset, this.offset + this.pageSize);
         })
       );
     } else {
-      if (this.offset + this.limit > this.length) paginatedData = this.data.slice(this.offset);
-      else paginatedData = this.data.slice(this.offset, this.offset + this.limit);
+      if (this.offset + this.pageSize > this.length) paginatedData = this.data.slice(this.offset);
+      else paginatedData = this.data.slice(this.offset, this.offset + this.pageSize);
     }
     this.dataSource = new AppTableDataSource(paginatedData);
   }

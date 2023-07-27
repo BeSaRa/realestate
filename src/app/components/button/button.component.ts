@@ -11,6 +11,7 @@ import {
 import { CommonModule } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
 import { AppIcons, AppIconsType } from '@constants/app-icons';
+import { ButtonTypeContract } from '@contracts/button-type-contract';
 
 @Component({
   selector: 'app-button',
@@ -24,8 +25,7 @@ export class ButtonComponent implements DoCheck {
   @Input() disabled = false;
   @Input() inProgress = false;
   @Input() size: 'sm' | 'md' | 'lg' | 'xl' = 'md';
-  @Input() buttonStyle: 'none' | 'none-primary' | 'primary' | 'primary-outline' | 'secondary' | 'secondary-outline' =
-    'none';
+  @Input() buttonStyle: keyof ButtonTypeContract = 'primary';
   @Input() isRounded = false;
   @Input() icon?: keyof AppIconsType;
 

@@ -1,6 +1,6 @@
 .input-form {
   @apply w-full rounded-md overflow-hidden box-border shadow-sm border [&.lg]:border-2 [&.xl]:border-2
-  focus-within:outline-none focus-within:border-2 [&.lg]:focus-within:border-[3px] [&.xl]:focus-within:border-[3px]
+  focus-within:outline-none focus-within:ring-1 ring-secondary
   [&.disabled]:bg-slate-50 [&.disabled]:text-slate-500 [&.disabled_.mat-mdc-select-placeholder]:text-slate-500 [&.disabled]:border-slate-200 [&.disabled]:shadow-none
   group-[.has-error]:border-red-500 group-[.has-error]:text-red-600
   group-[.has-error]:focus-within:border-red-500 group-[.has-error]:focus-within:ring-red-500;

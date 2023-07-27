@@ -4,21 +4,23 @@
 }
 
 .btn.sm {
-  @apply text-sm px-2 py-1 [&.primary]:py-[5px] [&.secondary]:py-[5px];
+  @apply text-sm px-2 py-1 [&.primary]:py-[5px] [&.secondary]:py-[5px]
+  [&.success]:py-[5px] [&.warning]:py-[5px] [&.error]:py-[5px];
 }
 
 .btn.md {
-  @apply text-base px-2.5 py-1.5 [&.primary]:py-[7px] [&.secondary]:py-[7px];
+  @apply text-base px-2.5 py-1.5 [&.primary]:py-[7px] [&.secondary]:py-[7px]
+  [&.success]:py-[7px] [&.warning]:py-[7px] [&.error]:py-[7px];
 }
 
 .btn.lg {
   @apply text-xl px-3 py-2 focus:ring-2 [&.rounded]:rounded-md [&.active]:ring-2 [&.none]:hover:ring-2 [&.none-primary]:hover:ring-2
-  [&.primary]:py-2.5 [&.secondary]:py-2.5;
+  [&.primary]:py-2.5 [&.secondary]:py-2.5 [&.success]:py-2.5 [&.warning]:py-2.5 [&.error]:py-2.5;
 }
 
 .btn.xl {
   @apply text-2xl px-3.5 py-2.5 focus:ring-2 [&.rounded]:rounded-md [&.active]:ring-2 [&.none]:hover:ring-2 [&.none-primary]:hover:ring-2
-  [&.primary]:py-3 [&.secondary]:py-3;
+  [&.primary]:py-3 [&.secondary]:py-3 [&.success]:py-3 [&.warning]:py-3 [&.error]:py-3;
 }
 
 .btn.primary {
@@ -49,6 +51,36 @@
 .btn.none-primary {
   @apply disabled:bg-slate-100/10 disabled:text-primary/40 bg-transparent text-primary
   hover:bg-primary/5 [&.active]:bg-primary/5 ring-primary;
+}
+
+.btn.success {
+  @apply disabled:bg-green-500/40 bg-green-500 hover:bg-green-500/80 [&.active]:bg-green-500 ring-green-500/50;
+}
+
+.btn.success-outline {
+  @apply disabled:text-green-500/40 disabled:bg-slate-100/10 disabled:border-green-500/40 bg-transparent text-green-500
+  hover:text-green-500/70 [&.active]:text-green-500 border [&.lg]:border-2 [&.xl]:border-2 border-green-500
+  hover:border-green-500/70 ring-green-500/50;
+}
+
+.btn.error {
+  @apply disabled:bg-red-500/40 bg-red-500 hover:bg-red-500/80 [&.active]:bg-red-500 ring-red-500/50;
+}
+
+.btn.error-outline {
+  @apply disabled:text-red-500/40 disabled:bg-slate-100/10 disabled:border-red-500/40 bg-transparent text-red-500
+  hover:text-red-500/70 [&.active]:text-red-500 border [&.lg]:border-2 [&.xl]:border-2 border-red-500
+  hover:border-red-500/70 ring-red-500/50;
+}
+
+.btn.warning {
+  @apply disabled:bg-yellow-500/40 bg-yellow-500 hover:bg-yellow-500/80 [&.active]:bg-yellow-500 ring-yellow-500/50;
+}
+
+.btn.warning-outline {
+  @apply disabled:text-yellow-500/40 disabled:bg-slate-100/10 disabled:border-yellow-500/40 bg-transparent text-yellow-500
+  hover:text-yellow-500/70 [&.active]:text-yellow-500 border [&.lg]:border-2 [&.xl]:border-2 border-yellow-500
+  hover:border-yellow-500/70 ring-yellow-500/50;
 }
 
 .with-icon {

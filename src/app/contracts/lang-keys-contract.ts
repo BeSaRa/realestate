@@ -83,8 +83,10 @@ export interface LangKeysContract {
   paginator_last_page_label: string;
   paginator_next_page_label: string;
   paginator_previous_page_label: string;
-  ///////////////////////////////////////////////
-  paginator_show_label: string;
+  paginator_showing_label: string;
+  paginator_to_label: string;
+  paginator_from_label: string;
+  paginator_entry_label: string;
   property_type: string;
   property_usage: string;
 }
