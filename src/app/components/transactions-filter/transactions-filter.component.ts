@@ -8,11 +8,13 @@ import { LookupService } from '@services/lookup.service';
 import { Subject, takeUntil } from 'rxjs';
 import { Lookup } from '@models/lookup';
 import { range } from '@utils/utils';
+import { Durations } from '@enums/durations';
+import { InputComponent } from '@components/input/input.component';
 
 @Component({
   selector: 'app-transactions-filter',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, ButtonComponent, SelectInputComponent],
+  imports: [CommonModule, ReactiveFormsModule, ButtonComponent, SelectInputComponent, InputComponent],
   templateUrl: './transactions-filter.component.html',
   styleUrls: ['./transactions-filter.component.scss'],
 })
@@ -30,7 +32,9 @@ export class TransactionsFilterComponent implements OnInit, OnDestroy {
 
   years = range(2019, new Date().getFullYear());
 
-  durationOptions = ['سنوي', 'سنوي 1', 'سنوي 2'];
+  durations = this.lookupService.lookups.durations;
+  halfYearDurations = this.lookupService.lookups.halfYearDurations;
+  quarterYearDurations = this.lookupService.lookups.quarterYearDurations;
 
   form = this.fb.group({
     municipalityId: [],
@@ -50,8 +54,17 @@ export class TransactionsFilterComponent implements OnInit, OnDestroy {
     areaTo: [],
     baseYear: [],
     streetNo: [],
+    // not related to the criteria
+    durationType: [],
+    halfYearDuration: [],
+    quarterYearDuration: [],
   });
+
   private destroy$: Subject<void> = new Subject();
+
+  displayHalf = false;
+  displayQuarter = false;
+  displayRange = false;
 
   ngOnDestroy(): void {
     this.destroy$.next();
@@ -63,9 +76,8 @@ export class TransactionsFilterComponent implements OnInit, OnDestroy {
     this.listenToMunicipalityChange();
     this.listenToPropertyTypeListChange();
     this.listenToRentPurposeListChange();
+    this.listenToDurationTypeChange();
     this.setDefaultValues();
-
-    console.log(this.years);
   }
 
   get municipalityId(): AbstractControl {
@@ -74,6 +86,10 @@ export class TransactionsFilterComponent implements OnInit, OnDestroy {
 
   get zoneId(): AbstractControl {
     return this.form.get('zoneId') as AbstractControl;
+  }
+
+  get durationType(): AbstractControl {
+    return this.form.get('durationType') as AbstractControl;
   }
 
   get propertyTypeList(): AbstractControl {
@@ -126,7 +142,47 @@ export class TransactionsFilterComponent implements OnInit, OnDestroy {
       zoneId: 4,
       propertyTypeList: [-1],
       rentPurposeList: [-1],
-      bedRoomsCount: [0],
+      bedRoomsCount: 0,
+      durationType: 1,
+      issueDateYear: 2019,
     });
+  }
+
+  private listenToDurationTypeChange() {
+    this.durationType.valueChanges.pipe(takeUntil(this.destroy$)).subscribe((value: Durations) => {
+      value === Durations.YEARLY
+        ? this.onlyDisplayYear()
+        : value === Durations.HALF_YEARLY
+        ? this.onlyDisplayHalfYear()
+        : value === Durations.QUARTER_YEARLY
+        ? this.onlyDisplayQuarterYear()
+        : value === Durations.DURATION
+        ? this.onlyDisplayRangeYear()
+        : null;
+    });
+  }
+
+  private onlyDisplayYear() {
+    this.displayHalf = false;
+    this.displayQuarter = false;
+    this.displayRange = false;
+  }
+
+  private onlyDisplayHalfYear() {
+    this.displayHalf = true;
+    this.displayQuarter = false;
+    this.displayRange = false;
+  }
+
+  private onlyDisplayQuarterYear() {
+    this.displayHalf = false;
+    this.displayQuarter = true;
+    this.displayRange = false;
+  }
+
+  private onlyDisplayRangeYear() {
+    this.displayHalf = false;
+    this.displayQuarter = false;
+    this.displayRange = true;
   }
 }

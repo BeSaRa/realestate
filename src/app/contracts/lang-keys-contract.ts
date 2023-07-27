@@ -1,4 +1,6 @@
 export interface LangKeysContract {
+  select_quarter: string;
+  select_half: string;
   login: string;
   staff_login: string;
   search: string;

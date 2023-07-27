@@ -9,7 +9,6 @@ import {
   OnDestroy,
   OnInit,
   SimpleChanges,
-  ViewEncapsulation,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {

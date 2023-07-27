@@ -1,6 +1,8 @@
 import { LookupsContract } from '@contracts/lookups-contract';
 import { Lookup } from './lookup';
 import { Durations } from '@enums/durations';
+import { HalfYearDurations } from '@enums/half-year-durations';
+import { QuarterYearDurations } from '@enums/quarter-year-durations';
 
 export class LookupsMap implements LookupsContract {
   propertyTypeList!: Lookup[];
@@ -34,6 +36,7 @@ export class LookupsMap implements LookupsContract {
       lookupKey: 4,
     }),
   ];
+
   durations = [
     new Lookup().clone<Lookup>({
       arName: 'سنوي',
@@ -41,24 +44,55 @@ export class LookupsMap implements LookupsContract {
       lookupKey: Durations.YEARLY,
     }),
     new Lookup().clone<Lookup>({
-      arName: 'غرفة واحده',
-      enName: 'One Room',
-      lookupKey: 1,
+      arName: 'نصف سنوى',
+      enName: 'Half Yearly',
+      lookupKey: Durations.HALF_YEARLY,
     }),
     new Lookup().clone<Lookup>({
-      arName: 'غرفتين',
-      enName: 'Two Rooms',
-      lookupKey: 2,
+      arName: 'ربع سنوي',
+      enName: 'Quarter Yearly',
+      lookupKey: Durations.QUARTER_YEARLY,
     }),
     new Lookup().clone<Lookup>({
-      arName: 'ثلاث غرف',
-      enName: 'Three Rooms',
-      lookupKey: 3,
+      arName: 'مدة زمنية',
+      enName: 'Duration',
+      lookupKey: Durations.DURATION,
+    }),
+  ];
+
+  halfYearDurations = [
+    new Lookup().clone<Lookup>({
+      arName: 'النصف الاول',
+      enName: 'First Half',
+      lookupKey: HalfYearDurations.FIRST_HALF,
     }),
     new Lookup().clone<Lookup>({
-      arName: 'أربع  غرف',
-      enName: 'Four Rooms',
-      lookupKey: 4,
+      arName: 'النصف الاخير',
+      enName: 'Last Half',
+      lookupKey: HalfYearDurations.LAST_HALF,
+    }),
+  ];
+
+  quarterYearDurations = [
+    new Lookup().clone<Lookup>({
+      arName: 'الربع الاول',
+      enName: 'First Quarter',
+      lookupKey: QuarterYearDurations.FIRST_QUARTER,
+    }),
+    new Lookup().clone<Lookup>({
+      arName: 'الربع الثاني',
+      enName: 'Second Quarter',
+      lookupKey: QuarterYearDurations.SECOND_QUARTER,
+    }),
+    new Lookup().clone<Lookup>({
+      arName: 'الربع الثالث',
+      enName: 'Third Quarter',
+      lookupKey: QuarterYearDurations.THIRD_QUARTER,
+    }),
+    new Lookup().clone<Lookup>({
+      arName: 'الربع الاخير',
+      enName: 'Last Quarter',
+      lookupKey: QuarterYearDurations.LAST_QUARTER,
     }),
   ];
 }

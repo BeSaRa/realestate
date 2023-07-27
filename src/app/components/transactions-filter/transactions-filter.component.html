@@ -1,4 +1,4 @@
-<div class="grid grid-cols-4 gap-4">
+<div class="grid grid-cols-5 gap-4">
   <ng-container [formGroup]="form">
     <app-select-input
       formControlName="municipalityId"
@@ -31,7 +31,27 @@
       bindValue="lookupKey"
       [label]="lang.map.number_of_rooms"
       [options]="rooms" />
-    <app-select-input [label]="lang.map.duration" [options]="durationOptions" />
+    <app-select-input
+      formControlName="durationType"
+      bindLabel="getNames"
+      bindValue="lookupKey"
+      [label]="lang.map.duration"
+      [options]="durations" />
+    <app-select-input formControlName="issueDateYear" [label]="lang.map.year" [options]="years" />
+    <app-select-input
+      formControlName="halfYearDuration"
+      bindLabel="getNames"
+      bindValue="lookupKey"
+      [label]="lang.map.select_half"
+      [options]="halfYearDurations" />
+    <app-select-input
+      size="md"
+      formControlName="quarterYearDuration"
+      bindLabel="getNames"
+      bindValue="lookupKey"
+      [label]="lang.map.select_quarter"
+      [options]="quarterYearDurations" />
+    <app-input size="md"></app-input>
   </ng-container>
 </div>
 <div class="flex justify-center xl:justify-end gap-3 mt-5 xl:mt-0">
