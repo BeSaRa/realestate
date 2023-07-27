@@ -21,14 +21,23 @@
     <tr
       mat-row
       *matRowDef="let row; columns: displayedColumnsNames"
-      class="text-center text-xl border-b last-of-type:border-b-0 border-gray-200"></tr>
+      class="text-center text-xl border-b border-gray-200"></tr>
   </table>
-  <mat-paginator
-    class="border-t border-gray-200"
-    (page)="paginate($event)"
-    [pageSizeOptions]="pageSizeOptions"
-    [pageSize]="limit"
-    [showFirstLastButtons]="showFirstLastButtons"
-    [length]="length">
-  </mat-paginator>
+
+  <!-- paginator -->
+  <div class="flex justify-between items-center">
+    <span class="text-primary/70">
+      {{ lang.map.paginator_showing_label.toCapital() }} {{ offset + 1 }} {{ lang.map.paginator_to_label.toCapital() }}
+      {{ offset + pageSize > length ? length : offset + pageSize }} {{ lang.map.paginator_from_label.toCapital() }}
+      {{ length }}
+      {{ lang.map.paginator_entry_label.toCapital() }}
+    </span>
+    <mat-paginator
+      (page)="paginate($event)"
+      [pageSize]="pageSize"
+      [showFirstLastButtons]="showFirstLastButtons"
+      [hidePageSize]="true"
+      [length]="length">
+    </mat-paginator>
+  </div>
 </div>
