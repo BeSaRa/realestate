@@ -24,6 +24,7 @@ export class KpiRootComponent {
   lang = inject(TranslationService);
 
   selectItem(): void {
+    this.isHovered = true;
     this.itemSelected.emit(this.item);
   }
 }
