@@ -27,7 +27,7 @@ export class DashboardService {
   loadPurposeKpi(kpi: KpiRoot, criteria: Partial<RentCriteriaContract>): Observable<KpiModel[]> {
     const entities = Object.entries(this.urlService.URLS);
     entities.forEach((i) => {
-      i[1] === kpi.subUrl ? console.log(i[0]) : null;
+      i[1] === kpi.subUrl ? console.log(i[0], ' : ', kpi.subUrl) : null;
     });
     delete criteria.bedRoomsCount;
     return this.http.post<KpiModel[]>(kpi.subUrl!, criteria);
@@ -36,7 +36,7 @@ export class DashboardService {
   loadPropertyTypeKpi(kpi: KpiRoot, criteria: Partial<RentCriteriaContract>): Observable<KpiModel[]> {
     const entities = Object.entries(this.urlService.URLS);
     entities.forEach((i) => {
-      i[1] === kpi.secondSubUrl ? console.log(i[0]) : null;
+      i[1] === kpi.secondSubUrl ? console.log(i[0], ' : ', kpi.secondSubUrl) : null;
     });
     delete criteria.bedRoomsCount;
     return this.http.post<KpiModel[]>(kpi.secondSubUrl!, criteria);
