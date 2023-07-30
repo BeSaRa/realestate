@@ -1,16 +1,16 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import InputsPageComponent from './inputs-page.component';
+import { KpiRootComponent } from './kpi-root.component';
 
-describe('InputsPageComponent', () => {
-  let component: InputsPageComponent;
-  let fixture: ComponentFixture<InputsPageComponent>;
+describe('KpiRootComponent', () => {
+  let component: KpiRootComponent;
+  let fixture: ComponentFixture<KpiRootComponent>;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [InputsPageComponent],
+      imports: [KpiRootComponent],
     });
-    fixture = TestBed.createComponent(InputsPageComponent);
+    fixture = TestBed.createComponent(KpiRootComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

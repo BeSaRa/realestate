@@ -1,4 +1,21 @@
 export interface LangKeysContract {
+  depending_on_use: string;
+  average_rental_price_per_unit_property: string;
+  the_average_price_per_square_meter_square_foot: string;
+  the_total_value_of_lease_contracts: string;
+  total_rented_space: string;
+  the_total_number_of_properties_units_rented: string;
+  the_total_number_of_lease_contracts: string;
+  area_from: string;
+  area_to: string;
+  building_age_in_years_from: string;
+  building_age_in_years_to: string;
+  rental_value_per_month_from: string;
+  rental_value_per_month_to: string;
+  measuring_unit: string;
+  date_from_to: string;
+  date_to: string;
+  date_from: string;
   select_duration: string;
   select_quarter: string;
   select_half: string;

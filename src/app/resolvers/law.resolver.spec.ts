@@ -4,8 +4,8 @@ import { ResolveFn } from '@angular/router';
 import { lawResolver } from './law.resolver';
 
 describe('lawResolver', () => {
-  const executeResolver: ResolveFn<boolean> = (...resolverParameters) => 
-      TestBed.runInInjectionContext(() => lawResolver(...resolverParameters));
+  const executeResolver: ResolveFn<boolean> = (...resolverParameters) =>
+    TestBed.runInInjectionContext(() => lawResolver(...resolverParameters));
 
   beforeEach(() => {
     TestBed.configureTestingModule({});

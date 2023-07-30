@@ -1,27 +1,23 @@
 <app-extra-header class="flex -mt-32 relative text-white">
   <div class="flex justify-between items-center h-60">
     <div class="h-60 flex flex-col justify-center items-start" id="logo-side">
-      <h1 class="text-5xl font-semibold">{{ lang.map.qatar_real_estate_platform.toCapitalAll() }}</h1>
+      <h1 class="text-5xl font-semibold">{{ lang.map.qatar_real_estate_platform }}</h1>
       <h2 class="text-3xl font-semibold">
-        {{ lang.toggleMap.qatar_real_estate_platform.toCapitalAll() }} -
-        <span class="text-gray-400 font-normal">({{ lang.map.trial_run.toCapitalAll() }})</span>
+        {{ lang.toggleMap.qatar_real_estate_platform }} -
+        <span class="text-gray-400 font-normal">({{ lang.map.trial_run }})</span>
       </h2>
     </div>
     <div id="slider-side" class="flex flex-col gap-5">
       <!-- <img class="w-auto h-auto" ngSrc="assets/images/slider.png" alt="slider" height="240" width="470" />-->
       <div class="bg-black/50 p-5 rounded-xl flex flex-col items-center">
         <p>
-          {{
-            lang.map.average_price_per_square_foot_of_vacant_land_in_doha_since_the_beginning_of_the_year_until_now.toCapital()
-          }}
+          {{ lang.map.average_price_per_square_foot_of_vacant_land_in_doha_since_the_beginning_of_the_year_until_now }}
         </p>
         <p class="text-2xl text-secondary">619 QR</p>
       </div>
       <div class="bg-black/50 p-5 rounded-xl flex flex-col items-center">
         <p>
-          {{
-            lang.map.average_price_per_square_foot_of_villas_in_doha_since_the_beginning_of_the_year_until_now.toCapital()
-          }}
+          {{ lang.map.average_price_per_square_foot_of_villas_in_doha_since_the_beginning_of_the_year_until_now }}
         </p>
         <p class="text-2xl text-secondary">625 QR</p>
       </div>
@@ -32,10 +28,10 @@
   <app-banner />
   <br />
   <br />
-  <app-news-list [title]="lang.map.latest_news.toCapitalAll()" [newsData]="(newsData | async) ?? []" />
+  <app-news-list [title]="lang.map.latest_news" [newsData]="(newsData | async) ?? []" />
   <div class="text-center mt-10">
     <button routerLink="/news" class="self-center !bg-secondary !text-white !shadow-xl" mat-button>
-      {{ lang.map.more.toCapitalAll() }}...
+      {{ lang.map.more }}...
     </button>
   </div>
 

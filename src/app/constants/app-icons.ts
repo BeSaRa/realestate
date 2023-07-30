@@ -1,4 +1,5 @@
 export const AppIcons = {
+  DATE: 'calendar-range',
   RELOAD: 'reload',
   SEARCH: 'magnify',
   DOTS_CIRCLE: 'dots-circle',
@@ -29,6 +30,7 @@ export const AppIcons = {
   ARROW_LEFT: 'arrow-left-circle-outline',
   ARROW_RIGHT: 'arrow-right-circle-outline',
   CHEVRON_DOWN: 'chevron-down',
+  CHEVRON_UP: 'chevron-up',
   CHEVRON_LEFT: 'chevron-left',
   CHEVRON_RIGHT: 'chevron-right',
   TRIANGLE_DOWN: 'triangle-down',

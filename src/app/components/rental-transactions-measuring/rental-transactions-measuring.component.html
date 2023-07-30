@@ -3,17 +3,12 @@
     {{ lang.map.rental_transactions_measuring_dashboard.toCapitalAll() }}
   </h3>
   <div class="mt-12 flex flex-col xl:flex-row gap-10 items-center xl:items-start">
-    <div class="w-full xl:w-1/2 relative px-5 pt-10 pb-3 border border-primary rounded-2xl">
-      <span class="absolute top-0 left-1/2 -translate-y-1/2 -translate-x-1/2 px-5 bg-white font-bold text-xl">{{
-        lang.map.pricefull_indicators.toCapital()
-      }}</span>
-      <app-transactions-measuring-list [list]="pricefullList"></app-transactions-measuring-list>
+    <div class="w-full xl:w-1/2 relative px-5 py-3 border border-primary rounded-2xl">
+      <app-kpi-root></app-kpi-root>
+      <!--      <app-transactions-measuring-list [list]="nonePriceList"></app-transactions-measuring-list>-->
     </div>
-    <div class="w-full xl:w-1/2 relative px-5 pt-10 pb-3 border border-primary rounded-2xl">
-      <span class="absolute top-0 left-1/2 -translate-y-1/2 -translate-x-1/2 px-5 bg-white font-bold text-xl">{{
-        lang.map.priceless_indicators.toCapital()
-      }}</span>
-      <app-transactions-measuring-list [list]="pricelessList"></app-transactions-measuring-list>
+    <div class="w-full xl:w-1/2 relative px-5 py-3 border border-primary rounded-2xl">
+      <app-transactions-measuring-list [list]="priceList"></app-transactions-measuring-list>
     </div>
   </div>
 </div>

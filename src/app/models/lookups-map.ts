@@ -3,6 +3,7 @@ import { Lookup } from './lookup';
 import { Durations } from '@enums/durations';
 import { HalfYearDurations } from '@enums/half-year-durations';
 import { QuarterYearDurations } from '@enums/quarter-year-durations';
+import { Spaces } from '@enums/spaces';
 
 export class LookupsMap implements LookupsContract {
   propertyTypeList!: Lookup[];
@@ -93,6 +94,19 @@ export class LookupsMap implements LookupsContract {
       arName: 'الربع الاخير',
       enName: 'Last Quarter',
       lookupKey: QuarterYearDurations.LAST_QUARTER,
+    }),
+  ];
+
+  spaces = [
+    new Lookup().clone<Lookup>({
+      arName: 'المتر المربع',
+      enName: 'Square Meter',
+      lookupKey: Spaces.SQUARE_METER,
+    }),
+    new Lookup().clone<Lookup>({
+      arName: 'القدم المربع',
+      enName: 'Square Foot',
+      lookupKey: Spaces.SQUARE_FOOT,
     }),
   ];
 }

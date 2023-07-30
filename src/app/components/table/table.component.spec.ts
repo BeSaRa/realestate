@@ -8,7 +8,7 @@ describe('TableComponent', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [TableComponent]
+      imports: [TableComponent],
     });
     fixture = TestBed.createComponent(TableComponent);
     component = fixture.componentInstance;

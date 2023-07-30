@@ -8,7 +8,7 @@ describe('TranslationPopupComponent', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [TranslationPopupComponent]
+      imports: [TranslationPopupComponent],
     });
     fixture = TestBed.createComponent(TranslationPopupComponent);
     component = fixture.componentInstance;

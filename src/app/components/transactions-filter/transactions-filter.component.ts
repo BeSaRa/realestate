@@ -1,5 +1,5 @@
-import { Component, inject, OnDestroy, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { Component, EventEmitter, inject, OnDestroy, OnInit, Output } from '@angular/core';
+import { CommonModule, DatePipe } from '@angular/common';
 import { AbstractControl, ReactiveFormsModule, UntypedFormBuilder } from '@angular/forms';
 import { TranslationService } from '@services/translation.service';
 import { ButtonComponent } from '@components/button/button.component';
@@ -10,18 +10,66 @@ import { Lookup } from '@models/lookup';
 import { range } from '@utils/utils';
 import { Durations } from '@enums/durations';
 import { InputComponent } from '@components/input/input.component';
+import { MatIconModule } from '@angular/material/icon';
+import { AppIcons } from '@constants/app-icons';
+import { IconButtonComponent } from '@components/icon-button/icon-button.component';
+import { MatNativeDateModule, MatRippleModule } from '@angular/material/core';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { InputPrefixDirective } from '@directives/input-prefix.directive';
+import { ControlDirective } from '@directives/control.directive';
+import { NgxMaskDirective } from 'ngx-mask';
+import { RentCriteriaContract } from '@contracts/rent-criteria-contract';
+import { animate, state, style, transition, trigger } from '@angular/animations';
+import { CriteriaType } from '@enums/criteria-type';
 
 @Component({
   selector: 'app-transactions-filter',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, ButtonComponent, SelectInputComponent, InputComponent],
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    ButtonComponent,
+    SelectInputComponent,
+    InputComponent,
+    MatIconModule,
+    IconButtonComponent,
+    MatRippleModule,
+    MatDatepickerModule,
+    MatNativeDateModule,
+    MatFormFieldModule,
+    MatInputModule,
+    InputPrefixDirective,
+    ControlDirective,
+    NgxMaskDirective,
+  ],
+  providers: [DatePipe],
   templateUrl: './transactions-filter.component.html',
   styleUrls: ['./transactions-filter.component.scss'],
+  animations: [
+    trigger('openClose', [
+      state(
+        'true',
+        style({
+          height: '*',
+        })
+      ),
+      state(
+        'false',
+        style({
+          height: 0,
+        })
+      ),
+      transition('true <=> false', animate('150ms ease-in-out')),
+    ]),
+  ],
 })
 export class TransactionsFilterComponent implements OnInit, OnDestroy {
   lang = inject(TranslationService);
   fb = inject(UntypedFormBuilder);
   lookupService = inject(LookupService);
+  datePipe = inject(DatePipe);
 
   municipalities = this.lookupService.lookups.municipalityList;
   propertyTypes = this.lookupService.lookups.propertyTypeList;
@@ -35,6 +83,10 @@ export class TransactionsFilterComponent implements OnInit, OnDestroy {
   durations = this.lookupService.lookups.durations;
   halfYearDurations = this.lookupService.lookups.halfYearDurations;
   quarterYearDurations = this.lookupService.lookups.quarterYearDurations;
+  // spaces = this.lookupService.lookups.spaces; // will use it later
+
+  @Output()
+  fromChanged = new EventEmitter<{ criteria: RentCriteriaContract; type: CriteriaType }>();
 
   form = this.fb.group({
     municipalityId: [],
@@ -58,13 +110,23 @@ export class TransactionsFilterComponent implements OnInit, OnDestroy {
     durationType: [],
     halfYearDuration: [],
     quarterYearDuration: [],
+    rangeDate: [],
   });
 
   private destroy$: Subject<void> = new Subject();
 
+  protected readonly AppIcons = AppIcons;
+
   displayHalf = false;
   displayQuarter = false;
   displayRange = false;
+  minDate: Date = new Date('2019-01-01');
+  maxDate: Date = new Date();
+  isOpened = false;
+
+  toggleFilters(): void {
+    this.isOpened = !this.isOpened;
+  }
 
   ngOnDestroy(): void {
     this.destroy$.next();
@@ -78,8 +140,6 @@ export class TransactionsFilterComponent implements OnInit, OnDestroy {
     this.listenToRentPurposeListChange();
     this.listenToDurationTypeChange();
     this.setDefaultValues();
-
-    console.log(this.propertyUsages);
   }
 
   get municipalityId(): AbstractControl {
@@ -100,6 +160,18 @@ export class TransactionsFilterComponent implements OnInit, OnDestroy {
 
   get rentPurposeList(): AbstractControl {
     return this.form.get('rentPurposeList') as AbstractControl;
+  }
+
+  get issueDateFrom(): AbstractControl {
+    return this.form.get('issueDateFrom') as AbstractControl;
+  }
+
+  get issueDateTo(): AbstractControl {
+    return this.form.get('issueDateTo') as AbstractControl;
+  }
+
+  get rangeDate(): AbstractControl {
+    return this.form.get('rangeDate') as AbstractControl;
   }
 
   listenToMunicipalityChange(): void {
@@ -148,6 +220,7 @@ export class TransactionsFilterComponent implements OnInit, OnDestroy {
       durationType: 1,
       issueDateYear: 2019,
     });
+    this.fromChanged.emit({ criteria: this.form.value, type: CriteriaType.DEFAULT });
   }
 
   private listenToDurationTypeChange() {
@@ -186,5 +259,22 @@ export class TransactionsFilterComponent implements OnInit, OnDestroy {
     this.displayHalf = false;
     this.displayQuarter = false;
     this.displayRange = true;
+  }
+
+  rangeChange() {
+    this.rangeDate.patchValue(
+      (this.issueDateFrom.value ? this.datePipe.transform(this.issueDateFrom.value, 'YYY-MM-dd') : '') +
+        ' --- ' +
+        (this.issueDateTo.value ? this.datePipe.transform(this.issueDateTo.value, 'YYY-MM-dd') : '')
+    );
+  }
+
+  resetForm(): void {
+    this.form.reset({}, { emitEvent: false });
+    this.setDefaultValues();
+  }
+
+  search() {
+    this.fromChanged.emit({ criteria: this.form.value, type: CriteriaType.USER });
   }
 }

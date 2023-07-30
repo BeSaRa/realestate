@@ -28,10 +28,10 @@ export abstract class CmsService<T, PrimaryType = number>
 
   @CastResponse(undefined, { unwrap: 'data', fallback: '$default' })
   loadById(id: PrimaryType): Observable<T> {
-    return this.http.get<T>(this.urlService.URLS.BASE_URL + 'items/' + this.collectionName + '/' + id);
+    return this.http.get<T>(this.urlService.URLS.BASE_URL + '/items/' + this.collectionName + '/' + id);
   }
 
   loadFile(fileId: string): string {
-    return this.urlService.URLS.BASE_URL + 'assets/' + fileId;
+    return this.urlService.URLS.BASE_URL + '/assets/' + fileId;
   }
 }

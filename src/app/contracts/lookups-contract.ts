@@ -9,4 +9,5 @@ export interface LookupsContract {
   durations: Lookup[];
   halfYearDurations: Lookup[];
   quarterYearDurations: Lookup[];
+  spaces: Lookup[];
 }

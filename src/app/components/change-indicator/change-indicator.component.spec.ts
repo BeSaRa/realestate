@@ -8,7 +8,7 @@ describe('ChangeIndicatorComponent', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [ChangeIndicatorComponent]
+      imports: [ChangeIndicatorComponent],
     });
     fixture = TestBed.createComponent(ChangeIndicatorComponent);
     component = fixture.componentInstance;

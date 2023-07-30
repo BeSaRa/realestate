@@ -18,12 +18,14 @@ import { NGX_COUNTUP_OPTIONS } from '@constants/injection-tokens';
 import { MatPaginatorIntl } from '@angular/material/paginator';
 import { PaginatorLocal } from '@constants/paginator-local';
 import { LookupService } from '@services/lookup.service';
+import { provideNgxMask } from 'ngx-mask';
 
 export const appConfig: ApplicationConfig = {
   providers: [
     provideRouter(routes, withComponentInputBinding()),
     provideAnimations(),
     provideHttpClient(withInterceptorsFromDi()),
+    provideNgxMask(),
     importProvidersFrom(MatDialogModule),
     {
       provide: HTTP_INTERCEPTORS,

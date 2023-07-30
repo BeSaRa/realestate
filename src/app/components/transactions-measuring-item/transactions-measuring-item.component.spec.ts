@@ -8,7 +8,7 @@ describe('TransactionsMeasuringItemComponent', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [TransactionsMeasuringItemComponent]
+      imports: [TransactionsMeasuringItemComponent],
     });
     fixture = TestBed.createComponent(TransactionsMeasuringItemComponent);
     component = fixture.componentInstance;

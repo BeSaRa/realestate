@@ -10,18 +10,43 @@
 
 <div class="content-wrapper">
   <div class="px-16">
-    <app-transactions-filter></app-transactions-filter>
+    <app-transactions-filter (fromChanged)="filterChange($event)" />
   </div>
-
   <div class="p-16">
-    <app-rental-transactions-measuring></app-rental-transactions-measuring>
+    <div class="flex flex-col">
+      <h3 class="heading text-3xl self-start text-primary border-secondary font-semibold inline-block">
+        {{ lang.map.rental_transactions_measuring_dashboard }}
+      </h3>
+      <div class="flex flex-col gap-4 lg:flex-row">
+        <div class="my-4 p-4 border border-primary rounded-lg flex justify-center gap-4">
+          <app-kpi-root (itemSelected)="rootItemSelected($event)" *ngFor="let item of nonePriceList" [item]="item" />
+        </div>
+        <div class="my-4 p-4 border border-primary rounded-lg flex justify-center gap-4">
+          <app-kpi-root (itemSelected)="rootItemSelected($event)" *ngFor="let item of priceList" [item]="item" />
+        </div>
+      </div>
+    </div>
   </div>
-
-  <div class="bg-sand p-16">
-    <app-rental-contracts></app-rental-contracts>
-  </div>
-
-  <div class="p-16">
-    <app-rental-transactions-list></app-rental-transactions-list>
+  <div class="bg-sand p-16 flex justify-center flex-col">
+    <div class="px-16">
+      <div class="flex w-full justify-center">
+        <h3 *ngIf="selectedRoot" class="text-3xl mb-4 text-primary border-secondary font-semibold">
+          {{ selectedRoot.getNames() }} ({{ lang.map.depending_on_use }})
+        </h3>
+      </div>
+      <div class="grid grid-cols-3 xl:grid-cols-6 border-2 border-secondary overflow-hidden rounded-xl">
+        <app-purpose
+          *ngFor="let item of purposeKPIS; let i = index"
+          [item]="item"
+          class="border-e-2 border-secondary last-of-type:border-e-0 {{ i > 2 ? 'border-t-2 xl:border-t-0' : '' }} {{
+            i % 3 === 2 ? 'border-e-0 xl:border-e-2' : ''
+          }}" />
+      </div>
+      <div class="mt-10" dir="ltr">
+        <carousel [autoplay]="true" [arrowsOutside]="true" [margin]="20" [cellWidth]="350">
+          <app-property-block class="carousel-cell" *ngFor="let item of propertiesKPIS" [item]="item" />
+        </carousel>
+      </div>
+    </div>
   </div>
 </div>
