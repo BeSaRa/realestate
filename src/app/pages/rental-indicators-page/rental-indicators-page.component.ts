@@ -19,7 +19,6 @@ import { PropertyBlockComponent } from '@components/property-block/property-bloc
 import { BidiModule } from '@angular/cdk/bidi';
 import { RentDefaultValues } from '@models/rent-default-values';
 import { combineLatest, take } from 'rxjs';
-import { compileClassMetadata } from '@angular/compiler';
 import { KpiModel } from '@models/kpi-model';
 
 @Component({
@@ -103,9 +102,9 @@ export default class RentalIndicatorsPageComponent {
       this.lang.getArabicTranslation('average_rental_price_per_unit_property'),
       this.lang.getEnglishTranslation('average_rental_price_per_unit_property'),
       false,
-      this.urlService.URLS.RENT_KPI6,
-      this.urlService.URLS.RENT_KPI7,
-      this.urlService.URLS.RENT_KPI8
+      this.urlService.URLS.RENT_KPI16,
+      this.urlService.URLS.RENT_KPI17,
+      this.urlService.URLS.RENT_KPI18
     ),
   ];
 

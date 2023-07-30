@@ -23,13 +23,13 @@ export const EndPoints = {
   RENT_KPI16: 'RENT|mean-area', // root
   RENT_KPI17: 'RENT|mean-area/purpose',
   RENT_KPI18: 'RENT|mean-area/property',
-  RENT_KPI19: 'RENT|total-contracts/property',
-  RENT_KPI20: 'RENT|total-contracts/property',
-  RENT_KPI21: 'RENT|total-contracts/property',
-  RENT_KPI22: 'RENT|total-contracts/property',
-  RENT_KPI23: 'RENT|total-contracts/property',
-  RENT_KPI24: 'RENT|total-contracts/property',
-  RENT_KPI25: 'RENT|total-contracts/property',
+  // RENT_KPI19: 'RENT|total-contracts/property',
+  // RENT_KPI20: 'RENT|total-contracts/property',
+  // RENT_KPI21: 'RENT|total-contracts/property',
+  // RENT_KPI22: 'RENT|total-contracts/property',
+  // RENT_KPI23: 'RENT|total-contracts/property',
+  // RENT_KPI24: 'RENT|total-contracts/property',
+  // RENT_KPI25: 'RENT|total-contracts/property',
 };
 
 export type EndpointsType = typeof EndPoints;
