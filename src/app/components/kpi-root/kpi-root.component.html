@@ -1,3 +1,5 @@
+<!-- eslint-disable @angular-eslint/template/click-events-have-key-events -->
+<!-- eslint-disable-next-line @angular-eslint/template/interactive-supports-focus -->
 <div
   (click)="selectItem()"
   (mouseenter)="isHovered = true"
@@ -11,5 +13,5 @@
     ><span [countUp]="item.value" [options]="countUpOptions"></span>
     {{ !item.hasPrice ? lang.map.qr.toUpperCase() : "" }}</span
   >
-  <app-change-indicator class="mt-2" [value]="item.yoy" [isHovered]="isHovered"></app-change-indicator>
+  <app-change-indicator class="mt-2" [value]="item.yoy" [isHovered]="isHovered || item.selected"></app-change-indicator>
 </div>
