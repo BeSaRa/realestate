@@ -32,8 +32,12 @@ export const routes: Routes = [
     resolve: { lawData: lawResolver },
   },
   {
-    path: 'sell-indicators',
+    path: 'sell-indicator',
     loadComponent: () => import('@pages/sell-indicator-page/sell-indicators-page.component'),
+  },
+  {
+    path: 'sell-indicators',
+    loadComponent: () => import('@pages/sell-indicators-page/sell-indicators-page.component'),
   },
   {
     path: 'mortgage-indicators',
