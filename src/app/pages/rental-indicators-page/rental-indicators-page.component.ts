@@ -17,6 +17,10 @@ import { PurposeComponent } from '@components/purpose/purpose.component';
 import { IvyCarouselModule } from 'angular-responsive-carousel2';
 import { PropertyBlockComponent } from '@components/property-block/property-block.component';
 import { BidiModule } from '@angular/cdk/bidi';
+import { RentDefaultValues } from '@models/rent-default-values';
+import { combineLatest, take } from 'rxjs';
+import { compileClassMetadata } from '@angular/compiler';
+import { KpiModel } from '@models/kpi-model';
 
 @Component({
   selector: 'app-rental-indicators-page',
@@ -105,9 +109,9 @@ export default class RentalIndicatorsPageComponent {
     ),
   ];
 
-  purposeKPIS = [...this.lookupService.lookups.rentPurposeList.slice().sort((a, b) => a.lookupKey - b.lookupKey)];
+  purposeKPIS = this.lookupService.lookups.rentPurposeList;
 
-  propertiesKPIS = [...this.lookupService.lookups.propertyTypeList.slice().sort((a, b) => a.lookupKey - b.lookupKey)];
+  propertiesKPIS = this.lookupService.lookups.propertyTypeList;
 
   selectedRoot?: KpiRoot;
 
@@ -121,11 +125,30 @@ export default class RentalIndicatorsPageComponent {
 
   filterChange({ criteria, type }: { criteria: RentCriteriaContract; type: CriteriaType }) {
     this.criteria = { criteria, type };
-    if (type !== CriteriaType.DEFAULT) return;
 
-    this.dashboardService.loadRentDefaults(criteria).subscribe((result) => {
-      console.log(result);
-    });
+    if (type === CriteriaType.DEFAULT) {
+      // load default
+      this.dashboardService.loadRentDefaults(criteria).subscribe((result) => {
+        this.setDefaultRoots(result[0]);
+      });
+    } else {
+      this.rootKPIS.map((item) => {
+        ((i) => {
+          this.dashboardService
+            .loadKpiRoot(i, this.criteria.criteria)
+            .pipe(take(1))
+            .subscribe((value) => {
+              if (!value.length) {
+                i.setValue(0);
+                i.setYoy(0);
+              } else {
+                i.setValue(value[value.length - 1].kpiVal);
+                i.setYoy(value[value.length - 1].kpiYoYVal);
+              }
+            });
+        })(item);
+      });
+    }
   }
 
   rootItemSelected(item: KpiRoot) {
@@ -136,8 +159,52 @@ export default class RentalIndicatorsPageComponent {
       item !== i ? (i.selected = false) : item.toggleSelect();
     });
 
-    this.dashboardService.loadKpiSub(item, this.criteria.criteria).subscribe((value) => {
-      console.log(value);
+    combineLatest([
+      this.dashboardService.loadPurposeKpi(item, this.criteria.criteria),
+      this.dashboardService.loadPropertyTypeKpi(item, this.criteria.criteria),
+    ]).subscribe(([subKPI, secondSubKPI]) => {
+      const purpose = subKPI.reduce((acc, item) => {
+        return { ...item, [item.rentPuropseId]: item };
+      }, {} as Record<number, KpiModel>);
+      const propertyTypes = secondSubKPI.reduce((acc, item) => {
+        return { ...item, [item.propertyTypeId]: item };
+      }, {} as Record<number, KpiModel>);
+
+      this.purposeKPIS = this.purposeKPIS.map((item) => {
+        Object.prototype.hasOwnProperty.call(purpose, item.lookupKey)
+          ? (item.value = purpose[item.lookupKey].kpiVal)
+          : (item.value = 0);
+        Object.prototype.hasOwnProperty.call(purpose, item.lookupKey)
+          ? (item.yoy = purpose[item.lookupKey].kpiYoYVal)
+          : (item.yoy = 0);
+        return item;
+      });
+      this.propertiesKPIS = this.propertiesKPIS.map((item) => {
+        Object.prototype.hasOwnProperty.call(propertyTypes, item.lookupKey)
+          ? (item.value = propertyTypes[item.lookupKey].kpiVal)
+          : (item.value = 0);
+        Object.prototype.hasOwnProperty.call(propertyTypes, item.lookupKey)
+          ? (item.yoy = propertyTypes[item.lookupKey].kpiYoYVal)
+          : (item.yoy = 0);
+        return item;
+      });
     });
+  }
+
+  private setDefaultRoots(rentDefaultValue?: RentDefaultValues) {
+    if (!rentDefaultValue) {
+      this.rootKPIS.forEach((item) => {
+        item.setValue(0);
+        item.setYoy(0);
+      });
+    } else {
+      this.rootKPIS.forEach((item) => {
+        const value = `kpi${item.id}Val`;
+        const yoy = `kpiYoY${item.id}`;
+        item.setValue(rentDefaultValue[value as keyof RentDefaultValues]);
+        item.setYear(rentDefaultValue.issueYear);
+        item.setYoy(rentDefaultValue[yoy as keyof RentDefaultValues]);
+      });
+    }
   }
 }

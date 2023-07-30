@@ -11,6 +11,6 @@
     dir="ltr"
     class="relative text-lg font-bold transition"
     [ngClass]="{ 'text-secondary': !isHovered, 'text-white': isHovered }">
-    {{ value }} % YoY
+    {{ (value || 0).toFixed(2) }} % YoY
   </span>
 </div>

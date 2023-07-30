@@ -7,6 +7,7 @@ export class KpiRoot extends ClonerMixin(GetNamesMixin(class {})) implements Kpi
   imageUrl?: string;
   yoy = 0;
   selected = false;
+  year!: number;
 
   constructor(
     public id: number,
@@ -27,6 +28,16 @@ export class KpiRoot extends ClonerMixin(GetNamesMixin(class {})) implements Kpi
 
   setYoy(yoy: number): this {
     this.yoy = yoy;
+    return this;
+  }
+
+  setValue(value: number): this {
+    this.value = value;
+    return this;
+  }
+
+  setYear(year: number): this {
+    this.year = year;
     return this;
   }
 

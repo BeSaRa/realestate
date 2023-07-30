@@ -41,8 +41,9 @@
       [label]="lang.map.select_half"
       [options]="halfYearDurations" />
     <app-select-input
+      [isMultiple]="true"
       *ngIf="displayQuarter"
-      formControlName="quarterYearDuration"
+      formControlName="issueDateQuarterList"
       bindLabel="getNames"
       bindValue="lookupKey"
       [label]="lang.map.select_quarter"

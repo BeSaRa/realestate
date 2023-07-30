@@ -14,27 +14,27 @@ export class LookupsMap implements LookupsContract {
     new Lookup().clone<Lookup>({
       arName: 'ستوديو',
       enName: 'Studio',
-      lookupKey: 0,
+      lookupKey: 1,
     }),
     new Lookup().clone<Lookup>({
       arName: 'غرفة واحده',
       enName: 'One Room',
-      lookupKey: 1,
+      lookupKey: 2,
     }),
     new Lookup().clone<Lookup>({
       arName: 'غرفتين',
       enName: 'Two Rooms',
-      lookupKey: 2,
+      lookupKey: 3,
     }),
     new Lookup().clone<Lookup>({
       arName: 'ثلاث غرف',
       enName: 'Three Rooms',
-      lookupKey: 3,
+      lookupKey: 4,
     }),
     new Lookup().clone<Lookup>({
       arName: 'أربع  غرف',
       enName: 'Four Rooms',
-      lookupKey: 4,
+      lookupKey: 5,
     }),
   ];
 

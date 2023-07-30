@@ -5,7 +5,7 @@ import { TranslationService } from '@services/translation.service';
 import { ButtonComponent } from '@components/button/button.component';
 import { SelectInputComponent } from '@components/select-input/select-input.component';
 import { LookupService } from '@services/lookup.service';
-import { Subject, takeUntil } from 'rxjs';
+import { debounceTime, Subject, takeUntil } from 'rxjs';
 import { Lookup } from '@models/lookup';
 import { range } from '@utils/utils';
 import { Durations } from '@enums/durations';
@@ -23,6 +23,7 @@ import { NgxMaskDirective } from 'ngx-mask';
 import { RentCriteriaContract } from '@contracts/rent-criteria-contract';
 import { animate, state, style, transition, trigger } from '@angular/animations';
 import { CriteriaType } from '@enums/criteria-type';
+import { HalfYearDurations } from '@enums/half-year-durations';
 
 @Component({
   selector: 'app-transactions-filter',
@@ -116,7 +117,7 @@ export class TransactionsFilterComponent implements OnInit, OnDestroy {
   private destroy$: Subject<void> = new Subject();
 
   protected readonly AppIcons = AppIcons;
-
+  displayYear = true;
   displayHalf = false;
   displayQuarter = false;
   displayRange = false;
@@ -140,6 +141,7 @@ export class TransactionsFilterComponent implements OnInit, OnDestroy {
     this.listenToRentPurposeListChange();
     this.listenToDurationTypeChange();
     this.setDefaultValues();
+    this.listenToFormChanges();
   }
 
   get municipalityId(): AbstractControl {
@@ -216,11 +218,13 @@ export class TransactionsFilterComponent implements OnInit, OnDestroy {
       propertyTypeList: [-1],
       rentPurposeList: [-1],
       zoneId: 4,
-      bedRoomsCount: 0,
+      bedRoomsCount: 3,
       durationType: 1,
-      issueDateYear: 2019,
+      issueDateYear: 2023,
+      issueDateStartMonth: 1,
+      issueDateEndMonth: 12,
     });
-    this.fromChanged.emit({ criteria: this.form.value, type: CriteriaType.DEFAULT });
+    this.sendFilter(CriteriaType.DEFAULT);
   }
 
   private listenToDurationTypeChange() {
@@ -238,21 +242,44 @@ export class TransactionsFilterComponent implements OnInit, OnDestroy {
   }
 
   private onlyDisplayYear() {
+    this.displayYear = true;
     this.displayHalf = false;
     this.displayQuarter = false;
     this.displayRange = false;
+
+    this.form.patchValue(
+      {
+        issueDateFrom: null,
+        issueDateTo: null,
+      },
+      { emitEvent: false }
+    );
   }
 
   private onlyDisplayHalfYear() {
     this.displayHalf = true;
     this.displayQuarter = false;
     this.displayRange = false;
+    this.form.patchValue(
+      {
+        issueDateFrom: null,
+        issueDateTo: null,
+      },
+      { emitEvent: false }
+    );
   }
 
   private onlyDisplayQuarterYear() {
     this.displayHalf = false;
     this.displayQuarter = true;
     this.displayRange = false;
+    this.form.patchValue(
+      {
+        issueDateFrom: null,
+        issueDateTo: null,
+      },
+      { emitEvent: false }
+    );
   }
 
   private onlyDisplayRangeYear() {
@@ -275,6 +302,26 @@ export class TransactionsFilterComponent implements OnInit, OnDestroy {
   }
 
   search() {
-    this.fromChanged.emit({ criteria: this.form.value, type: CriteriaType.USER });
+    this.sendFilter(CriteriaType.USER);
+  }
+
+  sendFilter(criteriaType: CriteriaType): void {
+    const value = this.form.value as Partial<RentCriteriaContract>;
+    if (this.displayYear) {
+      const date = new Date();
+      date.getFullYear() === value.issueDateYear ? (value.issueDateEndMonth = date.getMonth() + 1) : null;
+      value.issueDateQuarterList = [1, 2, 3, 4];
+    } else if (this.displayHalf) {
+      value.halfYearDuration === HalfYearDurations.FIRST_HALF
+        ? (value.issueDateQuarterList = [1, 2])
+        : (value.issueDateQuarterList = [3, 4]);
+    }
+    this.fromChanged.emit({ criteria: value as RentCriteriaContract, type: criteriaType });
+  }
+
+  private listenToFormChanges() {
+    this.form.valueChanges.pipe(takeUntil(this.destroy$), debounceTime(250)).subscribe(() => {
+      this.sendFilter(CriteriaType.USER);
+    });
   }
 }

@@ -6,6 +6,7 @@ import { UrlService } from '@services/url.service';
 import { RentDefaultValues } from '@models/rent-default-values';
 import { CastResponse } from 'cast-response';
 import { KpiRoot } from '@models/kpiRoot';
+import { KpiModel } from '@models/kpi-model';
 
 @Injectable({
   providedIn: 'root',
@@ -19,21 +20,17 @@ export class DashboardService {
     return this.http.post<RentDefaultValues[]>(this.urlService.URLS.DEFAULT_RENT, criteria);
   }
 
-  loadKpiRoot(kpi: KpiRoot, criteria: RentCriteriaContract): Observable<any> {
-    return this.http.post(kpi.url, criteria);
+  loadKpiRoot(kpi: KpiRoot, criteria: RentCriteriaContract): Observable<any[]> {
+    return this.http.post<any[]>(kpi.url, criteria);
   }
 
-  loadKpiSub(kpi: KpiRoot, criteria: Partial<RentCriteriaContract>): Observable<any> {
-    criteria.propertyTypeList = [39];
-    criteria.issueDateStartMonth = 1;
-    criteria.issueDateEndMonth = 12;
-    criteria.issueDateQuarterList = [1, 2, 3, 4];
-    criteria.municipalityId = 1;
-    delete criteria.zoneId;
-    return this.http.post(kpi.subUrl!, criteria);
+  loadPurposeKpi(kpi: KpiRoot, criteria: Partial<RentCriteriaContract>): Observable<KpiModel[]> {
+    delete criteria.bedRoomsCount;
+    return this.http.post<KpiModel[]>(kpi.subUrl!, criteria);
   }
 
-  loadKpiSecondSub(kpi: KpiRoot, criteria: RentCriteriaContract): Observable<any> {
-    return this.http.post(kpi.secondSubUrl!, criteria);
+  loadPropertyTypeKpi(kpi: KpiRoot, criteria: Partial<RentCriteriaContract>): Observable<KpiModel[]> {
+    delete criteria.bedRoomsCount;
+    return this.http.post<KpiModel[]>(kpi.secondSubUrl!, criteria);
   }
 }

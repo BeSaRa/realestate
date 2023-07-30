@@ -16,4 +16,6 @@ export interface RentCriteriaContract {
   baseYear: string;
   zoneId: number;
   streetNo: number;
+  // not related to model
+  halfYearDuration: number;
 }
