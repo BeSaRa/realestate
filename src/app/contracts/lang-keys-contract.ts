@@ -8,6 +8,7 @@ export interface LangKeysContract {
   unit_details: string;
   depending_on_property_type: string;
   depending_on_use: string;
+  depending_on_type: string;
   average_rental_price_per_unit_property: string;
   the_average_price_per_square_meter_square_foot: string;
   the_total_value_of_lease_contracts: string;

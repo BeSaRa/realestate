@@ -33,8 +33,15 @@
 ::ng-deep .app-select-input mat-option.mdc-list-item--selected {
   @apply bg-secondary/40 #{!important};
 
-  & > span,
-  & > mat-pseudo-checkbox::after {
-    @apply font-bold text-primary;
+  & > span {
+    @apply font-bold text-primary #{!important};
+  }
+
+  & > .mat-pseudo-checkbox-checked {
+    @apply bg-primary;
+  }
+
+  & > .mat-pseudo-checkbox-checked::after {
+    @apply text-white  #{!important};
   }
 }

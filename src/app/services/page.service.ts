@@ -15,6 +15,6 @@ export class PageService {
 
   @CastResponse(() => Page, { unwrap: 'data', fallback: '$default' })
   loadPage(pageName: Pages): Observable<Page> {
-    return this.http.get<Page>(this.urlService.URLS.BASE_URL + 'items/' + pageName);
+    return this.http.get<Page>(this.urlService.URLS.BASE_URL + '/items/' + pageName);
   }
 }
