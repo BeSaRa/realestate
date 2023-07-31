@@ -179,6 +179,7 @@ export default class RentalIndicatorsPageComponent {
       // load default
       this.dashboardService.loadRentDefaults(criteria).subscribe((result) => {
         this.setDefaultRoots(result[0]);
+        this.rootItemSelected(this.rootKPIS[0]);
       });
     } else {
       this.rootKPIS.map((item) => {
@@ -289,7 +290,7 @@ export default class RentalIndicatorsPageComponent {
         series: [
           {
             name: this.selectedRoot?.getNames(),
-            data: this.selectedRootChartData.map((item) => item.kpiVal),
+            data: this.selectedRootChartData.map((item) => Number(item.kpiVal)),
           },
         ],
         xaxis: {
