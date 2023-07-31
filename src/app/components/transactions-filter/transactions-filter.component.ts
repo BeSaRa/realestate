@@ -24,6 +24,7 @@ import { RentCriteriaContract } from '@contracts/rent-criteria-contract';
 import { animate, state, style, transition, trigger } from '@angular/animations';
 import { CriteriaType } from '@enums/criteria-type';
 import { HalfYearDurations } from '@enums/half-year-durations';
+import { InputSuffixDirective } from '@directives/input-suffix.directive';
 
 @Component({
   selector: 'app-transactions-filter',
@@ -42,6 +43,7 @@ import { HalfYearDurations } from '@enums/half-year-durations';
     MatFormFieldModule,
     MatInputModule,
     InputPrefixDirective,
+    InputSuffixDirective,
     ControlDirective,
     NgxMaskDirective,
   ],

@@ -1,4 +1,4 @@
-<div class="grid gap-4 lg:grid-cols-7 md:grid-cols-3 grid-cols-2">
+<div class="grid gap-4 xl:grid-cols-6 lg:grid-cols-4 md:grid-cols-3 grid-cols-2">
   <ng-container [formGroup]="form">
     <app-select-input
       formControlName="municipalityId"
@@ -51,19 +51,24 @@
     <app-input
       *ngIf="displayRange"
       formControlName="rangeDate"
+      caretColor="caret-transparent"
       (click)="dateRange.open()"
+      (keydown)="$event.preventDefault()"
       [label]="lang.map.date_from_to">
       <mat-icon
         mat-ripple
-        appInputPrefix
+        appInputSuffix
         (click)="dateRange.open()"
-        class="cursor-pointer"
+        class="cursor-pointer mx-2"
         [svgIcon]="AppIcons.DATE"></mat-icon>
-      <mat-date-range-input [max]="maxDate" [min]="minDate" class="!w-0 !h-0" appInputPrefix [rangePicker]="dateRange">
+      <mat-datepicker-toggle matIconSuffix [for]="dateRange">
+        <mat-icon matDatepickerToggleIcon>keyboard_arrow_down</mat-icon>
+      </mat-datepicker-toggle>
+      <mat-date-range-input [max]="maxDate" [min]="minDate" class="!w-0 !h-0" [rangePicker]="dateRange">
         <input matStartDate formControlName="issueDateFrom" (dateChange)="rangeChange()" placeholder="Start date" />
         <input matEndDate formControlName="issueDateTo" (dateChange)="rangeChange()" placeholder="here is end date" />
       </mat-date-range-input>
-      <mat-date-range-picker class="hidden" #dateRange></mat-date-range-picker>
+      <mat-date-range-picker touchUi class="hidden" #dateRange></mat-date-range-picker>
     </app-input>
     <ng-container *ngIf="isOpened">
       <!--      <app-select-input-->

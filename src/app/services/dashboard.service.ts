@@ -21,34 +21,19 @@ export class DashboardService {
     return this.http.post<RentDefaultValues[]>(this.urlService.URLS.DEFAULT_RENT, criteria);
   }
 
-  loadKpiRoot(kpi: KpiRoot, criteria: RentCriteriaContract): Observable<any[]> {
-    return this.http.post<any[]>(kpi.url, criteria);
+  loadKpiRoot(kpi: KpiRoot, criteria: RentCriteriaContract): Observable<KpiModel[]> {
+    return this.http.post<KpiModel[]>(kpi.url, criteria);
   }
 
   loadPurposeKpi(kpi: KpiRoot, criteria: Partial<RentCriteriaContract>): Observable<KpiModel[]> {
-    const entities = Object.entries(this.urlService.URLS);
-    entities.forEach((i) => {
-      i[1] === kpi.subUrl ? console.log(i[0], ' : ', kpi.subUrl) : null;
-    });
-    delete criteria.bedRoomsCount;
     return this.http.post<KpiModel[]>(kpi.subUrl!, criteria);
   }
 
   loadPropertyTypeKpi(kpi: KpiRoot, criteria: Partial<RentCriteriaContract>): Observable<KpiModel[]> {
-    const entities = Object.entries(this.urlService.URLS);
-    entities.forEach((i) => {
-      i[1] === kpi.secondSubUrl ? console.log(i[0], ' : ', kpi.secondSubUrl) : null;
-    });
-    delete criteria.bedRoomsCount;
     return this.http.post<KpiModel[]>(kpi.secondSubUrl!, criteria);
   }
 
   loadLineChartKpi(kpi: KpiRoot, criteria: Partial<RentCriteriaContract>): Observable<KpiModel[]> {
-    const entities = Object.entries(this.urlService.URLS);
-    entities.forEach((i) => {
-      i[1] === kpi.lineChart ? console.log(i[0], ' : ', kpi.lineChart) : null;
-    });
-    delete criteria.bedRoomsCount;
     return this.http.post<KpiModel[]>(kpi.lineChart!, criteria);
   }
   @CastResponse(() => RentTransaction)

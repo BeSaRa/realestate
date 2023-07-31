@@ -30,3 +30,17 @@
 :root {
   --mdc-theme-text-primary-on-background: theme("colors.primary");
 }
+
+.mat-calendar-body-selected {
+  @apply bg-primary;
+}
+
+.mat-calendar-body-in-range::before {
+  @apply bg-secondary/50;
+}
+
+.mat-calendar-body-cell:hover .mat-calendar-body-cell-content,
+.mat-calendar-body-active
+  .mat-calendar-body-cell-content:not(.mat-calendar-body-selected) {
+  @apply bg-primary/50 #{!important};
+}

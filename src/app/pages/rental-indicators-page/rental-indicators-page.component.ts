@@ -88,7 +88,7 @@ export default class RentalIndicatorsPageComponent implements OnInit {
       1,
       this.lang.getArabicTranslation('the_total_number_of_lease_contracts'),
       this.lang.getEnglishTranslation('the_total_number_of_lease_contracts'),
-      true,
+      false,
       this.urlService.URLS.RENT_KPI1,
       this.urlService.URLS.RENT_KPI2,
       this.urlService.URLS.RENT_KPI3,
@@ -98,7 +98,7 @@ export default class RentalIndicatorsPageComponent implements OnInit {
       4,
       this.lang.getArabicTranslation('the_total_number_of_properties_units_rented'),
       this.lang.getEnglishTranslation('the_total_number_of_properties_units_rented'),
-      true,
+      false,
       this.urlService.URLS.RENT_KPI4,
       this.urlService.URLS.RENT_KPI5,
       this.urlService.URLS.RENT_KPI6,
@@ -109,7 +109,7 @@ export default class RentalIndicatorsPageComponent implements OnInit {
       10,
       this.lang.getArabicTranslation('total_rented_space'),
       this.lang.getEnglishTranslation('total_rented_space'),
-      true,
+      false,
       this.urlService.URLS.RENT_KPI10,
       this.urlService.URLS.RENT_KPI11,
       this.urlService.URLS.RENT_KPI12,
@@ -119,7 +119,7 @@ export default class RentalIndicatorsPageComponent implements OnInit {
       7,
       this.lang.getArabicTranslation('the_total_value_of_lease_contracts'),
       this.lang.getEnglishTranslation('the_total_value_of_lease_contracts'),
-      false,
+      true,
       this.urlService.URLS.RENT_KPI7,
       this.urlService.URLS.RENT_KPI8,
       this.urlService.URLS.RENT_KPI9,
@@ -129,7 +129,7 @@ export default class RentalIndicatorsPageComponent implements OnInit {
       16,
       this.lang.getArabicTranslation('the_average_price_per_square_meter_square_foot'),
       this.lang.getEnglishTranslation('the_average_price_per_square_meter_square_foot'),
-      false,
+      true,
       this.urlService.URLS.RENT_KPI16,
       this.urlService.URLS.RENT_KPI17,
       this.urlService.URLS.RENT_KPI18,
@@ -139,7 +139,7 @@ export default class RentalIndicatorsPageComponent implements OnInit {
       13,
       this.lang.getArabicTranslation('average_rental_price_per_unit_property'),
       this.lang.getEnglishTranslation('average_rental_price_per_unit_property'),
-      false,
+      true,
       this.urlService.URLS.RENT_KPI13,
       this.urlService.URLS.RENT_KPI14,
       this.urlService.URLS.RENT_KPI15,
@@ -221,20 +221,18 @@ export default class RentalIndicatorsPageComponent implements OnInit {
       });
     } else {
       this.rootKPIS.map((item) => {
-        ((i) => {
-          this.dashboardService
-            .loadKpiRoot(i, this.criteria.criteria)
-            .pipe(take(1))
-            .subscribe((value) => {
-              if (!value.length) {
-                i.setValue(0);
-                i.setYoy(0);
-              } else {
-                i.setValue(value[value.length - 1].kpiVal);
-                i.setYoy(value[value.length - 1].kpiYoYVal);
-              }
-            });
-        })(item);
+        this.dashboardService
+          .loadKpiRoot(item, this.criteria.criteria)
+          .pipe(take(1))
+          .subscribe((value) => {
+            if (!value.length) {
+              item.setValue(0);
+              item.setYoy(0);
+            } else {
+              item.setValue(value[value.length - 1].kpiVal);
+              item.setYoy(value[value.length - 1].kpiYoYVal);
+            }
+          });
       });
 
       this.rootItemSelected(this.rootKPIS[0]);
@@ -277,6 +275,7 @@ export default class RentalIndicatorsPageComponent implements OnInit {
       this.selectedPurpose && this.purposeSelected(this.selectedPurpose);
       this.updateChart();
     });
+    this.purposeSelected(this.purposeKPIS[this.purposeKPIS.length - 1]);
   }
 
   private setDefaultRoots(rentDefaultValue?: RentDefaultValues) {
@@ -311,17 +310,11 @@ export default class RentalIndicatorsPageComponent implements OnInit {
         })
         .pipe(takeUntil(this.destroy$))
         .subscribe((result) => {
-          const propertyTypes = result.reduce((acc, item) => {
-            return { ...acc, [item.propertyTypeId]: item };
-          }, {} as Record<number, KpiModel>);
           this.propertiesKPIS = this.propertiesKPIS
             .map((item) => {
-              Object.prototype.hasOwnProperty.call(propertyTypes, item.lookupKey)
-                ? (item.value = propertyTypes[item.lookupKey].kpiVal)
-                : (item.value = 0);
-              Object.prototype.hasOwnProperty.call(propertyTypes, item.lookupKey)
-                ? (item.yoy = propertyTypes[item.lookupKey].kpiYoYVal)
-                : (item.yoy = 0);
+              const subItem = result.find((i) => i.propertyTypeId === item.lookupKey);
+              subItem ? (item.value = subItem.kpiVal) : (item.value = 0);
+              subItem ? (item.yoy = subItem.kpiYoYVal) : (item.yoy = 0);
               return item;
             })
             .sort((a, b) => a.value - b.value);
