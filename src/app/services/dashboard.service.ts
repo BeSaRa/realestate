@@ -41,4 +41,13 @@ export class DashboardService {
     delete criteria.bedRoomsCount;
     return this.http.post<KpiModel[]>(kpi.secondSubUrl!, criteria);
   }
+
+  loadLineChartKpi(kpi: KpiRoot, criteria: Partial<RentCriteriaContract>): Observable<KpiModel[]> {
+    const entities = Object.entries(this.urlService.URLS);
+    entities.forEach((i) => {
+      i[1] === kpi.lineChart ? console.log(i[0], ' : ', kpi.lineChart) : null;
+    });
+    delete criteria.bedRoomsCount;
+    return this.http.post<KpiModel[]>(kpi.lineChart!, criteria);
+  }
 }

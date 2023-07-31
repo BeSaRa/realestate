@@ -16,7 +16,8 @@ export class KpiRoot extends ClonerMixin(GetNamesMixin(class {})) implements Kpi
     public hasPrice = false,
     public url: string,
     public subUrl?: string,
-    public secondSubUrl?: string
+    public secondSubUrl?: string,
+    public lineChart?: string
   ) {
     super();
   }

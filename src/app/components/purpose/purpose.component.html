@@ -1,6 +1,7 @@
 <div
   (mouseenter)="isHovered = true"
   (mouseleave)="isHovered = false"
+  [ngClass]="{ selected: item.selected }"
   class="group px-2 pt-2 h-full flex hover:cursor-pointer flex-col gap-2  justify-between items-center text-center bg-sand transition {{
     lang.isLtr ? 'ltr-gradient' : 'gradient'
   }} ">

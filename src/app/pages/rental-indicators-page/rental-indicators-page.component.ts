@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ExtraHeaderComponent } from '@components/extra-header/extra-header.component';
 import { TranslationService } from '@services/translation.service';
@@ -18,8 +18,11 @@ import { IvyCarouselModule } from 'angular-responsive-carousel2';
 import { PropertyBlockComponent } from '@components/property-block/property-block.component';
 import { BidiModule } from '@angular/cdk/bidi';
 import { RentDefaultValues } from '@models/rent-default-values';
-import { combineLatest, take } from 'rxjs';
+import { combineLatest, Subject, take, takeUntil } from 'rxjs';
 import { KpiModel } from '@models/kpi-model';
+import { Lookup } from '@models/lookup';
+import { ChartComponent, NgApexchartsModule } from 'ng-apexcharts';
+import { PartialChartOptions } from '@app-types/partialChartOptions';
 
 @Component({
   selector: 'app-rental-indicators-page',
@@ -36,6 +39,7 @@ import { KpiModel } from '@models/kpi-model';
     IvyCarouselModule,
     PropertyBlockComponent,
     BidiModule,
+    NgApexchartsModule,
   ],
   templateUrl: './rental-indicators-page.component.html',
   styleUrls: ['./rental-indicators-page.component.scss'],
@@ -45,11 +49,14 @@ export default class RentalIndicatorsPageComponent {
   dashboardService = inject(DashboardService);
   urlService = inject(UrlService);
   lookupService = inject(LookupService);
+  destroy$ = new Subject<void>();
 
   criteria!: {
     criteria: RentCriteriaContract;
     type: CriteriaType;
   };
+  @ViewChild('chart')
+  chart!: ChartComponent;
 
   rootKPIS = [
     new KpiRoot(
@@ -59,7 +66,8 @@ export default class RentalIndicatorsPageComponent {
       true,
       this.urlService.URLS.RENT_KPI1,
       this.urlService.URLS.RENT_KPI2,
-      this.urlService.URLS.RENT_KPI3
+      this.urlService.URLS.RENT_KPI3,
+      this.urlService.URLS.RENT_KPI19
     ),
     new KpiRoot(
       4,
@@ -68,7 +76,8 @@ export default class RentalIndicatorsPageComponent {
       true,
       this.urlService.URLS.RENT_KPI4,
       this.urlService.URLS.RENT_KPI5,
-      this.urlService.URLS.RENT_KPI6
+      this.urlService.URLS.RENT_KPI6,
+      this.urlService.URLS.RENT_KPI20
     ),
     new KpiRoot(
       7,
@@ -77,7 +86,8 @@ export default class RentalIndicatorsPageComponent {
       true,
       this.urlService.URLS.RENT_KPI7,
       this.urlService.URLS.RENT_KPI8,
-      this.urlService.URLS.RENT_KPI9
+      this.urlService.URLS.RENT_KPI9,
+      this.urlService.URLS.RENT_KPI21
     ),
     new KpiRoot(
       10,
@@ -86,7 +96,8 @@ export default class RentalIndicatorsPageComponent {
       false,
       this.urlService.URLS.RENT_KPI10,
       this.urlService.URLS.RENT_KPI11,
-      this.urlService.URLS.RENT_KPI12
+      this.urlService.URLS.RENT_KPI12,
+      this.urlService.URLS.RENT_KPI22
     ),
     new KpiRoot(
       13,
@@ -95,7 +106,8 @@ export default class RentalIndicatorsPageComponent {
       false,
       this.urlService.URLS.RENT_KPI13,
       this.urlService.URLS.RENT_KPI14,
-      this.urlService.URLS.RENT_KPI15
+      this.urlService.URLS.RENT_KPI15,
+      this.urlService.URLS.RENT_KPI23
     ),
     new KpiRoot(
       16,
@@ -104,15 +116,53 @@ export default class RentalIndicatorsPageComponent {
       false,
       this.urlService.URLS.RENT_KPI16,
       this.urlService.URLS.RENT_KPI17,
-      this.urlService.URLS.RENT_KPI18
+      this.urlService.URLS.RENT_KPI18,
+      this.urlService.URLS.RENT_KPI24
     ),
   ];
+
+  chartOptions: Partial<PartialChartOptions> = {
+    series: [
+      {
+        name: 'Desktops',
+        data: [10, 41, 35, 51, 49, 62, 69, 91, 148],
+      },
+    ],
+    chart: {
+      height: 350,
+      type: 'line',
+      zoom: {
+        enabled: false,
+      },
+    },
+    dataLabels: {
+      enabled: false,
+    },
+    stroke: {
+      curve: 'smooth',
+    },
+    title: {
+      text: this.rootKPIS[0].getNames(),
+      align: 'center',
+    },
+    grid: {
+      row: {
+        colors: ['#f3f3f3', 'transparent'], // takes an array which will be repeated on columns
+        opacity: 0.5,
+      },
+    },
+    xaxis: {
+      categories: [],
+    },
+  };
 
   purposeKPIS = this.lookupService.lookups.rentPurposeList;
 
   propertiesKPIS = this.lookupService.lookups.propertyTypeList;
 
   selectedRoot?: KpiRoot;
+
+  selectedRootChartData!: KpiModel[];
 
   get priceList() {
     return this.rootKPIS.filter((item) => item.hasPrice);
@@ -147,26 +197,24 @@ export default class RentalIndicatorsPageComponent {
             });
         })(item);
       });
+
+      this.rootItemSelected(this.rootKPIS[0]);
     }
   }
 
   rootItemSelected(item: KpiRoot) {
-    if (item.selected) return;
     this.selectedRoot = item;
-
     this.rootKPIS.forEach((i) => {
-      item !== i ? (i.selected = false) : item.toggleSelect();
+      item !== i ? (i.selected = false) : (item.selected = true);
     });
 
     combineLatest([
       this.dashboardService.loadPurposeKpi(item, this.criteria.criteria),
-      this.dashboardService.loadPropertyTypeKpi(item, this.criteria.criteria),
-    ]).subscribe(([subKPI, secondSubKPI]) => {
+      this.dashboardService.loadLineChartKpi(item, this.criteria.criteria),
+    ]).subscribe(([subKPI, lineChartData]) => {
+      this.selectedRootChartData = lineChartData;
       const purpose = subKPI.reduce((acc, item) => {
-        return { ...item, [item.rentPuropseId]: item };
-      }, {} as Record<number, KpiModel>);
-      const propertyTypes = secondSubKPI.reduce((acc, item) => {
-        return { ...item, [item.propertyTypeId]: item };
+        return { ...acc, [item.rentPuropseId]: item };
       }, {} as Record<number, KpiModel>);
 
       this.purposeKPIS = this.purposeKPIS.map((item) => {
@@ -178,15 +226,7 @@ export default class RentalIndicatorsPageComponent {
           : (item.yoy = 0);
         return item;
       });
-      this.propertiesKPIS = this.propertiesKPIS.map((item) => {
-        Object.prototype.hasOwnProperty.call(propertyTypes, item.lookupKey)
-          ? (item.value = propertyTypes[item.lookupKey].kpiVal)
-          : (item.value = 0);
-        Object.prototype.hasOwnProperty.call(propertyTypes, item.lookupKey)
-          ? (item.yoy = propertyTypes[item.lookupKey].kpiYoYVal)
-          : (item.yoy = 0);
-        return item;
-      });
+      this.updateChart();
     });
   }
 
@@ -205,5 +245,53 @@ export default class RentalIndicatorsPageComponent {
         item.setYoy(rentDefaultValue[yoy as keyof RentDefaultValues]);
       });
     }
+  }
+
+  purposeSelected(item: Lookup) {
+    this.selectedRoot &&
+      this.dashboardService
+        .loadPropertyTypeKpi(this.selectedRoot, {
+          ...this.criteria.criteria,
+          rentPurposeList: [item.lookupKey],
+        })
+        .pipe(takeUntil(this.destroy$))
+        .subscribe((result) => {
+          const propertyTypes = result.reduce((acc, item) => {
+            return { ...acc, [item.propertyTypeId]: item };
+          }, {} as Record<number, KpiModel>);
+          this.propertiesKPIS = this.propertiesKPIS
+            .map((item) => {
+              Object.prototype.hasOwnProperty.call(propertyTypes, item.lookupKey)
+                ? (item.value = propertyTypes[item.lookupKey].kpiVal)
+                : (item.value = 0);
+              Object.prototype.hasOwnProperty.call(propertyTypes, item.lookupKey)
+                ? (item.yoy = propertyTypes[item.lookupKey].kpiYoYVal)
+                : (item.yoy = 0);
+              return item;
+            })
+            .sort((a, b) => b.value - a.value);
+        });
+  }
+
+  updateChart(): void {
+    this.chart
+      .updateOptions({
+        title: {
+          text: this.selectedRoot?.getNames(),
+        },
+        chart: {
+          type: 'line',
+        },
+        series: [
+          {
+            name: this.selectedRoot?.getNames(),
+            data: this.selectedRootChartData.map((item) => item.kpiVal),
+          },
+        ],
+        xaxis: {
+          categories: this.selectedRootChartData.map((item) => item.issueYear),
+        },
+      })
+      .then();
   }
 }

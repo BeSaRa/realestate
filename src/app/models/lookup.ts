@@ -9,4 +9,5 @@ export class Lookup extends ClonerMixin(GetNamesMixin(class {})) {
   // not related to the model
   value = 0;
   yoy = 0;
+  selected = false;
 }

@@ -1,9 +1,9 @@
 <app-extra-header class="flex -mt-32 relative text-white text-center">
   <div class="h-60 flex flex-col justify-center" id="logo-side">
-    <h1 class="text-5xl font-semibold">{{ lang.map.qatar_real_estate_platform.toCapitalAll() }}</h1>
+    <h1 class="text-5xl font-semibold">{{ lang.map.qatar_real_estate_platform }}</h1>
     <h2 class="text-3xl font-semibold">
-      {{ lang.toggleMap.qatar_real_estate_platform.toCapitalAll() }} -
-      <span class="text-gray-400 font-normal">({{ lang.map.trial_run.toCapitalAll() }})</span>
+      {{ lang.toggleMap.qatar_real_estate_platform }} -
+      <span class="text-gray-400 font-normal">({{ lang.map.trial_run }})</span>
     </h2>
   </div>
 </app-extra-header>
@@ -38,15 +38,33 @@
         <app-purpose
           *ngFor="let item of purposeKPIS; let i = index"
           [item]="item"
+          (click)="purposeSelected(item)"
           class="border-e-2 border-secondary last-of-type:border-e-0 {{ i > 2 ? 'border-t-2 xl:border-t-0' : '' }} {{
             i % 3 === 2 ? 'border-e-0 xl:border-e-2' : ''
           }}" />
       </div>
       <div class="mt-10 w-11/12" dir="ltr">
-        <carousel [autoplay]="true" [arrowsOutside]="true" [margin]="20" [cellWidth]="350">
+        <h3 *ngIf="selectedRoot" class="text-3xl mb-4 text-primary border-secondary font-semibold">
+          {{ selectedRoot.getNames() }} ({{ lang.map.depending_on_use }})
+        </h3>
+        <carousel [arrowsOutside]="true" [margin]="20" [cellWidth]="350">
           <app-property-block class="carousel-cell" *ngFor="let item of propertiesKPIS" [item]="item" />
         </carousel>
       </div>
     </div>
+  </div>
+  <div class="p-16">
+    <apx-chart
+      #chart
+      [series]="chartOptions.series!"
+      [chart]="chartOptions.chart!"
+      [xaxis]="chartOptions.xaxis!"
+      [stroke]="chartOptions.stroke!"
+      [colors]="chartOptions.colors!"
+      [dataLabels]="chartOptions.dataLabels!"
+      [legend]="chartOptions.legend!"
+      [markers]="chartOptions.markers!"
+      [grid]="chartOptions.grid!"
+      [title]="chartOptions.title!"></apx-chart>
   </div>
 </div>
