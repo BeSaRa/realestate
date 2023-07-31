@@ -44,9 +44,11 @@
           }}" />
       </div>
       <div class="mt-10 w-11/12" dir="ltr">
-        <h3 *ngIf="selectedRoot" class="text-3xl mb-4 text-primary border-secondary font-semibold">
-          {{ selectedRoot.getNames() }} ({{ lang.map.depending_on_use }})
-        </h3>
+        <div class="flex justify-center">
+          <h3 *ngIf="selectedRoot" class="text-3xl mb-4 text-primary border-secondary font-semibold">
+            {{ selectedRoot.getNames() }} ({{ lang.map.depending_on_use }})
+          </h3>
+        </div>
         <carousel [arrowsOutside]="true" [margin]="20" [cellWidth]="350">
           <app-property-block class="carousel-cell" *ngFor="let item of propertiesKPIS" [item]="item" />
         </carousel>

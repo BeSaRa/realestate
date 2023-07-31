@@ -248,6 +248,10 @@ export default class RentalIndicatorsPageComponent {
   }
 
   purposeSelected(item: Lookup) {
+    this.purposeKPIS.forEach((i) => {
+      item !== i ? (i.selected = false) : (item.selected = true);
+    });
+
     this.selectedRoot &&
       this.dashboardService
         .loadPropertyTypeKpi(this.selectedRoot, {

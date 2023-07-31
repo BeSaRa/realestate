@@ -7,10 +7,10 @@
   }} ">
   <span class="flex-1 -mb-1.5">
     <span
-      class="text-2xl me-2 text-primary font-bold group-hover:text-white transition"
+      class="text-2xl me-2 text-primary font-bold group-hover:text-white group-[.selected]:text-white transition"
       [countUp]="item.value"
       [options]="countUpOptions"></span>
-    <span class="text-xl text-black font-bold group-hover:text-white transition">{{ item.getNames() }}</span>
+    <span class="text-xl text-black font-bold group-[.selected]:text-white transition">{{ item.getNames() }}</span>
   </span>
-  <app-change-indicator [value]="item.yoy" [isHovered]="isHovered"></app-change-indicator>
+  <app-change-indicator [value]="item.yoy" [isHovered]="isHovered || item.selected"></app-change-indicator>
 </div>
