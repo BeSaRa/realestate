@@ -1,4 +1,11 @@
 export interface LangKeysContract {
+  rent_transactions_list: string;
+  space: string;
+  rooms: string;
+  contract_start_date: string;
+  contract_end_date: string;
+  rental_value: string;
+  unit_details: string;
   depending_on_property_type: string;
   depending_on_use: string;
   average_rental_price_per_unit_property: string;

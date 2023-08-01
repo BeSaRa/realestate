@@ -29,6 +29,7 @@ export const EndPoints = {
   RENT_KPI22: 'RENT|chart/area',
   RENT_KPI23: 'RENT|chart/rent-mean-value',
   RENT_KPI24: 'RENT|chart/rent-sqt-meter',
+  RENT_KPI29: 'RENT|summary',
 };
 
 export type EndpointsType = typeof EndPoints;

@@ -51,9 +51,16 @@ export class TableComponent implements OnInit {
   }
 
   private _initializeLength() {
+    console.log('OUTSIDE');
     if (isObservable(this.data)) {
-      this.data.pipe(tap((data) => (this.length = data.length)));
+      this.data.pipe(
+        tap((data) => {
+          this.length = data.length;
+          console.log('length', this.length);
+        })
+      );
     } else {
+      console.log('Length: outside', this.data.length);
       this.length = this.data.length;
     }
   }
@@ -63,6 +70,7 @@ export class TableComponent implements OnInit {
     if (isObservable(this.data)) {
       paginatedData = this.data.pipe(
         map((data) => {
+          this.length = data.length;
           if (this.offset + this.pageSize > this.length) return data.slice(this.offset);
           else return data.slice(this.offset, this.offset + this.pageSize);
         })

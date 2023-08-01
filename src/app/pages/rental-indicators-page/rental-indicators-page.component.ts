@@ -1,4 +1,4 @@
-import { Component, inject, ViewChild } from '@angular/core';
+import { Component, inject, OnInit, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ExtraHeaderComponent } from '@components/extra-header/extra-header.component';
 import { TranslationService } from '@services/translation.service';
@@ -18,12 +18,15 @@ import { IvyCarouselModule } from 'angular-responsive-carousel2';
 import { PropertyBlockComponent } from '@components/property-block/property-block.component';
 import { BidiModule } from '@angular/cdk/bidi';
 import { RentDefaultValues } from '@models/rent-default-values';
-import { combineLatest, Subject, take, takeUntil } from 'rxjs';
+import { combineLatest, ReplaySubject, Subject, take, takeUntil } from 'rxjs';
 import { KpiModel } from '@models/kpi-model';
 import { Lookup } from '@models/lookup';
 import { ChartComponent, NgApexchartsModule } from 'ng-apexcharts';
 import { PartialChartOptions } from '@app-types/partialChartOptions';
 import { formatNumber } from '@utils/utils';
+import { TableComponent } from '@components/table/table.component';
+import { TableColumnTemplateDirective } from '@directives/table-column-template.directive';
+import { RentTransaction } from '@models/rent-transaction';
 
 @Component({
   selector: 'app-rental-indicators-page',
@@ -41,11 +44,19 @@ import { formatNumber } from '@utils/utils';
     PropertyBlockComponent,
     BidiModule,
     NgApexchartsModule,
+    TableComponent,
+    TableColumnTemplateDirective,
   ],
   templateUrl: './rental-indicators-page.component.html',
   styleUrls: ['./rental-indicators-page.component.scss'],
 })
-export default class RentalIndicatorsPageComponent {
+export default class RentalIndicatorsPageComponent implements OnInit {
+  ngOnInit(): void {
+    console.log('');
+  }
+
+  transactions = new ReplaySubject<RentTransaction[]>(1);
+
   lang = inject(TranslationService);
   dashboardService = inject(DashboardService);
   urlService = inject(UrlService);
@@ -58,6 +69,14 @@ export default class RentalIndicatorsPageComponent {
   };
   @ViewChild('chart')
   chart!: ChartComponent;
+
+  displayedColumns = [
+    { columnName: 'municipality_id', columnHeader: this.lang.map.municipal },
+    { columnName: 'unit_details', columnHeader: this.lang.map.unit_details },
+    { columnName: 'rental_value', columnHeader: this.lang.map.rental_value },
+    { columnName: 'contract_start_date', columnHeader: this.lang.map.contract_start_date },
+    { columnName: 'contract_end_date', columnHeader: this.lang.map.contract_end_date },
+  ];
 
   rootKPIS = [
     new KpiRoot(
@@ -212,6 +231,7 @@ export default class RentalIndicatorsPageComponent {
 
       this.rootItemSelected(this.rootKPIS[0]);
     }
+    this.loadTransactions();
   }
 
   rootItemSelected(item: KpiRoot) {
@@ -312,5 +332,14 @@ export default class RentalIndicatorsPageComponent {
         },
       })
       .then();
+  }
+
+  private loadTransactions() {
+    this.dashboardService
+      .loadKpiTransactions(this.criteria.criteria)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((list) => {
+        this.transactions.next(list);
+      });
   }
 }

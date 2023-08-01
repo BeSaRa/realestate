@@ -6,14 +6,17 @@ import { CastResponse } from 'cast-response';
 import { LookupsContract } from '@contracts/lookups-contract';
 import { LookupsMap } from '@models/lookups-map';
 import { Lookup } from '@models/lookup';
+import { RegisterServiceMixin } from '@mixins/register-service-mixin';
 
 @Injectable({
   providedIn: 'root',
 })
-export class LookupService {
+export class LookupService extends RegisterServiceMixin(class {}) {
+  serviceName = 'LookupService';
   urlService = inject(UrlService);
   http = inject(HttpClient);
   lookups!: LookupsContract;
+  listMap: Record<number, Lookup> = {};
 
   @CastResponse(() => LookupsMap, {
     shape: {
@@ -28,6 +31,15 @@ export class LookupService {
   }
 
   load(): Observable<LookupsMap> {
-    return this._load().pipe(tap((response) => (this.lookups = response)));
+    return this._load()
+      .pipe(tap((response) => (this.lookups = response)))
+      .pipe(
+        tap(
+          (res) =>
+            (this.listMap = res.municipalityList.reduce((acc, i) => {
+              return { ...acc, [i.lookupKey]: i };
+            }, {}))
+        )
+      );
   }
 }

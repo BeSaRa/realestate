@@ -7,6 +7,7 @@ import { RentDefaultValues } from '@models/rent-default-values';
 import { CastResponse } from 'cast-response';
 import { KpiRoot } from '@models/kpiRoot';
 import { KpiModel } from '@models/kpi-model';
+import { RentTransaction } from '@models/rent-transaction';
 
 @Injectable({
   providedIn: 'root',
@@ -49,5 +50,9 @@ export class DashboardService {
     });
     delete criteria.bedRoomsCount;
     return this.http.post<KpiModel[]>(kpi.lineChart!, criteria);
+  }
+  @CastResponse(() => RentTransaction)
+  loadKpiTransactions(criteria: Partial<RentCriteriaContract>): Observable<RentTransaction[]> {
+    return this.http.post<RentTransaction[]>(this.urlService.URLS.RENT_KPI29, criteria);
   }
 }
