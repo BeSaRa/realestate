@@ -4,6 +4,6 @@ export class KpiModel {
   kpiVal!: number;
   kpiYoYDifference!: number;
   kpiYoYVal!: number;
-  rentPuropseId!: number;
+  rentPurposeId!: number;
   propertyTypeId!: number;
 }

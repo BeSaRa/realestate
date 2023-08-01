@@ -7,7 +7,9 @@ import {
   ApexMarkers,
   ApexStroke,
   ApexTitleSubtitle,
+  ApexTooltip,
   ApexXAxis,
+  ApexYAxis,
 } from 'ng-apexcharts';
 
 export type PartialChartOptions = {
@@ -18,8 +20,9 @@ export type PartialChartOptions = {
   dataLabels: ApexDataLabels;
   markers: ApexMarkers;
   colors: string[];
-  yaxis: ApexXAxis;
+  yaxis: ApexYAxis;
   grid: ApexGrid;
   legend: ApexLegend;
   title: ApexTitleSubtitle;
+  tooltip: ApexTooltip;
 };

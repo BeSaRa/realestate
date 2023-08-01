@@ -46,7 +46,7 @@
       <div class="mt-10 w-11/12" dir="ltr">
         <div class="flex justify-center">
           <h3 *ngIf="selectedRoot" class="text-3xl mb-4 text-primary border-secondary font-semibold">
-            {{ selectedRoot.getNames() }} ({{ lang.map.depending_on_use }})
+            {{ selectedRoot.getNames() }} ({{ lang.map.depending_on_property_type }})
           </h3>
         </div>
         <carousel [arrowsOutside]="true" [margin]="20" [cellWidth]="350">
@@ -55,7 +55,7 @@
       </div>
     </div>
   </div>
-  <div class="p-16">
+  <div dir="ltr" class="p-16">
     <apx-chart
       #chart
       [series]="chartOptions.series!"
@@ -67,6 +67,8 @@
       [legend]="chartOptions.legend!"
       [markers]="chartOptions.markers!"
       [grid]="chartOptions.grid!"
+      [yaxis]="chartOptions.yaxis!"
+      [tooltip]="chartOptions.tooltip!"
       [title]="chartOptions.title!"></apx-chart>
   </div>
 </div>

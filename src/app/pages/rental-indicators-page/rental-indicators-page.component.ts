@@ -23,6 +23,7 @@ import { KpiModel } from '@models/kpi-model';
 import { Lookup } from '@models/lookup';
 import { ChartComponent, NgApexchartsModule } from 'ng-apexcharts';
 import { PartialChartOptions } from '@app-types/partialChartOptions';
+import { formatNumber } from '@utils/utils';
 
 @Component({
   selector: 'app-rental-indicators-page',
@@ -79,64 +80,60 @@ export default class RentalIndicatorsPageComponent {
       this.urlService.URLS.RENT_KPI6,
       this.urlService.URLS.RENT_KPI20
     ),
+
     new KpiRoot(
-      7,
+      10,
       this.lang.getArabicTranslation('total_rented_space'),
       this.lang.getEnglishTranslation('total_rented_space'),
       true,
-      this.urlService.URLS.RENT_KPI7,
-      this.urlService.URLS.RENT_KPI8,
-      this.urlService.URLS.RENT_KPI9,
-      this.urlService.URLS.RENT_KPI21
-    ),
-    new KpiRoot(
-      10,
-      this.lang.getArabicTranslation('the_total_value_of_lease_contracts'),
-      this.lang.getEnglishTranslation('the_total_value_of_lease_contracts'),
-      false,
       this.urlService.URLS.RENT_KPI10,
       this.urlService.URLS.RENT_KPI11,
       this.urlService.URLS.RENT_KPI12,
       this.urlService.URLS.RENT_KPI22
     ),
     new KpiRoot(
-      13,
-      this.lang.getArabicTranslation('the_average_price_per_square_meter_square_foot'),
-      this.lang.getEnglishTranslation('the_average_price_per_square_meter_square_foot'),
+      7,
+      this.lang.getArabicTranslation('the_total_value_of_lease_contracts'),
+      this.lang.getEnglishTranslation('the_total_value_of_lease_contracts'),
       false,
-      this.urlService.URLS.RENT_KPI13,
-      this.urlService.URLS.RENT_KPI14,
-      this.urlService.URLS.RENT_KPI15,
-      this.urlService.URLS.RENT_KPI23
+      this.urlService.URLS.RENT_KPI7,
+      this.urlService.URLS.RENT_KPI8,
+      this.urlService.URLS.RENT_KPI9,
+      this.urlService.URLS.RENT_KPI21
     ),
     new KpiRoot(
       16,
-      this.lang.getArabicTranslation('average_rental_price_per_unit_property'),
-      this.lang.getEnglishTranslation('average_rental_price_per_unit_property'),
+      this.lang.getArabicTranslation('the_average_price_per_square_meter_square_foot'),
+      this.lang.getEnglishTranslation('the_average_price_per_square_meter_square_foot'),
       false,
       this.urlService.URLS.RENT_KPI16,
       this.urlService.URLS.RENT_KPI17,
       this.urlService.URLS.RENT_KPI18,
       this.urlService.URLS.RENT_KPI24
     ),
+    new KpiRoot(
+      13,
+      this.lang.getArabicTranslation('average_rental_price_per_unit_property'),
+      this.lang.getEnglishTranslation('average_rental_price_per_unit_property'),
+      false,
+      this.urlService.URLS.RENT_KPI13,
+      this.urlService.URLS.RENT_KPI14,
+      this.urlService.URLS.RENT_KPI15,
+      this.urlService.URLS.RENT_KPI23
+    ),
   ];
 
   chartOptions: Partial<PartialChartOptions> = {
-    series: [
-      {
-        name: 'Desktops',
-        data: [10, 41, 35, 51, 49, 62, 69, 91, 148],
-      },
-    ],
+    series: [],
     chart: {
       height: 350,
-      type: 'line',
-      zoom: {
-        enabled: false,
-      },
+      type: 'area',
     },
     dataLabels: {
-      enabled: false,
+      enabled: true,
+      formatter(val: number): string | number {
+        return formatNumber(val) as string;
+      },
     },
     stroke: {
       curve: 'smooth',
@@ -147,12 +144,24 @@ export default class RentalIndicatorsPageComponent {
     },
     grid: {
       row: {
-        colors: ['#f3f3f3', 'transparent'], // takes an array which will be repeated on columns
+        colors: ['#f3f3f3', 'transparent'],
         opacity: 0.5,
       },
     },
     xaxis: {
       categories: [],
+    },
+
+    yaxis: {
+      min: 0,
+      max: (max: number) => max + 150,
+      tickAmount: 10,
+      labels: {
+        formatter(val: number): string | string[] {
+          return formatNumber(val) as string;
+        },
+        minWidth: 50,
+      },
     },
   };
 
@@ -163,6 +172,8 @@ export default class RentalIndicatorsPageComponent {
   selectedRoot?: KpiRoot;
 
   selectedRootChartData!: KpiModel[];
+
+  selectedPurpose?: Lookup;
 
   get priceList() {
     return this.rootKPIS.filter((item) => item.hasPrice);
@@ -215,7 +226,7 @@ export default class RentalIndicatorsPageComponent {
     ]).subscribe(([subKPI, lineChartData]) => {
       this.selectedRootChartData = lineChartData;
       const purpose = subKPI.reduce((acc, item) => {
-        return { ...acc, [item.rentPuropseId]: item };
+        return { ...acc, [item.rentPurposeId]: item };
       }, {} as Record<number, KpiModel>);
 
       this.purposeKPIS = this.purposeKPIS.map((item) => {
@@ -227,6 +238,7 @@ export default class RentalIndicatorsPageComponent {
           : (item.yoy = 0);
         return item;
       });
+      this.selectedPurpose && this.purposeSelected(this.selectedPurpose);
       this.updateChart();
     });
   }
@@ -253,6 +265,8 @@ export default class RentalIndicatorsPageComponent {
       item !== i ? (i.selected = false) : (item.selected = true);
     });
 
+    this.selectedPurpose = item;
+
     this.selectedRoot &&
       this.dashboardService
         .loadPropertyTypeKpi(this.selectedRoot, {
@@ -274,7 +288,7 @@ export default class RentalIndicatorsPageComponent {
                 : (item.yoy = 0);
               return item;
             })
-            .sort((a, b) => b.value - a.value);
+            .sort((a, b) => a.value - b.value);
         });
   }
 
@@ -290,7 +304,7 @@ export default class RentalIndicatorsPageComponent {
         series: [
           {
             name: this.selectedRoot?.getNames(),
-            data: this.selectedRootChartData.map((item) => Number(item.kpiVal)),
+            data: this.selectedRootChartData.map((item) => item.kpiVal),
           },
         ],
         xaxis: {

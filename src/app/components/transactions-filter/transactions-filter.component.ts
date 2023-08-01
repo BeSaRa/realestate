@@ -176,6 +176,10 @@ export class TransactionsFilterComponent implements OnInit, OnDestroy {
     return this.form.get('rangeDate') as AbstractControl;
   }
 
+  get issueDateQuarterList(): AbstractControl {
+    return this.form.get('issueDateQuarterList') as AbstractControl;
+  }
+
   listenToMunicipalityChange(): void {
     this.municipalityId.valueChanges.pipe(takeUntil(this.destroy$)).subscribe((value: number) => {
       this.filteredZones = this.zones.filter((item) => item.municipalityId === value);
@@ -217,7 +221,7 @@ export class TransactionsFilterComponent implements OnInit, OnDestroy {
       municipalityId: this.municipalities[0].lookupKey,
       propertyTypeList: [-1],
       rentPurposeList: [-1],
-      zoneId: 4,
+      zoneId: 38,
       // bedRoomsCount: null,
       durationType: 1,
       issueDateYear: 2023,
@@ -257,6 +261,7 @@ export class TransactionsFilterComponent implements OnInit, OnDestroy {
   }
 
   private onlyDisplayHalfYear() {
+    this.displayYear = false;
     this.displayHalf = true;
     this.displayQuarter = false;
     this.displayRange = false;
@@ -270,6 +275,7 @@ export class TransactionsFilterComponent implements OnInit, OnDestroy {
   }
 
   private onlyDisplayQuarterYear() {
+    this.displayYear = false;
     this.displayHalf = false;
     this.displayQuarter = true;
     this.displayRange = false;
@@ -283,6 +289,7 @@ export class TransactionsFilterComponent implements OnInit, OnDestroy {
   }
 
   private onlyDisplayRangeYear() {
+    this.displayYear = false;
     this.displayHalf = false;
     this.displayQuarter = false;
     this.displayRange = true;
@@ -308,13 +315,22 @@ export class TransactionsFilterComponent implements OnInit, OnDestroy {
   sendFilter(criteriaType: CriteriaType): void {
     const value = this.form.value as Partial<RentCriteriaContract>;
     if (this.displayYear) {
+      console.log('DISPLAY YEAR');
       const date = new Date();
       date.getFullYear() === value.issueDateYear ? (value.issueDateEndMonth = date.getMonth() + 1) : null;
       value.issueDateQuarterList = [1, 2, 3, 4];
     } else if (this.displayHalf) {
+      console.log('HALF');
       value.halfYearDuration === HalfYearDurations.FIRST_HALF
         ? (value.issueDateQuarterList = [1, 2])
         : (value.issueDateQuarterList = [3, 4]);
+    } else if (this.displayQuarter) {
+      console.log('QUARTER');
+      if (!this.issueDateQuarterList.value || !this.issueDateQuarterList.value.length) {
+        return;
+      } else if (this.displayRange) {
+        if (!this.issueDateFrom.value || !this.issueDateTo.value) return;
+      }
     }
     this.fromChanged.emit({ criteria: value as RentCriteriaContract, type: criteriaType });
   }
