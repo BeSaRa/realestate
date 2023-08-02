@@ -14,7 +14,7 @@ import { KpiRootComponent } from '@components/kpi-root/kpi-root.component';
 import { UrlService } from '@services/url.service';
 import { LookupService } from '@services/lookup.service';
 import { PurposeComponent } from '@components/purpose/purpose.component';
-import { IvyCarouselModule } from 'angular-responsive-carousel2';
+import { CarouselComponent, IvyCarouselModule } from 'angular-responsive-carousel2';
 import { PropertyBlockComponent } from '@components/property-block/property-block.component';
 import { BidiModule } from '@angular/cdk/bidi';
 import { RentDefaultValues } from '@models/rent-default-values';
@@ -52,7 +52,7 @@ import { RentTransaction } from '@models/rent-transaction';
 })
 export default class RentalIndicatorsPageComponent implements OnInit {
   ngOnInit(): void {
-    console.log('');
+    // console.log('dd')
   }
 
   transactions = new ReplaySubject<RentTransaction[]>(1);
@@ -77,6 +77,9 @@ export default class RentalIndicatorsPageComponent implements OnInit {
     { columnName: 'contract_start_date', columnHeader: this.lang.map.contract_start_date },
     { columnName: 'contract_end_date', columnHeader: this.lang.map.contract_end_date },
   ];
+
+  @ViewChild('carousel')
+  carousel!: CarouselComponent;
 
   rootKPIS = [
     new KpiRoot(
@@ -108,7 +111,7 @@ export default class RentalIndicatorsPageComponent implements OnInit {
       this.urlService.URLS.RENT_KPI10,
       this.urlService.URLS.RENT_KPI11,
       this.urlService.URLS.RENT_KPI12,
-      this.urlService.URLS.RENT_KPI22
+      this.urlService.URLS.RENT_KPI21
     ),
     new KpiRoot(
       7,
@@ -118,7 +121,7 @@ export default class RentalIndicatorsPageComponent implements OnInit {
       this.urlService.URLS.RENT_KPI7,
       this.urlService.URLS.RENT_KPI8,
       this.urlService.URLS.RENT_KPI9,
-      this.urlService.URLS.RENT_KPI21
+      this.urlService.URLS.RENT_KPI22
     ),
     new KpiRoot(
       16,
@@ -163,7 +166,7 @@ export default class RentalIndicatorsPageComponent implements OnInit {
     },
     grid: {
       row: {
-        colors: ['#f3f3f3', 'transparent'],
+        colors: ['#f3f3f3'],
         opacity: 0.5,
       },
     },
@@ -309,6 +312,7 @@ export default class RentalIndicatorsPageComponent implements OnInit {
               return item;
             })
             .sort((a, b) => a.value - b.value);
+          this.goToFirstCell();
         });
   }
 
@@ -341,5 +345,11 @@ export default class RentalIndicatorsPageComponent implements OnInit {
       .subscribe((list) => {
         this.transactions.next(list);
       });
+  }
+
+  private goToFirstCell(): void {
+    this.carousel.cellsToScroll = this.carousel.cellLength;
+    this.carousel.next();
+    this.carousel.cellsToScroll = 1;
   }
 }

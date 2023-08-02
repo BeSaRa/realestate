@@ -10,7 +10,7 @@ export class RentTransaction {
   area!: number;
   bedRoomsCount!: number;
   propertyTypeId!: number;
-  rentPaymentMonth!: number;
+  rentPaymentMonthly!: number;
   issueYear!: number;
   startDate!: string;
   endDate!: string;
