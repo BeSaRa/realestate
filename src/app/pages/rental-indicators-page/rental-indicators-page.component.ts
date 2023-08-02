@@ -153,7 +153,7 @@ export default class RentalIndicatorsPageComponent implements OnInit {
     series: [],
     chart: {
       height: 350,
-      type: 'area',
+      type: 'line',
     },
     dataLabels: {
       enabled: true,
@@ -163,10 +163,6 @@ export default class RentalIndicatorsPageComponent implements OnInit {
     },
     stroke: {
       curve: 'smooth',
-    },
-    title: {
-      text: this.rootKPIS[0].getNames(),
-      align: 'center',
     },
     grid: {
       row: {
@@ -336,12 +332,6 @@ export default class RentalIndicatorsPageComponent implements OnInit {
   updateChart(): void {
     this.chart
       .updateOptions({
-        title: {
-          text: this.selectedRoot?.getNames(),
-        },
-        chart: {
-          type: 'line',
-        },
         series: [
           {
             name: this.selectedRoot?.getNames(),
