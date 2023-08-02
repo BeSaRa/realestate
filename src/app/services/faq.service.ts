@@ -13,5 +13,5 @@ CastResponseContainer({
 })
 export class FaqService extends CmsService<Faq> {
   serviceName = 'FaqService';
-  collectionName = 'faq';
+  collectionName = 'FAQ';
 }
