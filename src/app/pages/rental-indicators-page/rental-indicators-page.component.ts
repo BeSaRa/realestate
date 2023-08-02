@@ -195,7 +195,7 @@ export default class RentalIndicatorsPageComponent implements OnInit {
 
   selectedRootChartData!: KpiModel[];
 
-  selectedPurpose?: Lookup;
+  selectedPurpose?: Lookup = this.lookupService.lookups.rentPurposeList[0];
 
   get priceList() {
     return this.rootKPIS.filter((item) => item.hasPrice);
