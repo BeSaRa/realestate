@@ -1,0 +1,29 @@
+<app-extra-header class="flex -mt-32 relative text-white text-center">
+  <div class="h-60 flex flex-col justify-center" id="logo-side">
+    <h1 class="text-5xl font-semibold">{{ lang.map.qatar_real_estate_platform.toCapitalAll() }}</h1>
+    <h2 class="text-3xl font-semibold">
+      {{ lang.toggleMap.qatar_real_estate_platform.toCapitalAll() }} -
+      <span class="text-gray-400 font-normal">({{ lang.map.trial_run.toCapitalAll() }})</span>
+    </h2>
+  </div>
+</app-extra-header>
+<div class="content-wrapper p-10">
+  <h2 class="heading text-3xl self-start text-primary border-secondary font-semibold inline-block">
+    {{ lang.map.faq.toUpperCase() }}
+  </h2>
+
+  <div class="mt-20">
+    <mat-accordion *ngIf="faqData$ | async as faqData">
+      <div *ngFor="let faqItem of faqData" class="mb-2">
+        <mat-expansion-panel>
+          <mat-expansion-panel-header>
+            <mat-panel-title class="text-primary text-xl font-semibold">{{ faqItem.question }}</mat-panel-title>
+          </mat-expansion-panel-header>
+          <ng-template matExpansionPanelContent>
+            <div [innerHTML]="faqItem.answer"></div>
+          </ng-template>
+        </mat-expansion-panel>
+      </div>
+    </mat-accordion>
+  </div>
+</div>

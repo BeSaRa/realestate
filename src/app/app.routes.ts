@@ -27,6 +27,10 @@ export const routes: Routes = [
     loadComponent: () => import('./pages/law-page/law-page.component'),
   },
   {
+    path: 'faq',
+    loadComponent: () => import('./pages/faq-page/faq-page.component'),
+  },
+  {
     path: 'laws/:id',
     loadComponent: () => import('./pages/law-details-page/law-details-page.component'),
     resolve: { lawData: lawResolver },
