@@ -205,6 +205,11 @@ export default class RentalIndicatorsPageComponent implements OnInit {
     return this.rootKPIS.filter((item) => !item.hasPrice);
   }
 
+  updateAllPurpose(value: number, yoy: number): void {
+    const lookup = this.purposeKPIS.find((i) => i.lookupKey === -1);
+    lookup && (lookup.value = value) && (lookup.yoy = yoy);
+  }
+
   filterChange({ criteria, type }: { criteria: RentCriteriaContract; type: CriteriaType }) {
     this.criteria = { criteria, type };
 
@@ -252,6 +257,9 @@ export default class RentalIndicatorsPageComponent implements OnInit {
         return { ...acc, [item.rentPurposeId]: item };
       }, {} as Record<number, KpiModel>);
 
+      let total = 0;
+      let totalYoy = 0;
+
       this.purposeKPIS = this.purposeKPIS.map((item) => {
         Object.prototype.hasOwnProperty.call(purpose, item.lookupKey)
           ? (item.value = purpose[item.lookupKey].kpiVal)
@@ -259,8 +267,13 @@ export default class RentalIndicatorsPageComponent implements OnInit {
         Object.prototype.hasOwnProperty.call(purpose, item.lookupKey)
           ? (item.yoy = purpose[item.lookupKey].kpiYoYVal)
           : (item.yoy = 0);
+        if (item.lookupKey !== -1) {
+          total += item.value;
+          totalYoy += item.yoy;
+        }
         return item;
       });
+      this.updateAllPurpose(total, totalYoy);
       this.selectedPurpose && this.purposeSelected(this.selectedPurpose);
       this.updateChart();
     });
