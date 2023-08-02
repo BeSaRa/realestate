@@ -27,6 +27,7 @@ import { formatNumber } from '@utils/utils';
 import { TableComponent } from '@components/table/table.component';
 import { TableColumnTemplateDirective } from '@directives/table-column-template.directive';
 import { RentTransaction } from '@models/rent-transaction';
+import { IconButtonComponent } from '@components/icon-button/icon-button.component';
 
 @Component({
   selector: 'app-rental-indicators-page',
@@ -46,6 +47,7 @@ import { RentTransaction } from '@models/rent-transaction';
     NgApexchartsModule,
     TableComponent,
     TableColumnTemplateDirective,
+    IconButtonComponent,
   ],
   templateUrl: './rental-indicators-page.component.html',
   styleUrls: ['./rental-indicators-page.component.scss'],
@@ -145,6 +147,8 @@ export default class RentalIndicatorsPageComponent implements OnInit {
     ),
   ];
 
+  selectedChartType = 'line';
+
   chartOptions: Partial<PartialChartOptions> = {
     series: [],
     chart: {
@@ -166,7 +170,7 @@ export default class RentalIndicatorsPageComponent implements OnInit {
     },
     grid: {
       row: {
-        colors: ['#f3f3f3'],
+        colors: ['#f3f3f3', 'transparent'],
         opacity: 0.5,
       },
     },
@@ -364,5 +368,14 @@ export default class RentalIndicatorsPageComponent implements OnInit {
     this.carousel.cellsToScroll = this.carousel.cellLength;
     this.carousel.next();
     this.carousel.cellsToScroll = 1;
+  }
+
+  updateChartType(type: string) {
+    this.chart.updateOptions({ chart: { type: type } }).then();
+    this.selectedChartType = type;
+  }
+
+  isSelectedChartType(type: string) {
+    return this.selectedChartType === type;
   }
 }

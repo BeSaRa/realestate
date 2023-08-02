@@ -35,6 +35,9 @@ export const AppIcons = {
   CHEVRON_RIGHT: 'chevron-right',
   TRIANGLE_DOWN: 'triangle-down',
   TRIANGLE_UP: 'triangle',
+  LINE_CHART: 'chart-line',
+  BAR_CHART: 'chart-bar',
+  AREA_CHART: 'chart-areaspline',
 };
 
 export type AppIconsType = typeof AppIcons;
