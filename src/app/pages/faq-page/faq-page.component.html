@@ -12,7 +12,7 @@
     {{ lang.map.faq.toUpperCase() }}
   </h2>
 
-  <div class="mt-20">
+  <div class="mt-10">
     <mat-accordion *ngIf="faqData$ | async as faqData">
       <div *ngFor="let faqItem of faqData" class="mb-2">
         <mat-expansion-panel>
