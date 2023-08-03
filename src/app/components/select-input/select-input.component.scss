@@ -37,11 +37,11 @@
     @apply font-bold text-primary #{!important};
   }
 
-  & > .mat-pseudo-checkbox-checked {
+  &.mat-mdc-option-multiple > .mat-pseudo-checkbox-checked {
     @apply bg-primary;
   }
 
-  & > .mat-pseudo-checkbox-checked::after {
+  &.mat-mdc-option-multiple > .mat-pseudo-checkbox-checked::after {
     @apply text-white  #{!important};
   }
 }
