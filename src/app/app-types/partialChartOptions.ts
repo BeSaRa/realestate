@@ -5,6 +5,7 @@ import {
   ApexGrid,
   ApexLegend,
   ApexMarkers,
+  ApexPlotOptions,
   ApexStroke,
   ApexTitleSubtitle,
   ApexTooltip,
@@ -25,4 +26,5 @@ export type PartialChartOptions = {
   legend: ApexLegend;
   title: ApexTitleSubtitle;
   tooltip: ApexTooltip;
+  plotOptions: ApexPlotOptions;
 };

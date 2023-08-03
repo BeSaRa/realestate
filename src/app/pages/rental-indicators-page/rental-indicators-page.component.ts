@@ -52,13 +52,8 @@ import { IconButtonComponent } from '@components/icon-button/icon-button.compone
   templateUrl: './rental-indicators-page.component.html',
   styleUrls: ['./rental-indicators-page.component.scss'],
 })
-export default class RentalIndicatorsPageComponent implements OnInit {
-  ngOnInit(): void {
-    // console.log('dd')
-  }
-
+export default class RentalIndicatorsPageComponent {
   transactions = new ReplaySubject<RentTransaction[]>(1);
-
   lang = inject(TranslationService);
   dashboardService = inject(DashboardService);
   urlService = inject(UrlService);
@@ -173,7 +168,11 @@ export default class RentalIndicatorsPageComponent implements OnInit {
     xaxis: {
       categories: [],
     },
-
+    plotOptions: {
+      bar: {
+        columnWidth: '20%',
+      },
+    },
     yaxis: {
       min: 0,
       max: (max: number) => max + 150,
@@ -185,6 +184,7 @@ export default class RentalIndicatorsPageComponent implements OnInit {
         minWidth: 50,
       },
     },
+    tooltip: {},
   };
 
   purposeKPIS = this.lookupService.lookups.rentPurposeList;
@@ -255,9 +255,6 @@ export default class RentalIndicatorsPageComponent implements OnInit {
         return { ...acc, [item.rentPurposeId]: item };
       }, {} as Record<number, KpiModel>);
 
-      let total = 0;
-      let totalYoy = 0;
-
       this.purposeKPIS = this.purposeKPIS.map((item) => {
         Object.prototype.hasOwnProperty.call(purpose, item.lookupKey)
           ? (item.value = purpose[item.lookupKey].kpiVal)
@@ -265,13 +262,9 @@ export default class RentalIndicatorsPageComponent implements OnInit {
         Object.prototype.hasOwnProperty.call(purpose, item.lookupKey)
           ? (item.yoy = purpose[item.lookupKey].kpiYoYVal)
           : (item.yoy = 0);
-        if (item.lookupKey !== -1) {
-          total += item.value;
-          totalYoy += item.yoy;
-        }
         return item;
       });
-      this.updateAllPurpose(total, totalYoy);
+      this.selectedRoot && this.updateAllPurpose(this.selectedRoot.value, this.selectedRoot.yoy);
       this.selectedPurpose && this.purposeSelected(this.selectedPurpose);
       this.updateChart();
     });
