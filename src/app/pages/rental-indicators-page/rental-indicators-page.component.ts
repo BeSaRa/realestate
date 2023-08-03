@@ -212,7 +212,6 @@ export default class RentalIndicatorsPageComponent {
 
   filterChange({ criteria, type }: { criteria: RentCriteriaContract; type: CriteriaType }) {
     this.criteria = { criteria, type };
-    console.log(this.criteria.criteria);
     if (type === CriteriaType.DEFAULT) {
       // load default
       this.dashboardService.loadRentDefaults(criteria).subscribe((result) => {
