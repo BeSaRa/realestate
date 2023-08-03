@@ -17,9 +17,7 @@
       (focus)="onFocus()"
       class="bg-transparent w-full border-b-white/50 outline-none pe-10 px-5 placeholder:text-white/80" />
     <div class="absolute rtl:left-0 ltr:right-0">
-      <button mat-icon-button>
-        <mat-icon>search</mat-icon>
-      </button>
+      <app-icon-button icon="SEARCH"></app-icon-button>
     </div>
     <mat-autocomplete #auto="matAutocomplete"
       ><div [dir]="lang.getCurrent().direction">
@@ -49,22 +47,25 @@
       </button>
     </li> -->
     <li>
-      <button mat-icon-button (click)="toggleFilter()">
-        <mat-icon>visibility</mat-icon>
-      </button>
+      <app-icon-button [icon]="'VIEW'" (click)="toggleFilter()"></app-icon-button>
     </li>
     <li>
-      <a class="text-white" (click)="$event.preventDefault()" mat-button href="#">{{
+      <app-button buttonStyle="none">{{ lang.map.login.toCapitalAll() }}</app-button>
+      <!-- <a class="text-white" (click)="$event.preventDefault()" mat-button href="#">{{
         lang.map.login.toCapitalAll()
-      }}</a>
+      }}</a> -->
     </li>
     <li>
-      <a mat-button (click)="$event.preventDefault()" href="#">{{ lang.map.staff_login.toCapitalAll() }}</a>
+      <!-- <a mat-button (click)="$event.preventDefault()" href="#">{{ lang.map.staff_login.toCapitalAll() }}</a> -->
+      <app-button buttonStyle="none">{{ lang.map.staff_login.toCapitalAll() }}</app-button>
     </li>
     <li>
-      <a mat-button (click)="changeLang($event)" href="#">{{
+      <app-button (click)="changeLang($event)" buttonStyle="none">{{
         lang.getCurrent().toggleTo.substring(0, 2).toUpperCase()
-      }}</a>
+      }}</app-button>
+      <!-- <a mat-button (click)="changeLang($event)" href="#">{{
+        lang.getCurrent().toggleTo.substring(0, 2).toUpperCase()
+      }}</a> -->
     </li>
   </ul>
   <!-- top-header-menu -->

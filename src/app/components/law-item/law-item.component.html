@@ -23,10 +23,7 @@
       </div>
     </div>
   </div>
-  <a
-    class="flex justify-center items-center h-16 w-12 rounded-lg bg-primary hover:bg-secondary text-white"
-    [href]="lawItemData.fileUrl"
-    target="_blank">
-    <mat-icon>cloud_download</mat-icon>
-  </a>
+  <app-button (click)="onDownload($event)" class="self-stretch my-6">
+    <mat-icon [svgIcon]="icons.DOWNLOAD"></mat-icon>
+  </app-button>
 </div>

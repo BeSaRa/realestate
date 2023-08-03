@@ -30,12 +30,10 @@
           </g>
         </svg>
       </div>
-      <a
-        class="bg-primary hover:bg-secondary transition text-white mt-2 px-2 py-1 rounded-md"
-        [href]="lawData.fileUrl"
-        target="_blank">
+
+      <app-button class="mt-2" size="sm" (click)="onDownload()">
         {{ lang.map.download_file.toCapital() }}
-      </a>
+      </app-button>
     </div>
   </div>
   <mat-accordion *ngIf="lawData.articles">

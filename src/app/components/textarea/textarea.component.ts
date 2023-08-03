@@ -58,6 +58,7 @@ export class TextareaComponent
   @Input() rows: string | number = 4;
   @Input() marginBottom = 'mb-5';
   @Input() noMargin = false;
+  @Input() resizable = false;
 
   @ContentChild(ControlDirective) template?: ControlDirective;
 

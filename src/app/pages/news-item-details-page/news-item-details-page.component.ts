@@ -1,9 +1,11 @@
 import { CommonModule, NgOptimizedImage } from '@angular/common';
 import { Component, Input, OnDestroy, OnInit, inject } from '@angular/core';
-import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
 import { ActivatedRoute } from '@angular/router';
 import { ExtraHeaderComponent } from '@components/extra-header/extra-header.component';
+import { IconButtonComponent } from '@components/icon-button/icon-button.component';
 import { RelatedNewsListComponent } from '@components/related-news-list/related-news-list.component';
+import { AppIcons } from '@constants/app-icons';
 import { News } from '@models/news';
 import { SafeHtmlPipe } from '@pipes/safe-html.pipe';
 import { NewsService } from '@services/news.service';
@@ -18,7 +20,8 @@ import { Subject, map, switchMap, takeUntil, tap } from 'rxjs';
     NgOptimizedImage,
     ExtraHeaderComponent,
     SafeHtmlPipe,
-    MatButtonModule,
+    IconButtonComponent,
+    MatIconModule,
     RelatedNewsListComponent,
   ],
   templateUrl: './news-item-details-page.component.html',
@@ -35,6 +38,8 @@ export default class NewsItemDetailsPageComponent implements OnInit, OnDestroy {
   lang = inject(TranslationService);
 
   destroy$: Subject<void> = new Subject<void>();
+
+  icons = AppIcons;
 
   ngOnInit(): void {
     this.route.params

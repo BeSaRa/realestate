@@ -5,13 +5,14 @@
         <span>{{ lang.map.building_number.toCapitalAll() }}</span
         ><span>{{ lang.toggleMap.building_number.toCapitalAll() }}</span>
       </div>
-      <div class="flex border-secondary border-2 w-full h-16 rounded-xl overflow-hidden relative">
-        <textarea
-          type="text"
-          formControlName="building"
-          rows="3"
-          class="w-full placeholder-primary/50 text-xl h-full outline-none py-5 px-5 text-primary resize-none overflow-hidden"></textarea>
-      </div>
+      <app-textarea
+        bgColor="bg-white"
+        label=""
+        caretColor="caret-secondary"
+        borderColor="border-secondary"
+        formControlName="building"
+        [displayErrors]="false"
+        rows="3"></app-textarea>
     </div>
     <div class="h-0 w-full mt-5 border-b-[6px] border-sand"></div>
     <div class="grid grid-cols-2 gap-2 mt-5 px-7">
@@ -20,37 +21,39 @@
           <span>{{ lang.map.street.toCapitalAll() }}</span
           ><span>{{ lang.toggleMap.street.toCapitalAll() }}</span>
         </div>
-        <div class="flex border-secondary border-2 w-full h-16 rounded-xl overflow-hidden relative">
-          <input
-            type="text"
-            formControlName="street"
-            class="w-full placeholder-primary/50 text-xl h-full outline-none py-5 px-5 text-primary" />
-        </div>
+        <app-textarea
+          bgColor="bg-white"
+          label=""
+          caretColor="caret-secondary"
+          borderColor="border-secondary"
+          formControlName="street"
+          [displayErrors]="false"
+          rows="2"></app-textarea>
       </div>
       <div>
         <div class="flex justify-between text-lg text-white mb-2">
           <span>{{ lang.map.zone.toCapitalAll() }}</span
           ><span>{{ lang.toggleMap.zone.toCapitalAll() }}</span>
         </div>
-        <div class="flex border-secondary border-2 w-full h-16 rounded-xl overflow-hidden relative">
-          <input
-            type="text"
-            formControlName="zone"
-            class="w-full placeholder-primary/50 text-xl h-full outline-none py-5 px-5 text-primary" />
-        </div>
+        <app-textarea
+          bgColor="bg-white"
+          label=""
+          caretColor="caret-secondary"
+          borderColor="border-secondary"
+          formControlName="zone"
+          [displayErrors]="false"
+          rows="2"></app-textarea>
       </div>
     </div>
     <div class="mt-5 text-center">
-      <a
+      <app-button
+        class="inline-block"
+        buttonStyle="secondary"
         appElementReference
         #searchLink="appElementReference"
-        (click)="form.invalid ? $event.preventDefault() : null"
-        [href]="href"
-        target="_blank"
-        class="self-center !bg-secondary !text-white !shadow-xl"
-        mat-button>
+        (click)="onNavigate()">
         {{ lang.map.search.toCapital() }}
-      </a>
+      </app-button>
     </div>
   </form>
 </div>

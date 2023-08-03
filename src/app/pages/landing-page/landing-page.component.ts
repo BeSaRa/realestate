@@ -1,16 +1,16 @@
-import { Component, inject } from '@angular/core';
 import { CommonModule, NgOptimizedImage } from '@angular/common';
-import { ExtraHeaderComponent } from '@components/extra-header/extra-header.component';
-import { MatButtonModule } from '@angular/material/button';
+import { Component, inject } from '@angular/core';
+import { MatRadioModule } from '@angular/material/radio';
+import { RouterModule } from '@angular/router';
 import { BannerComponent } from '@components/banner/banner.component';
+import { ButtonComponent } from '@components/button/button.component';
+import { ExtraHeaderComponent } from '@components/extra-header/extra-header.component';
+import { InquiriesComponent } from '@components/inquiries/inquiries.component';
+import { InwaniComponent } from '@components/inwani/inwani.component';
 import { NewsListComponent } from '@components/news-list/news-list.component';
 import { NewsletterFormComponent } from '@components/newsletter-form/newsletter-form.component';
 import { VotingFormComponent } from '@components/voting-form/voting-form.component';
-import { MatRadioModule } from '@angular/material/radio';
-import { InquiriesComponent } from '@components/inquiries/inquiries.component';
 import { NewsService } from '@services/news.service';
-import { RouterModule } from '@angular/router';
-import { InwaniComponent } from '@components/inwani/inwani.component';
 import { TranslationService } from '@services/translation.service';
 
 @Component({
@@ -21,7 +21,7 @@ import { TranslationService } from '@services/translation.service';
     RouterModule,
     ExtraHeaderComponent,
     NgOptimizedImage,
-    MatButtonModule,
+    ButtonComponent,
     BannerComponent,
     NewsListComponent,
     NewsletterFormComponent,

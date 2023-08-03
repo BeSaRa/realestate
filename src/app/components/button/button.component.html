@@ -2,13 +2,18 @@
   [disabled]="disabled"
   (click)="clickEvent($event)"
   [ngClass]="{ active: isActive, 'cursor-not-allowed': disabled, 'rounded-full': isRounded, rounded: !isRounded }"
-  class="flex items-center justify-center w-full btn {{ size }} {{ buttonStyle }}">
+  class="group/btn relative overflow-hidden flex items-center justify-center h-full w-full btn {{ size }} {{
+    buttonStyle
+  }}">
+  <div
+    *ngIf="overlayEnabled"
+    class="absolute top-0 left-0 w-full h-full bg-transparent group-hover/btn:bg-black/25 transition"></div>
   <mat-icon *ngIf="inProgress" class="animate-spin duration-200 size-18">dots-circle</mat-icon>
-  <div *ngIf="icon" class="with-icon">
+  <div *ngIf="icon" class="relative with-icon">
     <div><ng-container [ngTemplateOutlet]="content"></ng-container></div>
     <mat-icon class="btn-icon" [svgIcon]="selectedIcon"></mat-icon>
   </div>
-  <ng-container *ngIf="!icon" [ngTemplateOutlet]="content"></ng-container>
+  <div class="relative flex items-center"><ng-container *ngIf="!icon" [ngTemplateOutlet]="content"></ng-container></div>
 </button>
 
 <ng-template #content>

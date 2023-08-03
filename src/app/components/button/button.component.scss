@@ -24,7 +24,7 @@
 }
 
 .btn.primary {
-  @apply disabled:bg-primary/40 bg-primary hover:bg-primary/80 [&.active]:bg-primary ring-primary/50;
+  @apply disabled:bg-primary/40 bg-primary  [&.active]:bg-primary ring-primary/50;
 }
 
 .btn.primary-outline {
@@ -34,7 +34,7 @@
 }
 
 .btn.secondary {
-  @apply disabled:bg-secondary/40 bg-secondary hover:bg-secondary/80 [&.active]:bg-secondary ring-secondary/50;
+  @apply disabled:bg-secondary/40 bg-secondary  [&.active]:bg-secondary ring-secondary/50;
 }
 
 .btn.secondary-outline {
@@ -54,7 +54,7 @@
 }
 
 .btn.success {
-  @apply disabled:bg-green-500/40 bg-green-500 hover:bg-green-500/80 [&.active]:bg-green-500 ring-green-500/50;
+  @apply disabled:bg-green-500/40 bg-green-500  [&.active]:bg-green-500 ring-green-500/50;
 }
 
 .btn.success-outline {
@@ -64,7 +64,7 @@
 }
 
 .btn.error {
-  @apply disabled:bg-red-500/40 bg-red-500 hover:bg-red-500/80 [&.active]:bg-red-500 ring-red-500/50;
+  @apply disabled:bg-red-500/40 bg-red-500  [&.active]:bg-red-500 ring-red-500/50;
 }
 
 .btn.error-outline {
@@ -74,7 +74,7 @@
 }
 
 .btn.warning {
-  @apply disabled:bg-yellow-500/40 bg-yellow-500 hover:bg-yellow-500/80 [&.active]:bg-yellow-500 ring-yellow-500/50;
+  @apply disabled:bg-yellow-500/40 bg-yellow-500  [&.active]:bg-yellow-500 ring-yellow-500/50;
 }
 
 .btn.warning-outline {
