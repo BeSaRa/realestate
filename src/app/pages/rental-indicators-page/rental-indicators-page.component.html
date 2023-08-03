@@ -96,7 +96,7 @@
             [yaxis]="chartOptions.yaxis!"
             [tooltip]="chartOptions.tooltip!"
             [plotOptions]="chartOptions.plotOptions!"
-            [title]="chartOptions.title!"></apx-chart>
+            [title]="chartOptions.title!" />
         </div>
         <div class="h-full flex flex-col mt-10">
           <app-icon-button
@@ -148,6 +148,19 @@
     </div>
   </div>
   <div *ngIf="isSelectedTab('statistical_reports_for_rent')" class="flex flex-col">
-    <div class="p-16"></div>
+    <div class="px-16 flex flex-col">
+      <div class="flex justify-center mt-5">
+        <h3 class="heading text-3xl text-primary border-secondary font-semibold inline-block">
+          {{ lang.map.top_10_areas }}
+        </h3>
+      </div>
+      <div class="w-3/4 bg-sand rounded-xl p-2 self-center mt-5">
+        <ul>
+          <li>
+            <app-button></app-button>
+          </li>
+        </ul>
+      </div>
+    </div>
   </div>
 </div>

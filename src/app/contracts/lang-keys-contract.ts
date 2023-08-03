@@ -1,4 +1,5 @@
 export interface LangKeysContract {
+  top_10_areas: string;
   statistical_reports_for_rent: string;
   rental_indicators: string;
   rent_transactions_list: string;

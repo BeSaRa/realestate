@@ -1,4 +1,4 @@
-import { Component, inject, OnInit, ViewChild } from '@angular/core';
+import { Component, inject, OnInit, QueryList, ViewChild, ViewChildren } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ExtraHeaderComponent } from '@components/extra-header/extra-header.component';
 import { TranslationService } from '@services/translation.service';
@@ -18,7 +18,7 @@ import { CarouselComponent, IvyCarouselModule } from 'angular-responsive-carouse
 import { PropertyBlockComponent } from '@components/property-block/property-block.component';
 import { BidiModule } from '@angular/cdk/bidi';
 import { RentDefaultValues } from '@models/rent-default-values';
-import { combineLatest, ReplaySubject, Subject, take, takeUntil } from 'rxjs';
+import { combineLatest, forkJoin, ReplaySubject, Subject, take, takeUntil } from 'rxjs';
 import { KpiModel } from '@models/kpi-model';
 import { Lookup } from '@models/lookup';
 import { ChartComponent, NgApexchartsModule } from 'ng-apexcharts';
@@ -66,8 +66,8 @@ export default class RentalIndicatorsPageComponent {
     criteria: RentCriteriaContract;
     type: CriteriaType;
   };
-  @ViewChild('chart')
-  chart!: ChartComponent;
+  @ViewChildren('chart')
+  chart!: QueryList<ChartComponent>;
 
   displayedColumns = [
     { columnName: 'municipality_id', columnHeader: this.lang.map.municipal },
@@ -77,15 +77,15 @@ export default class RentalIndicatorsPageComponent {
     { columnName: 'contract_end_date', columnHeader: this.lang.map.contract_end_date },
   ];
 
-  @ViewChild('carousel')
-  carousel!: CarouselComponent;
+  @ViewChildren('carousel')
+  carousel!: QueryList<CarouselComponent>;
 
   rootKPIS = [
     new KpiRoot(
       1,
       this.lang.getArabicTranslation('the_total_number_of_lease_contracts'),
       this.lang.getEnglishTranslation('the_total_number_of_lease_contracts'),
-      true,
+      false,
       this.urlService.URLS.RENT_KPI1,
       this.urlService.URLS.RENT_KPI2,
       this.urlService.URLS.RENT_KPI3,
@@ -95,7 +95,7 @@ export default class RentalIndicatorsPageComponent {
       4,
       this.lang.getArabicTranslation('the_total_number_of_properties_units_rented'),
       this.lang.getEnglishTranslation('the_total_number_of_properties_units_rented'),
-      true,
+      false,
       this.urlService.URLS.RENT_KPI4,
       this.urlService.URLS.RENT_KPI5,
       this.urlService.URLS.RENT_KPI6,
@@ -106,7 +106,7 @@ export default class RentalIndicatorsPageComponent {
       10,
       this.lang.getArabicTranslation('total_rented_space'),
       this.lang.getEnglishTranslation('total_rented_space'),
-      true,
+      false,
       this.urlService.URLS.RENT_KPI10,
       this.urlService.URLS.RENT_KPI11,
       this.urlService.URLS.RENT_KPI12,
@@ -116,7 +116,7 @@ export default class RentalIndicatorsPageComponent {
       7,
       this.lang.getArabicTranslation('the_total_value_of_lease_contracts'),
       this.lang.getEnglishTranslation('the_total_value_of_lease_contracts'),
-      false,
+      true,
       this.urlService.URLS.RENT_KPI7,
       this.urlService.URLS.RENT_KPI8,
       this.urlService.URLS.RENT_KPI9,
@@ -126,7 +126,7 @@ export default class RentalIndicatorsPageComponent {
       16,
       this.lang.getArabicTranslation('the_average_price_per_square_meter_square_foot'),
       this.lang.getEnglishTranslation('the_average_price_per_square_meter_square_foot'),
-      false,
+      true,
       this.urlService.URLS.RENT_KPI16,
       this.urlService.URLS.RENT_KPI17,
       this.urlService.URLS.RENT_KPI18,
@@ -136,7 +136,7 @@ export default class RentalIndicatorsPageComponent {
       13,
       this.lang.getArabicTranslation('average_rental_price_per_unit_property'),
       this.lang.getEnglishTranslation('average_rental_price_per_unit_property'),
-      false,
+      true,
       this.urlService.URLS.RENT_KPI13,
       this.urlService.URLS.RENT_KPI14,
       this.urlService.URLS.RENT_KPI15,
@@ -248,7 +248,7 @@ export default class RentalIndicatorsPageComponent {
       item !== i ? (i.selected = false) : (item.selected = true);
     });
 
-    combineLatest([
+    forkJoin([
       this.dashboardService.loadPurposeKpi(item, this.criteria.criteria),
       this.dashboardService.loadLineChartKpi(item, this.criteria.criteria),
     ]).subscribe(([subKPI, lineChartData]) => {
@@ -270,7 +270,6 @@ export default class RentalIndicatorsPageComponent {
       this.selectedPurpose && this.purposeSelected(this.selectedPurpose);
       this.updateChart();
     });
-    this.purposeSelected(this.purposeKPIS[this.purposeKPIS.length - 1]);
   }
 
   private setDefaultRoots(rentDefaultValue?: RentDefaultValues) {
@@ -318,7 +317,8 @@ export default class RentalIndicatorsPageComponent {
   }
 
   updateChart(): void {
-    this.chart
+    if (!this.chart.length) return;
+    this.chart.first
       .updateOptions({
         series: [
           {
@@ -343,13 +343,14 @@ export default class RentalIndicatorsPageComponent {
   }
 
   private goToFirstCell(): void {
-    this.carousel.cellsToScroll = this.carousel.cellLength;
-    this.carousel.next();
-    this.carousel.cellsToScroll = 1;
+    if (!this.carousel.length) return;
+    this.carousel.first.cellsToScroll = this.carousel.first.cellLength;
+    this.carousel.first.next();
+    this.carousel.first.cellsToScroll = 1;
   }
 
   updateChartType(type: string) {
-    this.chart.updateOptions({ chart: { type: type } }).then();
+    this.chart.first.updateOptions({ chart: { type: type } }).then();
     this.selectedChartType = type;
   }
 
@@ -359,6 +360,9 @@ export default class RentalIndicatorsPageComponent {
 
   switchTab(tab: string): void {
     this.selectedTab = tab;
+    this.carousel.setDirty();
+    this.chart.setDirty();
+    setTimeout(() => this.updateChart());
   }
 
   isSelectedTab(tab: string): boolean {
