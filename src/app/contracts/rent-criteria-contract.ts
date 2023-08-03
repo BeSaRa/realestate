@@ -1,7 +1,7 @@
 export interface RentCriteriaContract {
   propertyTypeList: number[];
   municipalityId: number;
-  rentPurposeList: number[];
+  purposeList: number[];
   issueDateQuarterList: number[];
   bedRoomsCount: number;
   issueDateYear: number;

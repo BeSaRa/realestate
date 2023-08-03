@@ -95,7 +95,7 @@ export class TransactionsFilterComponent implements OnInit, OnDestroy {
     municipalityId: [],
     zoneId: [],
     propertyTypeList: [],
-    rentPurposeList: [],
+    purposeList: [],
     issueDateQuarterList: [],
     // bedRoomsCount: [],
     issueDateYear: [],
@@ -162,8 +162,8 @@ export class TransactionsFilterComponent implements OnInit, OnDestroy {
     return this.form.get('propertyTypeList') as AbstractControl;
   }
 
-  get rentPurposeList(): AbstractControl {
-    return this.form.get('rentPurposeList') as AbstractControl;
+  get purposeList(): AbstractControl {
+    return this.form.get('purposeList') as AbstractControl;
   }
 
   get issueDateFrom(): AbstractControl {
@@ -204,7 +204,7 @@ export class TransactionsFilterComponent implements OnInit, OnDestroy {
   }
 
   listenToRentPurposeListChange(): void {
-    this.rentPurposeList.valueChanges.pipe(takeUntil(this.destroy$)).subscribe((value: number[]) => {
+    this.purposeList.valueChanges.pipe(takeUntil(this.destroy$)).subscribe((value: number[]) => {
       this.propertyUsages.forEach((item) => {
         (value ?? []).includes(-1)
           ? item.lookupKey !== -1
@@ -212,7 +212,7 @@ export class TransactionsFilterComponent implements OnInit, OnDestroy {
             : (item.disabled = false)
           : (item.disabled = false);
       });
-      this.rentPurposeList.patchValue(value.includes(-1) ? [-1] : value.filter((item) => item !== -1), {
+      this.purposeList.patchValue(value.includes(-1) ? [-1] : value.filter((item) => item !== -1), {
         emitEvent: false,
       });
     });
@@ -222,7 +222,7 @@ export class TransactionsFilterComponent implements OnInit, OnDestroy {
     this.form.patchValue({
       municipalityId: this.municipalities[0].lookupKey,
       propertyTypeList: [-1],
-      rentPurposeList: [-1],
+      purposeList: [-1],
       zoneId: 38,
       // bedRoomsCount: null,
       durationType: 1,
@@ -317,17 +317,14 @@ export class TransactionsFilterComponent implements OnInit, OnDestroy {
   sendFilter(criteriaType: CriteriaType): void {
     const value = this.form.value as Partial<RentCriteriaContract>;
     if (this.displayYear) {
-      console.log('DISPLAY YEAR');
       const date = new Date();
       date.getFullYear() === value.issueDateYear ? (value.issueDateEndMonth = date.getMonth() + 1) : null;
       value.issueDateQuarterList = [1, 2, 3, 4];
     } else if (this.displayHalf) {
-      console.log('HALF');
       value.halfYearDuration === HalfYearDurations.FIRST_HALF
         ? (value.issueDateQuarterList = [1, 2])
         : (value.issueDateQuarterList = [3, 4]);
     } else if (this.displayQuarter) {
-      console.log('QUARTER');
       if (!this.issueDateQuarterList.value || !this.issueDateQuarterList.value.length) {
         return;
       } else if (this.displayRange) {

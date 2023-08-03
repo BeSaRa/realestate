@@ -212,7 +212,7 @@ export default class RentalIndicatorsPageComponent {
 
   filterChange({ criteria, type }: { criteria: RentCriteriaContract; type: CriteriaType }) {
     this.criteria = { criteria, type };
-
+    console.log(this.criteria.criteria);
     if (type === CriteriaType.DEFAULT) {
       // load default
       this.dashboardService.loadRentDefaults(criteria).subscribe((result) => {
@@ -299,7 +299,7 @@ export default class RentalIndicatorsPageComponent {
       this.dashboardService
         .loadPropertyTypeKpi(this.selectedRoot, {
           ...this.criteria.criteria,
-          rentPurposeList: [item.lookupKey],
+          purposeList: [item.lookupKey],
         })
         .pipe(takeUntil(this.destroy$))
         .subscribe((result) => {
