@@ -17,9 +17,9 @@
     }}  flex items-center justify-start">
     <ng-container *ngIf="!hasCustomControl">
       <textarea
-        class="{{ disabled ? 'bg-slate-50' : bgColor }} {{ caretColor }} disabled:cursor-not-allowed {{
-          placeholderColor
-        }}"
+        class="{{ disabled ? 'bg-slate-50' : bgColor }} {{ !resizable ? 'resize-none' : '' }} {{
+          caretColor
+        }} disabled:cursor-not-allowed {{ placeholderColor }}"
         [rows]="rows"
         [ngClass]="tailwindClass"
         autocomplete="off"

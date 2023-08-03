@@ -38,6 +38,14 @@ export const AppIcons = {
   LINE_CHART: 'chart-line',
   BAR_CHART: 'chart-bar',
   AREA_CHART: 'chart-areaspline',
+  SEND: 'send',
+  FACEBOOK: 'facebook',
+  TWITTER: 'twitter',
+  YOUTUBE: 'youtube',
+  INSTAGRAM: 'instagram',
+  PRINTER: 'printer',
+  DOWNLOAD: 'cloud-download',
+  CLOCK: 'clock-time-eight',
 };
 
 export type AppIconsType = typeof AppIcons;

@@ -2,10 +2,10 @@ import { CommonModule } from '@angular/common';
 import { Component, OnDestroy, OnInit, inject } from '@angular/core';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
-import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
+import { ButtonComponent } from '@components/button/button.component';
+import { IconButtonComponent } from '@components/icon-button/icon-button.component';
 import { NewsItemComponent } from '@components/news-item/news-item.component';
-import { LangContract } from '@contracts/lang-contract';
 import { News } from '@models/news';
 import { NewsService } from '@services/news.service';
 import { TranslationService } from '@services/translation.service';
@@ -17,10 +17,11 @@ import { Subject, debounceTime, takeUntil, tap } from 'rxjs';
   imports: [
     CommonModule,
     ReactiveFormsModule,
-    MatButtonModule,
     MatIconModule,
     MatAutocompleteModule,
     NewsItemComponent,
+    ButtonComponent,
+    IconButtonComponent,
   ],
   templateUrl: './top-header.component.html',
   styleUrls: ['./top-header.component.scss'],

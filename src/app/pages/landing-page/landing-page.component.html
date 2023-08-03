@@ -29,16 +29,14 @@
   <br />
   <br />
   <app-news-list [title]="lang.map.latest_news" [newsData]="(newsData | async) ?? []" />
-  <div class="text-center mt-10">
-    <button routerLink="/news" class="self-center !bg-secondary !text-white !shadow-xl" mat-button>
-      {{ lang.map.more }}...
-    </button>
+  <div class="flex justify-center mt-10">
+    <app-button buttonStyle="secondary" routerLink="/news"> {{ lang.map.more }}... </app-button>
   </div>
 
   <br />
   <br />
   <div class="flex justify-center">
-    <div class="shadow-xl flex rounded-xl border w-3/4 p-20 gap-x-10">
+    <div class="shadow-gray-200 custom-shadow flex rounded-xl border w-3/4 p-20 gap-x-10">
       <div class="w-3/5 flex flex-col gap-y-10">
         <app-newsletter-form />
         <app-voting-form />

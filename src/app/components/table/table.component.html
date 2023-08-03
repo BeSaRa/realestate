@@ -1,5 +1,6 @@
-<div class="py-4 px-8 rounded-xl border border-secondary/50 shadow-gray-100 custom-shadow">
-  <table mat-table [dataSource]="dataSource" class="overflow-y-scroll">
+<div
+  class="overflow-x-auto overflow-y-hidden py-4 px-8 rounded-xl border border-secondary/50 shadow-gray-100 custom-shadow">
+  <table mat-table [dataSource]="dataSource" class="w-full" [ngStyle]="{ minWidth}">
     <!-- columns -->
     <ng-container
       *ngFor="let displayedColumn of displayedColumns; let index = index"

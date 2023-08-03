@@ -16,35 +16,62 @@
       width="350" />
   </a>
   <div class="flex justify-center items-start flex-col">
-    <ul
-      id="main-menu"
-      class="flex gap-x-3 [&>li>a:hover]:!border-white group-[.fixed]:[&>li>a:hover]:!border-primary group-[.fixed]:[&>li>a.active]:!border-primary group-[.fixed]:text-primary text-white [&>li>a]:!border-2 [&>li>a]:!border-solid [&>li>a]:!border-transparent [&>li>a.active]:!border-white">
+    <ul id="main-menu" class="flex gap-x-3">
       <li>
-        <a mat-button routerLink="/home" routerLinkActive="active">{{ lang.map.home.toCapitalAll() }}</a>
+        <app-button
+          [buttonStyle]="sticky.isSticky() ? 'none-primary' : 'none'"
+          routerLink="/home"
+          routerLinkActive="active"
+          >{{ lang.map.home.toCapitalAll() }}</app-button
+        >
       </li>
       <li>
-        <a mat-button routerLink="/sell-indicators" routerLinkActive="active">{{
-          lang.map.sell_indicator.toCapitalAll()
-        }}</a>
+        <app-button
+          [buttonStyle]="sticky.isSticky() ? 'none-primary' : 'none'"
+          routerLink="/sell-indicators"
+          routerLinkActive="active"
+          >{{ lang.map.sell_indicator.toCapitalAll() }}</app-button
+        >
       </li>
       <li>
-        <a mat-button routerLink="/mortgage-indicators" routerLinkActive="active">{{
-          lang.map.mortgage_indicator.toCapitalAll()
-        }}</a>
+        <app-button
+          [buttonStyle]="sticky.isSticky() ? 'none-primary' : 'none'"
+          routerLink="/mortgage-indicators"
+          routerLinkActive="active"
+          >{{ lang.map.mortgage_indicator.toCapitalAll() }}</app-button
+        >
       </li>
       <li>
-        <a mat-button routerLink="/rental-indicators" routerLinkActive="active">{{
-          lang.map.rental_indicator.toCapitalAll()
-        }}</a>
+        <app-button
+          [buttonStyle]="sticky.isSticky() ? 'none-primary' : 'none'"
+          routerLink="/rental-indicators"
+          routerLinkActive="active"
+          >{{ lang.map.rental_indicator.toCapitalAll() }}</app-button
+        >
       </li>
       <li>
-        <a mat-button routerLink="/news" routerLinkActive="active">{{ lang.map.news.toCapitalAll() }}</a>
+        <app-button
+          [buttonStyle]="sticky.isSticky() ? 'none-primary' : 'none'"
+          routerLink="/news"
+          routerLinkActive="active"
+          >{{ lang.map.news.toCapitalAll() }}</app-button
+        >
       </li>
       <li>
-        <a mat-button routerLink="/about" routerLinkActive="active">{{ lang.map.about_us.toCapitalAll() }}</a>
+        <app-button
+          [buttonStyle]="sticky.isSticky() ? 'none-primary' : 'none'"
+          routerLink="/about"
+          routerLinkActive="active"
+          >{{ lang.map.about_us.toCapitalAll() }}</app-button
+        >
       </li>
       <li>
-        <a mat-button routerLink="/laws" routerLinkActive="active">{{ lang.map.laws_and_decisions.toCapitalAll() }}</a>
+        <app-button
+          [buttonStyle]="sticky.isSticky() ? 'none-primary' : 'none'"
+          routerLink="/laws"
+          routerLinkActive="active"
+          >{{ lang.map.laws_and_decisions.toCapitalAll() }}</app-button
+        >
       </li>
     </ul>
   </div>

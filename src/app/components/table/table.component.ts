@@ -19,6 +19,7 @@ export class TableComponent implements OnInit {
   @Input({ required: true }) data!: unknown[] | Observable<unknown[]>;
   @Input({ required: true }) displayedColumns!: DisplayedColumnContract[];
   @Input() pageSize = 5;
+  @Input() minWidth = '1000px';
 
   @ContentChildren(TableColumnTemplateDirective) columnsTemplates!: QueryList<TableColumnTemplateDirective>;
 
