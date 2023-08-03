@@ -12,120 +12,142 @@
   <div class="px-16">
     <app-transactions-filter (fromChanged)="filterChange($event)" />
   </div>
-  <div class="p-16">
-    <div class="flex flex-col">
-      <h3 class="heading text-3xl self-start text-primary border-secondary font-semibold inline-block">
-        {{ lang.map.rental_transactions_measuring_dashboard }}
-      </h3>
-      <div class="flex flex-col gap-4 xl:flex-row">
-        <div class="flex-1 my-4 p-4 border border-primary rounded-lg grid grid-cols-3 justify-center gap-4">
-          <app-kpi-root (itemSelected)="rootItemSelected($event)" *ngFor="let item of nonePriceList" [item]="item" />
-        </div>
-        <div class="flex-1 my-4 p-4 border border-primary rounded-lg grid grid-cols-3 justify-center gap-4">
-          <app-kpi-root (itemSelected)="rootItemSelected($event)" *ngFor="let item of priceList" [item]="item" />
-        </div>
+  <div class="flex flex-col">
+    <div class="px-16 mt-5">
+      <div class="flex justify-center gap-5">
+        <button
+          [ngClass]="{ active: isSelectedTab('rental_indicators') }"
+          (click)="switchTab('rental_indicators')"
+          class="shadow-xl outline-none border border-secondary text-secondary p-5 text-2xl rounded-2xl [&.active]:bg-secondary [&.active]:text-white [&.active]:ring-2 ring-black">
+          {{ lang.map.rental_indicators }}
+        </button>
+        <button
+          [ngClass]="{ active: isSelectedTab('statistical_reports_for_rent') }"
+          (click)="switchTab('statistical_reports_for_rent')"
+          class="shadow-xl outline-none border border-secondary text-secondary p-5 text-2xl rounded-2xl [&.active]:bg-secondary [&.active]:text-white [&.active]:ring-2 ring-black">
+          {{ lang.map.statistical_reports_for_rent }}
+        </button>
       </div>
     </div>
   </div>
-  <div class="bg-sand p-16">
-    <div class="px-16 flex flex-col justify-center items-center">
-      <div class="flex w-full justify-center">
-        <h3 *ngIf="selectedRoot" class="text-3xl mb-4 text-primary border-secondary font-semibold">
-          {{ selectedRoot.getNames() }} ({{ lang.map.depending_on_use }})
+  <div *ngIf="isSelectedTab('rental_indicators')" class="flex flex-col">
+    <div class="p-16">
+      <div class="flex flex-col">
+        <h3 class="heading text-3xl self-start text-primary border-secondary font-semibold inline-block">
+          {{ lang.map.rental_transactions_measuring_dashboard }}
         </h3>
-      </div>
-      <div class="w-4/6 grid grid-cols-3 xl:grid-cols-6 border-2 border-secondary overflow-hidden rounded-xl">
-        <app-purpose
-          *ngFor="let item of purposeKPIS; let i = index"
-          [item]="item"
-          (click)="purposeSelected(item)"
-          class="border-e-2 border-secondary last-of-type:border-e-0 {{ i > 2 ? 'border-t-2 xl:border-t-0' : '' }} {{
-            i % 3 === 2 ? 'border-e-0 xl:border-e-2' : ''
-          }}" />
-      </div>
-      <div class="mt-20 w-11/12" dir="ltr">
-        <div class="flex justify-center">
-          <h3 *ngIf="selectedRoot" class="text-3xl mb-4 text-primary border-secondary font-semibold">
-            {{ selectedRoot.getNames() }} ({{ lang.map.depending_on_type }})
-          </h3>
-        </div>
-        <carousel #carousel [arrowsOutside]="true" [margin]="20" [cellWidth]="350">
-          <app-property-block class="carousel-cell" *ngFor="let item of propertiesKPIS" [item]="item" />
-        </carousel>
-      </div>
-    </div>
-  </div>
-  <div class="p-16 flex flex-col">
-    <div class="flex justify-center">
-      <h3 *ngIf="selectedRoot" class="text-3xl mb-4 text-primary border-secondary font-semibold">
-        {{ selectedRoot.getNames() }}
-      </h3>
-    </div>
-    <div class="flex">
-      <div class="flex-auto" dir="ltr">
-        <apx-chart
-          #chart
-          [series]="chartOptions.series!"
-          [chart]="chartOptions.chart!"
-          [xaxis]="chartOptions.xaxis!"
-          [stroke]="chartOptions.stroke!"
-          [colors]="chartOptions.colors!"
-          [dataLabels]="chartOptions.dataLabels!"
-          [legend]="chartOptions.legend!"
-          [markers]="chartOptions.markers!"
-          [grid]="chartOptions.grid!"
-          [yaxis]="chartOptions.yaxis!"
-          [tooltip]="chartOptions.tooltip!"
-          [plotOptions]="chartOptions.plotOptions!"
-          [title]="chartOptions.title!"></apx-chart>
-      </div>
-      <div class="h-full flex flex-col mt-10">
-        <app-icon-button
-          [ngClass]="{ 'text-primary': isSelectedChartType('line') }"
-          (click)="updateChartType('line')"
-          class="text-primary"
-          icon="LINE_CHART" />
-        <app-icon-button
-          [ngClass]="{ 'text-primary': isSelectedChartType('bar') }"
-          (click)="updateChartType('bar')"
-          icon="BAR_CHART" />
-        <app-icon-button
-          [ngClass]="{ 'text-primary': isSelectedChartType('area') }"
-          (click)="updateChartType('area')"
-          icon="AREA_CHART" />
-      </div>
-    </div>
-  </div>
-
-  <div class="p-16">
-    <h3 class="text-3xl mb-4 text-primary border-secondary font-semibold">
-      {{ lang.map.rent_transactions_list }}
-    </h3>
-    <app-table [displayedColumns]="displayedColumns" [data]="transactions">
-      <ng-template appTableColumnTemplate columnName="municipality_id" let-item>{{
-        item.municipalityInfo.getNames()
-      }}</ng-template>
-      <ng-template appTableColumnTemplate columnName="unit_details" let-item>
-        <div class="flex justify-center">
-          <div class="text-start">
-            <div>
-              <b>{{ lang.map.rooms }}</b> : {{ item.bedRoomsCount ? item.bedRoomsCount : "---" }}
-            </div>
-            <div>
-              <b>{{ lang.map.space }}</b> : {{ item.area ? item.area : "---" }}
-            </div>
+        <div class="flex flex-col gap-4 xl:flex-row">
+          <div class="flex-1 my-4 p-4 border border-primary rounded-lg grid grid-cols-3 justify-center gap-4">
+            <app-kpi-root (itemSelected)="rootItemSelected($event)" *ngFor="let item of nonePriceList" [item]="item" />
+          </div>
+          <div class="flex-1 my-4 p-4 border border-primary rounded-lg grid grid-cols-3 justify-center gap-4">
+            <app-kpi-root (itemSelected)="rootItemSelected($event)" *ngFor="let item of priceList" [item]="item" />
           </div>
         </div>
-      </ng-template>
-      <ng-template appTableColumnTemplate columnName="rental_value" let-item
-        >{{ item.rentPaymentMonthly ? item.rentPaymentMonthly : "---" }}
-      </ng-template>
-      <ng-template appTableColumnTemplate columnName="contract_start_date" let-item>{{
-        item.startDate | date : "YYYY-MM-dd"
-      }}</ng-template>
-      <ng-template appTableColumnTemplate columnName="contract_end_date" let-item>{{
-        item.endDate | date : "YYYY-MM-dd"
-      }}</ng-template>
-    </app-table>
+      </div>
+    </div>
+    <div class="bg-sand p-16">
+      <div class="px-16 flex flex-col justify-center items-center">
+        <div class="flex w-full justify-center">
+          <h3 *ngIf="selectedRoot" class="text-3xl mb-4 text-primary border-secondary font-semibold">
+            {{ selectedRoot.getNames() }} ({{ lang.map.depending_on_use }})
+          </h3>
+        </div>
+        <div class="w-4/6 grid grid-cols-3 xl:grid-cols-6 border-2 border-secondary overflow-hidden rounded-xl">
+          <app-purpose
+            *ngFor="let item of purposeKPIS; let i = index"
+            [item]="item"
+            (click)="purposeSelected(item)"
+            class="border-e-2 border-secondary last-of-type:border-e-0 {{ i > 2 ? 'border-t-2 xl:border-t-0' : '' }} {{
+              i % 3 === 2 ? 'border-e-0 xl:border-e-2' : ''
+            }}" />
+        </div>
+        <div class="mt-20 w-11/12" dir="ltr">
+          <div class="flex justify-center">
+            <h3 *ngIf="selectedRoot" class="text-3xl mb-4 text-primary border-secondary font-semibold">
+              {{ selectedRoot.getNames() }} ({{ lang.map.depending_on_type }})
+            </h3>
+          </div>
+          <carousel #carousel [arrowsOutside]="true" [margin]="20" [cellWidth]="350">
+            <app-property-block class="carousel-cell" *ngFor="let item of propertiesKPIS" [item]="item" />
+          </carousel>
+        </div>
+      </div>
+    </div>
+    <div class="p-16 flex flex-col">
+      <div class="flex justify-center">
+        <h3 *ngIf="selectedRoot" class="text-3xl mb-4 text-primary border-secondary font-semibold">
+          {{ selectedRoot.getNames() }}
+        </h3>
+      </div>
+      <div class="flex">
+        <div class="flex-auto" dir="ltr">
+          <apx-chart
+            #chart
+            [series]="chartOptions.series!"
+            [chart]="chartOptions.chart!"
+            [xaxis]="chartOptions.xaxis!"
+            [stroke]="chartOptions.stroke!"
+            [colors]="chartOptions.colors!"
+            [dataLabels]="chartOptions.dataLabels!"
+            [legend]="chartOptions.legend!"
+            [markers]="chartOptions.markers!"
+            [grid]="chartOptions.grid!"
+            [yaxis]="chartOptions.yaxis!"
+            [tooltip]="chartOptions.tooltip!"
+            [plotOptions]="chartOptions.plotOptions!"
+            [title]="chartOptions.title!"></apx-chart>
+        </div>
+        <div class="h-full flex flex-col mt-10">
+          <app-icon-button
+            [ngClass]="{ 'text-primary': isSelectedChartType('line') }"
+            (click)="updateChartType('line')"
+            class="text-primary"
+            icon="LINE_CHART" />
+          <app-icon-button
+            [ngClass]="{ 'text-primary': isSelectedChartType('bar') }"
+            (click)="updateChartType('bar')"
+            icon="BAR_CHART" />
+          <app-icon-button
+            [ngClass]="{ 'text-primary': isSelectedChartType('area') }"
+            (click)="updateChartType('area')"
+            icon="AREA_CHART" />
+        </div>
+      </div>
+    </div>
+    <div class="p-16">
+      <h3 class="text-3xl mb-4 text-primary border-secondary font-semibold">
+        {{ lang.map.rent_transactions_list }}
+      </h3>
+      <app-table [displayedColumns]="displayedColumns" [data]="transactions">
+        <ng-template appTableColumnTemplate columnName="municipality_id" let-item>{{
+          item.municipalityInfo.getNames()
+        }}</ng-template>
+        <ng-template appTableColumnTemplate columnName="unit_details" let-item>
+          <div class="flex justify-center">
+            <div class="text-start">
+              <div>
+                <b>{{ lang.map.rooms }}</b> : {{ item.bedRoomsCount ? item.bedRoomsCount : "---" }}
+              </div>
+              <div>
+                <b>{{ lang.map.space }}</b> : {{ item.area ? item.area : "---" }}
+              </div>
+            </div>
+          </div>
+        </ng-template>
+        <ng-template appTableColumnTemplate columnName="rental_value" let-item
+          >{{ item.rentPaymentMonthly ? item.rentPaymentMonthly : "---" }}
+        </ng-template>
+        <ng-template appTableColumnTemplate columnName="contract_start_date" let-item>{{
+          item.startDate | date : "YYYY-MM-dd"
+        }}</ng-template>
+        <ng-template appTableColumnTemplate columnName="contract_end_date" let-item>{{
+          item.endDate | date : "YYYY-MM-dd"
+        }}</ng-template>
+      </app-table>
+    </div>
+  </div>
+  <div *ngIf="isSelectedTab('statistical_reports_for_rent')" class="flex flex-col">
+    <div class="p-16"></div>
   </div>
 </div>

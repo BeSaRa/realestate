@@ -1,4 +1,6 @@
 export interface LangKeysContract {
+  statistical_reports_for_rent: string;
+  rental_indicators: string;
   rent_transactions_list: string;
   space: string;
   rooms: string;

@@ -28,6 +28,7 @@ import { TableComponent } from '@components/table/table.component';
 import { TableColumnTemplateDirective } from '@directives/table-column-template.directive';
 import { RentTransaction } from '@models/rent-transaction';
 import { IconButtonComponent } from '@components/icon-button/icon-button.component';
+import { ButtonComponent } from '@components/button/button.component';
 
 @Component({
   selector: 'app-rental-indicators-page',
@@ -48,6 +49,7 @@ import { IconButtonComponent } from '@components/icon-button/icon-button.compone
     TableComponent,
     TableColumnTemplateDirective,
     IconButtonComponent,
+    ButtonComponent,
   ],
   templateUrl: './rental-indicators-page.component.html',
   styleUrls: ['./rental-indicators-page.component.scss'],
@@ -83,7 +85,7 @@ export default class RentalIndicatorsPageComponent {
       1,
       this.lang.getArabicTranslation('the_total_number_of_lease_contracts'),
       this.lang.getEnglishTranslation('the_total_number_of_lease_contracts'),
-      false,
+      true,
       this.urlService.URLS.RENT_KPI1,
       this.urlService.URLS.RENT_KPI2,
       this.urlService.URLS.RENT_KPI3,
@@ -93,7 +95,7 @@ export default class RentalIndicatorsPageComponent {
       4,
       this.lang.getArabicTranslation('the_total_number_of_properties_units_rented'),
       this.lang.getEnglishTranslation('the_total_number_of_properties_units_rented'),
-      false,
+      true,
       this.urlService.URLS.RENT_KPI4,
       this.urlService.URLS.RENT_KPI5,
       this.urlService.URLS.RENT_KPI6,
@@ -104,7 +106,7 @@ export default class RentalIndicatorsPageComponent {
       10,
       this.lang.getArabicTranslation('total_rented_space'),
       this.lang.getEnglishTranslation('total_rented_space'),
-      false,
+      true,
       this.urlService.URLS.RENT_KPI10,
       this.urlService.URLS.RENT_KPI11,
       this.urlService.URLS.RENT_KPI12,
@@ -114,7 +116,7 @@ export default class RentalIndicatorsPageComponent {
       7,
       this.lang.getArabicTranslation('the_total_value_of_lease_contracts'),
       this.lang.getEnglishTranslation('the_total_value_of_lease_contracts'),
-      true,
+      false,
       this.urlService.URLS.RENT_KPI7,
       this.urlService.URLS.RENT_KPI8,
       this.urlService.URLS.RENT_KPI9,
@@ -124,7 +126,7 @@ export default class RentalIndicatorsPageComponent {
       16,
       this.lang.getArabicTranslation('the_average_price_per_square_meter_square_foot'),
       this.lang.getEnglishTranslation('the_average_price_per_square_meter_square_foot'),
-      true,
+      false,
       this.urlService.URLS.RENT_KPI16,
       this.urlService.URLS.RENT_KPI17,
       this.urlService.URLS.RENT_KPI18,
@@ -134,7 +136,7 @@ export default class RentalIndicatorsPageComponent {
       13,
       this.lang.getArabicTranslation('average_rental_price_per_unit_property'),
       this.lang.getEnglishTranslation('average_rental_price_per_unit_property'),
-      true,
+      false,
       this.urlService.URLS.RENT_KPI13,
       this.urlService.URLS.RENT_KPI14,
       this.urlService.URLS.RENT_KPI15,
@@ -196,6 +198,7 @@ export default class RentalIndicatorsPageComponent {
   selectedRootChartData!: KpiModel[];
 
   selectedPurpose?: Lookup = this.lookupService.lookups.rentPurposeList[0];
+  selectedTab = 'rental_indicators';
 
   get priceList() {
     return this.rootKPIS.filter((item) => item.hasPrice);
@@ -251,7 +254,7 @@ export default class RentalIndicatorsPageComponent {
     ]).subscribe(([subKPI, lineChartData]) => {
       this.selectedRootChartData = lineChartData;
       const purpose = subKPI.reduce((acc, item) => {
-        return { ...acc, [item.rentPurposeId]: item };
+        return { ...acc, [item.purposeId]: item };
       }, {} as Record<number, KpiModel>);
 
       this.purposeKPIS = this.purposeKPIS.map((item) => {
@@ -352,5 +355,13 @@ export default class RentalIndicatorsPageComponent {
 
   isSelectedChartType(type: string) {
     return this.selectedChartType === type;
+  }
+
+  switchTab(tab: string): void {
+    this.selectedTab = tab;
+  }
+
+  isSelectedTab(tab: string): boolean {
+    return this.selectedTab === tab;
   }
 }
