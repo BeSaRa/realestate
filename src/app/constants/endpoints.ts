@@ -30,6 +30,13 @@ export const EndPoints = {
   RENT_KPI23: 'RENT|kpi23/chart/rent-mean-value',
   RENT_KPI24: 'RENT|kpi24/chart/rent-sqt-meter',
   RENT_KPI29: 'RENT|kpi29/summary',
+  // top 10
+  RENT_KPI30: 'RENT|kpi30/stats/certificate-count',
+  RENT_KPI31: 'RENT|kpi31/stats/mean-rent-amount',
+  RENT_KPI32: 'RENT|kpi32/stats/rent-amount',
+  RENT_KPI33: 'RENT|kpi33/stats/area',
+  RENT_KPI30_1: 'RENT|kpi30_1/stats/contract-count',
+  RENT_KPI31_1: 'RENT|kpi31_1/stats/mean-rent-meter',
 };
 
 export type EndpointsType = typeof EndPoints;

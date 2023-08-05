@@ -8,6 +8,8 @@ import { CastResponse } from 'cast-response';
 import { KpiRoot } from '@models/kpiRoot';
 import { KpiModel } from '@models/kpi-model';
 import { RentTransaction } from '@models/rent-transaction';
+import { Lookup } from '@models/lookup';
+import { Top10Model } from '@models/top-10-model';
 
 @Injectable({
   providedIn: 'root',
@@ -36,8 +38,14 @@ export class DashboardService {
   loadLineChartKpi(kpi: KpiRoot, criteria: Partial<RentCriteriaContract>): Observable<KpiModel[]> {
     return this.http.post<KpiModel[]>(kpi.lineChart!, criteria);
   }
+
   @CastResponse(() => RentTransaction)
   loadKpiTransactions(criteria: Partial<RentCriteriaContract>): Observable<RentTransaction[]> {
     return this.http.post<RentTransaction[]>(this.urlService.URLS.RENT_KPI29, criteria);
+  }
+
+  @CastResponse(() => Top10Model)
+  loadTop10BasedOnCriteria(item: Lookup, criteria: Partial<RentCriteriaContract>): Observable<Top10Model[]> {
+    return this.http.post<Top10Model[]>(item.url, criteria);
   }
 }

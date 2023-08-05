@@ -16,8 +16,8 @@ export class LookupService extends RegisterServiceMixin(class {}) {
   urlService = inject(UrlService);
   http = inject(HttpClient);
   lookups!: LookupsContract;
-  listMap: Record<number, Lookup> = {};
-
+  municipalitiesMap: Record<number, Lookup> = {};
+  zonesMap: Record<number, Lookup> = {};
   @CastResponse(() => LookupsMap, {
     shape: {
       'propertyTypeList.*': () => Lookup,
@@ -36,7 +36,13 @@ export class LookupService extends RegisterServiceMixin(class {}) {
       .pipe(
         tap(
           (res) =>
-            (this.listMap = res.municipalityList.reduce((acc, i) => {
+            (this.municipalitiesMap = res.municipalityList.reduce((acc, i) => {
+              return { ...acc, [i.lookupKey]: i };
+            }, {}))
+        ),
+        tap(
+          (res) =>
+            (this.zonesMap = res.zoneList.reduce((acc, i) => {
               return { ...acc, [i.lookupKey]: i };
             }, {}))
         )

@@ -1,4 +1,10 @@
 export interface LangKeysContract {
+  number_of_lease_contracts: string;
+  number_of_units: string;
+  average_price_per_month: string;
+  average_price_per_meter: string;
+  rented_spaces: string;
+  contracts_values: string;
   top_10_areas: string;
   statistical_reports_for_rent: string;
   rental_indicators: string;

@@ -1,4 +1,4 @@
-import { Component, inject, OnInit, QueryList, ViewChild, ViewChildren } from '@angular/core';
+import { Component, inject, OnInit, QueryList, ViewChildren } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ExtraHeaderComponent } from '@components/extra-header/extra-header.component';
 import { TranslationService } from '@services/translation.service';
@@ -18,7 +18,7 @@ import { CarouselComponent, IvyCarouselModule } from 'angular-responsive-carouse
 import { PropertyBlockComponent } from '@components/property-block/property-block.component';
 import { BidiModule } from '@angular/cdk/bidi';
 import { RentDefaultValues } from '@models/rent-default-values';
-import { combineLatest, forkJoin, ReplaySubject, Subject, take, takeUntil } from 'rxjs';
+import { forkJoin, ReplaySubject, Subject, take, takeUntil } from 'rxjs';
 import { KpiModel } from '@models/kpi-model';
 import { Lookup } from '@models/lookup';
 import { ChartComponent, NgApexchartsModule } from 'ng-apexcharts';
@@ -29,6 +29,7 @@ import { TableColumnTemplateDirective } from '@directives/table-column-template.
 import { RentTransaction } from '@models/rent-transaction';
 import { IconButtonComponent } from '@components/icon-button/icon-button.component';
 import { ButtonComponent } from '@components/button/button.component';
+import { Top10Model } from '@models/top-10-model';
 
 @Component({
   selector: 'app-rental-indicators-page',
@@ -54,7 +55,9 @@ import { ButtonComponent } from '@components/button/button.component';
   templateUrl: './rental-indicators-page.component.html',
   styleUrls: ['./rental-indicators-page.component.scss'],
 })
-export default class RentalIndicatorsPageComponent {
+export default class RentalIndicatorsPageComponent implements OnInit {
+  ngOnInit(): void {}
+
   transactions = new ReplaySubject<RentTransaction[]>(1);
   lang = inject(TranslationService);
   dashboardService = inject(DashboardService);
@@ -68,6 +71,8 @@ export default class RentalIndicatorsPageComponent {
   };
   @ViewChildren('chart')
   chart!: QueryList<ChartComponent>;
+  @ViewChildren('top10Chart')
+  top10Chart!: QueryList<ChartComponent>;
 
   displayedColumns = [
     { columnName: 'municipality_id', columnHeader: this.lang.map.municipal },
@@ -145,6 +150,48 @@ export default class RentalIndicatorsPageComponent {
   ];
 
   selectedChartType = 'line';
+  // number_of_lease_contracts
+  // number_of_units
+  // average_price_per_month
+  // average_price_per_meter
+  // rented_spaces
+  // contracts_values
+
+  accordingToList: Lookup[] = [
+    new Lookup().clone<Lookup>({
+      arName: this.lang.getArabicTranslation('number_of_lease_contracts'),
+      enName: this.lang.getEnglishTranslation('number_of_lease_contracts'),
+      selected: true,
+      url: this.urlService.URLS.RENT_KPI30,
+    }),
+    new Lookup().clone<Lookup>({
+      arName: this.lang.getArabicTranslation('number_of_units'),
+      enName: this.lang.getEnglishTranslation('number_of_units'),
+      url: this.urlService.URLS.RENT_KPI31,
+    }),
+    new Lookup().clone<Lookup>({
+      arName: this.lang.getArabicTranslation('average_price_per_month'),
+      enName: this.lang.getEnglishTranslation('average_price_per_month'),
+      url: this.urlService.URLS.RENT_KPI32,
+    }),
+    new Lookup().clone<Lookup>({
+      arName: this.lang.getArabicTranslation('average_price_per_meter'),
+      enName: this.lang.getEnglishTranslation('average_price_per_meter'),
+      url: this.urlService.URLS.RENT_KPI33,
+    }),
+    new Lookup().clone<Lookup>({
+      arName: this.lang.getArabicTranslation('rented_spaces'),
+      enName: this.lang.getEnglishTranslation('rented_spaces'),
+      url: this.urlService.URLS.RENT_KPI30_1,
+    }),
+    new Lookup().clone<Lookup>({
+      arName: this.lang.getArabicTranslation('contracts_values'),
+      enName: this.lang.getEnglishTranslation('contracts_values'),
+      url: this.urlService.URLS.RENT_KPI31_1,
+    }),
+  ];
+  top10ChartData: Top10Model[] = [];
+  selectedTop10: Lookup = this.accordingToList[0];
 
   chartOptions: Partial<PartialChartOptions> = {
     series: [],
@@ -189,6 +236,63 @@ export default class RentalIndicatorsPageComponent {
     tooltip: {},
   };
 
+  top10ChartOptions: Partial<PartialChartOptions> = {
+    series: [],
+    chart: {
+      type: 'bar',
+      height: 400,
+    },
+    dataLabels: {
+      enabled: true,
+      dropShadow: {
+        enabled: true,
+      },
+      formatter(val: number): string | number {
+        return formatNumber(val) as string;
+      },
+    },
+    stroke: {
+      curve: 'smooth',
+    },
+    grid: {
+      xaxis: {
+        lines: {
+          show: true,
+        },
+      },
+    },
+    xaxis: {
+      categories: [],
+      labels: {
+        formatter(value: string): string | string[] {
+          return formatNumber(value as unknown as number) as string;
+        },
+      },
+    },
+    plotOptions: {
+      bar: {
+        horizontal: true,
+        columnWidth: '20%',
+        dataLabels: {
+          position: 'bottom',
+        },
+      },
+    },
+    yaxis: {
+      reversed: true,
+      labels: {
+        formatter(val: number): string | string[] {
+          return formatNumber(val) as string;
+        },
+        style: {
+          fontFamily: 'inherit',
+          fontSize: '15px',
+        },
+      },
+    },
+    colors: ['#60d39d'],
+  };
+
   purposeKPIS = this.lookupService.lookups.rentPurposeList;
 
   propertiesKPIS = this.lookupService.lookups.propertyTypeList;
@@ -198,7 +302,7 @@ export default class RentalIndicatorsPageComponent {
   selectedRootChartData!: KpiModel[];
 
   selectedPurpose?: Lookup = this.lookupService.lookups.rentPurposeList[0];
-  selectedTab = 'rental_indicators';
+  selectedTab = 'statistical_reports_for_rent';
 
   get priceList() {
     return this.rootKPIS.filter((item) => item.hasPrice);
@@ -220,6 +324,7 @@ export default class RentalIndicatorsPageComponent {
       this.dashboardService.loadRentDefaults(criteria).subscribe((result) => {
         this.setDefaultRoots(result[0]);
         this.rootItemSelected(this.rootKPIS[0]);
+        this.selectTop10Chart(this.selectedTop10);
       });
     } else {
       this.rootKPIS.map((item) => {
@@ -269,6 +374,7 @@ export default class RentalIndicatorsPageComponent {
       this.selectedRoot && this.updateAllPurpose(this.selectedRoot.value, this.selectedRoot.yoy);
       this.selectedPurpose && this.purposeSelected(this.selectedPurpose);
       this.updateChart();
+      this.updateTop10Chart();
     });
   }
 
@@ -362,10 +468,44 @@ export default class RentalIndicatorsPageComponent {
     this.selectedTab = tab;
     this.carousel.setDirty();
     this.chart.setDirty();
-    setTimeout(() => this.updateChart());
+    this.top10Chart.setDirty();
+    setTimeout(() => {
+      this.updateChart();
+      this.updateTop10Chart();
+    });
   }
 
   isSelectedTab(tab: string): boolean {
     return this.selectedTab === tab;
+  }
+
+  selectTop10Chart(item: Lookup): void {
+    this.accordingToList.forEach((i) => {
+      i === item ? (i.selected = true) : (i.selected = false);
+    });
+    this.selectedTop10 = item;
+    this.dashboardService.loadTop10BasedOnCriteria(item, this.criteria.criteria).subscribe((top10ChartData) => {
+      this.top10ChartData = top10ChartData;
+      this.updateTop10Chart();
+    });
+  }
+
+  updateTop10Chart(): void {
+    if (!this.top10Chart.length) return;
+    this.top10Chart.first
+      .updateOptions({
+        series: [
+          {
+            name: this.selectedTop10.getNames(),
+            data: this.top10ChartData.map((item) => {
+              return { x: item.zoneInfo.getNames(), y: item.kpiVal };
+            }),
+          },
+        ],
+        xaxis: {
+          categories: [],
+        },
+      })
+      .then();
   }
 }
