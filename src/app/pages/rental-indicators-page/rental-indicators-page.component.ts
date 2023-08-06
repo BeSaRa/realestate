@@ -165,29 +165,24 @@ export default class RentalIndicatorsPageComponent implements OnInit {
       url: this.urlService.URLS.RENT_KPI30,
     }),
     new Lookup().clone<Lookup>({
-      arName: this.lang.getArabicTranslation('number_of_units'),
-      enName: this.lang.getEnglishTranslation('number_of_units'),
-      url: this.urlService.URLS.RENT_KPI31,
-    }),
-    new Lookup().clone<Lookup>({
       arName: this.lang.getArabicTranslation('average_price_per_month'),
       enName: this.lang.getEnglishTranslation('average_price_per_month'),
-      url: this.urlService.URLS.RENT_KPI32,
-    }),
-    new Lookup().clone<Lookup>({
-      arName: this.lang.getArabicTranslation('average_price_per_meter'),
-      enName: this.lang.getEnglishTranslation('average_price_per_meter'),
-      url: this.urlService.URLS.RENT_KPI33,
-    }),
-    new Lookup().clone<Lookup>({
-      arName: this.lang.getArabicTranslation('rented_spaces'),
-      enName: this.lang.getEnglishTranslation('rented_spaces'),
-      url: this.urlService.URLS.RENT_KPI30_1,
+      url: this.urlService.URLS.RENT_KPI31,
     }),
     new Lookup().clone<Lookup>({
       arName: this.lang.getArabicTranslation('contracts_values'),
       enName: this.lang.getEnglishTranslation('contracts_values'),
-      url: this.urlService.URLS.RENT_KPI31_1,
+      url: this.urlService.URLS.RENT_KPI32,
+    }),
+    new Lookup().clone<Lookup>({
+      arName: this.lang.getArabicTranslation('rented_spaces'),
+      enName: this.lang.getEnglishTranslation('rented_spaces'),
+      url: this.urlService.URLS.RENT_KPI33,
+    }),
+    new Lookup().clone<Lookup>({
+      arName: this.lang.getArabicTranslation('number_of_units'),
+      enName: this.lang.getEnglishTranslation('number_of_units'),
+      url: this.urlService.URLS.RENT_KPI30_1,
     }),
   ];
   top10ChartData: Top10Model[] = [];
