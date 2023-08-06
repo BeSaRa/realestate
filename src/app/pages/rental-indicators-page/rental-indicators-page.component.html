@@ -100,17 +100,17 @@
         </div>
         <div class="h-full flex flex-col mt-10">
           <app-icon-button
-            [ngClass]="{ 'text-primary': isSelectedChartType('line') }"
-            (click)="updateChartType('line')"
+            [ngClass]="{ 'text-primary': isSelectedChartType(ChartType.LINE) }"
+            (click)="updateChartType(ChartType.LINE)"
             class="text-primary"
             icon="LINE_CHART" />
           <app-icon-button
-            [ngClass]="{ 'text-primary': isSelectedChartType('bar') }"
-            (click)="updateChartType('bar')"
+            [ngClass]="{ 'text-primary': isSelectedChartType(ChartType.BAR) }"
+            (click)="updateChartType(ChartType.BAR)"
             icon="BAR_CHART" />
           <app-icon-button
-            [ngClass]="{ 'text-primary': isSelectedChartType('area') }"
-            (click)="updateChartType('area')"
+            [ngClass]="{ 'text-primary': isSelectedChartType(ChartType.AREA) }"
+            (click)="updateChartType(ChartType.AREA)"
             icon="AREA_CHART" />
         </div>
       </div>

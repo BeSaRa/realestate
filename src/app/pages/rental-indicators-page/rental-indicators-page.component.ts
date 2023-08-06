@@ -30,6 +30,7 @@ import { RentTransaction } from '@models/rent-transaction';
 import { IconButtonComponent } from '@components/icon-button/icon-button.component';
 import { ButtonComponent } from '@components/button/button.component';
 import { Top10Model } from '@models/top-10-model';
+import { ChartType } from '@enums/chart-type';
 
 @Component({
   selector: 'app-rental-indicators-page',
@@ -56,6 +57,7 @@ import { Top10Model } from '@models/top-10-model';
   styleUrls: ['./rental-indicators-page.component.scss'],
 })
 export default class RentalIndicatorsPageComponent implements OnInit {
+  protected readonly ChartType = ChartType;
   ngOnInit(): void {}
 
   transactions = new ReplaySubject<RentTransaction[]>(1);
@@ -149,13 +151,7 @@ export default class RentalIndicatorsPageComponent implements OnInit {
     ),
   ];
 
-  selectedChartType = 'line';
-  // number_of_lease_contracts
-  // number_of_units
-  // average_price_per_month
-  // average_price_per_meter
-  // rented_spaces
-  // contracts_values
+  selectedChartType: ChartType = ChartType.LINE;
 
   accordingToList: Lookup[] = [
     new Lookup().clone<Lookup>({
@@ -450,12 +446,12 @@ export default class RentalIndicatorsPageComponent implements OnInit {
     this.carousel.first.cellsToScroll = 1;
   }
 
-  updateChartType(type: string) {
+  updateChartType(type: ChartType) {
     this.chart.first.updateOptions({ chart: { type: type } }).then();
     this.selectedChartType = type;
   }
 
-  isSelectedChartType(type: string) {
+  isSelectedChartType(type: ChartType) {
     return this.selectedChartType === type;
   }
 
