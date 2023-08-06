@@ -1,4 +1,4 @@
-import { Component, EventEmitter, inject, OnDestroy, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, inject, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { CommonModule, DatePipe } from '@angular/common';
 import { AbstractControl, ReactiveFormsModule, UntypedFormBuilder } from '@angular/forms';
 import { TranslationService } from '@services/translation.service';
@@ -73,20 +73,25 @@ export class TransactionsFilterComponent implements OnInit, OnDestroy {
   fb = inject(UntypedFormBuilder);
   lookupService = inject(LookupService);
   datePipe = inject(DatePipe);
+  @Input()
+  municipalities: Lookup[] = [];
+  @Input()
+  propertyTypes: Lookup[] = [];
+  @Input()
+  propertyUsages: Lookup[] = [];
+  @Input()
+  zones: Lookup[] = [];
+  @Input()
+  rooms: Lookup[] = [];
 
-  municipalities = this.lookupService.lookups.municipalityList;
-  propertyTypes = this.lookupService.lookups.propertyTypeList;
-  propertyUsages = this.lookupService.lookups.rentPurposeList.slice().sort((a, b) => a.lookupKey - b.lookupKey);
-  zones = this.lookupService.lookups.zoneList;
-  rooms = this.lookupService.lookups.rooms;
   filteredZones: Lookup[] = [];
 
   years = range(2019, new Date().getFullYear());
 
-  durations = this.lookupService.lookups.durations;
-  halfYearDurations = this.lookupService.lookups.halfYearDurations;
-  quarterYearDurations = this.lookupService.lookups.quarterYearDurations;
-  // spaces = this.lookupService.lookups.spaces; // will use it later
+  durations = this.lookupService.rentLookups.durations;
+  halfYearDurations = this.lookupService.rentLookups.halfYearDurations;
+  quarterYearDurations = this.lookupService.rentLookups.quarterYearDurations;
+  // spaces = this.lookupService.rentLookups.spaces; // will use it later
 
   @Output()
   fromChanged = new EventEmitter<{ criteria: RentCriteriaContract; type: CriteriaType }>();

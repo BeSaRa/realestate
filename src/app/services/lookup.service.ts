@@ -18,6 +18,9 @@ export class LookupService extends RegisterServiceMixin(class {}) {
   lookups!: LookupsContract;
   municipalitiesMap: Record<number, Lookup> = {};
   zonesMap: Record<number, Lookup> = {};
+
+  rentLookups!: LookupsContract;
+
   @CastResponse(() => LookupsMap, {
     shape: {
       'propertyTypeList.*': () => Lookup,
@@ -32,7 +35,7 @@ export class LookupService extends RegisterServiceMixin(class {}) {
 
   load(): Observable<LookupsMap> {
     return this._load()
-      .pipe(tap((response) => (this.lookups = response)))
+      .pipe(tap((response) => (this.rentLookups = response)))
       .pipe(
         tap(
           (res) =>
@@ -40,12 +43,11 @@ export class LookupService extends RegisterServiceMixin(class {}) {
               return { ...acc, [i.lookupKey]: i };
             }, {}))
         ),
-        tap(
-          (res) =>
-            (this.zonesMap = res.zoneList.reduce((acc, i) => {
-              return { ...acc, [i.lookupKey]: i };
-            }, {}))
-        )
+        tap((res) => {
+          this.zonesMap = res.zoneList.reduce((acc, i) => {
+            return { ...acc, [i.lookupKey]: i };
+          }, {});
+        })
       );
   }
 }

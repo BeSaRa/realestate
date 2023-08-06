@@ -1,4 +1,4 @@
-import { Component, inject, OnInit, QueryList, ViewChildren } from '@angular/core';
+import { Component, inject, Input, OnInit, QueryList, ViewChildren } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ExtraHeaderComponent } from '@components/extra-header/extra-header.component';
 import { TranslationService } from '@services/translation.service';
@@ -66,6 +66,16 @@ export default class RentalIndicatorsPageComponent implements OnInit {
   urlService = inject(UrlService);
   lookupService = inject(LookupService);
   destroy$ = new Subject<void>();
+
+  municipalities = this.lookupService.rentLookups.municipalityList;
+
+  propertyTypes = this.lookupService.rentLookups.propertyTypeList;
+
+  propertyUsages = this.lookupService.rentLookups.rentPurposeList.slice().sort((a, b) => a.lookupKey - b.lookupKey);
+
+  zones = this.lookupService.rentLookups.zoneList;
+
+  rooms = this.lookupService.rentLookups.rooms;
 
   criteria!: {
     criteria: RentCriteriaContract;
@@ -284,15 +294,15 @@ export default class RentalIndicatorsPageComponent implements OnInit {
     colors: ['#60d39d'],
   };
 
-  purposeKPIS = this.lookupService.lookups.rentPurposeList;
+  purposeKPIS = this.lookupService.rentLookups.rentPurposeList;
 
-  propertiesKPIS = this.lookupService.lookups.propertyTypeList;
+  propertiesKPIS = this.lookupService.rentLookups.propertyTypeList;
 
   selectedRoot?: KpiRoot;
 
   selectedRootChartData!: KpiModel[];
 
-  selectedPurpose?: Lookup = this.lookupService.lookups.rentPurposeList[0];
+  selectedPurpose?: Lookup = this.lookupService.rentLookups.rentPurposeList[0];
   selectedTab = 'rental_indicators';
 
   get priceList() {

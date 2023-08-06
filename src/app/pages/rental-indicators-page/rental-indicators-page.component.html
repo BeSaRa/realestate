@@ -10,7 +10,13 @@
 
 <div class="content-wrapper">
   <div class="px-16">
-    <app-transactions-filter (fromChanged)="filterChange($event)" />
+    <app-transactions-filter
+      [municipalities]="municipalities"
+      [propertyTypes]="propertyTypes"
+      [propertyUsages]="propertyUsages"
+      [zones]="zones"
+      [rooms]="rooms"
+      (fromChanged)="filterChange($event)" />
   </div>
   <div class="flex flex-col">
     <div class="px-16 mt-5">
@@ -122,7 +128,7 @@
       <app-table [displayedColumns]="displayedColumns" [data]="transactions">
         <ng-template appTableColumnTemplate columnName="municipality_id" let-item>{{
           item.municipalityInfo.getNames()
-          }}</ng-template>
+        }}</ng-template>
         <ng-template appTableColumnTemplate columnName="unit_details" let-item>
           <div class="flex justify-center">
             <div class="text-start">
@@ -136,14 +142,14 @@
           </div>
         </ng-template>
         <ng-template appTableColumnTemplate columnName="rental_value" let-item
-        >{{ item.rentPaymentMonthly ? item.rentPaymentMonthly : "---" }}
+          >{{ item.rentPaymentMonthly ? item.rentPaymentMonthly : "---" }}
         </ng-template>
         <ng-template appTableColumnTemplate columnName="contract_start_date" let-item>{{
           item.startDate | date : "YYYY-MM-dd"
-          }}</ng-template>
+        }}</ng-template>
         <ng-template appTableColumnTemplate columnName="contract_end_date" let-item>{{
           item.endDate | date : "YYYY-MM-dd"
-          }}</ng-template>
+        }}</ng-template>
       </app-table>
     </div>
   </div>
@@ -161,7 +167,7 @@
               (click)="selectTop10Chart(item)"
               size="lg"
               [buttonStyle]="item.selected ? 'secondary' : 'none-primary'"
-            >{{ item.getNames() }}</app-button
+              >{{ item.getNames() }}</app-button
             >
           </li>
         </ul>
