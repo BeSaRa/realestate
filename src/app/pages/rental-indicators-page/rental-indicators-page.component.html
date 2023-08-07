@@ -194,26 +194,30 @@
       <table class="custom-table p-5" mat-table matSort [dataSource]="compositeTransactions">
         <!-- arName -->
         <ng-container matColumnDef="municipality">
-          <th mat-header-cell class="!bg-azure !text-white" mat-sort-header="municipality" *matHeaderCellDef>
+          <!--          mat-sort-header="municipality" -->
+          <th mat-header-cell class="!bg-azure !text-white" *matHeaderCellDef>
             {{ lang.map.municipal }}
           </th>
           <td mat-cell *matCellDef="let element">{{ element[0].municipalityInfo.getNames() }}</td>
         </ng-container>
 
         <ng-container matColumnDef="firstYear1">
-          <th mat-header-cell class="!bg-azure !text-white" mat-sort-header="firstYear1" *matHeaderCellDef>
+          <!--          mat-sort-header="firstYear1" -->
+          <th mat-header-cell class="!bg-azure !text-white" *matHeaderCellDef>
             {{ compositeYears.previousYear }}
           </th>
           <td mat-cell *matCellDef="let element">{{ element[0].kpi1Val | formatNumbers }}</td>
         </ng-container>
         <ng-container matColumnDef="firstYear2">
-          <th mat-header-cell class="!bg-azure !text-white" mat-sort-header="firstYear2" *matHeaderCellDef>
+          <!--          mat-sort-header="firstYear2" -->
+          <th mat-header-cell class="!bg-azure !text-white" *matHeaderCellDef>
             {{ compositeYears.selectedYear }}
           </th>
           <td mat-cell *matCellDef="let element">{{ element[1].kpi1Val | formatNumbers }}</td>
         </ng-container>
         <ng-container matColumnDef="firstYoy">
-          <th mat-header-cell class="!bg-azure !text-white" mat-sort-header="firstYoy" *matHeaderCellDef>
+          <!--          mat-sort-header="firstYoy" -->
+          <th mat-header-cell class="!bg-azure !text-white" *matHeaderCellDef>
             {{ lang.map.change }}
           </th>
           <td mat-cell *matCellDef="let element">
@@ -225,19 +229,22 @@
         </ng-container>
 
         <ng-container matColumnDef="secondYear1">
-          <th mat-header-cell class="!bg-jungle !text-white" mat-sort-header="secondYear1" *matHeaderCellDef>
+          <!--          mat-sort-header="secondYear1" -->
+          <th mat-header-cell class="!bg-jungle !text-white" *matHeaderCellDef>
             {{ compositeYears.previousYear }}
           </th>
           <td mat-cell *matCellDef="let element">{{ element[0].kpi2Val | formatNumbers }}</td>
         </ng-container>
         <ng-container matColumnDef="secondYear2">
-          <th mat-header-cell class="!bg-jungle !text-white" mat-sort-header="secondYear2" *matHeaderCellDef>
+          <!--          mat-sort-header="secondYear2" -->
+          <th mat-header-cell class="!bg-jungle !text-white" *matHeaderCellDef>
             {{ compositeYears.selectedYear }}
           </th>
           <td mat-cell *matCellDef="let element">{{ element[1].kpi2Val | formatNumbers }}</td>
         </ng-container>
         <ng-container matColumnDef="secondYoy">
-          <th mat-header-cell class="!bg-jungle !text-white" mat-sort-header="secondYoy" *matHeaderCellDef>
+          <!--          mat-sort-header="secondYoy" -->
+          <th mat-header-cell class="!bg-jungle !text-white" *matHeaderCellDef>
             {{ lang.map.change }}
           </th>
           <td mat-cell *matCellDef="let element">
@@ -249,19 +256,22 @@
         </ng-container>
 
         <ng-container matColumnDef="thirdYear1">
-          <th mat-header-cell class="!bg-indigo-rainbow !text-white" mat-sort-header="thirdYear1" *matHeaderCellDef>
+          <!--          mat-sort-header="thirdYear1" -->
+          <th mat-header-cell class="!bg-indigo-rainbow !text-white" *matHeaderCellDef>
             {{ compositeYears.previousYear }}
           </th>
           <td mat-cell *matCellDef="let element">{{ element[0].kpi3Val | formatNumbers }}</td>
         </ng-container>
         <ng-container matColumnDef="thirdYear2">
-          <th mat-header-cell class="!bg-indigo-rainbow !text-white" mat-sort-header="thirdYear2" *matHeaderCellDef>
+          <!--          mat-sort-header="thirdYear2" -->
+          <th mat-header-cell class="!bg-indigo-rainbow !text-white" *matHeaderCellDef>
             {{ compositeYears.selectedYear }}
           </th>
           <td mat-cell *matCellDef="let element">{{ element[1].kpi3Val | formatNumbers }}</td>
         </ng-container>
         <ng-container matColumnDef="thirdYoy">
-          <th mat-header-cell class="!bg-indigo-rainbow !text-white" mat-sort-header="thirdYoy" *matHeaderCellDef>
+          <!--          mat-sort-header="thirdYoy" -->
+          <th mat-header-cell class="!bg-indigo-rainbow !text-white" *matHeaderCellDef>
             {{ lang.map.change }}
           </th>
           <td mat-cell *matCellDef="let element">
@@ -275,7 +285,7 @@
         <ng-container matColumnDef="contractCounts">
           <th colspan="4" mat-header-cell *matHeaderCellDef>
             <div class="flex justify-center">
-              <span class="text-azure text-xl">{{ lang.map.rent_contracts_count }}</span>
+              <span class="text-azure text-2xl">{{ lang.map.rent_contracts_count }}</span>
             </div>
           </th>
         </ng-container>
@@ -283,7 +293,7 @@
         <ng-container matColumnDef="contractValues">
           <th colspan="3" mat-header-cell *matHeaderCellDef>
             <div class="flex justify-center">
-              <span class="text-jungle text-xl">{{ lang.map.rent_contracts_values }}</span>
+              <span class="text-jungle text-2xl">{{ lang.map.rent_contracts_values }}</span>
             </div>
           </th>
         </ng-container>
@@ -291,7 +301,7 @@
         <ng-container matColumnDef="avgContract">
           <th colspan="3" mat-header-cell *matHeaderCellDef>
             <div class="flex justify-center">
-              <span class="text-indigo-rainbow text-xl">{{ lang.map.rent_avg_contracts_values }}</span>
+              <span class="text-indigo-rainbow text-2xl">{{ lang.map.rent_avg_contracts_values }}</span>
             </div>
           </th>
         </ng-container>
