@@ -7,6 +7,9 @@ module.exports = {
         primary: "#8A1538",
         secondary: "#A29475",
         sand: "#F4F4F4",
+        azure: "#4E94B3",
+        jungle: "#259C80",
+        'indigo-rainbow': "#1A4161"
       },
       animation: {
         sticky: "sticky .65s cubic-bezier(0.23, 1, 0.32, 1) both",

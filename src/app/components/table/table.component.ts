@@ -52,16 +52,13 @@ export class TableComponent implements OnInit {
   }
 
   private _initializeLength() {
-    console.log('OUTSIDE');
     if (isObservable(this.data)) {
       this.data.pipe(
         tap((data) => {
           this.length = data.length;
-          console.log('length', this.length);
         })
       );
     } else {
-      console.log('Length: outside', this.data.length);
       this.length = this.data.length;
     }
   }

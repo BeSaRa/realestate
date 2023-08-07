@@ -190,5 +190,119 @@
           [title]="top10ChartOptions.title!" />
       </div>
     </div>
+    <div class="px-16 py-5">
+      <table class="custom-table p-5" mat-table matSort [dataSource]="compositeTransactions">
+        <!-- arName -->
+        <ng-container matColumnDef="municipality">
+          <th mat-header-cell class="!bg-azure !text-white" mat-sort-header="municipality" *matHeaderCellDef>
+            {{ lang.map.municipal }}
+          </th>
+          <td mat-cell *matCellDef="let element">{{ element[0].municipalityInfo.getNames() }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="firstYear1">
+          <th mat-header-cell class="!bg-azure !text-white" mat-sort-header="firstYear1" *matHeaderCellDef>
+            {{ compositeYears.previousYear }}
+          </th>
+          <td mat-cell *matCellDef="let element">{{ element[0].kpi1Val | formatNumbers }}</td>
+        </ng-container>
+        <ng-container matColumnDef="firstYear2">
+          <th mat-header-cell class="!bg-azure !text-white" mat-sort-header="firstYear2" *matHeaderCellDef>
+            {{ compositeYears.selectedYear }}
+          </th>
+          <td mat-cell *matCellDef="let element">{{ element[1].kpi1Val | formatNumbers }}</td>
+        </ng-container>
+        <ng-container matColumnDef="firstYoy">
+          <th mat-header-cell class="!bg-azure !text-white" mat-sort-header="firstYoy" *matHeaderCellDef>
+            {{ lang.map.change }}
+          </th>
+          <td mat-cell *matCellDef="let element">
+            <div class="flex gap-2 items-center">
+              <app-yoy-indicator [value]="element[1].kpi1YoYVal.toFixed(2)" />
+              <div>{{ element[1].kpi1YoYVal.toFixed(2) }} %</div>
+            </div>
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="secondYear1">
+          <th mat-header-cell class="!bg-jungle !text-white" mat-sort-header="secondYear1" *matHeaderCellDef>
+            {{ compositeYears.previousYear }}
+          </th>
+          <td mat-cell *matCellDef="let element">{{ element[0].kpi2Val | formatNumbers }}</td>
+        </ng-container>
+        <ng-container matColumnDef="secondYear2">
+          <th mat-header-cell class="!bg-jungle !text-white" mat-sort-header="secondYear2" *matHeaderCellDef>
+            {{ compositeYears.selectedYear }}
+          </th>
+          <td mat-cell *matCellDef="let element">{{ element[1].kpi2Val | formatNumbers }}</td>
+        </ng-container>
+        <ng-container matColumnDef="secondYoy">
+          <th mat-header-cell class="!bg-jungle !text-white" mat-sort-header="secondYoy" *matHeaderCellDef>
+            {{ lang.map.change }}
+          </th>
+          <td mat-cell *matCellDef="let element">
+            <div class="flex gap-2 items-center">
+              <app-yoy-indicator [value]="element[1].kpi2YoYVal.toFixed(2)" />
+              <div>{{ element[1].kpi2YoYVal.toFixed(2) }} %</div>
+            </div>
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="thirdYear1">
+          <th mat-header-cell class="!bg-indigo-rainbow !text-white" mat-sort-header="thirdYear1" *matHeaderCellDef>
+            {{ compositeYears.previousYear }}
+          </th>
+          <td mat-cell *matCellDef="let element">{{ element[0].kpi3Val | formatNumbers }}</td>
+        </ng-container>
+        <ng-container matColumnDef="thirdYear2">
+          <th mat-header-cell class="!bg-indigo-rainbow !text-white" mat-sort-header="thirdYear2" *matHeaderCellDef>
+            {{ compositeYears.selectedYear }}
+          </th>
+          <td mat-cell *matCellDef="let element">{{ element[1].kpi3Val | formatNumbers }}</td>
+        </ng-container>
+        <ng-container matColumnDef="thirdYoy">
+          <th mat-header-cell class="!bg-indigo-rainbow !text-white" mat-sort-header="thirdYoy" *matHeaderCellDef>
+            {{ lang.map.change }}
+          </th>
+          <td mat-cell *matCellDef="let element">
+            <div class="flex gap-2 items-center">
+              <app-yoy-indicator [value]="element[1].kpi3YoYVal.toFixed(2)" />
+              <div>{{ element[1].kpi3YoYVal.toFixed(2) }} %</div>
+            </div>
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="contractCounts">
+          <th colspan="4" mat-header-cell *matHeaderCellDef>
+            <div class="flex justify-center">
+              <span class="text-azure text-xl">{{ lang.map.rent_contracts_count }}</span>
+            </div>
+          </th>
+        </ng-container>
+
+        <ng-container matColumnDef="contractValues">
+          <th colspan="3" mat-header-cell *matHeaderCellDef>
+            <div class="flex justify-center">
+              <span class="text-jungle text-xl">{{ lang.map.rent_contracts_values }}</span>
+            </div>
+          </th>
+        </ng-container>
+
+        <ng-container matColumnDef="avgContract">
+          <th colspan="3" mat-header-cell *matHeaderCellDef>
+            <div class="flex justify-center">
+              <span class="text-indigo-rainbow text-xl">{{ lang.map.rent_avg_contracts_values }}</span>
+            </div>
+          </th>
+        </ng-container>
+        <tr mat-header-row class="[&>th]:border-none" *matHeaderRowDef="compositeTransactionsExtraColumns"></tr>
+        <tr mat-header-row class="rounded-first-tr" *matHeaderRowDef="compositeTransactionsColumns"></tr>
+        <tr mat-row class="rounded-last-tr" *matRowDef="let element; columns: compositeTransactionsColumns"></tr>
+        <!-- Row shown when there is no matching data. -->
+        <tr class="mat-row" *matNoDataRow>
+          <td class="p-4" colspan="100">{{ lang.map.no_records_to_display }}</td>
+        </tr>
+      </table>
+    </div>
   </div>
 </div>

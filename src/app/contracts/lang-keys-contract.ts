@@ -1,4 +1,9 @@
 export interface LangKeysContract {
+  rent_avg_contracts_values: string;
+  rent_contracts_values: string;
+  rent_contracts_count: string;
+  change: string;
+  no_records_to_display: string;
   number_of_lease_contracts: string;
   number_of_units: string;
   average_price_per_month: string;

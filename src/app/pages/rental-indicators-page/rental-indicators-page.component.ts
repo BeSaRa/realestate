@@ -1,4 +1,4 @@
-import { Component, inject, Input, OnInit, QueryList, ViewChildren } from '@angular/core';
+import { Component, inject, OnInit, QueryList, ViewChildren } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ExtraHeaderComponent } from '@components/extra-header/extra-header.component';
 import { TranslationService } from '@services/translation.service';
@@ -31,6 +31,11 @@ import { IconButtonComponent } from '@components/icon-button/icon-button.compone
 import { ButtonComponent } from '@components/button/button.component';
 import { Top10Model } from '@models/top-10-model';
 import { ChartType } from '@enums/chart-type';
+import { MatTableModule } from '@angular/material/table';
+import { CompositeTransaction } from '@models/composite-transaction';
+import { MatSortModule } from '@angular/material/sort';
+import { FormatNumbersPipe } from '@pipes/format-numbers.pipe';
+import { YoyIndicatorComponent } from '@components/yoy-indicator/yoy-indicator.component';
 
 @Component({
   selector: 'app-rental-indicators-page',
@@ -52,13 +57,20 @@ import { ChartType } from '@enums/chart-type';
     TableColumnTemplateDirective,
     IconButtonComponent,
     ButtonComponent,
+    MatTableModule,
+    MatSortModule,
+    FormatNumbersPipe,
+    YoyIndicatorComponent,
   ],
   templateUrl: './rental-indicators-page.component.html',
   styleUrls: ['./rental-indicators-page.component.scss'],
 })
 export default class RentalIndicatorsPageComponent implements OnInit {
   protected readonly ChartType = ChartType;
-  ngOnInit(): void {}
+
+  ngOnInit(): void {
+    setTimeout(() => this.loadCompositeTransactions());
+  }
 
   transactions = new ReplaySubject<RentTransaction[]>(1);
   lang = inject(TranslationService);
@@ -305,6 +317,22 @@ export default class RentalIndicatorsPageComponent implements OnInit {
   selectedPurpose?: Lookup = this.lookupService.rentLookups.rentPurposeList[0];
   selectedTab = 'rental_indicators';
 
+  compositeTransactions: CompositeTransaction[][] = [];
+  compositeYears!: { selectedYear: number; previousYear: number };
+  compositeTransactionsColumns = [
+    'municipality',
+    'firstYear1',
+    'firstYear2',
+    'firstYoy',
+    'secondYear1',
+    'secondYear2',
+    'secondYoy',
+    'thirdYear1',
+    'thirdYear2',
+    'thirdYoy',
+  ];
+  compositeTransactionsExtraColumns = ['contractCounts', 'contractValues', 'avgContract'];
+
   get priceList() {
     return this.rootKPIS.filter((item) => item.hasPrice);
   }
@@ -503,10 +531,16 @@ export default class RentalIndicatorsPageComponent implements OnInit {
             }),
           },
         ],
-        xaxis: {
-          categories: [],
-        },
       })
       .then();
   }
+
+  loadCompositeTransactions(): void {
+    this.dashboardService.loadCompositeTransactions(this.criteria.criteria).subscribe((value) => {
+      this.compositeTransactions = value.items;
+      this.compositeYears = value.years;
+    });
+  }
+
+  protected readonly formatNumber = formatNumber;
 }
