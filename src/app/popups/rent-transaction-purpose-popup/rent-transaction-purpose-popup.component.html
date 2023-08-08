@@ -7,10 +7,13 @@
     <apx-chart
       [series]="chartOptions.series!"
       [xaxis]="chartOptions.xaxis!"
+      [title]="chartOptions.title!"
       [yaxis]="chartOptions.yaxis!"
       [plotOptions]="chartOptions.plotOptions!"
       [dataLabels]="chartOptions.dataLabels!"
       [chart]="chartOptions.chart!" />
   </div>
 </div>
-<div class="dialog-footer"></div>
+<div class="dialog-footer">
+  <app-button (click)="ref.close()" buttonStyle="primary">{{ lang.map.close }}</app-button>
+</div>

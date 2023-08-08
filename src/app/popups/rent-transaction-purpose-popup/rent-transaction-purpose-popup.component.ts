@@ -3,16 +3,17 @@ import { CommonModule } from '@angular/common';
 import { ChartComponent, NgApexchartsModule } from 'ng-apexcharts';
 import { PartialChartOptions } from '@app-types/partialChartOptions';
 import { DateAdapter, MatNativeDateModule } from '@angular/material/core';
-import { MAT_DIALOG_DATA, MAT_DIALOG_DEFAULT_OPTIONS, MatDialogRef } from '@angular/material/dialog';
+import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { RentTransactionPurpose } from '@models/rent-transaction-purpose';
 import { formatNumber } from '@utils/utils';
 import { TranslationService } from '@services/translation.service';
 import { IconButtonComponent } from '@components/icon-button/icon-button.component';
+import { ButtonComponent } from '@components/button/button.component';
 
 @Component({
   selector: 'app-rent-transaction-purpose-popup',
   standalone: true,
-  imports: [CommonModule, NgApexchartsModule, MatNativeDateModule, IconButtonComponent],
+  imports: [CommonModule, NgApexchartsModule, MatNativeDateModule, IconButtonComponent, ButtonComponent],
   templateUrl: './rent-transaction-purpose-popup.component.html',
   styleUrls: ['./rent-transaction-purpose-popup.component.scss'],
 })
@@ -42,6 +43,14 @@ export class RentTransactionPurposePopupComponent implements AfterViewInit {
       type: 'line',
       height: 350,
       width: 600,
+    },
+    title: {
+      text: this.lang.map.year + ' : ' + this.data[0].issueYear.toString(),
+      align: 'center',
+      floating: true,
+      style: {
+        fontFamily: 'inherit',
+      },
     },
     plotOptions: {},
     xaxis: {
@@ -81,4 +90,6 @@ export class RentTransactionPurposePopupComponent implements AfterViewInit {
       ]);
     });
   }
+
+  protected readonly alert = alert;
 }
