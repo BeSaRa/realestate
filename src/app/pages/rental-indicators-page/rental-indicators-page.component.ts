@@ -23,7 +23,7 @@ import { KpiModel } from '@models/kpi-model';
 import { Lookup } from '@models/lookup';
 import { ChartComponent, NgApexchartsModule } from 'ng-apexcharts';
 import { PartialChartOptions } from '@app-types/partialChartOptions';
-import { formatNumber, hasValidLength } from '@utils/utils';
+import { formatNumber } from '@utils/utils';
 import { TableComponent } from '@components/table/table.component';
 import { TableColumnTemplateDirective } from '@directives/table-column-template.directive';
 import { RentTransaction } from '@models/rent-transaction';
@@ -565,7 +565,6 @@ export default class RentalIndicatorsPageComponent implements OnInit {
 
   updatePiChart(): void {
     if (!this.pieChart.length) return;
-    console.log(this.pieChartData);
     this.pieChart.first
       .updateOptions({
         series: this.pieChartData.length
