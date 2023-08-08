@@ -20,6 +20,7 @@ export class LookupService extends RegisterServiceMixin(class {}) {
   zonesMap: Record<number, Lookup> = {};
 
   rentLookups!: LookupsContract;
+  roomsMap: Record<number, Lookup> = {};
 
   @CastResponse(() => LookupsMap, {
     shape: {
@@ -45,6 +46,11 @@ export class LookupService extends RegisterServiceMixin(class {}) {
         ),
         tap((res) => {
           this.zonesMap = res.zoneList.reduce((acc, i) => {
+            return { ...acc, [i.lookupKey]: i };
+          }, {});
+        }),
+        tap((res) => {
+          this.roomsMap = res.rooms.reduce((acc, i) => {
             return { ...acc, [i.lookupKey]: i };
           }, {});
         })

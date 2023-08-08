@@ -49,6 +49,7 @@
   @apply border-black before:border-black after:border-black #{!important};
 }
 .custom-table {
+  background-color: transparent;
   .mat-sort-header-arrow {
     color: white;
   }

@@ -1,4 +1,5 @@
 export interface LangKeysContract {
+  rent_contracts_count_according_to_bedrooms: string;
   rent_avg_contracts_values: string;
   rent_contracts_values: string;
   rent_contracts_count: string;

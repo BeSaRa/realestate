@@ -12,6 +12,7 @@ import { Lookup } from '@models/lookup';
 import { Top10Model } from '@models/top-10-model';
 import { CompositeTransaction } from '@models/composite-transaction';
 import { chunks, formatNumber } from '@utils/utils';
+import { RoomNumberKpi } from '@models/room-number-kpi';
 
 @Injectable({
   providedIn: 'root',
@@ -79,5 +80,9 @@ export class DashboardService {
           };
         })
       );
+  }
+  @CastResponse(() => RoomNumberKpi)
+  loadRentRoomCounts(criteria: Partial<RentCriteriaContract>): Observable<RoomNumberKpi[]> {
+    return this.http.post<RoomNumberKpi[]>(this.urlService.URLS.RENT_KPI34, criteria);
   }
 }

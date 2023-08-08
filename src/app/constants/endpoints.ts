@@ -37,6 +37,7 @@ export const EndPoints = {
   RENT_KPI33: 'RENT|kpi33/stats/area',
   RENT_KPI30_1: 'RENT|kpi30_1/stats/contract-count',
   RENT_KPI31_1: 'RENT|kpi31_1/stats/mean-rent-meter',
+  RENT_KPI34: 'RENT|kpi34/stats/bed-rooms-count',
   // collection of transactions tables
   RENT_KPI35_36_37: 'RENT|kpi35_36_37/stats/indicators',
 };

@@ -14,27 +14,57 @@ export class LookupsMap implements LookupsContract {
     new Lookup().clone<Lookup>({
       arName: 'ستوديو',
       enName: 'Studio',
-      lookupKey: 1,
+      lookupKey: 0,
     }),
     new Lookup().clone<Lookup>({
       arName: 'غرفة واحده',
       enName: 'One Room',
-      lookupKey: 2,
+      lookupKey: 1,
     }),
     new Lookup().clone<Lookup>({
       arName: 'غرفتين',
       enName: 'Two Rooms',
-      lookupKey: 3,
+      lookupKey: 2,
     }),
     new Lookup().clone<Lookup>({
       arName: 'ثلاث غرف',
       enName: 'Three Rooms',
-      lookupKey: 4,
+      lookupKey: 3,
     }),
     new Lookup().clone<Lookup>({
       arName: 'أربع  غرف',
       enName: 'Four Rooms',
+      lookupKey: 4,
+    }),
+    new Lookup().clone<Lookup>({
+      arName: 'خمس غرف',
+      enName: 'five Rooms',
       lookupKey: 5,
+    }),
+    new Lookup().clone<Lookup>({
+      arName: 'ستة غرف',
+      enName: 'Six Rooms',
+      lookupKey: 6,
+    }),
+    new Lookup().clone<Lookup>({
+      arName: 'سبع غرف',
+      enName: 'Seven Rooms',
+      lookupKey: 7,
+    }),
+    new Lookup().clone<Lookup>({
+      arName: 'ثماني غرف',
+      enName: 'eight Rooms',
+      lookupKey: 8,
+    }),
+    new Lookup().clone<Lookup>({
+      arName: 'تسع غرف',
+      enName: 'Nine Rooms',
+      lookupKey: 9,
+    }),
+    new Lookup().clone<Lookup>({
+      arName: 'عشر غرف',
+      enName: 'Ten Rooms',
+      lookupKey: 10,
     }),
   ];
 

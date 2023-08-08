@@ -23,7 +23,7 @@ import { KpiModel } from '@models/kpi-model';
 import { Lookup } from '@models/lookup';
 import { ChartComponent, NgApexchartsModule } from 'ng-apexcharts';
 import { PartialChartOptions } from '@app-types/partialChartOptions';
-import { formatNumber } from '@utils/utils';
+import { formatNumber, hasValidLength } from '@utils/utils';
 import { TableComponent } from '@components/table/table.component';
 import { TableColumnTemplateDirective } from '@directives/table-column-template.directive';
 import { RentTransaction } from '@models/rent-transaction';
@@ -36,6 +36,8 @@ import { CompositeTransaction } from '@models/composite-transaction';
 import { MatSortModule } from '@angular/material/sort';
 import { FormatNumbersPipe } from '@pipes/format-numbers.pipe';
 import { YoyIndicatorComponent } from '@components/yoy-indicator/yoy-indicator.component';
+import { PieChartOptions } from '@app-types/pie-chart-options';
+import { RoomNumberKpi } from '@models/room-number-kpi';
 
 @Component({
   selector: 'app-rental-indicators-page',
@@ -69,7 +71,10 @@ export default class RentalIndicatorsPageComponent implements OnInit {
   protected readonly ChartType = ChartType;
 
   ngOnInit(): void {
-    setTimeout(() => this.loadCompositeTransactions());
+    setTimeout(() => {
+      this.loadCompositeTransactions();
+      this.dashboardService.loadRentRoomCounts(this.criteria.criteria).subscribe((v) => console.log(v));
+    });
   }
 
   transactions = new ReplaySubject<RentTransaction[]>(1);
@@ -93,10 +98,17 @@ export default class RentalIndicatorsPageComponent implements OnInit {
     criteria: RentCriteriaContract;
     type: CriteriaType;
   };
+
   @ViewChildren('chart')
   chart!: QueryList<ChartComponent>;
   @ViewChildren('top10Chart')
   top10Chart!: QueryList<ChartComponent>;
+  @ViewChildren('pieChart')
+  pieChart!: QueryList<ChartComponent>;
+
+  top10ChartData: Top10Model[] = [];
+  selectedRootChartData!: KpiModel[];
+  pieChartData: RoomNumberKpi[] = [];
 
   displayedColumns = [
     { columnName: 'municipality_id', columnHeader: this.lang.map.municipal },
@@ -203,7 +215,6 @@ export default class RentalIndicatorsPageComponent implements OnInit {
       url: this.urlService.URLS.RENT_KPI30_1,
     }),
   ];
-  top10ChartData: Top10Model[] = [];
   selectedTop10: Lookup = this.accordingToList[0];
 
   chartOptions: Partial<PartialChartOptions> = {
@@ -306,13 +317,25 @@ export default class RentalIndicatorsPageComponent implements OnInit {
     colors: ['#60d39d'],
   };
 
+  pieChartOptions: PieChartOptions = {
+    chart: {
+      type: 'pie',
+      width: 480,
+    },
+    labels: [],
+    series: [1, 2, 53, 69, 7],
+    legend: {
+      formatter: (val, opts) => {
+        return val + ' : ' + opts.w.globals.series[opts.seriesIndex];
+      },
+    },
+  };
+
   purposeKPIS = this.lookupService.rentLookups.rentPurposeList;
 
   propertiesKPIS = this.lookupService.rentLookups.propertyTypeList;
 
   selectedRoot?: KpiRoot;
-
-  selectedRootChartData!: KpiModel[];
 
   selectedPurpose?: Lookup = this.lookupService.rentLookups.rentPurposeList[0];
   selectedTab = 'rental_indicators';
@@ -372,8 +395,11 @@ export default class RentalIndicatorsPageComponent implements OnInit {
       });
 
       this.rootItemSelected(this.rootKPIS[0]);
+      this.selectTop10Chart(this.selectedTop10);
     }
     this.loadTransactions();
+    this.loadRoomCounts();
+    this.loadCompositeTransactions();
   }
 
   rootItemSelected(item: KpiRoot) {
@@ -498,9 +524,11 @@ export default class RentalIndicatorsPageComponent implements OnInit {
     this.carousel.setDirty();
     this.chart.setDirty();
     this.top10Chart.setDirty();
+    this.pieChart.setDirty();
     setTimeout(() => {
       this.updateChart();
       this.updateTop10Chart();
+      this.updatePiChart();
     });
   }
 
@@ -535,6 +563,21 @@ export default class RentalIndicatorsPageComponent implements OnInit {
       .then();
   }
 
+  updatePiChart(): void {
+    if (!this.pieChart.length) return;
+    console.log(this.pieChartData);
+    this.pieChart.first
+      .updateOptions({
+        series: this.pieChartData.length
+          ? this.pieChartData.map((i) => i.kpiVal)
+          : this.lookupService.rentLookups.rooms.map(() => 0),
+        labels: this.pieChartData.length
+          ? this.pieChartData.map((i) => i.roomInfo.getNames())
+          : this.lookupService.rentLookups.rooms.map((i) => i.getNames()),
+      })
+      .then();
+  }
+
   loadCompositeTransactions(): void {
     this.dashboardService.loadCompositeTransactions(this.criteria.criteria).subscribe((value) => {
       this.compositeTransactions = value.items;
@@ -542,5 +585,10 @@ export default class RentalIndicatorsPageComponent implements OnInit {
     });
   }
 
-  protected readonly formatNumber = formatNumber;
+  loadRoomCounts(): void {
+    this.dashboardService.loadRentRoomCounts(this.criteria.criteria).subscribe((value) => {
+      this.pieChartData = value;
+      this.updatePiChart();
+    });
+  }
 }
