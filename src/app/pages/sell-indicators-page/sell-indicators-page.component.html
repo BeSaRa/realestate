@@ -7,3 +7,159 @@
     </h2>
   </div>
 </app-extra-header>
+
+<div class="content-wrapper">
+  <div class="px-16">
+    <app-transactions-filter
+      indicatorType="sell"
+      [municipalities]="municipalities"
+      [propertyTypes]="propertyTypes"
+      [propertyUsages]="propertyUsages"
+      [zones]="zones"
+      [rooms]="rooms"
+      (fromChanged)="filterChange($event)" />
+  </div>
+  <div class="flex flex-col">
+    <div class="px-16 mt-5">
+      <div class="flex justify-center gap-5">
+        <button
+          [ngClass]="{ active: isSelectedTab('sell_indicators') }"
+          (click)="switchTab('sell_indicators')"
+          class="shadow-xl outline-none border border-secondary text-secondary p-5 text-2xl rounded-2xl [&.active]:bg-secondary [&.active]:text-white [&.active]:ring-2 ring-black">
+          {{ lang.map.sell_indicators }}
+        </button>
+        <button
+          [ngClass]="{ active: isSelectedTab('statistical_reports_for_sell') }"
+          (click)="switchTab('statistical_reports_for_sell')"
+          class="shadow-xl outline-none border border-secondary text-secondary p-5 text-2xl rounded-2xl [&.active]:bg-secondary [&.active]:text-white [&.active]:ring-2 ring-black">
+          {{ lang.map.statistical_reports_for_sell }}
+        </button>
+      </div>
+    </div>
+  </div>
+  <div *ngIf="isSelectedTab('sell_indicators')" class="flex flex-col">
+    <div class="p-16">
+      <div class="flex flex-col">
+        <h3 class="heading text-3xl self-start text-primary border-secondary font-semibold inline-block">
+          {{ lang.map.sell_transactions_measuring_dashboard }}
+        </h3>
+        <div class="flex flex-col gap-4 xl:flex-row">
+          <div class="flex-1 my-4 p-4 border border-primary rounded-lg grid grid-cols-3 justify-center gap-4">
+            <app-kpi-root (itemSelected)="rootItemSelected($event)" *ngFor="let item of nonePriceList" [item]="item" />
+          </div>
+          <div class="flex-1 my-4 p-4 border border-primary rounded-lg grid grid-cols-3 justify-center gap-4">
+            <app-kpi-root (itemSelected)="rootItemSelected($event)" *ngFor="let item of priceList" [item]="item" />
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="bg-sand p-16">
+      <div class="px-16 flex flex-col justify-center items-center">
+        <div class="flex w-full justify-center">
+          <h3 *ngIf="selectedRoot" class="text-3xl mb-4 text-primary border-secondary font-semibold">
+            {{ selectedRoot.getNames() }} ({{ lang.map.depending_on_use }})
+          </h3>
+        </div>
+        <div
+          class="w-5/6 grid grid-cols-3 xl:grid-cols-7 gap-2 xl:gap-0 border-0 xl:border-2 border-secondary overflow-hidden xl:rounded-xl">
+          <ng-container *ngFor="let item of purposeKPIS; let i = index">
+            <span class="xl:hidden" *ngIf="i === 6"></span>
+            <app-purpose
+              [item]="item"
+              (click)="purposeSelected(item)"
+              class="border-2 rounded-xl overflow-hidden xl:border-0 xl:rounded-none xl:border-e-2 border-secondary xl:last-of-type:border-e-0"
+          /></ng-container>
+        </div>
+        <!-- <div class="mt-20 w-11/12" dir="ltr">
+          <div class="flex justify-center">
+            <h3 *ngIf="selectedRoot" class="text-3xl mb-4 text-primary border-secondary font-semibold">
+              {{ selectedRoot.getNames() }} ({{ lang.map.depending_on_type }})
+            </h3>
+          </div>
+          <carousel #carousel [arrowsOutside]="true" [margin]="20" [cellWidth]="350">
+            <app-property-block class="carousel-cell" *ngFor="let item of propertiesKPIS" [item]="item" />
+          </carousel>
+        </div> -->
+      </div>
+    </div>
+    <!-- <div class="p-16 flex flex-col">
+      <div class="flex justify-center">
+        <h3 *ngIf="selectedRoot" class="text-3xl mb-4 text-primary border-secondary font-semibold">
+          {{ selectedRoot.getNames() }}
+        </h3>
+      </div>
+      <div class="flex">
+        <div class="flex-auto" dir="ltr">
+          <apx-chart
+            #chart
+            [series]="chartOptions.series!"
+            [chart]="chartOptions.chart!"
+            [xaxis]="chartOptions.xaxis!"
+            [stroke]="chartOptions.stroke!"
+            [colors]="chartOptions.colors!"
+            [dataLabels]="chartOptions.dataLabels!"
+            [legend]="chartOptions.legend!"
+            [markers]="chartOptions.markers!"
+            [grid]="chartOptions.grid!"
+            [yaxis]="chartOptions.yaxis!"
+            [tooltip]="chartOptions.tooltip!"
+            [plotOptions]="chartOptions.plotOptions!"
+            [title]="chartOptions.title!" />
+        </div>
+        <div class="h-full flex flex-col mt-10">
+          <app-icon-button
+            [ngClass]="{ 'text-primary': isSelectedChartType(ChartType.LINE) }"
+            (click)="updateChartType(ChartType.LINE)"
+            class="text-primary"
+            icon="LINE_CHART" />
+          <app-icon-button
+            [ngClass]="{ 'text-primary': isSelectedChartType(ChartType.BAR) }"
+            (click)="updateChartType(ChartType.BAR)"
+            icon="BAR_CHART" />
+          <app-icon-button
+            [ngClass]="{ 'text-primary': isSelectedChartType(ChartType.AREA) }"
+            (click)="updateChartType(ChartType.AREA)"
+            icon="AREA_CHART" />
+        </div>
+      </div>
+    </div> -->
+  </div>
+  <div *ngIf="isSelectedTab('statistical_reports_for_sell')" class="flex flex-col">
+    <div class="px-16 py-5 flex flex-col">
+      <div class="flex justify-center mt-5">
+        <h3 class="heading text-3xl text-primary border-secondary font-semibold inline-block">
+          {{ lang.map.top_10_areas }}
+        </h3>
+      </div>
+      <!-- <div class="bg-sand shadow rounded-xl p-2 self-center mt-5">
+        <ul class="flex gap-2">
+          <li *ngFor="let item of accordingToList">
+            <app-button
+              (click)="selectTop10Chart(item)"
+              size="lg"
+              [buttonStyle]="item.selected ? 'secondary' : 'none-primary'"
+              >{{ item.getNames() }}</app-button
+            >
+          </li>
+        </ul>
+      </div>
+      <div dir="ltr">
+        <apx-chart
+          #top10Chart
+          [series]="top10ChartOptions.series!"
+          [chart]="top10ChartOptions.chart!"
+          [xaxis]="top10ChartOptions.xaxis!"
+          [stroke]="top10ChartOptions.stroke!"
+          [colors]="top10ChartOptions.colors!"
+          [dataLabels]="top10ChartOptions.dataLabels!"
+          [legend]="top10ChartOptions.legend!"
+          [markers]="top10ChartOptions.markers!"
+          [grid]="top10ChartOptions.grid!"
+          [yaxis]="top10ChartOptions.yaxis!"
+          [tooltip]="top10ChartOptions.tooltip!"
+          [plotOptions]="top10ChartOptions.plotOptions!"
+          [title]="top10ChartOptions.title!" />
+      </div> -->
+    </div>
+  </div>
+</div>

@@ -10,7 +10,7 @@ export class CompositeTransactionInterceptor implements ModelInterceptorContract
 
   receive(model: CompositeTransaction): CompositeTransaction {
     const lookupService = ServiceRegistry.get<LookupService>('LookupService');
-    model.municipalityInfo = lookupService.municipalitiesMap[model.municipalityId];
+    model.municipalityInfo = lookupService.rentMunicipalitiesMap[model.municipalityId];
     return model;
   }
 }

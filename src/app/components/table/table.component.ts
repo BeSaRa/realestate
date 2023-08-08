@@ -2,7 +2,6 @@ import { CommonModule } from '@angular/common';
 import { Component, ContentChildren, Input, OnInit, QueryList, inject } from '@angular/core';
 import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
 import { MatTableModule } from '@angular/material/table';
-import { DisplayedColumnContract } from '@contracts/displayed-column-contract';
 import { TableColumnTemplateDirective } from '@directives/table-column-template.directive';
 import { AppTableDataSource } from '@models/app-table-data-source';
 import { TranslationService } from '@services/translation.service';
@@ -17,7 +16,6 @@ import { Observable, isObservable, map, tap } from 'rxjs';
 })
 export class TableComponent implements OnInit {
   @Input({ required: true }) data!: unknown[] | Observable<unknown[]>;
-  @Input({ required: true }) displayedColumns!: DisplayedColumnContract[];
   @Input() pageSize = 5;
   @Input() minWidth = '1000px';
 
@@ -32,10 +30,6 @@ export class TableComponent implements OnInit {
 
   lang = inject(TranslationService);
 
-  get displayedColumnsNames() {
-    return this.displayedColumns.map((c) => c.columnName);
-  }
-
   ngOnInit(): void {
     this._initializeLength();
     this._initializeDataSource();
@@ -43,6 +37,10 @@ export class TableComponent implements OnInit {
 
   getColumnTemplate(columnName: string) {
     return this.columnsTemplates.find((c) => c.columnName === columnName);
+  }
+
+  get displayedColumnNames() {
+    return this.columnsTemplates.map((c) => c.columnName);
   }
 
   paginate($event: PageEvent) {

@@ -8,19 +8,20 @@ import { objectHasOwnProperty } from '@utils/utils';
 export class TableColumnTemplateDirective {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   @Input({ required: true }) columnName!: string;
+  @Input({ required: true }) columnHeader!: string;
   @Input() bindColumnValue?: string | ((item: any) => any);
 
   templateRef = inject(TemplateRef);
 
-  getBindValue(rowData: unknown): unknown {
+  getBindValue(columnData: unknown): unknown {
     return this.bindColumnValue && typeof this.bindColumnValue === 'string'
-      ? typeof (rowData as never)[this.bindColumnValue] === 'function'
-        ? ((rowData as never)[this.bindColumnValue] as () => unknown)()
-        : objectHasOwnProperty(rowData, this.bindColumnValue)
-        ? rowData[this.bindColumnValue]
-        : rowData
+      ? typeof (columnData as never)[this.bindColumnValue] === 'function'
+        ? ((columnData as never)[this.bindColumnValue] as () => unknown)()
+        : objectHasOwnProperty(columnData, this.bindColumnValue)
+        ? columnData[this.bindColumnValue]
+        : columnData
       : this.bindColumnValue && typeof this.bindColumnValue === 'function'
-      ? this.bindColumnValue(rowData)
-      : rowData;
+      ? this.bindColumnValue(columnData)
+      : columnData;
   }
 }

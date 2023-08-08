@@ -1,12 +1,12 @@
-import { inject, Injectable } from '@angular/core';
-import { UrlService } from '@services/url.service';
-import { Observable, tap } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
-import { CastResponse } from 'cast-response';
+import { inject, Injectable } from '@angular/core';
 import { LookupsContract } from '@contracts/lookups-contract';
-import { LookupsMap } from '@models/lookups-map';
-import { Lookup } from '@models/lookup';
 import { RegisterServiceMixin } from '@mixins/register-service-mixin';
+import { Lookup } from '@models/lookup';
+import { LookupsMap } from '@models/lookups-map';
+import { UrlService } from '@services/url.service';
+import { CastResponse } from 'cast-response';
+import { forkJoin, Observable, tap } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
@@ -15,11 +15,14 @@ export class LookupService extends RegisterServiceMixin(class {}) {
   serviceName = 'LookupService';
   urlService = inject(UrlService);
   http = inject(HttpClient);
-  lookups!: LookupsContract;
-  municipalitiesMap: Record<number, Lookup> = {};
+
+  rentMunicipalitiesMap: Record<number, Lookup> = {};
+  sellMunicipalitiesMap: Record<number, Lookup> = {};
   rentZonesMap: Record<number, Lookup> = {};
+  sellZonesMap: Record<number, Lookup> = {};
 
   rentLookups!: LookupsContract;
+  sellLookups!: LookupsContract;
   rentRoomsMap: Record<number, Lookup> = {};
   rentPurposeMap: Record<number, Lookup> = {};
 
@@ -31,35 +34,61 @@ export class LookupService extends RegisterServiceMixin(class {}) {
       'municipalityList.*': () => Lookup,
     },
   })
-  private _load(): Observable<LookupsMap> {
-    return this.http.get<LookupsMap>(this.urlService.URLS.LOOKUPS);
+  private _load(): Observable<LookupsMap[]> {
+    return forkJoin([
+      this.http.get<LookupsMap>(this.urlService.URLS.RENT_LOOKUPS),
+      this.http.get<LookupsMap>(this.urlService.URLS.SELL_LOOKUPS),
+    ]);
   }
 
-  load(): Observable<LookupsMap> {
+  load(): Observable<LookupsMap[]> {
     return this._load()
-      .pipe(tap((response) => (this.rentLookups = response)))
       .pipe(
-        tap(
-          (res) =>
-            (this.municipalitiesMap = res.municipalityList.reduce((acc, i) => {
-              return { ...acc, [i.lookupKey]: i };
-            }, {}))
-        ),
+        tap((response) => {
+          this.rentLookups = response[0];
+          this.sellLookups = this._addAllToSellPropertyType(response[1]);
+          console.log(response[1]);
+        })
+      )
+      .pipe(
         tap((res) => {
-          this.rentZonesMap = res.zoneList.reduce((acc, i) => {
-            return { ...acc, [i.lookupKey]: i };
-          }, {});
+          this.rentMunicipalitiesMap = this._initializeMunicipalitiesMap(res[0]);
+          this.sellMunicipalitiesMap = this._initializeMunicipalitiesMap(res[1]);
         }),
         tap((res) => {
-          this.rentRoomsMap = res.rooms.reduce((acc, i) => {
-            return { ...acc, [i.lookupKey]: i };
-          }, {});
+          this.rentZonesMap = this._initializeZonesMap(res[0]);
+          this.sellZonesMap = this._initializeZonesMap(res[1]);
         }),
         tap((res) => {
-          this.rentPurposeMap = res.rentPurposeList.reduce((acc, i) => {
+          this.rentPurposeMap = res[0].rentPurposeList.reduce((acc, i) => {
             return { ...acc, [i.lookupKey]: i };
           }, {});
         })
       );
+  }
+
+  private _initializeZonesMap(lookups: LookupsMap) {
+    return lookups.zoneList.reduce((acc, i) => {
+      return { ...acc, [i.lookupKey]: i };
+    }, {});
+  }
+  private _initializeMunicipalitiesMap(lookups: LookupsMap) {
+    return lookups.municipalityList.reduce((acc, i) => {
+      return { ...acc, [i.lookupKey]: i };
+    }, {});
+  }
+
+  // Temporarily used until back team add all from backend
+  private _addAllToSellPropertyType(lookups: LookupsContract) {
+    if (lookups.propertyTypeList.find((p) => p.lookupKey === -1)) return lookups;
+    lookups.propertyTypeList = [
+      new Lookup().clone<Lookup>({
+        arName: 'الكل',
+        enName: 'All',
+        lookupKey: -1,
+      }),
+      ...lookups.propertyTypeList,
+    ];
+    return lookups;
   }
 }

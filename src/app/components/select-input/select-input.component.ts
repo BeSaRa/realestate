@@ -144,6 +144,9 @@ export class SelectInputComponent implements ControlValueAccessor, OnInit, OnCha
       this.selectInput?.options.notifyOnChanges();
     });
     this._changeSelectArrow();
+    this.selectInput?.openedChange.pipe(takeUntil(this.destroy$)).subscribe((isOpened) => {
+      isOpened ? this._setSelectDirection() : null;
+    });
   }
 
   onChange!: (value: string | null) => void;
@@ -230,6 +233,14 @@ export class SelectInputComponent implements ControlValueAccessor, OnInit, OnCha
       selectArrowElement?.classList.remove('text-slate-300');
       selectArrowElement?.classList.add(this.labelColor);
     }
+  }
+
+  private _setSelectDirection() {
+    const current = this.lang.getCurrent();
+    const overlayWrapper = document.querySelectorAll<HTMLDivElement>('.cdk-overlay-connected-position-bounding-box');
+    overlayWrapper.forEach((item: HTMLDivElement) => {
+      item.dir = current.direction;
+    });
   }
 
   ngOnDestroy(): void {
