@@ -29,6 +29,12 @@ export const EndPoints = {
   RENT_KPI22: 'RENT|kpi22/chart/area',
   RENT_KPI23: 'RENT|kpi23/chart/rent-mean-value',
   RENT_KPI24: 'RENT|kpi24/chart/rent-sqt-meter',
+  // transactions based on (Purpose, type)
+  RENT_KPI25: 'RENT|kpi25/chart/rent-sqt-meter/rent-purpose',
+  RENT_KPI26: 'RENT|kpi26/chart/purpose',
+  // RENT_KPI24: 'RENT|kpi24/chart/rent-sqt-meter',
+
+  // summary transactions
   RENT_KPI29: 'RENT|kpi29/summary',
   // top 10
   RENT_KPI30: 'RENT|kpi30/stats/certificate-count',

@@ -35,7 +35,7 @@ export class LookupsMap implements LookupsContract {
       arName: 'أربع  غرف',
       enName: 'Four Rooms',
       lookupKey: 4,
-    }),
+    }) /*,
     new Lookup().clone<Lookup>({
       arName: 'خمس غرف',
       enName: 'five Rooms',
@@ -65,7 +65,7 @@ export class LookupsMap implements LookupsContract {
       arName: 'عشر غرف',
       enName: 'Ten Rooms',
       lookupKey: 10,
-    }),
+    }),*/,
   ];
 
   durations = [

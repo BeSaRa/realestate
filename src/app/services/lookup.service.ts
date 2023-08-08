@@ -17,10 +17,11 @@ export class LookupService extends RegisterServiceMixin(class {}) {
   http = inject(HttpClient);
   lookups!: LookupsContract;
   municipalitiesMap: Record<number, Lookup> = {};
-  zonesMap: Record<number, Lookup> = {};
+  rentZonesMap: Record<number, Lookup> = {};
 
   rentLookups!: LookupsContract;
-  roomsMap: Record<number, Lookup> = {};
+  rentRoomsMap: Record<number, Lookup> = {};
+  rentPurposeMap: Record<number, Lookup> = {};
 
   @CastResponse(() => LookupsMap, {
     shape: {
@@ -45,12 +46,17 @@ export class LookupService extends RegisterServiceMixin(class {}) {
             }, {}))
         ),
         tap((res) => {
-          this.zonesMap = res.zoneList.reduce((acc, i) => {
+          this.rentZonesMap = res.zoneList.reduce((acc, i) => {
             return { ...acc, [i.lookupKey]: i };
           }, {});
         }),
         tap((res) => {
-          this.roomsMap = res.rooms.reduce((acc, i) => {
+          this.rentRoomsMap = res.rooms.reduce((acc, i) => {
+            return { ...acc, [i.lookupKey]: i };
+          }, {});
+        }),
+        tap((res) => {
+          this.rentPurposeMap = res.rentPurposeList.reduce((acc, i) => {
             return { ...acc, [i.lookupKey]: i };
           }, {});
         })

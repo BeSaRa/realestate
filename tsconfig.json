@@ -68,6 +68,9 @@
       ],
       "@pages/*": [
         "./src/app/pages/*"
+      ],
+      "@popups/*": [
+        "./src/popups/*"
       ]
     },
     "baseUrl": "./",

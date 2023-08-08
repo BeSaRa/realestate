@@ -38,6 +38,7 @@ import { FormatNumbersPipe } from '@pipes/format-numbers.pipe';
 import { YoyIndicatorComponent } from '@components/yoy-indicator/yoy-indicator.component';
 import { PieChartOptions } from '@app-types/pie-chart-options';
 import { RoomNumberKpi } from '@models/room-number-kpi';
+import { RentTransactionPurpose } from '@models/rent-transaction-purpose';
 
 @Component({
   selector: 'app-rental-indicators-page',
@@ -67,15 +68,8 @@ import { RoomNumberKpi } from '@models/room-number-kpi';
   templateUrl: './rental-indicators-page.component.html',
   styleUrls: ['./rental-indicators-page.component.scss'],
 })
-export default class RentalIndicatorsPageComponent implements OnInit {
+export default class RentalIndicatorsPageComponent {
   protected readonly ChartType = ChartType;
-
-  ngOnInit(): void {
-    setTimeout(() => {
-      this.loadCompositeTransactions();
-      this.dashboardService.loadRentRoomCounts(this.criteria.criteria).subscribe((v) => console.log(v));
-    });
-  }
 
   transactions = new ReplaySubject<RentTransaction[]>(1);
   lang = inject(TranslationService);
@@ -326,7 +320,9 @@ export default class RentalIndicatorsPageComponent implements OnInit {
     series: [1, 2, 53, 69, 7],
     legend: {
       formatter: (val, opts) => {
-        return val + ' : ' + opts.w.globals.series[opts.seriesIndex];
+        return this.lang.getCurrent().direction === 'rtl'
+          ? '( ' + opts.w.globals.series[opts.seriesIndex] + ' ) : ' + val
+          : val + ' : ( ' + opts.w.globals.series[opts.seriesIndex] + ' )';
       },
     },
   };
@@ -339,6 +335,7 @@ export default class RentalIndicatorsPageComponent implements OnInit {
 
   selectedPurpose?: Lookup = this.lookupService.rentLookups.rentPurposeList[0];
   selectedTab = 'rental_indicators';
+  // selectedTab = 'statistical_reports_for_rent';
 
   compositeTransactions: CompositeTransaction[][] = [];
   compositeYears!: { selectedYear: number; previousYear: number };
@@ -355,6 +352,9 @@ export default class RentalIndicatorsPageComponent implements OnInit {
     'thirdYoy',
   ];
   compositeTransactionsExtraColumns = ['contractCounts', 'contractValues', 'avgContract'];
+
+  transactionsPurpose: RentTransactionPurpose[] = [];
+  transactionsPurposeColumns = ['purpose', 'count', 'average', 'chart'];
 
   get priceList() {
     return this.rootKPIS.filter((item) => item.hasPrice);
@@ -400,6 +400,7 @@ export default class RentalIndicatorsPageComponent implements OnInit {
     this.loadTransactions();
     this.loadRoomCounts();
     this.loadCompositeTransactions();
+    this.loadTransactionsBasedOnPurpose();
   }
 
   rootItemSelected(item: KpiRoot) {
@@ -589,5 +590,15 @@ export default class RentalIndicatorsPageComponent implements OnInit {
       this.pieChartData = value;
       this.updatePiChart();
     });
+  }
+
+  loadTransactionsBasedOnPurpose(): void {
+    this.dashboardService.loadTransactionsBasedOnPurpose(this.criteria.criteria).subscribe((values) => {
+      this.transactionsPurpose = values;
+    });
+  }
+
+  openChart(item: RentTransactionPurpose): void {
+    item.openChart(this.criteria.criteria).subscribe();
   }
 }

@@ -12,10 +12,10 @@ export class RoomNumberKpiInterceptor implements ModelInterceptorContract<RoomNu
   receive(model: RoomNumberKpi): RoomNumberKpi {
     const lookupService = ServiceRegistry.get<LookupService>('LookupService');
     model.roomInfo =
-      lookupService.roomsMap[model.bedRoomsCount || 0] ||
+      lookupService.rentRoomsMap[model.bedRoomsCount || 0] ||
       new Lookup().clone<Lookup>({
-        arName: `${model.bedRoomsCount} غرفة `,
-        enName: `${model.bedRoomsCount} Rooms `,
+        arName: ` غرف${model.bedRoomsCount}`,
+        enName: `${model.bedRoomsCount} Rooms`,
       });
     return model;
   }

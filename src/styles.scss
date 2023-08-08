@@ -37,11 +37,23 @@
   box-shadow: 1px 1px 10px var(--tw-shadow-color),
     -1px -1px 10px var(--tw-shadow-color);
 }
-.rounded-last-tr {
-  @apply font-semibold last-of-type:overflow-hidden last-of-type:rounded-bl-xl last-of-type:rounded-br-xl shadow [&:last-of-type>td:first-child]:rounded-br-xl [&:last-of-type>td:last-child]:rounded-bl-xl
-}
 
-.rounded-first-tr {
-  @apply font-semibold last-of-type:overflow-hidden last-of-type:rounded-tl-xl last-of-type:rounded-tr-xl [&:last-of-type>th:first-child]:rounded-tr-xl [&:last-of-type>th:last-child]:rounded-tl-xl
-}
+html[dir='rtl'] {
+  .rounded-last-tr {
+    @apply font-semibold last-of-type:overflow-hidden last-of-type:rounded-bl-xl last-of-type:rounded-br-xl shadow [&:last-of-type>td:first-child]:rounded-br-xl [&:last-of-type>td:last-child]:rounded-bl-xl
+  }
 
+  .rounded-first-tr {
+    @apply font-semibold last-of-type:overflow-hidden last-of-type:rounded-tl-xl last-of-type:rounded-tr-xl [&:last-of-type>th:first-child]:rounded-tr-xl [&:last-of-type>th:last-child]:rounded-tl-xl
+  }
+}
+html[dir="ltr"] {
+  .rounded-last-tr {
+    @apply font-semibold last-of-type:overflow-hidden last-of-type:rounded-bl-xl last-of-type:rounded-br-xl shadow [&:last-of-type>td:first-child]:rounded-bl-xl [&:last-of-type>td:last-child]:rounded-br-xl
+  }
+
+  .rounded-first-tr {
+    @apply font-semibold last-of-type:overflow-hidden last-of-type:rounded-tl-xl last-of-type:rounded-tr-xl [&:last-of-type>th:first-child]:rounded-tl-xl [&:last-of-type>th:last-child]:rounded-tr-xl
+  }
+
+}

@@ -10,7 +10,7 @@ export class Top10ModelInterceptor implements ModelInterceptorContract<Top10Mode
 
   receive(model: Top10Model): Top10Model {
     const lookupService = ServiceRegistry.get<LookupService>('LookupService');
-    model.zoneInfo = lookupService.zonesMap[model.zoneId];
+    model.zoneInfo = lookupService.rentZonesMap[model.zoneId];
     return model;
   }
 }
