@@ -8,11 +8,11 @@
       <th *matHeaderCellDef class="p-2">
         {{ getColumnTemplate(displayedColumn)!.columnHeader }}
       </th>
-      <td *matCellDef="let column" class="text-primary py-2">
+      <td *matCellDef="let row" class="text-primary py-2">
         <ng-container
           [ngTemplateOutlet]="getColumnTemplate(displayedColumn)!.templateRef"
           [ngTemplateOutletContext]="{
-            $implicit: getColumnTemplate(displayedColumn)!.getBindValue(column)
+            $implicit: getColumnTemplate(displayedColumn)!.getBindValue(row)
           }"></ng-container>
       </td>
     </ng-container>
