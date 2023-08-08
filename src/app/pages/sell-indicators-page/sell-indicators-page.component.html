@@ -70,7 +70,7 @@
               class="border-2 rounded-xl overflow-hidden xl:border-0 xl:rounded-none xl:border-e-2 border-secondary xl:last-of-type:border-e-0"
           /></ng-container>
         </div>
-        <!-- <div class="mt-20 w-11/12" dir="ltr">
+        <div class="mt-20 w-11/12" dir="ltr">
           <div class="flex justify-center">
             <h3 *ngIf="selectedRoot" class="text-3xl mb-4 text-primary border-secondary font-semibold">
               {{ selectedRoot.getNames() }} ({{ lang.map.depending_on_type }})
@@ -79,10 +79,10 @@
           <carousel #carousel [arrowsOutside]="true" [margin]="20" [cellWidth]="350">
             <app-property-block class="carousel-cell" *ngFor="let item of propertiesKPIS" [item]="item" />
           </carousel>
-        </div> -->
+        </div>
       </div>
     </div>
-    <!-- <div class="p-16 flex flex-col">
+    <div class="p-16 flex flex-col">
       <div class="flex justify-center">
         <h3 *ngIf="selectedRoot" class="text-3xl mb-4 text-primary border-secondary font-semibold">
           {{ selectedRoot.getNames() }}
@@ -122,7 +122,7 @@
             icon="AREA_CHART" />
         </div>
       </div>
-    </div> -->
+    </div>
   </div>
   <div *ngIf="isSelectedTab('statistical_reports_for_sell')" class="flex flex-col">
     <div class="px-16 py-5 flex flex-col">
@@ -131,7 +131,7 @@
           {{ lang.map.top_10_areas }}
         </h3>
       </div>
-      <!-- <div class="bg-sand shadow rounded-xl p-2 self-center mt-5">
+      <div class="bg-sand shadow rounded-xl p-2 self-center mt-5">
         <ul class="flex gap-2">
           <li *ngFor="let item of accordingToList">
             <app-button
@@ -159,7 +159,7 @@
           [tooltip]="top10ChartOptions.tooltip!"
           [plotOptions]="top10ChartOptions.plotOptions!"
           [title]="top10ChartOptions.title!" />
-      </div> -->
+      </div>
     </div>
   </div>
 </div>

@@ -152,4 +152,11 @@ export interface LangKeysContract {
   sold_areas: string;
   average_price_per_unit: string;
   average_price_per_square_meter: string;
+
+  location: string;
+  sold_for: string;
+  sold_by: string;
+  issue_date: string;
+  square_feet_price: string;
+  unit_parcel_no: string;
 }

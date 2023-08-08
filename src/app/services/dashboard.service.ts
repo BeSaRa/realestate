@@ -1,6 +1,5 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
-import { MatDialogRef } from '@angular/material/dialog';
 import { CriteriaContract } from '@contracts/criteria-contract';
 import { RentCriteriaContract } from '@contracts/rent-criteria-contract';
 import { SellCriteriaContract } from '@contracts/sell-criteria-contract';
@@ -13,15 +12,16 @@ import { Lookup } from '@models/lookup';
 import { RentDefaultValues } from '@models/rent-default-values';
 import { RentTop10Model } from '@models/rent-top-10-model';
 import { RentTransaction } from '@models/rent-transaction';
-import { RentTransactionPurpose } from '@models/rent-transaction-purpose';
 import { RoomNumberKpi } from '@models/room-number-kpi';
 import { SellDefaultValues } from '@models/sell-default-values';
 import { SellTop10Model } from '@models/sell-top-10-model';
-import { DialogService } from '@services/dialog.service';
 import { UrlService } from '@services/url.service';
 import { chunks } from '@utils/utils';
 import { CastResponse } from 'cast-response';
 import { map, Observable } from 'rxjs';
+import { DialogService } from './dialog.service';
+import { RentTransactionPurpose } from '@models/rent-transaction-purpose';
+import { MatDialogRef } from '@angular/material/dialog';
 import { RentTransactionPurposePopupComponent } from '../popups/rent-transaction-purpose-popup/rent-transaction-purpose-popup.component';
 
 @Injectable({
