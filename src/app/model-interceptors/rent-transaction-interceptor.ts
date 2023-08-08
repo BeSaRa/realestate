@@ -6,7 +6,7 @@ import { LookupService } from '@services/lookup.service';
 export class RentTransactionInterceptor implements ModelInterceptorContract<RentTransaction> {
   receive(model: RentTransaction): RentTransaction {
     const lookupService = ServiceRegistry.get('LookupService') as LookupService;
-    model.municipalityInfo = lookupService.municipalitiesMap[model.municipalityid];
+    model.municipalityInfo = lookupService.rentMunicipalitiesMap[model.municipalityid];
     return model;
   }
 

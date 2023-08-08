@@ -1,9 +1,6 @@
-export const EndPoints = {
-  BASE_URL: '',
-  TRANSLATION: 'http://eblaepm.no-ip.org:8055/translations',
-  BE: 'http://eblaepm.no-ip.org:7800/mme-services/',
-  LOOKUPS: 'BE|kpi/rent/lookup',
+const RentEndPoints = {
   RENT: 'BE|kpi/rent',
+  RENT_LOOKUPS: 'BE|kpi/rent/lookup',
   DEFAULT_RENT: 'RENT|default',
   RENT_KPI1: 'RENT|kpi1/total-contracts', // root
   RENT_KPI2: 'RENT|kpi2/total-contracts/purpose',
@@ -40,6 +37,61 @@ export const EndPoints = {
   RENT_KPI34: 'RENT|kpi34/stats/bed-rooms-count',
   // collection of transactions tables
   RENT_KPI35_36_37: 'RENT|kpi35_36_37/stats/indicators',
+};
+
+const SellEndPoints = {
+  SELL: 'BE|kpi/sell',
+  SELL_LOOKUPS: 'BE|kpi/sell/lookup',
+  DEFAULT_SELL: 'SELL|default',
+  SELL_KPI1: 'SELL|kpi1/total-contracts', // root
+  SELL_KPI2: 'SELL|kpi2/total-contracts/purpose',
+  SELL_KPI3: 'SELL|kpi3/total-contracts/property',
+  SELL_KPI4: 'SELL|kpi4/total-units', // root
+  SELL_KPI5: 'SELL|kpi5/total-units/purpose',
+  SELL_KPI6: 'SELL|kpi6/property',
+  SELL_KPI7: 'SELL|kpi7/total-transactions', // root
+  SELL_KPI8: 'SELL|kpi8/total-transactions/purpose',
+  SELL_KPI9: 'SELL|kpi9/total-transactions/property',
+  SELL_KPI10: 'SELL|kpi10/total-areas', // root
+  SELL_KPI11: 'SELL|kpi11/total-areas/purpose',
+  SELL_KPI12: 'SELL|kpi12/total-areas/property',
+  SELL_KPI13: 'SELL|kpi13/mean-value', // root
+  SELL_KPI14: 'SELL|kpi14/mean-value/purpose',
+  SELL_KPI15: 'SELL|kpi15/mean-value/property',
+  SELL_KPI16: 'SELL|kpi16/mean-area', // root
+  SELL_KPI17: 'SELL|kpi17/mean-area/purpose',
+  SELL_KPI18: 'SELL|kpi18/mean-area/property',
+
+  ///// charts
+  SELL_KPI19: 'SELL|kpi19/chart/certificate-count',
+  SELL_KPI20: 'SELL|kpi20/chart/unit-count',
+  SELL_KPI21: 'SELL|kpi21/chart/transaction-count',
+  SELL_KPI22: 'SELL|kpi22/chart/area-count',
+  SELL_KPI23: 'SELL|kpi23/chart/mean-unit-price',
+  SELL_KPI24: 'SELL|kpi24/chart/mean-unit-sqt-price',
+
+  SELL_KPI25: 'SELL|kpi25/stats/indicator/purpose',
+  SELL_KPI26: 'SELL|kpi26/chart/indicator/purpose',
+  SELL_KPI27: 'SELL|kpi27/stats/indicator/property',
+
+  SELL_KPI29: 'SELL|kpi29/transactions',
+
+  SELL_KPI30: 'SELL|kpi30/zones/transactions-number',
+  SELL_KPI31: 'SELL|kpi31/zones/unit-price',
+  SELL_KPI32: 'SELL|kpi32/zones/transactions-value',
+  SELL_KPI33: 'SELL|kpi33/zones/areas',
+  SELL_KPI33_1: 'SELL|kpi33_1/zones/real-estate-number',
+  SELL_KPI33_2: 'SELL|kpi33_2/zones/real-estate-mt-value',
+
+  SELL_KPI35_36_37: 'SELL|kpi35_36_37/stats/indicators',
+};
+
+export const EndPoints = {
+  BASE_URL: '',
+  TRANSLATION: 'http://eblaepm.no-ip.org:8055/translations',
+  BE: 'http://eblaepm.no-ip.org:7800/mme-services/',
+  ...RentEndPoints,
+  ...SellEndPoints,
 };
 
 export type EndpointsType = typeof EndPoints;

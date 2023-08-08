@@ -1,5 +1,14 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, Component, DoCheck, ElementRef, Input, OnInit, inject } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  DoCheck,
+  ElementRef,
+  Input,
+  OnChanges,
+  OnInit,
+  inject,
+} from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
 import { AppIcons, AppIconsType } from '@constants/app-icons';
 import { ButtonTypeContract } from '@contracts/button-type-contract';
@@ -12,7 +21,7 @@ import { ButtonTypeContract } from '@contracts/button-type-contract';
   styleUrls: ['./button.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class ButtonComponent implements OnInit, DoCheck {
+export class ButtonComponent implements OnChanges, DoCheck {
   @Input() disabled = false;
   @Input() inProgress = false;
   @Input() size: 'sm' | 'md' | 'lg' | 'xl' = 'md';
@@ -25,7 +34,7 @@ export class ButtonComponent implements OnInit, DoCheck {
 
   overlayEnabled = false;
 
-  ngOnInit(): void {
+  ngOnChanges(): void {
     this.overlayEnabled = !this.buttonStyle.includes('none') && !this.buttonStyle.includes('outline') && !this.disabled;
   }
 
