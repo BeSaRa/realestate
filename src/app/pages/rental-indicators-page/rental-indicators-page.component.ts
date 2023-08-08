@@ -1,44 +1,45 @@
-import { Component, inject, OnInit, QueryList, ViewChildren } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { Component, inject, QueryList, ViewChildren } from '@angular/core';
+
 import { ExtraHeaderComponent } from '@components/extra-header/extra-header.component';
-import { TranslationService } from '@services/translation.service';
+import { KpiRootComponent } from '@components/kpi-root/kpi-root.component';
+import { PropertyBlockComponent } from '@components/property-block/property-block.component';
+import { PurposeComponent } from '@components/purpose/purpose.component';
+import { RentalContractsComponent } from '@components/rental-contracts/rental-contracts.component';
 import { RentalTransactionsMeasuringComponent } from '@components/rental-transactions-measuring/rental-transactions-measuring.component';
 import { TransactionsFilterComponent } from '@components/transactions-filter/transactions-filter.component';
-import { RentalContractsComponent } from '@components/rental-contracts/rental-contracts.component';
-import { RentalTransactionsListComponent } from '@components/rental-transactions-list/rental-transactions-list.component';
+import { CriteriaContract } from '@contracts/criteria-contract';
 import { RentCriteriaContract } from '@contracts/rent-criteria-contract';
 import { CriteriaType } from '@enums/criteria-type';
-import { DashboardService } from '@services/dashboard.service';
 import { KpiRoot } from '@models/kpiRoot';
-import { KpiRootComponent } from '@components/kpi-root/kpi-root.component';
-import { UrlService } from '@services/url.service';
-import { LookupService } from '@services/lookup.service';
-import { PurposeComponent } from '@components/purpose/purpose.component';
-import { CarouselComponent, IvyCarouselModule } from 'angular-responsive-carousel2';
-import { PropertyBlockComponent } from '@components/property-block/property-block.component';
-import { BidiModule } from '@angular/cdk/bidi';
 import { RentDefaultValues } from '@models/rent-default-values';
-import { forkJoin, ReplaySubject, Subject, take, takeUntil } from 'rxjs';
+import { RentTop10Model } from '@models/rent-top-10-model';
+
+import { MatSortModule } from '@angular/material/sort';
+import { MatTableModule } from '@angular/material/table';
+import { PartialChartOptions } from '@app-types/partialChartOptions';
+import { PieChartOptions } from '@app-types/pie-chart-options';
+import { ButtonComponent } from '@components/button/button.component';
+import { IconButtonComponent } from '@components/icon-button/icon-button.component';
+import { TableComponent } from '@components/table/table.component';
+import { YoyIndicatorComponent } from '@components/yoy-indicator/yoy-indicator.component';
+import { TableColumnTemplateDirective } from '@directives/table-column-template.directive';
+import { ChartType } from '@enums/chart-type';
+import { CompositeTransaction } from '@models/composite-transaction';
 import { KpiModel } from '@models/kpi-model';
 import { Lookup } from '@models/lookup';
-import { ChartComponent, NgApexchartsModule } from 'ng-apexcharts';
-import { PartialChartOptions } from '@app-types/partialChartOptions';
-import { formatNumber } from '@utils/utils';
-import { TableComponent } from '@components/table/table.component';
-import { TableColumnTemplateDirective } from '@directives/table-column-template.directive';
 import { RentTransaction } from '@models/rent-transaction';
-import { IconButtonComponent } from '@components/icon-button/icon-button.component';
-import { ButtonComponent } from '@components/button/button.component';
-import { Top10Model } from '@models/top-10-model';
-import { ChartType } from '@enums/chart-type';
-import { MatTableModule } from '@angular/material/table';
-import { CompositeTransaction } from '@models/composite-transaction';
-import { MatSortModule } from '@angular/material/sort';
-import { FormatNumbersPipe } from '@pipes/format-numbers.pipe';
-import { YoyIndicatorComponent } from '@components/yoy-indicator/yoy-indicator.component';
-import { PieChartOptions } from '@app-types/pie-chart-options';
-import { RoomNumberKpi } from '@models/room-number-kpi';
 import { RentTransactionPurpose } from '@models/rent-transaction-purpose';
+import { RoomNumberKpi } from '@models/room-number-kpi';
+import { FormatNumbersPipe } from '@pipes/format-numbers.pipe';
+import { DashboardService } from '@services/dashboard.service';
+import { LookupService } from '@services/lookup.service';
+import { TranslationService } from '@services/translation.service';
+import { UrlService } from '@services/url.service';
+import { formatNumber } from '@utils/utils';
+import { CarouselComponent, IvyCarouselModule } from 'angular-responsive-carousel2';
+import { ChartComponent, NgApexchartsModule } from 'ng-apexcharts';
+import { forkJoin, ReplaySubject, Subject, take, takeUntil } from 'rxjs';
 
 @Component({
   selector: 'app-rental-indicators-page',
@@ -49,12 +50,10 @@ import { RentTransactionPurpose } from '@models/rent-transaction-purpose';
     TransactionsFilterComponent,
     RentalTransactionsMeasuringComponent,
     RentalContractsComponent,
-    RentalTransactionsListComponent,
     KpiRootComponent,
     PurposeComponent,
     IvyCarouselModule,
     PropertyBlockComponent,
-    BidiModule,
     NgApexchartsModule,
     TableComponent,
     TableColumnTemplateDirective,
@@ -89,7 +88,7 @@ export default class RentalIndicatorsPageComponent {
   rooms = this.lookupService.rentLookups.rooms;
 
   criteria!: {
-    criteria: RentCriteriaContract;
+    criteria: CriteriaContract;
     type: CriteriaType;
   };
 
@@ -100,17 +99,8 @@ export default class RentalIndicatorsPageComponent {
   @ViewChildren('pieChart')
   pieChart!: QueryList<ChartComponent>;
 
-  top10ChartData: Top10Model[] = [];
   selectedRootChartData!: KpiModel[];
   pieChartData: RoomNumberKpi[] = [];
-
-  displayedColumns = [
-    { columnName: 'municipality_id', columnHeader: this.lang.map.municipal },
-    { columnName: 'unit_details', columnHeader: this.lang.map.unit_details },
-    { columnName: 'rental_value', columnHeader: this.lang.map.rental_value },
-    { columnName: 'contract_start_date', columnHeader: this.lang.map.contract_start_date },
-    { columnName: 'contract_end_date', columnHeader: this.lang.map.contract_end_date },
-  ];
 
   @ViewChildren('carousel')
   carousel!: QueryList<CarouselComponent>;
@@ -209,6 +199,7 @@ export default class RentalIndicatorsPageComponent {
       url: this.urlService.URLS.RENT_KPI30_1,
     }),
   ];
+  top10ChartData: RentTop10Model[] = [];
   selectedTop10: Lookup = this.accordingToList[0];
 
   chartOptions: Partial<PartialChartOptions> = {
@@ -369,11 +360,11 @@ export default class RentalIndicatorsPageComponent {
     lookup && (lookup.value = value) && (lookup.yoy = yoy);
   }
 
-  filterChange({ criteria, type }: { criteria: RentCriteriaContract; type: CriteriaType }) {
+  filterChange({ criteria, type }: { criteria: CriteriaContract; type: CriteriaType }) {
     this.criteria = { criteria, type };
     if (type === CriteriaType.DEFAULT) {
       // load default
-      this.dashboardService.loadRentDefaults(criteria).subscribe((result) => {
+      this.dashboardService.loadRentDefaults(criteria as Partial<RentCriteriaContract>).subscribe((result) => {
         this.setDefaultRoots(result[0]);
         this.rootItemSelected(this.rootKPIS[0]);
         this.selectTop10Chart(this.selectedTop10);
@@ -394,7 +385,7 @@ export default class RentalIndicatorsPageComponent {
           });
       });
 
-      this.rootItemSelected(this.rootKPIS[0]);
+      this.rootItemSelected(this.selectedRoot);
       this.selectTop10Chart(this.selectedTop10);
     }
     this.loadTransactions();
@@ -403,7 +394,8 @@ export default class RentalIndicatorsPageComponent {
     this.loadTransactionsBasedOnPurpose();
   }
 
-  rootItemSelected(item: KpiRoot) {
+  rootItemSelected(item?: KpiRoot) {
+    if (!item) return;
     this.selectedRoot = item;
     this.rootKPIS.forEach((i) => {
       item !== i ? (i.selected = false) : (item.selected = true);
@@ -542,7 +534,7 @@ export default class RentalIndicatorsPageComponent {
       i === item ? (i.selected = true) : (i.selected = false);
     });
     this.selectedTop10 = item;
-    this.dashboardService.loadTop10BasedOnCriteria(item, this.criteria.criteria).subscribe((top10ChartData) => {
+    this.dashboardService.loadRentTop10BasedOnCriteria(item, this.criteria.criteria).subscribe((top10ChartData) => {
       this.top10ChartData = top10ChartData;
       this.updateTop10Chart();
     });

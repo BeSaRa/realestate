@@ -136,4 +136,20 @@ export interface LangKeysContract {
   paginator_entry_label: string;
   property_type: string;
   property_usage: string;
+  //////////////////
+  sell_transactions_measuring_dashboard: string;
+  the_total_number_of_sell_contracts: string;
+  the_total_number_of_properties_units_sold: string;
+  the_total_value_of_sell_contracts: string;
+  total_sold_areas: string;
+  average_sell_price_per_unit_property: string;
+  sell_average_price_per_square_meter_square_foot: string;
+  real_estate_value_from: string;
+  real_estate_value_to: string;
+  statistical_reports_for_sell: string;
+  //////
+  number_of_sell_contracts: string;
+  sold_areas: string;
+  average_price_per_unit: string;
+  average_price_per_square_meter: string;
 }

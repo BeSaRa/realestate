@@ -85,12 +85,23 @@
       <app-input formControlName="streetNo" [label]="lang.map.street">
         <input appControl formControlName="streetNo" mask="9999" />
       </app-input>
-      <app-input formControlName="rentPaymentMonthlyPerUnitFrom" [label]="lang.map.rental_value_per_month_from">
-        <input appControl formControlName="rentPaymentMonthlyPerUnitFrom" mask="separator" thousandSeparator="," />
-      </app-input>
-      <app-input formControlName="rentPaymentMonthlyPerUnitTo" [label]="lang.map.rental_value_per_month_to">
-        <input appControl formControlName="rentPaymentMonthlyPerUnitTo" mask="separator" thousandSeparator="," />
-      </app-input>
+      <ng-container *ngIf="indicatorType === 'rent'">
+        <app-input formControlName="rentPaymentMonthlyPerUnitFrom" [label]="lang.map.rental_value_per_month_from">
+          <input appControl formControlName="rentPaymentMonthlyPerUnitFrom" mask="separator" thousandSeparator="," />
+        </app-input>
+        <app-input formControlName="rentPaymentMonthlyPerUnitTo" [label]="lang.map.rental_value_per_month_to">
+          <input appControl formControlName="rentPaymentMonthlyPerUnitTo" mask="separator" thousandSeparator="," />
+        </app-input>
+      </ng-container>
+      <ng-container *ngIf="indicatorType === 'sell'">
+        <app-input formControlName="realEstateValueFrom" [label]="lang.map.real_estate_value_from">
+          <input appControl formControlName="realEstateValueFrom" mask="separator" thousandSeparator="," />
+        </app-input>
+        <app-input formControlName="realEstateValueTo" [label]="lang.map.real_estate_value_to">
+          <input appControl formControlName="realEstateValueTo" mask="separator" thousandSeparator="," />
+        </app-input>
+      </ng-container>
+
       <!--    <app-input formControlName="rentPaymentMonthlyPerUnitFrom" [label]="lang.map.building_age_in_years_from">-->
       <!--      <input appControl formControlName="streetNo" mask="separator" thousandSeparator="," />-->
       <!--    </app-input>-->

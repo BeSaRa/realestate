@@ -1,30 +1,30 @@
-import { Component, EventEmitter, inject, Input, OnDestroy, OnInit, Output } from '@angular/core';
+import { animate, state, style, transition, trigger } from '@angular/animations';
 import { CommonModule, DatePipe } from '@angular/common';
+import { Component, EventEmitter, Input, OnDestroy, OnInit, Output, inject } from '@angular/core';
 import { AbstractControl, ReactiveFormsModule, UntypedFormBuilder } from '@angular/forms';
-import { TranslationService } from '@services/translation.service';
-import { ButtonComponent } from '@components/button/button.component';
-import { SelectInputComponent } from '@components/select-input/select-input.component';
-import { LookupService } from '@services/lookup.service';
-import { debounceTime, Subject, takeUntil } from 'rxjs';
-import { Lookup } from '@models/lookup';
-import { range } from '@utils/utils';
-import { Durations } from '@enums/durations';
-import { InputComponent } from '@components/input/input.component';
-import { MatIconModule } from '@angular/material/icon';
-import { AppIcons } from '@constants/app-icons';
-import { IconButtonComponent } from '@components/icon-button/icon-button.component';
 import { MatNativeDateModule, MatRippleModule } from '@angular/material/core';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
-import { InputPrefixDirective } from '@directives/input-prefix.directive';
+import { ButtonComponent } from '@components/button/button.component';
+import { IconButtonComponent } from '@components/icon-button/icon-button.component';
+import { InputComponent } from '@components/input/input.component';
+import { SelectInputComponent } from '@components/select-input/select-input.component';
+import { AppIcons } from '@constants/app-icons';
+import { CriteriaContract } from '@contracts/criteria-contract';
 import { ControlDirective } from '@directives/control.directive';
-import { NgxMaskDirective } from 'ngx-mask';
-import { RentCriteriaContract } from '@contracts/rent-criteria-contract';
-import { animate, state, style, transition, trigger } from '@angular/animations';
-import { CriteriaType } from '@enums/criteria-type';
-import { HalfYearDurations } from '@enums/half-year-durations';
+import { InputPrefixDirective } from '@directives/input-prefix.directive';
 import { InputSuffixDirective } from '@directives/input-suffix.directive';
+import { CriteriaType } from '@enums/criteria-type';
+import { Durations } from '@enums/durations';
+import { HalfYearDurations } from '@enums/half-year-durations';
+import { Lookup } from '@models/lookup';
+import { LookupService } from '@services/lookup.service';
+import { TranslationService } from '@services/translation.service';
+import { range } from '@utils/utils';
+import { NgxMaskDirective } from 'ngx-mask';
+import { Subject, debounceTime, takeUntil } from 'rxjs';
 
 @Component({
   selector: 'app-transactions-filter',
@@ -69,20 +69,19 @@ import { InputSuffixDirective } from '@directives/input-suffix.directive';
   ],
 })
 export class TransactionsFilterComponent implements OnInit, OnDestroy {
+  @Input() indicatorType: 'sell' | 'rent' | 'mortgage' = 'rent';
+  @Input() municipalities: Lookup[] = [];
+  @Input() propertyTypes: Lookup[] = [];
+  @Input() propertyUsages: Lookup[] = [];
+  @Input() zones: Lookup[] = [];
+  @Input() rooms: Lookup[] = [];
+
+  @Output() fromChanged = new EventEmitter<{ criteria: CriteriaContract; type: CriteriaType }>();
+
   lang = inject(TranslationService);
   fb = inject(UntypedFormBuilder);
   lookupService = inject(LookupService);
   datePipe = inject(DatePipe);
-  @Input()
-  municipalities: Lookup[] = [];
-  @Input()
-  propertyTypes: Lookup[] = [];
-  @Input()
-  propertyUsages: Lookup[] = [];
-  @Input()
-  zones: Lookup[] = [];
-  @Input()
-  rooms: Lookup[] = [];
 
   filteredZones: Lookup[] = [];
 
@@ -93,9 +92,6 @@ export class TransactionsFilterComponent implements OnInit, OnDestroy {
   quarterYearDurations = this.lookupService.rentLookups.quarterYearDurations;
   // spaces = this.lookupService.rentLookups.spaces; // will use it later
 
-  @Output()
-  fromChanged = new EventEmitter<{ criteria: RentCriteriaContract; type: CriteriaType }>();
-
   form = this.fb.group({
     municipalityId: [],
     zoneId: [],
@@ -104,12 +100,15 @@ export class TransactionsFilterComponent implements OnInit, OnDestroy {
     issueDateQuarterList: [],
     // bedRoomsCount: [],
     issueDateYear: [],
+    issueDateMonth: [],
     issueDateStartMonth: [],
     issueDateEndMonth: [],
     issueDateFrom: [],
     issueDateTo: [],
     rentPaymentMonthlyPerUnitFrom: [],
     rentPaymentMonthlyPerUnitTo: [],
+    realEstateValueFrom: [],
+    realEstateValueTo: [],
     areaFrom: [],
     areaTo: [],
     baseYear: [],
@@ -320,7 +319,8 @@ export class TransactionsFilterComponent implements OnInit, OnDestroy {
   }
 
   sendFilter(criteriaType: CriteriaType): void {
-    const value = this.form.value as Partial<RentCriteriaContract>;
+    let value = this.form.value;
+    value = this._removeUnusedProps(value) as Partial<CriteriaContract>;
     if (this.displayYear) {
       const date = new Date();
       date.getFullYear() === value.issueDateYear ? (value.issueDateEndMonth = date.getMonth() + 1) : null;
@@ -336,12 +336,30 @@ export class TransactionsFilterComponent implements OnInit, OnDestroy {
         if (!this.issueDateFrom.value || !this.issueDateTo.value) return;
       }
     }
-    this.fromChanged.emit({ criteria: value as RentCriteriaContract, type: criteriaType });
+
+    this.fromChanged.emit({ criteria: value as CriteriaContract, type: criteriaType });
   }
 
   private listenToFormChanges() {
     this.form.valueChanges.pipe(takeUntil(this.destroy$), debounceTime(250)).subscribe(() => {
       this.sendFilter(CriteriaType.USER);
     });
+  }
+
+  _removeUnusedProps(value: any) {
+    if (this.indicatorType === 'sell') {
+      delete value.rentPaymentMonthlyPerUnitFrom;
+      delete value.rentPaymentMonthlyPerUnitTo;
+    }
+    if (this.indicatorType === 'rent') {
+      delete value.realEstateValueFrom;
+      delete value.realEstateValueTo;
+    }
+    Object.keys(value).forEach((key) => {
+      if (typeof value[key] === 'string' && value[key] === '') delete value[key];
+      if (Array.isArray(value[key]) && value[key].length === 0) delete value[key];
+      value[key] ?? delete value[key];
+    });
+    return value;
   }
 }

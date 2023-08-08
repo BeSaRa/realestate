@@ -3,25 +3,25 @@
   <table mat-table [dataSource]="dataSource" class="w-full" [ngStyle]="{ minWidth}">
     <!-- columns -->
     <ng-container
-      *ngFor="let displayedColumn of displayedColumns; let index = index"
-      [matColumnDef]="displayedColumn.columnName">
+      *ngFor="let displayedColumn of displayedColumnNames; let index = index"
+      [matColumnDef]="displayedColumn">
       <th *matHeaderCellDef class="p-2">
-        {{ displayedColumn.columnHeader }}
+        {{ getColumnTemplate(displayedColumn)!.columnHeader }}
       </th>
-      <td *matCellDef="let row" class="text-primary py-2">
+      <td *matCellDef="let column" class="text-primary py-2">
         <ng-container
-          [ngTemplateOutlet]="getColumnTemplate(displayedColumn.columnName)!.templateRef"
+          [ngTemplateOutlet]="getColumnTemplate(displayedColumn)!.templateRef"
           [ngTemplateOutletContext]="{
-            $implicit: getColumnTemplate(displayedColumn.columnName)!.getBindValue(row)
+            $implicit: getColumnTemplate(displayedColumn)!.getBindValue(column)
           }"></ng-container>
       </td>
     </ng-container>
 
     <!-- rows -->
-    <tr mat-header-row *matHeaderRowDef="displayedColumnsNames" class="!bg-primary !text-white text-xl font-bold"></tr>
+    <tr mat-header-row *matHeaderRowDef="displayedColumnNames" class="!bg-primary !text-white text-xl font-bold"></tr>
     <tr
       mat-row
-      *matRowDef="let row; columns: displayedColumnsNames"
+      *matRowDef="let row; columns: displayedColumnNames"
       class="text-center text-xl border-b border-gray-200"></tr>
   </table>
 

@@ -1,21 +1,9 @@
-export interface RentCriteriaContract {
-  propertyTypeList: number[];
-  municipalityId: number;
-  purposeList: number[];
-  issueDateQuarterList: number[];
+import { CriteriaContract } from './criteria-contract';
+
+export interface RentCriteriaContract extends CriteriaContract {
   bedRoomsCount: number;
-  issueDateYear: number;
-  issueDateStartMonth: number;
-  issueDateEndMonth: number;
-  issueDateFrom: string;
-  issueDateTo: string;
   rentPaymentMonthlyPerUnitFrom: number;
   rentPaymentMonthlyPerUnitTo: number;
-  areaFrom: number;
-  areaTo: number;
   baseYear: string;
-  zoneId: number;
   streetNo: number;
-  // not related to model
-  halfYearDuration: number;
 }
