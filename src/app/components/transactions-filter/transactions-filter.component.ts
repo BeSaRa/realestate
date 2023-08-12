@@ -98,7 +98,7 @@ export class TransactionsFilterComponent implements OnInit, OnDestroy {
     propertyTypeList: [],
     purposeList: [],
     issueDateQuarterList: [],
-    // bedRoomsCount: [],
+    bedRoomsCount: [],
     issueDateYear: [],
     issueDateMonth: [],
     issueDateStartMonth: [],

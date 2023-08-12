@@ -71,12 +71,12 @@
       <mat-date-range-picker touchUi class="hidden" #dateRange></mat-date-range-picker>
     </app-input>
     <ng-container *ngIf="isOpened">
-      <!--      <app-select-input-->
-      <!--        formControlName="bedRoomsCount"-->
-      <!--        bindLabel="getNames"-->
-      <!--        bindValue="lookupKey"-->
-      <!--        [label]="lang.map.number_of_rooms"-->
-      <!--        [options]="rooms" />-->
+      <app-select-input
+        formControlName="bedRoomsCount"
+        bindLabel="getNames"
+        bindValue="lookupKey"
+        [label]="lang.map.number_of_rooms"
+        [options]="rooms" />
       <!--      <app-select-input-->
       <!--        bindLabel="getNames"-->
       <!--        bindValue="lookupKey"-->
