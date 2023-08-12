@@ -276,14 +276,24 @@
           <th mat-header-cell class="!bg-azure !text-white" *matHeaderCellDef>
             {{ compositeYears.previousYear }}
           </th>
-          <td mat-cell *matCellDef="let element">{{ element[0].kpi1Val | formatNumbers }}</td>
+          <td mat-cell *matCellDef="let element">
+            {{
+              element[0].kpi1Val
+                | mask : maskSeparator.SEPARATOR : { thousandSeparator: maskSeparator.THOUSAND_SEPARATOR }
+            }}
+          </td>
         </ng-container>
         <ng-container matColumnDef="firstYear2">
           <!--          mat-sort-header="firstYear2" -->
           <th mat-header-cell class="!bg-azure !text-white" *matHeaderCellDef>
             {{ compositeYears.selectedYear }}
           </th>
-          <td mat-cell *matCellDef="let element">{{ element[1].kpi1Val | formatNumbers }}</td>
+          <td mat-cell *matCellDef="let element">
+            {{
+              element[1].kpi1Val
+                | mask : maskSeparator.SEPARATOR : { thousandSeparator: maskSeparator.THOUSAND_SEPARATOR }
+            }}
+          </td>
         </ng-container>
         <ng-container matColumnDef="firstYoy">
           <!--          mat-sort-header="firstYoy" -->

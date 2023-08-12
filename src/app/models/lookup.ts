@@ -11,4 +11,5 @@ export class Lookup extends ClonerMixin(GetNamesMixin(class {})) {
   yoy = 0;
   selected = false;
   url = '';
+  hasPrice = false;
 }

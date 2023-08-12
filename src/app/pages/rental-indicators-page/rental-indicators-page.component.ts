@@ -40,6 +40,8 @@ import { formatNumber } from '@utils/utils';
 import { CarouselComponent, IvyCarouselModule } from 'angular-responsive-carousel2';
 import { ChartComponent, NgApexchartsModule } from 'ng-apexcharts';
 import { forkJoin, ReplaySubject, Subject, take, takeUntil } from 'rxjs';
+import { NgxMaskPipe } from 'ngx-mask';
+import { maskSeparator } from '@constants/mask-separator';
 
 @Component({
   selector: 'app-rental-indicators-page',
@@ -63,7 +65,9 @@ import { forkJoin, ReplaySubject, Subject, take, takeUntil } from 'rxjs';
     MatSortModule,
     FormatNumbersPipe,
     YoyIndicatorComponent,
+    NgxMaskPipe,
   ],
+  providers: [NgxMaskPipe],
   templateUrl: './rental-indicators-page.component.html',
   styleUrls: ['./rental-indicators-page.component.scss'],
 })
@@ -76,6 +80,8 @@ export default class RentalIndicatorsPageComponent {
   urlService = inject(UrlService);
   lookupService = inject(LookupService);
   destroy$ = new Subject<void>();
+
+  maskPipe = inject(NgxMaskPipe);
 
   municipalities = this.lookupService.rentLookups.municipalityList;
 
@@ -177,26 +183,31 @@ export default class RentalIndicatorsPageComponent {
       enName: this.lang.getEnglishTranslation('number_of_lease_contracts'),
       selected: true,
       url: this.urlService.URLS.RENT_KPI30,
+      hasPrice: false,
     }),
     new Lookup().clone<Lookup>({
       arName: this.lang.getArabicTranslation('average_price_per_month'),
       enName: this.lang.getEnglishTranslation('average_price_per_month'),
       url: this.urlService.URLS.RENT_KPI31,
+      hasPrice: true,
     }),
     new Lookup().clone<Lookup>({
       arName: this.lang.getArabicTranslation('contracts_values'),
       enName: this.lang.getEnglishTranslation('contracts_values'),
       url: this.urlService.URLS.RENT_KPI32,
+      hasPrice: true,
     }),
     new Lookup().clone<Lookup>({
       arName: this.lang.getArabicTranslation('rented_spaces'),
       enName: this.lang.getEnglishTranslation('rented_spaces'),
       url: this.urlService.URLS.RENT_KPI33,
+      hasPrice: false,
     }),
     new Lookup().clone<Lookup>({
       arName: this.lang.getArabicTranslation('number_of_units'),
       enName: this.lang.getEnglishTranslation('number_of_units'),
       url: this.urlService.URLS.RENT_KPI30_1,
+      hasPrice: false,
     }),
   ];
   top10ChartData: RentTop10Model[] = [];
@@ -210,8 +221,12 @@ export default class RentalIndicatorsPageComponent {
     },
     dataLabels: {
       enabled: true,
-      formatter(val: number): string | number {
-        return formatNumber(val) as string;
+      formatter: (val: number): string | number => {
+        return this.selectedRoot?.hasPrice
+          ? (formatNumber(val) as string)
+          : (this.maskPipe.transform(val.toFixed(0), maskSeparator.SEPARATOR, {
+              thousandSeparator: maskSeparator.THOUSAND_SEPARATOR,
+            }) as unknown as string);
       },
     },
     stroke: {
@@ -236,10 +251,15 @@ export default class RentalIndicatorsPageComponent {
       max: (max: number) => max + 150,
       tickAmount: 10,
       labels: {
-        formatter(val: number): string | string[] {
-          return formatNumber(val) as string;
+        formatter: (val: number): string | string[] => {
+          return this.selectedRoot?.hasPrice
+            ? (formatNumber(val) as string)
+            : (this.maskPipe.transform(val.toFixed(0), 'separator', { thousandSeparator: ',' }) as unknown as string);
         },
         minWidth: 50,
+        style: {
+          fontWeight: 'bold',
+        },
       },
     },
     tooltip: {},
@@ -256,8 +276,11 @@ export default class RentalIndicatorsPageComponent {
       dropShadow: {
         enabled: true,
       },
-      formatter(val: number): string | number {
-        return formatNumber(val) as string;
+      formatter: (val: string): string | number => {
+        const value = val as unknown as number;
+        return this.selectedTop10?.hasPrice
+          ? (formatNumber(value) as string)
+          : (this.maskPipe.transform(value.toFixed(0), 'separator', { thousandSeparator: ',' }) as unknown as string);
       },
     },
     stroke: {
@@ -273,8 +296,11 @@ export default class RentalIndicatorsPageComponent {
     xaxis: {
       categories: [],
       labels: {
-        formatter(value: string): string | string[] {
-          return formatNumber(value as unknown as number) as string;
+        formatter: (val: string): string | string[] => {
+          const value = val as unknown as number;
+          return this.selectedTop10?.hasPrice
+            ? (formatNumber(value) as string)
+            : (this.maskPipe.transform(value.toFixed(0), 'separator', { thousandSeparator: ',' }) as unknown as string);
         },
       },
     },
@@ -290,8 +316,12 @@ export default class RentalIndicatorsPageComponent {
     yaxis: {
       reversed: true,
       labels: {
-        formatter(val: number): string | string[] {
-          return formatNumber(val) as string;
+        formatter: (val: number | string): string | string[] => {
+          return typeof val === 'string'
+            ? val
+            : this.selectedTop10?.hasPrice
+            ? (formatNumber(val) as string)
+            : (this.maskPipe.transform(val.toFixed(0), 'separator', { thousandSeparator: ',' }) as unknown as string);
         },
         style: {
           fontFamily: 'inherit',
@@ -472,6 +502,7 @@ export default class RentalIndicatorsPageComponent {
 
   updateChart(): void {
     if (!this.chart.length) return;
+
     this.chart.first
       .updateOptions({
         series: [
@@ -548,7 +579,7 @@ export default class RentalIndicatorsPageComponent {
           {
             name: this.selectedTop10.getNames(),
             data: this.top10ChartData.map((item) => {
-              return { x: item.zoneInfo.getNames(), y: item.kpiVal };
+              return { x: (item.zoneInfo && item.zoneInfo.getNames()) || `NA/${item.zoneId}`, y: item.kpiVal };
             }),
           },
         ],
@@ -593,4 +624,6 @@ export default class RentalIndicatorsPageComponent {
   openChart(item: RentTransactionPurpose): void {
     item.openChart(this.criteria.criteria).subscribe();
   }
+
+  protected readonly maskSeparator = maskSeparator;
 }
