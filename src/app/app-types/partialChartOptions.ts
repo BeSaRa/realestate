@@ -22,7 +22,7 @@ export type PartialChartOptions = {
   dataLabels: ApexDataLabels;
   markers: ApexMarkers;
   colors: string[];
-  yaxis: ApexYAxis;
+  yaxis: ApexYAxis | ApexYAxis[];
   grid: ApexGrid;
   legend: ApexLegend;
   title: ApexTitleSubtitle;

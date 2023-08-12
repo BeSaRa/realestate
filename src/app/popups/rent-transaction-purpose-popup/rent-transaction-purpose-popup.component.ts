@@ -9,12 +9,15 @@ import { formatNumber } from '@utils/utils';
 import { TranslationService } from '@services/translation.service';
 import { IconButtonComponent } from '@components/icon-button/icon-button.component';
 import { ButtonComponent } from '@components/button/button.component';
+import { NgxMaskPipe } from 'ngx-mask';
+import { maskSeparator } from '@constants/mask-separator';
 
 @Component({
   selector: 'app-rent-transaction-purpose-popup',
   standalone: true,
   imports: [CommonModule, NgApexchartsModule, MatNativeDateModule, IconButtonComponent, ButtonComponent],
   templateUrl: './rent-transaction-purpose-popup.component.html',
+  providers: [NgxMaskPipe],
   styleUrls: ['./rent-transaction-purpose-popup.component.scss'],
 })
 export class RentTransactionPurposePopupComponent implements AfterViewInit {
@@ -27,11 +30,9 @@ export class RentTransactionPurposePopupComponent implements AfterViewInit {
   data: RentTransactionPurpose[] = inject(MAT_DIALOG_DATA);
   ref = inject(MatDialogRef);
 
-  dataMap = this.data.reduce((acc, item) => {
-    return { ...acc, [item.issueMonth]: item };
-  }, {} as Record<number, RentTransactionPurpose>);
-
   months: string[] = [];
+
+  maskPipe = inject(NgxMaskPipe);
 
   chartOptions: Partial<PartialChartOptions> = {
     series: [],
@@ -55,31 +56,64 @@ export class RentTransactionPurposePopupComponent implements AfterViewInit {
     },
     dataLabels: {
       enabled: true,
-      formatter(val: number): string | number {
-        return formatNumber(val);
+      formatter: (val: number, { seriesIndex }): string | number => {
+        return seriesIndex === 0
+          ? formatNumber(val)
+          : this.maskPipe.transform(val, maskSeparator.SEPARATOR, {
+              thousandSeparator: maskSeparator.THOUSAND_SEPARATOR,
+            });
       },
     },
-    yaxis: {
-      labels: {
-        formatter(val: number): string {
-          return formatNumber(val) as string;
+    yaxis: [
+      {
+        title: {
+          text: this.lang.map.average_price_per_month,
+        },
+        labels: {
+          formatter(val: number): string {
+            return formatNumber(val) as string;
+          },
         },
       },
-    },
+      {
+        opposite: true,
+        title: {
+          text: this.lang.map.rent_contracts_count,
+        },
+        labels: {
+          formatter: (val: number): string => {
+            return this.maskPipe.transform(val, maskSeparator.SEPARATOR, {
+              thousandSeparator: maskSeparator.THOUSAND_SEPARATOR,
+            });
+          },
+        },
+      },
+    ],
   };
 
   ngAfterViewInit(): void {
     this.adapter.setLocale(this.lang.getCurrent().code === 'ar-SA' ? 'ar-EG' : 'en-US');
     this.months = this.adapter.getMonthNames('long');
+    console.log(this.months);
     Promise.resolve().then(() => {
       this.chart.updateSeries([
         {
           name: this.lang.map.average_price_per_month,
           type: 'column',
-          data: this.months.map((month, index) => {
+          data: this.data.map((item) => {
             return {
-              y: this.dataMap[index + 1] ? this.dataMap[index + 1].rentPaymentMonthly : 0,
-              x: month,
+              y: item.rentPaymentMonthly,
+              x: this.months[item.issueMonth - 1],
+            };
+          }),
+        },
+        {
+          name: this.lang.map.rent_contracts_count,
+          type: 'line',
+          data: this.data.map((item) => {
+            return {
+              y: item.certificateCount,
+              x: this.months[item.issueMonth - 1],
             };
           }),
         },
