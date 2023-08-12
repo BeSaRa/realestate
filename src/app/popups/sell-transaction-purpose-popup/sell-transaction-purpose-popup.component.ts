@@ -1,19 +1,23 @@
-import { AfterViewInit, Component, ViewChild, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ChartComponent, NgApexchartsModule } from 'ng-apexcharts';
-import { TranslationService } from '@services/translation.service';
+import { AfterViewInit, Component, ViewChild, inject } from '@angular/core';
 import { DateAdapter, MatNativeDateModule } from '@angular/material/core';
-import { SellTransactionPurpose } from '@models/sell-transaction-purpose';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { PartialChartOptions } from '@app-types/partialChartOptions';
-import { formatNumber } from '@utils/utils';
 import { ButtonComponent } from '@components/button/button.component';
 import { IconButtonComponent } from '@components/icon-button/icon-button.component';
+import { maskSeparator } from '@constants/mask-separator';
+import { SellTransactionPurpose } from '@models/sell-transaction-purpose';
+import { TranslationService } from '@services/translation.service';
+import { formatNumber } from '@utils/utils';
+import { ChartComponent, NgApexchartsModule } from 'ng-apexcharts';
+import { NgxMaskPipe } from 'ngx-mask';
 
 @Component({
   selector: 'app-sell-transaction-purpose-popup',
   standalone: true,
   imports: [CommonModule, NgApexchartsModule, MatNativeDateModule, IconButtonComponent, ButtonComponent],
+  providers: [NgxMaskPipe],
+
   templateUrl: './sell-transaction-purpose-popup.component.html',
   styleUrls: ['./sell-transaction-purpose-popup.component.scss'],
 })
@@ -27,11 +31,9 @@ export class SellTransactionPurposePopupComponent implements AfterViewInit {
   data: SellTransactionPurpose[] = inject(MAT_DIALOG_DATA);
   ref = inject(MatDialogRef);
 
-  dataMap = this.data.reduce((acc, item) => {
-    return { ...acc, [item.issueMonth]: item };
-  }, {} as Record<number, SellTransactionPurpose>);
-
   months: string[] = [];
+
+  maskPipe = inject(NgxMaskPipe);
 
   chartOptions: Partial<PartialChartOptions> = {
     series: [],
@@ -55,31 +57,64 @@ export class SellTransactionPurposePopupComponent implements AfterViewInit {
     },
     dataLabels: {
       enabled: true,
-      formatter(val: number): string | number {
-        return formatNumber(val);
+      formatter: (val: number, { seriesIndex }): string | number => {
+        return seriesIndex === 0
+          ? formatNumber(val)
+          : this.maskPipe.transform(val, maskSeparator.SEPARATOR, {
+              thousandSeparator: maskSeparator.THOUSAND_SEPARATOR,
+            });
       },
     },
-    yaxis: {
-      labels: {
-        formatter(val: number): string {
-          return formatNumber(val) as string;
+    yaxis: [
+      {
+        title: {
+          text: this.lang.map.average_price,
+        },
+        labels: {
+          formatter(val: number): string {
+            return formatNumber(val) as string;
+          },
         },
       },
-    },
+      {
+        opposite: true,
+        title: {
+          text: this.lang.map.number_of_sell_contracts,
+        },
+        labels: {
+          formatter: (val: number): string => {
+            return this.maskPipe.transform(val, maskSeparator.SEPARATOR, {
+              thousandSeparator: maskSeparator.THOUSAND_SEPARATOR,
+            });
+          },
+        },
+      },
+    ],
   };
 
   ngAfterViewInit(): void {
     this.adapter.setLocale(this.lang.getCurrent().code === 'ar-SA' ? 'ar-EG' : 'en-US');
     this.months = this.adapter.getMonthNames('long');
+    console.log(this.months);
     Promise.resolve().then(() => {
       this.chart.updateSeries([
         {
-          name: this.lang.map.average_price_per_month,
+          name: this.lang.map.average_price,
           type: 'column',
-          data: this.months.map((month, index) => {
+          data: this.data.map((item) => {
             return {
-              y: this.dataMap[index + 1] ? this.dataMap[index + 1].medianPrice : 0,
-              x: month,
+              y: item.medianPrice,
+              x: this.months[item.issueMonth - 1],
+            };
+          }),
+        },
+        {
+          name: this.lang.map.number_of_sell_contracts,
+          type: 'line',
+          data: this.data.map((item) => {
+            return {
+              y: item.countCertificateCode,
+              x: this.months[item.issueMonth - 1],
             };
           }),
         },

@@ -77,7 +77,12 @@
             </h3>
           </div>
           <carousel #carousel [arrowsOutside]="true" [margin]="20" [cellWidth]="350">
-            <app-property-block class="carousel-cell" *ngFor="let item of propertiesKPIS" [item]="item" />
+            <app-property-block
+              useAssetsFrom="sell"
+              [ignoreLocalImages]="true"
+              class="carousel-cell"
+              *ngFor="let item of propertiesKPIS"
+              [item]="item" />
           </carousel>
         </div>
       </div>

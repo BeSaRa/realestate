@@ -83,6 +83,7 @@ export class LookupService extends RegisterServiceMixin(class {}) {
         tap((res) => {
           this.rentPurposeMap = this._initializePurposeMap(res[0]);
           this.sellPurposeMap = this._initializePurposeMap(res[1]);
+          console.log(this.sellLookups.propertyTypeList);
         })
       );
   }
