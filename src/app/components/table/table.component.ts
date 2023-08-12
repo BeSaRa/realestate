@@ -18,6 +18,7 @@ export class TableComponent implements OnInit {
   @Input({ required: true }) data!: unknown[] | Observable<unknown[]>;
   @Input() pageSize = 5;
   @Input() minWidth = '1000px';
+  @Input() headerBgColor = '!bg-primary';
 
   @ContentChildren(TableColumnTemplateDirective) columnsTemplates!: QueryList<TableColumnTemplateDirective>;
 

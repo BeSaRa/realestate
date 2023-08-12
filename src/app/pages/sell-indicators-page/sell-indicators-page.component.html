@@ -123,8 +123,99 @@
         </div>
       </div>
     </div>
+    <div class="p-16">
+      <h3 class="text-3xl mb-4 text-primary border-secondary font-semibold">
+        {{ lang.map.sell_transactions_list }}
+      </h3>
+      <app-table minWidth="900px" headerBgColor="!bg-secondary" [data]="transactions">
+        <ng-template appTableColumnTemplate columnName="location" [columnHeader]="this.lang.map.location" let-item>
+          <div class="flex justify-center">
+            <div class="text-start">
+              <p class="font-bold">{{ item.municipalityInfo.getNames() }}</p>
+              <p>{{ lang.map.status + ": " + item.unitStatusInfo.getNames() }}</p>
+            </div>
+          </div>
+        </ng-template>
+        <ng-template appTableColumnTemplate columnName="sold_for" [columnHeader]="this.lang.map.sold_for" let-item>
+          <span class="font-bold">{{ item.realEstateValue | number }}</span>
+        </ng-template>
+        <ng-template appTableColumnTemplate columnName="issue_date" [columnHeader]="this.lang.map.issue_date" let-item>
+          <div class="text-center">
+            <p>{{ item.issueDate | date : "YYYY-MM-dd" }}</p>
+            <p class="font-bold">{{ item.soldTo || "Individual" }}</p>
+          </div>
+        </ng-template>
+        <ng-template
+          appTableColumnTemplate
+          columnName="square_feet_price"
+          [columnHeader]="this.lang.map.square_feet_price"
+          let-item>
+          <span class="font-bold">{{ item.priceMT | number : "1.0-0" }}</span>
+        </ng-template>
+        <ng-template appTableColumnTemplate columnName="roi" columnHeader="ROI" let-item>
+          <span class="font-bold">{{ item.roi ?? 0.016 | percent : "1.2" }}</span>
+        </ng-template>
+        <ng-template
+          appTableColumnTemplate
+          columnName="unit_parcel_no"
+          [columnHeader]="this.lang.map.unit_parcel_no"
+          let-item
+          ><span class="font-bold">{{ item.unitNo ?? 13000 | number }}</span></ng-template
+        >
+      </app-table>
+    </div>
   </div>
   <div *ngIf="isSelectedTab('statistical_reports_for_sell')" class="flex flex-col">
+    <div class="px-16 py-8 flex bg-sand mt-8 flex-col">
+      <div class="flex justify-center mt-5">
+        <h3 class="heading text-3xl text-primary border-secondary font-semibold inline-block">
+          {{ lang.map.list_of_sell_transactions }}
+        </h3>
+      </div>
+      <table class="mt-5 custom-table" mat-table matSort [dataSource]="transactionsPurpose">
+        <!-- purpose -->
+        <ng-container matColumnDef="purpose">
+          <th mat-header-cell class="!text-white" mat-sort-header="purpose" *matHeaderCellDef>
+            {{ lang.map.purpose }}
+          </th>
+          <td mat-cell *matCellDef="let element">{{ element.purposeInfo.getNames() }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="average">
+          <th mat-header-cell class="!text-white" mat-sort-header="average" *matHeaderCellDef>
+            {{ lang.map.average_price }}
+          </th>
+          <td mat-cell *matCellDef="let element">{{ element.medianPrice | formatNumbers }}</td>
+        </ng-container>
+        <!-- count -->
+        <ng-container matColumnDef="count">
+          <th mat-header-cell class="!text-white" mat-sort-header="count" *matHeaderCellDef>
+            {{ lang.map.number_of_sell_contracts }}
+          </th>
+          <td mat-cell *matCellDef="let element">{{ element.countCertificateCode | formatNumbers : 0 }}</td>
+        </ng-container>
+        <!-- count -->
+        <ng-container matColumnDef="chart">
+          <th mat-header-cell class="!text-white" *matHeaderCellDef>{{ lang.map.chart }}</th>
+          <td mat-cell *matCellDef="let element">
+            <app-icon-button (click)="openChart(element)" icon="BAR_CHART"></app-icon-button>
+          </td>
+        </ng-container>
+
+        <tr
+          mat-header-row
+          class="rounded-first-tr !bg-primary !text-white"
+          *matHeaderRowDef="transactionsPurposeColumns"></tr>
+        <tr
+          mat-row
+          class="rounded-last-tr !bg-white"
+          *matRowDef="let element; columns: transactionsPurposeColumns"></tr>
+        <!-- Row shown when there is no matching data. -->
+        <tr class="mat-row" *matNoDataRow>
+          <td class="p-4" colspan="100">{{ lang.map.no_records_to_display }}</td>
+        </tr>
+      </table>
+    </div>
     <div class="px-16 py-5 flex flex-col">
       <div class="flex justify-center mt-5">
         <h3 class="heading text-3xl text-primary border-secondary font-semibold inline-block">

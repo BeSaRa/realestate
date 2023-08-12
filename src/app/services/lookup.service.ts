@@ -16,15 +16,19 @@ export class LookupService extends RegisterServiceMixin(class {}) {
   urlService = inject(UrlService);
   http = inject(HttpClient);
 
+  rentLookups!: LookupsContract;
+  sellLookups!: LookupsContract;
+
   rentMunicipalitiesMap: Record<number, Lookup> = {};
   sellMunicipalitiesMap: Record<number, Lookup> = {};
+
   rentZonesMap: Record<number, Lookup> = {};
   sellZonesMap: Record<number, Lookup> = {};
 
-  rentLookups!: LookupsContract;
-  sellLookups!: LookupsContract;
   rentRoomsMap: Record<number, Lookup> = {};
+
   rentPurposeMap: Record<number, Lookup> = {};
+  sellPurposeMap: Record<number, Lookup> = {};
 
   @CastResponse(() => LookupsMap, {
     shape: {
@@ -77,9 +81,8 @@ export class LookupService extends RegisterServiceMixin(class {}) {
           this.sellZonesMap = this._initializeZonesMap(res[1]);
         }),
         tap((res) => {
-          this.rentPurposeMap = res[0].rentPurposeList.reduce((acc, i) => {
-            return { ...acc, [i.lookupKey]: i };
-          }, {});
+          this.rentPurposeMap = this._initializePurposeMap(res[0]);
+          this.sellPurposeMap = this._initializePurposeMap(res[1]);
         })
       );
   }
@@ -92,6 +95,12 @@ export class LookupService extends RegisterServiceMixin(class {}) {
 
   private _initializeMunicipalitiesMap(lookups: LookupsMap) {
     return lookups.municipalityList.reduce((acc, i) => {
+      return { ...acc, [i.lookupKey]: i };
+    }, {});
+  }
+
+  private _initializePurposeMap(lookups: LookupsMap) {
+    return lookups.rentPurposeList.reduce((acc, i) => {
       return { ...acc, [i.lookupKey]: i };
     }, {});
   }
