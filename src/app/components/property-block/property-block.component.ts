@@ -20,6 +20,10 @@ export class PropertyBlockComponent {
   @Input()
   item!: Lookup;
   countUpOptions: CountUpOptionsContract = inject(NGX_COUNTUP_OPTIONS);
+  @Input()
+  useAssetsFrom = 'rent';
+  @Input()
+  ignoreLocalImages = false;
 
   images = {
     39: 'assets/images/rental-images/department.png',
@@ -29,8 +33,10 @@ export class PropertyBlockComponent {
   };
 
   getItemImage(item: Lookup) {
-    return Object.prototype.hasOwnProperty.call(this.images, item.lookupKey)
-      ? this.images[item.lookupKey as keyof typeof this.images]
-      : this.images[41];
+    return !this.ignoreLocalImages
+      ? Object.prototype.hasOwnProperty.call(this.images, item.lookupKey)
+        ? this.images[item.lookupKey as keyof typeof this.images]
+        : this.images[41]
+      : `assets/icons/${this.useAssetsFrom}/${item.lookupKey !== -1 ? item.lookupKey : 43}.png`;
   }
 }
