@@ -23,6 +23,9 @@ import { DialogService } from './dialog.service';
 import { RentTransactionPurpose } from '@models/rent-transaction-purpose';
 import { MatDialogRef } from '@angular/material/dialog';
 import { RentTransactionPurposePopupComponent } from '../popups/rent-transaction-purpose-popup/rent-transaction-purpose-popup.component';
+import { SellTransaction } from '@models/sell-transaction';
+import { SellTransactionPurpose } from '@models/sell-transaction-purpose';
+import { SellTransactionPurposePopupComponent } from '../popups/sell-transaction-purpose-popup/sell-transaction-purpose-popup.component';
 
 @Injectable({
   providedIn: 'root',
@@ -58,9 +61,35 @@ export class DashboardService extends RegisterServiceMixin(class {}) implements 
     return this.http.post<KpiModel[]>(kpi.lineChart!, criteria);
   }
 
+  @CastResponse(() => RentTransactionPurpose)
+  loadRentTransactionsBasedOnPurpose(criteria: Partial<RentCriteriaContract>): Observable<RentTransactionPurpose[]> {
+    return this.http.post<RentTransactionPurpose[]>(this.urlService.URLS.RENT_KPI25, criteria);
+  }
+  @CastResponse(() => SellTransactionPurpose)
+  loadSellTransactionsBasedOnPurpose(criteria: Partial<SellCriteriaContract>): Observable<SellTransactionPurpose[]> {
+    return this.http.post<SellTransactionPurpose[]>(this.urlService.URLS.SELL_KPI25, criteria);
+  }
+
+  @CastResponse(() => RentTransactionPurpose)
+  loadRentTransactionsBasedOnPurposeDetails(
+    criteria: Partial<RentCriteriaContract>
+  ): Observable<RentTransactionPurpose[]> {
+    return this.http.post<RentTransactionPurpose[]>(this.urlService.URLS.RENT_KPI26, criteria);
+  }
+  @CastResponse(() => SellTransactionPurpose)
+  loadSellTransactionsBasedOnPurposeDetails(
+    criteria: Partial<SellCriteriaContract>
+  ): Observable<SellTransactionPurpose[]> {
+    return this.http.post<SellTransactionPurpose[]>(this.urlService.URLS.SELL_KPI26, criteria);
+  }
+
   @CastResponse(() => RentTransaction)
-  loadKpiTransactions(criteria: Partial<CriteriaContract>): Observable<RentTransaction[]> {
+  loadRentKpiTransactions(criteria: Partial<CriteriaContract>): Observable<RentTransaction[]> {
     return this.http.post<RentTransaction[]>(this.urlService.URLS.RENT_KPI29, criteria);
+  }
+  @CastResponse(() => SellTransaction)
+  loadSellKpiTransactions(criteria: Partial<CriteriaContract>): Observable<SellTransaction[]> {
+    return this.http.post<SellTransaction[]>(this.urlService.URLS.SELL_KPI29, criteria);
   }
 
   @CastResponse(() => RentTop10Model)
@@ -107,23 +136,25 @@ export class DashboardService extends RegisterServiceMixin(class {}) implements 
     return this.http.post<RoomNumberKpi[]>(this.urlService.URLS.RENT_KPI34, criteria);
   }
 
-  @CastResponse(() => RentTransactionPurpose)
-  loadTransactionsBasedOnPurpose(criteria: Partial<RentCriteriaContract>): Observable<RentTransactionPurpose[]> {
-    return this.http.post<RentTransactionPurpose[]>(this.urlService.URLS.RENT_KPI25, criteria);
-  }
-
-  @CastResponse(() => RentTransactionPurpose)
-  loadTransactionsBasedOnPurposeDetails(criteria: Partial<RentCriteriaContract>): Observable<RentTransactionPurpose[]> {
-    return this.http.post<RentTransactionPurpose[]>(this.urlService.URLS.RENT_KPI26, criteria);
-  }
-
   openRentChartDialogBasedOnPurpose(
     criteria: Partial<RentCriteriaContract>
   ): Observable<MatDialogRef<RentTransactionPurposePopupComponent>> {
-    return this.loadTransactionsBasedOnPurposeDetails(criteria).pipe(
+    return this.loadRentTransactionsBasedOnPurposeDetails(criteria).pipe(
       map((data) =>
         this.dialog.open<RentTransactionPurposePopupComponent, RentTransactionPurpose[]>(
           RentTransactionPurposePopupComponent,
+          { data }
+        )
+      )
+    );
+  }
+  openSellChartDialogBasedOnPurpose(
+    criteria: Partial<SellCriteriaContract>
+  ): Observable<MatDialogRef<SellTransactionPurposePopupComponent>> {
+    return this.loadSellTransactionsBasedOnPurposeDetails(criteria).pipe(
+      map((data) =>
+        this.dialog.open<SellTransactionPurposePopupComponent, SellTransactionPurpose[]>(
+          SellTransactionPurposePopupComponent,
           { data }
         )
       )

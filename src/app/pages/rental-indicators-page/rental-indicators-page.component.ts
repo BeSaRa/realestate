@@ -520,7 +520,7 @@ export default class RentalIndicatorsPageComponent {
 
   private loadTransactions() {
     this.dashboardService
-      .loadKpiTransactions(this.criteria.criteria)
+      .loadRentKpiTransactions(this.criteria.criteria)
       .pipe(takeUntil(this.destroy$))
       .subscribe((list) => {
         this.transactions.next(list);
@@ -616,7 +616,7 @@ export default class RentalIndicatorsPageComponent {
   }
 
   loadTransactionsBasedOnPurpose(): void {
-    this.dashboardService.loadTransactionsBasedOnPurpose(this.criteria.criteria).subscribe((values) => {
+    this.dashboardService.loadRentTransactionsBasedOnPurpose(this.criteria.criteria).subscribe((values) => {
       this.transactionsPurpose = values;
     });
   }

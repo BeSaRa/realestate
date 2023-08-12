@@ -1,5 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit, QueryList, ViewChildren, inject } from '@angular/core';
+import { MatTableModule } from '@angular/material/table';
 import { PartialChartOptions } from '@app-types/partialChartOptions';
 import { ButtonComponent } from '@components/button/button.component';
 import { ExtraHeaderComponent } from '@components/extra-header/extra-header.component';
@@ -7,9 +8,11 @@ import { IconButtonComponent } from '@components/icon-button/icon-button.compone
 import { KpiRootComponent } from '@components/kpi-root/kpi-root.component';
 import { PropertyBlockComponent } from '@components/property-block/property-block.component';
 import { PurposeComponent } from '@components/purpose/purpose.component';
+import { TableComponent } from '@components/table/table.component';
 import { TransactionsFilterComponent } from '@components/transactions-filter/transactions-filter.component';
 import { CriteriaContract } from '@contracts/criteria-contract';
 import { SellCriteriaContract } from '@contracts/sell-criteria-contract';
+import { TableColumnTemplateDirective } from '@directives/table-column-template.directive';
 import { ChartType } from '@enums/chart-type';
 import { CriteriaType } from '@enums/criteria-type';
 import { KpiModel } from '@models/kpi-model';
@@ -17,6 +20,9 @@ import { KpiRoot } from '@models/kpiRoot';
 import { Lookup } from '@models/lookup';
 import { SellDefaultValues } from '@models/sell-default-values';
 import { SellTop10Model } from '@models/sell-top-10-model';
+import { SellTransaction } from '@models/sell-transaction';
+import { SellTransactionPurpose } from '@models/sell-transaction-purpose';
+import { FormatNumbersPipe } from '@pipes/format-numbers.pipe';
 import { DashboardService } from '@services/dashboard.service';
 import { LookupService } from '@services/lookup.service';
 import { TranslationService } from '@services/translation.service';
@@ -24,7 +30,7 @@ import { UrlService } from '@services/url.service';
 import { formatNumber } from '@utils/utils';
 import { CarouselComponent, IvyCarouselModule } from 'angular-responsive-carousel2';
 import { ChartComponent, NgApexchartsModule } from 'ng-apexcharts';
-import { Subject, forkJoin, take, takeUntil } from 'rxjs';
+import { ReplaySubject, Subject, forkJoin, take, takeUntil } from 'rxjs';
 
 @Component({
   selector: 'app-sell-indicators-page',
@@ -40,6 +46,10 @@ import { Subject, forkJoin, take, takeUntil } from 'rxjs';
     ButtonComponent,
     IconButtonComponent,
     NgApexchartsModule,
+    TableComponent,
+    TableColumnTemplateDirective,
+    MatTableModule,
+    FormatNumbersPipe,
   ],
   templateUrl: './sell-indicators-page.component.html',
   styleUrls: ['./sell-indicators-page.component.scss'],
@@ -149,32 +159,32 @@ export default class SellIndicatorsPageComponent implements OnInit {
       arName: this.lang.getArabicTranslation('number_of_sell_contracts'),
       enName: this.lang.getEnglishTranslation('number_of_sell_contracts'),
       selected: true,
-      url: this.urlService.URLS.SELL_KPI19,
-    }),
-    new Lookup().clone<Lookup>({
-      arName: this.lang.getArabicTranslation('number_of_units'),
-      enName: this.lang.getEnglishTranslation('number_of_units'),
-      url: this.urlService.URLS.SELL_KPI20,
-    }),
-    new Lookup().clone<Lookup>({
-      arName: this.lang.getArabicTranslation('number_of_transactions'),
-      enName: this.lang.getEnglishTranslation('number_of_transactions'),
-      url: this.urlService.URLS.RENT_KPI21,
-    }),
-    new Lookup().clone<Lookup>({
-      arName: this.lang.getArabicTranslation('sold_areas'),
-      enName: this.lang.getEnglishTranslation('sold_areas'),
-      url: this.urlService.URLS.RENT_KPI22,
+      url: this.urlService.URLS.SELL_KPI30,
     }),
     new Lookup().clone<Lookup>({
       arName: this.lang.getArabicTranslation('average_price_per_unit'),
       enName: this.lang.getEnglishTranslation('average_price_per_unit'),
-      url: this.urlService.URLS.RENT_KPI23,
+      url: this.urlService.URLS.SELL_KPI31,
+    }),
+    new Lookup().clone<Lookup>({
+      arName: this.lang.getArabicTranslation('transactions_value'),
+      enName: this.lang.getEnglishTranslation('transactions_value'),
+      url: this.urlService.URLS.SELL_KPI32,
+    }),
+    new Lookup().clone<Lookup>({
+      arName: this.lang.getArabicTranslation('sold_areas'),
+      enName: this.lang.getEnglishTranslation('sold_areas'),
+      url: this.urlService.URLS.SELL_KPI33,
+    }),
+    new Lookup().clone<Lookup>({
+      arName: this.lang.getArabicTranslation('number_of_units'),
+      enName: this.lang.getEnglishTranslation('number_of_units'),
+      url: this.urlService.URLS.SELL_KPI33_1,
     }),
     new Lookup().clone<Lookup>({
       arName: this.lang.getArabicTranslation('average_price_per_square_meter'),
       enName: this.lang.getEnglishTranslation('average_price_per_square_meter'),
-      url: this.urlService.URLS.RENT_KPI24,
+      url: this.urlService.URLS.SELL_KPI33_2,
     }),
   ];
 
@@ -227,6 +237,11 @@ export default class SellIndicatorsPageComponent implements OnInit {
     tooltip: { marker: { fillColors: ['#A29475'] } },
     colors: ['#A29475'],
   };
+
+  transactions = new ReplaySubject<SellTransaction[]>(1);
+
+  transactionsPurpose: SellTransactionPurpose[] = [];
+  transactionsPurposeColumns = ['purpose', 'count', 'average', 'chart'];
 
   top10ChartData: SellTop10Model[] = [];
   selectedTop10: Lookup = this.accordingToList[0];
@@ -332,8 +347,10 @@ export default class SellIndicatorsPageComponent implements OnInit {
       });
 
       this.rootItemSelected(this.selectedRoot);
+      this.selectTop10Chart(this.selectedTop10);
     }
-    // this.loadTransactions();
+    this.loadTransactions();
+    this.loadTransactionsBasedOnPurpose();
   }
 
   private setDefaultRoots(sellDefaultValue?: SellDefaultValues) {
@@ -448,6 +465,26 @@ export default class SellIndicatorsPageComponent implements OnInit {
 
   isSelectedChartType(type: ChartType) {
     return this.selectedChartType === type;
+  }
+
+  private loadTransactions() {
+    this.dashboardService
+      .loadSellKpiTransactions(this.criteria.criteria)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((list) => {
+        console.log(list);
+        this.transactions.next(list);
+      });
+  }
+
+  loadTransactionsBasedOnPurpose(): void {
+    this.dashboardService.loadSellTransactionsBasedOnPurpose(this.criteria.criteria).subscribe((values) => {
+      this.transactionsPurpose = values;
+    });
+  }
+
+  openChart(item: SellTransactionPurpose): void {
+    item.openChart(this.criteria.criteria).subscribe();
   }
 
   selectTop10Chart(item: Lookup): void {

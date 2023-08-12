@@ -18,7 +18,10 @@
     </ng-container>
 
     <!-- rows -->
-    <tr mat-header-row *matHeaderRowDef="displayedColumnNames" class="!bg-primary !text-white text-xl font-bold"></tr>
+    <tr
+      mat-header-row
+      *matHeaderRowDef="displayedColumnNames"
+      class="{{ headerBgColor }} !text-white text-xl font-bold"></tr>
     <tr
       mat-row
       *matRowDef="let row; columns: displayedColumnNames"

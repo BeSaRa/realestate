@@ -139,4 +139,17 @@ export class LookupsMap implements LookupsContract {
       lookupKey: Spaces.SQUARE_FOOT,
     }),
   ];
+
+  unitStatus = [
+    new Lookup().clone<Lookup>({
+      arName: 'مباع',
+      enName: 'sold',
+      lookupKey: 0,
+    }),
+    new Lookup().clone<Lookup>({
+      arName: 'جديد',
+      enName: 'new',
+      lookupKey: 1,
+    }),
+  ];
 }

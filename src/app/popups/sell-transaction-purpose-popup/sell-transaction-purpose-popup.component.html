@@ -1,0 +1,19 @@
+<div class="dialog-header">
+  <span>{{ lang.map.chart }} - {{ data[0].purposeInfo.getNames() }}</span>
+  <app-icon-button class="close-btn" (click)="ref.close()" icon="CLOSE" />
+</div>
+<div class="dialog-content">
+  <div dir="ltr">
+    <apx-chart
+      [series]="chartOptions.series!"
+      [xaxis]="chartOptions.xaxis!"
+      [title]="chartOptions.title!"
+      [yaxis]="chartOptions.yaxis!"
+      [plotOptions]="chartOptions.plotOptions!"
+      [dataLabels]="chartOptions.dataLabels!"
+      [chart]="chartOptions.chart!" />
+  </div>
+</div>
+<div class="dialog-footer">
+  <app-button (click)="ref.close()" buttonStyle="primary">{{ lang.map.close }}</app-button>
+</div>
