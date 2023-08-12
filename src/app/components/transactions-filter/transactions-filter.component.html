@@ -1,18 +1,24 @@
 <div class="grid gap-4 xl:grid-cols-6 lg:grid-cols-4 md:grid-cols-3 grid-cols-2">
   <ng-container [formGroup]="form">
     <app-select-input
+      [enableFilter]="true"
+      bindFilter="getNames"
       formControlName="municipalityId"
       bindLabel="getNames"
       bindValue="lookupKey"
       [label]="lang.map.municipal"
       [options]="municipalities" />
     <app-select-input
+      [enableFilter]="true"
+      bindFilter="getNames"
       formControlName="zoneId"
       bindValue="lookupKey"
       bindLabel="getNames"
       [label]="lang.map.zone"
       [options]="filteredZones" />
     <app-select-input
+      [enableFilter]="true"
+      bindFilter="getNames"
       formControlName="propertyTypeList"
       [isMultiple]="true"
       bindValue="lookupKey"
@@ -20,6 +26,8 @@
       bindLabel="getNames"
       [options]="propertyTypes" />
     <app-select-input
+      [enableFilter]="true"
+      bindFilter="getNames"
       formControlName="purposeList"
       [isMultiple]="true"
       bindLabel="getNames"
