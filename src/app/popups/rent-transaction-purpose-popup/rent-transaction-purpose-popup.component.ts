@@ -33,10 +33,6 @@ export class RentTransactionPurposePopupComponent implements AfterViewInit {
 
   months: string[] = [];
 
-  series = this.months.map((month, index) =>
-    this.dataMap[index + 1] ? this.dataMap[index + 1].rentPaymentMonthly : 0
-  );
-
   chartOptions: Partial<PartialChartOptions> = {
     series: [],
     chart: {
@@ -90,6 +86,4 @@ export class RentTransactionPurposePopupComponent implements AfterViewInit {
       ]);
     });
   }
-
-  protected readonly alert = alert;
 }

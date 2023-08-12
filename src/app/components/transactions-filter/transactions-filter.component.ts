@@ -1,6 +1,6 @@
 import { animate, state, style, transition, trigger } from '@angular/animations';
 import { CommonModule, DatePipe } from '@angular/common';
-import { Component, EventEmitter, Input, OnDestroy, OnInit, Output, inject } from '@angular/core';
+import { Component, EventEmitter, inject, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { AbstractControl, ReactiveFormsModule, UntypedFormBuilder } from '@angular/forms';
 import { MatNativeDateModule, MatRippleModule } from '@angular/material/core';
 import { MatDatepickerModule } from '@angular/material/datepicker';
@@ -24,7 +24,7 @@ import { LookupService } from '@services/lookup.service';
 import { TranslationService } from '@services/translation.service';
 import { range } from '@utils/utils';
 import { NgxMaskDirective } from 'ngx-mask';
-import { Subject, debounceTime, takeUntil } from 'rxjs';
+import { debounceTime, Subject, takeUntil } from 'rxjs';
 
 @Component({
   selector: 'app-transactions-filter',
@@ -189,6 +189,13 @@ export class TransactionsFilterComponent implements OnInit, OnDestroy {
   listenToMunicipalityChange(): void {
     this.municipalityId.valueChanges.pipe(takeUntil(this.destroy$)).subscribe((value: number) => {
       this.filteredZones = this.zones.filter((item) => item.municipalityId === value);
+      this.filteredZones.unshift(
+        new Lookup().clone<Lookup>({
+          arName: 'الكل',
+          enName: 'All',
+          lookupKey: -1,
+        })
+      );
     });
   }
 

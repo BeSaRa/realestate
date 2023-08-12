@@ -6,7 +6,7 @@ import { Lookup } from '@models/lookup';
 import { LookupsMap } from '@models/lookups-map';
 import { UrlService } from '@services/url.service';
 import { CastResponse } from 'cast-response';
-import { forkJoin, Observable, tap } from 'rxjs';
+import { forkJoin, map, Observable, tap } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
@@ -34,20 +34,37 @@ export class LookupService extends RegisterServiceMixin(class {}) {
       'municipalityList.*': () => Lookup,
     },
   })
+  _loadRentLookups(): Observable<LookupsMap> {
+    return this.http.get<LookupsMap>(this.urlService.URLS.RENT_LOOKUPS);
+  }
+
+  @CastResponse(() => LookupsMap, {
+    shape: {
+      'propertyTypeList.*': () => Lookup,
+      'rentPurposeList.*': () => Lookup,
+      'zoneList.*': () => Lookup,
+      'municipalityList.*': () => Lookup,
+    },
+  })
+  _loadSellLookups(): Observable<LookupsMap> {
+    return this.http.get<LookupsMap>(this.urlService.URLS.SELL_LOOKUPS);
+  }
+
   private _load(): Observable<LookupsMap[]> {
-    return forkJoin([
-      this.http.get<LookupsMap>(this.urlService.URLS.RENT_LOOKUPS),
-      this.http.get<LookupsMap>(this.urlService.URLS.SELL_LOOKUPS),
-    ]);
+    return forkJoin([this._loadRentLookups(), this._loadSellLookups()]);
   }
 
   load(): Observable<LookupsMap[]> {
     return this._load()
       .pipe(
-        tap((response) => {
-          this.rentLookups = response[0];
-          this.sellLookups = this._addAllToSellPropertyType(response[1]);
-          console.log(response[1]);
+        map(([rent, sell]) => {
+          rent.zoneList = rent.zoneList.filter((i) => i.lookupKey !== -1); // remove the all from zones
+          sell.zoneList = sell.zoneList.filter((i) => i.lookupKey !== -1); // remove the all from zones
+          return [rent, sell];
+        }),
+        tap(([rent, sell]) => {
+          this.rentLookups = rent;
+          this.sellLookups = this._addAllToSellPropertyType(sell);
         })
       )
       .pipe(
@@ -72,6 +89,7 @@ export class LookupService extends RegisterServiceMixin(class {}) {
       return { ...acc, [i.lookupKey]: i };
     }, {});
   }
+
   private _initializeMunicipalitiesMap(lookups: LookupsMap) {
     return lookups.municipalityList.reduce((acc, i) => {
       return { ...acc, [i.lookupKey]: i };

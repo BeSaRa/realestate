@@ -2,6 +2,7 @@ import {
   ApexAxisChartSeries,
   ApexChart,
   ApexDataLabels,
+  ApexFill,
   ApexGrid,
   ApexLegend,
   ApexMarkers,
@@ -27,4 +28,5 @@ export type PartialChartOptions = {
   title: ApexTitleSubtitle;
   tooltip: ApexTooltip;
   plotOptions: ApexPlotOptions;
+  fill: ApexFill;
 };
