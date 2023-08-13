@@ -37,6 +37,7 @@ import { CarouselComponent, IvyCarouselModule } from 'angular-responsive-carouse
 import { ChartComponent, NgApexchartsModule } from 'ng-apexcharts';
 import { NgxMaskPipe } from 'ngx-mask';
 import { ReplaySubject, Subject, forkJoin, take, takeUntil } from 'rxjs';
+import { MatSortModule } from '@angular/material/sort';
 
 @Component({
   selector: 'app-sell-indicators-page',
@@ -58,6 +59,7 @@ import { ReplaySubject, Subject, forkJoin, take, takeUntil } from 'rxjs';
     FormatNumbersPipe,
     YoyIndicatorComponent,
     NgxMaskPipe,
+    MatSortModule,
   ],
   providers: [NgxMaskPipe],
   templateUrl: './sell-indicators-page.component.html',
