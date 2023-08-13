@@ -11,4 +11,5 @@ export interface LookupsContract {
   quarterYearDurations: Lookup[];
   spaces: Lookup[];
   unitStatus: Lookup[];
+  districtList: Lookup[];
 }

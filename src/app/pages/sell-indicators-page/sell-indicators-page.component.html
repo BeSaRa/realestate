@@ -15,7 +15,7 @@
       [municipalities]="municipalities"
       [propertyTypes]="propertyTypes"
       [propertyUsages]="propertyUsages"
-      [zones]="zones"
+      [areas]="areas"
       [rooms]="rooms"
       (fromChanged)="filterChange($event)" />
   </div>
@@ -67,8 +67,8 @@
             <app-purpose
               [item]="item"
               (click)="purposeSelected(item)"
-              class="border-2 rounded-xl overflow-hidden xl:border-0 xl:rounded-none xl:border-e-2 border-secondary xl:last-of-type:border-e-0"
-          /></ng-container>
+              class="border-2 rounded-xl overflow-hidden xl:border-0 xl:rounded-none xl:border-e-2 border-secondary xl:last-of-type:border-e-0" />
+          </ng-container>
         </div>
         <div class="mt-20 w-11/12" dir="ltr">
           <div class="flex justify-center">

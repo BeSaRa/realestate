@@ -8,7 +8,19 @@
       bindValue="lookupKey"
       [label]="lang.map.municipal"
       [options]="municipalities" />
+
     <app-select-input
+      *ngIf="isSell()"
+      [enableFilter]="true"
+      bindFilter="getNames"
+      formControlName="areaCode"
+      bindValue="lookupKey"
+      bindLabel="getNames"
+      [label]="lang.map.zone"
+      [options]="filteredAreas" />
+
+    <app-select-input
+      *ngIf="isRent()"
       [enableFilter]="true"
       bindFilter="getNames"
       formControlName="zoneId"
@@ -16,6 +28,7 @@
       bindLabel="getNames"
       [label]="lang.map.zone"
       [options]="filteredZones" />
+
     <app-select-input
       [enableFilter]="true"
       bindFilter="getNames"

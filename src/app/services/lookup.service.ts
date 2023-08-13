@@ -69,6 +69,8 @@ export class LookupService extends RegisterServiceMixin(class {}) {
         map(([rent, sell]) => {
           rent.zoneList = rent.zoneList.filter((i) => i.lookupKey !== -1); // remove the all from zones
           sell.zoneList = sell.zoneList.filter((i) => i.lookupKey !== -1); // remove the all from zones
+          sell.districtList = sell.districtList.filter((i) => i.lookupKey !== -1 && i.lookupKey !== 0); // remove the all from zones
+          rent.districtList = rent.districtList.filter((i) => i.lookupKey !== -1 && i.lookupKey !== 0); // remove the all from zones
           return [rent, sell];
         }),
         tap(([rent, sell]) => {

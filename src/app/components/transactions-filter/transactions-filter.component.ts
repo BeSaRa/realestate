@@ -75,6 +75,7 @@ export class TransactionsFilterComponent implements OnInit, OnDestroy {
   @Input() propertyUsages: Lookup[] = [];
   @Input() zones: Lookup[] = [];
   @Input() rooms: Lookup[] = [];
+  @Input() areas: Lookup[] = [];
 
   @Output() fromChanged = new EventEmitter<{ criteria: CriteriaContract; type: CriteriaType }>();
 
@@ -84,8 +85,9 @@ export class TransactionsFilterComponent implements OnInit, OnDestroy {
   datePipe = inject(DatePipe);
 
   filteredZones: Lookup[] = [];
+  filteredAreas: Lookup[] = [];
 
-  years = range(2019, new Date().getFullYear());
+  years: number[] = [];
 
   durations = this.lookupService.rentLookups.durations;
   halfYearDurations = this.lookupService.rentLookups.halfYearDurations;
@@ -113,6 +115,7 @@ export class TransactionsFilterComponent implements OnInit, OnDestroy {
     areaTo: [],
     baseYear: [],
     streetNo: [],
+    areaCode: [],
     // not related to the criteria
     durationType: [],
     halfYearDuration: [],
@@ -142,6 +145,7 @@ export class TransactionsFilterComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
+    this.years = range(this.isSell() ? 2006 : 2019, new Date().getFullYear());
     this.listenToMunicipalityChange();
     this.listenToPropertyTypeListChange();
     this.listenToRentPurposeListChange();
@@ -188,6 +192,17 @@ export class TransactionsFilterComponent implements OnInit, OnDestroy {
 
   listenToMunicipalityChange(): void {
     this.municipalityId.valueChanges.pipe(takeUntil(this.destroy$)).subscribe((value: number) => {
+      if (this.isSell()) {
+        this.filteredAreas = this.areas.filter((item) => item.municipalityId === value);
+        this.filteredAreas.unshift(
+          new Lookup().clone<Lookup>({
+            arName: 'الكل',
+            enName: 'All',
+            lookupKey: -1,
+          })
+        );
+        return;
+      }
       this.filteredZones = this.zones.filter((item) => item.municipalityId === value);
       this.filteredZones.unshift(
         new Lookup().clone<Lookup>({
@@ -231,7 +246,7 @@ export class TransactionsFilterComponent implements OnInit, OnDestroy {
 
   private setDefaultValues() {
     this.form.patchValue({
-      municipalityId: this.municipalities[0].lookupKey,
+      municipalityId: this.isSell() ? 4 : 1,
       propertyTypeList: [-1],
       purposeList: [-1],
       zoneId: 38,
@@ -240,6 +255,7 @@ export class TransactionsFilterComponent implements OnInit, OnDestroy {
       issueDateYear: 2023,
       issueDateStartMonth: 1,
       issueDateEndMonth: 12,
+      areaCode: -1,
     });
     this.sendFilter(CriteriaType.DEFAULT);
   }
@@ -344,6 +360,14 @@ export class TransactionsFilterComponent implements OnInit, OnDestroy {
       }
     }
 
+    if (this.isSell()) {
+      delete value.zoneId;
+    }
+
+    if (this.isRent()) {
+      delete value.areaCode;
+    }
+
     this.fromChanged.emit({ criteria: value as CriteriaContract, type: criteriaType });
   }
 
@@ -368,5 +392,21 @@ export class TransactionsFilterComponent implements OnInit, OnDestroy {
       value[key] ?? delete value[key];
     });
     return value;
+  }
+
+  private isIndicator(name: 'sell' | 'rent' | 'mortgage'): boolean {
+    return this.indicatorType === name;
+  }
+
+  isSell(): boolean {
+    return this.isIndicator('sell');
+  }
+
+  isRent(): boolean {
+    return this.isIndicator('rent');
+  }
+
+  isMort(): boolean {
+    return this.isIndicator('mortgage');
   }
 }
