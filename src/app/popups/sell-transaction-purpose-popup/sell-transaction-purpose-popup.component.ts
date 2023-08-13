@@ -110,7 +110,7 @@ export class SellTransactionPurposePopupComponent implements AfterViewInit {
         },
         {
           name: this.lang.map.number_of_sell_contracts,
-          type: 'line',
+          type: 'area',
           data: this.data.map((item) => {
             return {
               y: item.countCertificateCode,

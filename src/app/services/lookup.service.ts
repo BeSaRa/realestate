@@ -90,8 +90,8 @@ export class LookupService extends RegisterServiceMixin(class {}) {
           this.sellPurposeMap = this._initializePurposeMap(res[1]);
         }),
         tap((res) => {
-          this.rentPurposeMap = this._initializeDistrictMap(res[0]);
-          this.sellPurposeMap = this._initializeDistrictMap(res[1]);
+          this.rentDistrictMap = this._initializeDistrictMap(res[0]);
+          this.sellDistrictMap = this._initializeDistrictMap(res[1]);
         })
       );
   }
