@@ -23,9 +23,10 @@ import { ButtonComponent } from '@components/button/button.component';
 import { IconButtonComponent } from '@components/icon-button/icon-button.component';
 import { TableComponent } from '@components/table/table.component';
 import { YoyIndicatorComponent } from '@components/yoy-indicator/yoy-indicator.component';
+import { maskSeparator } from '@constants/mask-separator';
 import { TableColumnTemplateDirective } from '@directives/table-column-template.directive';
 import { ChartType } from '@enums/chart-type';
-import { CompositeTransaction } from '@models/composite-transaction';
+import { RentCompositeTransaction } from '@models/composite-transaction';
 import { KpiModel } from '@models/kpi-model';
 import { Lookup } from '@models/lookup';
 import { RentTransaction } from '@models/rent-transaction';
@@ -39,9 +40,8 @@ import { UrlService } from '@services/url.service';
 import { formatNumber } from '@utils/utils';
 import { CarouselComponent, IvyCarouselModule } from 'angular-responsive-carousel2';
 import { ChartComponent, NgApexchartsModule } from 'ng-apexcharts';
-import { forkJoin, ReplaySubject, Subject, take, takeUntil } from 'rxjs';
 import { NgxMaskPipe } from 'ngx-mask';
-import { maskSeparator } from '@constants/mask-separator';
+import { forkJoin, ReplaySubject, Subject, take, takeUntil } from 'rxjs';
 
 @Component({
   selector: 'app-rental-indicators-page',
@@ -358,7 +358,7 @@ export default class RentalIndicatorsPageComponent {
   selectedTab = 'rental_indicators';
   // selectedTab = 'statistical_reports_for_rent';
 
-  compositeTransactions: CompositeTransaction[][] = [];
+  compositeTransactions: RentCompositeTransaction[][] = [];
   compositeYears!: { selectedYear: number; previousYear: number };
   compositeTransactionsColumns = [
     'municipality',
@@ -602,7 +602,7 @@ export default class RentalIndicatorsPageComponent {
   }
 
   loadCompositeTransactions(): void {
-    this.dashboardService.loadCompositeTransactions(this.criteria.criteria).subscribe((value) => {
+    this.dashboardService.loadRentCompositeTransactions(this.criteria.criteria).subscribe((value) => {
       this.compositeTransactions = value.items;
       this.compositeYears = value.years;
     });
