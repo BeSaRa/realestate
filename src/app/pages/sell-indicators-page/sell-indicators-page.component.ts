@@ -173,16 +173,19 @@ export default class SellIndicatorsPageComponent implements OnInit {
       arName: this.lang.getArabicTranslation('number_of_sell_contracts'),
       enName: this.lang.getEnglishTranslation('number_of_sell_contracts'),
       selected: true,
+      hasPrice: false,
       url: this.urlService.URLS.SELL_KPI30,
     }),
     new Lookup().clone<Lookup>({
       arName: this.lang.getArabicTranslation('average_price_per_unit'),
       enName: this.lang.getEnglishTranslation('average_price_per_unit'),
+      hasPrice: true,
       url: this.urlService.URLS.SELL_KPI31,
     }),
     new Lookup().clone<Lookup>({
       arName: this.lang.getArabicTranslation('transactions_value'),
       enName: this.lang.getEnglishTranslation('transactions_value'),
+      hasPrice: true,
       url: this.urlService.URLS.SELL_KPI32,
     }),
     new Lookup().clone<Lookup>({
@@ -199,6 +202,7 @@ export default class SellIndicatorsPageComponent implements OnInit {
       arName: this.lang.getArabicTranslation('average_price_per_square_meter'),
       enName: this.lang.getEnglishTranslation('average_price_per_square_meter'),
       url: this.urlService.URLS.SELL_KPI33_2,
+      hasPrice: true,
     }),
   ];
 
