@@ -14,8 +14,8 @@ export class RoomNumberKpiInterceptor implements ModelInterceptorContract<RoomNu
     model.roomInfo =
       lookupService.rentRoomsMap[model.bedRoomsCount || 0] ||
       new Lookup().clone<Lookup>({
-        arName: ` غرف${model.bedRoomsCount}`,
-        enName: `${model.bedRoomsCount} Rooms`,
+        arName: ` غرف${model.bedRoomsCount || 'N/A'}`,
+        enName: `${model.bedRoomsCount || 'N/A'} Rooms`,
       });
     return model;
   }

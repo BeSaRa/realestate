@@ -30,8 +30,12 @@ export class LookupService extends RegisterServiceMixin(class {}) {
   rentPurposeMap: Record<number, Lookup> = {};
   sellPurposeMap: Record<number, Lookup> = {};
 
+  sellDistrictMap: Record<number, Lookup> = {};
+  rentDistrictMap: Record<number, Lookup> = {};
+
   @CastResponse(() => LookupsMap, {
     shape: {
+      'districtList.*': () => Lookup,
       'propertyTypeList.*': () => Lookup,
       'rentPurposeList.*': () => Lookup,
       'zoneList.*': () => Lookup,
@@ -44,6 +48,7 @@ export class LookupService extends RegisterServiceMixin(class {}) {
 
   @CastResponse(() => LookupsMap, {
     shape: {
+      'districtList.*': () => Lookup,
       'propertyTypeList.*': () => Lookup,
       'rentPurposeList.*': () => Lookup,
       'zoneList.*': () => Lookup,
@@ -83,7 +88,10 @@ export class LookupService extends RegisterServiceMixin(class {}) {
         tap((res) => {
           this.rentPurposeMap = this._initializePurposeMap(res[0]);
           this.sellPurposeMap = this._initializePurposeMap(res[1]);
-          console.log(this.sellLookups.propertyTypeList);
+        }),
+        tap((res) => {
+          this.rentPurposeMap = this._initializeDistrictMap(res[0]);
+          this.sellPurposeMap = this._initializeDistrictMap(res[1]);
         })
       );
   }
@@ -102,6 +110,12 @@ export class LookupService extends RegisterServiceMixin(class {}) {
 
   private _initializePurposeMap(lookups: LookupsMap) {
     return lookups.rentPurposeList.reduce((acc, i) => {
+      return { ...acc, [i.lookupKey]: i };
+    }, {});
+  }
+
+  private _initializeDistrictMap(lookups: LookupsMap) {
+    return lookups.districtList.reduce((acc, i) => {
       return { ...acc, [i.lookupKey]: i };
     }, {});
   }

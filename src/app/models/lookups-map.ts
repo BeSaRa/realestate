@@ -6,6 +6,7 @@ import { QuarterYearDurations } from '@enums/quarter-year-durations';
 import { Spaces } from '@enums/spaces';
 
 export class LookupsMap implements LookupsContract {
+  districtList!: Lookup[];
   propertyTypeList!: Lookup[];
   rentPurposeList!: Lookup[];
   zoneList!: Lookup[];

@@ -413,6 +413,7 @@ export default class SellIndicatorsPageComponent implements OnInit {
     this.loadTransactions();
     this.loadTransactionsBasedOnPurpose();
     this.loadCompositeTransactions();
+    // this.loadRoomCounts();
   }
 
   private setDefaultRoots(sellDefaultValue?: SellDefaultValues) {
@@ -534,7 +535,6 @@ export default class SellIndicatorsPageComponent implements OnInit {
       .loadSellKpiTransactions(this.criteria.criteria)
       .pipe(takeUntil(this.destroy$))
       .subscribe((list) => {
-        console.log(list);
         this.transactions.next(list);
       });
   }
