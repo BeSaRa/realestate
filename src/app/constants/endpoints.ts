@@ -89,6 +89,8 @@ const SellEndPoints = {
   SELL_KPI33_1: 'SELL|kpi33_1/zones/real-estate-number',
   SELL_KPI33_2: 'SELL|kpi33_2/zones/real-estate-mt-value',
 
+  SELL_KPI34: 'SELL|kpi34/stats/bed-rooms-count',
+
   SELL_KPI35_36_37: 'SELL|kpi35_36_37/stats/indicators',
 };
 

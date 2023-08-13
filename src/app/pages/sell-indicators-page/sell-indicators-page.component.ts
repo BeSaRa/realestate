@@ -2,6 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component, OnInit, QueryList, ViewChildren, inject } from '@angular/core';
 import { MatTableModule } from '@angular/material/table';
 import { PartialChartOptions } from '@app-types/partialChartOptions';
+import { PieChartOptions } from '@app-types/pie-chart-options';
 import { ButtonComponent } from '@components/button/button.component';
 import { ExtraHeaderComponent } from '@components/extra-header/extra-header.component';
 import { IconButtonComponent } from '@components/icon-button/icon-button.component';
@@ -10,14 +11,18 @@ import { PropertyBlockComponent } from '@components/property-block/property-bloc
 import { PurposeComponent } from '@components/purpose/purpose.component';
 import { TableComponent } from '@components/table/table.component';
 import { TransactionsFilterComponent } from '@components/transactions-filter/transactions-filter.component';
+import { YoyIndicatorComponent } from '@components/yoy-indicator/yoy-indicator.component';
+import { maskSeparator } from '@constants/mask-separator';
 import { CriteriaContract } from '@contracts/criteria-contract';
 import { SellCriteriaContract } from '@contracts/sell-criteria-contract';
 import { TableColumnTemplateDirective } from '@directives/table-column-template.directive';
 import { ChartType } from '@enums/chart-type';
 import { CriteriaType } from '@enums/criteria-type';
+import { CompositeTransaction } from '@models/composite-transaction';
 import { KpiModel } from '@models/kpi-model';
 import { KpiRoot } from '@models/kpiRoot';
 import { Lookup } from '@models/lookup';
+import { RoomNumberKpi } from '@models/room-number-kpi';
 import { SellDefaultValues } from '@models/sell-default-values';
 import { SellTop10Model } from '@models/sell-top-10-model';
 import { SellTransaction } from '@models/sell-transaction';
@@ -30,6 +35,7 @@ import { UrlService } from '@services/url.service';
 import { formatNumber } from '@utils/utils';
 import { CarouselComponent, IvyCarouselModule } from 'angular-responsive-carousel2';
 import { ChartComponent, NgApexchartsModule } from 'ng-apexcharts';
+import { NgxMaskPipe } from 'ngx-mask';
 import { ReplaySubject, Subject, forkJoin, take, takeUntil } from 'rxjs';
 
 @Component({
@@ -50,7 +56,10 @@ import { ReplaySubject, Subject, forkJoin, take, takeUntil } from 'rxjs';
     TableColumnTemplateDirective,
     MatTableModule,
     FormatNumbersPipe,
+    YoyIndicatorComponent,
+    NgxMaskPipe,
   ],
+  providers: [NgxMaskPipe],
   templateUrl: './sell-indicators-page.component.html',
   styleUrls: ['./sell-indicators-page.component.scss'],
 })
@@ -58,12 +67,14 @@ export default class SellIndicatorsPageComponent implements OnInit {
   @ViewChildren('carousel') carousel!: QueryList<CarouselComponent>;
   @ViewChildren('chart') chart!: QueryList<ChartComponent>;
   @ViewChildren('top10Chart') top10Chart!: QueryList<ChartComponent>;
+  @ViewChildren('pieChart') pieChart!: QueryList<ChartComponent>;
 
   lang = inject(TranslationService);
   dashboardService = inject(DashboardService);
   urlService = inject(UrlService);
   lookupService = inject(LookupService);
   destroy$ = new Subject<void>();
+  maskPipe = inject(NgxMaskPipe);
 
   municipalities = this.lookupService.sellLookups.municipalityList;
   propertyTypes = this.lookupService.sellLookups.propertyTypeList;
@@ -199,11 +210,13 @@ export default class SellIndicatorsPageComponent implements OnInit {
     },
     dataLabels: {
       enabled: true,
-      formatter(val: number): string | number {
-        return formatNumber(val) as string;
+      formatter: (val: number): string | number => {
+        return this.selectedRoot?.hasPrice
+          ? (formatNumber(val) as string)
+          : (this.maskPipe.transform(val.toFixed(0), maskSeparator.SEPARATOR, {
+              thousandSeparator: maskSeparator.THOUSAND_SEPARATOR,
+            }) as unknown as string);
       },
-      background: { foreColor: '#ffffff' },
-      style: { colors: ['#A29475'] },
     },
     stroke: {
       curve: 'smooth',
@@ -228,10 +241,15 @@ export default class SellIndicatorsPageComponent implements OnInit {
       max: (max: number) => max + 150,
       tickAmount: 10,
       labels: {
-        formatter(val: number): string | string[] {
-          return formatNumber(val) as string;
+        formatter: (val: number): string | string[] => {
+          return this.selectedRoot?.hasPrice
+            ? (formatNumber(val) as string)
+            : (this.maskPipe.transform(val.toFixed(0), 'separator', { thousandSeparator: ',' }) as unknown as string);
         },
         minWidth: 50,
+        style: {
+          fontWeight: 'bold',
+        },
       },
     },
     tooltip: { marker: { fillColors: ['#A29475'] } },
@@ -256,8 +274,11 @@ export default class SellIndicatorsPageComponent implements OnInit {
       dropShadow: {
         enabled: true,
       },
-      formatter(val: number): string | number {
-        return formatNumber(val) as string;
+      formatter: (val: string): string | number => {
+        const value = val as unknown as number;
+        return this.selectedTop10?.hasPrice
+          ? (formatNumber(value) as string)
+          : (this.maskPipe.transform(value.toFixed(0), 'separator', { thousandSeparator: ',' }) as unknown as string);
       },
     },
     stroke: {
@@ -273,8 +294,11 @@ export default class SellIndicatorsPageComponent implements OnInit {
     xaxis: {
       categories: [],
       labels: {
-        formatter(value: string): string | string[] {
-          return formatNumber(value as unknown as number) as string;
+        formatter: (val: string): string | string[] => {
+          const value = val as unknown as number;
+          return this.selectedTop10?.hasPrice
+            ? (formatNumber(value) as string)
+            : (this.maskPipe.transform(value.toFixed(0), 'separator', { thousandSeparator: ',' }) as unknown as string);
         },
       },
     },
@@ -290,8 +314,12 @@ export default class SellIndicatorsPageComponent implements OnInit {
     yaxis: {
       reversed: true,
       labels: {
-        formatter(val: number): string | string[] {
-          return formatNumber(val) as string;
+        formatter: (val: number | string): string | string[] => {
+          return typeof val === 'string'
+            ? val
+            : this.selectedTop10?.hasPrice
+            ? (formatNumber(val) as string)
+            : (this.maskPipe.transform(val.toFixed(0), 'separator', { thousandSeparator: ',' }) as unknown as string);
         },
         style: {
           fontFamily: 'inherit',
@@ -300,6 +328,39 @@ export default class SellIndicatorsPageComponent implements OnInit {
       },
     },
     colors: ['#60d39d'],
+  };
+
+  compositeTransactions: CompositeTransaction[][] = [];
+  compositeYears!: { selectedYear: number; previousYear: number };
+  compositeTransactionsColumns = [
+    'municipality',
+    'firstYear1',
+    'firstYear2',
+    'firstYoy',
+    'secondYear1',
+    'secondYear2',
+    'secondYoy',
+    'thirdYear1',
+    'thirdYear2',
+    'thirdYoy',
+  ];
+  compositeTransactionsExtraColumns = ['contractCounts', 'contractValues', 'avgContract'];
+
+  pieChartData: RoomNumberKpi[] = [];
+  pieChartOptions: PieChartOptions = {
+    chart: {
+      type: 'pie',
+      width: 480,
+    },
+    labels: [],
+    series: [1, 2, 53, 69, 7],
+    legend: {
+      formatter: (val, opts) => {
+        return this.lang.getCurrent().direction === 'rtl'
+          ? '( ' + opts.w.globals.series[opts.seriesIndex] + ' ) : ' + val
+          : val + ' : ( ' + opts.w.globals.series[opts.seriesIndex] + ' )';
+      },
+    },
   };
 
   selectedTab = 'sell_indicators';
@@ -351,6 +412,7 @@ export default class SellIndicatorsPageComponent implements OnInit {
     }
     this.loadTransactions();
     this.loadTransactionsBasedOnPurpose();
+    this.loadCompositeTransactions();
   }
 
   private setDefaultRoots(sellDefaultValue?: SellDefaultValues) {
@@ -516,4 +578,34 @@ export default class SellIndicatorsPageComponent implements OnInit {
       })
       .then();
   }
+
+  loadRoomCounts(): void {
+    this.dashboardService.loadSellRoomCounts(this.criteria.criteria).subscribe((value) => {
+      this.pieChartData = value;
+      this.updatePiChart();
+    });
+  }
+
+  updatePiChart(): void {
+    if (!this.pieChart.length) return;
+    this.pieChart.first
+      .updateOptions({
+        series: this.pieChartData.length
+          ? this.pieChartData.map((i) => i.kpiVal)
+          : this.lookupService.sellLookups.rooms.map(() => 0),
+        labels: this.pieChartData.length
+          ? this.pieChartData.map((i) => i.roomInfo.getNames())
+          : this.lookupService.sellLookups.rooms.map((i) => i.getNames()),
+      })
+      .then();
+  }
+
+  loadCompositeTransactions(): void {
+    this.dashboardService.loadSellCompositeTransactions(this.criteria.criteria).subscribe((value) => {
+      this.compositeTransactions = value.items;
+      this.compositeYears = value.years;
+    });
+  }
+
+  protected readonly maskSeparator = maskSeparator;
 }

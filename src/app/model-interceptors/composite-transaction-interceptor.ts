@@ -13,4 +13,16 @@ export class CompositeTransactionInterceptor implements ModelInterceptorContract
     model.municipalityInfo = lookupService.rentMunicipalitiesMap[model.municipalityId];
     return model;
   }
+
+  rentReceive(model: CompositeTransaction): CompositeTransaction {
+    const lookupService = ServiceRegistry.get<LookupService>('LookupService');
+    model.municipalityInfo = lookupService.rentMunicipalitiesMap[model.municipalityId];
+    return model;
+  }
+
+  sellReceive(model: CompositeTransaction): CompositeTransaction {
+    const lookupService = ServiceRegistry.get<LookupService>('LookupService');
+    model.municipalityInfo = lookupService.sellMunicipalitiesMap[model.municipalityId];
+    return model;
+  }
 }

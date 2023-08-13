@@ -5,7 +5,11 @@ import { RentCriteriaContract } from '@contracts/rent-criteria-contract';
 import { SellCriteriaContract } from '@contracts/sell-criteria-contract';
 import { ServiceContract } from '@contracts/service-contract';
 import { RegisterServiceMixin } from '@mixins/register-service-mixin';
-import { CompositeTransaction } from '@models/composite-transaction';
+import {
+  CompositeTransaction,
+  RentCompositeTransaction,
+  SellCompositeTransaction,
+} from '@models/composite-transaction';
 import { KpiModel } from '@models/kpi-model';
 import { KpiRoot } from '@models/kpiRoot';
 import { Lookup } from '@models/lookup';
@@ -102,14 +106,34 @@ export class DashboardService extends RegisterServiceMixin(class {}) implements 
   }
 
   @CastResponse(() => CompositeTransaction)
-  private _loadCompositeTransactions(criteria: Partial<RentCriteriaContract>): Observable<CompositeTransaction[]> {
-    return this.http.post<CompositeTransaction[]>(this.urlService.URLS.RENT_KPI35_36_37, criteria);
+  private _loadCompositeTransactions(
+    url: string,
+    criteria: Partial<CriteriaContract>
+  ): Observable<CompositeTransaction[]> {
+    return this.http.post<CompositeTransaction[]>(url, criteria);
   }
 
-  loadCompositeTransactions(
-    criteria: Partial<RentCriteriaContract>
-  ): Observable<{ years: { selectedYear: number; previousYear: number }; items: CompositeTransaction[][] }> {
-    return this._loadCompositeTransactions(criteria)
+  @CastResponse(() => SellCompositeTransaction)
+  _loadSellCompositeTransactions(criteria: Partial<SellCriteriaContract>) {
+    return this.http.post<SellCompositeTransaction[]>(this.urlService.URLS.SELL_KPI35_36_37, criteria);
+  }
+  @CastResponse(() => RentCompositeTransaction)
+  _loadRentCompositeTransactions(criteria: Partial<RentCriteriaContract>) {
+    return this.http.post<RentCompositeTransaction[]>(this.urlService.URLS.RENT_KPI35_36_37, criteria);
+  }
+
+  loadSellCompositeTransactions(criteria: Partial<SellCriteriaContract>) {
+    return this.mapCompositeTransactions(this._loadSellCompositeTransactions(criteria));
+  }
+  loadRentCompositeTransactions(criteria: Partial<RentCriteriaContract>) {
+    return this.mapCompositeTransactions(this._loadRentCompositeTransactions(criteria));
+  }
+
+  private mapCompositeTransactions(compositeTransactions: Observable<CompositeTransaction[]>): Observable<{
+    years: { selectedYear: number; previousYear: number };
+    items: CompositeTransaction[][];
+  }> {
+    return compositeTransactions
       .pipe(
         map((values) => {
           return values;
@@ -134,6 +158,10 @@ export class DashboardService extends RegisterServiceMixin(class {}) implements 
   @CastResponse(() => RoomNumberKpi)
   loadRentRoomCounts(criteria: Partial<RentCriteriaContract>): Observable<RoomNumberKpi[]> {
     return this.http.post<RoomNumberKpi[]>(this.urlService.URLS.RENT_KPI34, criteria);
+  }
+  @CastResponse(() => RoomNumberKpi)
+  loadSellRoomCounts(criteria: Partial<SellCriteriaContract>): Observable<RoomNumberKpi[]> {
+    return this.http.post<RoomNumberKpi[]>(this.urlService.URLS.SELL_KPI34, criteria);
   }
 
   openRentChartDialogBasedOnPurpose(
