@@ -95,7 +95,6 @@ export class SellTransactionPurposePopupComponent implements AfterViewInit {
   ngAfterViewInit(): void {
     this.adapter.setLocale(this.lang.getCurrent().code === 'ar-SA' ? 'ar-EG' : 'en-US');
     this.months = this.adapter.getMonthNames('long');
-    console.log(this.months);
     Promise.resolve().then(() => {
       this.chart.updateSeries([
         {
@@ -110,7 +109,7 @@ export class SellTransactionPurposePopupComponent implements AfterViewInit {
         },
         {
           name: this.lang.map.number_of_sell_contracts,
-          type: 'area',
+          type: 'line',
           data: this.data.map((item) => {
             return {
               y: item.countCertificateCode,

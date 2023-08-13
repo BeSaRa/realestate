@@ -94,7 +94,6 @@ export class RentTransactionPurposePopupComponent implements AfterViewInit {
   ngAfterViewInit(): void {
     this.adapter.setLocale(this.lang.getCurrent().code === 'ar-SA' ? 'ar-EG' : 'en-US');
     this.months = this.adapter.getMonthNames('long');
-    console.log(this.months);
     Promise.resolve().then(() => {
       this.chart.updateSeries([
         {
