@@ -30,6 +30,9 @@ export class LookupService extends RegisterServiceMixin(class {}) {
   rentPurposeMap: Record<number, Lookup> = {};
   sellPurposeMap: Record<number, Lookup> = {};
 
+  rentPropertyType: Record<number, Lookup> = {};
+  sellPropertyType: Record<number, Lookup> = {};
+
   sellDistrictMap: Record<number, Lookup> = {};
   rentDistrictMap: Record<number, Lookup> = {};
 
@@ -92,6 +95,10 @@ export class LookupService extends RegisterServiceMixin(class {}) {
           this.sellPurposeMap = this._initializePurposeMap(res[1]);
         }),
         tap((res) => {
+          this.rentPropertyType = this._initializePropertyTypeMap(res[0]);
+          this.sellPropertyType = this._initializePropertyTypeMap(res[1]);
+        }),
+        tap((res) => {
           this.rentDistrictMap = this._initializeDistrictMap(res[0]);
           this.sellDistrictMap = this._initializeDistrictMap(res[1]);
         })
@@ -112,6 +119,12 @@ export class LookupService extends RegisterServiceMixin(class {}) {
 
   private _initializePurposeMap(lookups: LookupsMap) {
     return lookups.rentPurposeList.reduce((acc, i) => {
+      return { ...acc, [i.lookupKey]: i };
+    }, {});
+  }
+
+  private _initializePropertyTypeMap(lookups: LookupsMap) {
+    return lookups.propertyTypeList.reduce((acc, i) => {
       return { ...acc, [i.lookupKey]: i };
     }, {});
   }

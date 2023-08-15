@@ -358,6 +358,8 @@ export default class RentalIndicatorsPageComponent {
   selectedTab = 'rental_indicators';
   // selectedTab = 'statistical_reports_for_rent';
 
+  protected readonly maskSeparator = maskSeparator;
+
   compositeTransactions: RentCompositeTransaction[][] = [];
   compositeYears!: { selectedYear: number; previousYear: number };
   compositeTransactionsColumns = [
@@ -625,5 +627,40 @@ export default class RentalIndicatorsPageComponent {
     item.openChart(this.criteria.criteria).subscribe();
   }
 
-  protected readonly maskSeparator = maskSeparator;
+  get basedOnCriteria(): string {
+    const generatedTitle: string[] = [];
+    const municipality = this.getSelectedMunicipality();
+    const zone = this.getSelectedZone();
+    const purpose = this.getSelectedPurpose();
+    const propertyType = this.getSelectedPropertyType();
+    municipality.length && generatedTitle.push(municipality);
+    zone.length && generatedTitle.push(zone);
+    propertyType.length && generatedTitle.push(propertyType);
+    purpose.length && generatedTitle.push(purpose);
+    return `(${generatedTitle.join(' , ')})`;
+  }
+
+  private getSelectedMunicipality(): string {
+    return this.lookupService.rentMunicipalitiesMap[this.criteria.criteria.municipalityId].getNames() || '';
+  }
+
+  private getSelectedZone(): string {
+    return this.lookupService.rentZonesMap[this.criteria.criteria.zoneId].getNames() || '';
+  }
+
+  private getSelectedPropertyType(): string {
+    return this.criteria.criteria.propertyTypeList &&
+      this.criteria.criteria.propertyTypeList.length == 1 &&
+      this.criteria.criteria.propertyTypeList[0] !== -1
+      ? this.lookupService.rentPropertyType[this.criteria.criteria.propertyTypeList[0]].getNames()
+      : '';
+  }
+
+  private getSelectedPurpose(): string {
+    return this.criteria.criteria.purposeList &&
+      this.criteria.criteria.purposeList.length == 1 &&
+      this.criteria.criteria.purposeList[0] !== -1
+      ? this.lookupService.rentPurposeMap[this.criteria.criteria.purposeList[0]].getNames()
+      : '';
+  }
 }
