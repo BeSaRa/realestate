@@ -12,7 +12,7 @@ export class SellTop10ModelInterceptor implements ModelInterceptorContract<SellT
   receive(model: SellTop10Model): SellTop10Model {
     const lookupService = ServiceRegistry.get<LookupService>('LookupService');
     model.zoneInfo =
-      lookupService.sellZonesMap[model.zoneId] ||
+      lookupService.sellDistrictMap[model.zoneId] ||
       new Lookup().clone<Lookup>({
         arName: `غير معروف ${model.zoneId} `,
         enName: `Unknown ${model.zoneId}`,
