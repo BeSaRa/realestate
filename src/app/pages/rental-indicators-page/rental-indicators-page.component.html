@@ -185,7 +185,7 @@
     <div class="px-16 py-8 flex bg-sand mt-8 flex-col">
       <div class="flex justify-center mt-5">
         <h3 class="heading text-3xl text-primary border-secondary font-semibold inline-block">
-          {{ lang.map.list_of_rental_transactions }}
+          {{ lang.map.rental_indicators }} ({{ lang.map.depending_on_use }})
         </h3>
       </div>
       <table class="mt-5 custom-table" mat-table matSort [dataSource]="transactionsPurpose">
@@ -396,7 +396,7 @@
         <ng-container matColumnDef="avgContract">
           <th colspan="3" mat-header-cell *matHeaderCellDef>
             <div class="flex justify-center">
-              <span class="text-indigo-rainbow text-2xl">{{ lang.map.rent_avg_contracts_values }}</span>
+              <span class="text-indigo-rainbow text-2xl">{{ lang.map.average_rental_price_per_unit_property }}</span>
             </div>
           </th>
         </ng-container>
