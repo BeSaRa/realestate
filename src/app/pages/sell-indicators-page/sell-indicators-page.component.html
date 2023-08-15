@@ -160,13 +160,13 @@
         <ng-template appTableColumnTemplate columnName="roi" columnHeader="ROI" let-item>
           <span class="font-bold">{{ item.roi ?? 0.016 | percent : "1.2" }}</span>
         </ng-template>
-        <ng-template
+        <!-- <ng-template
           appTableColumnTemplate
           columnName="unit_parcel_no"
           [columnHeader]="this.lang.map.unit_parcel_no"
           let-item
           ><span class="font-bold">{{ item.unitNo ?? 13000 | number }}</span></ng-template
-        >
+        > -->
       </app-table>
     </div>
   </div>
@@ -174,7 +174,7 @@
     <div class="px-16 py-8 flex bg-sand mt-8 flex-col">
       <div class="flex justify-center mt-5">
         <h3 class="heading text-3xl text-primary border-secondary font-semibold inline-block">
-          {{ lang.map.list_of_sell_transactions }}
+          {{ lang.map.sell_indicator + " " + lang.map.depending_on_use }}
         </h3>
       </div>
       <table class="mt-5 custom-table" mat-table matSort [dataSource]="transactionsPurpose">

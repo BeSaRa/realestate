@@ -166,4 +166,5 @@ export interface LangKeysContract {
   sell_contracts_count_according_to_bedrooms: string;
   sell_contracts_value: string;
   sell_contracts_count: string;
+  district: string;
 }
