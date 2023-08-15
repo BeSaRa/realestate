@@ -72,7 +72,7 @@ const SellEndPoints = {
   SELL_KPI19: 'SELL|kpi19/chart/certificate-count',
   SELL_KPI20: 'SELL|kpi20/chart/unit-count',
   SELL_KPI21: 'SELL|kpi21/chart/transaction-count',
-  SELL_KPI22: 'SELL|kpi22/chart/area-count',
+  SELL_KPI22: 'SELL|kpi22/chart/area-amount',
   SELL_KPI23: 'SELL|kpi23/chart/mean-unit-price',
   SELL_KPI24: 'SELL|kpi24/chart/mean-unit-sqt-price',
 
