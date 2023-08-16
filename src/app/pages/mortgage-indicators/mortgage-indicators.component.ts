@@ -7,13 +7,14 @@ import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatOptionModule } from '@angular/material/core';
 import { ChartComponent, NgApexchartsModule } from 'ng-apexcharts';
 import { DataService } from '@services/data.service';
-import { MunicipalityContract } from '@contracts/municipality-contract';
-import { CategoryContract } from '@contracts/category-contract';
 import { KpiContract } from '@contracts/kpi-contract';
 import { delay, merge, startWith, tap } from 'rxjs';
 import { ChartOptions } from '@app-types/ChartOptions';
 import { formatNumber } from '@utils/utils';
 import { TranslationService } from '@services/translation.service';
+import { TransactionsFilterComponent } from '@components/transactions-filter/transactions-filter.component';
+import { CriteriaContract } from '@contracts/criteria-contract';
+import { CriteriaType } from '@enums/criteria-type';
 
 @Component({
   selector: 'app-mortgage-indicators',
@@ -26,6 +27,7 @@ import { TranslationService } from '@services/translation.service';
     MatOptionModule,
     NgApexchartsModule,
     ReactiveFormsModule,
+    TransactionsFilterComponent,
   ],
   templateUrl: './mortgage-indicators.component.html',
   styleUrls: ['./mortgage-indicators.component.scss'],
@@ -42,14 +44,6 @@ export default class MortgageIndicatorsComponent implements OnInit {
     code: [this.dataService.doha],
     category: [this.dataService.categories[0]],
   });
-
-  displayFn(option: MunicipalityContract) {
-    return option.MUNICIPALITY_New;
-  }
-
-  displayCatFn(option: CategoryContract) {
-    return option.REAL_ESTATE_CATEGORY;
-  }
 
   @ViewChild('mortCountsChart', { static: true }) mortCountChart!: ChartComponent;
   @ViewChild('mortValuesChart', { static: true }) mortValueChart!: ChartComponent;
@@ -80,6 +74,8 @@ export default class MortgageIndicatorsComponent implements OnInit {
     this._listenToLangChanges();
     this.setAxis();
   }
+
+  filterChange($event: { criteria: CriteriaContract; type: CriteriaType }): void {}
 
   private _listenToLangChanges() {
     this.lang.change$.subscribe(() => {

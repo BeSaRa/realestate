@@ -1,9 +1,9 @@
 <app-extra-header class="flex -mt-32 relative text-white text-center">
   <div class="h-60 flex flex-col justify-center" id="logo-side">
-    <h1 class="text-5xl font-semibold">{{ lang.map.qatar_real_estate_platform.toCapitalAll() }}</h1>
+    <h1 class="text-5xl font-semibold">{{ lang.map.qatar_real_estate_platform }}</h1>
     <h2 class="text-3xl font-semibold">
-      {{ lang.toggleMap.qatar_real_estate_platform.toCapitalAll() }} -
-      <span class="text-gray-400 font-normal">({{ lang.map.trial_run.toCapitalAll() }})</span>
+      {{ lang.toggleMap.qatar_real_estate_platform }} -
+      <span class="text-gray-400 font-normal">({{ lang.map.trial_run }})</span>
     </h2>
   </div>
 </app-extra-header>
@@ -11,63 +11,13 @@
   <div class="flex justify-center">
     <div class="flex flex-col w-3/4 gap-y-5">
       <h1 class="heading text-3xl self-start text-primary border-secondary font-semibold inline-block">
-        {{ lang.map.mortgage_indicators.toCapitalAll() }}
+        {{ lang.map.mortgage_indicators }}
       </h1>
-      <div [formGroup]="form" class="selections justify-center flex w-full gap-x-5">
-        <div>
-          <label for="year">{{ lang.map.year.toCapital() }}</label>
-          <div class="flex border-secondary border-2 w-full h-14 rounded-xl overflow-hidden relative">
-            <input
-              id="year"
-              type="text"
-              (keydown)="$event.preventDefault()"
-              formControlName="year"
-              [placeholder]="lang.map.year.toCapital()"
-              [matAutocomplete]="auto"
-              class="input" />
-            <mat-autocomplete #auto="matAutocomplete">
-              <mat-option *ngFor="let option of dataService.years" [value]="option">
-                {{ option }}
-              </mat-option>
-            </mat-autocomplete>
-          </div>
-        </div>
-        <div>
-          <label for="code">{{ lang.map.municipal.toCapital() }}</label>
-          <div class="flex border-secondary border-2 w-full h-14 rounded-xl overflow-hidden relative">
-            <input
-              type="text"
-              id="code"
-              (keydown)="$event.preventDefault()"
-              formControlName="code"
-              [placeholder]="lang.map.municipal.toCapital()"
-              [matAutocomplete]="municipality"
-              class="input" />
-            <mat-autocomplete [displayWith]="displayFn" #municipality="matAutocomplete">
-              <mat-option *ngFor="let option of dataService.municipalities" [value]="option">
-                {{ option.MUNICIPALITY_New }}
-              </mat-option>
-            </mat-autocomplete>
-          </div>
-        </div>
-        <div>
-          <label for="type">{{ lang.map.real_estate_type.toCapitalAll() }}</label>
-          <div class="flex border-secondary border-2 w-full h-14 rounded-xl overflow-hidden relative">
-            <input
-              id="type"
-              type="text"
-              formControlName="category"
-              [placeholder]="lang.map.real_estate_type.toCapitalAll()"
-              [matAutocomplete]="category"
-              class="input" />
-            <mat-autocomplete [displayWith]="displayCatFn" #category="matAutocomplete">
-              <mat-option *ngFor="let option of dataService.categories" [value]="option">
-                {{ option.REAL_ESTATE_CATEGORY }}
-              </mat-option>
-            </mat-autocomplete>
-          </div>
-        </div>
-      </div>
+      <app-transactions-filter
+        (fromChanged)="filterChange($event)"
+        [areas]="[]"
+        [propertyTypes]="[]"
+        [propertyUsages]="[]" />
       <div class="flex justify-center items-stretch [&>div]:w-80 gap-x-5">
         <div
           *ngIf="mortgageCounts; else loading"
@@ -77,7 +27,7 @@
             {{ mortgageCounts.avg_value_mt }}
           </div>
           <div *ngIf="!mortgageCounts.avg_value_mt" class="text-xl font-semibold">
-            {{ lang.map.not_found.toCapitalAll() }}
+            {{ lang.map.not_found }}
           </div>
           <div
             *ngIf="mortgageCounts.yoy"
@@ -95,7 +45,7 @@
             {{ mortgageValues.avg_value_mt }}
           </div>
           <div *ngIf="!mortgageValues.avg_value_mt" class="text-xl font-semibold">
-            {{ lang.map.not_found.toCapitalAll() }}
+            {{ lang.map.not_found }}
           </div>
           <div
             *ngIf="mortgageValues.yoy"

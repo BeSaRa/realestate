@@ -7,34 +7,41 @@ import { LookupsMap } from '@models/lookups-map';
 import { UrlService } from '@services/url.service';
 import { CastResponse } from 'cast-response';
 import { forkJoin, map, Observable, tap } from 'rxjs';
+import { ServiceContract } from '@contracts/service-contract';
 
 @Injectable({
   providedIn: 'root',
 })
-export class LookupService extends RegisterServiceMixin(class {}) {
+export class LookupService extends RegisterServiceMixin(class {}) implements ServiceContract {
   serviceName = 'LookupService';
   urlService = inject(UrlService);
   http = inject(HttpClient);
 
   rentLookups!: LookupsContract;
   sellLookups!: LookupsContract;
+  mortLookups!: LookupsContract;
 
   rentMunicipalitiesMap: Record<number, Lookup> = {};
   sellMunicipalitiesMap: Record<number, Lookup> = {};
+  mortMunicipalitiesMap: Record<number, Lookup> = {};
 
   rentZonesMap: Record<number, Lookup> = {};
   sellZonesMap: Record<number, Lookup> = {};
+  mortZonesMap: Record<number, Lookup> = {};
 
   rentRoomsMap: Record<number, Lookup> = {};
 
   rentPurposeMap: Record<number, Lookup> = {};
   sellPurposeMap: Record<number, Lookup> = {};
+  mortPurposeMap: Record<number, Lookup> = {};
 
   rentPropertyType: Record<number, Lookup> = {};
   sellPropertyType: Record<number, Lookup> = {};
+  mortPropertyType: Record<number, Lookup> = {};
 
   sellDistrictMap: Record<number, Lookup> = {};
   rentDistrictMap: Record<number, Lookup> = {};
+  mortDistrictMap: Record<number, Lookup> = {};
 
   @CastResponse(() => LookupsMap, {
     shape: {
@@ -62,45 +69,66 @@ export class LookupService extends RegisterServiceMixin(class {}) {
     return this.http.get<LookupsMap>(this.urlService.URLS.SELL_LOOKUPS);
   }
 
+  @CastResponse(() => LookupsMap, {
+    shape: {
+      'districtList.*': () => Lookup,
+      'propertyTypeList.*': () => Lookup,
+      'rentPurposeList.*': () => Lookup,
+      'zoneList.*': () => Lookup,
+      'municipalityList.*': () => Lookup,
+    },
+  })
+  _loadMortLookups(): Observable<LookupsMap> {
+    return this.http.get<LookupsMap>(this.urlService.URLS.MORT_LOOKUPS);
+  }
+
   private _load(): Observable<LookupsMap[]> {
-    return forkJoin([this._loadRentLookups(), this._loadSellLookups()]);
+    return forkJoin([this._loadRentLookups(), this._loadSellLookups(), this._loadMortLookups()]);
   }
 
   load(): Observable<LookupsMap[]> {
     return this._load()
       .pipe(
-        map(([rent, sell]) => {
+        map(([rent, sell, mort]) => {
           rent.zoneList = rent.zoneList.filter((i) => i.lookupKey !== -1); // remove the all from zones
           sell.zoneList = sell.zoneList.filter((i) => i.lookupKey !== -1); // remove the all from zones
+          mort.zoneList = mort.zoneList.filter((i) => i.lookupKey !== -1); // remove the all from zones
           sell.districtList = sell.districtList.filter((i) => i.lookupKey !== -1 && i.lookupKey !== 0); // remove the all from zones
           rent.districtList = rent.districtList.filter((i) => i.lookupKey !== -1 && i.lookupKey !== 0); // remove the all from zones
-          return [rent, sell];
+          mort.districtList = mort.districtList.filter((i) => i.lookupKey !== -1 && i.lookupKey !== 0); // remove the all from zones
+          return [rent, sell, mort];
         }),
-        tap(([rent, sell]) => {
+        tap(([rent, sell, mort]) => {
           this.rentLookups = rent;
           this.sellLookups = this._addAllToSellDistrict(this._addAllToSellPropertyType(sell));
+          this.mortLookups = mort;
         })
       )
       .pipe(
         tap((res) => {
           this.rentMunicipalitiesMap = this._initializeMunicipalitiesMap(res[0]);
           this.sellMunicipalitiesMap = this._initializeMunicipalitiesMap(res[1]);
+          this.mortMunicipalitiesMap = this._initializeMunicipalitiesMap(res[2]);
         }),
         tap((res) => {
           this.rentZonesMap = this._initializeZonesMap(res[0]);
           this.sellZonesMap = this._initializeZonesMap(res[1]);
+          this.mortZonesMap = this._initializeZonesMap(res[2]);
         }),
         tap((res) => {
           this.rentPurposeMap = this._initializePurposeMap(res[0]);
           this.sellPurposeMap = this._initializePurposeMap(res[1]);
+          this.mortPurposeMap = this._initializePurposeMap(res[2]);
         }),
         tap((res) => {
           this.rentPropertyType = this._initializePropertyTypeMap(res[0]);
           this.sellPropertyType = this._initializePropertyTypeMap(res[1]);
+          this.mortPropertyType = this._initializePropertyTypeMap(res[2]);
         }),
         tap((res) => {
           this.rentDistrictMap = this._initializeDistrictMap(res[0]);
           this.sellDistrictMap = this._initializeDistrictMap(res[1]);
+          this.mortDistrictMap = this._initializeDistrictMap(res[2]);
         })
       );
   }
@@ -148,6 +176,7 @@ export class LookupService extends RegisterServiceMixin(class {}) {
     ];
     return lookups;
   }
+
   private _addAllToSellDistrict(lookups: LookupsContract) {
     if (lookups.districtList.find((p) => p.lookupKey === -1)) return lookups;
     lookups.districtList = [

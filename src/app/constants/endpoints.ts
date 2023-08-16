@@ -1,4 +1,4 @@
-const RentEndPoints = {
+const rentEndPoints = {
   RENT: 'BE|kpi/rent',
   RENT_LOOKUPS: 'BE|kpi/rent/lookup',
   DEFAULT_RENT: 'RENT|default',
@@ -45,7 +45,7 @@ const RentEndPoints = {
   RENT_KPI35_36_37: 'RENT|kpi35_36_37/stats/indicators',
 };
 
-const SellEndPoints = {
+const sellEndPoints = {
   SELL: 'BE|kpi/sell',
   SELL_LOOKUPS: 'BE|kpi/sell/lookup',
   DEFAULT_SELL: 'SELL|default',
@@ -93,13 +93,18 @@ const SellEndPoints = {
 
   SELL_KPI35_36_37: 'SELL|kpi35_36_37/stats/indicators',
 };
+const mortgage = {
+  MORT: 'BE|kpi/mortgage',
+  MORT_LOOKUPS: 'MORT|lookup',
+};
 
 export const EndPoints = {
   BASE_URL: '',
   TRANSLATION: 'http://eblaepm.no-ip.org:8055/translations',
   BE: 'http://eblaepm.no-ip.org:7800/mme-services/',
-  ...RentEndPoints,
-  ...SellEndPoints,
+  ...rentEndPoints,
+  ...sellEndPoints,
+  ...mortgage,
 };
 
 export type EndpointsType = typeof EndPoints;
