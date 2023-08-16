@@ -5,6 +5,10 @@
       {{ lang.toggleMap.qatar_real_estate_platform.toCapitalAll() }} -
       <span class="text-gray-400 font-normal">({{ lang.map.trial_run.toCapitalAll() }})</span>
     </h2>
+    <h2 class="mt-2 text-3xl font-semibold flex flex-col gap-3 items-center">
+      <span class="w-32 h-[3px] bg-secondary"></span>
+      <span class="text-white">{{ lang.map.real_estate_sell_indicators }}</span>
+    </h2>
   </div>
 </app-extra-header>
 
@@ -20,18 +24,18 @@
       (fromChanged)="filterChange($event)" />
   </div>
   <div class="flex flex-col">
-    <div class="px-16 mt-5">
-      <div class="flex justify-center gap-5">
+    <div class="px-16 mt-5 flex justify-center">
+      <div class="flex w-1/2 justify-center gap-5 text-3xl">
         <button
           [ngClass]="{ active: isSelectedTab('sell_indicators') }"
           (click)="switchTab('sell_indicators')"
-          class="shadow-xl outline-none border border-secondary text-secondary p-5 text-2xl rounded-2xl [&.active]:bg-secondary [&.active]:text-white [&.active]:ring-2 ring-black">
+          class="flex-1 shadow-xl outline-none border border-secondary text-secondary p-5 rounded-2xl [&.active]:bg-secondary [&.active]:text-white [&.active]:ring-2 ring-black">
           {{ lang.map.sell_indicators }}
         </button>
         <button
           [ngClass]="{ active: isSelectedTab('statistical_reports_for_sell') }"
           (click)="switchTab('statistical_reports_for_sell')"
-          class="shadow-xl outline-none border border-secondary text-secondary p-5 text-2xl rounded-2xl [&.active]:bg-secondary [&.active]:text-white [&.active]:ring-2 ring-black">
+          class="flex-1 shadow-xl outline-none border border-secondary text-secondary p-5 rounded-2xl [&.active]:bg-secondary [&.active]:text-white [&.active]:ring-2 ring-black">
           {{ lang.map.statistical_reports_for_sell }}
         </button>
       </div>
@@ -41,7 +45,7 @@
     <div class="p-16">
       <div class="flex flex-col">
         <h3 class="heading text-3xl self-start text-primary border-secondary font-semibold inline-block">
-          {{ lang.map.sell_transactions_measuring_dashboard }}
+          {{ lang.map.sell_transactions_measuring_dashboard }} {{ basedOnCriteria }}
         </h3>
         <div class="flex flex-col gap-4 xl:flex-row">
           <div class="flex-1 my-4 p-4 border border-primary rounded-lg grid grid-cols-3 justify-center gap-4">
@@ -57,7 +61,7 @@
       <div class="px-16 flex flex-col justify-center items-center">
         <div class="flex w-full justify-center">
           <h3 *ngIf="selectedRoot" class="text-3xl mb-4 text-primary border-secondary font-semibold">
-            {{ selectedRoot.getNames() }} ({{ lang.map.depending_on_use }})
+            {{ selectedRoot.getNames() }} ({{ lang.map.depending_on_use }}) {{ basedOnCriteria }}
           </h3>
         </div>
         <div
@@ -73,7 +77,7 @@
         <div class="mt-20 w-11/12" dir="ltr">
           <div class="flex justify-center">
             <h3 *ngIf="selectedRoot" class="text-3xl mb-4 text-primary border-secondary font-semibold">
-              {{ selectedRoot.getNames() }} ({{ lang.map.depending_on_type }})
+              {{ selectedRoot.getNames() }} ({{ lang.map.depending_on_type }}) {{ basedOnCriteria }}
             </h3>
           </div>
           <carousel #carousel [arrowsOutside]="true" [margin]="20" [cellWidth]="350">
@@ -90,7 +94,7 @@
     <div class="p-16 flex flex-col">
       <div class="flex justify-center">
         <h3 *ngIf="selectedRoot" class="text-3xl mb-4 text-primary border-secondary font-semibold">
-          {{ selectedRoot.getNames() }}
+          {{ selectedRoot.getNames() }} {{ basedOnCriteria }}
         </h3>
       </div>
       <div class="flex">
@@ -130,7 +134,7 @@
     </div>
     <div class="p-16">
       <h3 class="text-3xl mb-4 text-primary border-secondary font-semibold">
-        {{ lang.map.sell_transactions_list }}
+        {{ lang.map.sell_transactions_list }} {{ basedOnCriteria }}
       </h3>
       <app-table minWidth="900px" headerBgColor="!bg-secondary" [data]="transactions">
         <ng-template appTableColumnTemplate columnName="location" [columnHeader]="this.lang.map.location" let-item>
