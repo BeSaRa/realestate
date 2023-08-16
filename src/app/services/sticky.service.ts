@@ -5,4 +5,5 @@ import { Injectable, signal } from '@angular/core';
 })
 export class StickyService {
   isSticky = signal(false);
+  isFilterSticky = signal(false);
 }

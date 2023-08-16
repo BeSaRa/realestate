@@ -64,6 +64,15 @@ export class DashboardService extends RegisterServiceMixin(class {}) implements 
   loadLineChartKpi(kpi: KpiRoot, criteria: Partial<CriteriaContract>): Observable<KpiModel[]> {
     return this.http.post<KpiModel[]>(kpi.lineChart!, criteria);
   }
+  loadLineChartKpi_H(kpi: KpiRoot, criteria: Partial<CriteriaContract>): Observable<KpiModel[]> {
+    return this.http.post<KpiModel[]>(kpi.lineChart! + '/halfy', criteria);
+  }
+  loadLineChartKpi_M(kpi: KpiRoot, criteria: Partial<CriteriaContract>): Observable<KpiModel[]> {
+    return this.http.post<KpiModel[]>(kpi.lineChart! + '/monthly', criteria);
+  }
+  loadLineChartKpi_Q(kpi: KpiRoot, criteria: Partial<CriteriaContract>): Observable<KpiModel[]> {
+    return this.http.post<KpiModel[]>(kpi.lineChart! + '/quarterly', criteria);
+  }
 
   @CastResponse(() => RentTransactionPurpose)
   loadRentTransactionsBasedOnPurpose(criteria: Partial<RentCriteriaContract>): Observable<RentTransactionPurpose[]> {

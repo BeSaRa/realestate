@@ -78,7 +78,7 @@ export class LookupService extends RegisterServiceMixin(class {}) {
         }),
         tap(([rent, sell]) => {
           this.rentLookups = rent;
-          this.sellLookups = this._addAllToSellPropertyType(sell);
+          this.sellLookups = this._addAllToSellDistrict(this._addAllToSellPropertyType(sell));
         })
       )
       .pipe(
@@ -145,6 +145,18 @@ export class LookupService extends RegisterServiceMixin(class {}) {
         lookupKey: -1,
       }),
       ...lookups.propertyTypeList,
+    ];
+    return lookups;
+  }
+  private _addAllToSellDistrict(lookups: LookupsContract) {
+    if (lookups.districtList.find((p) => p.lookupKey === -1)) return lookups;
+    lookups.districtList = [
+      new Lookup().clone<Lookup>({
+        arName: 'الكل',
+        enName: 'All',
+        lookupKey: -1,
+      }),
+      ...lookups.districtList,
     ];
     return lookups;
   }

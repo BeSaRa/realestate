@@ -23,6 +23,16 @@ export class KpiRootComponent {
   countUpOptions: CountUpOptionsContract = inject(NGX_COUNTUP_OPTIONS);
   lang = inject(TranslationService);
 
+  get iconUrl() {
+    return this.item.iconUrl;
+  }
+
+  get whiteIconUrl() {
+    const index = this.item.iconUrl.indexOf('.png');
+    const whiteIconUrl = this.item.iconUrl.slice(0, index) + '-white' + this.item.iconUrl.slice(index);
+    return whiteIconUrl;
+  }
+
   selectItem(): void {
     this.isHovered = true;
     this.itemSelected.emit(this.item);

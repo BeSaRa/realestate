@@ -8,7 +8,7 @@ import { IconButtonComponent } from '@components/icon-button/icon-button.compone
 import { maskSeparator } from '@constants/mask-separator';
 import { SellTransactionPurpose } from '@models/sell-transaction-purpose';
 import { TranslationService } from '@services/translation.service';
-import { formatNumber } from '@utils/utils';
+import { formatChartColors, formatNumber, minMaxAvg } from '@utils/utils';
 import { ChartComponent, NgApexchartsModule } from 'ng-apexcharts';
 import { NgxMaskPipe } from 'ngx-mask';
 
@@ -118,6 +118,8 @@ export class SellTransactionPurposePopupComponent implements AfterViewInit {
           }),
         },
       ]);
+      const _minMaxAvg = minMaxAvg(this.data.map((item) => item.medianPrice));
+      this.chart.updateOptions({ colors: [formatChartColors(_minMaxAvg)] });
     });
   }
 }

@@ -21,7 +21,7 @@ export type PartialChartOptions = {
   stroke: ApexStroke;
   dataLabels: ApexDataLabels;
   markers: ApexMarkers;
-  colors: string[];
+  colors: string[] | ((value: number) => string)[];
   yaxis: ApexYAxis | ApexYAxis[];
   grid: ApexGrid;
   legend: ApexLegend;

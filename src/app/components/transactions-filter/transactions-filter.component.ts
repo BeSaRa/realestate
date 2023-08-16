@@ -1,6 +1,16 @@
 import { animate, state, style, transition, trigger } from '@angular/animations';
 import { CommonModule, DatePipe } from '@angular/common';
-import { Component, EventEmitter, inject, Input, OnDestroy, OnInit, Output } from '@angular/core';
+import {
+  Component,
+  computed,
+  EventEmitter,
+  HostListener,
+  inject,
+  Input,
+  OnDestroy,
+  OnInit,
+  Output,
+} from '@angular/core';
 import { AbstractControl, ReactiveFormsModule, UntypedFormBuilder } from '@angular/forms';
 import { MatNativeDateModule, MatRippleModule } from '@angular/material/core';
 import { MatDatepickerModule } from '@angular/material/datepicker';
@@ -21,6 +31,7 @@ import { Durations } from '@enums/durations';
 import { HalfYearDurations } from '@enums/half-year-durations';
 import { Lookup } from '@models/lookup';
 import { LookupService } from '@services/lookup.service';
+import { StickyService } from '@services/sticky.service';
 import { TranslationService } from '@services/translation.service';
 import { range } from '@utils/utils';
 import { NgxMaskDirective } from 'ngx-mask';
@@ -83,6 +94,14 @@ export class TransactionsFilterComponent implements OnInit, OnDestroy {
   fb = inject(UntypedFormBuilder);
   lookupService = inject(LookupService);
   datePipe = inject(DatePipe);
+  stickyService = inject(StickyService);
+
+  @HostListener('window:scroll')
+  windowScroll(): void {
+    this.stickyService.isFilterSticky.set(window.scrollY > 500);
+  }
+
+  isFilterSticky = computed(() => this.stickyService.isFilterSticky());
 
   filteredZones: Lookup[] = [];
   filteredAreas: Lookup[] = [];

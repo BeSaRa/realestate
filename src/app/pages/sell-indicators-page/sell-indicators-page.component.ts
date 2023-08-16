@@ -1,5 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit, QueryList, ViewChildren, inject } from '@angular/core';
+import { MatSortModule } from '@angular/material/sort';
 import { MatTableModule } from '@angular/material/table';
 import { PartialChartOptions } from '@app-types/partialChartOptions';
 import { PieChartOptions } from '@app-types/pie-chart-options';
@@ -32,12 +33,11 @@ import { DashboardService } from '@services/dashboard.service';
 import { LookupService } from '@services/lookup.service';
 import { TranslationService } from '@services/translation.service';
 import { UrlService } from '@services/url.service';
-import { formatNumber } from '@utils/utils';
+import { formatChartColors, formatNumber, minMaxAvg } from '@utils/utils';
 import { CarouselComponent, IvyCarouselModule } from 'angular-responsive-carousel2';
 import { ChartComponent, NgApexchartsModule } from 'ng-apexcharts';
 import { NgxMaskPipe } from 'ngx-mask';
 import { ReplaySubject, Subject, forkJoin, take, takeUntil } from 'rxjs';
-import { MatSortModule } from '@angular/material/sort';
 
 @Component({
   selector: 'app-sell-indicators-page',
@@ -102,7 +102,8 @@ export default class SellIndicatorsPageComponent implements OnInit {
       this.urlService.URLS.SELL_KPI1,
       this.urlService.URLS.SELL_KPI2,
       this.urlService.URLS.SELL_KPI3,
-      this.urlService.URLS.SELL_KPI19
+      this.urlService.URLS.SELL_KPI19,
+      'assets/icons/kpi/7.png'
     ),
     new KpiRoot(
       4,
@@ -112,7 +113,8 @@ export default class SellIndicatorsPageComponent implements OnInit {
       this.urlService.URLS.SELL_KPI4,
       this.urlService.URLS.SELL_KPI5,
       this.urlService.URLS.SELL_KPI6,
-      this.urlService.URLS.SELL_KPI20
+      this.urlService.URLS.SELL_KPI20,
+      'assets/icons/kpi/1.png'
     ),
 
     new KpiRoot(
@@ -123,7 +125,8 @@ export default class SellIndicatorsPageComponent implements OnInit {
       this.urlService.URLS.SELL_KPI10,
       this.urlService.URLS.SELL_KPI11,
       this.urlService.URLS.SELL_KPI12,
-      this.urlService.URLS.SELL_KPI22
+      this.urlService.URLS.SELL_KPI22,
+      'assets/icons/kpi/3.png'
     ),
     new KpiRoot(
       7,
@@ -133,7 +136,8 @@ export default class SellIndicatorsPageComponent implements OnInit {
       this.urlService.URLS.SELL_KPI7,
       this.urlService.URLS.SELL_KPI8,
       this.urlService.URLS.SELL_KPI9,
-      this.urlService.URLS.SELL_KPI21
+      this.urlService.URLS.SELL_KPI21,
+      'assets/icons/kpi/6.png'
     ),
     new KpiRoot(
       16,
@@ -143,7 +147,8 @@ export default class SellIndicatorsPageComponent implements OnInit {
       this.urlService.URLS.SELL_KPI16,
       this.urlService.URLS.SELL_KPI17,
       this.urlService.URLS.SELL_KPI18,
-      this.urlService.URLS.SELL_KPI24
+      this.urlService.URLS.SELL_KPI24,
+      'assets/icons/kpi/5.png'
     ),
     new KpiRoot(
       13,
@@ -153,7 +158,8 @@ export default class SellIndicatorsPageComponent implements OnInit {
       this.urlService.URLS.SELL_KPI13,
       this.urlService.URLS.SELL_KPI14,
       this.urlService.URLS.SELL_KPI15,
-      this.urlService.URLS.SELL_KPI23
+      this.urlService.URLS.SELL_KPI23,
+      'assets/icons/kpi/2.png'
     ),
   ];
 
@@ -224,10 +230,11 @@ export default class SellIndicatorsPageComponent implements OnInit {
               thousandSeparator: maskSeparator.THOUSAND_SEPARATOR,
             }) as unknown as string);
       },
+      style: { colors: ['#259C80'] },
     },
     stroke: {
       curve: 'smooth',
-      colors: ['#A29475'],
+      // colors: ['#A29475'],
     },
     grid: {
       row: {
@@ -240,7 +247,7 @@ export default class SellIndicatorsPageComponent implements OnInit {
     },
     plotOptions: {
       bar: {
-        columnWidth: '20%',
+        columnWidth: '40%',
       },
     },
     yaxis: {
@@ -259,8 +266,7 @@ export default class SellIndicatorsPageComponent implements OnInit {
         },
       },
     },
-    tooltip: { marker: { fillColors: ['#A29475'] } },
-    colors: ['#A29475'],
+    tooltip: { marker: { fillColors: ['#259C80'] } },
   };
 
   transactions = new ReplaySubject<SellTransaction[]>(1);
@@ -513,6 +519,7 @@ export default class SellIndicatorsPageComponent implements OnInit {
 
   updateChart(): void {
     if (!this.chart.length) return;
+    const _minMaxAvg = minMaxAvg(this.selectedRootChartData.map((item) => item.kpiVal));
     this.chart.first
       .updateOptions({
         series: [
@@ -524,6 +531,7 @@ export default class SellIndicatorsPageComponent implements OnInit {
         xaxis: {
           categories: this.selectedRootChartData.map((item) => item.issueYear),
         },
+        colors: [formatChartColors(_minMaxAvg)],
       })
       .then();
   }
@@ -615,4 +623,43 @@ export default class SellIndicatorsPageComponent implements OnInit {
   }
 
   protected readonly maskSeparator = maskSeparator;
+
+  get basedOnCriteria(): string {
+    const generatedTitle: string[] = [];
+    const municipality = this.getSelectedMunicipality();
+    const district = this.getSelectedDistrict();
+    const purpose = this.getSelectedPurpose();
+    const propertyType = this.getSelectedPropertyType();
+    municipality.length && generatedTitle.push(municipality);
+    district.length && generatedTitle.push(district);
+    propertyType.length && generatedTitle.push(propertyType);
+    purpose.length && generatedTitle.push(purpose);
+    return `(${generatedTitle.join(' , ')})`;
+  }
+
+  private getSelectedMunicipality(): string {
+    return this.lookupService.sellMunicipalitiesMap[this.criteria.criteria.municipalityId].getNames() || '';
+  }
+
+  private getSelectedDistrict(): string {
+    const areaCode = (this.criteria.criteria as SellCriteriaContract).areaCode;
+    if (areaCode === -1) return '';
+    return this.lookupService.sellDistrictMap[areaCode].getNames() || '';
+  }
+
+  private getSelectedPropertyType(): string {
+    return this.criteria.criteria.propertyTypeList &&
+      this.criteria.criteria.propertyTypeList.length == 1 &&
+      this.criteria.criteria.propertyTypeList[0] !== -1
+      ? this.lookupService.sellPropertyType[this.criteria.criteria.propertyTypeList[0]].getNames()
+      : '';
+  }
+
+  private getSelectedPurpose(): string {
+    return this.criteria.criteria.purposeList &&
+      this.criteria.criteria.purposeList.length == 1 &&
+      this.criteria.criteria.purposeList[0] !== -1
+      ? this.lookupService.sellPurposeMap[this.criteria.criteria.purposeList[0]].getNames()
+      : '';
+  }
 }

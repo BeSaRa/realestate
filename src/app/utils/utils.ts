@@ -1,4 +1,5 @@
 import { NgModel } from '@angular/forms';
+import { MinMaxAvgContract } from '@contracts/min-max-avg-contract';
 
 export function objectHasOwnProperty<O, P extends PropertyKey>(
   object: O,
@@ -63,4 +64,28 @@ export function* chunks<T>(arr: T[], n: number): Generator<T[], void> {
   for (let i = 0; i < arr.length; i += n) {
     yield arr.slice(i, i + n);
   }
+}
+
+export function minMaxAvg(values: number[]): MinMaxAvgContract {
+  let max = values[0];
+  let min = values[0];
+  let sum = values[0]; //changed from original post
+  for (let i = 1; i < values.length; i++) {
+    if (values[i] > max) {
+      max = values[i];
+    }
+    if (values[i] < min) {
+      min = values[i];
+    }
+    sum = sum + values[i];
+  }
+  return { min, max, avg: sum / values.length };
+}
+
+export function formatChartColors(minMaxAvg: MinMaxAvgContract) {
+  return ({ value }: { value: number }): string => {
+    if (value >= minMaxAvg.min && value < minMaxAvg.avg) return '#8A1538';
+    if (value >= minMaxAvg.avg && value < minMaxAvg.max) return '#C0C0C0';
+    return '#A29475';
+  };
 }
