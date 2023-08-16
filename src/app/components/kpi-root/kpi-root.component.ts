@@ -29,12 +29,12 @@ export class KpiRootComponent {
 
   get whiteIconUrl() {
     const index = this.item.iconUrl.indexOf('.png');
-    const whiteIconUrl = this.item.iconUrl.slice(0, index) + '-white' + this.item.iconUrl.slice(index);
-    return whiteIconUrl;
+    return this.item.iconUrl.slice(0, index) + '-white' + this.item.iconUrl.slice(index);
   }
 
   selectItem(): void {
     this.isHovered = true;
     this.itemSelected.emit(this.item);
+    console.log(this.item.url);
   }
 }

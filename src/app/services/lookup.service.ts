@@ -100,8 +100,8 @@ export class LookupService extends RegisterServiceMixin(class {}) implements Ser
         }),
         tap(([rent, sell, mort]) => {
           this.rentLookups = rent;
-          this.sellLookups = this._addAllToSellDistrict(this._addAllToSellPropertyType(sell));
-          this.mortLookups = mort;
+          this.sellLookups = this._addAllToDistrict(this._addAllToPropertyType(sell));
+          this.mortLookups = this._addAllToPropertyType(mort);
         })
       )
       .pipe(
@@ -164,7 +164,7 @@ export class LookupService extends RegisterServiceMixin(class {}) implements Ser
   }
 
   // Temporarily used until back team add all from backend
-  private _addAllToSellPropertyType(lookups: LookupsContract) {
+  private _addAllToPropertyType(lookups: LookupsContract) {
     if (lookups.propertyTypeList.find((p) => p.lookupKey === -1)) return lookups;
     lookups.propertyTypeList = [
       new Lookup().clone<Lookup>({
@@ -177,7 +177,7 @@ export class LookupService extends RegisterServiceMixin(class {}) implements Ser
     return lookups;
   }
 
-  private _addAllToSellDistrict(lookups: LookupsContract) {
+  private _addAllToDistrict(lookups: LookupsContract) {
     if (lookups.districtList.find((p) => p.lookupKey === -1)) return lookups;
     lookups.districtList = [
       new Lookup().clone<Lookup>({

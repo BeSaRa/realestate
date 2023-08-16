@@ -265,7 +265,7 @@ export class TransactionsFilterComponent implements OnInit, OnDestroy {
 
   private setDefaultValues() {
     this.form.patchValue({
-      municipalityId: this.isSell() ? 4 : 1,
+      municipalityId: this.isSell() || this.isMort() ? 4 : 1,
       propertyTypeList: [-1],
       purposeList: [-1],
       zoneId: 38,
