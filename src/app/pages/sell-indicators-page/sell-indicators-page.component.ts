@@ -83,7 +83,7 @@ export default class SellIndicatorsPageComponent implements OnInit {
   propertyUsages = this.lookupService.sellLookups.rentPurposeList.slice().sort((a, b) => a.lookupKey - b.lookupKey);
   areas = this.lookupService.sellLookups.districtList.slice().sort((a, b) => a.lookupKey - b.lookupKey);
   // zones = this.lookupService.sellLookups.zoneList;
-  rooms = this.lookupService.sellLookups.rooms;
+  rooms = [] /*this.lookupService.sellLookups.rooms*/;
 
   purposeKPIS = this.lookupService.sellLookups.rentPurposeList;
   propertiesKPIS = this.lookupService.sellLookups.propertyTypeList;

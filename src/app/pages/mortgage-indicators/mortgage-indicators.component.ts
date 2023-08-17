@@ -59,11 +59,8 @@ export default class MortgageIndicatorsComponent implements OnInit {
   municipalities = this.lookupService.mortLookups.municipalityList;
   propertyUsage = this.lookupService.mortLookups.rentPurposeList.slice().sort((a, b) => a.lookupKey - b.lookupKey);
   propertyTypes = this.lookupService.mortLookups.propertyTypeList;
-  rooms = this.lookupService.mortLookups.rooms;
+  rooms = [] /*this.lookupService.mortLookups.rooms*/;
   areas = this.lookupService.mortLookups.districtList;
-
-  mortgageCounts?: KpiContract;
-  mortgageValues?: KpiContract;
 
   rootKpis = [
     new KpiRoot(
