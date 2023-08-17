@@ -17,11 +17,16 @@
         indicatorType="mortgage"
         [municipalities]="municipalities"
         (fromChanged)="filterChange($event)"
-        [areas]="[]"
+        [areas]="areas"
         [rooms]="rooms"
         [propertyTypes]="propertyTypes"
         [propertyUsages]="propertyUsage" />
-      <div class="flex justify-center items-stretch [&>div]:w-80 gap-x-5"></div>
+      <div class="flex justify-center items-stretch [&>div]:w-80 gap-x-5">
+        <div
+          class="flex-1 my-4 p-4 border border-primary rounded-lg grid grid-cols-1 lg:grid-cols-3 justify-center gap-4">
+          <app-kpi-root (itemSelected)="rootItemSelected($event)" *ngFor="let item of rootKpis" [item]="item" />
+        </div>
+      </div>
 
       <div dir="ltr">
         <!--        <apx-chart></apx-chart>-->

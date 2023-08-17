@@ -1,4 +1,7 @@
 export interface LangKeysContract {
+  total_mortgage_transactions: string;
+  total_value_of_mortgage_transactions: string;
+  the_total_number_of_mortgaged_units: string;
   average_price: string;
   chart: string;
   purpose: string;

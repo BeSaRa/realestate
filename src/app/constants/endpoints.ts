@@ -96,6 +96,22 @@ const sellEndPoints = {
 const mortgage = {
   MORT: 'BE|kpi/mortgage',
   MORT_LOOKUPS: 'MORT|lookup',
+  MORT_KPI1: 'MORT|kpi1/transaction-number', // root
+  MORT_KPI2: 'MORT|kpi2/chart/contract-change-rate',
+  MORT_KPI2_H: 'MORT|kpi2/chart/contract-change-rate/halfly',
+  MORT_KPI2_M: 'MORT|kpi2/chart/contract-change-rate/monthly',
+  MORT_KPI2_Q: 'MORT|kpi2/chart/contract-change-rate/quartley',
+  MORT_KPI3: 'MORT|kpi3/unit-num', // root
+  MORT_KPI4: 'MORT|kpi4/chart/unit-num-rate',
+  MORT_KPI4_H: 'MORT|kpi4/chart/unit-num-rate/halfly',
+  MORT_KPI4_M: 'MORT|kpi4/chart/unit-num-rate/monthly',
+  MORT_KPI4_Q: 'MORT|kpi4/chart/unit-num-rate/quartley',
+  MORT_KPI5: 'MORT|kpi5/stats/transaction-value', // root
+  MORT_KPI6: 'MORT|kpi6/chart/transaction-value-rate',
+  MORT_KPI6_H: 'MORT|kpi6/chart/transaction-value-rate/halfly',
+  MORT_KPI6_M: 'MORT|kpi6/chart/transaction-value-rate/monthly',
+  MORT_KPI6_Q: 'MORT|kpi6/chart/transaction-value-rate/quartley',
+  MORT_KPI7: 'MORT|kpi6/detail/transaction',
 };
 
 export const EndPoints = {

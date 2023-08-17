@@ -211,7 +211,7 @@ export class TransactionsFilterComponent implements OnInit, OnDestroy {
 
   listenToMunicipalityChange(): void {
     this.municipalityId.valueChanges.pipe(takeUntil(this.destroy$)).subscribe((value: number) => {
-      if (this.isSell()) {
+      if (this.isSell() || this.isMort()) {
         this.filteredAreas = this.areas.filter((item) => item.municipalityId === value);
         this.filteredAreas.unshift(
           new Lookup().clone<Lookup>({
@@ -379,7 +379,7 @@ export class TransactionsFilterComponent implements OnInit, OnDestroy {
       }
     }
 
-    if (this.isSell()) {
+    if (this.isSell() || this.isMort()) {
       delete value.zoneId;
     }
 
