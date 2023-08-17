@@ -222,4 +222,21 @@ export class DashboardService extends RegisterServiceMixin(class {}) implements 
       )
     );
   }
+
+  loadMortgageTransactionCountChart(
+    item: KpiRoot,
+    criteria: Partial<MortgageCriteriaContract>
+  ): Observable<Record<number, KpiModel[]>> {
+    return this.http.post<KpiModel[]>(item.lineChart ?? 'NOT_FOUND_URL', criteria).pipe(
+      map((values) => {
+        return values.reduce((acc, item) => {
+          if (!Object.prototype.hasOwnProperty.call(acc, item.issueYear)) {
+            acc[item.issueYear] = [];
+          }
+          acc[item.issueYear].push(item);
+          return { ...acc };
+        }, {} as Record<number, KpiModel[]>);
+      })
+    );
+  }
 }

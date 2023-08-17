@@ -3,6 +3,7 @@ import {
   ApexChart,
   ApexDataLabels,
   ApexGrid,
+  ApexLegend,
   ApexPlotOptions,
   ApexStroke,
   ApexTitleSubtitle,
@@ -23,4 +24,5 @@ export type ChartOptions = {
   colors: string[];
   tooltip: ApexTooltip;
   plotOptions?: ApexPlotOptions;
+  legend?: ApexLegend;
 };

@@ -27,24 +27,43 @@
           <app-kpi-root (itemSelected)="rootItemSelected($event)" *ngFor="let item of rootKpis" [item]="item" />
         </div>
       </div>
-
-      <div dir="ltr">
-        <!--        <apx-chart></apx-chart>-->
-      </div>
-      <div dir="ltr">
-        <!--        <apx-chart-->
-        <!--          #mortValuesChart-->
-        <!--          [tooltip]="mortVsSellValuesOptions.tooltip"-->
-        <!--          [colors]="mortVsSellValuesOptions.colors"-->
-        <!--          [series]="mortVsSellValuesOptions.series"-->
-        <!--          [chart]="mortVsSellValuesOptions.chart"-->
-        <!--          [xaxis]="mortVsSellValuesOptions.xaxis"-->
-        <!--          [dataLabels]="mortVsSellValuesOptions.dataLabels"-->
-        <!--          [grid]="mortVsSellValuesOptions.grid"-->
-        <!--          [stroke]="mortVsSellValuesOptions.stroke"-->
-        <!--          [plotOptions]="mortVsSellValuesOptions.plotOptions!"-->
-        <!--          [yaxis]="mortVsSellValuesOptions.yaxis!"-->
-        <!--          [title]="mortVsSellValuesOptions.title"></apx-chart>-->
+      <div class="flex flex-col">
+        <h1 class="heading text-3xl self-center text-primary border-secondary font-semibold inline-block">
+          {{ lang.map.number_of_transactions }}
+        </h1>
+        <div class="flex">
+          <div dir="ltr" class="flex-auto">
+            <apx-chart
+              #chart
+              [tooltip]="chartOptions.tooltip!"
+              [colors]="chartOptions.colors!"
+              [series]="chartOptions.series!"
+              [chart]="chartOptions.chart!"
+              [xaxis]="chartOptions.xaxis!"
+              [dataLabels]="chartOptions.dataLabels!"
+              [grid]="chartOptions.grid!"
+              [stroke]="chartOptions.stroke!"
+              [legend]="chartOptions.legend!"
+              [plotOptions]="chartOptions.plotOptions!"
+              [yaxis]="chartOptions.yaxis!"
+              [title]="chartOptions.title!"></apx-chart>
+          </div>
+          <div class="h-full flex flex-col mt-10">
+            <app-icon-button
+              [ngClass]="{ 'text-primary': isSelectedChartType(ChartType.LINE) }"
+              (click)="updateChartType(ChartType.LINE)"
+              class="text-primary"
+              icon="LINE_CHART" />
+            <app-icon-button
+              [ngClass]="{ 'text-primary': isSelectedChartType(ChartType.BAR) }"
+              (click)="updateChartType(ChartType.BAR)"
+              icon="BAR_CHART" />
+            <app-icon-button
+              [ngClass]="{ 'text-primary': isSelectedChartType(ChartType.AREA) }"
+              (click)="updateChartType(ChartType.AREA)"
+              icon="AREA_CHART" />
+          </div>
+        </div>
       </div>
     </div>
   </div>
