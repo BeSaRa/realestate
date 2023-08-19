@@ -22,6 +22,8 @@ import { ChartType } from '@enums/chart-type';
 import { IconButtonComponent } from '@components/icon-button/icon-button.component';
 import { DurationTypes } from '@enums/durations';
 import { ButtonComponent } from '@components/button/button.component';
+import { KpiBaseModel } from '@models/kpi-base-model';
+import { formatNumber } from '@utils/utils';
 
 @Component({
   selector: 'app-mortgage-indicators',
@@ -57,6 +59,8 @@ export default class MortgageIndicatorsComponent implements OnInit {
   fb = inject(UntypedFormBuilder);
 
   @ViewChild('chart', { static: true }) transactionCountChart!: ChartComponent;
+
+  @ViewChild('chartValues', { static: true }) transactionValueChart!: ChartComponent;
 
   municipalities = this.lookupService.mortLookups.municipalityList;
   propertyUsage = this.lookupService.mortLookups.rentPurposeList.slice().sort((a, b) => a.lookupKey - b.lookupKey);
@@ -103,15 +107,16 @@ export default class MortgageIndicatorsComponent implements OnInit {
   protected readonly DurationTypes = DurationTypes;
 
   transactionCount?: Record<number, KpiModel[]>;
-  transactionValues?: Record<number, KpiModel[]>;
-  selectedChartType: ChartType = ChartType.LINE;
+  transactionValues?: Record<number, KpiBaseModel[]>;
+  countChartType: ChartType = ChartType.LINE;
+  valueChartType: ChartType = ChartType.LINE;
 
   transactionCountDuration = DurationTypes.YEARLY;
 
   protected readonly ChartType = ChartType;
 
   // total_mortgage_transactions
-  chartOptions: Partial<ChartOptions> = {
+  chartCountOptions: Partial<ChartOptions> = {
     series: [],
     chart: {
       height: 350,
@@ -155,6 +160,58 @@ export default class MortgageIndicatorsComponent implements OnInit {
     },
   };
 
+  chartValueOptions: Partial<ChartOptions> = {
+    series: [],
+    chart: {
+      height: 350,
+      type: ChartType.LINE,
+    },
+    colors: ['#A29475', '#8A1538'],
+    dataLabels: {
+      enabled: true,
+      formatter(val: number): string | number {
+        return formatNumber(val) as string;
+      },
+    },
+    legend: {
+      fontFamily: 'inherit',
+    },
+    stroke: {
+      show: true,
+    },
+    grid: {
+      row: {
+        colors: ['#f3f3f3', 'transparent'], // takes an array which will be repeated on columns
+        opacity: 0.5,
+      },
+    },
+    xaxis: {
+      categories: [],
+    },
+    tooltip: {
+      theme: 'light',
+      shared: true,
+    },
+    plotOptions: {
+      bar: {
+        columnWidth: '30%',
+        dataLabels: {
+          position: 'top',
+        },
+      },
+    },
+    yaxis: {
+      title: {
+        text: this.lang.map.transactions_value,
+      },
+      labels: {
+        formatter(val: number): string | string[] {
+          return formatNumber(val) as string;
+        },
+      },
+    },
+  };
+
   ngOnInit() {}
 
   filterChange($event: { criteria: CriteriaContract; type: CriteriaType }): void {
@@ -175,6 +232,7 @@ export default class MortgageIndicatorsComponent implements OnInit {
       .loadMortgageTransactionCountChart(this.criteria.criteria, this.transactionCountDuration)
       .subscribe((value) => {
         this.transactionCount = value;
+        console.log({ transactionCount: value });
         this.updateTransactionCountChart();
       });
   }
@@ -182,7 +240,8 @@ export default class MortgageIndicatorsComponent implements OnInit {
   loadMortgageTransactionValueChart(): void {
     this.dashboardService.loadMortgageTransactionValueChart(this.criteria.criteria).subscribe((value) => {
       this.transactionValues = value;
-      this.updateTransactionCountChart();
+      console.log({ transactionValues: value });
+      this.updateTransactionValueChart();
     });
   }
 
@@ -226,18 +285,42 @@ export default class MortgageIndicatorsComponent implements OnInit {
       .then();
   }
 
-  updateChartType(type: ChartType) {
-    this.transactionCountChart
+  updateTransactionValueChart(): void {
+    if (!this.transactionValues) return;
+
+    this.transactionValueChart
+      .updateOptions({
+        series: [
+          {
+            name: this.lang.map.mortgage,
+            data: Object.keys(this.transactionValues).map((year: string) => {
+              return {
+                x: year,
+                y: this.transactionValues && this.transactionValues[year as unknown as number][0].kpiVal,
+              };
+            }),
+          },
+        ],
+      })
+      .then();
+  }
+
+  updateChartType(
+    type: ChartType,
+    chart: 'transactionCountChart' | 'transactionValueChart',
+    chartProperty: 'countChartType' | 'valueChartType'
+  ) {
+    this[chart]
       .updateOptions({
         chart: { type: type, stacked: type === ChartType.BAR },
         stroke: { show: type !== ChartType.BAR },
       })
       .then();
-    this.selectedChartType = type;
+    this[chartProperty] = type;
   }
 
-  isSelectedChartType(type: ChartType) {
-    return this.selectedChartType === type;
+  isSelectedChartType(type: ChartType, chartProperty: 'countChartType' | 'valueChartType') {
+    return this[chartProperty] === type;
   }
 
   updateChartDuration(durationType: DurationTypes) {

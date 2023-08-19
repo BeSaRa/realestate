@@ -34,6 +34,7 @@ import { RentTransactionPurposePopupComponent } from '../popups/rent-transaction
 import { SellTransactionPurposePopupComponent } from '../popups/sell-transaction-purpose-popup/sell-transaction-purpose-popup.component';
 import { MortgageCriteriaContract } from '@contracts/mortgage-criteria-contract';
 import { DialogService } from './dialog.service';
+import { KpiBaseModel } from '@models/kpi-base-model';
 
 @Injectable({
   providedIn: 'root',
@@ -251,9 +252,9 @@ export class DashboardService extends RegisterServiceMixin(class {}) implements 
   loadMortgageTransactionValueChart(
     criteria: Partial<MortgageCriteriaContract>,
     duration: DurationTypes = DurationTypes.YEARLY
-  ): Observable<Record<number, KpiModel[]>> {
+  ): Observable<Record<number, KpiBaseModel[]>> {
     return this.http
-      .post<KpiModel[]>(this.getSelectedDurationString(this.urlService.URLS.MORT_KPI6, duration), criteria)
+      .post<KpiBaseModel[]>(this.getSelectedDurationString(this.urlService.URLS.MORT_KPI6, duration), criteria)
       .pipe(
         map((values) => {
           return values.reduce((acc, item) => {
@@ -262,7 +263,7 @@ export class DashboardService extends RegisterServiceMixin(class {}) implements 
             }
             acc[item.issueYear].push(item);
             return { ...acc };
-          }, {} as Record<number, KpiModel[]>);
+          }, {} as Record<number, KpiBaseModel[]>);
         })
       );
   }

@@ -64,32 +64,99 @@
           <div dir="ltr" class="flex-auto">
             <apx-chart
               #chart
-              [tooltip]="chartOptions.tooltip!"
-              [colors]="chartOptions.colors!"
-              [series]="chartOptions.series!"
-              [chart]="chartOptions.chart!"
-              [xaxis]="chartOptions.xaxis!"
-              [dataLabels]="chartOptions.dataLabels!"
-              [grid]="chartOptions.grid!"
-              [stroke]="chartOptions.stroke!"
-              [legend]="chartOptions.legend!"
-              [plotOptions]="chartOptions.plotOptions!"
-              [yaxis]="chartOptions.yaxis!"
-              [title]="chartOptions.title!"></apx-chart>
+              [tooltip]="chartCountOptions.tooltip!"
+              [colors]="chartCountOptions.colors!"
+              [series]="chartCountOptions.series!"
+              [chart]="chartCountOptions.chart!"
+              [xaxis]="chartCountOptions.xaxis!"
+              [dataLabels]="chartCountOptions.dataLabels!"
+              [grid]="chartCountOptions.grid!"
+              [stroke]="chartCountOptions.stroke!"
+              [legend]="chartCountOptions.legend!"
+              [plotOptions]="chartCountOptions.plotOptions!"
+              [yaxis]="chartCountOptions.yaxis!"
+              [title]="chartCountOptions.title!"></apx-chart>
           </div>
           <div class="h-full flex flex-col mt-10">
             <app-icon-button
-              [ngClass]="{ 'text-primary': isSelectedChartType(ChartType.LINE) }"
-              (click)="updateChartType(ChartType.LINE)"
+              [ngClass]="{ 'text-primary': isSelectedChartType(ChartType.LINE, 'countChartType') }"
+              (click)="updateChartType(ChartType.LINE, 'transactionCountChart', 'countChartType')"
               class="text-primary"
               icon="LINE_CHART" />
             <app-icon-button
-              [ngClass]="{ 'text-primary': isSelectedChartType(ChartType.BAR) }"
-              (click)="updateChartType(ChartType.BAR)"
+              [ngClass]="{ 'text-primary': isSelectedChartType(ChartType.BAR, 'countChartType') }"
+              (click)="updateChartType(ChartType.BAR, 'transactionCountChart', 'countChartType')"
               icon="BAR_CHART" />
             <app-icon-button
-              [ngClass]="{ 'text-primary': isSelectedChartType(ChartType.AREA) }"
-              (click)="updateChartType(ChartType.AREA)"
+              [ngClass]="{ 'text-primary': isSelectedChartType(ChartType.AREA, 'countChartType') }"
+              (click)="updateChartType(ChartType.AREA, 'transactionCountChart', 'countChartType')"
+              icon="AREA_CHART" />
+          </div>
+        </div>
+      </div>
+      <div class="flex flex-col">
+        <h1 class="heading text-3xl self-center text-primary border-secondary font-semibold inline-block">
+          {{ lang.map.transactions_value }}
+        </h1>
+        <!--        <div class="flex">-->
+        <!--          <div class="flex-auto"></div>-->
+        <!--          <div class="grid grid-cols-4 gap-2">-->
+        <!--            <app-button-->
+        <!--              (click)="updateChartDuration(DurationTypes.YEARLY)"-->
+        <!--              [buttonStyle]="transactionCountDuration === DurationTypes.YEARLY ? 'secondary' : 'secondary-outline'"-->
+        <!--              [isRounded]="true"-->
+        <!--              >{{ lang.map.yearly }}</app-button-->
+        <!--            >-->
+        <!--            <app-button-->
+        <!--              (click)="updateChartDuration(DurationTypes.HALFY)"-->
+        <!--              [buttonStyle]="transactionCountDuration === DurationTypes.HALFY ? 'secondary' : 'secondary-outline'"-->
+        <!--              [isRounded]="true"-->
+        <!--              >{{ lang.map.half_yearly }}</app-button-->
+        <!--            >-->
+        <!--            <app-button-->
+        <!--              (click)="updateChartDuration(DurationTypes.QUARTERLY)"-->
+        <!--              [buttonStyle]="transactionCountDuration === DurationTypes.QUARTERLY ? 'secondary' : 'secondary-outline'"-->
+        <!--              [isRounded]="true"-->
+        <!--              >{{ lang.map.quarter_yearly }}</app-button-->
+        <!--            >-->
+        <!--            <app-button-->
+        <!--              (click)="updateChartDuration(DurationTypes.MONTHLY)"-->
+        <!--              [buttonStyle]="transactionCountDuration === DurationTypes.MONTHLY ? 'secondary' : 'secondary-outline'"-->
+        <!--              [isRounded]="true"-->
+        <!--              >{{ lang.map.monthly }}</app-button-->
+        <!--            >-->
+        <!--          </div>-->
+        <!--        </div>-->
+        <div class="flex">
+          <div dir="ltr" class="flex-auto">
+            <apx-chart
+              #chartValues
+              [tooltip]="chartValueOptions.tooltip!"
+              [colors]="chartValueOptions.colors!"
+              [series]="chartValueOptions.series!"
+              [chart]="chartValueOptions.chart!"
+              [xaxis]="chartValueOptions.xaxis!"
+              [dataLabels]="chartValueOptions.dataLabels!"
+              [grid]="chartValueOptions.grid!"
+              [stroke]="chartValueOptions.stroke!"
+              [legend]="chartValueOptions.legend!"
+              [plotOptions]="chartValueOptions.plotOptions!"
+              [yaxis]="chartValueOptions.yaxis!"
+              [title]="chartValueOptions.title!"></apx-chart>
+          </div>
+          <div class="h-full flex flex-col mt-10">
+            <app-icon-button
+              [ngClass]="{ 'text-primary': isSelectedChartType(ChartType.LINE, 'valueChartType') }"
+              (click)="updateChartType(ChartType.LINE, 'transactionValueChart', 'valueChartType')"
+              class="text-primary"
+              icon="LINE_CHART" />
+            <app-icon-button
+              [ngClass]="{ 'text-primary': isSelectedChartType(ChartType.BAR, 'valueChartType') }"
+              (click)="updateChartType(ChartType.BAR, 'transactionValueChart', 'valueChartType')"
+              icon="BAR_CHART" />
+            <app-icon-button
+              [ngClass]="{ 'text-primary': isSelectedChartType(ChartType.AREA, 'valueChartType') }"
+              (click)="updateChartType(ChartType.AREA, 'transactionValueChart', 'valueChartType')"
               icon="AREA_CHART" />
           </div>
         </div>
