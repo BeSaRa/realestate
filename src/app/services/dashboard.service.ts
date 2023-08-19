@@ -29,7 +29,7 @@ import { SellTransactionPurpose } from '@models/sell-transaction-purpose';
 import { UrlService } from '@services/url.service';
 import { chunks } from '@utils/utils';
 import { CastResponse } from 'cast-response';
-import { forkJoin, map, Observable } from 'rxjs';
+import { forkJoin, map, Observable, tap } from 'rxjs';
 import { RentTransactionPurposePopupComponent } from '../popups/rent-transaction-purpose-popup/rent-transaction-purpose-popup.component';
 import { SellTransactionPurposePopupComponent } from '../popups/sell-transaction-purpose-popup/sell-transaction-purpose-popup.component';
 import { MortgageCriteriaContract } from '@contracts/mortgage-criteria-contract';
@@ -129,7 +129,7 @@ export class DashboardService extends RegisterServiceMixin(class {}) implements 
 
   @CastResponse(() => SellTransaction)
   loadSellKpiTransactions(criteria: Partial<CriteriaContract>): Observable<SellTransaction[]> {
-    return this.http.post<SellTransaction[]>(this.urlService.URLS.SELL_KPI29, criteria);
+    return this.http.post<SellTransaction[]>(this.urlService.URLS.SELL_KPI29, criteria).pipe(tap(console.log));
   }
 
   @CastResponse(() => RentTop10Model)
