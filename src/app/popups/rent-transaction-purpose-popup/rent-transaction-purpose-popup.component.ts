@@ -5,7 +5,7 @@ import { PartialChartOptions } from '@app-types/partialChartOptions';
 import { DateAdapter, MatNativeDateModule } from '@angular/material/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { RentTransactionPurpose } from '@models/rent-transaction-purpose';
-import { formatNumber } from '@utils/utils';
+import { formatChartColors, formatNumber, minMaxAvg } from '@utils/utils';
 import { TranslationService } from '@services/translation.service';
 import { IconButtonComponent } from '@components/icon-button/icon-button.component';
 import { ButtonComponent } from '@components/button/button.component';
@@ -117,6 +117,8 @@ export class RentTransactionPurposePopupComponent implements AfterViewInit {
           }),
         },
       ]);
+      const _minMaxAvg = minMaxAvg(this.data.map((item) => item.rentPaymentMonthly));
+      this.chart.updateOptions({ colors: [formatChartColors(_minMaxAvg)] });
     });
   }
 }
