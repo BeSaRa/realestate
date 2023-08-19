@@ -10,7 +10,6 @@ export class RentTransactionPurposeInterceptor implements ModelInterceptorContra
 
   receive(model: RentTransactionPurpose): RentTransactionPurpose {
     const lookupService = ServiceRegistry.get<LookupService>('LookupService');
-    console.log(model.purposeId, lookupService.rentPurposeMap);
     model.purposeInfo = lookupService.rentPurposeMap[model.purposeId];
     return model;
   }

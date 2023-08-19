@@ -35,6 +35,5 @@ export class KpiRootComponent {
   selectItem(): void {
     this.isHovered = true;
     this.itemSelected.emit(this.item);
-    console.log(this.item.url);
   }
 }

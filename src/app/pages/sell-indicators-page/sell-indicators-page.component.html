@@ -25,7 +25,7 @@
   </div>
   <div class="flex flex-col">
     <div class="px-16 mt-5 flex justify-center">
-      <div class="flex w-1/2 justify-center gap-5 text-3xl">
+      <div class="flex justify-center gap-5 w-full lg:w-2/3 xl:w-1/2 text-3xl">
         <button
           [ngClass]="{ active: isSelectedTab('sell_indicators') }"
           (click)="switchTab('sell_indicators')"
@@ -64,8 +64,8 @@
             {{ selectedRoot.getNames() }} ({{ lang.map.depending_on_use }}) {{ basedOnCriteria }}
           </h3>
         </div>
-        <div
-          class="w-5/6 grid grid-cols-3 xl:grid-cols-6 gap-2 xl:gap-0 border-0 xl:border-2 border-secondary overflow-hidden xl:rounded-xl">
+        <!-- <div
+          class="w-5/6 grid grid-cols-3 xl:grid-cols-7 gap-2 xl:gap-0 border-0 xl:border-2 border-secondary overflow-hidden xl:rounded-xl">
           <ng-container *ngFor="let item of purposeKPIS; let i = index">
             <span class="xl:hidden" *ngIf="i === 6"></span>
             <app-purpose
@@ -73,6 +73,15 @@
               (click)="purposeSelected(item)"
               class="border-2 rounded-xl overflow-hidden xl:border-0 xl:rounded-none xl:border-e-2 border-secondary xl:last-of-type:border-e-0" />
           </ng-container>
+        </div> -->
+        <div class="w-full grid grid-cols-3 xl:grid-cols-6 border-2 border-secondary overflow-hidden rounded-xl">
+          <app-purpose
+            *ngFor="let item of purposeKPIS; let i = index"
+            [item]="item"
+            (click)="purposeSelected(item)"
+            class="xl:border-e-2 border-secondary last-of-type:border-e-0 {{
+              i > 2 ? 'border-t-2 xl:border-t-0' : ''
+            }} {{ i % 3 === 2 ? 'border-e-0 xl:border-e-2' : 'border-e-2' }}" />
         </div>
         <div class="mt-20 w-11/12" dir="ltr">
           <div class="flex justify-center">
@@ -96,6 +105,34 @@
         <h3 *ngIf="selectedRoot" class="text-3xl mb-4 text-primary border-secondary font-semibold">
           {{ selectedRoot.getNames() }} {{ basedOnCriteria }}
         </h3>
+      </div>
+      <div class="flex justify-center lg:justify-end">
+        <div class="grid grid-cols-4 gap-2">
+          <app-button
+            (click)="updateChartDuration(DurationTypes.YEARLY)"
+            [buttonStyle]="selectedDurationType === DurationTypes.YEARLY ? 'secondary' : 'secondary-outline'"
+            [isRounded]="true"
+            >{{ lang.map.yearly }}</app-button
+          >
+          <app-button
+            (click)="updateChartDuration(DurationTypes.HALFY)"
+            [buttonStyle]="selectedDurationType === DurationTypes.HALFY ? 'secondary' : 'secondary-outline'"
+            [isRounded]="true"
+            >{{ lang.map.half_yearly }}</app-button
+          >
+          <app-button
+            (click)="updateChartDuration(DurationTypes.QUARTERLY)"
+            [buttonStyle]="selectedDurationType === DurationTypes.QUARTERLY ? 'secondary' : 'secondary-outline'"
+            [isRounded]="true"
+            >{{ lang.map.quarter_yearly }}</app-button
+          >
+          <app-button
+            (click)="updateChartDuration(DurationTypes.MONTHLY)"
+            [buttonStyle]="selectedDurationType === DurationTypes.MONTHLY ? 'secondary' : 'secondary-outline'"
+            [isRounded]="true"
+            >{{ lang.map.monthly }}</app-button
+          >
+        </div>
       </div>
       <div class="flex">
         <div class="flex-auto" dir="ltr">

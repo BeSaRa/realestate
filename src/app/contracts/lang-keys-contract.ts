@@ -173,4 +173,9 @@ export interface LangKeysContract {
 
   real_estate_rent_indicators: string;
   real_estate_sell_indicators: string;
+
+  yearly: string;
+  half_yearly: string;
+  quarter_yearly: string;
+  monthly: string;
 }

@@ -24,7 +24,7 @@
   </div>
   <div class="flex flex-col">
     <div class="px-16 mt-5 flex justify-center">
-      <div class="flex w-1/2 justify-center gap-5 text-3xl">
+      <div class="flex justify-center gap-5 w-full lg:w-2/3 xl:w-1/2 text-3xl">
         <button
           [ngClass]="{ active: isSelectedTab('rental_indicators') }"
           (click)="switchTab('rental_indicators')"
@@ -63,7 +63,7 @@
             {{ selectedRoot.getNames() }} ({{ lang.map.depending_on_use }})
           </h3>
         </div>
-        <div class="w-4/6 grid grid-cols-3 xl:grid-cols-6 border-2 border-secondary overflow-hidden rounded-xl">
+        <div class="w-full grid grid-cols-3 xl:grid-cols-6 border-2 border-secondary overflow-hidden rounded-xl">
           <app-purpose
             *ngFor="let item of purposeKPIS; let i = index"
             [item]="item"
