@@ -4,3 +4,10 @@ export enum Durations {
   QUARTER_YEARLY,
   DURATION,
 }
+
+export enum DurationTypes {
+  YEARLY = 'yearly',
+  HALFY = 'halfy',
+  QUARTERLY = 'quarterly',
+  MONTHLY = 'monthly',
+}
