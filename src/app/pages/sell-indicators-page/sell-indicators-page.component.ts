@@ -526,6 +526,7 @@ export default class SellIndicatorsPageComponent implements OnInit {
   updateChart(): void {
     if (!this.chart.length) return;
     const _minMaxAvg = minMaxAvg(this.selectedRootChartData.map((item) => item.kpiVal));
+
     this.chart.first
       .updateOptions({
         series: [

@@ -84,8 +84,8 @@ export function minMaxAvg(values: number[]): MinMaxAvgContract {
 
 export function formatChartColors(minMaxAvg: MinMaxAvgContract) {
   return ({ value }: { value: number }): string => {
-    if (value >= minMaxAvg.min && value < minMaxAvg.avg) return '#8A1538';
-    if (value >= minMaxAvg.avg && value < minMaxAvg.max) return '#C0C0C0';
-    return '#A29475';
+    if (value >= minMaxAvg.min && value < minMaxAvg.avg) return '#C0C0C0';
+    if (value >= minMaxAvg.avg && value < minMaxAvg.max) return '#A29475';
+    return '#8A1538';
   };
 }

@@ -37,7 +37,7 @@ import { DashboardService } from '@services/dashboard.service';
 import { LookupService } from '@services/lookup.service';
 import { TranslationService } from '@services/translation.service';
 import { UrlService } from '@services/url.service';
-import { formatNumber } from '@utils/utils';
+import { formatChartColors, formatNumber, minMaxAvg } from '@utils/utils';
 import { CarouselComponent, IvyCarouselModule } from 'angular-responsive-carousel2';
 import { ChartComponent, NgApexchartsModule } from 'ng-apexcharts';
 import { NgxMaskPipe } from 'ngx-mask';
@@ -234,9 +234,11 @@ export default class RentalIndicatorsPageComponent {
               thousandSeparator: maskSeparator.THOUSAND_SEPARATOR,
             }) as unknown as string);
       },
+      style: { colors: ['#259C80'] },
     },
     stroke: {
       curve: 'smooth',
+      // colors: ['#A29475'],
     },
     grid: {
       row: {
@@ -249,7 +251,7 @@ export default class RentalIndicatorsPageComponent {
     },
     plotOptions: {
       bar: {
-        columnWidth: '20%',
+        columnWidth: '40%',
       },
     },
     yaxis: {
@@ -268,7 +270,7 @@ export default class RentalIndicatorsPageComponent {
         },
       },
     },
-    tooltip: {},
+    tooltip: { marker: { fillColors: ['#259C80'] } },
   };
 
   top10ChartOptions: Partial<PartialChartOptions> = {
@@ -510,6 +512,7 @@ export default class RentalIndicatorsPageComponent {
 
   updateChart(): void {
     if (!this.chart.length) return;
+    const _minMaxAvg = minMaxAvg(this.selectedRootChartData.map((item) => item.kpiVal));
 
     this.chart.first
       .updateOptions({
@@ -522,8 +525,11 @@ export default class RentalIndicatorsPageComponent {
         xaxis: {
           categories: this.selectedRootChartData.map((item) => item.issueYear),
         },
+        colors: [formatChartColors(_minMaxAvg)],
+        tooltip: { marker: { fillColors: ['#259C80'] } },
       })
       .then();
+    this.updateChartType(ChartType.BAR);
   }
 
   private loadTransactions() {
