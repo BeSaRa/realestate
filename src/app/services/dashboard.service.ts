@@ -29,7 +29,7 @@ import { SellTransactionPurpose } from '@models/sell-transaction-purpose';
 import { UrlService } from '@services/url.service';
 import { chunks } from '@utils/utils';
 import { CastResponse } from 'cast-response';
-import { forkJoin, map, Observable, tap } from 'rxjs';
+import { forkJoin, map, Observable } from 'rxjs';
 import { RentTransactionPurposePopupComponent } from '../popups/rent-transaction-purpose-popup/rent-transaction-purpose-popup.component';
 import { SellTransactionPurposePopupComponent } from '../popups/sell-transaction-purpose-popup/sell-transaction-purpose-popup.component';
 import { MortgageCriteriaContract } from '@contracts/mortgage-criteria-contract';
@@ -88,6 +88,7 @@ export class DashboardService extends RegisterServiceMixin(class {}) implements 
     //   .subscribe();
     return this.http.post<KpiModel[]>(kpi.lineChart!, criteria);
   }
+
   loadLineChartKpiForDuration(
     endPoint: DurationTypes,
     kpi: KpiRoot,
@@ -229,19 +230,55 @@ export class DashboardService extends RegisterServiceMixin(class {}) implements 
   }
 
   loadMortgageTransactionCountChart(
-    item: KpiRoot,
-    criteria: Partial<MortgageCriteriaContract>
+    criteria: Partial<MortgageCriteriaContract>,
+    duration: DurationTypes = DurationTypes.YEARLY
   ): Observable<Record<number, KpiModel[]>> {
-    return this.http.post<KpiModel[]>(item.lineChart ?? 'NOT_FOUND_URL', criteria).pipe(
-      map((values) => {
-        return values.reduce((acc, item) => {
-          if (!Object.prototype.hasOwnProperty.call(acc, item.issueYear)) {
-            acc[item.issueYear] = [];
-          }
-          acc[item.issueYear].push(item);
-          return { ...acc };
-        }, {} as Record<number, KpiModel[]>);
-      })
+    return this.http
+      .post<KpiModel[]>(this.getSelectedDurationString(this.urlService.URLS.MORT_KPI2, duration), criteria)
+      .pipe(
+        map((values) => {
+          return values.reduce((acc, item) => {
+            if (!Object.prototype.hasOwnProperty.call(acc, item.issueYear)) {
+              acc[item.issueYear] = [];
+            }
+            acc[item.issueYear].push(item);
+            return { ...acc };
+          }, {} as Record<number, KpiModel[]>);
+        })
+      );
+  }
+
+  loadMortgageTransactionValueChart(
+    criteria: Partial<MortgageCriteriaContract>,
+    duration: DurationTypes = DurationTypes.YEARLY
+  ): Observable<Record<number, KpiModel[]>> {
+    return this.http
+      .post<KpiModel[]>(this.getSelectedDurationString(this.urlService.URLS.MORT_KPI6, duration), criteria)
+      .pipe(
+        map((values) => {
+          return values.reduce((acc, item) => {
+            if (!Object.prototype.hasOwnProperty.call(acc, item.issueYear)) {
+              acc[item.issueYear] = [];
+            }
+            acc[item.issueYear].push(item);
+            return { ...acc };
+          }, {} as Record<number, KpiModel[]>);
+        })
+      );
+  }
+
+  private getSelectedDurationString(url: string, duration: DurationTypes): string {
+    return (
+      url +
+      (duration === DurationTypes.YEARLY
+        ? ''
+        : duration === DurationTypes.HALFY
+        ? '/halfly'
+        : duration === DurationTypes.QUARTERLY
+        ? '/quartley'
+        : duration === DurationTypes.MONTHLY
+        ? '/monthly'
+        : '')
     );
   }
 

@@ -24,13 +24,42 @@
       <div class="flex justify-center items-stretch [&>div]:w-80 gap-x-5">
         <div
           class="flex-1 my-4 p-4 border border-primary rounded-lg grid grid-cols-1 lg:grid-cols-3 justify-center gap-4">
-          <app-kpi-root (itemSelected)="rootItemSelected($event)" *ngFor="let item of rootKpis" [item]="item" />
+          <app-kpi-root *ngFor="let item of rootKpis" [item]="item" />
         </div>
       </div>
       <div class="flex flex-col">
         <h1 class="heading text-3xl self-center text-primary border-secondary font-semibold inline-block">
           {{ lang.map.number_of_transactions }}
         </h1>
+        <!--        <div class="flex">-->
+        <!--          <div class="flex-auto"></div>-->
+        <!--          <div class="grid grid-cols-4 gap-2">-->
+        <!--            <app-button-->
+        <!--              (click)="updateChartDuration(DurationTypes.YEARLY)"-->
+        <!--              [buttonStyle]="transactionCountDuration === DurationTypes.YEARLY ? 'secondary' : 'secondary-outline'"-->
+        <!--              [isRounded]="true"-->
+        <!--              >{{ lang.map.yearly }}</app-button-->
+        <!--            >-->
+        <!--            <app-button-->
+        <!--              (click)="updateChartDuration(DurationTypes.HALFY)"-->
+        <!--              [buttonStyle]="transactionCountDuration === DurationTypes.HALFY ? 'secondary' : 'secondary-outline'"-->
+        <!--              [isRounded]="true"-->
+        <!--              >{{ lang.map.half_yearly }}</app-button-->
+        <!--            >-->
+        <!--            <app-button-->
+        <!--              (click)="updateChartDuration(DurationTypes.QUARTERLY)"-->
+        <!--              [buttonStyle]="transactionCountDuration === DurationTypes.QUARTERLY ? 'secondary' : 'secondary-outline'"-->
+        <!--              [isRounded]="true"-->
+        <!--              >{{ lang.map.quarter_yearly }}</app-button-->
+        <!--            >-->
+        <!--            <app-button-->
+        <!--              (click)="updateChartDuration(DurationTypes.MONTHLY)"-->
+        <!--              [buttonStyle]="transactionCountDuration === DurationTypes.MONTHLY ? 'secondary' : 'secondary-outline'"-->
+        <!--              [isRounded]="true"-->
+        <!--              >{{ lang.map.monthly }}</app-button-->
+        <!--            >-->
+        <!--          </div>-->
+        <!--        </div>-->
         <div class="flex">
           <div dir="ltr" class="flex-auto">
             <apx-chart

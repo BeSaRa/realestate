@@ -20,6 +20,8 @@ import { KpiModel } from '@models/kpi-model';
 import { TransactionType } from '@enums/transaction-type';
 import { ChartType } from '@enums/chart-type';
 import { IconButtonComponent } from '@components/icon-button/icon-button.component';
+import { DurationTypes } from '@enums/durations';
+import { ButtonComponent } from '@components/button/button.component';
 
 @Component({
   selector: 'app-mortgage-indicators',
@@ -35,6 +37,7 @@ import { IconButtonComponent } from '@components/icon-button/icon-button.compone
     TransactionsFilterComponent,
     KpiRootComponent,
     IconButtonComponent,
+    ButtonComponent,
   ],
   templateUrl: './mortgage-indicators.component.html',
   styleUrls: ['./mortgage-indicators.component.scss'],
@@ -70,7 +73,7 @@ export default class MortgageIndicatorsComponent implements OnInit {
       this.urlService.URLS.MORT_KPI1,
       '',
       '',
-      this.urlService.URLS.MORT_KPI2,
+      '',
       'assets/icons/kpi/1.png'
     ),
     new KpiRoot(
@@ -81,7 +84,7 @@ export default class MortgageIndicatorsComponent implements OnInit {
       this.urlService.URLS.MORT_KPI3,
       '',
       '',
-      this.urlService.URLS.MORT_KPI4,
+      '',
       'assets/icons/kpi/2.png'
     ),
     new KpiRoot(
@@ -92,15 +95,18 @@ export default class MortgageIndicatorsComponent implements OnInit {
       this.urlService.URLS.MORT_KPI5,
       '',
       '',
-      this.urlService.URLS.MORT_KPI6,
+      '',
       'assets/icons/kpi/6.png'
     ),
   ];
 
-  selectedRootKpi: KpiRoot = this.rootKpis[0];
+  protected readonly DurationTypes = DurationTypes;
 
-  lineChartData?: Record<number, KpiModel[]>;
+  transactionCount?: Record<number, KpiModel[]>;
+  transactionValues?: Record<number, KpiModel[]>;
   selectedChartType: ChartType = ChartType.LINE;
+
+  transactionCountDuration = DurationTypes.YEARLY;
 
   protected readonly ChartType = ChartType;
 
@@ -111,7 +117,7 @@ export default class MortgageIndicatorsComponent implements OnInit {
       height: 350,
       type: ChartType.LINE,
     },
-    colors: ['#0081ff', '#ff0000'],
+    colors: ['#A29475', '#8A1538'],
     dataLabels: {
       enabled: true,
     },
@@ -159,36 +165,44 @@ export default class MortgageIndicatorsComponent implements OnInit {
         item.yoy = (values[index] && values[index].kpiYoYVal) || 0;
       });
 
-      if (this.selectedRootKpi) {
-        this.rootItemSelected(this.selectedRootKpi);
-      }
+      this.loadMortgageTransactionChart();
+      this.loadMortgageTransactionValueChart();
     });
   }
 
-  rootItemSelected(item: KpiRoot): void {
-    this.dashboardService.loadMortgageTransactionCountChart(item, this.criteria.criteria).subscribe((value) => {
-      this.lineChartData = value;
+  loadMortgageTransactionChart(): void {
+    this.dashboardService
+      .loadMortgageTransactionCountChart(this.criteria.criteria, this.transactionCountDuration)
+      .subscribe((value) => {
+        this.transactionCount = value;
+        this.updateTransactionCountChart();
+      });
+  }
+
+  loadMortgageTransactionValueChart(): void {
+    this.dashboardService.loadMortgageTransactionValueChart(this.criteria.criteria).subscribe((value) => {
+      this.transactionValues = value;
       this.updateTransactionCountChart();
     });
   }
 
   updateTransactionCountChart(): void {
-    if (!this.lineChartData) return;
+    if (!this.transactionCount) return;
 
-    const xaxis = Object.keys(this.lineChartData);
+    const xaxis = Object.keys(this.transactionCount);
     const mort = xaxis.reduce((acc, year) => {
       // console.log(this.lineChartData[year]);
       return [...acc].concat(
-        (this.lineChartData &&
-          this.lineChartData[Number(year)].filter((item) => item.actionType === TransactionType.MORTGAGE)) ||
+        (this.transactionCount &&
+          this.transactionCount[Number(year)].filter((item) => item.actionType === TransactionType.MORTGAGE)) ||
           []
       );
     }, [] as KpiModel[]);
     const sell = xaxis.reduce((acc, year) => {
       // console.log(this.lineChartData[year]);
       return [...acc].concat(
-        (this.lineChartData &&
-          this.lineChartData[Number(year)].filter((item) => item.actionType === TransactionType.SELL)) ||
+        (this.transactionCount &&
+          this.transactionCount[Number(year)].filter((item) => item.actionType === TransactionType.SELL)) ||
           []
       );
     }, [] as KpiModel[]);
@@ -224,5 +238,10 @@ export default class MortgageIndicatorsComponent implements OnInit {
 
   isSelectedChartType(type: ChartType) {
     return this.selectedChartType === type;
+  }
+
+  updateChartDuration(durationType: DurationTypes) {
+    this.transactionCountDuration = durationType;
+    this.loadMortgageTransactionChart();
   }
 }
