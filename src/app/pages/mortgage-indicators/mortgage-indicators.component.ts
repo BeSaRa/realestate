@@ -23,7 +23,7 @@ import { IconButtonComponent } from '@components/icon-button/icon-button.compone
 import { DurationTypes } from '@enums/durations';
 import { ButtonComponent } from '@components/button/button.component';
 import { KpiBaseModel } from '@models/kpi-base-model';
-import { formatNumber } from '@utils/utils';
+import { formatChartColors, formatNumber, minMaxAvg } from '@utils/utils';
 
 @Component({
   selector: 'app-mortgage-indicators',
@@ -125,6 +125,7 @@ export default class MortgageIndicatorsComponent implements OnInit {
     colors: ['#A29475', '#8A1538'],
     dataLabels: {
       enabled: true,
+      style: { colors: ['#259C80'] },
     },
     legend: {
       fontFamily: 'inherit',
@@ -166,12 +167,13 @@ export default class MortgageIndicatorsComponent implements OnInit {
       height: 350,
       type: ChartType.LINE,
     },
-    colors: ['#A29475', '#8A1538'],
+    colors: ['#A29475'],
     dataLabels: {
       enabled: true,
       formatter(val: number): string | number {
         return formatNumber(val) as string;
       },
+      style: { colors: ['#259C80'] },
     },
     legend: {
       fontFamily: 'inherit',
@@ -191,6 +193,9 @@ export default class MortgageIndicatorsComponent implements OnInit {
     tooltip: {
       theme: 'light',
       shared: true,
+      marker: {
+        fillColors: ['#A29475'],
+      },
     },
     plotOptions: {
       bar: {
@@ -287,9 +292,14 @@ export default class MortgageIndicatorsComponent implements OnInit {
 
   updateTransactionValueChart(): void {
     if (!this.transactionValues) return;
-
+    const _minMaxAvg = minMaxAvg(
+      Object.keys(this.transactionValues).map(
+        (year) => (this.transactionValues && this.transactionValues[year as unknown as number][0].kpiVal) || 0
+      )
+    );
     this.transactionValueChart
       .updateOptions({
+        colors: [formatChartColors(_minMaxAvg)],
         series: [
           {
             name: this.lang.map.mortgage,
