@@ -145,7 +145,7 @@ export class SelectInputComponent implements ControlValueAccessor, OnInit, OnCha
     });
     this._changeSelectArrow();
     this.selectInput?.openedChange.pipe(takeUntil(this.destroy$)).subscribe((isOpened) => {
-      isOpened ? this._setSelectDirection() : null;
+      isOpened ? this._setSelectDirection() : this.filterControl.setValue('');
     });
   }
 
@@ -247,5 +247,10 @@ export class SelectInputComponent implements ControlValueAccessor, OnInit, OnCha
     this.destroy$.next();
     this.destroy$.complete();
     this.destroy$.unsubscribe();
+  }
+
+  closeSelect() {
+    console.log('HERE');
+    this.filterControl.setValue('');
   }
 }
