@@ -175,12 +175,10 @@
       </h3>
       <app-table minWidth="900px" headerBgColor="!bg-secondary" [data]="transactions">
         <ng-template appTableColumnTemplate columnName="location" [columnHeader]="this.lang.map.location" let-item>
-          <div class="flex justify-center">
-            <div class="text-start">
-              <p class="font-bold">{{ item.municipalityInfo.getNames() }}</p>
-              <p>{{ lang.map.status + ": " + item.unitStatusInfo.getNames() }}</p>
-            </div>
-          </div>
+          <span class="font-bold">
+            {{ item.municipalityInfo.getNames()
+            }}{{ item.areaInfo.getNames() ? "  -  " + item.areaInfo.getNames() : "" }}
+          </span>
         </ng-template>
         <ng-template appTableColumnTemplate columnName="sold_for" [columnHeader]="this.lang.map.sold_for" let-item>
           <span class="font-bold">{{ item.realEstateValue | number }}</span>
@@ -188,7 +186,7 @@
         <ng-template appTableColumnTemplate columnName="issue_date" [columnHeader]="this.lang.map.issue_date" let-item>
           <div class="text-center">
             <p>{{ item.issueDate | date : "YYYY-MM-dd" }}</p>
-            <p class="font-bold">{{ item.soldTo || "Individual" }}</p>
+            <p class="font-bold">{{ item.soldTo || "أفراد" }}</p>
           </div>
         </ng-template>
         <ng-template
@@ -199,8 +197,11 @@
           <span class="font-bold">{{ item.priceMT | number : "1.0-0" }}</span>
         </ng-template>
         <ng-template appTableColumnTemplate columnName="roi" columnHeader="ROI" let-item>
-          <span class="font-bold">{{ item.roi ?? 0.016 | percent : "1.2" }}</span>
+          <span class="font-bold">{{ item.roi === null ? "---" : (item.roi | percent : "1.2") }}</span>
         </ng-template>
+        <!-- <ng-template appTableColumnTemplate columnName="area" [columnHeader]="lang.map.area" let-item>
+          <span class="font-bold">{{ item.area === null ? "---" : (item.area | number ) }}</span>
+        </ng-template> -->
         <!-- <ng-template
           appTableColumnTemplate
           columnName="unit_parcel_no"
@@ -229,7 +230,7 @@
 
         <ng-container matColumnDef="average">
           <th mat-header-cell class="!text-white" mat-sort-header="average" *matHeaderCellDef>
-            {{ lang.map.average_price }}
+            {{ lang.map.average_sell_price_per_unit_property }}
           </th>
           <td mat-cell *matCellDef="let element">{{ element.medianPrice | formatNumbers }}</td>
         </ng-container>
