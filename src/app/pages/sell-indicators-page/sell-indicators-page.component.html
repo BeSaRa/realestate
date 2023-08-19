@@ -177,7 +177,7 @@
         <ng-template appTableColumnTemplate columnName="location" [columnHeader]="this.lang.map.location" let-item>
           <span class="font-bold">
             {{ item.municipalityInfo.getNames()
-            }}{{ item.areaInfo.getNames() ? "  -  " + item.areaInfo.getNames() : "" }}
+            }}{{ item.areaInfo?.getNames() ? "  -  " + item.areaInfo.getNames() : "" }}
           </span>
         </ng-template>
         <ng-template appTableColumnTemplate columnName="sold_for" [columnHeader]="this.lang.map.sold_for" let-item>

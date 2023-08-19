@@ -7,7 +7,7 @@ export class SellTransactionInterceptor implements ModelInterceptorContract<Sell
   receive(model: SellTransaction): SellTransaction {
     const lookupService = ServiceRegistry.get('LookupService') as LookupService;
     model.municipalityInfo = lookupService.sellMunicipalitiesMap[model.municipalityId];
-    model.areaInfo = lookupService.sellZonesMap[model.areaCode ?? 1];
+    // model.areaInfo = lookupService.sellZonesMap[model.areaCode];
     model.unitStatusInfo = lookupService.sellLookups.unitStatus[model.unitStatus ?? 0];
     return model;
   }
