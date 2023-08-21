@@ -178,4 +178,6 @@ export interface LangKeysContract {
   half_yearly: string;
   quarter_yearly: string;
   monthly: string;
+
+  rent_contracts_count_according_to_furniture: string;
 }
