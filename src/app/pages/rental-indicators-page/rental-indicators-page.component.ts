@@ -41,7 +41,9 @@ import { formatChartColors, formatNumber, minMaxAvg } from '@utils/utils';
 import { CarouselComponent, IvyCarouselModule } from 'angular-responsive-carousel2';
 import { ChartComponent, NgApexchartsModule } from 'ng-apexcharts';
 import { NgxMaskPipe } from 'ngx-mask';
-import { forkJoin, ReplaySubject, Subject, take, takeUntil } from 'rxjs';
+import { forkJoin, map, ReplaySubject, Subject, take, takeUntil } from 'rxjs';
+import { DurationTypes } from '@enums/durations';
+import { DateAdapter, MatNativeDateModule } from '@angular/material/core';
 
 @Component({
   selector: 'app-rental-indicators-page',
@@ -66,6 +68,7 @@ import { forkJoin, ReplaySubject, Subject, take, takeUntil } from 'rxjs';
     FormatNumbersPipe,
     YoyIndicatorComponent,
     NgxMaskPipe,
+    MatNativeDateModule,
   ],
   providers: [NgxMaskPipe],
   templateUrl: './rental-indicators-page.component.html',
@@ -79,6 +82,7 @@ export default class RentalIndicatorsPageComponent {
   dashboardService = inject(DashboardService);
   urlService = inject(UrlService);
   lookupService = inject(LookupService);
+  adapter = inject(DateAdapter);
   destroy$ = new Subject<void>();
 
   maskPipe = inject(NgxMaskPipe);
@@ -106,6 +110,9 @@ export default class RentalIndicatorsPageComponent {
   pieChart!: QueryList<ChartComponent>;
 
   selectedRootChartData!: KpiModel[];
+  DurationTypes = DurationTypes;
+  selectedDurationType: DurationTypes = DurationTypes.YEARLY;
+
   pieChartData: RoomNumberKpi[] = [];
 
   @ViewChildren('carousel')
@@ -461,7 +468,7 @@ export default class RentalIndicatorsPageComponent {
       });
       this.selectedRoot && this.updateAllPurpose(this.selectedRoot.value, this.selectedRoot.yoy);
       this.selectedPurpose && this.purposeSelected(this.selectedPurpose);
-      this.updateChart();
+      this.updateChartDuration(this.selectedDurationType);
       this.updateTop10Chart();
     });
   }
@@ -532,6 +539,82 @@ export default class RentalIndicatorsPageComponent {
     this.updateChartType(ChartType.BAR);
   }
 
+  updateChartMonthly() {
+    this.adapter.setLocale(this.lang.getCurrent().code === 'ar-SA' ? 'ar-EG' : 'en-US');
+    const months = this.adapter.getMonthNames('long');
+    this.dashboardService
+      .loadLineChartKpiForDuration(DurationTypes.MONTHLY, this.selectedRoot!, this.criteria.criteria)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((data) => {
+        const _minMaxAvg = minMaxAvg(data.map((d) => d.kpiVal));
+        this.chart.first
+          .updateOptions({
+            series: [
+              {
+                name: this.selectedRoot?.getNames(),
+                data: data.map((item) => {
+                  return {
+                    y: item.kpiVal,
+                    x: months[item.issuePeriod - 1],
+                  };
+                }),
+              },
+            ],
+            colors: [formatChartColors(_minMaxAvg)],
+            tooltip: { marker: { fillColors: ['#259C80'] } },
+          })
+          .then();
+      });
+  }
+
+  updateChartHalfyOrQuarterly() {
+    this.dashboardService
+      .loadLineChartKpiForDuration(
+        this.selectedDurationType === DurationTypes.HALFY ? DurationTypes.HALFY : DurationTypes.RENT_QUARTERLY,
+        this.selectedRoot!,
+        this.criteria.criteria
+      )
+      .pipe(takeUntil(this.destroy$))
+      .pipe(
+        map((durationData) => {
+          return this.dashboardService.mapDurationData(
+            durationData,
+            this.selectedDurationType === DurationTypes.HALFY
+              ? this.lookupService.sellLookups.halfYearDurations
+              : this.lookupService.sellLookups.quarterYearDurations
+          );
+        })
+      )
+      .subscribe((data) => {
+        const _chartData = Object.keys(data).map((key) => ({
+          name: data[parseInt(key)].period.getNames(),
+          data: data[parseInt(key)].kpiValues.map((item) => item.value),
+        }));
+        this.chart.first
+          .updateOptions({
+            series: _chartData,
+            xaxis: {
+              categories: data[1].kpiValues.map((v) => v.year),
+            },
+            colors: ['#8A1538', '#A29475', '#C0C0C0', '#1A4161'],
+            tooltip: { marker: { fillColors: ['#8A1538', '#A29475', '#C0C0C0', '#1A4161'] } },
+          })
+          .then();
+      });
+  }
+
+  updateChartType(type: ChartType) {
+    this.chart.first.updateOptions({ chart: { type: type } }).then();
+    this.selectedChartType = type;
+  }
+
+  updateChartDuration(durationType: DurationTypes) {
+    this.selectedDurationType = durationType;
+    if (this.selectedDurationType === DurationTypes.YEARLY) this.updateChart();
+    else if (this.selectedDurationType === DurationTypes.MONTHLY) this.updateChartMonthly();
+    else this.updateChartHalfyOrQuarterly();
+  }
+
   private loadTransactions() {
     this.dashboardService
       .loadRentKpiTransactions(this.criteria.criteria)
@@ -548,11 +631,6 @@ export default class RentalIndicatorsPageComponent {
     this.carousel.first.cellsToScroll = 1;
   }
 
-  updateChartType(type: ChartType) {
-    this.chart.first.updateOptions({ chart: { type: type } }).then();
-    this.selectedChartType = type;
-  }
-
   isSelectedChartType(type: ChartType) {
     return this.selectedChartType === type;
   }
@@ -564,7 +642,7 @@ export default class RentalIndicatorsPageComponent {
     this.top10Chart.setDirty();
     this.pieChart.setDirty();
     setTimeout(() => {
-      this.updateChart();
+      this.updateChartDuration(this.selectedDurationType);
       this.updateTop10Chart();
       this.updatePiChart();
     });

@@ -576,7 +576,7 @@ export default class SellIndicatorsPageComponent implements OnInit {
   updateChartHalfyOrQuarterly() {
     this.dashboardService
       .loadLineChartKpiForDuration(
-        this.selectedDurationType === DurationTypes.HALFY ? DurationTypes.HALFY : DurationTypes.QUARTERLY,
+        this.selectedDurationType === DurationTypes.HALFY ? DurationTypes.HALFY : DurationTypes.SELL_QUARTERLY,
         this.selectedRoot!,
         this.criteria.criteria
       )
