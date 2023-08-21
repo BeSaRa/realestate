@@ -457,5 +457,21 @@
         </div>
       </div>
     </div>
+    <div class="px-16 py-5">
+      <div class="shadow-lg rounded-lg overflow-hidden">
+        <div class="bg-primary p-4 flex justify-center items-center">
+          <span class="text-2xl text-white">{{ lang.map.rent_contracts_count_according_to_furniture }}</span>
+        </div>
+        <div dir="ltr" class="flex justify-center">
+          <apx-chart
+            #pieChart
+            [series]="pieChartOptions.series"
+            [labels]="pieChartOptions.labels"
+            [responsive]="pieChartOptions.responsive!"
+            [chart]="pieChartOptions.chart"
+            [legend]="pieChartOptions.legend" />
+        </div>
+      </div>
+    </div>
   </div>
 </div>
