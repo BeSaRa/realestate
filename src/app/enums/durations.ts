@@ -8,6 +8,7 @@ export enum Durations {
 export enum DurationTypes {
   YEARLY = 'yearly',
   HALFY = 'halfy',
-  QUARTERLY = 'quarterly',
+  SELL_QUARTERLY = 'quarterly',
+  RENT_QUARTERLY = 'quartley',
   MONTHLY = 'monthly',
 }

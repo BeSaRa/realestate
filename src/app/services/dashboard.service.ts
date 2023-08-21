@@ -3,6 +3,7 @@ import { inject, Injectable } from '@angular/core';
 import { MatDialogRef } from '@angular/material/dialog';
 import { CriteriaContract } from '@contracts/criteria-contract';
 import { DurationDataContract } from '@contracts/duration-data-contract';
+import { MortgageCriteriaContract } from '@contracts/mortgage-criteria-contract';
 import { RentCriteriaContract } from '@contracts/rent-criteria-contract';
 import { SellCriteriaContract } from '@contracts/sell-criteria-contract';
 import { ServiceContract } from '@contracts/service-contract';
@@ -13,6 +14,7 @@ import {
   RentCompositeTransaction,
   SellCompositeTransaction,
 } from '@models/composite-transaction';
+import { KpiBaseModel } from '@models/kpi-base-model';
 import { KpiDurationModel } from '@models/kpi-duration-model';
 import { KpiModel } from '@models/kpi-model';
 import { KpiRoot } from '@models/kpiRoot';
@@ -27,14 +29,12 @@ import { SellTop10Model } from '@models/sell-top-10-model';
 import { SellTransaction } from '@models/sell-transaction';
 import { SellTransactionPurpose } from '@models/sell-transaction-purpose';
 import { UrlService } from '@services/url.service';
-import { chunks } from '@utils/utils';
+import { chunks, minMaxAvg, range } from '@utils/utils';
 import { CastResponse } from 'cast-response';
-import { forkJoin, map, Observable, tap } from 'rxjs';
+import { forkJoin, map, Observable } from 'rxjs';
 import { RentTransactionPurposePopupComponent } from '../popups/rent-transaction-purpose-popup/rent-transaction-purpose-popup.component';
 import { SellTransactionPurposePopupComponent } from '../popups/sell-transaction-purpose-popup/sell-transaction-purpose-popup.component';
-import { MortgageCriteriaContract } from '@contracts/mortgage-criteria-contract';
 import { DialogService } from './dialog.service';
-import { KpiBaseModel } from '@models/kpi-base-model';
 
 @Injectable({
   providedIn: 'root',
@@ -80,13 +80,6 @@ export class DashboardService extends RegisterServiceMixin(class {}) implements 
   }
 
   loadLineChartKpi(kpi: KpiRoot, criteria: Partial<CriteriaContract>): Observable<KpiModel[]> {
-    // forkJoin([
-    //   this.loadLineChartKpiForDuration(DurationTypes.HALFY, kpi, criteria),
-    //   this.loadLineChartKpiForDuration(DurationTypes.QUARTERLY, kpi, criteria),
-    //   this.loadLineChartKpiForDuration(DurationTypes.MONTHLY, kpi, criteria),
-    // ])
-    //   .pipe(tap(console.log))
-    //   .subscribe();
     return this.http.post<KpiModel[]>(kpi.lineChart!, criteria);
   }
 
@@ -129,7 +122,7 @@ export class DashboardService extends RegisterServiceMixin(class {}) implements 
 
   @CastResponse(() => SellTransaction)
   loadSellKpiTransactions(criteria: Partial<CriteriaContract>): Observable<SellTransaction[]> {
-    return this.http.post<SellTransaction[]>(this.urlService.URLS.SELL_KPI29, criteria).pipe(tap(console.log));
+    return this.http.post<SellTransaction[]>(this.urlService.URLS.SELL_KPI29, criteria);
   }
 
   @CastResponse(() => RentTop10Model)
@@ -275,7 +268,7 @@ export class DashboardService extends RegisterServiceMixin(class {}) implements 
         ? ''
         : duration === DurationTypes.HALFY
         ? '/halfly'
-        : duration === DurationTypes.QUARTERLY
+        : duration === DurationTypes.SELL_QUARTERLY
         ? '/quartley'
         : duration === DurationTypes.MONTHLY
         ? '/monthly'
@@ -286,12 +279,22 @@ export class DashboardService extends RegisterServiceMixin(class {}) implements 
   mapDurationData(data: KpiDurationModel[], durations: Lookup[]): DurationDataContract {
     const durationData: DurationDataContract = {};
 
+    const { min: minYear, max: maxYear } = minMaxAvg(data.map((item) => item.issueYear));
+    const yearRange = range(minYear, maxYear);
+
     durations.forEach((item) => {
       durationData[item.lookupKey] = { period: item, kpiValues: [] };
     });
 
     data.forEach((item) => {
       durationData[item.issuePeriod].kpiValues.push({ year: item.issueYear, value: item.kpiVal });
+    });
+
+    yearRange.forEach((year) => {
+      durations.forEach((item) => {
+        durationData[item.lookupKey].kpiValues.find((d) => d.year === year) ??
+          durationData[item.lookupKey].kpiValues.push({ year, value: 0 });
+      });
     });
 
     durations.forEach((item) => {
