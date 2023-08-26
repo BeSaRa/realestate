@@ -109,6 +109,13 @@
         bindValue="lookupKey"
         [label]="lang.map.number_of_rooms"
         [options]="rooms" />
+      <app-select-input
+        *ngIf="furnitureStatus.length"
+        formControlName="furnitureStatus"
+        bindLabel="getNames"
+        bindValue="lookupKey"
+        [label]="lang.map.furniture_status"
+        [options]="furnitureStatus" />
       <!--      <app-select-input-->
       <!--        bindLabel="getNames"-->
       <!--        bindValue="lookupKey"-->

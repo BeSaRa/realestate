@@ -46,6 +46,7 @@ import { DurationEndpoints } from '@enums/durations';
 import { DateAdapter, MatNativeDateModule } from '@angular/material/core';
 import { TableColumnHeaderTemplateDirective } from '@directives/table-column-header-template.directive';
 import { TableColumnCellTemplateDirective } from '@directives/table-column-cell-template.directive';
+import { FurnitureStatusKpi } from '@models/furniture-status-kpi';
 
 @Component({
   selector: 'app-rental-indicators-page',
@@ -92,14 +93,11 @@ export default class RentalIndicatorsPageComponent {
   maskPipe = inject(NgxMaskPipe);
 
   municipalities = this.lookupService.rentLookups.municipalityList;
-
   propertyTypes = this.lookupService.rentLookups.propertyTypeList;
-
   propertyUsages = this.lookupService.rentLookups.rentPurposeList.slice().sort((a, b) => a.lookupKey - b.lookupKey);
-
   zones = this.lookupService.rentLookups.zoneList;
-
   rooms = this.lookupService.rentLookups.rooms;
+  furnitureStatusList = this.lookupService.rentLookups.furnitureStatusList;
 
   criteria!: {
     criteria: CriteriaContract;
@@ -117,7 +115,8 @@ export default class RentalIndicatorsPageComponent {
   DurationTypes = DurationEndpoints;
   selectedDurationType: DurationEndpoints = DurationEndpoints.YEARLY;
 
-  pieChartData: RoomNumberKpi[] = [];
+  roomsPieChartData: RoomNumberKpi[] = [];
+  furnitureStatusPieChartData: FurnitureStatusKpi[] = [];
 
   @ViewChildren('carousel')
   carousel!: QueryList<CarouselComponent>;
@@ -441,6 +440,7 @@ export default class RentalIndicatorsPageComponent {
     }
     this.loadTransactions();
     this.loadRoomCounts();
+    this.loadFurnitureStatus();
     this.loadCompositeTransactions();
     this.loadTransactionsBasedOnPurpose();
   }
@@ -650,7 +650,8 @@ export default class RentalIndicatorsPageComponent {
     setTimeout(() => {
       this.updateChartDuration(this.selectedDurationType);
       this.updateTop10Chart();
-      this.updatePiChart();
+      this.updateRoomsPiChart();
+      this.updateFurnitureStatusPiChart();
     });
   }
 
@@ -685,16 +686,30 @@ export default class RentalIndicatorsPageComponent {
       .then();
   }
 
-  updatePiChart(): void {
+  updateRoomsPiChart(): void {
     if (!this.pieChart.length) return;
     this.pieChart.first
       .updateOptions({
-        series: this.pieChartData.length
-          ? this.pieChartData.map((i) => i.kpiVal)
+        series: this.roomsPieChartData.length
+          ? this.roomsPieChartData.map((i) => i.kpiVal)
           : this.lookupService.rentLookups.rooms.map(() => 0),
-        labels: this.pieChartData.length
-          ? this.pieChartData.map((i) => i.roomInfo.getNames())
+        labels: this.roomsPieChartData.length
+          ? this.roomsPieChartData.map((i) => i.roomInfo.getNames())
           : this.lookupService.rentLookups.rooms.map((i) => i.getNames()),
+      })
+      .then();
+  }
+
+  updateFurnitureStatusPiChart(): void {
+    if (!this.pieChart.length) return;
+    this.pieChart.last
+      .updateOptions({
+        series: this.furnitureStatusPieChartData.length
+          ? this.furnitureStatusPieChartData.map((i) => i.kpiVal)
+          : this.lookupService.rentLookups.furnitureStatusList.map(() => 0),
+        labels: this.furnitureStatusPieChartData.length
+          ? this.furnitureStatusPieChartData.map((i) => i.furnitureStatusInfo.getNames())
+          : this.lookupService.rentLookups.furnitureStatusList.map((i) => i.getNames()),
       })
       .then();
   }
@@ -708,8 +723,15 @@ export default class RentalIndicatorsPageComponent {
 
   loadRoomCounts(): void {
     this.dashboardService.loadRentRoomCounts(this.criteria.criteria).subscribe((value) => {
-      this.pieChartData = value;
-      this.updatePiChart();
+      this.roomsPieChartData = value;
+      this.updateRoomsPiChart();
+    });
+  }
+
+  loadFurnitureStatus(): void {
+    this.dashboardService.loadRentFurnitureStatus(this.criteria.criteria).subscribe((value) => {
+      this.furnitureStatusPieChartData = value;
+      this.updateFurnitureStatusPiChart();
     });
   }
 

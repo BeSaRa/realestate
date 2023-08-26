@@ -196,4 +196,5 @@ export interface LangKeysContract {
   highest_price_per_square_foot: string;
   lowest_price_per_square_foot: string;
   area_in_square_foot: string;
+  furniture_status: string;
 }

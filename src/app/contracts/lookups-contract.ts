@@ -6,6 +6,7 @@ export interface LookupsContract {
   zoneList: Lookup[];
   municipalityList: Lookup[];
   rooms: Lookup[];
+  furnitureStatusList: Lookup[];
   durations: Lookup[];
   halfYearDurations: Lookup[];
   quarterYearDurations: Lookup[];

@@ -30,6 +30,7 @@ export class LookupService extends RegisterServiceMixin(class {}) implements Ser
   mortZonesMap: Record<number, Lookup> = {};
 
   rentRoomsMap: Record<number, Lookup> = {};
+  rentFurnitureMap: Record<number, Lookup> = {};
 
   rentPurposeMap: Record<number, Lookup> = {};
   sellPurposeMap: Record<number, Lookup> = {};
@@ -50,6 +51,7 @@ export class LookupService extends RegisterServiceMixin(class {}) implements Ser
       'rentPurposeList.*': () => Lookup,
       'zoneList.*': () => Lookup,
       'municipalityList.*': () => Lookup,
+      'furnitureStatusList.*': () => Lookup,
     },
   })
   _loadRentLookups(): Observable<LookupsMap> {
@@ -129,6 +131,9 @@ export class LookupService extends RegisterServiceMixin(class {}) implements Ser
           this.rentDistrictMap = this._initializeDistrictMap(res[0]);
           this.sellDistrictMap = this._initializeDistrictMap(res[1]);
           this.mortDistrictMap = this._initializeDistrictMap(res[2]);
+        }),
+        tap((res) => {
+          this.rentFurnitureMap = this._initializeFurnitureStatusMap(res[0]);
         })
       );
   }
@@ -159,6 +164,12 @@ export class LookupService extends RegisterServiceMixin(class {}) implements Ser
 
   private _initializeDistrictMap(lookups: LookupsMap) {
     return lookups.districtList.reduce((acc, i) => {
+      return { ...acc, [i.lookupKey]: i };
+    }, {});
+  }
+
+  private _initializeFurnitureStatusMap(lookups: LookupsMap) {
+    return lookups.furnitureStatusList.reduce((acc, i) => {
       return { ...acc, [i.lookupKey]: i };
     }, {});
   }

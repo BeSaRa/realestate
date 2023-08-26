@@ -88,6 +88,7 @@ export class TransactionsFilterComponent implements OnInit, OnDestroy {
   @Input() propertyUsages: Lookup[] = [];
   @Input() zones: Lookup[] = [];
   @Input() rooms: Lookup[] = [];
+  @Input() furnitureStatus: Lookup[] = [];
   @Input() areas: Lookup[] = [];
   @Input() minMaxِِِArea: Partial<MinMaxAvgContract> = {};
   @Input() minMaxِِِRealestateValue: Partial<MinMaxAvgContract> = {};
@@ -131,6 +132,7 @@ export class TransactionsFilterComponent implements OnInit, OnDestroy {
       purposeList: [],
       issueDateQuarterList: [],
       bedRoomsCount: [],
+      furnitureStatus: [],
       issueDateYear: [],
       issueDateMonth: [],
       issueDateStartMonth: [],
@@ -306,12 +308,13 @@ export class TransactionsFilterComponent implements OnInit, OnDestroy {
       propertyTypeList: [-1],
       purposeList: [-1],
       zoneId: 38,
-      // bedRoomsCount: null,
       durationType: 1,
       issueDateYear: 2023,
       issueDateStartMonth: 1,
       issueDateEndMonth: 12,
       areaCode: -1,
+      bedRoomsCount: undefined,
+      furnitureStatus: this.furnitureStatus.length ? -1 : undefined,
     });
     this.sendFilter(CriteriaType.DEFAULT);
   }
