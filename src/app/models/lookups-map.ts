@@ -36,7 +36,7 @@ export class LookupsMap implements LookupsContract {
       arName: 'أربع  غرف',
       enName: 'Four Rooms',
       lookupKey: 4,
-    }) /*,
+    }),
     new Lookup().clone<Lookup>({
       arName: 'خمس غرف',
       enName: 'five Rooms',
@@ -52,6 +52,11 @@ export class LookupsMap implements LookupsContract {
       enName: 'Seven Rooms',
       lookupKey: 7,
     }),
+    new Lookup().clone<Lookup>({
+      arName: 'غير محدد',
+      enName: 'indefinite',
+      lookupKey: undefined,
+    }) /*
     new Lookup().clone<Lookup>({
       arName: 'ثماني غرف',
       enName: 'eight Rooms',
@@ -84,6 +89,11 @@ export class LookupsMap implements LookupsContract {
       arName: 'ربع سنوي',
       enName: 'Quarter Yearly',
       lookupKey: Durations.QUARTER_YEARLY,
+    }),
+    new Lookup().clone<Lookup>({
+      arName: 'شهري',
+      enName: 'Monthly',
+      lookupKey: Durations.MONTHLY,
     }),
     new Lookup().clone<Lookup>({
       arName: 'مدة زمنية',

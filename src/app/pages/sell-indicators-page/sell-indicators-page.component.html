@@ -21,7 +21,10 @@
       [propertyUsages]="propertyUsages"
       [areas]="areas"
       [rooms]="rooms"
-      (fromChanged)="filterChange($event)" />
+      [minMaxِِِRealestateValue]="minMaxRealestateValue"
+      (fromChanged)="filterChange($event)"
+      (enableChangeAreaMinMaxValues)="enableChangeAreaMinMaxValues = $event"
+      (enableChangerealEstateValueMinMaxValues)="enableChangerealEstateValueMinMaxValues = $event" />
   </div>
   <div class="flex flex-col">
     <div class="px-16 mt-5 flex justify-center">
@@ -152,7 +155,7 @@
             [plotOptions]="chartOptions.plotOptions!"
             [title]="chartOptions.title!" />
         </div>
-        <div class="h-full flex flex-col mt-10">
+        <div class="h-full flex flex-col mt-4">
           <app-icon-button
             [ngClass]="{ 'text-primary': isSelectedChartType(ChartType.LINE) }"
             (click)="updateChartType(ChartType.LINE)"
@@ -173,33 +176,58 @@
       <h3 class="text-3xl mb-4 text-primary border-secondary font-semibold">
         {{ lang.map.sell_transactions_list }} {{ basedOnCriteria }}
       </h3>
-      <app-table minWidth="900px" headerBgColor="!bg-secondary" [data]="transactions">
-        <ng-template appTableColumnTemplate columnName="location" [columnHeader]="this.lang.map.location" let-item>
-          <span class="font-bold">
-            {{ item.municipalityInfo.getNames()
-            }}{{ item.areaInfo?.getNames() ? "  -  " + item.areaInfo.getNames() : "" }}
-          </span>
-        </ng-template>
-        <ng-template appTableColumnTemplate columnName="sold_for" [columnHeader]="this.lang.map.sold_for" let-item>
-          <span class="font-bold">{{ item.realEstateValue | number }}</span>
-        </ng-template>
-        <ng-template appTableColumnTemplate columnName="issue_date" [columnHeader]="this.lang.map.issue_date" let-item>
-          <div class="text-center">
+      <app-table
+        minWidth="900px"
+        headerBgColor="!bg-secondary"
+        [data]="transactions"
+        [sortOptions]="transactionsSortOptions"
+        [defaultSortOption]="transactionsSortOptions[0]">
+        <ng-container appTableColumnTemplate columnName="location">
+          <div *appTableColumnHeaderTemplate class="flex justify-center">
+            <div class="text-start">
+              <p>{{ this.lang.map.location }}</p>
+              <p class="font-normal">{{ this.lang.map.real_estate_status }}</p>
+            </div>
+          </div>
+          <div *appTableColumnCellTemplate="let item" class="flex justify-center">
+            <div class="text-start">
+              <p class="font-bold">{{ item.municipalityInfo.getNames() }}</p>
+              <p>{{ item.areaInfo?.getNames() ?? "---" }}</p>
+            </div>
+          </div>
+        </ng-container>
+        <ng-container appTableColumnTemplate columnName="sold_for">
+          <span *appTableColumnHeaderTemplate>{{ this.lang.map.sold_for }}</span>
+          <span *appTableColumnCellTemplate="let item" class="font-bold">{{ item.realEstateValue | number }}</span>
+        </ng-container>
+        <ng-container appTableColumnTemplate columnName="area_in_square_feet">
+          <span *appTableColumnHeaderTemplate>{{ this.lang.map.area_in_square_foot }}</span>
+          <span *appTableColumnCellTemplate="let item" class="font-bold">---</span>
+        </ng-container>
+        <ng-container appTableColumnTemplate columnName="square_feet_price">
+          <span *appTableColumnHeaderTemplate>{{ this.lang.map.square_feet_price }}</span>
+          <span *appTableColumnCellTemplate="let item" class="font-bold">{{ item.priceMT | number : "1.0-0" }}</span>
+        </ng-container>
+        <ng-container appTableColumnTemplate columnName="issue_date">
+          <div *appTableColumnHeaderTemplate class="flex justify-center">
+            <div class="text-start">
+              <p>{{ this.lang.map.issue_date }}</p>
+              <p class="font-normal">{{ this.lang.map.sold_by }}</p>
+            </div>
+          </div>
+          <div *appTableColumnCellTemplate="let item" class="text-center">
             <p>{{ item.issueDate | date : "YYYY-MM-dd" }}</p>
             <p class="font-bold">{{ item.soldTo || "أفراد" }}</p>
           </div>
-        </ng-template>
-        <ng-template
-          appTableColumnTemplate
-          columnName="square_feet_price"
-          [columnHeader]="this.lang.map.square_feet_price"
-          let-item>
-          <span class="font-bold">{{ item.priceMT | number : "1.0-0" }}</span>
-        </ng-template>
-        <ng-template appTableColumnTemplate columnName="roi" columnHeader="ROI" let-item>
-          <span class="font-bold">{{ item.roi === null ? "---" : (item.roi | percent : "1.2") }}</span>
-        </ng-template>
-        <!-- <ng-template appTableColumnTemplate columnName="area" [columnHeader]="lang.map.area" let-item>
+        </ng-container>
+
+        <ng-container appTableColumnTemplate columnName="roi">
+          <span *appTableColumnHeaderTemplate>ROI</span>
+          <span *appTableColumnCellTemplate="let item" class="font-bold">{{
+            item.roi === null ? "---" : (item.roi | percent : "1.2")
+          }}</span>
+        </ng-container>
+        <!-- <ng-template appTableColumnTemplate columnName="area" [columnHeader]="lang.map.area" >
           <span class="font-bold">{{ item.area === null ? "---" : (item.area | number ) }}</span>
         </ng-template> -->
         <!-- <ng-template
@@ -241,6 +269,29 @@
           </th>
           <td mat-cell *matCellDef="let element">{{ element.countCertificateCode | formatNumbers : 0 }}</td>
         </ng-container>
+
+        <!-- <ng-container matColumnDef="area">
+          <th mat-header-cell class="!text-white" mat-sort-header="area" *matHeaderCellDef>
+            {{ lang.map.total_area }}
+          </th>
+          <td mat-cell *matCellDef="let element">
+            {{ element.totalArea ? (element.totalArea | formatNumbers : 0) : "---" }}
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="count">
+          <th mat-header-cell class="!text-white" mat-sort-header="count" *matHeaderCellDef>
+            {{ lang.map.number_of_sell_contracts }}
+          </th>
+          <td mat-cell *matCellDef="let element">{{ element.countCertificateCode | formatNumbers : 0 }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="count">
+          <th mat-header-cell class="!text-white" mat-sort-header="count" *matHeaderCellDef>
+            {{ lang.map.number_of_sell_contracts }}
+          </th>
+          <td mat-cell *matCellDef="let element">{{ element.countCertificateCode | formatNumbers : 0 }}</td>
+        </ng-container> -->
         <!-- count -->
         <ng-container matColumnDef="chart">
           <th mat-header-cell class="!text-white" *matHeaderCellDef>{{ lang.map.chart }}</th>
@@ -282,21 +333,36 @@
         </ul>
       </div>
       <div dir="ltr">
-        <apx-chart
-          #top10Chart
-          [series]="top10ChartOptions.series!"
-          [chart]="top10ChartOptions.chart!"
-          [xaxis]="top10ChartOptions.xaxis!"
-          [stroke]="top10ChartOptions.stroke!"
-          [colors]="top10ChartOptions.colors!"
-          [dataLabels]="top10ChartOptions.dataLabels!"
-          [legend]="top10ChartOptions.legend!"
-          [markers]="top10ChartOptions.markers!"
-          [grid]="top10ChartOptions.grid!"
-          [yaxis]="top10ChartOptions.yaxis!"
-          [tooltip]="top10ChartOptions.tooltip!"
-          [plotOptions]="top10ChartOptions.plotOptions!"
-          [title]="top10ChartOptions.title!" />
+        <div class="flex">
+          <div class="flex-auto">
+            <apx-chart
+              #top10Chart
+              [series]="top10ChartOptions[selectedTop10ChartType].series!"
+              [chart]="top10ChartOptions[selectedTop10ChartType].chart!"
+              [xaxis]="top10ChartOptions[selectedTop10ChartType].xaxis!"
+              [stroke]="top10ChartOptions[selectedTop10ChartType].stroke!"
+              [colors]="top10ChartOptions[selectedTop10ChartType].colors!"
+              [dataLabels]="top10ChartOptions[selectedTop10ChartType].dataLabels!"
+              [legend]="top10ChartOptions[selectedTop10ChartType].legend!"
+              [markers]="top10ChartOptions[selectedTop10ChartType].markers!"
+              [grid]="top10ChartOptions[selectedTop10ChartType].grid!"
+              [yaxis]="top10ChartOptions[selectedTop10ChartType].yaxis!"
+              [tooltip]="top10ChartOptions[selectedTop10ChartType].tooltip!"
+              [plotOptions]="top10ChartOptions[selectedTop10ChartType].plotOptions!"
+              [title]="top10ChartOptions[selectedTop10ChartType].title!" />
+          </div>
+          <div class="h-full flex flex-col mt-6">
+            <app-icon-button
+              [ngClass]="{ 'text-primary': isSelectedTop10ChartType(ChartType.LINE) }"
+              (click)="updateTop10ChartType(ChartType.LINE)"
+              class="text-primary"
+              icon="LINE_CHART" />
+            <app-icon-button
+              [ngClass]="{ 'text-primary': isSelectedTop10ChartType(ChartType.BAR) }"
+              (click)="updateTop10ChartType(ChartType.BAR)"
+              icon="BAR_CHART" />
+          </div>
+        </div>
       </div>
     </div>
     <div class="px-16 bg-sand py-5">

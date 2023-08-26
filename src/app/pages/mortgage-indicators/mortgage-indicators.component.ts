@@ -20,7 +20,7 @@ import { KpiModel } from '@models/kpi-model';
 import { TransactionType } from '@enums/transaction-type';
 import { ChartType } from '@enums/chart-type';
 import { IconButtonComponent } from '@components/icon-button/icon-button.component';
-import { DurationTypes } from '@enums/durations';
+import { DurationEndpoints } from '@enums/durations';
 import { ButtonComponent } from '@components/button/button.component';
 import { KpiBaseModel } from '@models/kpi-base-model';
 import { formatChartColors, formatNumber, minMaxAvg } from '@utils/utils';
@@ -104,14 +104,14 @@ export default class MortgageIndicatorsComponent implements OnInit {
     ),
   ];
 
-  protected readonly DurationTypes = DurationTypes;
+  protected readonly DurationTypes = DurationEndpoints;
 
   transactionCount?: Record<number, KpiModel[]>;
   transactionValues?: Record<number, KpiBaseModel[]>;
   countChartType: ChartType = ChartType.LINE;
   valueChartType: ChartType = ChartType.LINE;
 
-  transactionCountDuration = DurationTypes.YEARLY;
+  transactionCountDuration = DurationEndpoints.YEARLY;
 
   protected readonly ChartType = ChartType;
 
@@ -333,7 +333,7 @@ export default class MortgageIndicatorsComponent implements OnInit {
     return this[chartProperty] === type;
   }
 
-  updateChartDuration(durationType: DurationTypes) {
+  updateChartDuration(durationType: DurationEndpoints) {
     this.transactionCountDuration = durationType;
     this.loadMortgageTransactionChart();
   }

@@ -7,7 +7,7 @@ import { MortgageCriteriaContract } from '@contracts/mortgage-criteria-contract'
 import { RentCriteriaContract } from '@contracts/rent-criteria-contract';
 import { SellCriteriaContract } from '@contracts/sell-criteria-contract';
 import { ServiceContract } from '@contracts/service-contract';
-import { DurationTypes } from '@enums/durations';
+import { DurationEndpoints } from '@enums/durations';
 import { RegisterServiceMixin } from '@mixins/register-service-mixin';
 import {
   CompositeTransaction,
@@ -80,11 +80,16 @@ export class DashboardService extends RegisterServiceMixin(class {}) implements 
   }
 
   loadLineChartKpi(kpi: KpiRoot, criteria: Partial<CriteriaContract>): Observable<KpiModel[]> {
+    // forkJoin([
+    //   this.loadLineChartKpiForDuration(DurationEndpoints.HALFY, kpi, criteria),
+    //   this.loadLineChartKpiForDuration(DurationEndpoints.RENT_QUARTERLY, kpi, criteria),
+    //   this.loadLineChartKpiForDuration(DurationEndpoints.MONTHLY, kpi, criteria),
+    // ]).subscribe(console.log);
     return this.http.post<KpiModel[]>(kpi.lineChart!, criteria);
   }
 
   loadLineChartKpiForDuration(
-    endPoint: DurationTypes,
+    endPoint: DurationEndpoints,
     kpi: KpiRoot,
     criteria: Partial<CriteriaContract>
   ): Observable<KpiDurationModel[]> {
@@ -225,7 +230,7 @@ export class DashboardService extends RegisterServiceMixin(class {}) implements 
 
   loadMortgageTransactionCountChart(
     criteria: Partial<MortgageCriteriaContract>,
-    duration: DurationTypes = DurationTypes.YEARLY
+    duration: DurationEndpoints = DurationEndpoints.YEARLY
   ): Observable<Record<number, KpiModel[]>> {
     return this.http
       .post<KpiModel[]>(this.getSelectedDurationString(this.urlService.URLS.MORT_KPI2, duration), criteria)
@@ -244,7 +249,7 @@ export class DashboardService extends RegisterServiceMixin(class {}) implements 
 
   loadMortgageTransactionValueChart(
     criteria: Partial<MortgageCriteriaContract>,
-    duration: DurationTypes = DurationTypes.YEARLY
+    duration: DurationEndpoints = DurationEndpoints.YEARLY
   ): Observable<Record<number, KpiBaseModel[]>> {
     return this.http
       .post<KpiBaseModel[]>(this.getSelectedDurationString(this.urlService.URLS.MORT_KPI6, duration), criteria)
@@ -261,16 +266,16 @@ export class DashboardService extends RegisterServiceMixin(class {}) implements 
       );
   }
 
-  private getSelectedDurationString(url: string, duration: DurationTypes): string {
+  private getSelectedDurationString(url: string, duration: DurationEndpoints): string {
     return (
       url +
-      (duration === DurationTypes.YEARLY
+      (duration === DurationEndpoints.YEARLY
         ? ''
-        : duration === DurationTypes.HALFY
+        : duration === DurationEndpoints.HALFY
         ? '/halfly'
-        : duration === DurationTypes.SELL_QUARTERLY
+        : duration === DurationEndpoints.SELL_QUARTERLY
         ? '/quartley'
-        : duration === DurationTypes.MONTHLY
+        : duration === DurationEndpoints.MONTHLY
         ? '/monthly'
         : '')
     );

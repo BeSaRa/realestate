@@ -20,6 +20,7 @@ export class SellTransactionPurpose {
   purposeId!: number;
 
   // not related to model
+  // totalArea: number | null = null;
   purposeInfo!: Lookup;
   private dashboardService: DashboardService;
 

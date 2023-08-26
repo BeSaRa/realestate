@@ -16,11 +16,14 @@ import { TransactionsFilterComponent } from '@components/transactions-filter/tra
 import { YoyIndicatorComponent } from '@components/yoy-indicator/yoy-indicator.component';
 import { maskSeparator } from '@constants/mask-separator';
 import { CriteriaContract } from '@contracts/criteria-contract';
+import { MinMaxAvgContract } from '@contracts/min-max-avg-contract';
 import { SellCriteriaContract } from '@contracts/sell-criteria-contract';
+import { TableColumnCellTemplateDirective } from '@directives/table-column-cell-template.directive';
+import { TableColumnHeaderTemplateDirective } from '@directives/table-column-header-template.directive';
 import { TableColumnTemplateDirective } from '@directives/table-column-template.directive';
 import { ChartType } from '@enums/chart-type';
 import { CriteriaType } from '@enums/criteria-type';
-import { DurationTypes } from '@enums/durations';
+import { DurationEndpoints } from '@enums/durations';
 import { CompositeTransaction } from '@models/composite-transaction';
 import { KpiModel } from '@models/kpi-model';
 import { KpiRoot } from '@models/kpiRoot';
@@ -30,6 +33,7 @@ import { SellDefaultValues } from '@models/sell-default-values';
 import { SellTop10Model } from '@models/sell-top-10-model';
 import { SellTransaction } from '@models/sell-transaction';
 import { SellTransactionPurpose } from '@models/sell-transaction-purpose';
+import { TableSortOption } from '@models/table-sort-option';
 import { FormatNumbersPipe } from '@pipes/format-numbers.pipe';
 import { DashboardService } from '@services/dashboard.service';
 import { LookupService } from '@services/lookup.service';
@@ -57,6 +61,8 @@ import { ReplaySubject, Subject, forkJoin, map, take, takeUntil } from 'rxjs';
     NgApexchartsModule,
     TableComponent,
     TableColumnTemplateDirective,
+    TableColumnHeaderTemplateDirective,
+    TableColumnCellTemplateDirective,
     MatTableModule,
     FormatNumbersPipe,
     YoyIndicatorComponent,
@@ -91,6 +97,12 @@ export default class SellIndicatorsPageComponent implements OnInit {
 
   purposeKPIS = this.lookupService.sellLookups.rentPurposeList;
   propertiesKPIS = this.lookupService.sellLookups.propertyTypeList;
+
+  minMaxArea: Partial<MinMaxAvgContract> = {};
+  minMaxRealestateValue: Partial<MinMaxAvgContract> = {};
+
+  enableChangeAreaMinMaxValues = true;
+  enableChangerealEstateValueMinMaxValues = true;
 
   criteria!: {
     criteria: CriteriaContract;
@@ -219,8 +231,8 @@ export default class SellIndicatorsPageComponent implements OnInit {
   protected readonly ChartType = ChartType;
   selectedChartType: ChartType = ChartType.LINE;
   selectedRootChartData!: KpiModel[];
-  DurationTypes = DurationTypes;
-  selectedDurationType: DurationTypes = DurationTypes.YEARLY;
+  DurationTypes = DurationEndpoints;
+  selectedDurationType: DurationEndpoints = DurationEndpoints.YEARLY;
   chartOptions: Partial<PartialChartOptions> = {
     series: [],
     chart: {
@@ -276,77 +288,192 @@ export default class SellIndicatorsPageComponent implements OnInit {
   };
 
   transactions = new ReplaySubject<SellTransaction[]>(1);
+  transactionsSortOptions: TableSortOption[] = [
+    new TableSortOption().clone<TableSortOption>({
+      arName: this.lang.getArabicTranslation('most_recent'),
+      enName: this.lang.getEnglishTranslation('most_recent'),
+      value: {
+        column: 'issueDate',
+        direction: 'desc',
+      },
+    }),
+    new TableSortOption().clone<TableSortOption>({
+      arName: this.lang.getArabicTranslation('oldest'),
+      enName: this.lang.getEnglishTranslation('oldest'),
+      value: {
+        column: 'issueDate',
+        direction: 'asc',
+      },
+    }),
+    new TableSortOption().clone<TableSortOption>({
+      arName: this.lang.getArabicTranslation('the_higher_price'),
+      enName: this.lang.getEnglishTranslation('the_higher_price'),
+      value: {
+        column: 'realEstateValue',
+        direction: 'desc',
+      },
+    }),
+    new TableSortOption().clone<TableSortOption>({
+      arName: this.lang.getArabicTranslation('the_lowest_price'),
+      enName: this.lang.getEnglishTranslation('the_lowest_price'),
+      value: {
+        column: 'realEstateValue',
+        direction: 'asc',
+      },
+    }),
+    new TableSortOption().clone<TableSortOption>({
+      arName: this.lang.getArabicTranslation('highest_price_per_square_foot'),
+      enName: this.lang.getEnglishTranslation('highest_price_per_square_foot'),
+      value: {
+        column: 'priceMT',
+        direction: 'desc',
+      },
+    }),
+    new TableSortOption().clone<TableSortOption>({
+      arName: this.lang.getArabicTranslation('lowest_price_per_square_foot'),
+      enName: this.lang.getEnglishTranslation('lowest_price_per_square_foot'),
+      value: {
+        column: 'priceMT',
+        direction: 'asc',
+      },
+    }),
+  ];
 
   transactionsPurpose: SellTransactionPurpose[] = [];
   transactionsPurposeColumns = ['purpose', 'count', 'average', 'chart'];
 
   top10ChartData: SellTop10Model[] = [];
   selectedTop10: Lookup = this.accordingToList[0];
-  top10ChartOptions: Partial<PartialChartOptions> = {
-    series: [],
-    chart: {
-      type: 'bar',
-      height: 400,
-    },
-    dataLabels: {
-      enabled: true,
-      dropShadow: {
+  selectedTop10ChartType = ChartType.BAR;
+  top10ChartOptions: Record<string, Partial<PartialChartOptions>> = {
+    bar: {
+      series: [],
+      chart: {
+        type: 'bar',
+        height: 400,
+      },
+      dataLabels: {
         enabled: true,
-      },
-      formatter: (val: string): string | number => {
-        const value = val as unknown as number;
-        return this.selectedTop10?.hasPrice
-          ? (formatNumber(value) as string)
-          : (this.maskPipe.transform(value.toFixed(0), 'separator', { thousandSeparator: ',' }) as unknown as string);
-      },
-    },
-    stroke: {
-      curve: 'smooth',
-    },
-    grid: {
-      xaxis: {
-        lines: {
-          show: true,
+        dropShadow: {
+          enabled: true,
         },
-      },
-    },
-    xaxis: {
-      categories: [],
-      labels: {
-        formatter: (val: string): string | string[] => {
+        formatter: (val: string): string | number => {
           const value = val as unknown as number;
           return this.selectedTop10?.hasPrice
             ? (formatNumber(value) as string)
             : (this.maskPipe.transform(value.toFixed(0), 'separator', { thousandSeparator: ',' }) as unknown as string);
         },
       },
-    },
-    plotOptions: {
-      bar: {
-        horizontal: true,
-        columnWidth: '20%',
-        dataLabels: {
-          position: 'bottom',
+      stroke: {
+        curve: 'smooth',
+      },
+      grid: {
+        xaxis: {
+          lines: {
+            show: true,
+          },
         },
       },
-    },
-    yaxis: {
-      reversed: true,
-      labels: {
-        formatter: (val: number | string): string | string[] => {
-          return typeof val === 'string'
-            ? val
-            : this.selectedTop10?.hasPrice
-            ? (formatNumber(val) as string)
-            : (this.maskPipe.transform(val.toFixed(0), 'separator', { thousandSeparator: ',' }) as unknown as string);
-        },
-        style: {
-          fontFamily: 'inherit',
-          fontSize: '15px',
+      xaxis: {
+        categories: [],
+        labels: {
+          formatter: (val: string): string | string[] => {
+            if (typeof val === 'string') return val;
+            const value = val as unknown as number;
+            return this.selectedTop10?.hasPrice
+              ? (formatNumber(value) as string)
+              : (this.maskPipe.transform(value.toFixed(0), 'separator', {
+                  thousandSeparator: ',',
+                }) as unknown as string);
+          },
         },
       },
+      plotOptions: {
+        bar: {
+          horizontal: true,
+          columnWidth: '20%',
+          dataLabels: {
+            position: 'bottom',
+          },
+        },
+      },
+      yaxis: {
+        reversed: true,
+        labels: {
+          formatter: (val: number | string): string | string[] => {
+            return typeof val === 'string'
+              ? val
+              : this.selectedTop10?.hasPrice
+              ? (formatNumber(val) as string)
+              : (this.maskPipe.transform(val.toFixed(0), 'separator', { thousandSeparator: ',' }) as unknown as string);
+          },
+          style: {
+            fontFamily: 'inherit',
+            fontSize: '15px',
+          },
+        },
+      },
+      colors: ['#60d39d'],
     },
-    colors: ['#60d39d'],
+    line: {
+      series: [],
+      chart: {
+        type: 'line',
+        height: 400,
+      },
+      dataLabels: {
+        enabled: true,
+        dropShadow: {
+          enabled: true,
+        },
+        formatter: (val: string): string | number => {
+          const value = val as unknown as number;
+          return this.selectedTop10?.hasPrice
+            ? (formatNumber(value) as string)
+            : (this.maskPipe.transform(value.toFixed(0), 'separator', { thousandSeparator: ',' }) as unknown as string);
+        },
+      },
+      stroke: {
+        curve: 'smooth',
+      },
+      grid: {
+        xaxis: {
+          lines: {
+            show: true,
+          },
+        },
+      },
+      xaxis: {
+        categories: [],
+        labels: {
+          formatter: (val: string): string | string[] => {
+            if (typeof val === 'string') return val;
+            const value = val as unknown as number;
+            return this.selectedTop10?.hasPrice
+              ? (formatNumber(value) as string)
+              : (this.maskPipe.transform(value.toFixed(0), 'separator', {
+                  thousandSeparator: ',',
+                }) as unknown as string);
+          },
+        },
+      },
+      yaxis: {
+        labels: {
+          formatter: (val: number | string): string | string[] => {
+            return typeof val === 'string'
+              ? val
+              : this.selectedTop10?.hasPrice
+              ? (formatNumber(val) as string)
+              : (this.maskPipe.transform(val.toFixed(0), 'separator', { thousandSeparator: ',' }) as unknown as string);
+          },
+          style: {
+            fontFamily: 'inherit',
+            fontSize: '15px',
+          },
+        },
+      },
+      colors: ['#60d39d'],
+    },
   };
 
   compositeTransactions: CompositeTransaction[][] = [];
@@ -549,9 +676,10 @@ export default class SellIndicatorsPageComponent implements OnInit {
     this.adapter.setLocale(this.lang.getCurrent().code === 'ar-SA' ? 'ar-EG' : 'en-US');
     const months = this.adapter.getMonthNames('long');
     this.dashboardService
-      .loadLineChartKpiForDuration(DurationTypes.MONTHLY, this.selectedRoot!, this.criteria.criteria)
+      .loadLineChartKpiForDuration(DurationEndpoints.MONTHLY, this.selectedRoot!, this.criteria.criteria)
       .pipe(takeUntil(this.destroy$))
       .subscribe((data) => {
+        data.sort((a, b) => a.issuePeriod - b.issuePeriod);
         const _minMaxAvg = minMaxAvg(data.map((d) => d.kpiVal));
         this.chart.first
           .updateOptions({
@@ -576,7 +704,9 @@ export default class SellIndicatorsPageComponent implements OnInit {
   updateChartHalfyOrQuarterly() {
     this.dashboardService
       .loadLineChartKpiForDuration(
-        this.selectedDurationType === DurationTypes.HALFY ? DurationTypes.HALFY : DurationTypes.SELL_QUARTERLY,
+        this.selectedDurationType === DurationEndpoints.HALFY
+          ? DurationEndpoints.HALFY
+          : DurationEndpoints.SELL_QUARTERLY,
         this.selectedRoot!,
         this.criteria.criteria
       )
@@ -585,7 +715,7 @@ export default class SellIndicatorsPageComponent implements OnInit {
         map((durationData) => {
           return this.dashboardService.mapDurationData(
             durationData,
-            this.selectedDurationType === DurationTypes.HALFY
+            this.selectedDurationType === DurationEndpoints.HALFY
               ? this.lookupService.sellLookups.halfYearDurations
               : this.lookupService.sellLookups.quarterYearDurations
           );
@@ -614,10 +744,10 @@ export default class SellIndicatorsPageComponent implements OnInit {
     this.selectedChartType = type;
   }
 
-  updateChartDuration(durationType: DurationTypes) {
+  updateChartDuration(durationType: DurationEndpoints) {
     this.selectedDurationType = durationType;
-    if (this.selectedDurationType === DurationTypes.YEARLY) this.updateChart();
-    else if (this.selectedDurationType === DurationTypes.MONTHLY) this.updateChartMonthly();
+    if (this.selectedDurationType === DurationEndpoints.YEARLY) this.updateChart();
+    else if (this.selectedDurationType === DurationEndpoints.MONTHLY) this.updateChartMonthly();
     else this.updateChartHalfyOrQuarterly();
   }
 
@@ -630,6 +760,12 @@ export default class SellIndicatorsPageComponent implements OnInit {
       .loadSellKpiTransactions(this.criteria.criteria)
       .pipe(takeUntil(this.destroy$))
       .subscribe((list) => {
+        if (this.enableChangerealEstateValueMinMaxValues) {
+          this.minMaxRealestateValue = minMaxAvg(list.map((item) => item.realEstateValue));
+        }
+        if (this.enableChangeAreaMinMaxValues) {
+        }
+        console.log(list);
         this.transactions.next(list);
       });
   }
@@ -658,20 +794,34 @@ export default class SellIndicatorsPageComponent implements OnInit {
   updateTop10Chart(): void {
     if (!this.top10Chart.length) return;
     this.top10Chart.first
-      .updateOptions({
-        series: [
-          {
-            name: this.selectedTop10.getNames(),
-            data: this.top10ChartData.map((item) => {
-              return { x: item.zoneInfo.getNames(), y: item.kpiVal };
-            }),
+      .updateOptions(
+        {
+          series: [
+            {
+              name: this.selectedTop10.getNames(),
+              data: this.top10ChartData.map((item) => {
+                return { x: item.zoneInfo.getNames(), y: item.kpiVal };
+              }),
+            },
+          ],
+          xaxis: {
+            categories: [],
           },
-        ],
-        xaxis: {
-          categories: [],
         },
-      })
+        true
+      )
       .then();
+  }
+
+  isSelectedTop10ChartType(type: ChartType) {
+    return this.selectedTop10ChartType === type;
+  }
+
+  updateTop10ChartType(type: ChartType) {
+    this.selectedTop10ChartType = type;
+    this.top10Chart.first
+      .updateOptions(this.top10ChartOptions[this.selectedTop10ChartType], true)
+      .then(() => this.updateTop10Chart());
   }
 
   loadRoomCounts(): void {
@@ -714,10 +864,11 @@ export default class SellIndicatorsPageComponent implements OnInit {
     district.length && generatedTitle.push(district);
     propertyType.length && generatedTitle.push(propertyType);
     purpose.length && generatedTitle.push(purpose);
-    return `(${generatedTitle.join(' , ')})`;
+    return generatedTitle.length ? `(${generatedTitle.join(' , ')})` : '';
   }
 
   private getSelectedMunicipality(): string {
+    if (this.criteria.criteria.municipalityId === -1) return '';
     return this.lookupService.sellMunicipalitiesMap[this.criteria.criteria.municipalityId].getNames() || '';
   }
 

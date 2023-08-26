@@ -12,7 +12,7 @@ import {
   Output,
 } from '@angular/core';
 import { AbstractControl, ReactiveFormsModule, UntypedFormBuilder } from '@angular/forms';
-import { MatNativeDateModule, MatRippleModule } from '@angular/material/core';
+import { DateAdapter, MatNativeDateModule, MatRippleModule } from '@angular/material/core';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
@@ -23,6 +23,7 @@ import { InputComponent } from '@components/input/input.component';
 import { SelectInputComponent } from '@components/select-input/select-input.component';
 import { AppIcons } from '@constants/app-icons';
 import { CriteriaContract } from '@contracts/criteria-contract';
+import { MinMaxAvgContract } from '@contracts/min-max-avg-contract';
 import { ControlDirective } from '@directives/control.directive';
 import { InputPrefixDirective } from '@directives/input-prefix.directive';
 import { InputSuffixDirective } from '@directives/input-suffix.directive';
@@ -34,8 +35,9 @@ import { LookupService } from '@services/lookup.service';
 import { StickyService } from '@services/sticky.service';
 import { TranslationService } from '@services/translation.service';
 import { range } from '@utils/utils';
+import { CustomValidators } from '@validators/custom-validators';
 import { NgxMaskDirective } from 'ngx-mask';
-import { debounceTime, Subject, takeUntil } from 'rxjs';
+import { debounceTime, filter, Subject, takeUntil } from 'rxjs';
 
 @Component({
   selector: 'app-transactions-filter',
@@ -87,14 +89,21 @@ export class TransactionsFilterComponent implements OnInit, OnDestroy {
   @Input() zones: Lookup[] = [];
   @Input() rooms: Lookup[] = [];
   @Input() areas: Lookup[] = [];
+  @Input() minMaxِِِArea: Partial<MinMaxAvgContract> = {};
+  @Input() minMaxِِِRealestateValue: Partial<MinMaxAvgContract> = {};
+  @Input() minMaxِِِRentPaymentMonthly: Partial<MinMaxAvgContract> = {};
 
   @Output() fromChanged = new EventEmitter<{ criteria: CriteriaContract; type: CriteriaType }>();
+  @Output() enableChangeAreaMinMaxValues = new EventEmitter<boolean>();
+  @Output() enableChangerentPaymentMonthlyMinMaxValues = new EventEmitter<boolean>();
+  @Output() enableChangerealEstateValueMinMaxValues = new EventEmitter<boolean>();
 
   lang = inject(TranslationService);
   fb = inject(UntypedFormBuilder);
   lookupService = inject(LookupService);
   datePipe = inject(DatePipe);
   stickyService = inject(StickyService);
+  adapter = inject(DateAdapter);
 
   @HostListener('window:scroll')
   windowScroll(): void {
@@ -111,36 +120,58 @@ export class TransactionsFilterComponent implements OnInit, OnDestroy {
   durations = this.lookupService.rentLookups.durations;
   halfYearDurations = this.lookupService.rentLookups.halfYearDurations;
   quarterYearDurations = this.lookupService.rentLookups.quarterYearDurations;
+  months: { label: string; value: number }[] = [];
   // spaces = this.lookupService.rentLookups.spaces; // will use it later
 
-  form = this.fb.group({
-    municipalityId: [],
-    zoneId: [],
-    propertyTypeList: [],
-    purposeList: [],
-    issueDateQuarterList: [],
-    bedRoomsCount: [],
-    issueDateYear: [],
-    issueDateMonth: [],
-    issueDateStartMonth: [],
-    issueDateEndMonth: [],
-    issueDateFrom: [],
-    issueDateTo: [],
-    rentPaymentMonthlyPerUnitFrom: [],
-    rentPaymentMonthlyPerUnitTo: [],
-    realEstateValueFrom: [],
-    realEstateValueTo: [],
-    areaFrom: [],
-    areaTo: [],
-    baseYear: [],
-    streetNo: [],
-    areaCode: [],
-    // not related to the criteria
-    durationType: [],
-    halfYearDuration: [],
-    quarterYearDuration: [],
-    rangeDate: [],
-  });
+  form = this.fb.group(
+    {
+      municipalityId: [],
+      zoneId: [],
+      propertyTypeList: [],
+      purposeList: [],
+      issueDateQuarterList: [],
+      bedRoomsCount: [],
+      issueDateYear: [],
+      issueDateMonth: [],
+      issueDateStartMonth: [],
+      issueDateEndMonth: [],
+      issueDateFrom: [],
+      issueDateTo: [],
+      rentPaymentMonthlyPerUnitFrom: [
+        '',
+        [(control: AbstractControl) => CustomValidators.minValue(this.minMaxِِِRentPaymentMonthly.min)(control)],
+      ],
+      rentPaymentMonthlyPerUnitTo: [
+        '',
+        [(control: AbstractControl) => CustomValidators.maxValue(this.minMaxِِِRentPaymentMonthly.max)(control)],
+      ],
+      realEstateValueFrom: [
+        '',
+        [(control: AbstractControl) => CustomValidators.minValue(this.minMaxِِِRealestateValue.min)(control)],
+      ],
+      realEstateValueTo: [
+        '',
+        [(control: AbstractControl) => CustomValidators.maxValue(this.minMaxِِِRealestateValue.max)(control)],
+      ],
+      areaFrom: ['', [(control: AbstractControl) => CustomValidators.minValue(this.minMaxِِِArea.min)(control)]],
+      areaTo: ['', [(control: AbstractControl) => CustomValidators.maxValue(this.minMaxِِِArea.max)(control)]],
+      baseYear: [],
+      streetNo: [],
+      areaCode: [],
+      // not related to the criteria
+      durationType: [],
+      halfYearDuration: [],
+      quarterYearDuration: [],
+      rangeDate: [],
+    },
+    {
+      validators: [
+        CustomValidators.compareFromTo('rentPaymentMonthlyPerUnitFrom', 'rentPaymentMonthlyPerUnitTo'),
+        CustomValidators.compareFromTo('realEstateValueFrom', 'realEstateValueTo'),
+        CustomValidators.compareFromTo('areaFrom', 'areaTo'),
+      ],
+    }
+  );
 
   private destroy$: Subject<void> = new Subject();
 
@@ -148,6 +179,7 @@ export class TransactionsFilterComponent implements OnInit, OnDestroy {
   displayYear = true;
   displayHalf = false;
   displayQuarter = false;
+  displayMonth = false;
   displayRange = false;
   minDate: Date = new Date('2019-01-01');
   maxDate: Date = new Date();
@@ -171,6 +203,7 @@ export class TransactionsFilterComponent implements OnInit, OnDestroy {
     this.listenToDurationTypeChange();
     this.setDefaultValues();
     this.listenToFormChanges();
+    this.listenToIssueYearChange();
   }
 
   get municipalityId(): AbstractControl {
@@ -191,6 +224,10 @@ export class TransactionsFilterComponent implements OnInit, OnDestroy {
 
   get purposeList(): AbstractControl {
     return this.form.get('purposeList') as AbstractControl;
+  }
+
+  get issueDateYear(): AbstractControl {
+    return this.form.get('issueDateYear') as AbstractControl;
   }
 
   get issueDateFrom(): AbstractControl {
@@ -287,9 +324,19 @@ export class TransactionsFilterComponent implements OnInit, OnDestroy {
         ? this.onlyDisplayHalfYear()
         : value === Durations.QUARTER_YEARLY
         ? this.onlyDisplayQuarterYear()
+        : value === Durations.MONTHLY
+        ? this.onlyDisplayMonth()
         : value === Durations.DURATION
         ? this.onlyDisplayRangeYear()
         : null;
+    });
+  }
+
+  private listenToIssueYearChange() {
+    this.issueDateYear.valueChanges.pipe(takeUntil(this.destroy$)).subscribe((_) => {
+      if (this.durationType.value === Durations.MONTHLY) {
+        this.setMonths();
+      }
     });
   }
 
@@ -297,12 +344,14 @@ export class TransactionsFilterComponent implements OnInit, OnDestroy {
     this.displayYear = true;
     this.displayHalf = false;
     this.displayQuarter = false;
+    this.displayMonth = false;
     this.displayRange = false;
 
     this.form.patchValue(
       {
         issueDateFrom: null,
         issueDateTo: null,
+        issueDateMonth: null,
       },
       { emitEvent: false }
     );
@@ -312,11 +361,13 @@ export class TransactionsFilterComponent implements OnInit, OnDestroy {
     this.displayYear = false;
     this.displayHalf = true;
     this.displayQuarter = false;
+    this.displayMonth = false;
     this.displayRange = false;
     this.form.patchValue(
       {
         issueDateFrom: null,
         issueDateTo: null,
+        issueDateMonth: null,
       },
       { emitEvent: false }
     );
@@ -326,7 +377,27 @@ export class TransactionsFilterComponent implements OnInit, OnDestroy {
     this.displayYear = false;
     this.displayHalf = false;
     this.displayQuarter = true;
+    this.displayMonth = false;
     this.displayRange = false;
+    this.form.patchValue(
+      {
+        issueDateFrom: null,
+        issueDateTo: null,
+        issueDateMonth: null,
+      },
+      { emitEvent: false }
+    );
+  }
+
+  private onlyDisplayMonth() {
+    this.displayYear = false;
+    this.displayHalf = false;
+    this.displayQuarter = false;
+    this.displayMonth = true;
+    this.displayRange = false;
+
+    this.setMonths();
+
     this.form.patchValue(
       {
         issueDateFrom: null,
@@ -336,10 +407,25 @@ export class TransactionsFilterComponent implements OnInit, OnDestroy {
     );
   }
 
+  private setMonths() {
+    this.adapter.setLocale(this.lang.getCurrent().code === 'ar-SA' ? 'ar-EG' : 'en-US');
+    const _months = this.adapter.getMonthNames('long');
+    this.months = _months.map((month, index) => ({
+      label: month,
+      value: index,
+    }));
+
+    if (this.issueDateYear.value === 2019) this.months = this.months.filter((month) => month.value >= 3);
+    if (this.issueDateYear.value === new Date().getFullYear()) {
+      this.months = this.months.filter((month) => month.value <= new Date().getMonth());
+    }
+  }
+
   private onlyDisplayRangeYear() {
     this.displayYear = false;
     this.displayHalf = false;
     this.displayQuarter = false;
+    this.displayMonth = false;
     this.displayRange = true;
   }
 
@@ -349,6 +435,12 @@ export class TransactionsFilterComponent implements OnInit, OnDestroy {
         ' --- ' +
         (this.issueDateTo.value ? this.datePipe.transform(this.issueDateTo.value, 'YYY-MM-dd') : '')
     );
+    this.form.patchValue(
+      {
+        issueDateMonth: null,
+      },
+      { emitEvent: false }
+    );
   }
 
   resetForm(): void {
@@ -357,7 +449,7 @@ export class TransactionsFilterComponent implements OnInit, OnDestroy {
   }
 
   search() {
-    this.sendFilter(CriteriaType.USER);
+    if (this.form.valid) this.sendFilter(CriteriaType.USER);
   }
 
   sendFilter(criteriaType: CriteriaType): void {
@@ -388,12 +480,23 @@ export class TransactionsFilterComponent implements OnInit, OnDestroy {
     }
 
     this.fromChanged.emit({ criteria: value as CriteriaContract, type: criteriaType });
+    this.enableChangeAreaMinMaxValues.emit(this._enableChangeAreaMinMaxValues(this.form.value));
+    this.enableChangerealEstateValueMinMaxValues.emit(this._enableChangeRealestateValueMinMaxValues(this.form.value));
+    this.enableChangerentPaymentMonthlyMinMaxValues.emit(
+      this._enableChangerentPaymentMonthlyMinMaxValues(this.form.value)
+    );
   }
 
   private listenToFormChanges() {
-    this.form.valueChanges.pipe(takeUntil(this.destroy$), debounceTime(250)).subscribe(() => {
-      this.sendFilter(CriteriaType.USER);
-    });
+    this.form.valueChanges
+      .pipe(
+        takeUntil(this.destroy$),
+        debounceTime(250),
+        filter((_) => this.form.valid)
+      )
+      .subscribe(() => {
+        this.sendFilter(CriteriaType.USER);
+      });
   }
 
   _removeUnusedProps(value: any) {
@@ -427,5 +530,24 @@ export class TransactionsFilterComponent implements OnInit, OnDestroy {
 
   isMort(): boolean {
     return this.isIndicator('mortgage');
+  }
+
+  private _enableChangeAreaMinMaxValues(value: any): boolean {
+    const enable =
+      !Object.prototype.hasOwnProperty.call(value, 'areaFrom') &&
+      !Object.prototype.hasOwnProperty.call(value, 'areaTo');
+    return enable;
+  }
+  private _enableChangeRealestateValueMinMaxValues(value: any): boolean {
+    const enable =
+      !Object.prototype.hasOwnProperty.call(value, 'realEstateValueFrom') &&
+      !Object.prototype.hasOwnProperty.call(value, 'realEstateValueTo');
+    return enable;
+  }
+  private _enableChangerentPaymentMonthlyMinMaxValues(value: any): boolean {
+    const enable =
+      !Object.prototype.hasOwnProperty.call(value, 'rentPaymentMonthlyPerUnitFrom') &&
+      !Object.prototype.hasOwnProperty.call(value, 'rentPaymentMonthlyPerUnitTo');
+    return enable;
   }
 }

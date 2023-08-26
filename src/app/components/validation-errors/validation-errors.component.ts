@@ -16,6 +16,9 @@ import { TranslationService } from '@services/translation.service';
 export class ValidationErrorsComponent {
   lang = inject(TranslationService);
   private _errors: ValidationErrors | null | undefined;
+
+  errorContent?: string;
+
   set errors(errors: ValidationErrors | null | undefined) {
     this.getCurrentError(errors);
     this._errors = errors;
@@ -31,6 +34,7 @@ export class ValidationErrorsComponent {
   private getCurrentError(errors: ValidationErrors | null | undefined): void {
     if (!errors) {
       this.currentError = '';
+      this.errorContent = undefined;
       return;
     }
     let currentNewError;
@@ -39,12 +43,14 @@ export class ValidationErrorsComponent {
       if (currentNewError) break;
     }
     if (!currentNewError) {
+      this.errorContent = undefined;
       return;
     }
 
     const validationKey = currentNewError[0] as keyof ValidationMessagesType;
 
     const validation = ValidationMessages[validationKey];
+    if (typeof errors[validationKey] === 'object') this.errorContent = errors[validationKey][validationKey] as string;
     if (!validation) {
       this.currentError = `Error: key not exists (${validationKey}) in ValidationMessages`;
       return;

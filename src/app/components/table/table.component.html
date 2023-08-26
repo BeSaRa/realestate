@@ -6,11 +6,11 @@
       *ngFor="let displayedColumn of displayedColumnNames; let index = index"
       [matColumnDef]="displayedColumn">
       <th *matHeaderCellDef class="p-2">
-        {{ getColumnTemplate(displayedColumn)!.columnHeader }}
+        <ng-container [ngTemplateOutlet]="getColumnTemplate(displayedColumn)!.header.templateRef"></ng-container>
       </th>
       <td *matCellDef="let row" class="text-primary py-2">
         <ng-container
-          [ngTemplateOutlet]="getColumnTemplate(displayedColumn)!.templateRef"
+          [ngTemplateOutlet]="getColumnTemplate(displayedColumn)!.cell.templateRef"
           [ngTemplateOutletContext]="{
             $implicit: getColumnTemplate(displayedColumn)!.getBindValue(row)
           }"></ng-container>
@@ -26,22 +26,40 @@
       mat-row
       *matRowDef="let row; columns: displayedColumnNames"
       class="text-center text-xl border-b border-gray-200"></tr>
+    <tr *matNoDataRow>
+      <td class="p-4" colspan="100">{{ lang.map.no_records_to_display }}</td>
+    </tr>
   </table>
 
   <!-- paginator -->
-  <div class="flex justify-between items-center">
+  <div *ngIf="length" class="flex justify-between items-center">
     <span class="text-primary/70">
-      {{ lang.map.paginator_showing_label.toCapital() }} {{ offset + 1 }} {{ lang.map.paginator_to_label.toCapital() }}
-      {{ offset + pageSize > length ? length : offset + pageSize }} {{ lang.map.paginator_from_label.toCapital() }}
+      {{ lang.map.paginator_showing_label.toCapital() }} {{ length ? offset + 1 : 0 }}
+      {{ lang.map.paginator_to_label.toCapital() }}
+      {{ offset + pageSize > length ? length : offset + pageSize }}
+      {{ lang.map.paginator_from_label.toCapital() }}
       {{ length }}
       {{ lang.map.paginator_entry_label.toCapital() }}
     </span>
-    <mat-paginator
-      (page)="paginate($event)"
-      [pageSize]="pageSize"
-      [showFirstLastButtons]="showFirstLastButtons"
-      [hidePageSize]="true"
-      [length]="length">
-    </mat-paginator>
+    <div class="flex justify-between items-center gap-4">
+      <mat-paginator
+        (page)="paginate($event)"
+        [pageSize]="pageSize"
+        [showFirstLastButtons]="showFirstLastButtons"
+        [hidePageSize]="true"
+        [length]="length">
+      </mat-paginator
+      ><app-select-input
+        *ngIf="sortOptions.length > 0"
+        class="w-52"
+        [formControl]="sortControl"
+        [placeholder]="lang.map.sort_order"
+        [displayErrors]="false"
+        [noMargin]="true"
+        label=""
+        bindLabel="getNames"
+        bindValue="value"
+        [options]="sortOptions"></app-select-input>
+    </div>
   </div>
 </div>
