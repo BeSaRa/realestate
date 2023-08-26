@@ -35,6 +35,7 @@ import { forkJoin, map, Observable } from 'rxjs';
 import { RentTransactionPurposePopupComponent } from '../popups/rent-transaction-purpose-popup/rent-transaction-purpose-popup.component';
 import { SellTransactionPurposePopupComponent } from '../popups/sell-transaction-purpose-popup/sell-transaction-purpose-popup.component';
 import { DialogService } from './dialog.service';
+import { FurnitureStatusKpi } from '@models/furniture-status-kpi';
 
 @Injectable({
   providedIn: 'root',
@@ -200,6 +201,11 @@ export class DashboardService extends RegisterServiceMixin(class {}) implements 
   @CastResponse(() => RoomNumberKpi)
   loadSellRoomCounts(criteria: Partial<SellCriteriaContract>): Observable<RoomNumberKpi[]> {
     return this.http.post<RoomNumberKpi[]>(this.urlService.URLS.SELL_KPI34, criteria);
+  }
+
+  @CastResponse(() => FurnitureStatusKpi)
+  loadRentFurnitureStatus(criteria: Partial<RentCriteriaContract>): Observable<FurnitureStatusKpi[]> {
+    return this.http.post<FurnitureStatusKpi[]>(this.urlService.URLS.RENT_KPI34_1, criteria);
   }
 
   openRentChartDialogBasedOnPurpose(
