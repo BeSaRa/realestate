@@ -72,6 +72,13 @@
       bindValue="lookupKey"
       [label]="lang.map.select_quarter"
       [options]="quarterYearDurations" />
+    <app-select-input
+      *ngIf="displayMonth"
+      formControlName="issueDateMonth"
+      bindLabel="label"
+      bindValue="value"
+      [label]="lang.map.select_month"
+      [options]="months" />
     <app-input
       *ngIf="displayRange"
       formControlName="rangeDate"

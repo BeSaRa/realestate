@@ -1,8 +1,8 @@
 /* eslint-disable no-control-regex,no-useless-escape */
-import { AbstractControl, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
+import { AbstractControl, FormGroup, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
 import { ValidationReturnType } from '@app-types/validation-return-type';
-import { hasValidLength, isValidValue } from '@utils/utils';
 import { LangKeysContract } from '@contracts/lang-keys-contract';
+import { hasValidLength, isValidValue } from '@utils/utils';
 // noinspection RegExpDuplicateCharacterInClass
 export const validationPatterns = {
   ENG_NUM: new RegExp(/^[a-zA-Z0-9\- ]+$/),
@@ -122,6 +122,32 @@ export function minlengthValidator(minLength: number): ValidatorFn {
   };
 }
 
+export function maxValueValidator(maxValue?: number): ValidatorFn {
+  if (!isValidValue(maxValue)) {
+    return Validators.nullValidator;
+  }
+  const _maxValue = maxValue as number;
+  return (control: AbstractControl): ValidationErrors | null => {
+    if (!isValidValue(control.value)) {
+      return null;
+    }
+    return control.value > _maxValue ? { maxValue: { maxValue: maxValue, actualValue: control.value } } : null;
+  };
+}
+
+export function minvValueValidator(minValue?: number): ValidatorFn {
+  if (!isValidValue(minValue)) {
+    return Validators.nullValidator;
+  }
+  const _minValue = minValue as number;
+  return (control: AbstractControl): ValidationErrors | null => {
+    if (!isValidValue(control.value)) {
+      return null;
+    }
+    return control.value < _minValue ? { minValue: { minValue: minValue, actualValue: control.value } } : null;
+  };
+}
+
 export function requiredValidator(control: AbstractControl): ValidationErrors | null {
   return !isValidValue(control.value) ? { required: true } : null;
 }
@@ -171,5 +197,29 @@ export function anyFieldsHasLength(fields: string[]): ValidatorFn {
       return value ? value.trim().length : false;
     });
     return valid ? null : { atLeastOneRequired: fields };
+  };
+}
+
+export function compareFromTo(fromControlName: string, toControlName: string) {
+  return (formGroup: FormGroup): ValidationErrors | null => {
+    const fromControl = formGroup.controls[fromControlName];
+    const toControl = formGroup.controls[toControlName];
+
+    const from = fromControl.value as number;
+    const to = toControl.value as number;
+
+    if ((from && to && from > to) || to === 0) {
+      fromControl.setErrors({ ...fromControl.errors, largerThanToValue: true });
+      toControl.setErrors({ ...toControl.errors, smallerThanFromValue: true });
+      return { fromIsLargerThanTo: true };
+    }
+
+    delete fromControl.errors?.['largerThanToValue'];
+    delete toControl.errors?.['smallerThanFromValue'];
+
+    if (Object.keys(fromControl.errors ?? {}).length === 0) fromControl.setErrors(null);
+    if (Object.keys(toControl.errors ?? {}).length === 0) toControl.setErrors(null);
+
+    return null;
   };
 }

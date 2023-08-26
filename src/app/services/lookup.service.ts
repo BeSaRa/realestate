@@ -1,13 +1,13 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { LookupsContract } from '@contracts/lookups-contract';
+import { ServiceContract } from '@contracts/service-contract';
 import { RegisterServiceMixin } from '@mixins/register-service-mixin';
 import { Lookup } from '@models/lookup';
 import { LookupsMap } from '@models/lookups-map';
 import { UrlService } from '@services/url.service';
 import { CastResponse } from 'cast-response';
 import { forkJoin, map, Observable, tap } from 'rxjs';
-import { ServiceContract } from '@contracts/service-contract';
 
 @Injectable({
   providedIn: 'root',
@@ -100,7 +100,7 @@ export class LookupService extends RegisterServiceMixin(class {}) implements Ser
         }),
         tap(([rent, sell, mort]) => {
           this.rentLookups = rent;
-          this.sellLookups = this._addAllToDistrict(this._addAllToPropertyType(sell));
+          this.sellLookups = this._addAllToMunicipalities(this._addAllToDistrict(this._addAllToPropertyType(sell)));
           this.mortLookups = this._addAllToPropertyType(mort);
         })
       )
@@ -186,6 +186,19 @@ export class LookupService extends RegisterServiceMixin(class {}) implements Ser
         lookupKey: -1,
       }),
       ...lookups.districtList,
+    ];
+    return lookups;
+  }
+
+  private _addAllToMunicipalities(lookups: LookupsContract) {
+    if (lookups.municipalityList.find((p) => p.lookupKey === -1)) return lookups;
+    lookups.municipalityList = [
+      new Lookup().clone<Lookup>({
+        arName: 'الكل',
+        enName: 'All',
+        lookupKey: -1,
+      }),
+      ...lookups.municipalityList,
     ];
     return lookups;
   }

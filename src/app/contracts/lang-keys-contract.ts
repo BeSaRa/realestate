@@ -180,4 +180,20 @@ export interface LangKeysContract {
   monthly: string;
 
   rent_contracts_count_according_to_furniture: string;
+  select_month: string;
+  total_area: string;
+
+  smaller_than_from_value: string;
+  larger_than_to_value: string;
+  max_value: string;
+  min_value: string;
+
+  sort_order: string;
+  most_recent: string;
+  oldest: string;
+  the_higher_price: string;
+  the_lowest_price: string;
+  highest_price_per_square_foot: string;
+  lowest_price_per_square_foot: string;
+  area_in_square_foot: string;
 }

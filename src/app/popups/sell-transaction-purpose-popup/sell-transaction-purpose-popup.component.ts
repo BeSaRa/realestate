@@ -42,19 +42,16 @@ export class SellTransactionPurposePopupComponent implements AfterViewInit {
       height: 350,
       width: 600,
     },
-    title: {
-      text: this.lang.map.year + ' : ' + this.data[0].issueYear.toString(),
-      align: 'center',
-      floating: true,
-      style: {
-        fontFamily: 'inherit',
-      },
-    },
+    // title: {
+    //   text: this.lang.map.year + ' : ' + this.data[0].issueYear.toString(),
+    //   align: 'center',
+    //   floating: true,
+    //   style: {
+    //     fontFamily: 'inherit',
+    //   },
+    // },
     plotOptions: {},
-    xaxis: {
-      type: 'category',
-      categories: [],
-    },
+
     dataLabels: {
       enabled: true,
       formatter: (val: number, { seriesIndex }): string | number => {
@@ -90,6 +87,22 @@ export class SellTransactionPurposePopupComponent implements AfterViewInit {
         },
       },
     ],
+    xaxis: {
+      tickPlacement: 'between',
+      labels: {
+        formatter: function (val: string) {
+          if (typeof val === 'string') {
+            const index = val.indexOf(' - ');
+            return val.slice(0, index);
+          }
+          return '';
+        },
+      },
+      group: {
+        style: { fontSize: '16px', fontWeight: 700 },
+        groups: [...this._getGroups()],
+      },
+    },
   };
 
   ngAfterViewInit(): void {
@@ -103,7 +116,7 @@ export class SellTransactionPurposePopupComponent implements AfterViewInit {
           data: this.data.map((item) => {
             return {
               y: item.medianPrice,
-              x: this.months[item.issueMonth - 1],
+              x: this.months[item.issueMonth - 1] + ' - ' + item.issueYear,
             };
           }),
         },
@@ -113,13 +126,50 @@ export class SellTransactionPurposePopupComponent implements AfterViewInit {
           data: this.data.map((item) => {
             return {
               y: item.countCertificateCode,
-              x: this.months[item.issueMonth - 1],
+              x: this.months[item.issueMonth - 1] + ' - ' + item.issueYear,
             };
           }),
         },
       ]);
       const _minMaxAvg = minMaxAvg(this.data.map((item) => item.medianPrice));
-      this.chart.updateOptions({ colors: [formatChartColors(_minMaxAvg)] });
+      this.chart.updateOptions({
+        colors: [formatChartColors(_minMaxAvg)],
+        tooltip: {
+          x: {
+            formatter: function (val: string) {
+              return val;
+            },
+          },
+        },
+      });
     });
+  }
+
+  private _getGroups(): { title: string; cols: number }[] {
+    // this.data = [
+    //   ...this.data,
+    //   ...[9, 10, 11, 12].map((month) => {
+    //     const d = { ...this.data[0] } as SellTransactionPurpose;
+    //     d.issueMonth = month;
+    //     d.issueYear = 2022;
+    //     return d;
+    //   }),
+    // ];
+    this.data.sort((a, b) => {
+      if (a.issueYear !== b.issueYear) return a.issueYear - b.issueYear;
+      return a.issueMonth - b.issueMonth;
+    });
+    const groupsObject = this.data.reduce((acc, cur) => {
+      if (Object.prototype.hasOwnProperty.call(acc, cur.issueYear)) {
+        acc[cur.issueYear]++;
+        return acc;
+      } else {
+        return { ...acc, [cur.issueYear]: 1 };
+      }
+    }, {} as Record<number, number>);
+
+    return Object.keys(groupsObject)
+      .map((year) => ({ title: year, cols: groupsObject[year as unknown as number] }))
+      .sort((a, b) => (a.title as unknown as number) - (b.title as unknown as number));
   }
 }

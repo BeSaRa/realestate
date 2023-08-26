@@ -1,28 +1,35 @@
 import { CommonModule } from '@angular/common';
 import { Component, ContentChildren, Input, OnInit, QueryList, inject } from '@angular/core';
+import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
+import { MatSortModule } from '@angular/material/sort';
 import { MatTableModule } from '@angular/material/table';
+import { SelectInputComponent } from '@components/select-input/select-input.component';
 import { TableColumnTemplateDirective } from '@directives/table-column-template.directive';
 import { AppTableDataSource } from '@models/app-table-data-source';
+import { TableSortOption } from '@models/table-sort-option';
 import { TranslationService } from '@services/translation.service';
 import { Observable, isObservable, map, tap } from 'rxjs';
 
 @Component({
   selector: 'app-table',
   standalone: true,
-  imports: [CommonModule, MatTableModule, MatPaginatorModule],
+  imports: [CommonModule, MatTableModule, MatPaginatorModule, MatSortModule, SelectInputComponent, ReactiveFormsModule],
   templateUrl: './table.component.html',
   styleUrls: ['./table.component.scss'],
 })
 export class TableComponent implements OnInit {
-  @Input({ required: true }) data!: unknown[] | Observable<unknown[]>;
+  @Input({ required: true }) data!: any[] | Observable<any[]>;
   @Input() pageSize = 5;
   @Input() minWidth = '1000px';
   @Input() headerBgColor = '!bg-primary';
+  @Input() sortOptions: TableSortOption[] = [];
+  @Input() defaultSortOption?: TableSortOption;
 
   @ContentChildren(TableColumnTemplateDirective) columnsTemplates!: QueryList<TableColumnTemplateDirective>;
 
-  dataSource!: AppTableDataSource<unknown>;
+  dataSource = new AppTableDataSource<any>([]);
+  sortedData!: any[] | Observable<any[]>;
 
   length!: number;
   pageSizeOptions: number[] = [2, 5, 10];
@@ -31,9 +38,14 @@ export class TableComponent implements OnInit {
 
   lang = inject(TranslationService);
 
+  sortControl = new FormControl<{ column: string; direction: 'asc' | 'desc' } | undefined>(undefined);
+
   ngOnInit(): void {
+    this.sortedData = this.data;
     this._initializeLength();
     this._initializeDataSource();
+    this._initializeSort();
+    this.sortControl.patchValue(this.defaultSortOption?.value);
   }
 
   getColumnTemplate(columnName: string) {
@@ -63,9 +75,9 @@ export class TableComponent implements OnInit {
   }
 
   private _initializeDataSource() {
-    let paginatedData = this.data;
-    if (isObservable(this.data)) {
-      paginatedData = this.data.pipe(
+    let paginatedData = this.sortedData;
+    if (isObservable(this.sortedData)) {
+      paginatedData = this.sortedData.pipe(
         map((data) => {
           this.length = data.length;
           if (this.offset + this.pageSize > this.length) return data.slice(this.offset);
@@ -73,9 +85,30 @@ export class TableComponent implements OnInit {
         })
       );
     } else {
-      if (this.offset + this.pageSize > this.length) paginatedData = this.data.slice(this.offset);
-      else paginatedData = this.data.slice(this.offset, this.offset + this.pageSize);
+      if (this.offset + this.pageSize > this.length) paginatedData = this.sortedData.slice(this.offset);
+      else paginatedData = this.sortedData.slice(this.offset, this.offset + this.pageSize);
     }
-    this.dataSource = new AppTableDataSource(paginatedData);
+    this.dataSource.setItems(paginatedData);
+  }
+
+  private _initializeSort() {
+    this.sortControl.valueChanges.subscribe((value) => {
+      if (isObservable(this.data)) {
+        this.sortedData = this.data.pipe(
+          map((data) => {
+            return data.sort((a, b) => {
+              if (value?.direction === 'desc') return b[value.column] > a[value.column] ? 1 : -1;
+              else return a[value!.column] > b[value!.column] ? 1 : -1;
+            });
+          })
+        );
+      } else {
+        this.sortedData = this.data.sort((a, b) => {
+          if (value?.direction === 'desc') return b[value.column] > a[value.column] ? 1 : -1;
+          else return a[value!.column] > b[value!.column] ? 1 : -1;
+        });
+      }
+      this._initializeDataSource();
+    });
   }
 }

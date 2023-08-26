@@ -42,8 +42,10 @@ import { CarouselComponent, IvyCarouselModule } from 'angular-responsive-carouse
 import { ChartComponent, NgApexchartsModule } from 'ng-apexcharts';
 import { NgxMaskPipe } from 'ngx-mask';
 import { forkJoin, map, ReplaySubject, Subject, take, takeUntil } from 'rxjs';
-import { DurationTypes } from '@enums/durations';
+import { DurationEndpoints } from '@enums/durations';
 import { DateAdapter, MatNativeDateModule } from '@angular/material/core';
+import { TableColumnHeaderTemplateDirective } from '@directives/table-column-header-template.directive';
+import { TableColumnCellTemplateDirective } from '@directives/table-column-cell-template.directive';
 
 @Component({
   selector: 'app-rental-indicators-page',
@@ -61,6 +63,8 @@ import { DateAdapter, MatNativeDateModule } from '@angular/material/core';
     NgApexchartsModule,
     TableComponent,
     TableColumnTemplateDirective,
+    TableColumnHeaderTemplateDirective,
+    TableColumnCellTemplateDirective,
     IconButtonComponent,
     ButtonComponent,
     MatTableModule,
@@ -110,8 +114,8 @@ export default class RentalIndicatorsPageComponent {
   pieChart!: QueryList<ChartComponent>;
 
   selectedRootChartData!: KpiModel[];
-  DurationTypes = DurationTypes;
-  selectedDurationType: DurationTypes = DurationTypes.YEARLY;
+  DurationTypes = DurationEndpoints;
+  selectedDurationType: DurationEndpoints = DurationEndpoints.YEARLY;
 
   pieChartData: RoomNumberKpi[] = [];
 
@@ -543,7 +547,7 @@ export default class RentalIndicatorsPageComponent {
     this.adapter.setLocale(this.lang.getCurrent().code === 'ar-SA' ? 'ar-EG' : 'en-US');
     const months = this.adapter.getMonthNames('long');
     this.dashboardService
-      .loadLineChartKpiForDuration(DurationTypes.MONTHLY, this.selectedRoot!, this.criteria.criteria)
+      .loadLineChartKpiForDuration(DurationEndpoints.MONTHLY, this.selectedRoot!, this.criteria.criteria)
       .pipe(takeUntil(this.destroy$))
       .subscribe((data) => {
         const _minMaxAvg = minMaxAvg(data.map((d) => d.kpiVal));
@@ -570,7 +574,9 @@ export default class RentalIndicatorsPageComponent {
   updateChartHalfyOrQuarterly() {
     this.dashboardService
       .loadLineChartKpiForDuration(
-        this.selectedDurationType === DurationTypes.HALFY ? DurationTypes.HALFY : DurationTypes.RENT_QUARTERLY,
+        this.selectedDurationType === DurationEndpoints.HALFY
+          ? DurationEndpoints.HALFY
+          : DurationEndpoints.RENT_QUARTERLY,
         this.selectedRoot!,
         this.criteria.criteria
       )
@@ -579,7 +585,7 @@ export default class RentalIndicatorsPageComponent {
         map((durationData) => {
           return this.dashboardService.mapDurationData(
             durationData,
-            this.selectedDurationType === DurationTypes.HALFY
+            this.selectedDurationType === DurationEndpoints.HALFY
               ? this.lookupService.sellLookups.halfYearDurations
               : this.lookupService.sellLookups.quarterYearDurations
           );
@@ -608,10 +614,10 @@ export default class RentalIndicatorsPageComponent {
     this.selectedChartType = type;
   }
 
-  updateChartDuration(durationType: DurationTypes) {
+  updateChartDuration(durationType: DurationEndpoints) {
     this.selectedDurationType = durationType;
-    if (this.selectedDurationType === DurationTypes.YEARLY) this.updateChart();
-    else if (this.selectedDurationType === DurationTypes.MONTHLY) this.updateChartMonthly();
+    if (this.selectedDurationType === DurationEndpoints.YEARLY) this.updateChart();
+    else if (this.selectedDurationType === DurationEndpoints.MONTHLY) this.updateChartMonthly();
     else this.updateChartHalfyOrQuarterly();
   }
 

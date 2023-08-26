@@ -1,5 +1,7 @@
-import { Directive, Input, TemplateRef, inject } from '@angular/core';
+import { ContentChild, Directive, Input } from '@angular/core';
 import { objectHasOwnProperty } from '@utils/utils';
+import { TableColumnCellTemplateDirective } from './table-column-cell-template.directive';
+import { TableColumnHeaderTemplateDirective } from './table-column-header-template.directive';
 
 @Directive({
   selector: '[appTableColumnTemplate]',
@@ -8,10 +10,10 @@ import { objectHasOwnProperty } from '@utils/utils';
 export class TableColumnTemplateDirective {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   @Input({ required: true }) columnName!: string;
-  @Input({ required: true }) columnHeader!: string;
   @Input() bindColumnValue?: string | ((item: any) => any);
 
-  templateRef = inject(TemplateRef);
+  @ContentChild(TableColumnHeaderTemplateDirective) header!: TableColumnHeaderTemplateDirective;
+  @ContentChild(TableColumnCellTemplateDirective) cell!: TableColumnCellTemplateDirective;
 
   getBindValue(columnData: unknown): unknown {
     return this.bindColumnValue && typeof this.bindColumnValue === 'string'

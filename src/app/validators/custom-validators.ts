@@ -1,8 +1,11 @@
 import {
   anyFieldsHasLength,
+  compareFromTo,
   decimalValidator,
+  maxValueValidator,
   maxlengthValidator,
   minlengthValidator,
+  minvValueValidator,
   numberValidator,
   patternValidator,
   requiredArrayValidator,
@@ -24,4 +27,7 @@ export const CustomValidators = {
   maxLength: maxlengthValidator,
   anyFieldsHasLength,
   unique: uniqueValidator,
+  compareFromTo: compareFromTo,
+  minValue: minvValueValidator,
+  maxValue: maxValueValidator,
 };
