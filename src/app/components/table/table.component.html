@@ -1,5 +1,21 @@
 <div
   class="overflow-x-auto overflow-y-hidden py-4 px-8 rounded-xl border border-secondary/50 shadow-gray-100 custom-shadow">
+  <div class="flex justify-between mb-4">
+    <div class="flex justify-start items-center gap-4">
+      <span class="font-bold">{{ lang.map.sort_order }}: </span>
+      <app-select-input
+        *ngIf="sortOptions.length > 0"
+        class="w-52"
+        size="sm"
+        [formControl]="sortControl"
+        [displayErrors]="false"
+        [noMargin]="true"
+        label=""
+        bindLabel="getNames"
+        bindValue="value"
+        [options]="sortOptions"></app-select-input>
+    </div>
+  </div>
   <table mat-table [dataSource]="dataSource" class="w-full" [ngStyle]="{ minWidth}">
     <!-- columns -->
     <ng-container
@@ -48,18 +64,7 @@
         [showFirstLastButtons]="showFirstLastButtons"
         [hidePageSize]="true"
         [length]="length">
-      </mat-paginator
-      ><app-select-input
-        *ngIf="sortOptions.length > 0"
-        class="w-52"
-        [formControl]="sortControl"
-        [placeholder]="lang.map.sort_order"
-        [displayErrors]="false"
-        [noMargin]="true"
-        label=""
-        bindLabel="getNames"
-        bindValue="value"
-        [options]="sortOptions"></app-select-input>
+      </mat-paginator>
     </div>
   </div>
 </div>
