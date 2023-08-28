@@ -21,7 +21,7 @@
       [propertyUsages]="propertyUsages"
       [areas]="areas"
       [rooms]="rooms"
-      [minMaxِِِRealestateValue]="minMaxRealestateValue"
+      [minMaxRealestateValue]="minMaxRealestateValue"
       (fromChanged)="filterChange($event)"
       (enableChangeAreaMinMaxValues)="enableChangeAreaMinMaxValues = $event"
       (enableChangerealEstateValueMinMaxValues)="enableChangerealEstateValueMinMaxValues = $event" />
@@ -263,11 +263,36 @@
           <td mat-cell *matCellDef="let element">{{ element.medianPrice | formatNumbers }}</td>
         </ng-container>
         <!-- count -->
-        <ng-container matColumnDef="count">
-          <th mat-header-cell class="!text-white" mat-sort-header="count" *matHeaderCellDef>
+        <ng-container matColumnDef="certificates-count">
+          <th mat-header-cell class="!text-white" mat-sort-header="certificates-count" *matHeaderCellDef>
             {{ lang.map.number_of_sell_contracts }}
           </th>
           <td mat-cell *matCellDef="let element">{{ element.countCertificateCode | formatNumbers : 0 }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="area">
+          <th mat-header-cell class="!text-white" mat-sort-header="area" *matHeaderCellDef>
+            {{ lang.map.total_area }}
+          </th>
+          <td mat-cell *matCellDef="let element">{{ element.sumArea | formatNumbers : 0 }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="units-count">
+          <th mat-header-cell class="!text-white" mat-sort-header="units-count" *matHeaderCellDef>
+            {{ lang.map.number_of_sold_units }}
+          </th>
+          <td mat-cell *matCellDef="let element">{{ element.countCertificateCode | formatNumbers : 0 }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="average-square">
+          <th mat-header-cell class="!text-white" mat-sort-header="average-square" *matHeaderCellDef>
+            {{
+              unitsService.selectedUnit() === 1
+                ? lang.map.average_price_per_square_meter
+                : lang.map.average_price_per_square_foot
+            }}
+          </th>
+          <td mat-cell *matCellDef="let element">{{ element.unitSquareMedianPrice() | formatNumbers : 0 }}</td>
         </ng-container>
 
         <!-- <ng-container matColumnDef="area">

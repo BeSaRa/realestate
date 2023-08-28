@@ -2,14 +2,14 @@ import { animate, state, style, transition, trigger } from '@angular/animations'
 import { CommonModule, DatePipe } from '@angular/common';
 import {
   Component,
-  computed,
   EventEmitter,
   HostListener,
-  inject,
   Input,
   OnDestroy,
   OnInit,
   Output,
+  computed,
+  inject,
 } from '@angular/core';
 import { AbstractControl, ReactiveFormsModule, UntypedFormBuilder } from '@angular/forms';
 import { DateAdapter, MatNativeDateModule, MatRippleModule } from '@angular/material/core';
@@ -34,10 +34,11 @@ import { Lookup } from '@models/lookup';
 import { LookupService } from '@services/lookup.service';
 import { StickyService } from '@services/sticky.service';
 import { TranslationService } from '@services/translation.service';
+import { UnitsService } from '@services/units.service';
 import { range } from '@utils/utils';
 import { CustomValidators } from '@validators/custom-validators';
 import { NgxMaskDirective } from 'ngx-mask';
-import { debounceTime, filter, Subject, takeUntil } from 'rxjs';
+import { Subject, debounceTime, filter, takeUntil } from 'rxjs';
 
 @Component({
   selector: 'app-transactions-filter',
@@ -90,13 +91,13 @@ export class TransactionsFilterComponent implements OnInit, OnDestroy {
   @Input() rooms: Lookup[] = [];
   @Input() furnitureStatus: Lookup[] = [];
   @Input() areas: Lookup[] = [];
-  @Input() minMaxِِِArea: Partial<MinMaxAvgContract> = {};
-  @Input() minMaxِِِRealestateValue: Partial<MinMaxAvgContract> = {};
-  @Input() minMaxِِِRentPaymentMonthly: Partial<MinMaxAvgContract> = {};
+  @Input() minMaxArea: Partial<MinMaxAvgContract> = {};
+  @Input() minMaxRealestateValue: Partial<MinMaxAvgContract> = {};
+  @Input() minMaxRentPaymentMonthly: Partial<MinMaxAvgContract> = {};
 
   @Output() fromChanged = new EventEmitter<{ criteria: CriteriaContract; type: CriteriaType }>();
   @Output() enableChangeAreaMinMaxValues = new EventEmitter<boolean>();
-  @Output() enableChangerentPaymentMonthlyMinMaxValues = new EventEmitter<boolean>();
+  @Output() enableChangeRentPaymentMonthlyMinMaxValues = new EventEmitter<boolean>();
   @Output() enableChangerealEstateValueMinMaxValues = new EventEmitter<boolean>();
 
   lang = inject(TranslationService);
@@ -105,6 +106,7 @@ export class TransactionsFilterComponent implements OnInit, OnDestroy {
   datePipe = inject(DatePipe);
   stickyService = inject(StickyService);
   adapter = inject(DateAdapter);
+  unitsService = inject(UnitsService);
 
   @HostListener('window:scroll')
   windowScroll(): void {
@@ -133,6 +135,7 @@ export class TransactionsFilterComponent implements OnInit, OnDestroy {
       issueDateQuarterList: [],
       bedRoomsCount: [],
       furnitureStatus: [],
+      unit: [],
       issueDateYear: [],
       issueDateMonth: [],
       issueDateStartMonth: [],
@@ -141,22 +144,22 @@ export class TransactionsFilterComponent implements OnInit, OnDestroy {
       issueDateTo: [],
       rentPaymentMonthlyPerUnitFrom: [
         '',
-        [(control: AbstractControl) => CustomValidators.minValue(this.minMaxِِِRentPaymentMonthly.min)(control)],
+        [(control: AbstractControl) => CustomValidators.minValue(this.minMaxRentPaymentMonthly.min)(control)],
       ],
       rentPaymentMonthlyPerUnitTo: [
         '',
-        [(control: AbstractControl) => CustomValidators.maxValue(this.minMaxِِِRentPaymentMonthly.max)(control)],
+        [(control: AbstractControl) => CustomValidators.maxValue(this.minMaxRentPaymentMonthly.max)(control)],
       ],
       realEstateValueFrom: [
         '',
-        [(control: AbstractControl) => CustomValidators.minValue(this.minMaxِِِRealestateValue.min)(control)],
+        [(control: AbstractControl) => CustomValidators.minValue(this.minMaxRealestateValue.min)(control)],
       ],
       realEstateValueTo: [
         '',
-        [(control: AbstractControl) => CustomValidators.maxValue(this.minMaxِِِRealestateValue.max)(control)],
+        [(control: AbstractControl) => CustomValidators.maxValue(this.minMaxRealestateValue.max)(control)],
       ],
-      areaFrom: ['', [(control: AbstractControl) => CustomValidators.minValue(this.minMaxِِِArea.min)(control)]],
-      areaTo: ['', [(control: AbstractControl) => CustomValidators.maxValue(this.minMaxِِِArea.max)(control)]],
+      areaFrom: ['', [(control: AbstractControl) => CustomValidators.minValue(this.minMaxArea.min)(control)]],
+      areaTo: ['', [(control: AbstractControl) => CustomValidators.maxValue(this.minMaxArea.max)(control)]],
       baseYear: [],
       streetNo: [],
       areaCode: [],
@@ -206,10 +209,15 @@ export class TransactionsFilterComponent implements OnInit, OnDestroy {
     this.setDefaultValues();
     this.listenToFormChanges();
     this.listenToIssueYearChange();
+    this.listenToUnitChange();
   }
 
   get municipalityId(): AbstractControl {
     return this.form.get('municipalityId') as AbstractControl;
+  }
+
+  get areaCode(): AbstractControl {
+    return this.form.get('areaCode') as AbstractControl;
   }
 
   get zoneId(): AbstractControl {
@@ -248,27 +256,33 @@ export class TransactionsFilterComponent implements OnInit, OnDestroy {
     return this.form.get('issueDateQuarterList') as AbstractControl;
   }
 
+  get unit(): AbstractControl {
+    return this.form.get('unit') as AbstractControl;
+  }
+
   listenToMunicipalityChange(): void {
     this.municipalityId.valueChanges.pipe(takeUntil(this.destroy$)).subscribe((value: number) => {
       if (this.isSell() || this.isMort()) {
         this.filteredAreas = this.areas.filter((item) => item.municipalityId === value);
-        this.filteredAreas.unshift(
+        !this.filteredAreas.find((i) => i.lookupKey === -1) &&
+          this.filteredAreas.unshift(
+            new Lookup().clone<Lookup>({
+              arName: 'الكل',
+              enName: 'All',
+              lookupKey: -1,
+            })
+          );
+        return;
+      }
+      this.filteredZones = this.zones.filter((item) => item.municipalityId === value);
+      !this.filteredZones.find((i) => i.lookupKey === -1) &&
+        this.filteredZones.unshift(
           new Lookup().clone<Lookup>({
             arName: 'الكل',
             enName: 'All',
             lookupKey: -1,
           })
         );
-        return;
-      }
-      this.filteredZones = this.zones.filter((item) => item.municipalityId === value);
-      this.filteredZones.unshift(
-        new Lookup().clone<Lookup>({
-          arName: 'الكل',
-          enName: 'All',
-          lookupKey: -1,
-        })
-      );
     });
   }
 
@@ -313,6 +327,7 @@ export class TransactionsFilterComponent implements OnInit, OnDestroy {
       issueDateStartMonth: 1,
       issueDateEndMonth: 12,
       areaCode: -1,
+      unit: this.unitsService.selectedUnit(),
       bedRoomsCount: undefined,
       furnitureStatus: this.furnitureStatus.length ? -1 : undefined,
     });
@@ -432,6 +447,12 @@ export class TransactionsFilterComponent implements OnInit, OnDestroy {
     this.displayRange = true;
   }
 
+  listenToUnitChange() {
+    this.unit.valueChanges.pipe(takeUntil(this.destroy$)).subscribe((value) => {
+      this.unitsService.setUnit(value);
+    });
+  }
+
   rangeChange() {
     this.rangeDate.patchValue(
       (this.issueDateFrom.value ? this.datePipe.transform(this.issueDateFrom.value, 'YYY-MM-dd') : '') +
@@ -485,8 +506,8 @@ export class TransactionsFilterComponent implements OnInit, OnDestroy {
     this.fromChanged.emit({ criteria: value as CriteriaContract, type: criteriaType });
     this.enableChangeAreaMinMaxValues.emit(this._enableChangeAreaMinMaxValues(this.form.value));
     this.enableChangerealEstateValueMinMaxValues.emit(this._enableChangeRealestateValueMinMaxValues(this.form.value));
-    this.enableChangerentPaymentMonthlyMinMaxValues.emit(
-      this._enableChangerentPaymentMonthlyMinMaxValues(this.form.value)
+    this.enableChangeRentPaymentMonthlyMinMaxValues.emit(
+      this._enableChangeRentPaymentMonthlyMinMaxValues(this.form.value)
     );
   }
 
@@ -506,10 +527,20 @@ export class TransactionsFilterComponent implements OnInit, OnDestroy {
     if (this.indicatorType === 'sell') {
       delete value.rentPaymentMonthlyPerUnitFrom;
       delete value.rentPaymentMonthlyPerUnitTo;
+
+      if (!this.filteredAreas.find((i) => i.lookupKey === this.areaCode.value)) {
+        this.areaCode.patchValue(-1, { emitEvent: false });
+        value.areaCode = -1;
+      }
     }
     if (this.indicatorType === 'rent') {
       delete value.realEstateValueFrom;
       delete value.realEstateValueTo;
+
+      if (!this.filteredZones.find((i) => i.lookupKey === this.zoneId.value)) {
+        this.zoneId.patchValue(-1, { emitEvent: false });
+        value.zoneId = -1;
+      }
     }
     Object.keys(value).forEach((key) => {
       if (typeof value[key] === 'string' && value[key] === '') delete value[key];
@@ -547,7 +578,7 @@ export class TransactionsFilterComponent implements OnInit, OnDestroy {
       !Object.prototype.hasOwnProperty.call(value, 'realEstateValueTo');
     return enable;
   }
-  private _enableChangerentPaymentMonthlyMinMaxValues(value: any): boolean {
+  private _enableChangeRentPaymentMonthlyMinMaxValues(value: any): boolean {
     const enable =
       !Object.prototype.hasOwnProperty.call(value, 'rentPaymentMonthlyPerUnitFrom') &&
       !Object.prototype.hasOwnProperty.call(value, 'rentPaymentMonthlyPerUnitTo');

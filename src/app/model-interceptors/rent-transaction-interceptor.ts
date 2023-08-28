@@ -7,6 +7,7 @@ export class RentTransactionInterceptor implements ModelInterceptorContract<Rent
   receive(model: RentTransaction): RentTransaction {
     const lookupService = ServiceRegistry.get('LookupService') as LookupService;
     model.municipalityInfo = lookupService.rentMunicipalitiesMap[model.municipalityid];
+    model.propertyTypeInfo = lookupService.rentPropertyTypeMap[model.propertyTypeId];
     return model;
   }
 
