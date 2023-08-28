@@ -11,7 +11,6 @@ export interface CriteriaContract {
   areaFrom: number;
   areaTo: number;
   zoneId: number;
-  bedRoomsCount: number;
 
   // not related to model
   halfYearDuration: number;

@@ -1,10 +1,9 @@
 <div
   class="overflow-x-auto overflow-y-hidden py-4 px-8 rounded-xl border border-secondary/50 shadow-gray-100 custom-shadow">
   <div class="flex justify-between mb-4">
-    <div class="flex justify-start items-center gap-4">
+    <div *ngIf="sortOptions.length" class="flex justify-start items-center gap-4">
       <span class="font-bold">{{ lang.map.sort_order }}: </span>
       <app-select-input
-        *ngIf="sortOptions.length > 0"
         class="w-52"
         size="sm"
         [formControl]="sortControl"

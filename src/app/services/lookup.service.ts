@@ -36,9 +36,9 @@ export class LookupService extends RegisterServiceMixin(class {}) implements Ser
   sellPurposeMap: Record<number, Lookup> = {};
   mortPurposeMap: Record<number, Lookup> = {};
 
-  rentPropertyType: Record<number, Lookup> = {};
-  sellPropertyType: Record<number, Lookup> = {};
-  mortPropertyType: Record<number, Lookup> = {};
+  rentPropertyTypeMap: Record<number, Lookup> = {};
+  sellPropertyTypeMap: Record<number, Lookup> = {};
+  mortPropertyTypeMap: Record<number, Lookup> = {};
 
   sellDistrictMap: Record<number, Lookup> = {};
   rentDistrictMap: Record<number, Lookup> = {};
@@ -101,7 +101,7 @@ export class LookupService extends RegisterServiceMixin(class {}) implements Ser
           return [rent, sell, mort];
         }),
         tap(([rent, sell, mort]) => {
-          this.rentLookups = rent;
+          this.rentLookups = this._addAllToMunicipalities(rent);
           this.sellLookups = this._addAllToMunicipalities(this._addAllToDistrict(this._addAllToPropertyType(sell)));
           this.mortLookups = this._addAllToPropertyType(mort);
         })
@@ -123,9 +123,9 @@ export class LookupService extends RegisterServiceMixin(class {}) implements Ser
           this.mortPurposeMap = this._initializePurposeMap(res[2]);
         }),
         tap((res) => {
-          this.rentPropertyType = this._initializePropertyTypeMap(res[0]);
-          this.sellPropertyType = this._initializePropertyTypeMap(res[1]);
-          this.mortPropertyType = this._initializePropertyTypeMap(res[2]);
+          this.rentPropertyTypeMap = this._initializePropertyTypeMap(res[0]);
+          this.sellPropertyTypeMap = this._initializePropertyTypeMap(res[1]);
+          this.mortPropertyTypeMap = this._initializePropertyTypeMap(res[2]);
         }),
         tap((res) => {
           this.rentDistrictMap = this._initializeDistrictMap(res[0]);

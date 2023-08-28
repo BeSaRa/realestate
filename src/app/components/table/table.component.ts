@@ -93,6 +93,7 @@ export class TableComponent implements OnInit {
 
   private _initializeSort() {
     this.sortControl.valueChanges.subscribe((value) => {
+      if (!value) return;
       if (isObservable(this.data)) {
         this.sortedData = this.data.pipe(
           map((data) => {

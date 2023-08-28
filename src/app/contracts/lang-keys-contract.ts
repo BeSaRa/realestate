@@ -152,6 +152,7 @@ export interface LangKeysContract {
   statistical_reports_for_sell: string;
   //////
   number_of_sell_contracts: string;
+  number_of_sold_units: string;
   sold_areas: string;
   average_price_per_unit: string;
   average_price_per_square_meter: string;
@@ -197,4 +198,9 @@ export interface LangKeysContract {
   lowest_price_per_square_foot: string;
   area_in_square_foot: string;
   furniture_status: string;
+
+  the_square_meter_price: string;
+  the_square_foot_price: string;
+  unit: string;
+  unit_type: string;
 }

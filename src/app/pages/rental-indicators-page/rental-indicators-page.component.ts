@@ -47,6 +47,9 @@ import { DateAdapter, MatNativeDateModule } from '@angular/material/core';
 import { TableColumnHeaderTemplateDirective } from '@directives/table-column-header-template.directive';
 import { TableColumnCellTemplateDirective } from '@directives/table-column-cell-template.directive';
 import { FurnitureStatusKpi } from '@models/furniture-status-kpi';
+import { UnitsService } from '@services/units.service';
+import { TableSortOption } from '@models/table-sort-option';
+import { MinMaxAvgContract } from '@contracts/min-max-avg-contract';
 
 @Component({
   selector: 'app-rental-indicators-page',
@@ -82,12 +85,12 @@ import { FurnitureStatusKpi } from '@models/furniture-status-kpi';
 export default class RentalIndicatorsPageComponent {
   protected readonly ChartType = ChartType;
 
-  transactions = new ReplaySubject<RentTransaction[]>(1);
   lang = inject(TranslationService);
   dashboardService = inject(DashboardService);
   urlService = inject(UrlService);
   lookupService = inject(LookupService);
   adapter = inject(DateAdapter);
+  unitsService = inject(UnitsService);
   destroy$ = new Subject<void>();
 
   maskPipe = inject(NgxMaskPipe);
@@ -98,6 +101,48 @@ export default class RentalIndicatorsPageComponent {
   zones = this.lookupService.rentLookups.zoneList;
   rooms = this.lookupService.rentLookups.rooms;
   furnitureStatusList = this.lookupService.rentLookups.furnitureStatusList;
+
+  transactions = new ReplaySubject<RentTransaction[]>(1);
+  transactionsSortOptions: TableSortOption[] = [
+    new TableSortOption().clone<TableSortOption>({
+      arName: this.lang.getArabicTranslation('most_recent'),
+      enName: this.lang.getEnglishTranslation('most_recent'),
+      value: {
+        column: 'startDate',
+        direction: 'desc',
+      },
+    }),
+    new TableSortOption().clone<TableSortOption>({
+      arName: this.lang.getArabicTranslation('oldest'),
+      enName: this.lang.getEnglishTranslation('oldest'),
+      value: {
+        column: 'startDate',
+        direction: 'asc',
+      },
+    }),
+    new TableSortOption().clone<TableSortOption>({
+      arName: this.lang.getArabicTranslation('the_higher_price'),
+      enName: this.lang.getEnglishTranslation('the_higher_price'),
+      value: {
+        column: 'rentPaymentMonthly',
+        direction: 'desc',
+      },
+    }),
+    new TableSortOption().clone<TableSortOption>({
+      arName: this.lang.getArabicTranslation('the_lowest_price'),
+      enName: this.lang.getEnglishTranslation('the_lowest_price'),
+      value: {
+        column: 'rentPaymentMonthly',
+        direction: 'asc',
+      },
+    }),
+  ];
+
+  minMaxArea: Partial<MinMaxAvgContract> = {};
+  minMaxRentPaymentMonthly: Partial<MinMaxAvgContract> = {};
+
+  enableChangeAreaMinMaxValues = true;
+  enableChangeRentPaymentMonthlyMinMaxValues = true;
 
   criteria!: {
     criteria: CriteriaContract;
@@ -202,9 +247,21 @@ export default class RentalIndicatorsPageComponent {
       hasPrice: false,
     }),
     new Lookup().clone<Lookup>({
+      arName: this.lang.getArabicTranslation('number_of_units'),
+      enName: this.lang.getEnglishTranslation('number_of_units'),
+      url: this.urlService.URLS.RENT_KPI30_1,
+      hasPrice: false,
+    }),
+    new Lookup().clone<Lookup>({
       arName: this.lang.getArabicTranslation('average_price_per_month'),
       enName: this.lang.getEnglishTranslation('average_price_per_month'),
       url: this.urlService.URLS.RENT_KPI31,
+      hasPrice: true,
+    }),
+    new Lookup().clone<Lookup>({
+      arName: this.lang.getArabicTranslation('average_price_per_meter'),
+      enName: this.lang.getEnglishTranslation('average_price_per_meter'),
+      url: this.urlService.URLS.RENT_KPI31_1,
       hasPrice: true,
     }),
     new Lookup().clone<Lookup>({
@@ -219,15 +276,10 @@ export default class RentalIndicatorsPageComponent {
       url: this.urlService.URLS.RENT_KPI33,
       hasPrice: false,
     }),
-    new Lookup().clone<Lookup>({
-      arName: this.lang.getArabicTranslation('number_of_units'),
-      enName: this.lang.getEnglishTranslation('number_of_units'),
-      url: this.urlService.URLS.RENT_KPI30_1,
-      hasPrice: false,
-    }),
   ];
   top10ChartData: RentTop10Model[] = [];
   selectedTop10: Lookup = this.accordingToList[0];
+  selectedTop10ChartType = ChartType.BAR;
 
   chartOptions: Partial<PartialChartOptions> = {
     series: [],
@@ -283,71 +335,135 @@ export default class RentalIndicatorsPageComponent {
     tooltip: { marker: { fillColors: ['#259C80'] } },
   };
 
-  top10ChartOptions: Partial<PartialChartOptions> = {
-    series: [],
-    chart: {
-      type: 'bar',
-      height: 400,
-    },
-    dataLabels: {
-      enabled: true,
-      dropShadow: {
+  top10ChartOptions: Record<string, Partial<PartialChartOptions>> = {
+    bar: {
+      series: [],
+      chart: {
+        type: 'bar',
+        height: 400,
+      },
+      dataLabels: {
         enabled: true,
-      },
-      formatter: (val: string): string | number => {
-        const value = val as unknown as number;
-        return this.selectedTop10?.hasPrice
-          ? (formatNumber(value) as string)
-          : (this.maskPipe.transform(value.toFixed(0), 'separator', { thousandSeparator: ',' }) as unknown as string);
-      },
-    },
-    stroke: {
-      curve: 'smooth',
-    },
-    grid: {
-      xaxis: {
-        lines: {
-          show: true,
+        dropShadow: {
+          enabled: true,
         },
-      },
-    },
-    xaxis: {
-      categories: [],
-      labels: {
-        formatter: (val: string): string | string[] => {
+        formatter: (val: string): string | number => {
           const value = val as unknown as number;
           return this.selectedTop10?.hasPrice
             ? (formatNumber(value) as string)
             : (this.maskPipe.transform(value.toFixed(0), 'separator', { thousandSeparator: ',' }) as unknown as string);
         },
       },
-    },
-    plotOptions: {
-      bar: {
-        horizontal: true,
-        columnWidth: '20%',
-        dataLabels: {
-          position: 'bottom',
+      stroke: {
+        curve: 'smooth',
+      },
+      grid: {
+        xaxis: {
+          lines: {
+            show: true,
+          },
         },
       },
-    },
-    yaxis: {
-      reversed: true,
-      labels: {
-        formatter: (val: number | string): string | string[] => {
-          return typeof val === 'string'
-            ? val
-            : this.selectedTop10?.hasPrice
-            ? (formatNumber(val) as string)
-            : (this.maskPipe.transform(val.toFixed(0), 'separator', { thousandSeparator: ',' }) as unknown as string);
-        },
-        style: {
-          fontFamily: 'inherit',
-          fontSize: '15px',
+      xaxis: {
+        categories: [],
+        labels: {
+          formatter: (val: string): string | string[] => {
+            if (typeof val === 'string') return val;
+            const value = val as unknown as number;
+            return this.selectedTop10?.hasPrice
+              ? (formatNumber(value) as string)
+              : (this.maskPipe.transform(value.toFixed(0), 'separator', {
+                  thousandSeparator: ',',
+                }) as unknown as string);
+          },
         },
       },
+      plotOptions: {
+        bar: {
+          horizontal: true,
+          columnWidth: '20%',
+          dataLabels: {
+            position: 'bottom',
+          },
+        },
+      },
+      yaxis: {
+        reversed: true,
+        labels: {
+          formatter: (val: number | string): string | string[] => {
+            return typeof val === 'string'
+              ? val
+              : this.selectedTop10?.hasPrice
+              ? (formatNumber(val) as string)
+              : (this.maskPipe.transform(val.toFixed(0), 'separator', { thousandSeparator: ',' }) as unknown as string);
+          },
+          style: {
+            fontFamily: 'inherit',
+            fontSize: '15px',
+          },
+        },
+      },
+      colors: ['#60d39d'],
     },
-    colors: ['#60d39d'],
+    line: {
+      series: [],
+      chart: {
+        type: 'line',
+        height: 400,
+      },
+      dataLabels: {
+        enabled: true,
+        dropShadow: {
+          enabled: true,
+        },
+        formatter: (val: string): string | number => {
+          const value = val as unknown as number;
+          return this.selectedTop10?.hasPrice
+            ? (formatNumber(value) as string)
+            : (this.maskPipe.transform(value.toFixed(0), 'separator', { thousandSeparator: ',' }) as unknown as string);
+        },
+      },
+      stroke: {
+        curve: 'smooth',
+      },
+      grid: {
+        xaxis: {
+          lines: {
+            show: true,
+          },
+        },
+      },
+      xaxis: {
+        categories: [],
+        labels: {
+          formatter: (val: string): string | string[] => {
+            if (typeof val === 'string' || typeof val === 'undefined') return val;
+            const value = val as unknown as number;
+            return this.selectedTop10?.hasPrice
+              ? (formatNumber(value) as string)
+              : (this.maskPipe.transform(value.toFixed(0), 'separator', {
+                  thousandSeparator: ',',
+                }) as unknown as string);
+          },
+        },
+      },
+      yaxis: {
+        labels: {
+          formatter: (val: number | string): string | string[] => {
+            return typeof val === 'string'
+              ? val
+              : this.selectedTop10?.hasPrice
+              ? (formatNumber(val) as string)
+              : (this.maskPipe.transform(val.toFixed(0), 'separator', { thousandSeparator: ',' }) as unknown as string);
+          },
+          style: {
+            fontFamily: 'inherit',
+            fontSize: '15px',
+          },
+        },
+      },
+      colors: ['#60d39d'],
+    },
   };
 
   pieChartOptions: PieChartOptions = {
@@ -395,7 +511,15 @@ export default class RentalIndicatorsPageComponent {
   compositeTransactionsExtraColumns = ['contractCounts', 'contractValues', 'avgContract'];
 
   transactionsPurpose: RentTransactionPurpose[] = [];
-  transactionsPurposeColumns = ['purpose', 'count', 'average', 'chart'];
+  transactionsPurposeColumns = [
+    'purpose',
+    'average',
+    'certificates-count',
+    'area',
+    'units-count',
+    'average-square',
+    'chart',
+  ];
 
   get priceList() {
     return this.rootKPIS.filter((item) => item.hasPrice);
@@ -593,8 +717,8 @@ export default class RentalIndicatorsPageComponent {
       )
       .subscribe((data) => {
         const _chartData = Object.keys(data).map((key) => ({
-          name: data[parseInt(key)].period.getNames(),
-          data: data[parseInt(key)].kpiValues.map((item) => item.value),
+          name: data[key as unknown as number].period.getNames(),
+          data: data[key as unknown as number].kpiValues.map((item) => item.value),
         }));
         this.chart.first
           .updateOptions({
@@ -626,6 +750,12 @@ export default class RentalIndicatorsPageComponent {
       .loadRentKpiTransactions(this.criteria.criteria)
       .pipe(takeUntil(this.destroy$))
       .subscribe((list) => {
+        if (this.enableChangeRentPaymentMonthlyMinMaxValues) {
+          this.minMaxRentPaymentMonthly = minMaxAvg(list.map((item) => item.rentPaymentMonthly));
+        }
+        if (this.enableChangeAreaMinMaxValues) {
+          this.minMaxArea = minMaxAvg(list.map((item) => item.area));
+        }
         this.transactions.next(list);
       });
   }
@@ -684,6 +814,17 @@ export default class RentalIndicatorsPageComponent {
         ],
       })
       .then();
+  }
+
+  isSelectedTop10ChartType(type: ChartType) {
+    return this.selectedTop10ChartType === type;
+  }
+
+  updateTop10ChartType(type: ChartType) {
+    this.selectedTop10ChartType = type;
+    this.top10Chart.first
+      .updateOptions(this.top10ChartOptions[this.selectedTop10ChartType], true)
+      .then(() => this.updateTop10Chart());
   }
 
   updateRoomsPiChart(): void {
@@ -755,14 +896,17 @@ export default class RentalIndicatorsPageComponent {
     zone.length && generatedTitle.push(zone);
     propertyType.length && generatedTitle.push(propertyType);
     purpose.length && generatedTitle.push(purpose);
-    return `(${generatedTitle.join(' , ')})`;
+    return generatedTitle.length ? `(${generatedTitle.join(' , ')})` : '';
   }
 
   private getSelectedMunicipality(): string {
+    if (this.criteria.criteria.municipalityId === -1) return '';
     return this.lookupService.rentMunicipalitiesMap[this.criteria.criteria.municipalityId].getNames() || '';
   }
 
   private getSelectedZone(): string {
+    if (this.criteria.criteria.zoneId === -1) return '';
+
     return this.lookupService.rentZonesMap[this.criteria.criteria.zoneId].getNames() || '';
   }
 
@@ -770,7 +914,7 @@ export default class RentalIndicatorsPageComponent {
     return this.criteria.criteria.propertyTypeList &&
       this.criteria.criteria.propertyTypeList.length == 1 &&
       this.criteria.criteria.propertyTypeList[0] !== -1
-      ? this.lookupService.rentPropertyType[this.criteria.criteria.propertyTypeList[0]].getNames()
+      ? this.lookupService.rentPropertyTypeMap[this.criteria.criteria.propertyTypeList[0]].getNames()
       : '';
   }
 

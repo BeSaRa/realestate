@@ -116,6 +116,12 @@
         bindValue="lookupKey"
         [label]="lang.map.furniture_status"
         [options]="furnitureStatus" />
+      <app-select-input
+        formControlName="unit"
+        bindLabel="getNames"
+        bindValue="lookupKey"
+        [label]="lang.map.unit"
+        [options]="unitsService.units" />
       <!--      <app-select-input-->
       <!--        bindLabel="getNames"-->
       <!--        bindValue="lookupKey"-->

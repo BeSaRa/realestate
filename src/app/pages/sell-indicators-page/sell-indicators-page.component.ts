@@ -24,6 +24,7 @@ import { TableColumnTemplateDirective } from '@directives/table-column-template.
 import { ChartType } from '@enums/chart-type';
 import { CriteriaType } from '@enums/criteria-type';
 import { DurationEndpoints } from '@enums/durations';
+import { AppChartTypesService } from '@services/app-chart-types.service';
 import { CompositeTransaction } from '@models/composite-transaction';
 import { KpiModel } from '@models/kpi-model';
 import { KpiRoot } from '@models/kpiRoot';
@@ -38,6 +39,7 @@ import { FormatNumbersPipe } from '@pipes/format-numbers.pipe';
 import { DashboardService } from '@services/dashboard.service';
 import { LookupService } from '@services/lookup.service';
 import { TranslationService } from '@services/translation.service';
+import { UnitsService } from '@services/units.service';
 import { UrlService } from '@services/url.service';
 import { formatChartColors, formatNumber, minMaxAvg } from '@utils/utils';
 import { CarouselComponent, IvyCarouselModule } from 'angular-responsive-carousel2';
@@ -84,6 +86,8 @@ export default class SellIndicatorsPageComponent implements OnInit {
   dashboardService = inject(DashboardService);
   urlService = inject(UrlService);
   lookupService = inject(LookupService);
+  unitsService = inject(UnitsService);
+  appChartTypesService = inject(AppChartTypesService);
   destroy$ = new Subject<void>();
   maskPipe = inject(NgxMaskPipe);
   adapter = inject(DateAdapter);
@@ -340,7 +344,15 @@ export default class SellIndicatorsPageComponent implements OnInit {
   ];
 
   transactionsPurpose: SellTransactionPurpose[] = [];
-  transactionsPurposeColumns = ['purpose', 'count', 'average', 'chart'];
+  transactionsPurposeColumns = [
+    'purpose',
+    'average',
+    'certificates-count',
+    'area',
+    'units-count',
+    'average-square',
+    'chart',
+  ];
 
   top10ChartData: SellTop10Model[] = [];
   selectedTop10: Lookup = this.accordingToList[0];
@@ -723,8 +735,8 @@ export default class SellIndicatorsPageComponent implements OnInit {
       )
       .subscribe((data) => {
         const _chartData = Object.keys(data).map((key) => ({
-          name: data[parseInt(key)].period.getNames(),
-          data: data[parseInt(key)].kpiValues.map((item) => item.value),
+          name: data[key as unknown as number].period.getNames(),
+          data: data[key as unknown as number].kpiValues.map((item) => item.value),
         }));
         this.chart.first
           .updateOptions({
@@ -765,7 +777,7 @@ export default class SellIndicatorsPageComponent implements OnInit {
         }
         if (this.enableChangeAreaMinMaxValues) {
         }
-        console.log(list);
+        // console.log(list);
         this.transactions.next(list);
       });
   }
@@ -882,7 +894,7 @@ export default class SellIndicatorsPageComponent implements OnInit {
     return this.criteria.criteria.propertyTypeList &&
       this.criteria.criteria.propertyTypeList.length == 1 &&
       this.criteria.criteria.propertyTypeList[0] !== -1
-      ? this.lookupService.sellPropertyType[this.criteria.criteria.propertyTypeList[0]].getNames()
+      ? this.lookupService.sellPropertyTypeMap[this.criteria.criteria.propertyTypeList[0]].getNames()
       : '';
   }
 

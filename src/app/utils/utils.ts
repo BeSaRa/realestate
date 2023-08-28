@@ -42,7 +42,7 @@ export function formatNumber(num: number, precision = 1): string | number {
   if (found) {
     return (num / found.threshold).toFixed(precision) + found.suffix;
   }
-  return num;
+  return num.toFixed(precision);
 }
 
 export function isNgModel(control: unknown): control is NgModel {
@@ -67,6 +67,7 @@ export function* chunks<T>(arr: T[], n: number): Generator<T[], void> {
 }
 
 export function minMaxAvg(values: number[]): MinMaxAvgContract {
+  values = values.filter((v) => isValidValue(v));
   let max = values[0];
   let min = values[0];
   let sum = values[0]; //changed from original post

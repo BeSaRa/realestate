@@ -35,11 +35,11 @@ const rentEndPoints = {
   RENT_KPI29: 'RENT|kpi29/summary',
   // top 10
   RENT_KPI30: 'RENT|kpi30/stats/certificate-count',
+  RENT_KPI30_1: 'RENT|kpi30_1/stats/contract-count',
   RENT_KPI31: 'RENT|kpi31/stats/mean-rent-amount',
+  RENT_KPI31_1: 'RENT|kpi31_1/stats/mean-rent-meter',
   RENT_KPI32: 'RENT|kpi32/stats/rent-amount',
   RENT_KPI33: 'RENT|kpi33/stats/area',
-  RENT_KPI30_1: 'RENT|kpi30_1/stats/contract-count',
-  RENT_KPI31_1: 'RENT|kpi31_1/stats/mean-rent-meter',
   RENT_KPI34: 'RENT|kpi34/stats/bed-rooms-count',
   RENT_KPI34_1: 'RENT|kpi34_1/stats/furniture-status',
   // collection of transactions tables

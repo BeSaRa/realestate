@@ -18,5 +18,7 @@ export class RentTransaction {
   unitOwner!: number;
   unitBroker!: number;
   unitTenant!: number;
+
   municipalityInfo!: Lookup;
+  propertyTypeInfo!: Lookup;
 }
