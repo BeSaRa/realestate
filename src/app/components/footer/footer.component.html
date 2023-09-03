@@ -26,20 +26,18 @@
     <ul id="top-footer-menu">
       <li>
         <app-button buttonStyle="none" routerLink="/about" routerLinkActive="active">{{
-          lang.map.about_us.toCapitalAll()
+          lang.map.about_us
         }}</app-button>
       </li>
       <li>
-        <app-button buttonStyle="none">{{ lang.map.surveys.toCapitalAll() }}</app-button>
+        <app-button buttonStyle="none">{{ lang.map.surveys }}</app-button>
       </li>
       <li>
-        <app-button buttonStyle="none" routerLink="/faq" routerLinkActive="active">{{
-          lang.map.faq.toUpperCase()
-        }}</app-button>
+        <app-button buttonStyle="none" routerLink="/faq" routerLinkActive="active">{{ lang.map.faq }}</app-button>
       </li>
     </ul>
     <div id="top-footer-downloads" class="flex flex-col items-center">
-      <p class="mb-3">{{ lang.map.stay_informed_and_get_the_latest_developments.toCapital() }}</p>
+      <p class="mb-3">{{ lang.map.stay_informed_and_get_the_latest_developments }}</p>
       <ul class="flex gap-x-3">
         <li>
           <a class="w-32 block" (click)="$event.preventDefault()" href="#">
@@ -78,7 +76,7 @@
     </div>
     <!-- useful-links-->
     <div id="follow-us" class="flex flex-col">
-      <p>{{ lang.map.follow_us.toCapitalAll() }}</p>
+      <p>{{ lang.map.follow_us }}</p>
       <ul class="flex" id="follow-us-menu">
         <li>
           <app-icon-button icon="TWITTER"></app-icon-button>
@@ -101,16 +99,16 @@
     class="flex items-center justify-between h-12 absolute bottom-0 right-0 left-0 bg-[#666666] px-10 w-full">
     <ul class="flex gap-x-3 divide-items">
       <li>
-        <app-button buttonStyle="none">{{ lang.map.privacy_and_rights.toCapitalAll() }}</app-button>
+        <app-button buttonStyle="none">{{ lang.map.privacy_and_rights }}</app-button>
       </li>
       <li>
-        <app-button buttonStyle="none">{{ lang.map.location_map.toCapitalAll() }}</app-button>
+        <app-button buttonStyle="none">{{ lang.map.location_map }}</app-button>
       </li>
     </ul>
     <div>
       <span
-        >{{ lang.map.municipality_is_not_responsible_for_any_citation_from_the_site.toCapital() }} -
-        {{ lang.map.all_rights_reserved_to_the_ministry_of_municipality.toCapital() }} © 2023</span
+        >{{ lang.map.municipality_is_not_responsible_for_any_citation_from_the_site }} -
+        {{ lang.map.all_rights_reserved_to_the_ministry_of_municipality }} © 2023</span
       >
     </div>
   </div>

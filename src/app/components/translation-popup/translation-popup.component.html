@@ -1,19 +1,19 @@
 <div class="dialog-container">
   <div class="dialog-header bg-primary">
-    <h1>{{ lang.map.add_translation.toCapitalAll() }}</h1>
+    <h1>{{ lang.map.add_translation }}</h1>
     <app-icon-button tabindex="-1" mat-dialog-close class="close-btn" icon="CLOSE"></app-icon-button>
   </div>
   <div class="dialog-content">
     <div class="grid grid-cols-2 gap-4 [&>*]:col-span-2">
       <div [formGroup]="form">
-        <app-input formControlName="localizationKey" [label]="lang.map.localization_key.toCapital()"></app-input>
-        <app-textarea formControlName="enName" [label]="lang.map.english_translation.toCapital()"></app-textarea>
-        <app-textarea formControlName="arName" [label]="lang.map.arabic_translation.toCapital()"></app-textarea>
+        <app-input formControlName="localizationKey" [label]="lang.map.localization_key"></app-input>
+        <app-textarea formControlName="enName" [label]="lang.map.english_translation"></app-textarea>
+        <app-textarea formControlName="arName" [label]="lang.map.arabic_translation"></app-textarea>
       </div>
     </div>
   </div>
   <div class="dialog-footer justify-end">
-    <app-button (click)="onAdd()" buttonStyle="primary">{{ lang.map.add.toCapital() }}</app-button>
-    <app-button mat-dialog-close buttonStyle="primary-outline">{{ lang.map.close.toCapital() }}</app-button>
+    <app-button (click)="onAdd()" buttonStyle="primary">{{ lang.map.add }}</app-button>
+    <app-button mat-dialog-close buttonStyle="primary-outline">{{ lang.map.close }}</app-button>
   </div>
 </div>

@@ -5,7 +5,7 @@
     <div
       class="bg-gradient-to-r ltr:bg-gradient-to-l from-transparent to-gray-800/80 h-48 w-full p-10 flex gap-x-2 items-center">
       <h2 class="text-2xl border-b-2 border-secondary font-semibold text-white">
-        {{ lang.map.most_used.toCapitalAll() }}
+        {{ lang.map.most_used }}
       </h2>
       <div class="flex flex-auto [&>*]:flex-1 items-center justify-center gap-x-5 ps-16 pe-10">
         <app-button
@@ -14,7 +14,7 @@
           buttonStyle="primary"
           size="xl"
           [icon]="lang.isLtr ? 'ARROW_RIGHT' : 'ARROW_LEFT'">
-          {{ lang.map.sell_indicator.toCapitalAll() }}
+          {{ lang.map.sell_indicator }}
         </app-button>
         <app-button
           routerLink="/sell-indicators"
@@ -22,7 +22,7 @@
           buttonStyle="primary"
           size="xl"
           [icon]="lang.isLtr ? 'ARROW_RIGHT' : 'ARROW_LEFT'">
-          {{ lang.map.mortgage_indicator.toCapitalAll() }}
+          {{ lang.map.mortgage_indicator }}
         </app-button>
         <app-button
           routerLink="/sell-indicators"
@@ -30,7 +30,7 @@
           buttonStyle="primary"
           size="xl"
           [icon]="lang.isLtr ? 'ARROW_RIGHT' : 'ARROW_LEFT'">
-          {{ lang.map.news.toCapitalAll() }}
+          {{ lang.map.news }}
         </app-button>
       </div>
     </div>

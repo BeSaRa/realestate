@@ -9,7 +9,7 @@
     #origin="matAutocompleteOrigin">
     <input
       type="text"
-      [placeholder]="lang.map.search.toCapital() + '...'"
+      [placeholder]="lang.map.search + '...'"
       id="top-search-input"
       [matAutocomplete]="auto"
       [matAutocompleteConnectedTo]="origin"
@@ -29,7 +29,7 @@
         ></mat-option>
         <ng-container *ngIf="!filteredNews.length && search.value">
           <mat-option class="!hidden"></mat-option>
-          <p class="px-4 text-xl">{{ lang.map.there_are_no_matching_results.toCapital() }}!</p>
+          <p class="px-4 text-xl">{{ lang.map.there_are_no_matching_results }}!</p>
         </ng-container>
       </div>
     </mat-autocomplete>
@@ -50,21 +50,21 @@
       <app-icon-button [icon]="'VIEW'" (click)="toggleFilter()"></app-icon-button>
     </li>
     <li>
-      <app-button buttonStyle="none">{{ lang.map.login.toCapitalAll() }}</app-button>
+      <app-button buttonStyle="none">{{ lang.map.login }}</app-button>
       <!-- <a class="text-white" (click)="$event.preventDefault()" mat-button href="#">{{
-        lang.map.login.toCapitalAll()
+        lang.map.login
       }}</a> -->
     </li>
     <li>
-      <!-- <a mat-button (click)="$event.preventDefault()" href="#">{{ lang.map.staff_login.toCapitalAll() }}</a> -->
-      <app-button buttonStyle="none">{{ lang.map.staff_login.toCapitalAll() }}</app-button>
+      <!-- <a mat-button (click)="$event.preventDefault()" href="#">{{ lang.map.staff_login }}</a> -->
+      <app-button buttonStyle="none">{{ lang.map.staff_login }}</app-button>
     </li>
     <li>
       <app-button (click)="changeLang($event)" buttonStyle="none">{{
-        lang.getCurrent().toggleTo.substring(0, 2).toUpperCase()
+        lang.getCurrent().toggleTo.substring(0, 2)
       }}</app-button>
       <!-- <a mat-button (click)="changeLang($event)" href="#">{{
-        lang.getCurrent().toggleTo.substring(0, 2).toUpperCase()
+        lang.getCurrent().toggleTo.substring(0, 2)
       }}</a> -->
     </li>
   </ul>

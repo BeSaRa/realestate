@@ -2,8 +2,8 @@
   <form [formGroup]="form" (ngSubmit)="searchLink.elementReference.click()">
     <div class="px-7">
       <div class="flex justify-between text-lg text-white mb-2">
-        <span>{{ lang.map.building_number.toCapitalAll() }}</span
-        ><span>{{ lang.toggleMap.building_number.toCapitalAll() }}</span>
+        <span>{{ lang.map.building_number }}</span
+        ><span>{{ lang.toggleMap.building_number }}</span>
       </div>
       <app-textarea
         bgColor="bg-white"
@@ -18,8 +18,8 @@
     <div class="grid grid-cols-2 gap-2 mt-5 px-7">
       <div>
         <div class="flex justify-between text-lg text-white mb-2">
-          <span>{{ lang.map.street.toCapitalAll() }}</span
-          ><span>{{ lang.toggleMap.street.toCapitalAll() }}</span>
+          <span>{{ lang.map.street }}</span
+          ><span>{{ lang.toggleMap.street }}</span>
         </div>
         <app-textarea
           bgColor="bg-white"
@@ -32,8 +32,8 @@
       </div>
       <div>
         <div class="flex justify-between text-lg text-white mb-2">
-          <span>{{ lang.map.zone.toCapitalAll() }}</span
-          ><span>{{ lang.toggleMap.zone.toCapitalAll() }}</span>
+          <span>{{ lang.map.zone }}</span
+          ><span>{{ lang.toggleMap.zone }}</span>
         </div>
         <app-textarea
           bgColor="bg-white"
@@ -52,7 +52,7 @@
         appElementReference
         #searchLink="appElementReference"
         (click)="onNavigate()">
-        {{ lang.map.search.toCapital() }}
+        {{ lang.map.search }}
       </app-button>
     </div>
   </form>

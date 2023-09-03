@@ -50,12 +50,12 @@
   <!-- paginator -->
   <div *ngIf="length" class="flex justify-between items-center">
     <span class="text-primary/70">
-      {{ lang.map.paginator_showing_label.toCapital() }} {{ length ? offset + 1 : 0 }}
-      {{ lang.map.paginator_to_label.toCapital() }}
+      {{ lang.map.paginator_showing_label }} {{ length ? offset + 1 : 0 }}
+      {{ lang.map.paginator_to_label }}
       {{ offset + pageSize > length ? length : offset + pageSize }}
-      {{ lang.map.paginator_from_label.toCapital() }}
+      {{ lang.map.paginator_from_label }}
       {{ length }}
-      {{ lang.map.paginator_entry_label.toCapital() }}
+      {{ lang.map.paginator_entry_label }}
     </span>
     <div class="flex justify-between items-center gap-4">
       <mat-paginator

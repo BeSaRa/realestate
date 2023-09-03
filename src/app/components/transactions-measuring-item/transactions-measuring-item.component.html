@@ -9,8 +9,7 @@
     item.getNames()
   }}</span>
   <span class="mt-2 text-4xl text-primary font-bold group-hover:text-white group-[.selected]:text-white transition"
-    ><span [countUp]="item.value" [options]="countUpOptions"></span>
-    {{ !item.hasPrice ? lang.map.qr.toUpperCase() : "" }}</span
+    ><span [countUp]="item.value" [options]="countUpOptions"></span> {{ !item.hasPrice ? lang.map.qr : "" }}</span
   >
   <app-change-indicator class="mt-2" [value]="item.yoy" [isHovered]="isHovered"></app-change-indicator>
 </div>
@@ -30,7 +29,7 @@
     <span class="flex-1 text-3xl text-black font-bold group-hover:text-white transition">{{ item.getNames() }}</span>
     <span class="mt-2 text-4xl text-primary font-bold group-hover:text-white transition">
       <span [countUp]="item.value" [options]="countUpOptions"></span>
-      {{ !item.hasPrice ? lang.map.qr.toUpperCase() : "" }}
+      {{ !item.hasPrice ? lang.map.qr : "" }}
     </span>
   </div>
 </div>
