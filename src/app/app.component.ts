@@ -45,7 +45,7 @@ export class AppComponent implements OnInit {
   windowScroll(): void {
     this.stickyService.isSticky.set(window.scrollY > 120);
   }
-
+  @HostListener('window:keydown.control.alt.ش')
   @HostListener('window:keydown.control.alt.a')
   openTranslationPopup() {
     this.dialog.open(TranslationPopupComponent);

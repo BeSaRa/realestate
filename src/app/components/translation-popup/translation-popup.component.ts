@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { ReactiveFormsModule, UntypedFormBuilder } from '@angular/forms';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
@@ -11,7 +11,7 @@ import { TranslationAddContract } from '@contracts/translation-contract';
 import { LangCodes } from '@enums/lang-codes';
 import { TranslationService } from '@services/translation.service';
 import { CustomValidators } from '@validators/custom-validators';
-import { catchError, tap, throwError } from 'rxjs';
+import { catchError, tap } from 'rxjs';
 
 @Component({
   selector: 'app-translation-popup',
@@ -56,9 +56,11 @@ export class TranslationPopupComponent implements OnInit {
   getKey() {
     return this.form.controls.localizationKey.value;
   }
+
   getArName() {
     return this.form.controls.arName.value;
   }
+
   getEnName() {
     return this.form.controls.enName.value;
   }
