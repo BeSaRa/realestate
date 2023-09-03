@@ -30,11 +30,23 @@ export class UrlService {
 
   public prepareUrls(): EndpointsType {
     this.URLS.BASE_URL = UrlService.removeTrailingSlash(this.config.BASE_URL);
+    if (this.config.CONFIG.BE) {
+      this.URLS.BE = this.addBaseUrl(this.config.CONFIG.BE);
+      console.log('TRUE');
+    } else {
+      console.log('FALSE');
+    }
     for (const key in this.urls) {
-      if (key !== 'BASE_URL' && Object.prototype.hasOwnProperty.call(this.urls, key)) {
+      if (
+        key !== 'BASE_URL' &&
+        Object.prototype.hasOwnProperty.call(this.urls, key) &&
+        key !== 'BE' &&
+        Object.prototype.hasOwnProperty.call(this.urls, key)
+      ) {
         this.URLS[key as keyof EndpointsType] = this.addBaseUrl(this.urls[key as keyof EndpointsType]);
       }
     }
+    console.log(this.URLS);
     return this.URLS;
   }
 

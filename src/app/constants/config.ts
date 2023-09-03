@@ -8,6 +8,7 @@ export const Config = {
   BASE_URL: '',
   TOKEN_HEADER_KEY: 'Authorization',
   TOKEN_STORE_KEY: '$$_T_$$',
+  BE: '',
 };
 
 export type ConfigType = typeof Config;

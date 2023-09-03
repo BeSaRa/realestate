@@ -2,5 +2,6 @@
   "ENVIRONMENTS_URLS": {
     "API": "http://eblaepm.no-ip.org:8055/"
   },
-  "BASE_ENVIRONMENT": "API"
+  "BASE_ENVIRONMENT": "API",
+  "BE": "http://eblaepm.no-ip.org:7800/mme-services"
 }

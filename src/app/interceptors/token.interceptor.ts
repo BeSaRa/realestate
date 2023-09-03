@@ -5,7 +5,7 @@ import { Observable } from 'rxjs';
 @Injectable()
 export class TokenInterceptor implements HttpInterceptor {
   intercept(request: HttpRequest<unknown>, next: HttpHandler): Observable<HttpEvent<unknown>> {
-    const token = 'C8A6ru4-kT4KTAb28Wtbt9y7-w-4FNal';
+    const token = 'IdBqvNPFwKogCLFZh_NGbJy3T91O_kjO';
 
     request = request.clone({
       setHeaders: {

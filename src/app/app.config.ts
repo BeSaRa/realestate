@@ -64,7 +64,6 @@ export const appConfig: ApplicationConfig = {
           ])
             .pipe(tap(() => url.setConfigService(config)))
             .pipe(tap(() => url.prepareUrls()))
-            .pipe(tap(() => url.prepareUrls()))
             .pipe(switchMap(() => lookups.load()))
             .pipe(switchMap(() => translation.load()));
       },

@@ -11,7 +11,8 @@
     "serve:ssr": "node dist/realestate/server/main.js",
     "build:ssr": "ng build && ng run realestate:server",
     "prerender": "ng run realestate:prerender",
-    "lint": "ng lint"
+    "lint": "ng lint",
+    "build:image": "docker build --tag real-estate-front-end ."
   },
   "private": true,
   "dependencies": {
