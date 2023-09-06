@@ -118,7 +118,7 @@ const mortgage = {
 export const EndPoints = {
   BASE_URL: '',
   TRANSLATION: 'translations',
-  BE: 'http://eblaepm.no-ip.org:7800/mme-services/',
+  BE: 'http://192.168.52.4:9080/mme-services/',
   ...rentEndPoints,
   ...sellEndPoints,
   ...mortgage,
