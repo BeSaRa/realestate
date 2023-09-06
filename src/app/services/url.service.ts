@@ -32,9 +32,9 @@ export class UrlService {
     this.URLS.BASE_URL = UrlService.removeTrailingSlash(this.config.BASE_URL);
     if (this.config.CONFIG.BE) {
       this.URLS.BE = this.addBaseUrl(this.config.CONFIG.BE);
-      console.log('TRUE');
+      // console.log('TRUE');
     } else {
-      console.log('FALSE');
+      // console.log('FALSE');
     }
     for (const key in this.urls) {
       if (
@@ -46,7 +46,7 @@ export class UrlService {
         this.URLS[key as keyof EndpointsType] = this.addBaseUrl(this.urls[key as keyof EndpointsType]);
       }
     }
-    console.log(this.URLS);
+    // console.log(this.URLS);
     return this.URLS;
   }
 

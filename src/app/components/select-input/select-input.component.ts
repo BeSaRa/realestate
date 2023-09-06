@@ -250,7 +250,6 @@ export class SelectInputComponent implements ControlValueAccessor, OnInit, OnCha
   }
 
   closeSelect() {
-    console.log('HERE');
     this.filterControl.setValue('');
   }
 }
