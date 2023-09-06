@@ -23,9 +23,7 @@ import { KpiRoot } from '@models/kpiRoot';
   styleUrls: ['./transactions-measuring-list.component.scss'],
 })
 export class TransactionsMeasuringListComponent implements OnInit {
-  ngOnInit(): void {
-    console.log('list', this.list);
-  }
+  ngOnInit(): void {}
   @Input({ required: true }) list!: KpiRoot[];
   @Input() type: 'normal' | 'small' | 'carousel' = 'normal';
 

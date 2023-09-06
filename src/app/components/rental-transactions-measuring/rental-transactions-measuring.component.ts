@@ -14,9 +14,7 @@ import { KpiRootComponent } from '@components/kpi-root/kpi-root.component';
   styleUrls: ['./rental-transactions-measuring.component.scss'],
 })
 export class RentalTransactionsMeasuringComponent implements OnInit {
-  ngOnInit(): void {
-    console.log('priceless', this.priceList);
-  }
+  ngOnInit(): void {}
   lang = inject(TranslationService);
 
   @Input()
