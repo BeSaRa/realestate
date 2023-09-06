@@ -18,7 +18,7 @@ import { NGX_COUNTUP_OPTIONS } from '@constants/injection-tokens';
 import { MatPaginatorIntl } from '@angular/material/paginator';
 import { PaginatorLocal } from '@constants/paginator-local';
 import { LookupService } from '@services/lookup.service';
-import { provideNgxMask } from 'ngx-mask';
+import { NgxMaskPipe, provideNgxMask } from 'ngx-mask';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -85,5 +85,6 @@ export const appConfig: ApplicationConfig = {
       provide: MatPaginatorIntl,
       useClass: PaginatorLocal,
     },
+    NgxMaskPipe,
   ],
 };

@@ -5,7 +5,7 @@ import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { PartialChartOptions } from '@app-types/partialChartOptions';
 import { ButtonComponent } from '@components/button/button.component';
 import { IconButtonComponent } from '@components/icon-button/icon-button.component';
-import { DialogChartDataContract } from '@contracts/dialog-chart-data-contract';
+import { ChartWithOppositePopupData } from '@contracts/chart-with-opposite-popup-data';
 import { AppChartTypesService } from '@services/app-chart-types.service';
 import { TranslationService } from '@services/translation.service';
 import { minMaxAvg } from '@utils/utils';
@@ -13,14 +13,14 @@ import { ApexYAxis, ChartComponent, NgApexchartsModule } from 'ng-apexcharts';
 import { NgxMaskPipe } from 'ngx-mask';
 
 @Component({
-  selector: 'app-popup-chart',
+  selector: 'app-popup-opposite-chart',
   standalone: true,
   imports: [CommonModule, NgApexchartsModule, MatNativeDateModule, IconButtonComponent, ButtonComponent],
   providers: [NgxMaskPipe],
-  templateUrl: './popup-chart.component.html',
-  styleUrls: ['./popup-chart.component.scss'],
+  templateUrl: './chart-with-opposite-popup.component.html',
+  styleUrls: ['./chart-with-opposite-popup.component.scss'],
 })
-export class PopupChartComponent implements OnInit, AfterViewInit {
+export class ChartWithOppositePopupComponent implements OnInit, AfterViewInit {
   @ViewChild(ChartComponent)
   chart!: ChartComponent;
 
@@ -28,7 +28,7 @@ export class PopupChartComponent implements OnInit, AfterViewInit {
   adapter = inject(DateAdapter);
   appChartTypesService = inject(AppChartTypesService);
 
-  dialogData: DialogChartDataContract<{ issueYear: number; issueMonth: number }> = inject(MAT_DIALOG_DATA);
+  popupData: ChartWithOppositePopupData<{ issueYear: number; issueMonth: number }> = inject(MAT_DIALOG_DATA);
   ref = inject(MatDialogRef);
 
   months: string[] = [];
@@ -42,23 +42,23 @@ export class PopupChartComponent implements OnInit, AfterViewInit {
       ...this.chartOptions,
       dataLabels: {
         ...this.chartOptions.dataLabels,
-        formatter: this.appChartTypesService.popupLabelsFormatter(),
+        formatter: this.appChartTypesService.popupLabelsFormatter,
       },
       yaxis: [
         {
           ...(this.chartOptions.yaxis as ApexYAxis[])[0],
-          title: { ...(this.chartOptions.yaxis as ApexYAxis[])[0].title, text: this.dialogData.mainChart.title },
+          title: { ...(this.chartOptions.yaxis as ApexYAxis[])[0].title, text: this.popupData.mainChart.title },
           labels: {
             ...(this.chartOptions.yaxis as ApexYAxis[])[0].labels,
-            formatter: this.appChartTypesService.axisYFormatter({ hasPrice: true }),
+            formatter: (val, opts) => this.appChartTypesService.axisYFormatter({ val, opts }, { hasPrice: true }),
           },
         },
         {
           ...(this.chartOptions.yaxis as ApexYAxis[])[1],
-          title: { ...(this.chartOptions.yaxis as ApexYAxis[])[1].title, text: this.dialogData.oppositeChart.title },
+          title: { ...(this.chartOptions.yaxis as ApexYAxis[])[1].title, text: this.popupData.oppositeChart.title },
           labels: {
             ...(this.chartOptions.yaxis as ApexYAxis[])[1].labels,
-            formatter: this.appChartTypesService.axisYFormatter({ hasPrice: false }),
+            formatter: (val, opts) => this.appChartTypesService.axisYFormatter({ val, opts }, { hasPrice: false }),
           },
         },
       ],
@@ -78,9 +78,9 @@ export class PopupChartComponent implements OnInit, AfterViewInit {
     Promise.resolve().then(() => {
       this.chart.updateSeries([
         {
-          name: this.dialogData.mainChart.title,
+          name: this.popupData.mainChart.title,
           type: 'column',
-          data: this.dialogData.list.map((item) => {
+          data: this.popupData.list.map((item) => {
             return {
               y: this._getMainChartValue(item),
               x: this.months[item.issueMonth - 1] + ' - ' + item.issueYear,
@@ -88,9 +88,9 @@ export class PopupChartComponent implements OnInit, AfterViewInit {
           }),
         },
         {
-          name: this.dialogData.oppositeChart.title,
+          name: this.popupData.oppositeChart.title,
           type: 'line',
-          data: this.dialogData.list.map((item) => {
+          data: this.popupData.list.map((item) => {
             return {
               y: this._getOppositeChartValue(item),
               x: this.months[item.issueMonth - 1] + ' - ' + item.issueYear,
@@ -98,7 +98,7 @@ export class PopupChartComponent implements OnInit, AfterViewInit {
           }),
         },
       ]);
-      const _minMaxAvg = minMaxAvg(this.dialogData.list.map((item) => this._getMainChartValue(item)));
+      const _minMaxAvg = minMaxAvg(this.popupData.list.map((item) => this._getMainChartValue(item)));
       this.chart.updateOptions({
         colors: [this.appChartTypesService.chartColorsFormatter(_minMaxAvg)],
         tooltip: {
@@ -113,11 +113,11 @@ export class PopupChartComponent implements OnInit, AfterViewInit {
   }
 
   private _getGroups(): { title: string; cols: number }[] {
-    this.dialogData.list.sort((a, b) => {
+    this.popupData.list.sort((a, b) => {
       if (a.issueYear !== b.issueYear) return a.issueYear - b.issueYear;
       return a.issueMonth - b.issueMonth;
     });
-    const groupsObject = this.dialogData.list.reduce((acc, cur) => {
+    const groupsObject = this.popupData.list.reduce((acc, cur) => {
       if (Object.prototype.hasOwnProperty.call(acc, cur.issueYear)) {
         acc[cur.issueYear]++;
         return acc;
@@ -132,13 +132,13 @@ export class PopupChartComponent implements OnInit, AfterViewInit {
   }
 
   private _getMainChartValue(item: { issueYear: number; issueMonth: number }) {
-    const bindValue = this.dialogData.mainChart.bindValue;
+    const bindValue = this.popupData.mainChart.bindValue;
     if (typeof bindValue === 'function') return bindValue(item);
     else return (item as any)[bindValue] as number;
   }
 
   private _getOppositeChartValue(item: { issueYear: number; issueMonth: number }) {
-    const bindValue = this.dialogData.oppositeChart.bindValue;
+    const bindValue = this.popupData.oppositeChart.bindValue;
     if (typeof bindValue === 'function') return bindValue(item);
     else return (item as any)[bindValue] as number;
   }
