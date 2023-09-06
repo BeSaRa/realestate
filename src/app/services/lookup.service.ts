@@ -52,6 +52,7 @@ export class LookupService extends RegisterServiceMixin(class {}) implements Ser
       'zoneList.*': () => Lookup,
       'municipalityList.*': () => Lookup,
       'furnitureStatusList.*': () => Lookup,
+      'nationalityList.*': () => Lookup,
     },
   })
   _loadRentLookups(): Observable<LookupsMap> {
@@ -65,6 +66,7 @@ export class LookupService extends RegisterServiceMixin(class {}) implements Ser
       'rentPurposeList.*': () => Lookup,
       'zoneList.*': () => Lookup,
       'municipalityList.*': () => Lookup,
+      'nationalityList.*': () => Lookup,
     },
   })
   _loadSellLookups(): Observable<LookupsMap> {
@@ -78,6 +80,7 @@ export class LookupService extends RegisterServiceMixin(class {}) implements Ser
       'rentPurposeList.*': () => Lookup,
       'zoneList.*': () => Lookup,
       'municipalityList.*': () => Lookup,
+      'nationalityList.*': () => Lookup,
     },
   })
   _loadMortLookups(): Observable<LookupsMap> {
@@ -85,7 +88,7 @@ export class LookupService extends RegisterServiceMixin(class {}) implements Ser
   }
 
   private _load(): Observable<LookupsMap[]> {
-    return forkJoin([this._loadRentLookups(), this._loadSellLookups(), this._loadMortLookups()]);
+    return forkJoin([this._loadRentLookups(), this._loadSellLookups(), this._loadMortLookups()]).pipe(tap(console.log));
   }
 
   load(): Observable<LookupsMap[]> {
