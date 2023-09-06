@@ -16,7 +16,7 @@ export class AppChartTypesService {
 
   private _mainChartOptions: Partial<PartialChartOptions> = mainChartOptions;
   get mainChartOptions() {
-    return structuredClone(this._mainChartOptions);
+    return { ...this._mainChartOptions };
   }
   get yearlyStaticChartOptions() {
     return { tooltip: { marker: { fillColors: ['#259C80'] } } };
@@ -33,59 +33,55 @@ export class AppChartTypesService {
 
   private _top10LineChartOptions = top10LineChartOptions;
   private _top10BarChartOptions = top10BarChartOptions;
-  get top10ChartOptions() {
-    return { line: structuredClone(this._top10LineChartOptions), bar: structuredClone(this._top10BarChartOptions) };
+  get top10ChartOptions(): { line: Partial<PartialChartOptions>; bar: Partial<PartialChartOptions> } {
+    return { line: { ...this._top10LineChartOptions }, bar: { ...this._top10BarChartOptions } };
   }
 
   private _pieChartOptions = pieChartOptions;
   get pieChartOptions() {
-    return structuredClone(this._pieChartOptions);
+    return { ...this._pieChartOptions, legend: { formatter: this.legendFormatter } };
   }
 
   private _popupChartOptions = popupChartOptions;
   get popupChartOptions() {
-    return structuredClone(this._popupChartOptions);
+    return { ...this._popupChartOptions };
   }
 
-  dataLabelsFormatter(root?: { hasPrice: boolean }): (val: string | number | number[], opts?: any) => string | number {
-    return (val) => {
-      return this._labelFormatter(val, root);
-    };
+  dataLabelsFormatter(
+    value: { val: string | number | number[]; opts?: any },
+    root?: { hasPrice: boolean }
+  ): string | number {
+    return this._labelFormatter(value.val, root);
   }
 
-  axisXFormatter(root?: { hasPrice: boolean }): (value: string, timestamp?: number, opts?: any) => string | string[] {
-    return (val) => {
-      return this._labelFormatter(val, root);
-    };
+  axisXFormatter(
+    value: { val: string; timestamp?: number; opts?: any },
+    root?: { hasPrice: boolean }
+  ): string | string[] {
+    return this._labelFormatter(value.val, root);
   }
 
-  axisYFormatter(root?: { hasPrice: boolean }): (val: number, opts?: any) => string | string[] {
-    return (val) => {
-      return this._labelFormatter(val, root);
-    };
+  axisYFormatter(value: { val: number; opts?: any }, root?: { hasPrice: boolean }): string | string[] {
+    return this._labelFormatter(value.val, root);
   }
 
-  popupLabelsFormatter(): (val: string | number | number[], opts?: any) => string | number {
-    return (val, { seriesIndex }) => {
-      if (typeof val === 'undefined') return val;
-      if (typeof val === 'string' && (val as unknown as number) !== undefined && (val as unknown as number) !== null)
-        return val;
-      const value = val as unknown as number;
-      return seriesIndex === 0
-        ? (formatNumber(value) as string)
-        : (this.maskPipe.transform(value.toFixed(0), maskSeparator.SEPARATOR, {
-            thousandSeparator: ',',
-          }) as unknown as string);
-    };
-  }
+  popupLabelsFormatter = (val: string | number | number[], opts?: { seriesIndex: number }) => {
+    if (typeof val === 'undefined') return val;
+    if (typeof val === 'string' && (val as unknown as number) !== undefined && (val as unknown as number) !== null)
+      return val;
+    const value = val as unknown as number;
+    return opts?.seriesIndex === 0
+      ? (formatNumber(value) as string)
+      : (this.maskPipe.transform(value.toFixed(0), maskSeparator.SEPARATOR, {
+          thousandSeparator: ',',
+        }) as unknown as string);
+  };
 
-  legendFormatter(): (legendName: string, opts: any) => string {
-    return (val, opts) => {
-      return this.lang.getCurrent().direction === 'rtl'
-        ? '( ' + opts.w.globals.series[opts.seriesIndex] + ' ) : ' + val
-        : val + ' : ( ' + opts.w.globals.series[opts.seriesIndex] + ' )';
-    };
-  }
+  legendFormatter = (legendName: string, opts: any) => {
+    return this.lang.getCurrent().direction === 'rtl'
+      ? '( ' + opts.w.globals.series[opts.seriesIndex] + ' ) : ' + legendName
+      : legendName + ' : ( ' + opts.w.globals.series[opts.seriesIndex] + ' )';
+  };
 
   chartColorsFormatter(minMaxAvg: MinMaxAvgContract) {
     return ({ value }: { value: number }): string => {

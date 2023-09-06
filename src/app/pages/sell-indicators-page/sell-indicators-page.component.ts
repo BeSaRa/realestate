@@ -43,7 +43,7 @@ import { UnitsService } from '@services/units.service';
 import { UrlService } from '@services/url.service';
 import { formatChartColors, formatNumber, minMaxAvg } from '@utils/utils';
 import { CarouselComponent, IvyCarouselModule } from 'angular-responsive-carousel2';
-import { ChartComponent, NgApexchartsModule } from 'ng-apexcharts';
+import { ApexYAxis, ChartComponent, NgApexchartsModule } from 'ng-apexcharts';
 import { NgxMaskPipe } from 'ngx-mask';
 import { ReplaySubject, Subject, forkJoin, map, take, takeUntil } from 'rxjs';
 
@@ -72,7 +72,6 @@ import { ReplaySubject, Subject, forkJoin, map, take, takeUntil } from 'rxjs';
     MatSortModule,
     MatNativeDateModule,
   ],
-  providers: [NgxMaskPipe],
   templateUrl: './sell-indicators-page.component.html',
   styleUrls: ['./sell-indicators-page.component.scss'],
 })
@@ -237,59 +236,7 @@ export default class SellIndicatorsPageComponent implements OnInit {
   selectedRootChartData!: KpiModel[];
   DurationTypes = DurationEndpoints;
   selectedDurationType: DurationEndpoints = DurationEndpoints.YEARLY;
-  chartOptions: Partial<PartialChartOptions> = {
-    series: [],
-    chart: {
-      height: 350,
-      type: 'line',
-    },
-    dataLabels: {
-      enabled: true,
-      formatter: (val: number): string | number => {
-        return this.selectedRoot?.hasPrice
-          ? (formatNumber(val) as string)
-          : (this.maskPipe.transform(val.toFixed(0), maskSeparator.SEPARATOR, {
-              thousandSeparator: maskSeparator.THOUSAND_SEPARATOR,
-            }) as unknown as string);
-      },
-      style: { colors: ['#259C80'] },
-    },
-    stroke: {
-      curve: 'smooth',
-      // colors: ['#A29475'],
-    },
-    grid: {
-      row: {
-        colors: ['#f3f3f3', 'transparent'],
-        opacity: 0.5,
-      },
-    },
-    xaxis: {
-      categories: [],
-    },
-    plotOptions: {
-      bar: {
-        columnWidth: '40%',
-      },
-    },
-    yaxis: {
-      min: 0,
-      max: (max: number) => max + 150,
-      tickAmount: 10,
-      labels: {
-        formatter: (val: number): string | string[] => {
-          return this.selectedRoot?.hasPrice
-            ? (formatNumber(val) as string)
-            : (this.maskPipe.transform(val.toFixed(0), 'separator', { thousandSeparator: ',' }) as unknown as string);
-        },
-        minWidth: 50,
-        style: {
-          fontWeight: 'bold',
-        },
-      },
-    },
-    tooltip: { marker: { fillColors: ['#259C80'] } },
-  };
+  chartOptions: Partial<PartialChartOptions> = this.appChartTypesService.mainChartOptions;
 
   transactions = new ReplaySubject<SellTransaction[]>(1);
   transactionsSortOptions: TableSortOption[] = [
@@ -356,137 +303,8 @@ export default class SellIndicatorsPageComponent implements OnInit {
 
   top10ChartData: SellTop10Model[] = [];
   selectedTop10: Lookup = this.accordingToList[0];
-  selectedTop10ChartType = ChartType.BAR;
-  top10ChartOptions: Record<string, Partial<PartialChartOptions>> = {
-    bar: {
-      series: [],
-      chart: {
-        type: 'bar',
-        height: 400,
-      },
-      dataLabels: {
-        enabled: true,
-        dropShadow: {
-          enabled: true,
-        },
-        formatter: (val: string): string | number => {
-          const value = val as unknown as number;
-          return this.selectedTop10?.hasPrice
-            ? (formatNumber(value) as string)
-            : (this.maskPipe.transform(value.toFixed(0), 'separator', { thousandSeparator: ',' }) as unknown as string);
-        },
-      },
-      stroke: {
-        curve: 'smooth',
-      },
-      grid: {
-        xaxis: {
-          lines: {
-            show: true,
-          },
-        },
-      },
-      xaxis: {
-        categories: [],
-        labels: {
-          formatter: (val: string): string | string[] => {
-            if (typeof val === 'string') return val;
-            const value = val as unknown as number;
-            return this.selectedTop10?.hasPrice
-              ? (formatNumber(value) as string)
-              : (this.maskPipe.transform(value.toFixed(0), 'separator', {
-                  thousandSeparator: ',',
-                }) as unknown as string);
-          },
-        },
-      },
-      plotOptions: {
-        bar: {
-          horizontal: true,
-          columnWidth: '20%',
-          dataLabels: {
-            position: 'bottom',
-          },
-        },
-      },
-      yaxis: {
-        reversed: true,
-        labels: {
-          formatter: (val: number | string): string | string[] => {
-            return typeof val === 'string'
-              ? val
-              : this.selectedTop10?.hasPrice
-              ? (formatNumber(val) as string)
-              : (this.maskPipe.transform(val.toFixed(0), 'separator', { thousandSeparator: ',' }) as unknown as string);
-          },
-          style: {
-            fontFamily: 'inherit',
-            fontSize: '15px',
-          },
-        },
-      },
-      colors: ['#60d39d'],
-    },
-    line: {
-      series: [],
-      chart: {
-        type: 'line',
-        height: 400,
-      },
-      dataLabels: {
-        enabled: true,
-        dropShadow: {
-          enabled: true,
-        },
-        formatter: (val: string): string | number => {
-          const value = val as unknown as number;
-          return this.selectedTop10?.hasPrice
-            ? (formatNumber(value) as string)
-            : (this.maskPipe.transform(value.toFixed(0), 'separator', { thousandSeparator: ',' }) as unknown as string);
-        },
-      },
-      stroke: {
-        curve: 'smooth',
-      },
-      grid: {
-        xaxis: {
-          lines: {
-            show: true,
-          },
-        },
-      },
-      xaxis: {
-        categories: [],
-        labels: {
-          formatter: (val: string): string | string[] => {
-            if (typeof val === 'string') return val;
-            const value = val as unknown as number;
-            return this.selectedTop10?.hasPrice
-              ? (formatNumber(value) as string)
-              : (this.maskPipe.transform(value.toFixed(0), 'separator', {
-                  thousandSeparator: ',',
-                }) as unknown as string);
-          },
-        },
-      },
-      yaxis: {
-        labels: {
-          formatter: (val: number | string): string | string[] => {
-            return typeof val === 'string'
-              ? val
-              : this.selectedTop10?.hasPrice
-              ? (formatNumber(val) as string)
-              : (this.maskPipe.transform(val.toFixed(0), 'separator', { thousandSeparator: ',' }) as unknown as string);
-          },
-          style: {
-            fontFamily: 'inherit',
-            fontSize: '15px',
-          },
-        },
-      },
-      colors: ['#60d39d'],
-    },
-  };
+  selectedTop10ChartType: 'bar' | 'line' = ChartType.BAR;
+  top10ChartOptions = this.appChartTypesService.top10ChartOptions;
 
   compositeTransactions: CompositeTransaction[][] = [];
   compositeYears!: { selectedYear: number; previousYear: number };
@@ -505,25 +323,13 @@ export default class SellIndicatorsPageComponent implements OnInit {
   compositeTransactionsExtraColumns = ['contractCounts', 'contractValues', 'avgContract'];
 
   pieChartData: RoomNumberKpi[] = [];
-  pieChartOptions: PieChartOptions = {
-    chart: {
-      type: 'pie',
-      width: 480,
-    },
-    labels: [],
-    series: [1, 2, 53, 69, 7],
-    legend: {
-      formatter: (val, opts) => {
-        return this.lang.getCurrent().direction === 'rtl'
-          ? '( ' + opts.w.globals.series[opts.seriesIndex] + ' ) : ' + val
-          : val + ' : ( ' + opts.w.globals.series[opts.seriesIndex] + ' )';
-      },
-    },
-  };
+  pieChartOptions: PieChartOptions = this.appChartTypesService.pieChartOptions;
 
   selectedTab = 'sell_indicators';
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    this._initializeChartsFormatters();
+  }
 
   switchTab(tab: string): void {
     this.selectedTab = tab;
@@ -677,8 +483,8 @@ export default class SellIndicatorsPageComponent implements OnInit {
         xaxis: {
           categories: this.selectedRootChartData.map((item) => item.issueYear),
         },
-        colors: [formatChartColors(_minMaxAvg)],
-        tooltip: { marker: { fillColors: ['#259C80'] } },
+        colors: [this.appChartTypesService.chartColorsFormatter(_minMaxAvg)],
+        ...this.appChartTypesService.yearlyStaticChartOptions,
       })
       .then();
     this.updateChartType(ChartType.BAR);
@@ -706,8 +512,8 @@ export default class SellIndicatorsPageComponent implements OnInit {
                 }),
               },
             ],
-            colors: [formatChartColors(_minMaxAvg)],
-            tooltip: { marker: { fillColors: ['#259C80'] } },
+            colors: [this.appChartTypesService.chartColorsFormatter(_minMaxAvg)],
+            ...this.appChartTypesService.monthlyStaticChartOptions,
           })
           .then();
       });
@@ -744,8 +550,7 @@ export default class SellIndicatorsPageComponent implements OnInit {
             xaxis: {
               categories: data[1].kpiValues.map((v) => v.year),
             },
-            colors: ['#8A1538', '#A29475', '#C0C0C0', '#1A4161'],
-            tooltip: { marker: { fillColors: ['#8A1538', '#A29475', '#C0C0C0', '#1A4161'] } },
+            ...this.appChartTypesService.halflyAndQuarterlyStaticChartOptions,
           })
           .then();
       });
@@ -830,7 +635,7 @@ export default class SellIndicatorsPageComponent implements OnInit {
   }
 
   updateTop10ChartType(type: ChartType) {
-    this.selectedTop10ChartType = type;
+    this.selectedTop10ChartType = type as 'line' | 'bar';
     this.top10Chart.first
       .updateOptions(this.top10ChartOptions[this.selectedTop10ChartType], true)
       .then(() => this.updateTop10Chart());
@@ -904,5 +709,67 @@ export default class SellIndicatorsPageComponent implements OnInit {
       this.criteria.criteria.purposeList[0] !== -1
       ? this.lookupService.sellPurposeMap[this.criteria.criteria.purposeList[0]].getNames()
       : '';
+  }
+
+  private _initializeChartsFormatters() {
+    this.chartOptions = {
+      ...this.chartOptions,
+      dataLabels: {
+        ...this.chartOptions.dataLabels,
+        formatter: (val, opts) => this.appChartTypesService.dataLabelsFormatter({ val, opts }, this.selectedRoot),
+      },
+      yaxis: {
+        ...this.chartOptions.yaxis,
+        labels: {
+          ...(this.chartOptions.yaxis as ApexYAxis).labels,
+          formatter: (val, opts) => this.appChartTypesService.axisYFormatter({ val, opts }, this.selectedRoot),
+        },
+      },
+    };
+
+    this.top10ChartOptions = {
+      line: {
+        ...this.top10ChartOptions.line,
+        dataLabels: {
+          ...this.top10ChartOptions.line.dataLabels,
+          formatter: (val, opts) => this.appChartTypesService.dataLabelsFormatter({ val, opts }, this.selectedRoot),
+        },
+        yaxis: {
+          ...this.top10ChartOptions.line.yaxis,
+          labels: {
+            ...(this.chartOptions.yaxis as ApexYAxis).labels,
+            formatter: (val, opts) => this.appChartTypesService.axisYFormatter({ val, opts }, this.selectedRoot),
+          },
+        },
+        xaxis: {
+          ...this.top10ChartOptions.line.xaxis,
+          labels: {
+            ...(this.top10ChartOptions.line.xaxis as ApexYAxis).labels,
+            formatter: (val, opts) => this.appChartTypesService.axisXFormatter({ val, opts }, this.selectedRoot),
+          },
+        },
+      },
+      bar: {
+        ...this.top10ChartOptions.bar,
+        dataLabels: {
+          ...this.top10ChartOptions.bar.dataLabels,
+          formatter: (val, opts) => this.appChartTypesService.dataLabelsFormatter({ val, opts }, this.selectedRoot),
+        },
+        yaxis: {
+          ...this.top10ChartOptions.bar.yaxis,
+          labels: {
+            ...(this.chartOptions.yaxis as ApexYAxis).labels,
+            formatter: (val, opts) => this.appChartTypesService.axisYFormatter({ val, opts }, this.selectedRoot),
+          },
+        },
+        xaxis: {
+          ...this.top10ChartOptions.bar.xaxis,
+          labels: {
+            ...(this.top10ChartOptions.bar.xaxis as ApexYAxis).labels,
+            formatter: (val, opts) => this.appChartTypesService.axisXFormatter({ val, opts }, this.selectedRoot),
+          },
+        },
+      },
+    };
   }
 }

@@ -1,6 +1,8 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { MatDialogRef } from '@angular/material/dialog';
+import { ChartWithOppositePopupComponent } from '@components/chart-with-opposite-popup/chart-with-opposite-popup.component';
+import { ChartWithOppositePopupData } from '@contracts/chart-with-opposite-popup-data';
 import { CriteriaContract } from '@contracts/criteria-contract';
 import { DurationDataContract } from '@contracts/duration-data-contract';
 import { MortgageCriteriaContract } from '@contracts/mortgage-criteria-contract';
@@ -14,6 +16,7 @@ import {
   RentCompositeTransaction,
   SellCompositeTransaction,
 } from '@models/composite-transaction';
+import { FurnitureStatusKpi } from '@models/furniture-status-kpi';
 import { KpiBaseModel } from '@models/kpi-base-model';
 import { KpiDurationModel } from '@models/kpi-duration-model';
 import { KpiModel } from '@models/kpi-model';
@@ -32,10 +35,9 @@ import { UrlService } from '@services/url.service';
 import { chunks, minMaxAvg, range } from '@utils/utils';
 import { CastResponse } from 'cast-response';
 import { forkJoin, map, Observable } from 'rxjs';
-import { RentTransactionPurposePopupComponent } from '../popups/rent-transaction-purpose-popup/rent-transaction-purpose-popup.component';
 import { SellTransactionPurposePopupComponent } from '../popups/sell-transaction-purpose-popup/sell-transaction-purpose-popup.component';
 import { DialogService } from './dialog.service';
-import { FurnitureStatusKpi } from '@models/furniture-status-kpi';
+import { TranslationService } from './translation.service';
 
 @Injectable({
   providedIn: 'root',
@@ -44,6 +46,7 @@ export class DashboardService extends RegisterServiceMixin(class {}) implements 
   serviceName = 'DashboardService';
   private http = inject(HttpClient);
   private urlService = inject(UrlService);
+  private lang = inject(TranslationService);
   private dialog = inject(DialogService);
 
   @CastResponse(() => RentDefaultValues)
@@ -210,12 +213,19 @@ export class DashboardService extends RegisterServiceMixin(class {}) implements 
 
   openRentChartDialogBasedOnPurpose(
     criteria: Partial<RentCriteriaContract>
-  ): Observable<MatDialogRef<RentTransactionPurposePopupComponent>> {
+  ): Observable<MatDialogRef<ChartWithOppositePopupComponent>> {
     return this.loadRentTransactionsBasedOnPurposeDetails(criteria).pipe(
       map((data) =>
-        this.dialog.open<RentTransactionPurposePopupComponent, RentTransactionPurpose[]>(
-          RentTransactionPurposePopupComponent,
-          { data }
+        this.dialog.open<ChartWithOppositePopupComponent, ChartWithOppositePopupData<RentTransactionPurpose>>(
+          ChartWithOppositePopupComponent,
+          {
+            data: {
+              title: data[0].purposeInfo.getNames(),
+              list: data,
+              mainChart: { title: this.lang.map.average_price_per_month, bindValue: 'rentPaymentMonthly' },
+              oppositeChart: { title: this.lang.map.rent_contracts_count, bindValue: 'certificateCount' },
+            },
+          }
         )
       )
     );
@@ -223,12 +233,19 @@ export class DashboardService extends RegisterServiceMixin(class {}) implements 
 
   openSellChartDialogBasedOnPurpose(
     criteria: Partial<SellCriteriaContract>
-  ): Observable<MatDialogRef<SellTransactionPurposePopupComponent>> {
+  ): Observable<MatDialogRef<ChartWithOppositePopupComponent>> {
     return this.loadSellTransactionsBasedOnPurposeDetails(criteria).pipe(
       map((data) =>
-        this.dialog.open<SellTransactionPurposePopupComponent, SellTransactionPurpose[]>(
-          SellTransactionPurposePopupComponent,
-          { data }
+        this.dialog.open<ChartWithOppositePopupComponent, ChartWithOppositePopupData<SellTransactionPurpose>>(
+          ChartWithOppositePopupComponent,
+          {
+            data: {
+              title: data[0].purposeInfo.getNames(),
+              list: data,
+              mainChart: { title: this.lang.map.average_price, bindValue: 'medianPrice' },
+              oppositeChart: { title: this.lang.map.number_of_sell_contracts, bindValue: 'countCertificateCode' },
+            },
+          }
         )
       )
     );

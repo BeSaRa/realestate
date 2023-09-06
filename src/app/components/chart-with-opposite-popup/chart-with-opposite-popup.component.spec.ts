@@ -1,16 +1,16 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { PopupChartComponent } from './popup-chart.component';
+import { ChartWithOppositePopupComponent } from './chart-with-opposite-popup.component';
 
 describe('PopupChartComponent', () => {
-  let component: PopupChartComponent;
-  let fixture: ComponentFixture<PopupChartComponent>;
+  let component: ChartWithOppositePopupComponent;
+  let fixture: ComponentFixture<ChartWithOppositePopupComponent>;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [PopupChartComponent]
+      imports: [ChartWithOppositePopupComponent],
     });
-    fixture = TestBed.createComponent(PopupChartComponent);
+    fixture = TestBed.createComponent(ChartWithOppositePopupComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
