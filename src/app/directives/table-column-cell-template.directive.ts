@@ -1,7 +1,7 @@
 import { Directive, TemplateRef, inject } from '@angular/core';
 
 @Directive({
-  selector: '[appTableColumnCellTemplate]',
+  selector: 'ng-template[appTableColumnCellTemplate]',
   standalone: true,
 })
 export class TableColumnCellTemplateDirective {
