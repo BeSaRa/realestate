@@ -139,7 +139,7 @@ export interface LangKeysContract {
   paginator_entry_label: string;
   property_type: string;
   property_usage: string;
-  //////////////////
+  // //////////////////
   sell_transactions_measuring_dashboard: string;
   the_total_number_of_sell_contracts: string;
   the_total_number_of_properties_units_sold: string;
@@ -150,7 +150,7 @@ export interface LangKeysContract {
   real_estate_value_from: string;
   real_estate_value_to: string;
   statistical_reports_for_sell: string;
-  //////
+  // //////
   number_of_sell_contracts: string;
   number_of_sold_units: string;
   sold_areas: string;
@@ -160,7 +160,7 @@ export interface LangKeysContract {
   sell_transactions_list: string;
   location: string;
   sold_for: string;
-  sold_by: string;
+  sold_by: string; // check it
   issue_date: string;
   square_feet_price: string;
   unit_parcel_no: string;
