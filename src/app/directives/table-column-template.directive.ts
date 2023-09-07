@@ -13,7 +13,7 @@ export class TableColumnTemplateDirective {
   @Input() bindColumnValue?: string | ((item: any) => any);
 
   @ContentChild(TableColumnHeaderTemplateDirective) header!: TableColumnHeaderTemplateDirective;
-  @ContentChild(TableColumnCellTemplateDirective) cell!: TableColumnCellTemplateDirective;
+  @ContentChild(TableColumnCellTemplateDirective) cell!: TableColumnCellTemplateDirective<object>;
 
   getBindValue(columnData: unknown): unknown {
     return this.bindColumnValue && typeof this.bindColumnValue === 'string'
