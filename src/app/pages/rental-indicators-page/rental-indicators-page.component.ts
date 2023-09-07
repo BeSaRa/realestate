@@ -737,64 +737,30 @@ export default class RentalIndicatorsPageComponent implements OnInit {
   }
 
   private _initializeChartsFormatters() {
-    this.chartOptions = {
-      ...this.chartOptions,
-      dataLabels: {
-        ...this.chartOptions.dataLabels,
-        formatter: (val, opts) => this.appChartTypesService.dataLabelsFormatter({ val, opts }, this.selectedRoot),
-      },
-      yaxis: {
-        ...this.chartOptions.yaxis,
-        labels: {
-          ...(this.chartOptions.yaxis as ApexYAxis).labels,
-          formatter: (val, opts) => this.appChartTypesService.axisYFormatter({ val, opts }, this.selectedRoot),
-        },
-      },
-    };
+    this.appChartTypesService.addDataLabelsFormatter(this.chartOptions, (val, opts) =>
+      this.appChartTypesService.dataLabelsFormatter({ val, opts }, this.selectedRoot)
+    );
+    this.appChartTypesService.addAxisYFormatter(this.chartOptions, (val, opts) =>
+      this.appChartTypesService.axisYFormatter({ val, opts }, this.selectedRoot)
+    );
 
-    this.top10ChartOptions = {
-      line: {
-        ...this.top10ChartOptions.line,
-        dataLabels: {
-          ...this.top10ChartOptions.line.dataLabels,
-          formatter: (val, opts) => this.appChartTypesService.dataLabelsFormatter({ val, opts }, this.selectedRoot),
-        },
-        yaxis: {
-          ...this.top10ChartOptions.line.yaxis,
-          labels: {
-            ...(this.chartOptions.yaxis as ApexYAxis).labels,
-            formatter: (val, opts) => this.appChartTypesService.axisYFormatter({ val, opts }, this.selectedRoot),
-          },
-        },
-        xaxis: {
-          ...this.top10ChartOptions.line.xaxis,
-          labels: {
-            ...(this.top10ChartOptions.line.xaxis as ApexYAxis).labels,
-            formatter: (val, opts) => this.appChartTypesService.axisXFormatter({ val, opts }, this.selectedRoot),
-          },
-        },
-      },
-      bar: {
-        ...this.top10ChartOptions.bar,
-        dataLabels: {
-          ...this.top10ChartOptions.bar.dataLabels,
-          formatter: (val, opts) => this.appChartTypesService.dataLabelsFormatter({ val, opts }, this.selectedRoot),
-        },
-        yaxis: {
-          ...this.top10ChartOptions.bar.yaxis,
-          labels: {
-            ...(this.chartOptions.yaxis as ApexYAxis).labels,
-            formatter: (val, opts) => this.appChartTypesService.axisYFormatter({ val, opts }, this.selectedRoot),
-          },
-        },
-        xaxis: {
-          ...this.top10ChartOptions.bar.xaxis,
-          labels: {
-            ...(this.top10ChartOptions.bar.xaxis as ApexYAxis).labels,
-            formatter: (val, opts) => this.appChartTypesService.axisXFormatter({ val, opts }, this.selectedRoot),
-          },
-        },
-      },
-    };
+    this.appChartTypesService.addDataLabelsFormatter(this.top10ChartOptions.line, (val, opts) =>
+      this.appChartTypesService.dataLabelsFormatter({ val, opts }, this.selectedRoot)
+    );
+    this.appChartTypesService.addAxisYFormatter(this.top10ChartOptions.line, (val, opts) =>
+      this.appChartTypesService.axisYFormatter({ val, opts }, this.selectedRoot)
+    );
+    this.appChartTypesService.addAxisXFormatter(this.top10ChartOptions.line, (val, opts) =>
+      this.appChartTypesService.axisXFormatter({ val, opts }, this.selectedRoot)
+    );
+    this.appChartTypesService.addDataLabelsFormatter(this.top10ChartOptions.bar, (val, opts) =>
+      this.appChartTypesService.dataLabelsFormatter({ val, opts }, this.selectedRoot)
+    );
+    this.appChartTypesService.addAxisYFormatter(this.top10ChartOptions.bar, (val, opts) =>
+      this.appChartTypesService.axisYFormatter({ val, opts }, this.selectedRoot)
+    );
+    this.appChartTypesService.addAxisXFormatter(this.top10ChartOptions.bar, (val, opts) =>
+      this.appChartTypesService.axisXFormatter({ val, opts }, this.selectedRoot)
+    );
   }
 }

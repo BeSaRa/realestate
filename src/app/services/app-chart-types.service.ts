@@ -6,6 +6,7 @@ import { formatNumber } from '@utils/utils';
 import { NgxMaskPipe } from 'ngx-mask';
 import { TranslationService } from './translation.service';
 import { PieChartOptions } from '@app-types/pie-chart-options';
+import { ApexYAxis } from 'ng-apexcharts';
 
 @Injectable({
   providedIn: 'root',
@@ -88,6 +89,43 @@ export class AppChartTypesService {
       if (value >= minMaxAvg.min && value < minMaxAvg.avg) return '#C0C0C0';
       if (value >= minMaxAvg.avg && value < minMaxAvg.max) return '#A29475';
       return '#8A1538';
+    };
+  }
+
+  addDataLabelsFormatter(
+    chartOptions: Partial<PartialChartOptions>,
+    formatter: (val: string | number | number[], opts?: any) => string | number
+  ) {
+    chartOptions = { ...chartOptions, dataLabels: { ...chartOptions.dataLabels, formatter } };
+  }
+
+  addAxisYFormatter(
+    chartOptions: Partial<PartialChartOptions>,
+    formatter: (val: number, opts?: any) => string | string[]
+  ) {
+    chartOptions = {
+      yaxis: {
+        ...chartOptions.yaxis,
+        labels: {
+          ...(chartOptions.yaxis as ApexYAxis).labels,
+          formatter,
+        },
+      },
+    };
+  }
+
+  addAxisXFormatter(
+    chartOptions: Partial<PartialChartOptions>,
+    formatter: (val: string, timestamp?: number, opts?: any) => string | string[]
+  ) {
+    chartOptions = {
+      xaxis: {
+        ...chartOptions.xaxis,
+        labels: {
+          ...(chartOptions.xaxis as ApexYAxis).labels,
+          formatter,
+        },
+      },
     };
   }
 
