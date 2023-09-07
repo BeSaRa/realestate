@@ -203,4 +203,8 @@ export interface LangKeysContract {
   the_square_foot_price: string;
   unit: string;
   unit_type: string;
+
+  ///////////////////////
+  ownership_indicator: string;
+  real_estate_ownership_indicators: string;
 }

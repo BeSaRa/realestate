@@ -48,6 +48,10 @@ export const routes: Routes = [
     loadComponent: () => import('@pages/rental-indicators-page/rental-indicators-page.component'),
   },
   {
+    path: 'ownership-indicators',
+    loadComponent: () => import('@pages/ownership-indicators-page/ownership-indicators-page.component'),
+  },
+  {
     path: 'inputs',
     loadComponent: () => import('@pages/inputs-page/inputs-page.component'),
   },
