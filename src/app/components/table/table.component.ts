@@ -18,8 +18,8 @@ import { Observable, isObservable, map, tap } from 'rxjs';
   templateUrl: './table.component.html',
   styleUrls: ['./table.component.scss'],
 })
-export class TableComponent implements OnInit {
-  @Input({ required: true }) data!: any[] | Observable<any[]>;
+export class TableComponent<T extends object> implements OnInit {
+  @Input({ required: true }) data!: T[] | Observable<T[]>;
   @Input() pageSize = 5;
   @Input() minWidth = '1000px';
   @Input() headerBgColor = '!bg-primary';
@@ -28,8 +28,8 @@ export class TableComponent implements OnInit {
 
   @ContentChildren(TableColumnTemplateDirective) columnsTemplates!: QueryList<TableColumnTemplateDirective>;
 
-  dataSource = new AppTableDataSource<any>([]);
-  sortedData!: any[] | Observable<any[]>;
+  dataSource = new AppTableDataSource<T>([]);
+  sortedData!: T[] | Observable<T[]>;
 
   length!: number;
   pageSizeOptions: number[] = [2, 5, 10];
@@ -98,15 +98,15 @@ export class TableComponent implements OnInit {
         this.sortedData = this.data.pipe(
           map((data) => {
             return data.sort((a, b) => {
-              if (value?.direction === 'desc') return b[value.column] > a[value.column] ? 1 : -1;
-              else return a[value!.column] > b[value!.column] ? 1 : -1;
+              if (value?.direction === 'desc') return b[value.column as keyof T] > a[value.column as keyof T] ? 1 : -1;
+              else return a[value.column as keyof T] > b[value.column as keyof T] ? 1 : -1;
             });
           })
         );
       } else {
         this.sortedData = this.data.sort((a, b) => {
-          if (value?.direction === 'desc') return b[value.column] > a[value.column] ? 1 : -1;
-          else return a[value!.column] > b[value!.column] ? 1 : -1;
+          if (value?.direction === 'desc') return b[value.column as keyof T] > a[value.column as keyof T] ? 1 : -1;
+          else return a[value.column as keyof T] > b[value.column as keyof T] ? 1 : -1;
         });
       }
       this._initializeDataSource();
