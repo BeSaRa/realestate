@@ -737,29 +737,33 @@ export default class RentalIndicatorsPageComponent implements OnInit {
   }
 
   private _initializeChartsFormatters() {
-    this.appChartTypesService.addDataLabelsFormatter(this.chartOptions, (val, opts) =>
+    this.chartOptions = this.appChartTypesService.addDataLabelsFormatter(this.chartOptions, (val, opts) =>
       this.appChartTypesService.dataLabelsFormatter({ val, opts }, this.selectedRoot)
     );
-    this.appChartTypesService.addAxisYFormatter(this.chartOptions, (val, opts) =>
+    this.chartOptions = this.appChartTypesService.addAxisYFormatter(this.chartOptions, (val, opts) =>
       this.appChartTypesService.axisYFormatter({ val, opts }, this.selectedRoot)
     );
 
-    this.appChartTypesService.addDataLabelsFormatter(this.top10ChartOptions.line, (val, opts) =>
-      this.appChartTypesService.dataLabelsFormatter({ val, opts }, this.selectedRoot)
+    this.top10ChartOptions.line = this.appChartTypesService.addDataLabelsFormatter(
+      this.top10ChartOptions.line,
+      (val, opts) => this.appChartTypesService.dataLabelsFormatter({ val, opts }, this.selectedRoot)
     );
-    this.appChartTypesService.addAxisYFormatter(this.top10ChartOptions.line, (val, opts) =>
+    this.top10ChartOptions.line = this.appChartTypesService.addAxisYFormatter(
+      this.top10ChartOptions.line,
+      (val, opts) => this.appChartTypesService.axisYFormatter({ val, opts }, this.selectedRoot)
+    );
+    this.top10ChartOptions.line = this.appChartTypesService.addAxisXFormatter(
+      this.top10ChartOptions.line,
+      (val, opts) => this.appChartTypesService.axisXFormatter({ val, opts }, this.selectedRoot)
+    );
+    this.top10ChartOptions.bar = this.appChartTypesService.addDataLabelsFormatter(
+      this.top10ChartOptions.bar,
+      (val, opts) => this.appChartTypesService.dataLabelsFormatter({ val, opts }, this.selectedRoot)
+    );
+    this.top10ChartOptions.bar = this.appChartTypesService.addAxisYFormatter(this.top10ChartOptions.bar, (val, opts) =>
       this.appChartTypesService.axisYFormatter({ val, opts }, this.selectedRoot)
     );
-    this.appChartTypesService.addAxisXFormatter(this.top10ChartOptions.line, (val, opts) =>
-      this.appChartTypesService.axisXFormatter({ val, opts }, this.selectedRoot)
-    );
-    this.appChartTypesService.addDataLabelsFormatter(this.top10ChartOptions.bar, (val, opts) =>
-      this.appChartTypesService.dataLabelsFormatter({ val, opts }, this.selectedRoot)
-    );
-    this.appChartTypesService.addAxisYFormatter(this.top10ChartOptions.bar, (val, opts) =>
-      this.appChartTypesService.axisYFormatter({ val, opts }, this.selectedRoot)
-    );
-    this.appChartTypesService.addAxisXFormatter(this.top10ChartOptions.bar, (val, opts) =>
+    this.top10ChartOptions.bar = this.appChartTypesService.addAxisXFormatter(this.top10ChartOptions.bar, (val, opts) =>
       this.appChartTypesService.axisXFormatter({ val, opts }, this.selectedRoot)
     );
   }

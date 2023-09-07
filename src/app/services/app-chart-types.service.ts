@@ -96,14 +96,15 @@ export class AppChartTypesService {
     chartOptions: Partial<PartialChartOptions>,
     formatter: (val: string | number | number[], opts?: any) => string | number
   ) {
-    chartOptions = { ...chartOptions, dataLabels: { ...chartOptions.dataLabels, formatter } };
+    return (chartOptions = { ...chartOptions, dataLabels: { ...chartOptions.dataLabels, formatter } });
   }
 
   addAxisYFormatter(
     chartOptions: Partial<PartialChartOptions>,
     formatter: (val: number, opts?: any) => string | string[]
   ) {
-    chartOptions = {
+    return (chartOptions = {
+      ...chartOptions,
       yaxis: {
         ...chartOptions.yaxis,
         labels: {
@@ -111,14 +112,15 @@ export class AppChartTypesService {
           formatter,
         },
       },
-    };
+    });
   }
 
   addAxisXFormatter(
     chartOptions: Partial<PartialChartOptions>,
     formatter: (val: string, timestamp?: number, opts?: any) => string | string[]
   ) {
-    chartOptions = {
+    return (chartOptions = {
+      ...chartOptions,
       xaxis: {
         ...chartOptions.xaxis,
         labels: {
@@ -126,7 +128,7 @@ export class AppChartTypesService {
           formatter,
         },
       },
-    };
+    });
   }
 
   private _labelFormatter(val: string | number | number[], root?: { hasPrice: boolean }) {
