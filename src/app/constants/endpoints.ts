@@ -45,7 +45,6 @@ const rentEndPoints = {
   // collection of transactions tables
   RENT_KPI35_36_37: 'RENT|kpi35_36_37/stats/indicators',
 };
-
 const sellEndPoints = {
   SELL: 'BE|kpi/sell',
   SELL_LOOKUPS: 'BE|kpi/sell/lookup',
@@ -94,7 +93,7 @@ const sellEndPoints = {
 
   SELL_KPI35_36_37: 'SELL|kpi35_36_37/stats/indicators',
 };
-const mortgage = {
+const mortgageEndpoints = {
   MORT: 'BE|kpi/mortgage',
   MORT_LOOKUPS: 'MORT|lookup',
   MORT_KPI1: 'MORT|kpi1/transaction-number', // root
@@ -114,6 +113,20 @@ const mortgage = {
   MORT_KPI6_Q: 'MORT|kpi6/chart/transaction-value-rate/quartley',
   MORT_KPI7: 'MORT|kpi6/detail/transaction',
 };
+const ownerEndpoints = {
+  OWNER: 'BE|kpi/owner',
+  OWNER_LOOKUPS: 'OWNER|lookup',
+  OWNER_KPI1: 'OWNER|kpi1/total-owner-count',
+  OWNER_KPI2: 'OWNER|kpi2/total-owner-count/purpose',
+  OWNER_KPI3: 'OWNER|kpi3/total-owner-count/property',
+  OWNER_KPI4: 'OWNER|kpi4/qatari/total-owner-count',
+  OWNER_KPI5: 'OWNER|kpi5/qatari/total-owner-count/purpose',
+  OWNER_KPI6: 'OWNER|kpi6/qatari/total-owner-count/property',
+  OWNER_KPI7: 'OWNER|kpi7/non-qatari/total-owner-count',
+  OWNER_KPI8: 'OWNER|kpi8/non-qatari/total-owner-count/purpose',
+  OWNER_KPI9: 'OWNER|kpi9/non-qatari/total-owner-count/property',
+  OWNER_KPI10: 'OWNER|kpi10/total-ownership-count',
+};
 
 export const EndPoints = {
   BASE_URL: '',
@@ -121,7 +134,8 @@ export const EndPoints = {
   BE: 'http://192.168.52.4:9080/mme-services/',
   ...rentEndPoints,
   ...sellEndPoints,
-  ...mortgage,
+  ...mortgageEndpoints,
+  ...ownerEndpoints,
 };
 
 export type EndpointsType = typeof EndPoints;

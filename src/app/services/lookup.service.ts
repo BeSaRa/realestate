@@ -20,29 +20,36 @@ export class LookupService extends RegisterServiceMixin(class {}) implements Ser
   rentLookups!: LookupsContract;
   sellLookups!: LookupsContract;
   mortLookups!: LookupsContract;
+  ownerLookups!: LookupsContract;
 
   rentMunicipalitiesMap: Record<number, Lookup> = {};
   sellMunicipalitiesMap: Record<number, Lookup> = {};
   mortMunicipalitiesMap: Record<number, Lookup> = {};
+  ownerMunicipalitiesMap: Record<number, Lookup> = {};
 
   rentZonesMap: Record<number, Lookup> = {};
   sellZonesMap: Record<number, Lookup> = {};
   mortZonesMap: Record<number, Lookup> = {};
+  ownerZonesMap: Record<number, Lookup> = {};
 
   rentRoomsMap: Record<number, Lookup> = {};
+
   rentFurnitureMap: Record<number, Lookup> = {};
 
   rentPurposeMap: Record<number, Lookup> = {};
   sellPurposeMap: Record<number, Lookup> = {};
   mortPurposeMap: Record<number, Lookup> = {};
+  ownerPurposeMap: Record<number, Lookup> = {};
 
   rentPropertyTypeMap: Record<number, Lookup> = {};
   sellPropertyTypeMap: Record<number, Lookup> = {};
   mortPropertyTypeMap: Record<number, Lookup> = {};
+  ownerPropertyTypeMap: Record<number, Lookup> = {};
 
   sellDistrictMap: Record<number, Lookup> = {};
   rentDistrictMap: Record<number, Lookup> = {};
   mortDistrictMap: Record<number, Lookup> = {};
+  ownerDistrictMap: Record<number, Lookup> = {};
 
   @CastResponse(() => LookupsMap, {
     shape: {
@@ -87,8 +94,28 @@ export class LookupService extends RegisterServiceMixin(class {}) implements Ser
     return this.http.get<LookupsMap>(this.urlService.URLS.MORT_LOOKUPS);
   }
 
+  @CastResponse(() => LookupsMap, {
+    shape: {
+      'districtList.*': () => Lookup,
+      'propertyTypeList.*': () => Lookup,
+      'rentPurposeList.*': () => Lookup,
+      'zoneList.*': () => Lookup,
+      'municipalityList.*': () => Lookup,
+      'furnitureStatusList.*': () => Lookup,
+      'nationalityList.*': () => Lookup,
+    },
+  })
+  _loadOwnerLookups(): Observable<LookupsMap> {
+    return this.http.get<LookupsMap>(this.urlService.URLS.OWNER_LOOKUPS);
+  }
+
   private _load(): Observable<LookupsMap[]> {
-    return forkJoin([this._loadRentLookups(), this._loadSellLookups(), this._loadMortLookups()]).pipe(tap(console.log));
+    return forkJoin([
+      this._loadRentLookups(),
+      this._loadSellLookups(),
+      this._loadMortLookups(),
+      this._loadOwnerLookups(),
+    ]).pipe(tap(console.log));
   }
 
   load(): Observable<LookupsMap[]> {

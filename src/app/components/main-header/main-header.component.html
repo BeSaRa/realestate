@@ -52,6 +52,14 @@
       <li>
         <app-button
           [buttonStyle]="sticky.isSticky() ? 'none-primary' : 'none'"
+          routerLink="/ownership-indicators"
+          routerLinkActive="active"
+          >{{ lang.map.ownership_indicator }}</app-button
+        >
+      </li>
+      <li>
+        <app-button
+          [buttonStyle]="sticky.isSticky() ? 'none-primary' : 'none'"
           routerLink="/news"
           routerLinkActive="active"
           >{{ lang.map.news }}</app-button
