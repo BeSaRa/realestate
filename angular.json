@@ -39,7 +39,7 @@
             "assets": [
               "src/favicon.svg",
               "src/assets",
-              "src/CONFIGURATIONS.json",
+              "src/config/CONFIGURATIONS.json",
               {
                 "glob": "mdi.svg",
                 "input": "./node_modules/@mdi/angular-material",
