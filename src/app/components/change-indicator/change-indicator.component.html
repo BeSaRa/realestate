@@ -4,7 +4,7 @@
     [ngClass]="{
       'text-[#D6D6D6]': !isHovered,
       'text-green-500': isHovered && value > 0,
-      'text-red-500': isHovered && value <= 0
+      'text-red-500': isHovered && (value <= 0 || !value)
     }"
     [svgIcon]="value > 0 ? icons.TRIANGLE_UP : icons.TRIANGLE_DOWN"></mat-icon>
   <span

@@ -88,7 +88,6 @@ export default class SellIndicatorsPageComponent implements OnInit {
   unitsService = inject(UnitsService);
   appChartTypesService = inject(AppChartTypesService);
   destroy$ = new Subject<void>();
-  maskPipe = inject(NgxMaskPipe);
   adapter = inject(DateAdapter);
 
   municipalities = this.lookupService.sellLookups.municipalityList;

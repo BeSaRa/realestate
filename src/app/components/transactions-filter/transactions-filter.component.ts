@@ -83,7 +83,7 @@ import { Subject, debounceTime, filter, takeUntil } from 'rxjs';
   ],
 })
 export class TransactionsFilterComponent implements OnInit, OnDestroy {
-  @Input() indicatorType: 'sell' | 'rent' | 'mortgage' = 'rent';
+  @Input() indicatorType: 'sell' | 'rent' | 'mortgage' | 'owner' = 'rent';
   @Input() municipalities: Lookup[] = [];
   @Input() propertyTypes: Lookup[] = [];
   @Input() propertyUsages: Lookup[] = [];
@@ -495,14 +495,6 @@ export class TransactionsFilterComponent implements OnInit, OnDestroy {
       }
     }
 
-    if (this.isSell() || this.isMort()) {
-      delete value.zoneId;
-    }
-
-    if (this.isRent()) {
-      delete value.areaCode;
-    }
-
     this.fromChanged.emit({ criteria: value as CriteriaContract, type: criteriaType });
     this.enableChangeAreaMinMaxValues.emit(this._enableChangeAreaMinMaxValues(this.form.value));
     this.enableChangerealEstateValueMinMaxValues.emit(this._enableChangeRealestateValueMinMaxValues(this.form.value));
@@ -527,6 +519,7 @@ export class TransactionsFilterComponent implements OnInit, OnDestroy {
     if (this.indicatorType === 'sell') {
       delete value.rentPaymentMonthlyPerUnitFrom;
       delete value.rentPaymentMonthlyPerUnitTo;
+      delete value.zoneId;
 
       if (!this.filteredAreas.find((i) => i.lookupKey === this.areaCode.value)) {
         this.areaCode.patchValue(-1, { emitEvent: false });
@@ -536,6 +529,7 @@ export class TransactionsFilterComponent implements OnInit, OnDestroy {
     if (this.indicatorType === 'rent') {
       delete value.realEstateValueFrom;
       delete value.realEstateValueTo;
+      delete value.areaCode;
 
       if (!this.filteredZones.find((i) => i.lookupKey === this.zoneId.value)) {
         this.zoneId.patchValue(-1, { emitEvent: false });
@@ -550,7 +544,7 @@ export class TransactionsFilterComponent implements OnInit, OnDestroy {
     return value;
   }
 
-  private isIndicator(name: 'sell' | 'rent' | 'mortgage'): boolean {
+  private isIndicator(name: 'sell' | 'rent' | 'mortgage' | 'owner'): boolean {
     return this.indicatorType === name;
   }
 
@@ -564,6 +558,10 @@ export class TransactionsFilterComponent implements OnInit, OnDestroy {
 
   isMort(): boolean {
     return this.isIndicator('mortgage');
+  }
+
+  isOwner(): boolean {
+    return this.isIndicator('owner');
   }
 
   private _enableChangeAreaMinMaxValues(value: any): boolean {
