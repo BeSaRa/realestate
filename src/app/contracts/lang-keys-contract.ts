@@ -206,5 +206,12 @@ export interface LangKeysContract {
 
   ///////////////////////
   ownership_indicator: string;
+  ownership_indicators: string;
+  statistical_reports_for_ownership: string;
   real_estate_ownership_indicators: string;
+  total_number_of_properties_units: string;
+  total_number_of_qatari_owners: string;
+  total_number_of_non_qatari_owners: string;
+  total_number_of_ownerships: string;
+  ownership_transactions_measuring_dashboard: string;
 }

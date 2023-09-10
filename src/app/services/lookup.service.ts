@@ -106,7 +106,7 @@ export class LookupService extends RegisterServiceMixin(class {}) implements Ser
     },
   })
   _loadOwnerLookups(): Observable<LookupsMap> {
-    return this.http.get<LookupsMap>(this.urlService.URLS.OWNER_LOOKUPS);
+    return this.http.get<LookupsMap>(this.urlService.URLS.OWNER_LOOKUPS).pipe(tap(console.log));
   }
 
   private _load(): Observable<LookupsMap[]> {
@@ -121,19 +121,20 @@ export class LookupService extends RegisterServiceMixin(class {}) implements Ser
   load(): Observable<LookupsMap[]> {
     return this._load()
       .pipe(
-        map(([rent, sell, mort]) => {
+        map(([rent, sell, mort, owner]) => {
           // rent.zoneList = rent.zoneList.filter((i) => i.lookupKey !== -1); // remove the all from zones
           sell.zoneList = sell.zoneList.filter((i) => i.lookupKey !== -1); // remove the all from zones
           mort.zoneList = mort.zoneList.filter((i) => i.lookupKey !== -1); // remove the all from zones
           sell.districtList = sell.districtList.filter((i) => i.lookupKey !== -1 && i.lookupKey !== 0); // remove the all from zones
           rent.districtList = rent.districtList.filter((i) => i.lookupKey !== -1 && i.lookupKey !== 0); // remove the all from zones
           mort.districtList = mort.districtList.filter((i) => i.lookupKey !== -1 && i.lookupKey !== 0); // remove the all from zones
-          return [rent, sell, mort];
+          return [rent, sell, mort, owner];
         }),
-        tap(([rent, sell, mort]) => {
+        tap(([rent, sell, mort, owner]) => {
           this.rentLookups = this._addAllToMunicipalities(rent);
           this.sellLookups = this._addAllToMunicipalities(this._addAllToDistrict(this._addAllToPropertyType(sell)));
           this.mortLookups = this._addAllToPropertyType(mort);
+          this.ownerLookups = owner;
         })
       )
       .pipe(

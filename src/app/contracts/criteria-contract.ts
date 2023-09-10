@@ -10,6 +10,7 @@ export interface CriteriaContract {
   issueDateTo: string;
   areaFrom: number;
   areaTo: number;
+  streetNo: number;
   zoneId: number;
 
   // not related to model

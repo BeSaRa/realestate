@@ -11,3 +11,94 @@
     </h2>
   </div>
 </app-extra-header>
+
+<div class="content-wrapper">
+  <div class="px-16">
+    <app-transactions-filter
+      indicatorType="owner"
+      [municipalities]="municipalities"
+      [propertyTypes]="propertyTypes"
+      [propertyUsages]="propertyUsages"
+      [areas]="areas"
+      (fromChanged)="filterChange($event)"
+      (enableChangeAreaMinMaxValues)="enableChangeAreaMinMaxValues = $event" />
+  </div>
+  <div class="flex flex-col">
+    <div class="px-16 mt-5 flex justify-center">
+      <div class="flex justify-center gap-5 w-full lg:w-2/3 xl:w-1/2 text-3xl">
+        <button
+          [ngClass]="{ active: isSelectedTab('ownership_indicators') }"
+          (click)="switchTab('ownership_indicators')"
+          class="flex-1 shadow-xl outline-none border border-secondary text-secondary p-5 rounded-2xl [&.active]:bg-secondary [&.active]:text-white [&.active]:ring-2 ring-black">
+          {{ lang.map.ownership_indicators }}
+        </button>
+        <button
+          [ngClass]="{ active: isSelectedTab('statistical_reports_for_ownership') }"
+          (click)="switchTab('statistical_reports_for_ownership')"
+          class="flex-1 shadow-xl outline-none border border-secondary text-secondary p-5 rounded-2xl [&.active]:bg-secondary [&.active]:text-white [&.active]:ring-2 ring-black">
+          {{ lang.map.statistical_reports_for_ownership }}
+        </button>
+      </div>
+    </div>
+  </div>
+  <div *ngIf="isSelectedTab('ownership_indicators')" class="flex flex-col">
+    <div class="p-16">
+      <div class="flex flex-col">
+        <h3 class="heading text-3xl self-start text-primary border-secondary font-semibold inline-block">
+          {{ lang.map.ownership_transactions_measuring_dashboard }}
+          <!--  {{ basedOnCriteria }} -->
+        </h3>
+
+        <div
+          class="flex-1 my-4 p-4 border border-primary rounded-lg grid grid-cols-2 lg:grid-cols-4 justify-center gap-4">
+          <app-kpi-root (itemSelected)="rootItemSelected($event)" *ngFor="let item of rootKPIS" [item]="item" />
+        </div>
+      </div>
+    </div>
+    <div class="bg-sand p-16">
+      <div class="px-16 flex flex-col justify-center items-center">
+        <div class="flex w-full justify-center">
+          <h3 *ngIf="selectedRoot" class="text-3xl mb-4 text-primary border-secondary font-semibold">
+            {{ selectedRoot.getNames() }} ({{ lang.map.depending_on_use }})
+            <!--  {{ basedOnCriteria }} -->
+          </h3>
+        </div>
+        <!-- <div
+          class="w-5/6 grid grid-cols-3 xl:grid-cols-7 gap-2 xl:gap-0 border-0 xl:border-2 border-secondary overflow-hidden xl:rounded-xl">
+          <ng-container *ngFor="let item of purposeKPIS; let i = index">
+            <span class="xl:hidden" *ngIf="i === 6"></span>
+            <app-purpose
+              [item]="item"
+              (click)="purposeSelected(item)"
+              class="border-2 rounded-xl overflow-hidden xl:border-0 xl:rounded-none xl:border-e-2 border-secondary xl:last-of-type:border-e-0" />
+          </ng-container>
+        </div> -->
+        <div class="w-full grid grid-cols-3 xl:grid-cols-6 border-2 border-secondary overflow-hidden rounded-xl">
+          <app-purpose
+            *ngFor="let item of purposeKPIS; let i = index"
+            [item]="item"
+            (click)="purposeSelected(item)"
+            class="xl:border-e-2 border-secondary last-of-type:border-e-0 {{
+              i > 2 ? 'border-t-2 xl:border-t-0' : ''
+            }} {{ i % 3 === 2 ? 'border-e-0 xl:border-e-2' : 'border-e-2' }}" />
+        </div>
+        <div class="mt-20 w-11/12" dir="ltr">
+          <div class="flex justify-center">
+            <h3 *ngIf="selectedRoot" class="text-3xl mb-4 text-primary border-secondary font-semibold">
+              {{ selectedRoot.getNames() }} ({{ lang.map.depending_on_type }})
+              <!-- {{ basedOnCriteria }} -->
+            </h3>
+          </div>
+          <carousel #carousel [arrowsOutside]="true" [margin]="20" [cellWidth]="350">
+            <app-property-block
+              useAssetsFrom="sell"
+              [ignoreLocalImages]="true"
+              class="carousel-cell"
+              *ngFor="let item of propertiesKPIS"
+              [item]="item" />
+          </carousel>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
