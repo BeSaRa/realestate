@@ -61,11 +61,8 @@
     </li>
     <li>
       <app-button (click)="changeLang($event)" buttonStyle="none">{{
-        lang.getCurrent().toggleTo.substring(0, 2)
+        lang.getCurrent().toggleTo.substring(0, 2).toUpperCase()
       }}</app-button>
-      <!-- <a mat-button (click)="changeLang($event)" href="#">{{
-        lang.getCurrent().toggleTo.substring(0, 2)
-      }}</a> -->
     </li>
   </ul>
   <!-- top-header-menu -->

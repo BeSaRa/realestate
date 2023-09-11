@@ -1,5 +1,5 @@
 import { Directive, Input, TemplateRef, inject } from '@angular/core';
-import { Observable, Subject } from 'rxjs';
+import { Observable } from 'rxjs';
 
 interface Context<T> {
   $implicit: T;
@@ -10,7 +10,7 @@ interface Context<T> {
   standalone: true,
 })
 export class TableColumnCellTemplateDirective<T extends object> {
-  @Input() appTableColumnCellTemplateType!: T | T[] | Observable<T[]>;
+  @Input() appTableColumnCellTemplateTypeOf!: T | T[] | Observable<T[]>;
 
   templateRef = inject(TemplateRef<Context<T>>);
 

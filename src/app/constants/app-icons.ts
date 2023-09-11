@@ -46,6 +46,7 @@ export const AppIcons = {
   PRINTER: 'printer',
   DOWNLOAD: 'cloud-download',
   CLOCK: 'clock-time-eight',
+  MENU: 'menu',
 };
 
 export type AppIconsType = typeof AppIcons;
