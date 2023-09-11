@@ -1,86 +1,44 @@
-<div id="bottom-header" class="h-20 justify-between w-full px-10 flex py-3">
+<div id="bottom-header" class="h-auto justify-between w-full px-5 lg:px-10 flex py-3">
   <a href="#" class="flex flex-none gap-x-2">
     <img
-      class="h-auto w-auto group-[.fixed]:hidden"
+      class="h-[40px] lg:h-auto w-[125px] lg:w-[175px] group-[.fixed]:hidden"
       priority
-      ngSrc="assets/images/mm-logo-white.png"
-      alt="authority-logo"
-      height="112"
-      width="350" />
+      src="assets/images/mm-logo-white.png"
+      alt="authority-logo" />
     <img
-      class="h-auto w-auto hidden group-[.fixed]:block"
+      class="h-[40px] lg:h-auto w-[125px] lg:w-[175px] hidden group-[.fixed]:block"
       priority
-      ngSrc="assets/images/mm-logo-colored.png"
-      alt="authority-logo"
-      height="112"
-      width="350" />
+      src="assets/images/mm-logo-colored.png"
+      alt="authority-logo" />
   </a>
   <div class="flex justify-center items-start flex-col">
-    <ul id="main-menu" class="flex gap-x-3">
-      <li>
-        <app-button
-          [buttonStyle]="sticky.isSticky() ? 'none-primary' : 'none'"
-          routerLink="/home"
-          routerLinkActive="active"
-          >{{ lang.map.home }}</app-button
-        >
-      </li>
-      <li>
-        <app-button
-          [buttonStyle]="sticky.isSticky() ? 'none-primary' : 'none'"
-          routerLink="/sell-indicators"
-          routerLinkActive="active"
-          >{{ lang.map.sell_indicator }}</app-button
-        >
-      </li>
-      <li>
-        <app-button
-          [buttonStyle]="sticky.isSticky() ? 'none-primary' : 'none'"
-          routerLink="/mortgage-indicators"
-          routerLinkActive="active"
-          >{{ lang.map.mortgage_indicator }}</app-button
-        >
-      </li>
-      <li>
-        <app-button
-          [buttonStyle]="sticky.isSticky() ? 'none-primary' : 'none'"
-          routerLink="/rental-indicators"
-          routerLinkActive="active"
-          >{{ lang.map.rental_indicator }}</app-button
-        >
-      </li>
-      <li>
-        <app-button
-          [buttonStyle]="sticky.isSticky() ? 'none-primary' : 'none'"
-          routerLink="/ownership-indicators"
-          routerLinkActive="active"
-          >{{ lang.map.ownership_indicator }}</app-button
-        >
-      </li>
-      <li>
-        <app-button
-          [buttonStyle]="sticky.isSticky() ? 'none-primary' : 'none'"
-          routerLink="/news"
-          routerLinkActive="active"
-          >{{ lang.map.news }}</app-button
-        >
-      </li>
-      <li>
-        <app-button
-          [buttonStyle]="sticky.isSticky() ? 'none-primary' : 'none'"
-          routerLink="/about"
-          routerLinkActive="active"
-          >{{ lang.map.about_us }}</app-button
-        >
-      </li>
-      <li>
-        <app-button
-          [buttonStyle]="sticky.isSticky() ? 'none-primary' : 'none'"
-          routerLink="/laws"
-          routerLinkActive="active"
-          >{{ lang.map.laws_and_decisions }}</app-button
-        >
-      </li>
-    </ul>
+    <div class="hidden lg:block">
+      <ul id="main-menu" class="flex gap-x-3">
+        <li *ngFor="let link of links">
+          <app-button
+            [buttonStyle]="sticky.isSticky() ? 'none-primary' : 'none'"
+            [routerLink]="link.link"
+            routerLinkActive="active"
+            >{{ link.label }}</app-button
+          >
+        </li>
+      </ul>
+    </div>
+    <div class="block lg:hidden">
+      <ul class="flex items-center gap-x-3 divide-items">
+        <li>
+          <app-button (click)="changeLang($event)" [buttonStyle]="sticky.isSticky() ? 'none-primary' : 'none'">{{
+            lang.getCurrent().toggleTo.substring(0, 2).toUpperCase()
+          }}</app-button>
+        </li>
+        <li>
+          <app-icon-button
+            icon="MENU"
+            (click)="(null)"
+            [ngClass]="{ 'text-primary': sticky.isSticky(), 'text-white': !sticky.isSticky() }"
+            class="block lg:hidden !text-3xl"></app-icon-button>
+        </li>
+      </ul>
+    </div>
   </div>
 </div>
