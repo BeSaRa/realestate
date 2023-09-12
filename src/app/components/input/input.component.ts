@@ -43,6 +43,7 @@ import { MatDatepickerModule } from '@angular/material/datepicker';
   ],
 })
 export class InputComponent implements ControlValueAccessor, OnInit, OnDestroy, AfterContentInit, OnChanges {
+  @Input() isSecondary = false;
   @Input() disabled = false;
   @Input() displayErrors = true;
   @Input() size: 'sm' | 'md' | 'lg' | 'xl' = 'md';
@@ -83,6 +84,8 @@ export class InputComponent implements ControlValueAccessor, OnInit, OnDestroy, 
   }
 
   ngOnInit(): void {
+    this.labelColor = this.isSecondary ? "text-gray-500" : 'text-black';
+    this.borderColor = this.isSecondary ? "border-gray-500" : "border-black";
     this.ctrl = this.injector.get(NgControl, null, {
       self: true,
       optional: true,

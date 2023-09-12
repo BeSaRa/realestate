@@ -63,7 +63,8 @@
       bindLabel="getNames"
       bindValue="lookupKey"
       [label]="lang.map.select_half"
-      [options]="halfYearDurations" />
+      [options]="halfYearDurations" 
+      [isSecondary]="true"/>
     <app-select-input
       [isMultiple]="true"
       *ngIf="displayQuarter"
@@ -71,21 +72,24 @@
       bindLabel="getNames"
       bindValue="lookupKey"
       [label]="lang.map.select_quarter"
-      [options]="quarterYearDurations" />
+      [options]="quarterYearDurations"
+      [isSecondary]="true" />
     <app-select-input
       *ngIf="displayMonth"
       formControlName="issueDateMonth"
       bindLabel="label"
       bindValue="value"
       [label]="lang.map.select_month"
-      [options]="months" />
+      [options]="months" 
+      [isSecondary]="true" />
     <app-input
       *ngIf="displayRange"
       formControlName="rangeDate"
       caretColor="caret-transparent"
       (click)="dateRange.open()"
       (keydown)="$event.preventDefault()"
-      [label]="lang.map.date_from_to">
+      [label]="lang.map.date_from_to"
+      [isSecondary]="true">
       <mat-icon
         mat-ripple
         appInputSuffix
@@ -96,8 +100,8 @@
         <mat-icon matDatepickerToggleIcon>keyboard_arrow_down</mat-icon>
       </mat-datepicker-toggle>
       <mat-date-range-input [max]="maxDate" [min]="minDate" class="!w-0 !h-0" [rangePicker]="dateRange">
-        <input matStartDate formControlName="issueDateFrom" (dateChange)="rangeChange()" placeholder="Start date" />
-        <input matEndDate formControlName="issueDateTo" (dateChange)="rangeChange()" placeholder="here is end date" />
+        <input matStartDate class="text-gray-500" formControlName="issueDateFrom" (dateChange)="rangeChange()" placeholder="Start date" />
+        <input matEndDate class="text-gray-500" formControlName="issueDateTo" (dateChange)="rangeChange()" placeholder="here is end date" />
       </mat-date-range-input>
       <mat-date-range-picker touchUi class="hidden" #dateRange></mat-date-range-picker>
     </app-input>
@@ -108,20 +112,23 @@
         bindLabel="getNames"
         bindValue="lookupKey"
         [label]="lang.map.number_of_rooms"
-        [options]="rooms" />
+        [options]="rooms" 
+        [isSecondary]="true" />
       <app-select-input
         *ngIf="furnitureStatus.length"
         formControlName="furnitureStatus"
         bindLabel="getNames"
         bindValue="lookupKey"
         [label]="lang.map.furniture_status"
-        [options]="furnitureStatus" />
+        [options]="furnitureStatus" 
+        [isSecondary]="true" />
       <app-select-input
         formControlName="unit"
         bindLabel="getNames"
         bindValue="lookupKey"
         [label]="lang.map.unit"
-        [options]="unitsService.units" />
+        [options]="unitsService.units" 
+        [isSecondary]="true" />
       <!--      <app-select-input-->
       <!--        bindLabel="getNames"-->
       <!--        bindValue="lookupKey"-->
@@ -129,23 +136,23 @@
       <!--        [options]="spaces" />-->
 
       <!-- street input was removed from mortgage filter as requested by QA -->
-      <app-input *ngIf="indicatorType !== 'mortgage'" formControlName="streetNo" [label]="lang.map.street">
-        <input appControl formControlName="streetNo" mask="9999" />
+      <app-input *ngIf="indicatorType !== 'mortgage'" formControlName="streetNo" [label]="lang.map.street" [isSecondary]="true">
+        <input appControl formControlName="streetNo" mask="9999" class="text-gray-500" mask="9999"/>
       </app-input>
       <ng-container *ngIf="indicatorType === 'rent'">
-        <app-input formControlName="rentPaymentMonthlyPerUnitFrom" [label]="lang.map.rental_value_per_month_from">
-          <input appControl formControlName="rentPaymentMonthlyPerUnitFrom" mask="separator" thousandSeparator="," />
+        <app-input formControlName="rentPaymentMonthlyPerUnitFrom" [label]="lang.map.rental_value_per_month_from" [isSecondary]="true">
+          <input appControl formControlName="rentPaymentMonthlyPerUnitFrom" class="text-gray-500" mask="separator" thousandSeparator="," />
         </app-input>
-        <app-input formControlName="rentPaymentMonthlyPerUnitTo" [label]="lang.map.rental_value_per_month_to">
-          <input appControl formControlName="rentPaymentMonthlyPerUnitTo" mask="separator" thousandSeparator="," />
+        <app-input formControlName="rentPaymentMonthlyPerUnitTo" [label]="lang.map.rental_value_per_month_to" [isSecondary]="true">
+          <input appControl formControlName="rentPaymentMonthlyPerUnitTo" class="text-gray-500" mask="separator" thousandSeparator="," />
         </app-input>
       </ng-container>
       <ng-container *ngIf="indicatorType === 'sell'">
-        <app-input formControlName="realEstateValueFrom" [label]="lang.map.real_estate_value_from">
-          <input appControl formControlName="realEstateValueFrom" mask="separator" thousandSeparator="," />
+        <app-input formControlName="realEstateValueFrom" [label]="lang.map.real_estate_value_from" [isSecondary]="true">
+          <input appControl formControlName="realEstateValueFrom" class="text-gray-500" mask="separator" thousandSeparator="," />
         </app-input>
-        <app-input formControlName="realEstateValueTo" [label]="lang.map.real_estate_value_to">
-          <input appControl formControlName="realEstateValueTo" mask="separator" thousandSeparator="," />
+        <app-input formControlName="realEstateValueTo" [label]="lang.map.real_estate_value_to" [isSecondary]="true" >
+          <input appControl formControlName="realEstateValueTo" class="text-gray-500" mask="separator" thousandSeparator="," />
         </app-input>
       </ng-container>
 
@@ -155,11 +162,11 @@
       <!--    <app-input formControlName="rentPaymentMonthlyPerUnitTo" [label]="lang.map.building_age_in_years_to">-->
       <!--      <input appControl formControlName="streetNo" mask="separator" thousandSeparator="," />-->
       <!--    </app-input>-->
-      <app-input formControlName="areaFrom" [label]="lang.map.area_from">
-        <input appControl formControlName="areaFrom" mask="separator" thousandSeparator="," />
+      <app-input formControlName="areaFrom" [label]="lang.map.area_from" [isSecondary]="true" >
+        <input appControl formControlName="areaFrom" class="text-gray-500" mask="separator" thousandSeparator="," />
       </app-input>
-      <app-input formControlName="areaTo" [label]="lang.map.area_to">
-        <input appControl formControlName="areaTo" mask="separator" thousandSeparator="," />
+      <app-input formControlName="areaTo" [label]="lang.map.area_to" [isSecondary]="true">
+        <input appControl formControlName="areaTo" class="text-gray-500" mask="separator" thousandSeparator="," />
       </app-input>
     </ng-container>
   </ng-container>
