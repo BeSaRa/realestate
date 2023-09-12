@@ -275,7 +275,7 @@ export class TransactionsFilterComponent implements OnInit, OnDestroy {
         return;
       }
       this.filteredZones = this.zones.filter((item) => item.municipalityId === value);
-      !this.filteredZones.find((i) => i.lookupKey === -1) &&
+      !this.filteredZones.find((i) => i.lookupKey === -1) && this.filteredZones.length > 1 &&
         this.filteredZones.unshift(
           new Lookup().clone<Lookup>({
             arName: 'الكل',
@@ -283,6 +283,7 @@ export class TransactionsFilterComponent implements OnInit, OnDestroy {
             lookupKey: -1,
           })
         );
+        this.filteredZones.length === 1 ? this.zoneId.setValue(this.filteredZones.at(0)?.lookupKey) : this.zoneId.setValue(-1) ;
     });
   }
 
@@ -321,7 +322,7 @@ export class TransactionsFilterComponent implements OnInit, OnDestroy {
       municipalityId: this.isSell() || this.isMort() || this.isOwner() ? 4 : 1,
       propertyTypeList: [-1],
       purposeList: [-1],
-      zoneId: this.isMort() ? -1 : 38,
+      zoneId: -1,
       durationType: 1,
       issueDateYear: 2023,
       issueDateStartMonth: 1,
