@@ -3,8 +3,6 @@ import { Component, OnInit, QueryList, ViewChildren, inject } from '@angular/cor
 import { DateAdapter, MatNativeDateModule } from '@angular/material/core';
 import { MatSortModule } from '@angular/material/sort';
 import { MatTableModule } from '@angular/material/table';
-import { PartialChartOptions } from '@app-types/partialChartOptions';
-import { PieChartOptions } from '@app-types/pie-chart-options';
 import { ButtonComponent } from '@components/button/button.component';
 import { ExtraHeaderComponent } from '@components/extra-header/extra-header.component';
 import { IconButtonComponent } from '@components/icon-button/icon-button.component';
@@ -24,11 +22,11 @@ import { TableColumnTemplateDirective } from '@directives/table-column-template.
 import { ChartType } from '@enums/chart-type';
 import { CriteriaType } from '@enums/criteria-type';
 import { DurationEndpoints } from '@enums/durations';
+import { ChartOptionsModel } from '@models/chart-options-model';
 import { CompositeTransaction } from '@models/composite-transaction';
 import { KpiModel } from '@models/kpi-model';
 import { KpiRoot } from '@models/kpiRoot';
 import { Lookup } from '@models/lookup';
-import { RoomNumberKpi } from '@models/room-number-kpi';
 import { SellDefaultValues } from '@models/sell-default-values';
 import { SellTop10Model } from '@models/sell-top-10-model';
 import { SellTransaction } from '@models/sell-transaction';
@@ -79,7 +77,6 @@ export default class SellIndicatorsPageComponent implements OnInit {
   @ViewChildren('carousel') carousel!: QueryList<CarouselComponent>;
   @ViewChildren('chart') chart!: QueryList<ChartComponent>;
   @ViewChildren('top10Chart') top10Chart!: QueryList<ChartComponent>;
-  @ViewChildren('pieChart') pieChart!: QueryList<ChartComponent>;
 
   lang = inject(TranslationService);
   dashboardService = inject(DashboardService);
@@ -235,7 +232,9 @@ export default class SellIndicatorsPageComponent implements OnInit {
   selectedRootChartData!: KpiModel[];
   DurationTypes = DurationEndpoints;
   selectedDurationType: DurationEndpoints = DurationEndpoints.YEARLY;
-  chartOptions: Partial<PartialChartOptions> = this.appChartTypesService.mainChartOptions;
+  chartOptions: ChartOptionsModel = new ChartOptionsModel().clone<ChartOptionsModel>(
+    this.appChartTypesService.mainChartOptions
+  );
 
   transactions = new ReplaySubject<SellTransaction[]>(1);
   transactionsSortOptions: TableSortOption[] = [
@@ -303,7 +302,10 @@ export default class SellIndicatorsPageComponent implements OnInit {
   top10ChartData: SellTop10Model[] = [];
   selectedTop10: Lookup = this.accordingToList[0];
   selectedTop10ChartType: 'bar' | 'line' = ChartType.BAR;
-  top10ChartOptions = this.appChartTypesService.top10ChartOptions;
+  top10ChartOptions = {
+    bar: new ChartOptionsModel().clone<ChartOptionsModel>(this.appChartTypesService.top10ChartOptions.bar),
+    line: new ChartOptionsModel().clone<ChartOptionsModel>(this.appChartTypesService.top10ChartOptions.line),
+  };
 
   compositeTransactions: CompositeTransaction[][] = [];
   compositeYears!: { selectedYear: number; previousYear: number };
@@ -320,9 +322,6 @@ export default class SellIndicatorsPageComponent implements OnInit {
     'thirdYoy',
   ];
   compositeTransactionsExtraColumns = ['contractCounts', 'contractValues', 'avgContract'];
-
-  pieChartData: RoomNumberKpi[] = [];
-  pieChartOptions: PieChartOptions = this.appChartTypesService.pieChartOptions;
 
   selectedTab = 'sell_indicators';
 
@@ -640,27 +639,6 @@ export default class SellIndicatorsPageComponent implements OnInit {
       .then(() => this.updateTop10Chart());
   }
 
-  loadRoomCounts(): void {
-    this.dashboardService.loadSellRoomCounts(this.criteria.criteria).subscribe((value) => {
-      this.pieChartData = value;
-      this.updatePiChart();
-    });
-  }
-
-  updatePiChart(): void {
-    if (!this.pieChart.length) return;
-    this.pieChart.first
-      .updateOptions({
-        series: this.pieChartData.length
-          ? this.pieChartData.map((i) => i.kpiVal)
-          : this.lookupService.sellLookups.rooms.map(() => 0),
-        labels: this.pieChartData.length
-          ? this.pieChartData.map((i) => i.roomInfo.getNames())
-          : this.lookupService.sellLookups.rooms.map((i) => i.getNames()),
-      })
-      .then();
-  }
-
   loadCompositeTransactions(): void {
     this.dashboardService.loadSellCompositeTransactions(this.criteria.criteria).subscribe((value) => {
       this.compositeTransactions = value.items;
@@ -711,34 +689,24 @@ export default class SellIndicatorsPageComponent implements OnInit {
   }
 
   private _initializeChartsFormatters() {
-    this.chartOptions = this.appChartTypesService.addDataLabelsFormatter(this.chartOptions, (val, opts) =>
-      this.appChartTypesService.dataLabelsFormatter({ val, opts }, this.selectedRoot)
-    );
-    this.chartOptions = this.appChartTypesService.addAxisYFormatter(this.chartOptions, (val, opts) =>
-      this.appChartTypesService.axisYFormatter({ val, opts }, this.selectedRoot)
-    );
+    this.chartOptions
+      .addDataLabelsFormatter((val, opts) =>
+        this.appChartTypesService.dataLabelsFormatter({ val, opts }, this.selectedRoot)
+      )
+      .addAxisYFormatter((val, opts) => this.appChartTypesService.axisYFormatter({ val, opts }, this.selectedRoot));
 
-    this.top10ChartOptions.line = this.appChartTypesService.addDataLabelsFormatter(
-      this.top10ChartOptions.line,
-      (val, opts) => this.appChartTypesService.dataLabelsFormatter({ val, opts }, this.selectedRoot)
-    );
-    this.top10ChartOptions.line = this.appChartTypesService.addAxisYFormatter(
-      this.top10ChartOptions.line,
-      (val, opts) => this.appChartTypesService.axisYFormatter({ val, opts }, this.selectedRoot)
-    );
-    this.top10ChartOptions.line = this.appChartTypesService.addAxisXFormatter(
-      this.top10ChartOptions.line,
-      (val, opts) => this.appChartTypesService.axisXFormatter({ val, opts }, this.selectedRoot)
-    );
-    this.top10ChartOptions.bar = this.appChartTypesService.addDataLabelsFormatter(
-      this.top10ChartOptions.bar,
-      (val, opts) => this.appChartTypesService.dataLabelsFormatter({ val, opts }, this.selectedRoot)
-    );
-    this.top10ChartOptions.bar = this.appChartTypesService.addAxisYFormatter(this.top10ChartOptions.bar, (val, opts) =>
-      this.appChartTypesService.axisYFormatter({ val, opts }, this.selectedRoot)
-    );
-    this.top10ChartOptions.bar = this.appChartTypesService.addAxisXFormatter(this.top10ChartOptions.bar, (val, opts) =>
-      this.appChartTypesService.axisXFormatter({ val, opts }, this.selectedRoot)
-    );
+    this.top10ChartOptions.line
+      .addDataLabelsFormatter((val, opts) =>
+        this.appChartTypesService.dataLabelsFormatter({ val, opts }, this.selectedRoot)
+      )
+      .addAxisYFormatter((val, opts) => this.appChartTypesService.axisYFormatter({ val, opts }, this.selectedRoot))
+      .addAxisXFormatter((val, opts) => this.appChartTypesService.axisXFormatter({ val, opts }, this.selectedRoot));
+
+    this.top10ChartOptions.bar
+      .addDataLabelsFormatter((val, opts) =>
+        this.appChartTypesService.dataLabelsFormatter({ val, opts }, this.selectedRoot)
+      )
+      .addAxisYFormatter((val, opts) => this.appChartTypesService.axisYFormatter({ val, opts }, this.selectedRoot))
+      .addAxisXFormatter((val, opts) => this.appChartTypesService.axisXFormatter({ val, opts }, this.selectedRoot));
   }
 }

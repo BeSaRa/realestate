@@ -15,6 +15,7 @@ import { MinMaxAvgContract } from '@contracts/min-max-avg-contract';
 import { OwnerCriteriaContract } from '@contracts/owner-criteria-contract';
 import { CriteriaType } from '@enums/criteria-type';
 import { NationalityCategories } from '@enums/nationality-categories';
+import { ChartOptionsModel } from '@models/chart-options-model';
 import { KpiModel } from '@models/kpi-model';
 import { KpiRoot } from '@models/kpiRoot';
 import { Lookup } from '@models/lookup';
@@ -149,11 +150,11 @@ export default class OwnershipIndicatorsPageComponent implements OnInit, AfterVi
   selectedTab = 'ownership_indicators';
 
   ownershipNationalitiesChartData: OwnershipCountNationality[] = [];
-  ownershipNationalitiesChartOptions: Partial<PartialChartOptions> = {
+  ownershipNationalitiesChartOptions: ChartOptionsModel = new ChartOptionsModel().clone<ChartOptionsModel>({
     ...this.appChartTypesService.mainChartOptions,
     ...this.appChartTypesService.yearlyStaticChartOptions,
     chart: { ...this.appChartTypesService.mainChartOptions.chart, type: 'bar' },
-  };
+  });
 
   ngOnInit(): void {
     this._initializeChartsFormatters();
@@ -404,13 +405,10 @@ export default class OwnershipIndicatorsPageComponent implements OnInit, AfterVi
   }
 
   private _initializeChartsFormatters() {
-    this.ownershipNationalitiesChartOptions = this.appChartTypesService.addDataLabelsFormatter(
-      this.ownershipNationalitiesChartOptions,
-      (val, opts) => this.appChartTypesService.dataLabelsFormatter({ val, opts }, { hasPrice: false })
-    );
-    this.ownershipNationalitiesChartOptions = this.appChartTypesService.addAxisYFormatter(
-      this.ownershipNationalitiesChartOptions,
-      (val, opts) => this.appChartTypesService.axisYFormatter({ val, opts }, { hasPrice: false })
-    );
+    this.ownershipNationalitiesChartOptions
+      .addDataLabelsFormatter((val, opts) =>
+        this.appChartTypesService.dataLabelsFormatter({ val, opts }, this.selectedRoot)
+      )
+      .addAxisYFormatter((val, opts) => this.appChartTypesService.axisYFormatter({ val, opts }, this.selectedRoot));
   }
 }
