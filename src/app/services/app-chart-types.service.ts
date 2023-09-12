@@ -7,6 +7,7 @@ import { NgxMaskPipe } from 'ngx-mask';
 import { TranslationService } from './translation.service';
 import { PieChartOptions } from '@app-types/pie-chart-options';
 import { ApexYAxis } from 'ng-apexcharts';
+import { AppColors } from '@constants/app-colors';
 
 @Injectable({
   providedIn: 'root',
@@ -20,16 +21,18 @@ export class AppChartTypesService {
     return { ...this._mainChartOptions };
   }
   get yearlyStaticChartOptions() {
-    return { tooltip: { marker: { fillColors: ['#259C80'] } } };
+    return { tooltip: { marker: { fillColors: [AppColors.JUNGLE] } } };
   }
   get halflyAndQuarterlyStaticChartOptions() {
     return {
-      colors: ['#8A1538', '#A29475', '#C0C0C0', '#1A4161'],
-      tooltip: { marker: { fillColors: ['#8A1538', '#A29475', '#C0C0C0', '#1A4161'] } },
+      colors: [AppColors.PRIMARY, AppColors.SECONDARY, AppColors.GRAY, AppColors.INDIGO_RAINBOW],
+      tooltip: {
+        marker: { fillColors: [AppColors.PRIMARY, AppColors.SECONDARY, AppColors.GRAY, AppColors.INDIGO_RAINBOW] },
+      },
     };
   }
   get monthlyStaticChartOptions() {
-    return { tooltip: { marker: { fillColors: ['#259C80'] } } };
+    return { tooltip: { marker: { fillColors: [AppColors.JUNGLE] } } };
   }
 
   private _top10LineChartOptions = top10LineChartOptions;
@@ -86,9 +89,9 @@ export class AppChartTypesService {
 
   chartColorsFormatter(minMaxAvg: MinMaxAvgContract) {
     return ({ value }: { value: number }): string => {
-      if (value >= minMaxAvg.min && value < minMaxAvg.avg) return '#C0C0C0';
-      if (value >= minMaxAvg.avg && value < minMaxAvg.max) return '#A29475';
-      return '#8A1538';
+      if (value >= minMaxAvg.min && value < minMaxAvg.avg) return AppColors.GRAY;
+      if (value >= minMaxAvg.avg && value < minMaxAvg.max) return AppColors.SECONDARY;
+      return AppColors.PRIMARY;
     };
   }
 
@@ -153,15 +156,15 @@ const mainChartOptions: Partial<PartialChartOptions> = {
   dataLabels: {
     enabled: true,
     // formatter: don't forget to set formatter when use chart
-    style: { colors: ['#259C80'] },
+    style: { colors: [AppColors.JUNGLE] },
   },
   stroke: {
     curve: 'smooth',
-    // colors: ['#A29475'],
+    // colors: [AppColors.SECONDARY],
   },
   grid: {
     row: {
-      colors: ['#f3f3f3', 'transparent'],
+      colors: [AppColors.GRAY_LIGHT, 'transparent'],
       opacity: 0.5,
     },
   },
@@ -175,8 +178,8 @@ const mainChartOptions: Partial<PartialChartOptions> = {
   },
   yaxis: {
     min: 0,
-    max: (max: number) => max + 150,
-    tickAmount: 10,
+    max: (max: number) => 1.1 * max,
+    // tickAmount: 10,
     labels: {
       // formatter: don't forget to set formatter when use chart
       minWidth: 50,
@@ -185,7 +188,7 @@ const mainChartOptions: Partial<PartialChartOptions> = {
       },
     },
   },
-  tooltip: { marker: { fillColors: ['#259C80'] } },
+  tooltip: { marker: { fillColors: [AppColors.JUNGLE] } },
 };
 
 const top10LineChartOptions: Partial<PartialChartOptions> = {
@@ -226,7 +229,7 @@ const top10LineChartOptions: Partial<PartialChartOptions> = {
       },
     },
   },
-  colors: ['#60d39d'],
+  colors: [AppColors.GREEN_LIGHT],
 };
 
 const top10BarChartOptions: Partial<PartialChartOptions> = {
@@ -277,7 +280,7 @@ const top10BarChartOptions: Partial<PartialChartOptions> = {
       },
     },
   },
-  colors: ['#60d39d'],
+  colors: [AppColors.GREEN_LIGHT],
 };
 
 const pieChartOptions: PieChartOptions = {

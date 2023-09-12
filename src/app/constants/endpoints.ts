@@ -126,6 +126,9 @@ const ownerEndpoints = {
   OWNER_KPI8: 'OWNER|kpi8/non-qatari/total-owner-count/purpose',
   OWNER_KPI9: 'OWNER|kpi9/non-qatari/total-owner-count/property',
   OWNER_KPI10: 'OWNER|kpi10/total-ownership-count',
+  OWNER_KPI11: 'OWNER|kpi11/qatari/total-ownership-count',
+  OWNER_KPI11_1: 'OWNER|kpi11_1/gcc/total-ownership-count',
+  OWNER_KPI11_2: 'OWNER|kpi11_2/other/total-ownership-count',
 };
 
 export const EndPoints = {

@@ -1,29 +1,30 @@
-import { Component, inject, OnInit, ViewChild } from '@angular/core';
-import { CommonModule } from '@angular/common';
 import { BidiModule } from '@angular/cdk/bidi';
-import { ExtraHeaderComponent } from '@components/extra-header/extra-header.component';
+import { CommonModule } from '@angular/common';
+import { Component, inject, OnInit, ViewChild } from '@angular/core';
 import { FormControl, ReactiveFormsModule, UntypedFormBuilder } from '@angular/forms';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatOptionModule } from '@angular/material/core';
-import { ChartComponent, NgApexchartsModule } from 'ng-apexcharts';
 import { ChartOptions } from '@app-types/ChartOptions';
-import { TranslationService } from '@services/translation.service';
+import { ButtonComponent } from '@components/button/button.component';
+import { ExtraHeaderComponent } from '@components/extra-header/extra-header.component';
+import { IconButtonComponent } from '@components/icon-button/icon-button.component';
+import { KpiRootComponent } from '@components/kpi-root/kpi-root.component';
 import { TransactionsFilterComponent } from '@components/transactions-filter/transactions-filter.component';
 import { CriteriaContract } from '@contracts/criteria-contract';
-import { CriteriaType } from '@enums/criteria-type';
-import { LookupService } from '@services/lookup.service';
-import { KpiRootComponent } from '@components/kpi-root/kpi-root.component';
-import { KpiRoot } from '@models/kpiRoot';
-import { UrlService } from '@services/url.service';
-import { DashboardService } from '@services/dashboard.service';
-import { KpiModel } from '@models/kpi-model';
-import { TransactionType } from '@enums/transaction-type';
 import { ChartType } from '@enums/chart-type';
-import { IconButtonComponent } from '@components/icon-button/icon-button.component';
+import { CriteriaType } from '@enums/criteria-type';
 import { DurationEndpoints } from '@enums/durations';
-import { ButtonComponent } from '@components/button/button.component';
+import { TransactionType } from '@enums/transaction-type';
 import { KpiBaseModel } from '@models/kpi-base-model';
-import { formatChartColors, formatNumber, minMaxAvg } from '@utils/utils';
+import { KpiModel } from '@models/kpi-model';
+import { KpiRoot } from '@models/kpiRoot';
+import { AppChartTypesService } from '@services/app-chart-types.service';
+import { DashboardService } from '@services/dashboard.service';
+import { LookupService } from '@services/lookup.service';
+import { TranslationService } from '@services/translation.service';
+import { UrlService } from '@services/url.service';
+import { formatNumber, minMaxAvg } from '@utils/utils';
+import { ChartComponent, NgApexchartsModule } from 'ng-apexcharts';
 
 @Component({
   selector: 'app-mortgage-indicators',
@@ -49,6 +50,7 @@ export default class MortgageIndicatorsComponent implements OnInit {
   lookupService = inject(LookupService);
   urlService = inject(UrlService);
   dashboardService = inject(DashboardService);
+  appChartTypesService = inject(AppChartTypesService);
 
   criteria: { criteria: CriteriaContract; type: CriteriaType } = {} as {
     criteria: CriteriaContract;
@@ -299,7 +301,7 @@ export default class MortgageIndicatorsComponent implements OnInit {
     );
     this.transactionValueChart
       .updateOptions({
-        colors: [formatChartColors(_minMaxAvg)],
+        colors: [this.appChartTypesService.chartColorsFormatter(_minMaxAvg)],
         series: [
           {
             name: this.lang.map.mortgage,

@@ -1,4 +1,5 @@
 export interface CriteriaContract {
+  areaCode: number;
   propertyTypeList: number[];
   municipalityId: number;
   purposeList: number[];

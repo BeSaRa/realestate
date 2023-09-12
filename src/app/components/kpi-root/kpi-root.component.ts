@@ -17,6 +17,8 @@ import { TranslationService } from '@services/translation.service';
 export class KpiRootComponent {
   @Input()
   item!: KpiRoot;
+  @Input()
+  showYoy = true;
   isHovered = false;
   @Output()
   itemSelected = new EventEmitter<KpiRoot>();

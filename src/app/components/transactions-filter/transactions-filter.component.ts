@@ -262,7 +262,7 @@ export class TransactionsFilterComponent implements OnInit, OnDestroy {
 
   listenToMunicipalityChange(): void {
     this.municipalityId.valueChanges.pipe(takeUntil(this.destroy$)).subscribe((value: number) => {
-      if (this.isSell() || this.isMort()) {
+      if (this.isSell() || this.isMort() || this.isOwner()) {
         this.filteredAreas = this.areas.filter((item) => item.municipalityId === value);
         !this.filteredAreas.find((i) => i.lookupKey === -1) &&
           this.filteredAreas.unshift(
@@ -318,7 +318,7 @@ export class TransactionsFilterComponent implements OnInit, OnDestroy {
 
   private setDefaultValues() {
     this.form.patchValue({
-      municipalityId: this.isSell() || this.isMort() ? 4 : 1,
+      municipalityId: this.isSell() || this.isMort() || this.isOwner() ? 4 : 1,
       propertyTypeList: [-1],
       purposeList: [-1],
       zoneId: 38,

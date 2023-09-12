@@ -24,6 +24,8 @@ export class PropertyBlockComponent {
   useAssetsFrom = 'rent';
   @Input()
   ignoreLocalImages = false;
+  @Input()
+  showYoy = true;
 
   images = {
     39: 'assets/images/rental-images/department.png',

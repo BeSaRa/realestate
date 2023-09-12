@@ -1,6 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { AfterViewInit, Component, OnInit, QueryList, ViewChildren, inject } from '@angular/core';
 import { DateAdapter, MatNativeDateModule } from '@angular/material/core';
+import { PartialChartOptions } from '@app-types/partialChartOptions';
 import { ButtonComponent } from '@components/button/button.component';
 import { ExtraHeaderComponent } from '@components/extra-header/extra-header.component';
 import { IconButtonComponent } from '@components/icon-button/icon-button.component';
@@ -13,10 +14,12 @@ import { CriteriaContract } from '@contracts/criteria-contract';
 import { MinMaxAvgContract } from '@contracts/min-max-avg-contract';
 import { OwnerCriteriaContract } from '@contracts/owner-criteria-contract';
 import { CriteriaType } from '@enums/criteria-type';
+import { NationalityCategories } from '@enums/nationality-categories';
 import { KpiModel } from '@models/kpi-model';
 import { KpiRoot } from '@models/kpiRoot';
 import { Lookup } from '@models/lookup';
 import { OwnerDefaultValues } from '@models/owner-default-values';
+import { OwnershipCountNationality } from '@models/ownership-count-nationality';
 import { FormatNumbersPipe } from '@pipes/format-numbers.pipe';
 import { AppChartTypesService } from '@services/app-chart-types.service';
 import { DashboardService } from '@services/dashboard.service';
@@ -24,8 +27,9 @@ import { LookupService } from '@services/lookup.service';
 import { TranslationService } from '@services/translation.service';
 import { UnitsService } from '@services/units.service';
 import { UrlService } from '@services/url.service';
+import { minMaxAvg } from '@utils/utils';
 import { CarouselComponent, IvyCarouselModule } from 'angular-responsive-carousel2';
-import { NgApexchartsModule } from 'ng-apexcharts';
+import { ChartComponent, NgApexchartsModule } from 'ng-apexcharts';
 import { NgxMaskPipe } from 'ngx-mask';
 import { Subject, forkJoin, take, takeUntil } from 'rxjs';
 
@@ -59,7 +63,7 @@ import { Subject, forkJoin, take, takeUntil } from 'rxjs';
 })
 export default class OwnershipIndicatorsPageComponent implements OnInit, AfterViewInit {
   @ViewChildren('carousel') carousel!: QueryList<CarouselComponent>;
-  // @ViewChildren('chart') chart!: QueryList<ChartComponent>;
+  @ViewChildren('ownershipNationalitiesChart') ownershipNationalitiesChart!: QueryList<ChartComponent>;
 
   lang = inject(TranslationService);
   dashboardService = inject(DashboardService);
@@ -86,6 +90,9 @@ export default class OwnershipIndicatorsPageComponent implements OnInit, AfterVi
     criteria: CriteriaContract;
     type: CriteriaType;
   };
+
+  NationalityCategories = NationalityCategories;
+  selectedNationalityCategory = NationalityCategories.QATARI;
 
   rootKPIS = [
     new KpiRoot(
@@ -122,25 +129,35 @@ export default class OwnershipIndicatorsPageComponent implements OnInit, AfterVi
       '',
       'assets/icons/kpi/8.png'
     ),
-    new KpiRoot(
-      10,
-      this.lang.getArabicTranslation('total_number_of_ownerships'),
-      this.lang.getEnglishTranslation('total_number_of_ownerships'),
-      false,
-      this.urlService.URLS.OWNER_KPI10,
-      '',
-      '',
-      '',
-      'assets/icons/kpi/7.png'
-    ),
   ];
+
+  totalOwnershipsRootKpi = new KpiRoot(
+    10,
+    this.lang.getArabicTranslation('total_number_of_ownerships'),
+    this.lang.getEnglishTranslation('total_number_of_ownerships'),
+    false,
+    this.urlService.URLS.OWNER_KPI10,
+    '',
+    '',
+    '',
+    'assets/icons/kpi/7.png'
+  );
 
   selectedRoot?: KpiRoot;
   selectedPurpose?: Lookup = this.lookupService.ownerLookups.rentPurposeList[0];
 
   selectedTab = 'ownership_indicators';
 
-  ngOnInit(): void {}
+  ownershipNationalitiesChartData: OwnershipCountNationality[] = [];
+  ownershipNationalitiesChartOptions: Partial<PartialChartOptions> = {
+    ...this.appChartTypesService.mainChartOptions,
+    ...this.appChartTypesService.yearlyStaticChartOptions,
+    chart: { ...this.appChartTypesService.mainChartOptions.chart, type: 'bar' },
+  };
+
+  ngOnInit(): void {
+    this._initializeChartsFormatters();
+  }
 
   ngAfterViewInit(): void {}
 
@@ -161,32 +178,49 @@ export default class OwnershipIndicatorsPageComponent implements OnInit, AfterVi
 
   filterChange({ criteria, type }: { criteria: CriteriaContract; type: CriteriaType }) {
     this.criteria = { criteria, type };
-    if (type === CriteriaType.DEFAULT) {
-      // load default
-      // this.dashboardService.loadOwnerDefaults(criteria as Partial<OwnerCriteriaContract>).subscribe((result) => {
-      //   this.setDefaultRoots(result[0]);
-      this.rootItemSelected(this.rootKPIS[0]);
-      //   // this.selectTop10Chart(this.selectedTop10);
-      // });
-    } else {
-      this.rootKPIS.map((item) => {
-        this.dashboardService
-          .loadKpiRoot(item, this.criteria.criteria)
-          .pipe(take(1))
-          .subscribe((value) => {
-            if (!value.length) {
-              item.setValue(0);
-              item.setYoy(0);
-            } else {
-              item.setValue(value[value.length - 1].kpiVal);
-              item.setYoy(value[value.length - 1].kpiYoYVal);
-            }
-          });
+    if (type === CriteriaType.DEFAULT) this.rootItemSelected(this.rootKPIS[0]);
+    // if (type === CriteriaType.DEFAULT) {
+    //   // load default
+    //   // this.dashboardService.loadOwnerDefaults(criteria as Partial<OwnerCriteriaContract>).subscribe((result) => {
+    //   //   this.setDefaultRoots(result[0]);
+    //   this.rootItemSelected(this.rootKPIS[0]);
+    //   //   // this.selectTop10Chart(this.selectedTop10);
+    //   // });
+    // } else {
+    this.rootKPIS.map((item) => {
+      this.dashboardService
+        .loadKpiRoot(item, this.criteria.criteria)
+        .pipe(take(1))
+        .subscribe((value) => {
+          if (!value.length) {
+            item.setValue(0);
+            item.setYoy(0);
+          } else {
+            item.setValue(value[value.length - 1].kpiVal);
+            item.setYoy(value[value.length - 1].kpiYoYVal);
+          }
+        });
+    });
+
+    this.dashboardService
+      .loadKpiRoot(this.totalOwnershipsRootKpi, this.criteria.criteria)
+      .pipe(take(1))
+      .subscribe((value) => {
+        if (!value.length) {
+          this.totalOwnershipsRootKpi.setValue(0);
+          this.totalOwnershipsRootKpi.setYoy(0);
+        } else {
+          this.totalOwnershipsRootKpi.setValue(value[value.length - 1].kpiVal);
+          this.totalOwnershipsRootKpi.setYoy(value[value.length - 1].kpiYoYVal);
+        }
       });
 
-      this.rootItemSelected(this.selectedRoot);
-      // this.selectTop10Chart(this.selectedTop10);
-    }
+    this.rootItemSelected(this.selectedRoot);
+    setTimeout(() => {
+      this.updateOwnershipChartNationalityCategory(this.selectedNationalityCategory);
+    }, 0);
+    // this.selectTop10Chart(this.selectedTop10);
+    // }
     // this.loadTransactions();
     // this.loadTransactionsBasedOnPurpose();
     // this.loadCompositeTransactions();
@@ -279,5 +313,104 @@ export default class OwnershipIndicatorsPageComponent implements OnInit, AfterVi
     this.carousel.first.cellsToScroll = this.carousel.first.cellLength;
     this.carousel.first.next();
     this.carousel.first.cellsToScroll = 1;
+  }
+
+  updateOwnershipChartNationalityCategory(nationalityCategory: NationalityCategories) {
+    this.selectedNationalityCategory = nationalityCategory;
+    if (!this.ownershipNationalitiesChart?.length) return;
+    const _criteria = { ...this.criteria.criteria } as OwnerCriteriaContract;
+    delete (_criteria as any).nationalityCode;
+
+    this.dashboardService
+      .loadOwnershipCountNationality(_criteria, nationalityCategory)
+      .pipe(take(1))
+      .subscribe((data) => {
+        this.ownershipNationalitiesChartData = data;
+        const _minMaxAvg = minMaxAvg(this.ownershipNationalitiesChartData.map((item) => item.kpiVal));
+        this.ownershipNationalitiesChart.first
+          .updateOptions({
+            series: [
+              {
+                name: this.lang.map.distribution_of_ownerships_according_to_nationality,
+                data: this.ownershipNationalitiesChartData.map((item) => item.kpiVal),
+              },
+            ],
+            xaxis: {
+              categories: this.ownershipNationalitiesChartData.map((item) => item.nationalityInfo.getNames()),
+            },
+            colors: [this.appChartTypesService.chartColorsFormatter(_minMaxAvg)],
+            ...this.appChartTypesService.yearlyStaticChartOptions,
+          })
+          .then();
+      });
+
+    const _minMaxAvg = minMaxAvg(this.ownershipNationalitiesChartData.map((item) => item.kpiVal));
+
+    this.ownershipNationalitiesChart.first
+      .updateOptions({
+        series: [
+          {
+            name: this.lang.map.distribution_of_ownerships_according_to_nationality,
+            data: this.ownershipNationalitiesChartData.map((item) => item.kpiVal),
+          },
+        ],
+        xaxis: {
+          categories: this.ownershipNationalitiesChartData.map((item) => item.nationalityInfo.getNames()),
+        },
+        colors: [this.appChartTypesService.chartColorsFormatter(_minMaxAvg)],
+        ...this.appChartTypesService.yearlyStaticChartOptions,
+      })
+      .then();
+  }
+
+  get basedOnCriteria(): string {
+    const generatedTitle: string[] = [];
+    const municipality = this.getSelectedMunicipality();
+    const district = this.getSelectedDistrict();
+    const purpose = this.getSelectedPurpose();
+    const propertyType = this.getSelectedPropertyType();
+    municipality.length && generatedTitle.push(municipality);
+    district.length && generatedTitle.push(district);
+    propertyType.length && generatedTitle.push(propertyType);
+    purpose.length && generatedTitle.push(purpose);
+    return generatedTitle.length ? `(${generatedTitle.join(' , ')})` : '';
+  }
+
+  private getSelectedMunicipality(): string {
+    if (this.criteria.criteria.municipalityId === -1) return '';
+    return this.lookupService.sellMunicipalitiesMap[this.criteria.criteria.municipalityId].getNames() || '';
+  }
+
+  private getSelectedDistrict(): string {
+    const areaCode = (this.criteria.criteria as OwnerCriteriaContract).areaCode;
+    if (areaCode === -1) return '';
+    return this.lookupService.sellDistrictMap[areaCode].getNames() || '';
+  }
+
+  private getSelectedPropertyType(): string {
+    return this.criteria.criteria.propertyTypeList &&
+      this.criteria.criteria.propertyTypeList.length == 1 &&
+      this.criteria.criteria.propertyTypeList[0] !== -1
+      ? this.lookupService.sellPropertyTypeMap[this.criteria.criteria.propertyTypeList[0]].getNames()
+      : '';
+  }
+
+  private getSelectedPurpose(): string {
+    return this.criteria.criteria.purposeList &&
+      this.criteria.criteria.purposeList.length == 1 &&
+      this.criteria.criteria.purposeList[0] !== -1
+      ? this.lookupService.sellPurposeMap[this.criteria.criteria.purposeList[0]].getNames()
+      : '';
+  }
+
+  private _initializeChartsFormatters() {
+    this.ownershipNationalitiesChartOptions = this.appChartTypesService.addDataLabelsFormatter(
+      this.ownershipNationalitiesChartOptions,
+      (val, opts) => this.appChartTypesService.dataLabelsFormatter({ val, opts }, { hasPrice: false })
+    );
+    this.ownershipNationalitiesChartOptions = this.appChartTypesService.addAxisYFormatter(
+      this.ownershipNationalitiesChartOptions,
+      (val, opts) => this.appChartTypesService.axisYFormatter({ val, opts }, { hasPrice: false })
+    );
   }
 }

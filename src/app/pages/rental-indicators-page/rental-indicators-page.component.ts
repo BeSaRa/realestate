@@ -15,6 +15,7 @@ import { KpiRoot } from '@models/kpiRoot';
 import { RentDefaultValues } from '@models/rent-default-values';
 import { RentTop10Model } from '@models/rent-top-10-model';
 
+import { DateAdapter, MatNativeDateModule } from '@angular/material/core';
 import { MatSortModule } from '@angular/material/sort';
 import { MatTableModule } from '@angular/material/table';
 import { PartialChartOptions } from '@app-types/partialChartOptions';
@@ -24,33 +25,32 @@ import { IconButtonComponent } from '@components/icon-button/icon-button.compone
 import { TableComponent } from '@components/table/table.component';
 import { YoyIndicatorComponent } from '@components/yoy-indicator/yoy-indicator.component';
 import { maskSeparator } from '@constants/mask-separator';
+import { MinMaxAvgContract } from '@contracts/min-max-avg-contract';
+import { TableColumnCellTemplateDirective } from '@directives/table-column-cell-template.directive';
+import { TableColumnHeaderTemplateDirective } from '@directives/table-column-header-template.directive';
 import { TableColumnTemplateDirective } from '@directives/table-column-template.directive';
 import { ChartType } from '@enums/chart-type';
+import { DurationEndpoints } from '@enums/durations';
 import { RentCompositeTransaction } from '@models/composite-transaction';
+import { FurnitureStatusKpi } from '@models/furniture-status-kpi';
 import { KpiModel } from '@models/kpi-model';
 import { Lookup } from '@models/lookup';
 import { RentTransaction } from '@models/rent-transaction';
 import { RentTransactionPurpose } from '@models/rent-transaction-purpose';
 import { RoomNumberKpi } from '@models/room-number-kpi';
+import { TableSortOption } from '@models/table-sort-option';
 import { FormatNumbersPipe } from '@pipes/format-numbers.pipe';
+import { AppChartTypesService } from '@services/app-chart-types.service';
 import { DashboardService } from '@services/dashboard.service';
 import { LookupService } from '@services/lookup.service';
 import { TranslationService } from '@services/translation.service';
+import { UnitsService } from '@services/units.service';
 import { UrlService } from '@services/url.service';
-import { formatChartColors, formatNumber, minMaxAvg } from '@utils/utils';
+import { minMaxAvg } from '@utils/utils';
 import { CarouselComponent, IvyCarouselModule } from 'angular-responsive-carousel2';
-import { ApexYAxis, ChartComponent, NgApexchartsModule } from 'ng-apexcharts';
+import { ChartComponent, NgApexchartsModule } from 'ng-apexcharts';
 import { NgxMaskPipe } from 'ngx-mask';
 import { forkJoin, map, ReplaySubject, Subject, take, takeUntil } from 'rxjs';
-import { DurationEndpoints } from '@enums/durations';
-import { DateAdapter, MatNativeDateModule } from '@angular/material/core';
-import { TableColumnHeaderTemplateDirective } from '@directives/table-column-header-template.directive';
-import { TableColumnCellTemplateDirective } from '@directives/table-column-cell-template.directive';
-import { FurnitureStatusKpi } from '@models/furniture-status-kpi';
-import { UnitsService } from '@services/units.service';
-import { TableSortOption } from '@models/table-sort-option';
-import { MinMaxAvgContract } from '@contracts/min-max-avg-contract';
-import { AppChartTypesService } from '@services/app-chart-types.service';
 
 @Component({
   selector: 'app-rental-indicators-page',
@@ -470,8 +470,8 @@ export default class RentalIndicatorsPageComponent implements OnInit {
         xaxis: {
           categories: this.selectedRootChartData.map((item) => item.issueYear),
         },
-        colors: [formatChartColors(_minMaxAvg)],
-        tooltip: { marker: { fillColors: ['#259C80'] } },
+        colors: [this.appChartTypesService.chartColorsFormatter(_minMaxAvg)],
+        ...this.appChartTypesService.yearlyStaticChartOptions,
       })
       .then();
     this.updateChartType(ChartType.BAR);
@@ -498,8 +498,8 @@ export default class RentalIndicatorsPageComponent implements OnInit {
                 }),
               },
             ],
-            colors: [formatChartColors(_minMaxAvg)],
-            tooltip: { marker: { fillColors: ['#259C80'] } },
+            colors: [this.appChartTypesService.chartColorsFormatter(_minMaxAvg)],
+            ...this.appChartTypesService.monthlyStaticChartOptions,
           })
           .then();
       });
@@ -536,8 +536,7 @@ export default class RentalIndicatorsPageComponent implements OnInit {
             xaxis: {
               categories: data[1].kpiValues.map((v) => v.year),
             },
-            colors: ['#8A1538', '#A29475', '#C0C0C0', '#1A4161'],
-            tooltip: { marker: { fillColors: ['#8A1538', '#A29475', '#C0C0C0', '#1A4161'] } },
+            ...this.appChartTypesService.halflyAndQuarterlyStaticChartOptions,
           })
           .then();
       });
