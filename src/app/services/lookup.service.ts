@@ -51,6 +51,8 @@ export class LookupService extends RegisterServiceMixin(class {}) implements Ser
   mortDistrictMap: Record<number, Lookup> = {};
   ownerDistrictMap: Record<number, Lookup> = {};
 
+  ownerNationalityMap: Record<number, Lookup> = {};
+
   @CastResponse(() => LookupsMap, {
     shape: {
       'districtList.*': () => Lookup,
@@ -134,7 +136,7 @@ export class LookupService extends RegisterServiceMixin(class {}) implements Ser
           this.rentLookups = this._addAllToMunicipalities(rent);
           this.sellLookups = this._addAllToMunicipalities(this._addAllToDistrict(this._addAllToPropertyType(sell)));
           this.mortLookups = this._addAllToPropertyType(mort);
-          this.ownerLookups = owner;
+          this.ownerLookups = this._addAllToDistrict(this._addAllToMunicipalities(this._addAllToPropertyType(owner)));
         })
       )
       .pipe(
@@ -165,6 +167,9 @@ export class LookupService extends RegisterServiceMixin(class {}) implements Ser
         }),
         tap((res) => {
           this.rentFurnitureMap = this._initializeFurnitureStatusMap(res[0]);
+        }),
+        tap((res) => {
+          this.ownerNationalityMap = this._initializeNationalityMap(res[3]);
         })
       );
   }
@@ -201,6 +206,12 @@ export class LookupService extends RegisterServiceMixin(class {}) implements Ser
 
   private _initializeFurnitureStatusMap(lookups: LookupsMap) {
     return lookups.furnitureStatusList.reduce((acc, i) => {
+      return { ...acc, [i.lookupKey]: i };
+    }, {});
+  }
+
+  private _initializeNationalityMap(lookups: LookupsMap) {
+    return lookups.nationalityList.reduce((acc, i) => {
       return { ...acc, [i.lookupKey]: i };
     }, {});
   }

@@ -14,5 +14,9 @@
   <span class="mt-2 text-3xl text-primary font-bold group-hover:text-white group-[.selected]:text-white transition"
     ><span [countUp]="item.value" [options]="countUpOptions"></span> {{ item.hasPrice ? lang.map.qr : "" }}</span
   >
-  <app-change-indicator class="mt-2" [value]="item.yoy" [isHovered]="isHovered || item.selected"></app-change-indicator>
+  <app-change-indicator
+    *ngIf="showYoy"
+    class="mt-2"
+    [value]="item.yoy"
+    [isHovered]="isHovered || item.selected"></app-change-indicator>
 </div>

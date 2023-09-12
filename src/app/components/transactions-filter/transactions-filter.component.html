@@ -13,7 +13,7 @@
       [options]="municipalities" />
 
     <app-select-input
-      *ngIf="isSell() || isMort()"
+      *ngIf="isSell() || isMort() || isOwner()"
       [enableFilter]="true"
       bindFilter="getNames"
       formControlName="areaCode"

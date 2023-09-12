@@ -214,4 +214,8 @@ export interface LangKeysContract {
   total_number_of_non_qatari_owners: string;
   total_number_of_ownerships: string;
   ownership_transactions_measuring_dashboard: string;
+  distribution_of_ownerships_according_to_nationality: string;
+  qatari: string;
+  gulf_cooperation_council_countries: string;
+  other_nationalities: string;
 }

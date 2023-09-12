@@ -17,6 +17,8 @@ import { NGX_COUNTUP_OPTIONS } from '@constants/injection-tokens';
 export class PurposeComponent {
   @Input()
   item!: Lookup;
+  @Input()
+  showYoy = true;
   isHovered = false;
   lang = inject(TranslationService);
   countUpOptions: CountUpOptionsContract = inject(NGX_COUNTUP_OPTIONS);

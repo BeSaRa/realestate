@@ -38,6 +38,9 @@ import { forkJoin, map, Observable } from 'rxjs';
 import { SellTransactionPurposePopupComponent } from '../popups/sell-transaction-purpose-popup/sell-transaction-purpose-popup.component';
 import { DialogService } from './dialog.service';
 import { TranslationService } from './translation.service';
+import { OwnerCriteriaContract } from '@contracts/owner-criteria-contract';
+import { OwnershipCountNationality } from '@models/ownership-count-nationality';
+import { NationalityCategories } from '@enums/nationality-categories';
 
 @Injectable({
   providedIn: 'root',
@@ -289,6 +292,17 @@ export class DashboardService extends RegisterServiceMixin(class {}) implements 
       );
   }
 
+  @CastResponse(() => OwnershipCountNationality)
+  loadOwnershipCountNationality(
+    criteria: Partial<OwnerCriteriaContract>,
+    nationalityCategory: NationalityCategories
+  ): Observable<OwnershipCountNationality[]> {
+    return this.http.post<OwnershipCountNationality[]>(
+      this.getOwnershipCountNationalityEndpoint(nationalityCategory),
+      criteria
+    );
+  }
+
   private getSelectedDurationString(url: string, duration: DurationEndpoints): string {
     return (
       url +
@@ -330,5 +344,13 @@ export class DashboardService extends RegisterServiceMixin(class {}) implements 
     });
 
     return durationData;
+  }
+
+  private getOwnershipCountNationalityEndpoint(nationalityCategory: NationalityCategories) {
+    return nationalityCategory === NationalityCategories.QATARI
+      ? this.urlService.URLS.OWNER_KPI11
+      : nationalityCategory === NationalityCategories.GCC
+      ? this.urlService.URLS.OWNER_KPI11_1
+      : this.urlService.URLS.OWNER_KPI11_2;
   }
 }

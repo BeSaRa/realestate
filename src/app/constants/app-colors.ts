@@ -1,0 +1,11 @@
+export const AppColors = {
+  PRIMARY: '#8A1538',
+  SECONDARY: '#A29475',
+  SAND: '#F4F4F4',
+  GRAY: '#C0C0C0',
+  GRAY_LIGHT: '#f3f3f3',
+  GREEN_LIGHT: '#60d39d',
+  AZURE: '#4E94B3',
+  JUNGLE: '#259C80',
+  INDIGO_RAINBOW: '#1A4161',
+};
