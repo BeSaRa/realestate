@@ -16,7 +16,7 @@ export class AppChartTypesService {
   lang = inject(TranslationService);
   maskPipe = inject(NgxMaskPipe);
 
-  private _mainChartOptions: Partial<PartialChartOptions> = mainChartOptions;
+  private _mainChartOptions: PartialChartOptions = mainChartOptions;
   get mainChartOptions() {
     return { ...this._mainChartOptions };
   }
@@ -147,7 +147,7 @@ export class AppChartTypesService {
   }
 }
 
-const mainChartOptions: Partial<PartialChartOptions> = {
+const mainChartOptions: PartialChartOptions = {
   series: [],
   chart: {
     height: 350,

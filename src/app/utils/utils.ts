@@ -53,6 +53,11 @@ export function isValidValue(value: unknown): boolean {
   return typeof value === 'string' ? value.trim() !== '' : typeof value !== 'undefined' && value !== null;
 }
 
+export function isArray<T>(value: T | T[]): value is T[] {
+  if (Array.isArray(value)) return true;
+  else return false;
+}
+
 export function hasValidLength(value: unknown): boolean {
   if (!isValidValue(value)) {
     return false;

@@ -18,8 +18,6 @@ import { RentTop10Model } from '@models/rent-top-10-model';
 import { DateAdapter, MatNativeDateModule } from '@angular/material/core';
 import { MatSortModule } from '@angular/material/sort';
 import { MatTableModule } from '@angular/material/table';
-import { PartialChartOptions } from '@app-types/partialChartOptions';
-import { PieChartOptions } from '@app-types/pie-chart-options';
 import { ButtonComponent } from '@components/button/button.component';
 import { IconButtonComponent } from '@components/icon-button/icon-button.component';
 import { TableComponent } from '@components/table/table.component';
@@ -31,6 +29,7 @@ import { TableColumnHeaderTemplateDirective } from '@directives/table-column-hea
 import { TableColumnTemplateDirective } from '@directives/table-column-template.directive';
 import { ChartType } from '@enums/chart-type';
 import { DurationEndpoints } from '@enums/durations';
+import { ChartOptionsModel } from '@models/chart-options-model';
 import { RentCompositeTransaction } from '@models/composite-transaction';
 import { FurnitureStatusKpi } from '@models/furniture-status-kpi';
 import { KpiModel } from '@models/kpi-model';
@@ -282,11 +281,16 @@ export default class RentalIndicatorsPageComponent implements OnInit {
   selectedTop10: Lookup = this.accordingToList[0];
   selectedTop10ChartType: 'bar' | 'line' = ChartType.BAR;
 
-  chartOptions: Partial<PartialChartOptions> = this.appChartTypesService.mainChartOptions;
+  chartOptions: ChartOptionsModel = new ChartOptionsModel().clone<ChartOptionsModel>(
+    this.appChartTypesService.mainChartOptions
+  );
 
-  top10ChartOptions = this.appChartTypesService.top10ChartOptions;
+  top10ChartOptions = {
+    bar: new ChartOptionsModel().clone<ChartOptionsModel>(this.appChartTypesService.top10ChartOptions.bar),
+    line: new ChartOptionsModel().clone<ChartOptionsModel>(this.appChartTypesService.top10ChartOptions.line),
+  };
 
-  pieChartOptions: PieChartOptions = this.appChartTypesService.pieChartOptions;
+  pieChartOptions = this.appChartTypesService.pieChartOptions;
 
   purposeKPIS = this.lookupService.rentLookups.rentPurposeList;
 
@@ -736,34 +740,24 @@ export default class RentalIndicatorsPageComponent implements OnInit {
   }
 
   private _initializeChartsFormatters() {
-    this.chartOptions = this.appChartTypesService.addDataLabelsFormatter(this.chartOptions, (val, opts) =>
-      this.appChartTypesService.dataLabelsFormatter({ val, opts }, this.selectedRoot)
-    );
-    this.chartOptions = this.appChartTypesService.addAxisYFormatter(this.chartOptions, (val, opts) =>
-      this.appChartTypesService.axisYFormatter({ val, opts }, this.selectedRoot)
-    );
+    this.chartOptions
+      .addDataLabelsFormatter((val, opts) =>
+        this.appChartTypesService.dataLabelsFormatter({ val, opts }, this.selectedRoot)
+      )
+      .addAxisYFormatter((val, opts) => this.appChartTypesService.axisYFormatter({ val, opts }, this.selectedRoot));
 
-    this.top10ChartOptions.line = this.appChartTypesService.addDataLabelsFormatter(
-      this.top10ChartOptions.line,
-      (val, opts) => this.appChartTypesService.dataLabelsFormatter({ val, opts }, this.selectedRoot)
-    );
-    this.top10ChartOptions.line = this.appChartTypesService.addAxisYFormatter(
-      this.top10ChartOptions.line,
-      (val, opts) => this.appChartTypesService.axisYFormatter({ val, opts }, this.selectedRoot)
-    );
-    this.top10ChartOptions.line = this.appChartTypesService.addAxisXFormatter(
-      this.top10ChartOptions.line,
-      (val, opts) => this.appChartTypesService.axisXFormatter({ val, opts }, this.selectedRoot)
-    );
-    this.top10ChartOptions.bar = this.appChartTypesService.addDataLabelsFormatter(
-      this.top10ChartOptions.bar,
-      (val, opts) => this.appChartTypesService.dataLabelsFormatter({ val, opts }, this.selectedRoot)
-    );
-    this.top10ChartOptions.bar = this.appChartTypesService.addAxisYFormatter(this.top10ChartOptions.bar, (val, opts) =>
-      this.appChartTypesService.axisYFormatter({ val, opts }, this.selectedRoot)
-    );
-    this.top10ChartOptions.bar = this.appChartTypesService.addAxisXFormatter(this.top10ChartOptions.bar, (val, opts) =>
-      this.appChartTypesService.axisXFormatter({ val, opts }, this.selectedRoot)
-    );
+    this.top10ChartOptions.line
+      .addDataLabelsFormatter((val, opts) =>
+        this.appChartTypesService.dataLabelsFormatter({ val, opts }, this.selectedRoot)
+      )
+      .addAxisYFormatter((val, opts) => this.appChartTypesService.axisYFormatter({ val, opts }, this.selectedRoot))
+      .addAxisXFormatter((val, opts) => this.appChartTypesService.axisXFormatter({ val, opts }, this.selectedRoot));
+
+    this.top10ChartOptions.bar
+      .addDataLabelsFormatter((val, opts) =>
+        this.appChartTypesService.dataLabelsFormatter({ val, opts }, this.selectedRoot)
+      )
+      .addAxisYFormatter((val, opts) => this.appChartTypesService.axisYFormatter({ val, opts }, this.selectedRoot))
+      .addAxisXFormatter((val, opts) => this.appChartTypesService.axisXFormatter({ val, opts }, this.selectedRoot));
   }
 }
