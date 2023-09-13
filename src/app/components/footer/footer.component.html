@@ -1,4 +1,4 @@
-<div class="h-80 relative text-white">
+<div class="h-[580px] lg:h-80 relative text-white">
   <div class="absolute inset-0 bg-pattern">
     <div class="absolute inset-0 bg-gradient-to-t from-transparent to-white to-100%"></div>
   </div>
@@ -18,12 +18,15 @@
   </svg>
   <div
     [ngClass]="{ 'clipped-footer': !lang.isLtr, 'clipped-footer-ltr': lang.isLtr }"
-    class="px-10 h-60 w-full bg-footer ltr:bg-footer-ltr bg-cover absolute top-8 right-0 left-0"></div>
+    class="clipped-footer px-10 h-[500px] lg:h-60 w-full bg-footer ltr:bg-footer-ltr bg-cover absolute top-8 right-0 left-0"></div>
   <div
     id="top-footer"
     [ngClass]="{ 'clipped-footer': !lang.isLtr, 'clipped-footer-ltr': lang.isLtr }"
-    class="px-10 pt-16 h-60 w-full bg-gradient-to-r ltr:bg-gradient-to-l from-primary/90 to-gray-800/90 absolute top-8 right-0 left-0 flex items-center justify-between">
-    <ul id="top-footer-menu">
+    class="lg:px-10 px-3 lg:pt-16 h-[500px] lg:h-60 w-full bg-gradient-to-r ltr:bg-gradient-to-l from-primary/90 to-gray-800/90 absolute top-8 right-0 left-0 lg:flex grid auto-rows-min pt-32 gap-8 grid-cols-2 items-center lg:justify-between">
+    <ul
+      id="top-footer-menu"
+      class="col-span-1 flex flex-col items-start"
+      [ngClass]="{ 'border-l': !lang.isLtr, 'border-r': lang.isLtr }">
       <li>
         <app-button buttonStyle="none" routerLink="/about" routerLinkActive="active">{{
           lang.map.about_us
@@ -36,7 +39,24 @@
         <app-button buttonStyle="none" routerLink="/faq" routerLinkActive="active">{{ lang.map.faq }}</app-button>
       </li>
     </ul>
-    <div id="top-footer-downloads" class="flex flex-col items-center">
+    <div id="follow-us" class="lg:order-last flex flex-col items-center col-span-1">
+      <p>{{ lang.map.follow_us }}</p>
+      <ul class="flex items-center" id="follow-us-menu">
+        <li>
+          <app-icon-button icon="TWITTER"></app-icon-button>
+        </li>
+        <li>
+          <app-icon-button icon="YOUTUBE"></app-icon-button>
+        </li>
+        <li>
+          <app-icon-button icon="FACEBOOK"></app-icon-button>
+        </li>
+        <li>
+          <app-icon-button icon="INSTAGRAM"></app-icon-button>
+        </li>
+      </ul>
+    </div>
+    <div id="top-footer-downloads" class="flex flex-col items-center col-span-2">
       <p class="mb-3">{{ lang.map.stay_informed_and_get_the_latest_developments }}</p>
       <ul class="flex gap-x-3">
         <li>
@@ -52,8 +72,8 @@
       </ul>
     </div>
     <!-- top-footer-app-downloads -->
-    <div id="useful-links">
-      <ul id="useful-links-menu" class="flex gap-x-3">
+    <div id="useful-links" class="col-span-2">
+      <ul id="useful-links-menu" class="flex justify-around gap-x-3">
         <li class="bg-gradient-to-b from-white via-gray-300 to-white rounded-2xl p-2">
           <a class="w-32 h-full flex items-center justify-center" target="_blank" href="https://www.mme.gov.qa">
             <img class="h-auto w-auto" ngSrc="assets/images/mme.png" height="35" width="112" alt="MME site" />
@@ -75,29 +95,12 @@
       </ul>
     </div>
     <!-- useful-links-->
-    <div id="follow-us" class="flex flex-col">
-      <p>{{ lang.map.follow_us }}</p>
-      <ul class="flex" id="follow-us-menu">
-        <li>
-          <app-icon-button icon="TWITTER"></app-icon-button>
-        </li>
-        <li>
-          <app-icon-button icon="YOUTUBE"></app-icon-button>
-        </li>
-        <li>
-          <app-icon-button icon="FACEBOOK"></app-icon-button>
-        </li>
-        <li>
-          <app-icon-button icon="INSTAGRAM"></app-icon-button>
-        </li>
-      </ul>
-    </div>
   </div>
   <!-- top-footer-->
   <div
     id="bottom-footer"
-    class="flex items-center justify-between h-12 absolute bottom-0 right-0 left-0 bg-[#666666] px-10 w-full">
-    <ul class="flex gap-x-3 divide-items">
+    class="lg:flex items-center text-sm lg:text-base lg:justify-between h-16 lg:h-12 absolute bottom-0 right-0 left-0 bg-[#666666] px-3 lg:px-10 w-full">
+    <ul class="flex justify-center gap-x-3 divide-items">
       <li>
         <app-button buttonStyle="none">{{ lang.map.privacy_and_rights }}</app-button>
       </li>
@@ -105,7 +108,7 @@
         <app-button buttonStyle="none">{{ lang.map.location_map }}</app-button>
       </li>
     </ul>
-    <div>
+    <div class="flex justify-center">
       <span
         >{{ lang.map.municipality_is_not_responsible_for_any_citation_from_the_site }} -
         {{ lang.map.all_rights_reserved_to_the_ministry_of_municipality }} © 2023</span
