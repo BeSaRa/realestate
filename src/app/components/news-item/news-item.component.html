@@ -1,6 +1,6 @@
 <ng-container *ngIf="type === 'full'">
-  <div class="news-item flex h-72">
-    <div class="h-72 shadow-xl rounded-xl group w-2/6">
+  <div class="news-item flex flex-col md:flex-row h-fit lg:h-72">
+    <div class="h-72 shadow-xl rounded-xl group w-full lg:w-2/6">
       <a
         [routerLink]="['/news', newsItemData.id]"
         href="#"
@@ -23,7 +23,7 @@
         </div>
       </a>
     </div>
-    <div class="news-content w-4/6 px-2 flex flex-col">
+    <div class="news-content h-44 lg:h72 w-full lg:w-4/6 px-2 lg:flex lg:flex-col">
       <div
         class="news-tags flex gap-x-2 [&>a]:bg-gray-200 [&>a]:px-1 [&>a]:text-sm [&>a]:py-1 [&>a:hover]:bg-gray-400 [&>a]:rounded">
         <a *ngFor="let tag of newsItemData.tags" (click)="$event.preventDefault()" href="#">{{ tag }}</a>
