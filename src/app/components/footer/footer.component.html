@@ -1,4 +1,4 @@
-<div class="h-[580px] lg:h-80 relative text-white">
+<div class="h-[600px] md:h-[500px] xl:h-80 relative text-white">
   <div class="absolute inset-0 bg-pattern">
     <div class="absolute inset-0 bg-gradient-to-t from-transparent to-white to-100%"></div>
   </div>
@@ -18,29 +18,33 @@
   </svg>
   <div
     [ngClass]="{ 'clipped-footer': !lang.isLtr, 'clipped-footer-ltr': lang.isLtr }"
-    class="clipped-footer px-10 h-[500px] lg:h-60 w-full bg-footer ltr:bg-footer-ltr bg-cover absolute top-8 right-0 left-0"></div>
+    class="clipped-footer px-10 h-[520px] md:h-[420px] xl:h-60 w-full bg-footer ltr:bg-footer-ltr bg-cover absolute top-8 right-0 left-0"></div>
   <div
     id="top-footer"
     [ngClass]="{ 'clipped-footer': !lang.isLtr, 'clipped-footer-ltr': lang.isLtr }"
-    class="lg:px-10 px-3 lg:pt-16 h-[500px] lg:h-60 w-full bg-gradient-to-r ltr:bg-gradient-to-l from-primary/90 to-gray-800/90 absolute top-8 right-0 left-0 lg:flex grid auto-rows-min pt-32 gap-8 grid-cols-2 items-center lg:justify-between">
-    <ul
-      id="top-footer-menu"
-      class="col-span-1 flex flex-col items-start"
-      [ngClass]="{ 'border-l': !lang.isLtr, 'border-r': lang.isLtr }">
-      <li>
-        <app-button buttonStyle="none" routerLink="/about" routerLinkActive="active">{{
-          lang.map.about_us
-        }}</app-button>
-      </li>
-      <li>
-        <app-button buttonStyle="none">{{ lang.map.surveys }}</app-button>
-      </li>
-      <li>
-        <app-button buttonStyle="none" routerLink="/faq" routerLinkActive="active">{{ lang.map.faq }}</app-button>
-      </li>
-    </ul>
-    <div id="follow-us" class="lg:order-last flex flex-col items-center col-span-1">
-      <p>{{ lang.map.follow_us }}</p>
+    class="px-10 pt-40 md:pt-32 xl:pt-16 h-[520px] md:h-[420px] xl:h-60 w-full bg-gradient-to-r ltr:bg-gradient-to-l from-primary/90 to-gray-800/90 absolute top-8 right-0 left-0 xl:flex grid auto-rows-min gap-8 grid-cols-12 items-center md:justify-between">
+    <div class="col-span-5 md:col-span-6 flex xl:block justify-end md:justify-center xl:justify-start">
+      <ul id="top-footer-menu" class="flex flex-col items-start">
+        <li>
+          <app-button buttonStyle="none" routerLink="/about" routerLinkActive="active">{{
+            lang.map.about_us
+          }}</app-button>
+        </li>
+        <li>
+          <app-button buttonStyle="none">{{ lang.map.surveys }}</app-button>
+        </li>
+        <li>
+          <app-button buttonStyle="none" routerLink="/faq" routerLinkActive="active">{{ lang.map.faq }}</app-button>
+        </li>
+      </ul>
+    </div>
+    <span class="md:hidden flex justify-center h-full col-span-2"
+      ><span class="h-full w-0 border border-secondary"></span
+    ></span>
+    <div
+      id="follow-us"
+      class="xl:order-last flex flex-col items-start md:items-center xl:items-start col-span-5 md:col-span-6">
+      <p class="ps-2">{{ lang.map.follow_us }}</p>
       <ul class="flex items-center" id="follow-us-menu">
         <li>
           <app-icon-button icon="TWITTER"></app-icon-button>
@@ -56,37 +60,43 @@
         </li>
       </ul>
     </div>
-    <div id="top-footer-downloads" class="flex flex-col items-center col-span-2">
+    <div id="top-footer-downloads" class="flex flex-col items-center col-span-12 md:col-span-6">
       <p class="mb-3">{{ lang.map.stay_informed_and_get_the_latest_developments }}</p>
       <ul class="flex gap-x-3">
         <li>
-          <a class="w-32 block" (click)="$event.preventDefault()" href="#">
+          <a class="w-44 md:w-36 xl:w-32 block" (click)="$event.preventDefault()" href="#">
             <img class="h-auto w-auto" ngSrc="assets/images/apple.png" height="90" width="303" alt="apple-app" />
           </a>
         </li>
         <li>
-          <a class="w-32 block" (click)="$event.preventDefault()" href="#">
+          <a class="w-44 md:w-36 xl:w-32 block" (click)="$event.preventDefault()" href="#">
             <img class="h-auto w-auto" ngSrc="assets/images/google.png" height="90" width="302" alt="apple-app" />
           </a>
         </li>
       </ul>
     </div>
     <!-- top-footer-app-downloads -->
-    <div id="useful-links" class="col-span-2">
-      <ul id="useful-links-menu" class="flex justify-around gap-x-3">
+    <div id="useful-links" class="col-span-12 md:col-span-6">
+      <ul id="useful-links-menu" class="flex justify-center gap-x-3">
         <li class="bg-gradient-to-b from-white via-gray-300 to-white rounded-2xl p-2">
-          <a class="w-32 h-full flex items-center justify-center" target="_blank" href="https://www.mme.gov.qa">
+          <a
+            class="w-32 md:w-24 xl:w-32 h-full flex items-center justify-center"
+            target="_blank"
+            href="https://www.mme.gov.qa">
             <img class="h-auto w-auto" ngSrc="assets/images/mme.png" height="35" width="112" alt="MME site" />
           </a>
         </li>
         <li class="bg-gradient-to-b from-white via-gray-300 to-white rounded-2xl p-2">
-          <a class="w-32 h-full flex items-center justify-center" target="_blank" href="https://hukoomi.gov.qa">
+          <a
+            class="w-32 md:w-24 xl:w-32 h-full flex items-center justify-center"
+            target="_blank"
+            href="https://hukoomi.gov.qa">
             <img class="h-auto w-auto" ngSrc="assets/images/hukoomi.png" height="29" width="94" alt="hukoomi site" />
           </a>
         </li>
         <li class="bg-gradient-to-b from-white via-gray-300 to-white rounded-2xl p-2">
           <a
-            class="w-32 h-full flex items-center justify-center"
+            class="w-32 md:w-24 xl:w-32 h-full flex items-center justify-center"
             target="_blank"
             href="https://www.dohaexpo2023.gov.qa">
             <img class="h-auto w-auto" ngSrc="assets/images/expo.png" height="40" width="71" alt="expo site" />
@@ -99,7 +109,7 @@
   <!-- top-footer-->
   <div
     id="bottom-footer"
-    class="lg:flex items-center text-sm lg:text-base lg:justify-between h-16 lg:h-12 absolute bottom-0 right-0 left-0 bg-[#666666] px-3 lg:px-10 w-full">
+    class="xl:flex items-center text-sm xl:text-base xl:justify-between h-16 xl:h-12 absolute bottom-0 right-0 left-0 bg-[#666666] px-3 xl:px-10 w-full">
     <ul class="flex justify-center gap-x-3 divide-items">
       <li>
         <app-button buttonStyle="none">{{ lang.map.privacy_and_rights }}</app-button>
