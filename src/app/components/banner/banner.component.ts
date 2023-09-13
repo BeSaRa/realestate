@@ -4,7 +4,7 @@ import { Component, inject } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { ButtonComponent } from '@components/button/button.component';
 import { TranslationService } from '@services/translation.service';
-import { takeUntil } from 'rxjs';
+import { Subject, takeUntil } from 'rxjs';
 
 @Component({
   selector: 'app-banner',
@@ -15,6 +15,8 @@ import { takeUntil } from 'rxjs';
 })
 export class BannerComponent {
   lang = inject(TranslationService);
+  destroyed = new Subject<void>();
+
   currentScreenSize: 'sm' | 'md' | 'lg' | 'xl' = 'md';
   buttonSizeMap = new Map<string, 'sm' | 'md' | 'lg' | 'xl'>([
     [Breakpoints.Small, 'sm'],
@@ -25,14 +27,18 @@ export class BannerComponent {
   constructor(breakpointObserver: BreakpointObserver) {
     breakpointObserver
       .observe([Breakpoints.XSmall, Breakpoints.Small, Breakpoints.Medium, Breakpoints.Large, Breakpoints.XLarge])
-      // .pipe(takeUntil(this.destroyed))
+      .pipe(takeUntil(this.destroyed))
       .subscribe((result) => {
         for (const query of Object.keys(result.breakpoints)) {
           if (result.breakpoints[query]) {
-            console.log(this.buttonSizeMap.get(query));
-            this.currentScreenSize = this.buttonSizeMap.get(query) ?? 'lg';
+            this.currentScreenSize = this.buttonSizeMap.get(query) ?? 'md';
           }
         }
       });
+  }
+
+  ngOnDestroy() {
+    this.destroyed.next();
+    this.destroyed.complete();
   }
 }
