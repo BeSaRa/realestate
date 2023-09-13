@@ -1,14 +1,15 @@
 <div class="flex justify-center">
   <div
     id="main-banner"
-    class="w-full md:w-3/4 h-fit sm:h-48 overflow-hidden rounded-2xl border-2 border-primary bg-banner ltr:bg-banner-ltr bg-cover bg-center">
+    class="w-full md:w-3/4 h-fit overflow-hidden rounded-2xl border-2 border-primary bg-banner ltr:bg-banner-ltr bg-cover bg-center">
     <div
-      class="bg-gradient-to-r ltr:bg-gradient-to-l from-transparent to-gray-800/80 h-fit sm:h-48 w-full pt-6 p-4 sm:p-10 sm:flex sm:gap-x-2 items-center">
-      <h2 class="text-lg md:text-2xl border-b-2 border-secondary font-semibold text-white">
+      class="bg-gradient-to-r ltr:bg-gradient-to-l from-transparent to-gray-800/80 h-fit w-full pt-6 px-2 xl:p-10 sm:flex flex-col xl:flex-row sm:gap-x-2 items-start xl:items-center">
+      <h2 class="w-max xl:flex-1 text-lg md:text-2xl border-b-2 border-secondary font-semibold text-white">
         {{ lang.map.most_used }}
       </h2>
-      <br /><br />
-      <div class="sm:flex sm:flex-auto [&>*]:flex-1 items-center [&>*]:p-2 justify-center sm:gap-x-5 md:ps-16 md:pe-10">
+      <br class="hidden xl:block" /><br />
+      <div
+        class="flex flex-col gap-y-2 [&>*]:w-full sm:flex-row sm:w-full xl:flex-auto [&>*]:flex-1 items-center pb-4 xl:pb-0 justify-center sm:gap-x-5 xl:ps-12 xl:pe-8">
         <app-button
           routerLink="/sell-indicators"
           routerLinkActive="active"
