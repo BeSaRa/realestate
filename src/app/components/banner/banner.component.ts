@@ -15,30 +15,4 @@ import { Subject, takeUntil } from 'rxjs';
 })
 export class BannerComponent {
   lang = inject(TranslationService);
-  destroyed = new Subject<void>();
-
-  currentScreenSize: 'sm' | 'md' | 'lg' | 'xl' = 'md';
-  buttonSizeMap = new Map<string, 'sm' | 'md' | 'lg' | 'xl'>([
-    [Breakpoints.Small, 'sm'],
-    [Breakpoints.Medium, 'md'],
-    [Breakpoints.Large, 'lg'],
-    [Breakpoints.XLarge, 'xl'],
-  ]);
-  constructor(breakpointObserver: BreakpointObserver) {
-    breakpointObserver
-      .observe([Breakpoints.XSmall, Breakpoints.Small, Breakpoints.Medium, Breakpoints.Large, Breakpoints.XLarge])
-      .pipe(takeUntil(this.destroyed))
-      .subscribe((result) => {
-        for (const query of Object.keys(result.breakpoints)) {
-          if (result.breakpoints[query]) {
-            this.currentScreenSize = this.buttonSizeMap.get(query) ?? 'md';
-          }
-        }
-      });
-  }
-
-  ngOnDestroy() {
-    this.destroyed.next();
-    this.destroyed.complete();
-  }
 }
