@@ -24,7 +24,7 @@
     </div>
   </div>
 </app-extra-header>
-<div class="content-wrapper p-10">
+<div class="content-wrapper p-5 lg:p-10">
   <app-banner />
   <br />
   <br />
@@ -35,13 +35,14 @@
 
   <br />
   <br />
-  <div class="flex justify-center">
-    <div class="shadow-gray-200 custom-shadow flex rounded-xl border w-3/4 p-20 gap-x-10">
-      <div class="w-3/5 flex flex-col gap-y-10">
+  <div class="flex justify-center items-center">
+    <div
+      class="shadow-gray-200 custom-shadow flex flex-col items-center lg:flex-row w-full rounded-xl border gap-y-5 p-5 lg:w-3/4 lg:p-20 lg:gap-x-10">
+      <div class="w-full lg:w-3/5 flex flex-col gap-y-5 lg:gap-y-10 items-stretch">
         <app-newsletter-form />
         <app-voting-form />
       </div>
-      <div class="w-2/5 flex flex-col gap-y-10 items-center">
+      <div class="w-full lg:w-2/5 flex flex-col gap-y-5 lg:gap-y-10 items-stretch">
         <app-inwani />
         <app-inquiries />
       </div>
