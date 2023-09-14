@@ -321,7 +321,7 @@ export class TransactionsFilterComponent implements OnInit, OnDestroy {
       municipalityId: this.isSell() || this.isMort() || this.isOwner() ? 4 : 1,
       propertyTypeList: [-1],
       purposeList: [-1],
-      zoneId: 38,
+      zoneId: this.isMort() ? -1 : 38,
       durationType: 1,
       issueDateYear: 2023,
       issueDateStartMonth: 1,
