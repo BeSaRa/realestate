@@ -493,7 +493,7 @@ export default class SellIndicatorsPageComponent implements OnInit {
     const months = this.adapter.getMonthNames('long');
     this.dashboardService
       .loadLineChartKpiForDuration(DurationEndpoints.MONTHLY, this.selectedRoot!, this.criteria.criteria)
-      .pipe(takeUntil(this.destroy$))
+      .pipe(take(1))
       .subscribe((data) => {
         data.sort((a, b) => a.issuePeriod - b.issuePeriod);
         const _minMaxAvg = minMaxAvg(data.map((d) => d.kpiVal));
@@ -520,13 +520,11 @@ export default class SellIndicatorsPageComponent implements OnInit {
   updateChartHalfyOrQuarterly() {
     this.dashboardService
       .loadLineChartKpiForDuration(
-        this.selectedDurationType === DurationEndpoints.HALFY
-          ? DurationEndpoints.HALFY
-          : DurationEndpoints.SELL_QUARTERLY,
+        this.selectedDurationType === DurationEndpoints.HALFY ? DurationEndpoints.HALFY : DurationEndpoints.QUARTERLY,
         this.selectedRoot!,
         this.criteria.criteria
       )
-      .pipe(takeUntil(this.destroy$))
+      .pipe(take(1))
       .pipe(
         map((durationData) => {
           return this.dashboardService.mapDurationData(

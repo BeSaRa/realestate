@@ -124,8 +124,8 @@
             >{{ lang.map.half_yearly }}</app-button
           >
           <app-button
-            (click)="updateChartDuration(DurationTypes.SELL_QUARTERLY)"
-            [buttonStyle]="selectedDurationType === DurationTypes.SELL_QUARTERLY ? 'secondary' : 'secondary-outline'"
+            (click)="updateChartDuration(DurationTypes.QUARTERLY)"
+            [buttonStyle]="selectedDurationType === DurationTypes.QUARTERLY ? 'secondary' : 'secondary-outline'"
             [isRounded]="true"
             >{{ lang.map.quarter_yearly }}</app-button
           >
@@ -192,7 +192,7 @@
           <div *appTableColumnCellTemplate="let item; typeOf: transactions" class="flex justify-center">
             <div class="text-start">
               <p class="font-bold">{{ item.municipalityInfo.getNames() }}</p>
-              <p>{{ item.areaInfo?.getNames() ?? "---" }}</p>
+              <p>{{ item.areaInfo && item.areaInfo.getNames() && "---" }}</p>
             </div>
           </div>
         </ng-container>

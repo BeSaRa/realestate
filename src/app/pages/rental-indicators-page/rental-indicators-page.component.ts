@@ -486,7 +486,7 @@ export default class RentalIndicatorsPageComponent implements OnInit {
     const months = this.adapter.getMonthNames('long');
     this.dashboardService
       .loadLineChartKpiForDuration(DurationEndpoints.MONTHLY, this.selectedRoot!, this.criteria.criteria)
-      .pipe(takeUntil(this.destroy$))
+      .pipe(take(1))
       .subscribe((data) => {
         const _minMaxAvg = minMaxAvg(data.map((d) => d.kpiVal));
         this.chart.first
@@ -512,13 +512,11 @@ export default class RentalIndicatorsPageComponent implements OnInit {
   updateChartHalfyOrQuarterly() {
     this.dashboardService
       .loadLineChartKpiForDuration(
-        this.selectedDurationType === DurationEndpoints.HALFY
-          ? DurationEndpoints.HALFY
-          : DurationEndpoints.RENT_QUARTERLY,
+        this.selectedDurationType === DurationEndpoints.HALFY ? DurationEndpoints.HALFY : DurationEndpoints.QUARTERLY,
         this.selectedRoot!,
         this.criteria.criteria
       )
-      .pipe(takeUntil(this.destroy$))
+      .pipe(take(1))
       .pipe(
         map((durationData) => {
           return this.dashboardService.mapDurationData(

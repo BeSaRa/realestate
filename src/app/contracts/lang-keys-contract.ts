@@ -218,4 +218,5 @@ export interface LangKeysContract {
   qatari: string;
   gulf_cooperation_council_countries: string;
   other_nationalities: string;
+  ownerships_count_change_for_nationality: string;
 }
