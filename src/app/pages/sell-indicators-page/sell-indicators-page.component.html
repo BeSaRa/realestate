@@ -27,42 +27,44 @@
       (enableChangerealEstateValueMinMaxValues)="enableChangerealEstateValueMinMaxValues = $event" />
   </div>
   <div class="flex flex-col">
-    <div class="px-16 mt-5 flex justify-center">
-      <div class="flex justify-center gap-5 w-full lg:w-2/3 xl:w-1/2 text-3xl">
+    <div class="px-3 lg:px-16 mt-5 flex justify-center">
+      <div class="flex justify-center gap-2 lg:gap-5 w-full lg:w-2/3 xl:w-1/2 text-lg lg:text-3xl">
         <button
           [ngClass]="{ active: isSelectedTab('sell_indicators') }"
           (click)="switchTab('sell_indicators')"
-          class="flex-1 shadow-xl outline-none border border-secondary text-secondary p-5 rounded-2xl [&.active]:bg-secondary [&.active]:text-white [&.active]:ring-2 ring-black">
+          class="flex-1 shadow-xl outline-none border border-secondary font-semibold p-2 lg:p-5 rounded-2xl [&.active]:bg-secondary [&.active]:text-white [&.active]:ring-2 ring-black">
           {{ lang.map.sell_indicators }}
         </button>
         <button
           [ngClass]="{ active: isSelectedTab('statistical_reports_for_sell') }"
           (click)="switchTab('statistical_reports_for_sell')"
-          class="flex-1 shadow-xl outline-none border border-secondary text-secondary p-5 rounded-2xl [&.active]:bg-secondary [&.active]:text-white [&.active]:ring-2 ring-black">
+          class="flex-1 shadow-xl outline-none border border-secondary font-semibold p-2 lg:p-5 rounded-2xl [&.active]:bg-secondary [&.active]:text-white [&.active]:ring-2 ring-black">
           {{ lang.map.statistical_reports_for_sell }}
         </button>
       </div>
     </div>
   </div>
   <div *ngIf="isSelectedTab('sell_indicators')" class="flex flex-col">
-    <div class="p-16">
+    <div class="p-3 lg:p-16">
       <div class="flex flex-col">
         <h3 class="heading text-3xl self-start text-primary border-secondary font-semibold inline-block">
           {{ lang.map.sell_transactions_measuring_dashboard }} {{ basedOnCriteria }}
         </h3>
         <div class="flex flex-col gap-4 xl:flex-row">
-          <div class="flex-1 my-4 p-4 border border-primary rounded-lg grid grid-cols-3 justify-center gap-4">
+          <div
+            class="flex-1 my-4 p-4 border border-secondary lg:border-primary rounded-lg grid grid-rows-3 grid-cols-1 lg:grid-rows-1 lg:grid-cols-3 justify-center gap-4">
             <app-kpi-root (itemSelected)="rootItemSelected($event)" *ngFor="let item of nonePriceList" [item]="item" />
           </div>
-          <div class="flex-1 my-4 p-4 border border-primary rounded-lg grid grid-cols-3 justify-center gap-4">
+          <div
+            class="flex-1 my-4 p-4 border border-secondary lg:border-primary rounded-lg grid grid-rows-3 grid-cols-1 lg:grid-rows-1 lg:grid-cols-3 justify-center gap-4">
             <app-kpi-root (itemSelected)="rootItemSelected($event)" *ngFor="let item of priceList" [item]="item" />
           </div>
         </div>
       </div>
     </div>
-    <div class="bg-sand p-16">
-      <div class="px-16 flex flex-col justify-center items-center">
-        <div class="flex w-full justify-center">
+    <div class="lg:bg-sand lg:p-16 p-3">
+      <div class="px-3 lg:px-16 flex flex-col justify-center items-center">
+        <div class="hidden lg:flex lg:w-full lg:h-fit justify-center">
           <h3 *ngIf="selectedRoot" class="text-3xl mb-4 text-primary border-secondary font-semibold">
             {{ selectedRoot.getNames() }} ({{ lang.map.depending_on_use }}) {{ basedOnCriteria }}
           </h3>
@@ -76,16 +78,18 @@
               (click)="purposeSelected(item)"
               class="border-2 rounded-xl overflow-hidden xl:border-0 xl:rounded-none xl:border-e-2 border-secondary xl:last-of-type:border-e-0" />
           </ng-container>
-        </div> -->
-        <div class="w-full grid grid-cols-3 xl:grid-cols-6 border-2 border-secondary overflow-hidden rounded-xl">
+        </div>  -->
+        <div
+          class="w-full grid grid-cols-3 gap-3 lg:gap-0 xl:grid-cols-6 lg:border-2 lg:border-secondary overflow-hidden rounded-xl">
           <app-purpose
             *ngFor="let item of purposeKPIS; let i = index"
             [item]="item"
             (click)="purposeSelected(item)"
-            class="xl:border-e-2 border-secondary last-of-type:border-e-0 {{
-              i > 2 ? 'border-t-2 xl:border-t-0' : ''
-            }} {{ i % 3 === 2 ? 'border-e-0 xl:border-e-2' : 'border-e-2' }}" />
+            class="rounded-3xl lg:rounded-none border-2  xl:border-e-2 border-secondary lg:last-of-type:border-e-0 {{
+              i > 2 ? 'lg:border-t-2 xl:border-t-0' : ''
+            }} {{ i % 3 === 2 ? 'lg:border-e-0 xl:border-e-2' : 'lg:border-e-2' }}" />
         </div>
+
         <div class="mt-20 w-11/12" dir="ltr">
           <div class="flex justify-center">
             <h3 *ngIf="selectedRoot" class="text-3xl mb-4 text-primary border-secondary font-semibold">
@@ -103,6 +107,7 @@
         </div>
       </div>
     </div>
+
     <div class="p-16 flex flex-col">
       <div class="flex justify-center">
         <h3 *ngIf="selectedRoot" class="text-3xl mb-4 text-primary border-secondary font-semibold">
@@ -137,7 +142,22 @@
           >
         </div>
       </div>
-      <div class="flex">
+      <div class="flex flex-col lg:flex-row">
+        <div class="h-full flex flex-row lg:flex-col mt-4">
+          <app-icon-button
+            [ngClass]="{ 'text-primary': isSelectedChartType(ChartType.LINE) }"
+            (click)="updateChartType(ChartType.LINE)"
+            class="text-primary"
+            icon="LINE_CHART" />
+          <app-icon-button
+            [ngClass]="{ 'text-primary': isSelectedChartType(ChartType.BAR) }"
+            (click)="updateChartType(ChartType.BAR)"
+            icon="BAR_CHART" />
+          <app-icon-button
+            [ngClass]="{ 'text-primary': isSelectedChartType(ChartType.AREA) }"
+            (click)="updateChartType(ChartType.AREA)"
+            icon="AREA_CHART" />
+        </div>
         <div class="flex-auto" dir="ltr">
           <apx-chart
             #chart
@@ -154,21 +174,6 @@
             [tooltip]="chartOptions.tooltip!"
             [plotOptions]="chartOptions.plotOptions!"
             [title]="chartOptions.title!" />
-        </div>
-        <div class="h-full flex flex-col mt-4">
-          <app-icon-button
-            [ngClass]="{ 'text-primary': isSelectedChartType(ChartType.LINE) }"
-            (click)="updateChartType(ChartType.LINE)"
-            class="text-primary"
-            icon="LINE_CHART" />
-          <app-icon-button
-            [ngClass]="{ 'text-primary': isSelectedChartType(ChartType.BAR) }"
-            (click)="updateChartType(ChartType.BAR)"
-            icon="BAR_CHART" />
-          <app-icon-button
-            [ngClass]="{ 'text-primary': isSelectedChartType(ChartType.AREA) }"
-            (click)="updateChartType(ChartType.AREA)"
-            icon="AREA_CHART" />
         </div>
       </div>
     </div>
@@ -406,7 +411,7 @@
         </ng-container>
 
         <ng-container matColumnDef="firstYear1">
-          <!--          mat-sort-header="firstYear1" -->
+          <!--           mat-sort-header="firstYear1" -->
           <th mat-header-cell class="!bg-azure !text-white" *matHeaderCellDef>
             {{ compositeYears.previousYear }}
           </th>

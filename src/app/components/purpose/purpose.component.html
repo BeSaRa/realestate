@@ -2,18 +2,20 @@
   (mouseenter)="isHovered = true"
   (mouseleave)="isHovered = false"
   [ngClass]="{ selected: item.selected, 'pb-2': !showYoy }"
-  class="group px-2 pt-2 h-full flex hover:cursor-pointer flex-col gap-2  justify-between items-center text-center bg-sand transition {{
+  class="group rounded-3xl lg:rounded-none px-2 pt-2 h-full flex hover:cursor-pointer flex-col gap-2  justify-between items-center text-center lg:bg-sand transition {{
     lang.isLtr ? 'ltr-gradient' : 'gradient'
   }} ">
   <span [ngClass]="{ '-mb-1.5': showYoy }" class="flex-1">
     <span
-      class="text-2xl me-2 text-primary font-bold group-hover:text-white group-[.selected]:text-white transition"
+      class="text-lg lg:text-2xl me-2 text-primary lg:font-bold group-hover:text-white group-[.selected]:text-white transition"
       [countUp]="item.value"
       [options]="countUpOptions"></span>
     <span class="text-xl text-black font-bold group-[.selected]:text-white transition">{{ item.getNames() }}</span>
   </span>
-  <app-change-indicator
-    *ngIf="showYoy"
-    [value]="item.yoy"
-    [isHovered]="isHovered || item.selected"></app-change-indicator>
+  <div class="hidden lg:block lg:w-fit lg:h-fit">
+    <app-change-indicator
+      *ngIf="showYoy"
+      [value]="item.yoy"
+      [isHovered]="isHovered || item.selected"></app-change-indicator>
+  </div>
 </div>
