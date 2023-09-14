@@ -495,6 +495,10 @@ export class TransactionsFilterComponent implements OnInit, OnDestroy {
       }
     }
 
+    if (this.isMort()) {
+      delete value.zoneId;
+    }
+
     this.fromChanged.emit({ criteria: value as CriteriaContract, type: criteriaType });
     this.enableChangeAreaMinMaxValues.emit(this._enableChangeAreaMinMaxValues(this.form.value));
     this.enableChangerealEstateValueMinMaxValues.emit(this._enableChangeRealestateValueMinMaxValues(this.form.value));
