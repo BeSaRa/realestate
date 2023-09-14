@@ -9,6 +9,7 @@ export interface CriteriaContract {
   issueDateEndMonth: number;
   issueDateFrom: string;
   issueDateTo: string;
+  nationalityCode: number;
   areaFrom: number;
   areaTo: number;
   streetNo: number;

@@ -1,7 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { AfterViewInit, Component, OnInit, QueryList, ViewChildren, inject } from '@angular/core';
 import { DateAdapter, MatNativeDateModule } from '@angular/material/core';
-import { PartialChartOptions } from '@app-types/partialChartOptions';
 import { ButtonComponent } from '@components/button/button.component';
 import { ExtraHeaderComponent } from '@components/extra-header/extra-header.component';
 import { IconButtonComponent } from '@components/icon-button/icon-button.component';
@@ -13,9 +12,11 @@ import { YoyIndicatorComponent } from '@components/yoy-indicator/yoy-indicator.c
 import { CriteriaContract } from '@contracts/criteria-contract';
 import { MinMaxAvgContract } from '@contracts/min-max-avg-contract';
 import { OwnerCriteriaContract } from '@contracts/owner-criteria-contract';
+import { ChartType } from '@enums/chart-type';
 import { CriteriaType } from '@enums/criteria-type';
+import { DurationEndpoints } from '@enums/durations';
 import { NationalityCategories } from '@enums/nationality-categories';
-import { ChartOptionsModel } from '@models/chart-options-model';
+import { ChartConfig, ChartContext, ChartOptionsModel, DataPointSelectionConfig } from '@models/chart-options-model';
 import { KpiModel } from '@models/kpi-model';
 import { KpiRoot } from '@models/kpiRoot';
 import { Lookup } from '@models/lookup';
@@ -32,7 +33,7 @@ import { minMaxAvg } from '@utils/utils';
 import { CarouselComponent, IvyCarouselModule } from 'angular-responsive-carousel2';
 import { ChartComponent, NgApexchartsModule } from 'ng-apexcharts';
 import { NgxMaskPipe } from 'ngx-mask';
-import { Subject, forkJoin, take, takeUntil } from 'rxjs';
+import { Subject, forkJoin, map, take, takeUntil } from 'rxjs';
 
 @Component({
   selector: 'app-owner-page',
@@ -65,6 +66,8 @@ import { Subject, forkJoin, take, takeUntil } from 'rxjs';
 export default class OwnershipIndicatorsPageComponent implements OnInit, AfterViewInit {
   @ViewChildren('carousel') carousel!: QueryList<CarouselComponent>;
   @ViewChildren('ownershipNationalitiesChart') ownershipNationalitiesChart!: QueryList<ChartComponent>;
+  @ViewChildren('ownershipsCountChangeForDurationChart')
+  ownershipsCountChangeForDurationChart!: QueryList<ChartComponent>;
 
   lang = inject(TranslationService);
   dashboardService = inject(DashboardService);
@@ -94,6 +97,9 @@ export default class OwnershipIndicatorsPageComponent implements OnInit, AfterVi
 
   NationalityCategories = NationalityCategories;
   selectedNationalityCategory = NationalityCategories.QATARI;
+
+  selectedDurationType = DurationEndpoints.YEARLY;
+  protected readonly DurationTypes = DurationEndpoints;
 
   rootKPIS = [
     new KpiRoot(
@@ -156,11 +162,20 @@ export default class OwnershipIndicatorsPageComponent implements OnInit, AfterVi
     chart: { ...this.appChartTypesService.mainChartOptions.chart, type: 'bar' },
   });
 
-  ngOnInit(): void {
+  isInitOwnershipNationalitiesChart = true;
+  selectedNationalityId = 634;
+
+  ownershipsCountChangeForDurationChartOptions = new ChartOptionsModel().clone<ChartOptionsModel>(
+    this.appChartTypesService.mainChartOptions
+  );
+  selectedOwnershipsCountChangeForDurationChartType: ChartType = ChartType.LINE;
+  protected readonly ChartType = ChartType;
+
+  ngOnInit(): void {}
+
+  ngAfterViewInit(): void {
     this._initializeChartsFormatters();
   }
-
-  ngAfterViewInit(): void {}
 
   switchTab(tab: string): void {
     this.selectedTab = tab;
@@ -333,35 +348,139 @@ export default class OwnershipIndicatorsPageComponent implements OnInit, AfterVi
             series: [
               {
                 name: this.lang.map.distribution_of_ownerships_according_to_nationality,
-                data: this.ownershipNationalitiesChartData.map((item) => item.kpiVal),
+                data: this.ownershipNationalitiesChartData.map((item, index) => ({
+                  x: (item.nationalityInfo && item.nationalityInfo.getNames()) || '',
+                  y: item.kpiVal,
+                  id: item.nationalityId,
+                  index,
+                })),
               },
             ],
-            xaxis: {
-              categories: this.ownershipNationalitiesChartData.map((item) => item.nationalityInfo.getNames()),
-            },
             colors: [this.appChartTypesService.chartColorsFormatter(_minMaxAvg)],
             ...this.appChartTypesService.yearlyStaticChartOptions,
           })
           .then();
       });
+  }
 
-    const _minMaxAvg = minMaxAvg(this.ownershipNationalitiesChartData.map((item) => item.kpiVal));
+  updateOwnershipsCountChangeChartByNationalityForDuration(durationType: DurationEndpoints) {
+    if (!this.ownershipsCountChangeForDurationChart.length) return;
+    this.selectedDurationType = durationType;
+    const _criteria = {
+      ...this.criteria.criteria,
+      nationalityCode: this.selectedNationalityId,
+    } as OwnerCriteriaContract;
+    if (this.selectedDurationType === DurationEndpoints.YEARLY) this.updateOwnershipsCountChangeChartYearly(_criteria);
+    else if (this.selectedDurationType === DurationEndpoints.MONTHLY)
+      this.updateOwnershipsCountChangeChartMonthly(_criteria);
+    else this.updateOwnershipsCountChangeChartHalfyOrQuarterly(_criteria);
+  }
 
-    this.ownershipNationalitiesChart.first
-      .updateOptions({
-        series: [
-          {
-            name: this.lang.map.distribution_of_ownerships_according_to_nationality,
-            data: this.ownershipNationalitiesChartData.map((item) => item.kpiVal),
-          },
-        ],
-        xaxis: {
-          categories: this.ownershipNationalitiesChartData.map((item) => item.nationalityInfo.getNames()),
-        },
-        colors: [this.appChartTypesService.chartColorsFormatter(_minMaxAvg)],
-        ...this.appChartTypesService.yearlyStaticChartOptions,
-      })
-      .then();
+  updateOwnershipsCountChangeChartYearly(criteria: OwnerCriteriaContract) {
+    this.dashboardService
+      .loadLineChartKpi({ chartDataUrl: this.urlService.URLS.OWNER_KPI12_1 }, criteria)
+      .pipe(take(1))
+      .subscribe((data) => {
+        const _minMaxAvg = minMaxAvg(data.map((item) => item.kpiVal));
+
+        this.ownershipsCountChangeForDurationChart.first
+          .updateOptions({
+            series: [
+              {
+                name:
+                  this.lang.map.ownerships_count_change_for_nationality +
+                  ' (' +
+                  this.lookupService.ownerNationalityMap[this.selectedNationalityId].getNames() +
+                  ')',
+                data: data.map((item) => item.kpiVal),
+              },
+            ],
+            xaxis: {
+              categories: data.map((item) => item.issueYear),
+            },
+            colors: [this.appChartTypesService.chartColorsFormatter(_minMaxAvg)],
+            ...this.appChartTypesService.yearlyStaticChartOptions,
+          })
+          .then();
+        this.updateOwnershipCountChangeChartType(ChartType.BAR);
+      });
+  }
+
+  updateOwnershipsCountChangeChartMonthly(criteria: OwnerCriteriaContract) {
+    this.adapter.setLocale(this.lang.getCurrent().code === 'ar-SA' ? 'ar-EG' : 'en-US');
+    const months = this.adapter.getMonthNames('long');
+    this.dashboardService
+      .loadLineChartKpiForDuration(
+        DurationEndpoints.MONTHLY,
+        { chartDataUrl: this.urlService.URLS.OWNER_KPI12_1 },
+        criteria
+      )
+      .pipe(take(1))
+      .subscribe((data) => {
+        data.sort((a, b) => a.issuePeriod - b.issuePeriod);
+        const _minMaxAvg = minMaxAvg(data.map((d) => d.kpiVal));
+        this.ownershipsCountChangeForDurationChart.first
+          .updateOptions({
+            series: [
+              {
+                name:
+                  this.lang.map.ownerships_count_change_for_nationality +
+                  ' (' +
+                  this.lookupService.ownerNationalityMap[this.selectedNationalityId].getNames() +
+                  ')',
+                data: data.map((item) => {
+                  return {
+                    y: item.kpiVal,
+                    x: months[item.issuePeriod - 1],
+                  };
+                }),
+              },
+            ],
+            colors: [this.appChartTypesService.chartColorsFormatter(_minMaxAvg)],
+            ...this.appChartTypesService.monthlyStaticChartOptions,
+          })
+          .then();
+      });
+  }
+
+  updateOwnershipsCountChangeChartHalfyOrQuarterly(criteria: OwnerCriteriaContract) {
+    this.dashboardService
+      .loadLineChartKpiForDuration(
+        this.selectedDurationType === DurationEndpoints.HALFY ? DurationEndpoints.HALFY : DurationEndpoints.QUARTERLY,
+        { chartDataUrl: this.urlService.URLS.OWNER_KPI12_1 },
+        criteria
+      )
+      .pipe(take(1))
+      .pipe(
+        map((durationData) => {
+          return this.dashboardService.mapDurationData(
+            durationData,
+            this.selectedDurationType === DurationEndpoints.HALFY
+              ? this.lookupService.sellLookups.halfYearDurations
+              : this.lookupService.sellLookups.quarterYearDurations
+          );
+        })
+      )
+      .subscribe((data) => {
+        const _chartData = Object.keys(data).map((key) => ({
+          name: data[key as unknown as number].period.getNames(),
+          data: data[key as unknown as number].kpiValues.map((item) => item.value),
+        }));
+        this.ownershipsCountChangeForDurationChart.first
+          .updateOptions({
+            series: _chartData,
+            xaxis: {
+              categories: data[1].kpiValues.map((v) => v.year),
+            },
+            ...this.appChartTypesService.halflyAndQuarterlyStaticChartOptions,
+          })
+          .then();
+      });
+  }
+
+  updateOwnershipCountChangeChartType(type: ChartType) {
+    this.ownershipsCountChangeForDurationChart.first.updateOptions({ chart: { type: type } }).then();
+    this.selectedOwnershipsCountChangeForDurationChartType = type;
   }
 
   get basedOnCriteria(): string {
@@ -407,8 +526,46 @@ export default class OwnershipIndicatorsPageComponent implements OnInit, AfterVi
   private _initializeChartsFormatters() {
     this.ownershipNationalitiesChartOptions
       .addDataLabelsFormatter((val, opts) =>
-        this.appChartTypesService.dataLabelsFormatter({ val, opts }, this.selectedRoot)
+        this.appChartTypesService.dataLabelsFormatter({ val, opts }, { hasPrice: false })
       )
-      .addAxisYFormatter((val, opts) => this.appChartTypesService.axisYFormatter({ val, opts }, this.selectedRoot));
+      .addAxisYFormatter((val, opts) => this.appChartTypesService.axisYFormatter({ val, opts }, { hasPrice: false }))
+      .addAnimationEndCallback((chartContext, options) => console.log([chartContext, options]))
+      .addUpdatedCallback(this._ownershipNationalitiesChartUpdatedCallback)
+      .addDataPointSelectionCallback(this._ownershipNationalitiesChartDataPointSelectionCallback);
+
+    this.ownershipsCountChangeForDurationChartOptions
+      .addDataLabelsFormatter((val, opts) =>
+        this.appChartTypesService.dataLabelsFormatter({ val, opts }, { hasPrice: false })
+      )
+      .addAxisYFormatter((val, opts) => this.appChartTypesService.axisYFormatter({ val, opts }, { hasPrice: false }));
   }
+
+  private _ownershipNationalitiesChartUpdatedCallback = (chartContext: ChartContext, config: ChartConfig) => {
+    const hasData = (config.config.series?.[0]?.data as { x: number; y: number; id: number }[] | undefined)?.filter(
+      (item) => item.id
+    ).length;
+    if (!hasData) {
+      return;
+    }
+    if (this.isInitOwnershipNationalitiesChart) {
+      this.ownershipNationalitiesChart.first.toggleDataPointSelection(
+        0,
+        (chartContext.w.config.series[0].data as unknown as { index: number; id: number }[]).filter(
+          (item) => item.id === this.selectedNationalityId
+        )[0].index
+      );
+    }
+    console.log([chartContext, config]);
+  };
+
+  private _ownershipNationalitiesChartDataPointSelectionCallback = (
+    event: MouseEvent,
+    chartContext: ChartContext,
+    config: DataPointSelectionConfig
+  ) => {
+    if (config.selectedDataPoints[config.seriesIndex].length === 0) return;
+    if (event === null) this.isInitOwnershipNationalitiesChart = false;
+    this.updateOwnershipsCountChangeChartByNationalityForDuration(this.selectedDurationType);
+    console.log([event, chartContext, config]);
+  };
 }

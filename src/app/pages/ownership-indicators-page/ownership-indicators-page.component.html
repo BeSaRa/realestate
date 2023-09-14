@@ -115,7 +115,7 @@
           {{ lang.map.distribution_of_ownerships_according_to_nationality }}
         </h3>
       </div>
-      <div class="flex justify-center lg:justify-end gap-2 pe-10">
+      <div class="flex justify-center lg:justify-end gap-2">
         <app-button
           (click)="updateOwnershipChartNationalityCategory(NationalityCategories.QATARI)"
           [buttonStyle]="
@@ -155,6 +155,60 @@
           [tooltip]="ownershipNationalitiesChartOptions.tooltip!"
           [plotOptions]="ownershipNationalitiesChartOptions.plotOptions!"
           [title]="ownershipNationalitiesChartOptions.title!" />
+      </div>
+    </div>
+    <div class="p-16 flex flex-col">
+      <div class="flex justify-start">
+        <h3 *ngIf="selectedRoot" class="text-3xl mb-4 text-primary border-secondary font-semibold">
+          {{ lang.map.ownerships_count_change_for_nationality }}
+          ({{ lookupService.ownerNationalityMap[selectedNationalityId].getNames() }})
+        </h3>
+      </div>
+      <div class="flex justify-center lg:justify-end">
+        <div class="grid grid-cols-4 gap-2">
+          <app-button
+            (click)="updateOwnershipsCountChangeChartByNationalityForDuration(DurationTypes.YEARLY)"
+            [buttonStyle]="selectedDurationType === DurationTypes.YEARLY ? 'secondary' : 'secondary-outline'"
+            [isRounded]="true"
+            >{{ lang.map.yearly }}</app-button
+          >
+          <app-button
+            (click)="updateOwnershipsCountChangeChartByNationalityForDuration(DurationTypes.HALFY)"
+            [buttonStyle]="selectedDurationType === DurationTypes.HALFY ? 'secondary' : 'secondary-outline'"
+            [isRounded]="true"
+            >{{ lang.map.half_yearly }}</app-button
+          >
+          <app-button
+            (click)="updateOwnershipsCountChangeChartByNationalityForDuration(DurationTypes.QUARTERLY)"
+            [buttonStyle]="selectedDurationType === DurationTypes.QUARTERLY ? 'secondary' : 'secondary-outline'"
+            [isRounded]="true"
+            >{{ lang.map.quarter_yearly }}</app-button
+          >
+          <app-button
+            (click)="updateOwnershipsCountChangeChartByNationalityForDuration(DurationTypes.MONTHLY)"
+            [buttonStyle]="selectedDurationType === DurationTypes.MONTHLY ? 'secondary' : 'secondary-outline'"
+            [isRounded]="true"
+            >{{ lang.map.monthly }}</app-button
+          >
+        </div>
+      </div>
+
+      <div class="flex-auto" dir="ltr">
+        <apx-chart
+          #ownershipsCountChangeForDurationChart
+          [series]="ownershipsCountChangeForDurationChartOptions.series!"
+          [chart]="ownershipsCountChangeForDurationChartOptions.chart!"
+          [xaxis]="ownershipsCountChangeForDurationChartOptions.xaxis!"
+          [stroke]="ownershipsCountChangeForDurationChartOptions.stroke!"
+          [colors]="ownershipsCountChangeForDurationChartOptions.colors!"
+          [dataLabels]="ownershipsCountChangeForDurationChartOptions.dataLabels!"
+          [legend]="ownershipsCountChangeForDurationChartOptions.legend!"
+          [markers]="ownershipsCountChangeForDurationChartOptions.markers!"
+          [grid]="ownershipsCountChangeForDurationChartOptions.grid!"
+          [yaxis]="ownershipsCountChangeForDurationChartOptions.yaxis!"
+          [tooltip]="ownershipsCountChangeForDurationChartOptions.tooltip!"
+          [plotOptions]="ownershipsCountChangeForDurationChartOptions.plotOptions!"
+          [title]="ownershipsCountChangeForDurationChartOptions.title!" />
       </div>
     </div>
   </div>

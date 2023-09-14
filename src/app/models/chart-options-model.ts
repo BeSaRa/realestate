@@ -4,18 +4,37 @@ import { isArray } from '@utils/utils';
 import {
   ApexAxisChartSeries,
   ApexChart,
-  ApexXAxis,
-  ApexStroke,
   ApexDataLabels,
-  ApexMarkers,
-  ApexYAxis,
+  ApexFill,
   ApexGrid,
   ApexLegend,
+  ApexMarkers,
+  ApexPlotOptions,
+  ApexStroke,
   ApexTitleSubtitle,
   ApexTooltip,
-  ApexPlotOptions,
-  ApexFill,
+  ApexXAxis,
+  ApexYAxis,
 } from 'ng-apexcharts';
+
+export interface ChartContext {
+  w: {
+    config: Required<PartialChartOptions>;
+  };
+}
+
+export interface DataPointSelectionConfig {
+  dataPointIndex: number;
+  selectedDataPoints: number[][];
+  seriesIndex: number;
+  w: {
+    config: Required<PartialChartOptions>;
+  };
+}
+
+export interface ChartConfig {
+  config: Required<PartialChartOptions>;
+}
 
 export class ChartOptionsModel extends ClonerMixin(class {}) implements PartialChartOptions {
   series?: ApexAxisChartSeries;
@@ -57,6 +76,35 @@ export class ChartOptionsModel extends ClonerMixin(class {}) implements PartialC
 
   addLegendFormatter(formatter: (legendName: string, opts: any) => string) {
     this.legend = { ...this.legend, formatter };
+    return this;
+  }
+
+  addAnimationEndCallback(callback: (chartContext: any, options: any) => void) {
+    this.chart = {
+      ...(this.chart ?? {}),
+      type: this.chart?.type ?? 'bar',
+      events: { ...(this.chart?.events ?? {}), animationEnd: callback },
+    };
+    return this;
+  }
+
+  addUpdatedCallback(callback: (chartContext: ChartContext, config: ChartConfig) => void) {
+    this.chart = {
+      ...(this.chart ?? {}),
+      type: this.chart?.type ?? 'bar',
+      events: { ...(this.chart?.events ?? {}), updated: callback },
+    };
+    return this;
+  }
+
+  addDataPointSelectionCallback(
+    callback: (event: MouseEvent, chartContext: ChartContext, config: DataPointSelectionConfig) => void
+  ) {
+    this.chart = {
+      ...(this.chart ?? {}),
+      type: this.chart?.type ?? 'bar',
+      events: { ...(this.chart?.events ?? {}), dataPointSelection: callback },
+    };
     return this;
   }
 }

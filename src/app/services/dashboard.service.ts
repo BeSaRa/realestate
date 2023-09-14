@@ -6,10 +6,12 @@ import { ChartWithOppositePopupData } from '@contracts/chart-with-opposite-popup
 import { CriteriaContract } from '@contracts/criteria-contract';
 import { DurationDataContract } from '@contracts/duration-data-contract';
 import { MortgageCriteriaContract } from '@contracts/mortgage-criteria-contract';
+import { OwnerCriteriaContract } from '@contracts/owner-criteria-contract';
 import { RentCriteriaContract } from '@contracts/rent-criteria-contract';
 import { SellCriteriaContract } from '@contracts/sell-criteria-contract';
 import { ServiceContract } from '@contracts/service-contract';
 import { DurationEndpoints } from '@enums/durations';
+import { NationalityCategories } from '@enums/nationality-categories';
 import { RegisterServiceMixin } from '@mixins/register-service-mixin';
 import {
   CompositeTransaction,
@@ -22,6 +24,7 @@ import { KpiDurationModel } from '@models/kpi-duration-model';
 import { KpiModel } from '@models/kpi-model';
 import { KpiRoot } from '@models/kpiRoot';
 import { Lookup } from '@models/lookup';
+import { OwnershipCountNationality } from '@models/ownership-count-nationality';
 import { RentDefaultValues } from '@models/rent-default-values';
 import { RentTop10Model } from '@models/rent-top-10-model';
 import { RentTransaction } from '@models/rent-transaction';
@@ -35,12 +38,8 @@ import { UrlService } from '@services/url.service';
 import { chunks, minMaxAvg, range } from '@utils/utils';
 import { CastResponse } from 'cast-response';
 import { forkJoin, map, Observable } from 'rxjs';
-import { SellTransactionPurposePopupComponent } from '../popups/sell-transaction-purpose-popup/sell-transaction-purpose-popup.component';
 import { DialogService } from './dialog.service';
 import { TranslationService } from './translation.service';
-import { OwnerCriteriaContract } from '@contracts/owner-criteria-contract';
-import { OwnershipCountNationality } from '@models/ownership-count-nationality';
-import { NationalityCategories } from '@enums/nationality-categories';
 
 @Injectable({
   providedIn: 'root',
@@ -86,21 +85,21 @@ export class DashboardService extends RegisterServiceMixin(class {}) implements 
     return this.http.post<KpiModel[]>(kpi.secondSubUrl!, criteria);
   }
 
-  loadLineChartKpi(kpi: KpiRoot, criteria: Partial<CriteriaContract>): Observable<KpiModel[]> {
+  loadLineChartKpi(chartData: { chartDataUrl?: string }, criteria: Partial<CriteriaContract>): Observable<KpiModel[]> {
     // forkJoin([
     //   this.loadLineChartKpiForDuration(DurationEndpoints.HALFY, kpi, criteria),
     //   this.loadLineChartKpiForDuration(DurationEndpoints.RENT_QUARTERLY, kpi, criteria),
     //   this.loadLineChartKpiForDuration(DurationEndpoints.MONTHLY, kpi, criteria),
     // ]).subscribe(console.log);
-    return this.http.post<KpiModel[]>(kpi.lineChart!, criteria);
+    return this.http.post<KpiModel[]>(chartData.chartDataUrl!, criteria);
   }
 
   loadLineChartKpiForDuration(
     endPoint: DurationEndpoints,
-    kpi: KpiRoot,
+    chartData: { chartDataUrl?: string },
     criteria: Partial<CriteriaContract>
   ): Observable<KpiDurationModel[]> {
-    return this.http.post<KpiDurationModel[]>(kpi.lineChart! + '/' + endPoint, criteria);
+    return this.http.post<KpiDurationModel[]>(chartData.chartDataUrl! + '/' + endPoint, criteria);
   }
 
   @CastResponse(() => RentTransactionPurpose)
@@ -310,7 +309,7 @@ export class DashboardService extends RegisterServiceMixin(class {}) implements 
         ? ''
         : duration === DurationEndpoints.HALFY
         ? '/halfly'
-        : duration === DurationEndpoints.SELL_QUARTERLY
+        : duration === DurationEndpoints.QUARTERLY
         ? '/quartley'
         : duration === DurationEndpoints.MONTHLY
         ? '/monthly'

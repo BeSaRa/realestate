@@ -1,13 +1,12 @@
 import { Injectable, inject } from '@angular/core';
 import { PartialChartOptions } from '@app-types/partialChartOptions';
+import { PieChartOptions } from '@app-types/pie-chart-options';
+import { AppColors } from '@constants/app-colors';
 import { maskSeparator } from '@constants/mask-separator';
 import { MinMaxAvgContract } from '@contracts/min-max-avg-contract';
 import { formatNumber } from '@utils/utils';
 import { NgxMaskPipe } from 'ngx-mask';
 import { TranslationService } from './translation.service';
-import { PieChartOptions } from '@app-types/pie-chart-options';
-import { ApexYAxis } from 'ng-apexcharts';
-import { AppColors } from '@constants/app-colors';
 
 @Injectable({
   providedIn: 'root',
@@ -93,45 +92,6 @@ export class AppChartTypesService {
       if (value >= minMaxAvg.avg && value < minMaxAvg.max) return AppColors.SECONDARY;
       return AppColors.PRIMARY;
     };
-  }
-
-  addDataLabelsFormatter(
-    chartOptions: Partial<PartialChartOptions>,
-    formatter: (val: string | number | number[], opts?: any) => string | number
-  ) {
-    return (chartOptions = { ...chartOptions, dataLabels: { ...chartOptions.dataLabels, formatter } });
-  }
-
-  addAxisYFormatter(
-    chartOptions: Partial<PartialChartOptions>,
-    formatter: (val: number, opts?: any) => string | string[]
-  ) {
-    return (chartOptions = {
-      ...chartOptions,
-      yaxis: {
-        ...chartOptions.yaxis,
-        labels: {
-          ...(chartOptions.yaxis as ApexYAxis).labels,
-          formatter,
-        },
-      },
-    });
-  }
-
-  addAxisXFormatter(
-    chartOptions: Partial<PartialChartOptions>,
-    formatter: (val: string, timestamp?: number, opts?: any) => string | string[]
-  ) {
-    return (chartOptions = {
-      ...chartOptions,
-      xaxis: {
-        ...chartOptions.xaxis,
-        labels: {
-          ...(chartOptions.xaxis as ApexYAxis).labels,
-          formatter,
-        },
-      },
-    });
   }
 
   private _labelFormatter(val: string | number | number[], root?: { hasPrice: boolean }) {
