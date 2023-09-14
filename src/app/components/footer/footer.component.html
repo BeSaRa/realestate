@@ -22,7 +22,7 @@
   <div
     id="top-footer"
     [ngClass]="{ 'clipped-footer': !lang.isLtr, 'clipped-footer-ltr': lang.isLtr }"
-    class="px-10 pt-40 md:pt-32 xl:pt-16 h-[520px] md:h-[420px] xl:h-60 w-full bg-gradient-to-r ltr:bg-gradient-to-l from-primary/90 to-gray-800/90 absolute top-8 right-0 left-0 xl:flex grid auto-rows-min gap-8 grid-cols-12 items-center md:justify-between">
+    class="px-0 sm:px-10 pt-40 md:pt-32 xl:pt-16 h-[520px] md:h-[420px] xl:h-60 w-full bg-gradient-to-r ltr:bg-gradient-to-l from-primary/90 to-gray-800/90 absolute top-8 right-0 left-0 xl:flex grid auto-rows-min gap-8 grid-cols-12 items-center md:justify-between">
     <div class="col-span-5 md:col-span-6 flex xl:block justify-end md:justify-center xl:justify-start">
       <ul id="top-footer-menu" class="flex flex-col items-start">
         <li>
@@ -45,7 +45,7 @@
       id="follow-us"
       class="xl:order-last flex flex-col items-start md:items-center xl:items-start col-span-5 md:col-span-6">
       <p class="ps-2">{{ lang.map.follow_us }}</p>
-      <ul class="flex items-center" id="follow-us-menu">
+      <ul class="grid grid-cols-2 sm:grid-cols-4" id="follow-us-menu">
         <li>
           <app-icon-button icon="TWITTER"></app-icon-button>
         </li>
@@ -64,12 +64,12 @@
       <p class="mb-3">{{ lang.map.stay_informed_and_get_the_latest_developments }}</p>
       <ul class="flex gap-x-3">
         <li>
-          <a class="w-44 md:w-36 xl:w-32 block" (click)="$event.preventDefault()" href="#">
+          <a class="w-32 sm:w-44 md:w-36 xl:w-32 block" (click)="$event.preventDefault()" href="#">
             <img class="h-auto w-auto" ngSrc="assets/images/apple.png" height="90" width="303" alt="apple-app" />
           </a>
         </li>
         <li>
-          <a class="w-44 md:w-36 xl:w-32 block" (click)="$event.preventDefault()" href="#">
+          <a class="w-32 sm:w-44 md:w-36 xl:w-32 block" (click)="$event.preventDefault()" href="#">
             <img class="h-auto w-auto" ngSrc="assets/images/google.png" height="90" width="302" alt="apple-app" />
           </a>
         </li>
@@ -80,7 +80,7 @@
       <ul id="useful-links-menu" class="flex justify-center gap-x-3">
         <li class="bg-gradient-to-b from-white via-gray-300 to-white rounded-2xl p-2">
           <a
-            class="w-32 md:w-24 xl:w-32 h-full flex items-center justify-center"
+            class="w-20 sm:w-32 md:w-24 xl:w-32 h-full flex items-center justify-center"
             target="_blank"
             href="https://www.mme.gov.qa">
             <img class="h-auto w-auto" ngSrc="assets/images/mme.png" height="35" width="112" alt="MME site" />
@@ -88,7 +88,7 @@
         </li>
         <li class="bg-gradient-to-b from-white via-gray-300 to-white rounded-2xl p-2">
           <a
-            class="w-32 md:w-24 xl:w-32 h-full flex items-center justify-center"
+            class="w-20 sm:w-32 md:w-24 xl:w-32 h-full flex items-center justify-center"
             target="_blank"
             href="https://hukoomi.gov.qa">
             <img class="h-auto w-auto" ngSrc="assets/images/hukoomi.png" height="29" width="94" alt="hukoomi site" />
@@ -96,7 +96,7 @@
         </li>
         <li class="bg-gradient-to-b from-white via-gray-300 to-white rounded-2xl p-2">
           <a
-            class="w-32 md:w-24 xl:w-32 h-full flex items-center justify-center"
+            class="w-20 sm:w-32 md:w-24 xl:w-32 h-full flex items-center justify-center"
             target="_blank"
             href="https://www.dohaexpo2023.gov.qa">
             <img class="h-auto w-auto" ngSrc="assets/images/expo.png" height="40" width="71" alt="expo site" />
@@ -109,7 +109,7 @@
   <!-- top-footer-->
   <div
     id="bottom-footer"
-    class="xl:flex items-center text-sm xl:text-base xl:justify-between h-16 xl:h-12 absolute bottom-0 right-0 left-0 bg-[#666666] px-3 xl:px-10 w-full">
+    class="xl:flex items-center text-xs sm:text-sm xl:text-base xl:justify-between h-20 xl:h-12 absolute bottom-0 right-0 left-0 bg-[#666666] px-3 xl:px-10 w-full">
     <ul class="flex justify-center gap-x-3 divide-items">
       <li>
         <app-button buttonStyle="none">{{ lang.map.privacy_and_rights }}</app-button>
@@ -119,7 +119,7 @@
       </li>
     </ul>
     <div class="flex justify-center">
-      <span
+      <span class="text-center"
         >{{ lang.map.municipality_is_not_responsible_for_any_citation_from_the_site }} -
         {{ lang.map.all_rights_reserved_to_the_ministry_of_municipality }} © 2023</span
       >
