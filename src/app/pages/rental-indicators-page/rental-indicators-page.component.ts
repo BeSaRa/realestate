@@ -392,7 +392,7 @@ export default class RentalIndicatorsPageComponent implements OnInit {
 
     forkJoin([
       this.dashboardService.loadPurposeKpi(item, this.criteria.criteria),
-      this.dashboardService.loadLineChartKpi(item, this.criteria.criteria),
+      this.dashboardService.loadChartKpiData(item, this.criteria.criteria),
     ]).subscribe(([subKPI, lineChartData]) => {
       this.selectedRootChartData = lineChartData;
       const purpose = subKPI.reduce((acc, item) => {
@@ -485,7 +485,7 @@ export default class RentalIndicatorsPageComponent implements OnInit {
     this.adapter.setLocale(this.lang.getCurrent().code === 'ar-SA' ? 'ar-EG' : 'en-US');
     const months = this.adapter.getMonthNames('long');
     this.dashboardService
-      .loadLineChartKpiForDuration(DurationEndpoints.MONTHLY, this.selectedRoot!, this.criteria.criteria)
+      .loadChartKpiDataForDuration(DurationEndpoints.MONTHLY, this.selectedRoot!, this.criteria.criteria)
       .pipe(take(1))
       .subscribe((data) => {
         const _minMaxAvg = minMaxAvg(data.map((d) => d.kpiVal));
@@ -511,7 +511,7 @@ export default class RentalIndicatorsPageComponent implements OnInit {
 
   updateChartHalfyOrQuarterly() {
     this.dashboardService
-      .loadLineChartKpiForDuration(
+      .loadChartKpiDataForDuration(
         this.selectedDurationType === DurationEndpoints.HALFY ? DurationEndpoints.HALFY : DurationEndpoints.QUARTERLY,
         this.selectedRoot!,
         this.criteria.criteria

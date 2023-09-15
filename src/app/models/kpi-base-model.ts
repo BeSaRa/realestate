@@ -4,8 +4,5 @@ export class KpiBaseModel {
   kpiPreviousYear!: number;
   kpiYoYDifference!: number;
   kpiYoYVal!: number;
-  kpiBaseYear!: number;
-  issueBaseYear!: number;
-  kpiYoYBaseDifference!: number;
-  kpiYoYBaseVal!: number;
+  yoy!: number;
 }

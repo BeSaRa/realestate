@@ -19,7 +19,6 @@ import {
   SellCompositeTransaction,
 } from '@models/composite-transaction';
 import { FurnitureStatusKpi } from '@models/furniture-status-kpi';
-import { KpiBaseModel } from '@models/kpi-base-model';
 import { KpiDurationModel } from '@models/kpi-duration-model';
 import { KpiModel } from '@models/kpi-model';
 import { KpiRoot } from '@models/kpiRoot';
@@ -85,7 +84,7 @@ export class DashboardService extends RegisterServiceMixin(class {}) implements 
     return this.http.post<KpiModel[]>(kpi.secondSubUrl!, criteria);
   }
 
-  loadLineChartKpi(chartData: { chartDataUrl?: string }, criteria: Partial<CriteriaContract>): Observable<KpiModel[]> {
+  loadChartKpiData(chartData: { chartDataUrl?: string }, criteria: Partial<CriteriaContract>): Observable<KpiModel[]> {
     // forkJoin([
     //   this.loadLineChartKpiForDuration(DurationEndpoints.HALFY, kpi, criteria),
     //   this.loadLineChartKpiForDuration(DurationEndpoints.RENT_QUARTERLY, kpi, criteria),
@@ -94,7 +93,7 @@ export class DashboardService extends RegisterServiceMixin(class {}) implements 
     return this.http.post<KpiModel[]>(chartData.chartDataUrl!, criteria);
   }
 
-  loadLineChartKpiForDuration(
+  loadChartKpiDataForDuration(
     endPoint: DurationEndpoints,
     chartData: { chartDataUrl?: string },
     criteria: Partial<CriteriaContract>
@@ -275,9 +274,9 @@ export class DashboardService extends RegisterServiceMixin(class {}) implements 
   loadMortgageTransactionValueChart(
     criteria: Partial<MortgageCriteriaContract>,
     duration: DurationEndpoints = DurationEndpoints.YEARLY
-  ): Observable<Record<number, KpiBaseModel[]>> {
+  ): Observable<Record<number, KpiModel[]>> {
     return this.http
-      .post<KpiBaseModel[]>(this.getSelectedDurationString(this.urlService.URLS.MORT_KPI6, duration), criteria)
+      .post<KpiModel[]>(this.getSelectedDurationString(this.urlService.URLS.MORT_KPI6, duration), criteria)
       .pipe(
         map((values) => {
           return values.reduce((acc, item) => {
@@ -286,13 +285,13 @@ export class DashboardService extends RegisterServiceMixin(class {}) implements 
             }
             acc[item.issueYear].push(item);
             return { ...acc };
-          }, {} as Record<number, KpiBaseModel[]>);
+          }, {} as Record<number, KpiModel[]>);
         })
       );
   }
 
   @CastResponse(() => OwnershipCountNationality)
-  loadOwnershipCountNationality(
+  loadOwnershipsCountNationality(
     criteria: Partial<OwnerCriteriaContract>,
     nationalityCategory: NationalityCategories
   ): Observable<OwnershipCountNationality[]> {

@@ -131,6 +131,10 @@ const ownerEndpoints = {
   OWNER_KPI11_2: 'OWNER|kpi11_2/other/total-ownership-count',
   OWNER_KPI12: 'OWNER|kpi12/nationality/variance',
   OWNER_KPI12_1: 'OWNER|kpi12_1/nationality/variance',
+  OWNER_KPI13: 'OWNER|kpi13/ownership/municipality',
+  OWNER_KPI13_1: 'OWNER|kpi13_1/ownership/municipality',
+  OWNER_KPI14: 'OWNER|kpi14/ownership/area',
+  OWNER_KPI14_1: 'OWNER|kpi14_1/ownership/area',
 };
 
 export const EndPoints = {

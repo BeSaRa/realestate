@@ -144,26 +144,31 @@ export class LookupService extends RegisterServiceMixin(class {}) implements Ser
           this.rentMunicipalitiesMap = this._initializeMunicipalitiesMap(res[0]);
           this.sellMunicipalitiesMap = this._initializeMunicipalitiesMap(res[1]);
           this.mortMunicipalitiesMap = this._initializeMunicipalitiesMap(res[2]);
+          this.ownerMunicipalitiesMap = this._initializeMunicipalitiesMap(res[3]);
         }),
         tap((res) => {
           this.rentZonesMap = this._initializeZonesMap(res[0]);
           this.sellZonesMap = this._initializeZonesMap(res[1]);
           this.mortZonesMap = this._initializeZonesMap(res[2]);
+          this.ownerZonesMap = this._initializeZonesMap(res[3]);
         }),
         tap((res) => {
           this.rentPurposeMap = this._initializePurposeMap(res[0]);
           this.sellPurposeMap = this._initializePurposeMap(res[1]);
           this.mortPurposeMap = this._initializePurposeMap(res[2]);
+          this.ownerPurposeMap = this._initializePurposeMap(res[3]);
         }),
         tap((res) => {
           this.rentPropertyTypeMap = this._initializePropertyTypeMap(res[0]);
           this.sellPropertyTypeMap = this._initializePropertyTypeMap(res[1]);
           this.mortPropertyTypeMap = this._initializePropertyTypeMap(res[2]);
+          this.ownerPropertyTypeMap = this._initializePropertyTypeMap(res[3]);
         }),
         tap((res) => {
           this.rentDistrictMap = this._initializeDistrictMap(res[0]);
           this.sellDistrictMap = this._initializeDistrictMap(res[1]);
           this.mortDistrictMap = this._initializeDistrictMap(res[2]);
+          this.ownerDistrictMap = this._initializeDistrictMap(res[3]);
         }),
         tap((res) => {
           this.rentFurnitureMap = this._initializeFurnitureStatusMap(res[0]);
