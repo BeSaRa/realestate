@@ -215,8 +215,12 @@ export interface LangKeysContract {
   total_number_of_ownerships: string;
   ownership_transactions_measuring_dashboard: string;
   distribution_of_ownerships_according_to_nationality: string;
+  ownerships_count: string;
   qatari: string;
   gulf_cooperation_council_countries: string;
   other_nationalities: string;
   ownerships_count_change_for_nationality: string;
+  ownerships_count_per_municipality: string;
+  ownerships_count_per_area: string;
+  and_municipality: string;
 }

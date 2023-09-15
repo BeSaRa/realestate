@@ -1,12 +1,8 @@
 import { TransactionType } from '@enums/transaction-type';
+import { KpiBaseModel } from './kpi-base-model';
 
-export class KpiModel {
+export class KpiModel extends KpiBaseModel {
   actionType!: TransactionType;
-  issueYear!: number;
-  kpiPreviousYear!: number;
-  kpiVal!: number;
-  kpiYoYDifference!: number;
-  kpiYoYVal!: number;
 
   issueBaseYear!: number;
   kpi2BaseYear!: number;

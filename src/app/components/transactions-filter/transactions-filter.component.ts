@@ -495,10 +495,6 @@ export class TransactionsFilterComponent implements OnInit, OnDestroy {
       }
     }
 
-    if (this.isMort()) {
-      delete value.zoneId;
-    }
-
     this.fromChanged.emit({ criteria: value as CriteriaContract, type: criteriaType });
     this.enableChangeAreaMinMaxValues.emit(this._enableChangeAreaMinMaxValues(this.form.value));
     this.enableChangerealEstateValueMinMaxValues.emit(this._enableChangeRealestateValueMinMaxValues(this.form.value));
@@ -523,7 +519,6 @@ export class TransactionsFilterComponent implements OnInit, OnDestroy {
     if (this.indicatorType === 'sell') {
       delete value.rentPaymentMonthlyPerUnitFrom;
       delete value.rentPaymentMonthlyPerUnitTo;
-      delete value.zoneId;
 
       if (!this.filteredAreas.find((i) => i.lookupKey === this.areaCode.value)) {
         this.areaCode.patchValue(-1, { emitEvent: false });
@@ -539,6 +534,9 @@ export class TransactionsFilterComponent implements OnInit, OnDestroy {
         this.zoneId.patchValue(-1, { emitEvent: false });
         value.zoneId = -1;
       }
+    }
+    if (this.isMort() || this.isSell() || this.isOwner()) {
+      delete value.zoneId;
     }
     Object.keys(value).forEach((key) => {
       if (typeof value[key] === 'string' && value[key] === '') delete value[key];

@@ -111,13 +111,13 @@
     </div>
     <div class="px-16 flex flex-col">
       <div class="flex justify-start">
-        <h3 *ngIf="selectedRoot" class="text-3xl mb-4 text-primary border-secondary font-semibold">
+        <h3 class="text-3xl mb-4 text-primary border-secondary font-semibold">
           {{ lang.map.distribution_of_ownerships_according_to_nationality }}
         </h3>
       </div>
       <div class="flex justify-center lg:justify-end gap-2">
         <app-button
-          (click)="updateOwnershipChartNationalityCategory(NationalityCategories.QATARI)"
+          (click)="updateNationalitiesChartData(NationalityCategories.QATARI)"
           [buttonStyle]="
             selectedNationalityCategory === NationalityCategories.QATARI ? 'secondary' : 'secondary-outline'
           "
@@ -125,13 +125,13 @@
           >{{ lang.map.qatari }}</app-button
         >
         <app-button
-          (click)="updateOwnershipChartNationalityCategory(NationalityCategories.GCC)"
+          (click)="updateNationalitiesChartData(NationalityCategories.GCC)"
           [buttonStyle]="selectedNationalityCategory === NationalityCategories.GCC ? 'secondary' : 'secondary-outline'"
           [isRounded]="true"
           >{{ lang.map.gulf_cooperation_council_countries }}</app-button
         >
         <app-button
-          (click)="updateOwnershipChartNationalityCategory(NationalityCategories.OTHER)"
+          (click)="updateNationalitiesChartData(NationalityCategories.OTHER)"
           [buttonStyle]="
             selectedNationalityCategory === NationalityCategories.OTHER ? 'secondary' : 'secondary-outline'
           "
@@ -141,25 +141,25 @@
       </div>
       <div dir="ltr">
         <apx-chart
-          #ownershipNationalitiesChart
-          [series]="ownershipNationalitiesChartOptions.series!"
-          [chart]="ownershipNationalitiesChartOptions.chart!"
-          [xaxis]="ownershipNationalitiesChartOptions.xaxis!"
-          [stroke]="ownershipNationalitiesChartOptions.stroke!"
-          [colors]="ownershipNationalitiesChartOptions.colors!"
-          [dataLabels]="ownershipNationalitiesChartOptions.dataLabels!"
-          [legend]="ownershipNationalitiesChartOptions.legend!"
-          [markers]="ownershipNationalitiesChartOptions.markers!"
-          [grid]="ownershipNationalitiesChartOptions.grid!"
-          [yaxis]="ownershipNationalitiesChartOptions.yaxis!"
-          [tooltip]="ownershipNationalitiesChartOptions.tooltip!"
-          [plotOptions]="ownershipNationalitiesChartOptions.plotOptions!"
-          [title]="ownershipNationalitiesChartOptions.title!" />
+          #nationalitiesChart
+          [series]="nationalitiesChartOptions.series!"
+          [chart]="nationalitiesChartOptions.chart!"
+          [xaxis]="nationalitiesChartOptions.xaxis!"
+          [stroke]="nationalitiesChartOptions.stroke!"
+          [colors]="nationalitiesChartOptions.colors!"
+          [dataLabels]="nationalitiesChartOptions.dataLabels!"
+          [legend]="nationalitiesChartOptions.legend!"
+          [markers]="nationalitiesChartOptions.markers!"
+          [grid]="nationalitiesChartOptions.grid!"
+          [yaxis]="nationalitiesChartOptions.yaxis!"
+          [tooltip]="nationalitiesChartOptions.tooltip!"
+          [plotOptions]="nationalitiesChartOptions.plotOptions!"
+          [title]="nationalitiesChartOptions.title!" />
       </div>
     </div>
-    <div class="p-16 flex flex-col">
+    <div class="px-16 flex flex-col">
       <div class="flex justify-start">
-        <h3 *ngIf="selectedRoot" class="text-3xl mb-4 text-primary border-secondary font-semibold">
+        <h3 class="text-3xl mb-4 text-primary border-secondary font-semibold">
           {{ lang.map.ownerships_count_change_for_nationality }}
           ({{ lookupService.ownerNationalityMap[selectedNationalityId].getNames() }})
         </h3>
@@ -167,25 +167,25 @@
       <div class="flex justify-center lg:justify-end">
         <div class="grid grid-cols-4 gap-2">
           <app-button
-            (click)="updateOwnershipsCountChangeChartByNationalityForDuration(DurationTypes.YEARLY)"
+            (click)="updateDurationsChartData(DurationTypes.YEARLY)"
             [buttonStyle]="selectedDurationType === DurationTypes.YEARLY ? 'secondary' : 'secondary-outline'"
             [isRounded]="true"
             >{{ lang.map.yearly }}</app-button
           >
           <app-button
-            (click)="updateOwnershipsCountChangeChartByNationalityForDuration(DurationTypes.HALFY)"
+            (click)="updateDurationsChartData(DurationTypes.HALFY)"
             [buttonStyle]="selectedDurationType === DurationTypes.HALFY ? 'secondary' : 'secondary-outline'"
             [isRounded]="true"
             >{{ lang.map.half_yearly }}</app-button
           >
           <app-button
-            (click)="updateOwnershipsCountChangeChartByNationalityForDuration(DurationTypes.QUARTERLY)"
+            (click)="updateDurationsChartData(DurationTypes.QUARTERLY)"
             [buttonStyle]="selectedDurationType === DurationTypes.QUARTERLY ? 'secondary' : 'secondary-outline'"
             [isRounded]="true"
             >{{ lang.map.quarter_yearly }}</app-button
           >
           <app-button
-            (click)="updateOwnershipsCountChangeChartByNationalityForDuration(DurationTypes.MONTHLY)"
+            (click)="updateDurationsChartData(DurationTypes.MONTHLY)"
             [buttonStyle]="selectedDurationType === DurationTypes.MONTHLY ? 'secondary' : 'secondary-outline'"
             [isRounded]="true"
             >{{ lang.map.monthly }}</app-button
@@ -195,20 +195,75 @@
 
       <div class="flex-auto" dir="ltr">
         <apx-chart
-          #ownershipsCountChangeForDurationChart
-          [series]="ownershipsCountChangeForDurationChartOptions.series!"
-          [chart]="ownershipsCountChangeForDurationChartOptions.chart!"
-          [xaxis]="ownershipsCountChangeForDurationChartOptions.xaxis!"
-          [stroke]="ownershipsCountChangeForDurationChartOptions.stroke!"
-          [colors]="ownershipsCountChangeForDurationChartOptions.colors!"
-          [dataLabels]="ownershipsCountChangeForDurationChartOptions.dataLabels!"
-          [legend]="ownershipsCountChangeForDurationChartOptions.legend!"
-          [markers]="ownershipsCountChangeForDurationChartOptions.markers!"
-          [grid]="ownershipsCountChangeForDurationChartOptions.grid!"
-          [yaxis]="ownershipsCountChangeForDurationChartOptions.yaxis!"
-          [tooltip]="ownershipsCountChangeForDurationChartOptions.tooltip!"
-          [plotOptions]="ownershipsCountChangeForDurationChartOptions.plotOptions!"
-          [title]="ownershipsCountChangeForDurationChartOptions.title!" />
+          #durationsChart
+          [series]="durationsChartOptions.series!"
+          [chart]="durationsChartOptions.chart!"
+          [xaxis]="durationsChartOptions.xaxis!"
+          [stroke]="durationsChartOptions.stroke!"
+          [colors]="durationsChartOptions.colors!"
+          [dataLabels]="durationsChartOptions.dataLabels!"
+          [legend]="durationsChartOptions.legend!"
+          [markers]="durationsChartOptions.markers!"
+          [grid]="durationsChartOptions.grid!"
+          [yaxis]="durationsChartOptions.yaxis!"
+          [tooltip]="durationsChartOptions.tooltip!"
+          [plotOptions]="durationsChartOptions.plotOptions!"
+          [title]="durationsChartOptions.title!" />
+      </div>
+    </div>
+    <div class="px-16 flex flex-col">
+      <div class="flex justify-start">
+        <h3 class="text-3xl mb-4 text-primary border-secondary font-semibold">
+          {{ lang.map.ownerships_count_per_municipality }}
+          ({{ lookupService.ownerNationalityMap[selectedNationalityId].getNames() }})
+        </h3>
+      </div>
+
+      <div class="flex-auto" dir="ltr">
+        <apx-chart
+          #municipalitiesChart
+          [series]="municipalitiesChartOptions.series!"
+          [chart]="municipalitiesChartOptions.chart!"
+          [xaxis]="municipalitiesChartOptions.xaxis!"
+          [stroke]="municipalitiesChartOptions.stroke!"
+          [colors]="municipalitiesChartOptions.colors!"
+          [dataLabels]="municipalitiesChartOptions.dataLabels!"
+          [legend]="municipalitiesChartOptions.legend!"
+          [markers]="municipalitiesChartOptions.markers!"
+          [grid]="municipalitiesChartOptions.grid!"
+          [yaxis]="municipalitiesChartOptions.yaxis!"
+          [tooltip]="municipalitiesChartOptions.tooltip!"
+          [plotOptions]="municipalitiesChartOptions.plotOptions!"
+          [title]="municipalitiesChartOptions.title!" />
+      </div>
+    </div>
+    <div class="px-16 flex flex-col">
+      <div class="flex justify-start">
+        <h3 class="text-3xl mb-4 text-primary border-secondary font-semibold">
+          {{ lang.map.ownerships_count_per_area }}
+          ({{ lookupService.ownerNationalityMap[selectedNationalityId].getNames() }})
+          {{ lang.map.and_municipality }} ({{
+            lookupService.ownerMunicipalitiesMap[selectedMunicipalityId].getNames()
+          }})
+        </h3>
+      </div>
+
+      <div class="flex-auto" dir="ltr">
+        <apx-chart
+          #areasChart
+          [series]="areasChartOptions.series!"
+          [chart]="areasChartOptions.chart!"
+          [xaxis]="areasChartOptions.xaxis!"
+          [stroke]="areasChartOptions.stroke!"
+          [colors]="areasChartOptions.colors!"
+          [dataLabels]="areasChartOptions.dataLabels!"
+          [legend]="areasChartOptions.legend!"
+          [markers]="areasChartOptions.markers!"
+          [grid]="areasChartOptions.grid!"
+          [yaxis]="areasChartOptions.yaxis!"
+          [tooltip]="areasChartOptions.tooltip!"
+          [plotOptions]="areasChartOptions.plotOptions!"
+          [title]="areasChartOptions.title!" />
       </div>
     </div>
   </div>

@@ -20,8 +20,6 @@ import { ChartConfig, ChartContext, ChartOptionsModel, DataPointSelectionConfig 
 import { KpiModel } from '@models/kpi-model';
 import { KpiRoot } from '@models/kpiRoot';
 import { Lookup } from '@models/lookup';
-import { OwnerDefaultValues } from '@models/owner-default-values';
-import { OwnershipCountNationality } from '@models/ownership-count-nationality';
 import { FormatNumbersPipe } from '@pipes/format-numbers.pipe';
 import { AppChartTypesService } from '@services/app-chart-types.service';
 import { DashboardService } from '@services/dashboard.service';
@@ -33,7 +31,7 @@ import { minMaxAvg } from '@utils/utils';
 import { CarouselComponent, IvyCarouselModule } from 'angular-responsive-carousel2';
 import { ChartComponent, NgApexchartsModule } from 'ng-apexcharts';
 import { NgxMaskPipe } from 'ngx-mask';
-import { Subject, forkJoin, map, take, takeUntil } from 'rxjs';
+import { Subject, map, take, takeUntil } from 'rxjs';
 
 @Component({
   selector: 'app-owner-page',
@@ -49,15 +47,9 @@ import { Subject, forkJoin, map, take, takeUntil } from 'rxjs';
     ButtonComponent,
     IconButtonComponent,
     NgApexchartsModule,
-    // TableComponent,
-    // TableColumnTemplateDirective,
-    // TableColumnHeaderTemplateDirective,
-    // TableColumnCellTemplateDirective,
-    // MatTableModule,
     FormatNumbersPipe,
     YoyIndicatorComponent,
     NgxMaskPipe,
-    // MatSortModule,
     MatNativeDateModule,
   ],
   templateUrl: './ownership-indicators-page.component.html',
@@ -65,9 +57,10 @@ import { Subject, forkJoin, map, take, takeUntil } from 'rxjs';
 })
 export default class OwnershipIndicatorsPageComponent implements OnInit, AfterViewInit {
   @ViewChildren('carousel') carousel!: QueryList<CarouselComponent>;
-  @ViewChildren('ownershipNationalitiesChart') ownershipNationalitiesChart!: QueryList<ChartComponent>;
-  @ViewChildren('ownershipsCountChangeForDurationChart')
-  ownershipsCountChangeForDurationChart!: QueryList<ChartComponent>;
+  @ViewChildren('nationalitiesChart') nationalitiesChart!: QueryList<ChartComponent>;
+  @ViewChildren('durationsChart') durationsChart!: QueryList<ChartComponent>;
+  @ViewChildren('municipalitiesChart') municipalitiesChart!: QueryList<ChartComponent>;
+  @ViewChildren('areasChart') areasChart!: QueryList<ChartComponent>;
 
   lang = inject(TranslationService);
   dashboardService = inject(DashboardService);
@@ -95,11 +88,8 @@ export default class OwnershipIndicatorsPageComponent implements OnInit, AfterVi
     type: CriteriaType;
   };
 
-  NationalityCategories = NationalityCategories;
-  selectedNationalityCategory = NationalityCategories.QATARI;
-
-  selectedDurationType = DurationEndpoints.YEARLY;
   protected readonly DurationTypes = DurationEndpoints;
+  protected readonly ChartType = ChartType;
 
   rootKPIS = [
     new KpiRoot(
@@ -155,21 +145,39 @@ export default class OwnershipIndicatorsPageComponent implements OnInit, AfterVi
 
   selectedTab = 'ownership_indicators';
 
-  ownershipNationalitiesChartData: OwnershipCountNationality[] = [];
-  ownershipNationalitiesChartOptions: ChartOptionsModel = new ChartOptionsModel().clone<ChartOptionsModel>({
+  NationalityCategories = NationalityCategories;
+  selectedNationalityCategory = NationalityCategories.QATARI;
+  isOnInitNationalitiesChart = true;
+  selectedNationalityId = 634;
+
+  nationalitiesChartOptions: ChartOptionsModel = new ChartOptionsModel().clone<ChartOptionsModel>({
     ...this.appChartTypesService.mainChartOptions,
     ...this.appChartTypesService.yearlyStaticChartOptions,
     chart: { ...this.appChartTypesService.mainChartOptions.chart, type: 'bar' },
   });
 
-  isInitOwnershipNationalitiesChart = true;
-  selectedNationalityId = 634;
+  selectedDurationType = DurationEndpoints.YEARLY;
+  selectedDurationsChartType: ChartType = ChartType.LINE;
 
-  ownershipsCountChangeForDurationChartOptions = new ChartOptionsModel().clone<ChartOptionsModel>(
-    this.appChartTypesService.mainChartOptions
-  );
-  selectedOwnershipsCountChangeForDurationChartType: ChartType = ChartType.LINE;
-  protected readonly ChartType = ChartType;
+  durationsChartOptions = new ChartOptionsModel().clone<ChartOptionsModel>({
+    ...this.appChartTypesService.mainChartOptions,
+    chart: { ...this.appChartTypesService.mainChartOptions.chart, type: 'bar' },
+  });
+
+  isOnInitMunicipaliteisChart = true;
+  selectedMunicipalityId = 1;
+
+  municipalitiesChartOptions = new ChartOptionsModel().clone<ChartOptionsModel>({
+    ...this.appChartTypesService.mainChartOptions,
+    ...this.appChartTypesService.yearlyStaticChartOptions,
+    chart: { ...this.appChartTypesService.mainChartOptions.chart, type: 'bar' },
+  });
+
+  areasChartOptions = new ChartOptionsModel().clone<ChartOptionsModel>({
+    ...this.appChartTypesService.mainChartOptions,
+    ...this.appChartTypesService.yearlyStaticChartOptions,
+    chart: { ...this.appChartTypesService.mainChartOptions.chart, type: 'bar' },
+  });
 
   ngOnInit(): void {}
 
@@ -195,14 +203,6 @@ export default class OwnershipIndicatorsPageComponent implements OnInit, AfterVi
   filterChange({ criteria, type }: { criteria: CriteriaContract; type: CriteriaType }) {
     this.criteria = { criteria, type };
     if (type === CriteriaType.DEFAULT) this.rootItemSelected(this.rootKPIS[0]);
-    // if (type === CriteriaType.DEFAULT) {
-    //   // load default
-    //   // this.dashboardService.loadOwnerDefaults(criteria as Partial<OwnerCriteriaContract>).subscribe((result) => {
-    //   //   this.setDefaultRoots(result[0]);
-    //   this.rootItemSelected(this.rootKPIS[0]);
-    //   //   // this.selectTop10Chart(this.selectedTop10);
-    //   // });
-    // } else {
     this.rootKPIS.map((item) => {
       this.dashboardService
         .loadKpiRoot(item, this.criteria.criteria)
@@ -233,31 +233,11 @@ export default class OwnershipIndicatorsPageComponent implements OnInit, AfterVi
 
     this.rootItemSelected(this.selectedRoot);
     setTimeout(() => {
-      this.updateOwnershipChartNationalityCategory(this.selectedNationalityCategory);
+      this.updateNationalitiesChartData(this.selectedNationalityCategory);
+      this.updateDurationsChartData(this.selectedDurationType);
+      this.updateMunicipalitiesChartData();
+      this.updateAreasChartData();
     }, 0);
-    // this.selectTop10Chart(this.selectedTop10);
-    // }
-    // this.loadTransactions();
-    // this.loadTransactionsBasedOnPurpose();
-    // this.loadCompositeTransactions();
-    // this.loadRoomCounts();
-  }
-
-  private setDefaultRoots(ownerDefaultValue?: OwnerDefaultValues) {
-    if (!ownerDefaultValue) {
-      this.rootKPIS.forEach((item) => {
-        item.setValue(0);
-        item.setYoy(0);
-      });
-    } else {
-      this.rootKPIS.forEach((item) => {
-        const value = `kpi${item.id}Val`;
-        const yoy = `kpiYoY${item.id}`;
-        item.setValue(ownerDefaultValue[value as keyof OwnerDefaultValues]);
-        item.setYear(ownerDefaultValue.issueYear);
-        item.setYoy(ownerDefaultValue[yoy as keyof OwnerDefaultValues]);
-      });
-    }
   }
 
   rootItemSelected(item?: KpiRoot) {
@@ -267,11 +247,7 @@ export default class OwnershipIndicatorsPageComponent implements OnInit, AfterVi
       item !== i ? (i.selected = false) : (item.selected = true);
     });
 
-    forkJoin([
-      this.dashboardService.loadPurposeKpi(item, this.criteria.criteria),
-      // this.dashboardService.loadLineChartKpi(item, this.criteria.criteria),
-    ]).subscribe(([subKPI /*lineChartData*/]) => {
-      // this.selectedRootChartData = lineChartData;
+    this.dashboardService.loadPurposeKpi(item, this.criteria.criteria).subscribe((subKPI) => {
       const purpose = subKPI.reduce((acc, item) => {
         return { ...acc, [item.purposeId]: item };
       }, {} as Record<number, KpiModel>);
@@ -287,8 +263,6 @@ export default class OwnershipIndicatorsPageComponent implements OnInit, AfterVi
       });
       this.selectedRoot && this.updateAllPurpose(this.selectedRoot.value, this.selectedRoot.yoy);
       this.selectedPurpose && this.purposeSelected(this.selectedPurpose);
-      // this.updateChartDuration(this.selectedDurationType);
-      // this.updateTop10Chart();
     });
   }
 
@@ -331,24 +305,23 @@ export default class OwnershipIndicatorsPageComponent implements OnInit, AfterVi
     this.carousel.first.cellsToScroll = 1;
   }
 
-  updateOwnershipChartNationalityCategory(nationalityCategory: NationalityCategories) {
+  updateNationalitiesChartData(nationalityCategory: NationalityCategories) {
+    if (!this.nationalitiesChart?.length) return;
     this.selectedNationalityCategory = nationalityCategory;
-    if (!this.ownershipNationalitiesChart?.length) return;
     const _criteria = { ...this.criteria.criteria } as OwnerCriteriaContract;
     delete (_criteria as any).nationalityCode;
 
     this.dashboardService
-      .loadOwnershipCountNationality(_criteria, nationalityCategory)
+      .loadOwnershipsCountNationality(_criteria, nationalityCategory)
       .pipe(take(1))
       .subscribe((data) => {
-        this.ownershipNationalitiesChartData = data;
-        const _minMaxAvg = minMaxAvg(this.ownershipNationalitiesChartData.map((item) => item.kpiVal));
-        this.ownershipNationalitiesChart.first
+        const _minMaxAvg = minMaxAvg(data.map((item) => item.kpiVal));
+        this.nationalitiesChart.first
           .updateOptions({
             series: [
               {
-                name: this.lang.map.distribution_of_ownerships_according_to_nationality,
-                data: this.ownershipNationalitiesChartData.map((item, index) => ({
+                name: this.lang.map.ownerships_count,
+                data: data.map((item, index) => ({
                   x: (item.nationalityInfo && item.nationalityInfo.getNames()) || '',
                   y: item.kpiVal,
                   id: item.nationalityId,
@@ -363,35 +336,30 @@ export default class OwnershipIndicatorsPageComponent implements OnInit, AfterVi
       });
   }
 
-  updateOwnershipsCountChangeChartByNationalityForDuration(durationType: DurationEndpoints) {
-    if (!this.ownershipsCountChangeForDurationChart.length) return;
+  updateDurationsChartData(durationType: DurationEndpoints) {
+    if (!this.durationsChart.length) return;
     this.selectedDurationType = durationType;
     const _criteria = {
       ...this.criteria.criteria,
       nationalityCode: this.selectedNationalityId,
     } as OwnerCriteriaContract;
-    if (this.selectedDurationType === DurationEndpoints.YEARLY) this.updateOwnershipsCountChangeChartYearly(_criteria);
-    else if (this.selectedDurationType === DurationEndpoints.MONTHLY)
-      this.updateOwnershipsCountChangeChartMonthly(_criteria);
-    else this.updateOwnershipsCountChangeChartHalfyOrQuarterly(_criteria);
+    if (this.selectedDurationType === DurationEndpoints.YEARLY) this.updateDurationsChartDataYearly(_criteria);
+    else if (this.selectedDurationType === DurationEndpoints.MONTHLY) this.updateDurationsChartDataMonthly(_criteria);
+    else this.updateDurationsChartDataHalfyOrQuarterly(_criteria);
   }
 
-  updateOwnershipsCountChangeChartYearly(criteria: OwnerCriteriaContract) {
+  updateDurationsChartDataYearly(criteria: OwnerCriteriaContract) {
     this.dashboardService
-      .loadLineChartKpi({ chartDataUrl: this.urlService.URLS.OWNER_KPI12_1 }, criteria)
+      .loadChartKpiData({ chartDataUrl: this.urlService.URLS.OWNER_KPI12_1 }, criteria)
       .pipe(take(1))
       .subscribe((data) => {
         const _minMaxAvg = minMaxAvg(data.map((item) => item.kpiVal));
 
-        this.ownershipsCountChangeForDurationChart.first
+        this.durationsChart.first
           .updateOptions({
             series: [
               {
-                name:
-                  this.lang.map.ownerships_count_change_for_nationality +
-                  ' (' +
-                  this.lookupService.ownerNationalityMap[this.selectedNationalityId].getNames() +
-                  ')',
+                name: this.lang.map.ownerships_count,
                 data: data.map((item) => item.kpiVal),
               },
             ],
@@ -402,15 +370,14 @@ export default class OwnershipIndicatorsPageComponent implements OnInit, AfterVi
             ...this.appChartTypesService.yearlyStaticChartOptions,
           })
           .then();
-        this.updateOwnershipCountChangeChartType(ChartType.BAR);
       });
   }
 
-  updateOwnershipsCountChangeChartMonthly(criteria: OwnerCriteriaContract) {
+  updateDurationsChartDataMonthly(criteria: OwnerCriteriaContract) {
     this.adapter.setLocale(this.lang.getCurrent().code === 'ar-SA' ? 'ar-EG' : 'en-US');
     const months = this.adapter.getMonthNames('long');
     this.dashboardService
-      .loadLineChartKpiForDuration(
+      .loadChartKpiDataForDuration(
         DurationEndpoints.MONTHLY,
         { chartDataUrl: this.urlService.URLS.OWNER_KPI12_1 },
         criteria
@@ -419,15 +386,11 @@ export default class OwnershipIndicatorsPageComponent implements OnInit, AfterVi
       .subscribe((data) => {
         data.sort((a, b) => a.issuePeriod - b.issuePeriod);
         const _minMaxAvg = minMaxAvg(data.map((d) => d.kpiVal));
-        this.ownershipsCountChangeForDurationChart.first
+        this.durationsChart.first
           .updateOptions({
             series: [
               {
-                name:
-                  this.lang.map.ownerships_count_change_for_nationality +
-                  ' (' +
-                  this.lookupService.ownerNationalityMap[this.selectedNationalityId].getNames() +
-                  ')',
+                name: this.lang.map.ownerships_count,
                 data: data.map((item) => {
                   return {
                     y: item.kpiVal,
@@ -443,9 +406,9 @@ export default class OwnershipIndicatorsPageComponent implements OnInit, AfterVi
       });
   }
 
-  updateOwnershipsCountChangeChartHalfyOrQuarterly(criteria: OwnerCriteriaContract) {
+  updateDurationsChartDataHalfyOrQuarterly(criteria: OwnerCriteriaContract) {
     this.dashboardService
-      .loadLineChartKpiForDuration(
+      .loadChartKpiDataForDuration(
         this.selectedDurationType === DurationEndpoints.HALFY ? DurationEndpoints.HALFY : DurationEndpoints.QUARTERLY,
         { chartDataUrl: this.urlService.URLS.OWNER_KPI12_1 },
         criteria
@@ -456,8 +419,8 @@ export default class OwnershipIndicatorsPageComponent implements OnInit, AfterVi
           return this.dashboardService.mapDurationData(
             durationData,
             this.selectedDurationType === DurationEndpoints.HALFY
-              ? this.lookupService.sellLookups.halfYearDurations
-              : this.lookupService.sellLookups.quarterYearDurations
+              ? this.lookupService.ownerLookups.halfYearDurations
+              : this.lookupService.ownerLookups.quarterYearDurations
           );
         })
       )
@@ -466,7 +429,7 @@ export default class OwnershipIndicatorsPageComponent implements OnInit, AfterVi
           name: data[key as unknown as number].period.getNames(),
           data: data[key as unknown as number].kpiValues.map((item) => item.value),
         }));
-        this.ownershipsCountChangeForDurationChart.first
+        this.durationsChart.first
           .updateOptions({
             series: _chartData,
             xaxis: {
@@ -478,9 +441,76 @@ export default class OwnershipIndicatorsPageComponent implements OnInit, AfterVi
       });
   }
 
-  updateOwnershipCountChangeChartType(type: ChartType) {
-    this.ownershipsCountChangeForDurationChart.first.updateOptions({ chart: { type: type } }).then();
-    this.selectedOwnershipsCountChangeForDurationChartType = type;
+  updateDurationsChartType(type: ChartType) {
+    this.durationsChart.first.updateOptions({ chart: { type: type } }).then();
+    this.selectedDurationsChartType = type;
+  }
+
+  updateMunicipalitiesChartData() {
+    const _criteria = {
+      ...this.criteria.criteria,
+      nationalityCode: this.selectedNationalityId,
+    } as OwnerCriteriaContract;
+    delete (_criteria as any).municipalityId;
+    this.dashboardService
+      .loadChartKpiData({ chartDataUrl: this.urlService.URLS.OWNER_KPI13_1 }, _criteria)
+      .pipe(take(1))
+      .pipe(map((data) => data as unknown as (KpiModel & { municipalityId: number })[]))
+      .subscribe((data) => {
+        const _minMaxAvg = minMaxAvg(data.map((item) => item.kpiVal));
+
+        this.municipalitiesChart.first
+          .updateOptions({
+            series: [
+              {
+                name: this.lang.map.ownerships_count,
+                data: data.map((item, index) => ({
+                  x: this.lookupService.ownerMunicipalitiesMap[item.municipalityId].getNames() || '',
+                  y: item.kpiVal,
+                  id: item.municipalityId,
+                  index,
+                })),
+              },
+            ],
+            colors: [this.appChartTypesService.chartColorsFormatter(_minMaxAvg)],
+            ...this.appChartTypesService.yearlyStaticChartOptions,
+          })
+          .then();
+      });
+  }
+
+  updateAreasChartData() {
+    const _criteria = {
+      ...this.criteria.criteria,
+      nationalityCode: this.selectedNationalityId,
+      municipalityId: this.selectedMunicipalityId,
+    } as OwnerCriteriaContract;
+    delete (_criteria as any).areaCode;
+    this.dashboardService
+      .loadChartKpiData({ chartDataUrl: this.urlService.URLS.OWNER_KPI14_1 }, _criteria)
+      .pipe(take(1))
+      .pipe(map((data) => data as unknown as (KpiModel & { areaCode: number })[]))
+      .subscribe((data) => {
+        const _minMaxAvg = minMaxAvg(data.map((item) => item.kpiVal));
+
+        this.areasChart.first
+          .updateOptions({
+            series: [
+              {
+                name: this.lang.map.ownerships_count,
+                data: data.map((item, index) => ({
+                  x: this.lookupService.ownerDistrictMap[item.areaCode].getNames() || '',
+                  y: item.kpiVal,
+                  id: item.areaCode,
+                  index,
+                })),
+              },
+            ],
+            colors: [this.appChartTypesService.chartColorsFormatter(_minMaxAvg)],
+            ...this.appChartTypesService.yearlyStaticChartOptions,
+          })
+          .then();
+      });
   }
 
   get basedOnCriteria(): string {
@@ -498,20 +528,20 @@ export default class OwnershipIndicatorsPageComponent implements OnInit, AfterVi
 
   private getSelectedMunicipality(): string {
     if (this.criteria.criteria.municipalityId === -1) return '';
-    return this.lookupService.sellMunicipalitiesMap[this.criteria.criteria.municipalityId].getNames() || '';
+    return this.lookupService.ownerMunicipalitiesMap[this.criteria.criteria.municipalityId].getNames() || '';
   }
 
   private getSelectedDistrict(): string {
     const areaCode = (this.criteria.criteria as OwnerCriteriaContract).areaCode;
     if (areaCode === -1) return '';
-    return this.lookupService.sellDistrictMap[areaCode].getNames() || '';
+    return this.lookupService.ownerDistrictMap[areaCode].getNames() || '';
   }
 
   private getSelectedPropertyType(): string {
     return this.criteria.criteria.propertyTypeList &&
       this.criteria.criteria.propertyTypeList.length == 1 &&
       this.criteria.criteria.propertyTypeList[0] !== -1
-      ? this.lookupService.sellPropertyTypeMap[this.criteria.criteria.propertyTypeList[0]].getNames()
+      ? this.lookupService.ownerPropertyTypeMap[this.criteria.criteria.propertyTypeList[0]].getNames()
       : '';
   }
 
@@ -519,53 +549,98 @@ export default class OwnershipIndicatorsPageComponent implements OnInit, AfterVi
     return this.criteria.criteria.purposeList &&
       this.criteria.criteria.purposeList.length == 1 &&
       this.criteria.criteria.purposeList[0] !== -1
-      ? this.lookupService.sellPurposeMap[this.criteria.criteria.purposeList[0]].getNames()
+      ? this.lookupService.ownerPurposeMap[this.criteria.criteria.purposeList[0]].getNames()
       : '';
   }
 
   private _initializeChartsFormatters() {
-    this.ownershipNationalitiesChartOptions
+    this.nationalitiesChartOptions
       .addDataLabelsFormatter((val, opts) =>
         this.appChartTypesService.dataLabelsFormatter({ val, opts }, { hasPrice: false })
       )
       .addAxisYFormatter((val, opts) => this.appChartTypesService.axisYFormatter({ val, opts }, { hasPrice: false }))
-      .addAnimationEndCallback((chartContext, options) => console.log([chartContext, options]))
-      .addUpdatedCallback(this._ownershipNationalitiesChartUpdatedCallback)
-      .addDataPointSelectionCallback(this._ownershipNationalitiesChartDataPointSelectionCallback);
+      .addUpdatedCallback(this._onNationalitiesChartUpdated)
+      .addDataPointSelectionCallback(this._onNationalitiesChartDataPointSelection);
 
-    this.ownershipsCountChangeForDurationChartOptions
+    this.durationsChartOptions
+      .addDataLabelsFormatter((val, opts) =>
+        this.appChartTypesService.dataLabelsFormatter({ val, opts }, { hasPrice: false })
+      )
+      .addAxisYFormatter((val, opts) => this.appChartTypesService.axisYFormatter({ val, opts }, { hasPrice: false }));
+
+    this.municipalitiesChartOptions
+      .addDataLabelsFormatter((val, opts) =>
+        this.appChartTypesService.dataLabelsFormatter({ val, opts }, { hasPrice: false })
+      )
+      .addAxisYFormatter((val, opts) => this.appChartTypesService.axisYFormatter({ val, opts }, { hasPrice: false }))
+      .addUpdatedCallback(this._onMunicipalitiesChartUpdated)
+      .addDataPointSelectionCallback(this._onMunicipalitiesChartDataPointSelection);
+
+    this.areasChartOptions
       .addDataLabelsFormatter((val, opts) =>
         this.appChartTypesService.dataLabelsFormatter({ val, opts }, { hasPrice: false })
       )
       .addAxisYFormatter((val, opts) => this.appChartTypesService.axisYFormatter({ val, opts }, { hasPrice: false }));
   }
 
-  private _ownershipNationalitiesChartUpdatedCallback = (chartContext: ChartContext, config: ChartConfig) => {
+  private _onNationalitiesChartUpdated = (chartContext: ChartContext, config: ChartConfig) => {
     const hasData = (config.config.series?.[0]?.data as { x: number; y: number; id: number }[] | undefined)?.filter(
       (item) => item.id
     ).length;
     if (!hasData) {
       return;
     }
-    if (this.isInitOwnershipNationalitiesChart) {
-      this.ownershipNationalitiesChart.first.toggleDataPointSelection(
+    if (this.isOnInitNationalitiesChart) {
+      this.nationalitiesChart.first.toggleDataPointSelection(
         0,
         (chartContext.w.config.series[0].data as unknown as { index: number; id: number }[]).filter(
           (item) => item.id === this.selectedNationalityId
         )[0].index
       );
     }
-    console.log([chartContext, config]);
   };
 
-  private _ownershipNationalitiesChartDataPointSelectionCallback = (
+  private _onNationalitiesChartDataPointSelection = (
     event: MouseEvent,
     chartContext: ChartContext,
     config: DataPointSelectionConfig
   ) => {
     if (config.selectedDataPoints[config.seriesIndex].length === 0) return;
-    if (event === null) this.isInitOwnershipNationalitiesChart = false;
-    this.updateOwnershipsCountChangeChartByNationalityForDuration(this.selectedDurationType);
-    console.log([event, chartContext, config]);
+    if (this.isOnInitNationalitiesChart) this.isOnInitNationalitiesChart = false;
+    this.selectedNationalityId = (
+      chartContext.w.config.series[config.seriesIndex].data[config.dataPointIndex] as unknown as { id: number }
+    ).id;
+    this.updateDurationsChartData(this.selectedDurationType);
+    this.updateMunicipalitiesChartData();
+  };
+
+  private _onMunicipalitiesChartUpdated = (chartContext: ChartContext, config: ChartConfig) => {
+    const hasData = (config.config.series?.[0]?.data as { x: number; y: number; id: number }[] | undefined)?.filter(
+      (item) => item.id
+    ).length;
+    if (!hasData) {
+      return;
+    }
+    if (this.isOnInitMunicipaliteisChart) {
+      this.municipalitiesChart.first.toggleDataPointSelection(
+        0,
+        (chartContext.w.config.series[0].data as unknown as { index: number; id: number }[]).filter(
+          (item) => item.id === this.selectedMunicipalityId
+        )[0].index
+      );
+    }
+  };
+
+  private _onMunicipalitiesChartDataPointSelection = (
+    event: MouseEvent,
+    chartContext: ChartContext,
+    config: DataPointSelectionConfig
+  ) => {
+    if (config.selectedDataPoints[config.seriesIndex].length === 0) return;
+    if (this.isOnInitMunicipaliteisChart) this.isOnInitMunicipaliteisChart = false;
+    this.selectedMunicipalityId = (
+      chartContext.w.config.series[config.seriesIndex].data[config.dataPointIndex] as unknown as { id: number }
+    ).id;
+    this.updateAreasChartData();
   };
 }

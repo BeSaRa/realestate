@@ -15,7 +15,6 @@ import { ChartType } from '@enums/chart-type';
 import { CriteriaType } from '@enums/criteria-type';
 import { DurationEndpoints } from '@enums/durations';
 import { TransactionType } from '@enums/transaction-type';
-import { KpiBaseModel } from '@models/kpi-base-model';
 import { KpiModel } from '@models/kpi-model';
 import { KpiRoot } from '@models/kpiRoot';
 import { AppChartTypesService } from '@services/app-chart-types.service';
@@ -109,7 +108,7 @@ export default class MortgageIndicatorsComponent implements OnInit {
   protected readonly DurationTypes = DurationEndpoints;
 
   transactionCount?: Record<number, KpiModel[]>;
-  transactionValues?: Record<number, KpiBaseModel[]>;
+  transactionValues?: Record<number, KpiModel[]>;
   countChartType: ChartType = ChartType.LINE;
   valueChartType: ChartType = ChartType.LINE;
 
