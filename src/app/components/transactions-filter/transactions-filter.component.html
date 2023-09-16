@@ -127,7 +127,9 @@
       <!--        bindValue="lookupKey"-->
       <!--        [label]="lang.map.measuring_unit"-->
       <!--        [options]="spaces" />-->
-      <app-input formControlName="streetNo" [label]="lang.map.street">
+
+      <!-- street input was removed from mortgage filter as requested by QA -->
+      <app-input *ngIf="indicatorType !== 'mortgage'" formControlName="streetNo" [label]="lang.map.street">
         <input appControl formControlName="streetNo" mask="9999" />
       </app-input>
       <ng-container *ngIf="indicatorType === 'rent'">
