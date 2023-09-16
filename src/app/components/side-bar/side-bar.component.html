@@ -1,0 +1,19 @@
+<!-- eslint-disable @angular-eslint/template/interactive-supports-focus -->
+<!-- eslint-disable @angular-eslint/template/click-events-have-key-events -->
+<!-- eslint-disable-next-line @angular-eslint/template/interactive-supports-focus -->
+
+<div
+  class="side-bar"
+  [ngClass]="{ 'side-bar-collapsed': !sideBarService.isOpened(), 'side-bar-opened': sideBarService.isOpened() }">
+  <div
+    class="side-bar-overlay"
+    [ngStyle]="{ transition: 'background-color ' + duration + 's, visibility ' + duration + 's' }"
+    [ngClass]="{ 'side-bar-overlay-collapsed': !sideBarService.isOpened() }"
+    (click)="sideBarService.close()"></div>
+
+  <div (click)="sideBarService.close()" class="side-bar-menu-container bg-primary" [ngStyle]="getSideBarStyles()">
+    <div class="side-bar-content-container">
+      <ng-content></ng-content>
+    </div>
+  </div>
+</div>

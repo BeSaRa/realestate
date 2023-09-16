@@ -6,3 +6,20 @@
   </div>
   <app-footer />
 </div>
+
+<app-side-bar [direction]="(direction$ | async)!">
+  <ul class="flex flex-col gap-y-1">
+    <li class="pb-1 border-b border-secondary/20 last-of-type:border-0" *ngFor="let link of links">
+      <a
+        class="block w-full text-xl px-3 py-2 text-white rounded-md transition hover:bg-white/20 [&.active]:bg-white/20"
+        [routerLink]="link.link"
+        routerLinkActive="active"
+        >{{ link.label() }}</a
+      >
+    </li>
+  </ul>
+  <div class="flex flex-col gap-2 mt-3">
+    <app-button buttonStyle="secondary">{{ lang.map.login }}</app-button>
+    <app-button buttonStyle="secondary">{{ lang.map.staff_login }}</app-button>
+  </div>
+</app-side-bar>
