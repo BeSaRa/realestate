@@ -135,7 +135,7 @@ export class LookupService extends RegisterServiceMixin(class {}) implements Ser
         tap(([rent, sell, mort, owner]) => {
           this.rentLookups = this._addAllToMunicipalities(rent);
           this.sellLookups = this._addAllToMunicipalities(this._addAllToDistrict(this._addAllToPropertyType(sell)));
-          this.mortLookups = this._addAllToPropertyType(mort);
+          this.mortLookups = this._addAllToMunicipalities(this._addAllToDistrict(this._addAllToPropertyType(mort)));
           this.ownerLookups = this._addAllToDistrict(this._addAllToMunicipalities(this._addAllToPropertyType(owner)));
         })
       )
