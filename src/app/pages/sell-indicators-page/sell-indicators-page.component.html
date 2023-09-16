@@ -53,7 +53,7 @@
     <div class="p-3 lg:p-16">
       <div class="flex flex-col">
         <h3 class="heading text-3xl self-start text-primary border-secondary font-semibold hidden lg:inline-block">
-          {{ lang.map.sell_transactions_measuring_dashboard }} {{ basedOnCriteria }}
+          {{ lang.map.sell_transactions_measuring_dashboard }} {{ getSelectedArea(true, true) }}
         </h3>
         <div class="flex flex-col gap-4 xl:flex-row">
           <div
@@ -71,7 +71,7 @@
       <div class="px-3 lg:px-16 flex flex-col justify-center items-center">
         <div class="hidden lg:flex lg:w-full lg:h-fit justify-center">
           <h3 *ngIf="selectedRoot" class="text-3xl mb-4 text-primary border-secondary font-semibold">
-            {{ selectedRoot.getNames() }} ({{ lang.map.depending_on_use }}) {{ basedOnCriteria }}
+            {{ selectedRoot.getNames() }} ({{ lang.map.depending_on_use }}) {{ getSelectedArea(true,true) }}
           </h3>
         </div>
         <!-- <div
@@ -98,7 +98,7 @@
         <div class="mt-20 w-5/6 lg:w-11/12" dir="ltr">
           <div class="hidden lg:flex justify-center">
             <h3 *ngIf="selectedRoot" class="text-3xl mb-4 text-primary border-secondary font-semibold">
-              {{ selectedRoot.getNames() }} ({{ lang.map.depending_on_type }}) {{ basedOnCriteria }}
+              {{ selectedRoot.getNames() }} ({{ lang.map.depending_on_type }}) {{ getSelectedArea(true, true) }}
             </h3>
           </div>
           <carousel #carousel [arrowsOutside]="true" [margin]="20" [cellWidth]="350">
@@ -193,7 +193,7 @@
     </div>
     <div class="p-3 lg:p-16">
       <h3 class="text-lg lg:text-3xl lg:hidden mb-4 text-primary border-secondary font-semibold">
-        {{ lang.map.sell_transactions_list }} {{ basedOnCriteria }}
+        {{ lang.map.sell_transactions_list }} {{ getSelectedArea(true, true) }}
       </h3>
       <app-table
         minWidth="900px"
@@ -267,7 +267,7 @@
     <div class="px-16 py-8 flex bg-sand mt-8 flex-col">
       <div class="flex justify-center mt-5">
         <h3 class="heading text-3xl text-primary border-secondary font-semibold inline-block">
-          {{ lang.map.sell_indicator + " " + lang.map.depending_on_use }}
+          {{ lang.map.sell_indicator + " " + lang.map.depending_on_use }} {{ getSelectedArea(true, true) }}
         </h3>
       </div>
       <table class="mt-5 custom-table" mat-table matSort [dataSource]="transactionsPurpose">
@@ -365,7 +365,7 @@
     <div class="px-16 py-5 flex flex-col">
       <div class="flex justify-center mt-5">
         <h3 class="heading text-3xl text-primary border-secondary font-semibold inline-block">
-          {{ lang.map.top_10_areas }}
+          {{ lang.map.top_10_areas }} {{ getSelectedArea(true, false) }}
         </h3>
       </div>
       <div class="bg-sand shadow rounded-xl p-2 self-center mt-5">

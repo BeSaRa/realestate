@@ -65,7 +65,7 @@
       <div class="px-16 flex flex-col justify-center items-center">
         <div class="flex w-full justify-center">
           <h3 *ngIf="selectedRoot" class="text-3xl mb-4 text-primary border-secondary font-semibold">
-            {{ selectedRoot.getNames() }} ({{ lang.map.depending_on_use }})
+            {{ selectedRoot.getNames() }} ({{ lang.map.depending_on_use }}) {{ getSelectedArea(true,true) }}
           </h3>
         </div>
         <div class="w-full grid grid-cols-3 xl:grid-cols-6 border-2 border-secondary overflow-hidden rounded-xl">
@@ -80,7 +80,7 @@
         <div class="mt-20 w-11/12" dir="ltr">
           <div class="flex justify-center">
             <h3 *ngIf="selectedRoot" class="text-3xl mb-4 text-primary border-secondary font-semibold">
-              {{ selectedRoot.getNames() }} ({{ lang.map.depending_on_type }}) {{ basedOnCriteria }}
+              {{ selectedRoot.getNames() }} ({{ lang.map.depending_on_type }}) {{ getSelectedArea(true, true) }}
             </h3>
           </div>
           <carousel #carousel [arrowsOutside]="true" [margin]="20" [cellWidth]="350">
@@ -165,7 +165,7 @@
     </div>
     <div class="p-16">
       <h3 class="text-3xl mb-4 text-primary border-secondary font-semibold">
-        {{ lang.map.rent_transactions_list }}
+        {{ lang.map.rent_transactions_list }} {{ getSelectedArea(true, true) }}
       </h3>
       <app-table
         minWidth="900px"
@@ -219,7 +219,7 @@
     <div class="px-16 py-8 flex bg-sand mt-8 flex-col">
       <div class="flex justify-center mt-5">
         <h3 class="heading text-3xl text-primary border-secondary font-semibold inline-block">
-          {{ lang.map.rental_indicators }} ({{ lang.map.depending_on_use }})
+          {{ lang.map.rental_indicators }} ({{ lang.map.depending_on_use }}) {{ getSelectedArea(true, true) }}
         </h3>
       </div>
       <table class="mt-5 custom-table" mat-table matSort [dataSource]="transactionsPurpose">
@@ -302,7 +302,7 @@
     <div class="px-16 py-5 flex flex-col">
       <div class="flex justify-center mt-5">
         <h3 class="heading text-3xl text-primary border-secondary font-semibold inline-block">
-          {{ lang.map.top_10_areas }}
+          {{ lang.map.top_10_areas }} {{ getSelectedArea(true,false) }}
         </h3>
       </div>
       <div class="bg-sand shadow rounded-xl p-2 self-center mt-5">
@@ -487,10 +487,11 @@
         </tr>
       </table>
     </div>
-    <div class="px-16 py-5">
+    <div class="grid grid-cols-2 gap-2">
+      <div class="pr-16 py-5">
       <div class="shadow-lg rounded-lg overflow-hidden">
         <div class="bg-primary p-4 flex justify-center items-center">
-          <span class="text-2xl text-white">{{ lang.map.rent_contracts_count_according_to_bedrooms }}</span>
+          <span class="text-2xl text-white">{{ lang.map.rent_contracts_count_according_to_bedrooms }} {{ getSelectedArea(true, true) }}</span>
         </div>
         <div dir="ltr" class="flex justify-center">
           <apx-chart
@@ -499,14 +500,15 @@
             [labels]="pieChartOptions.labels"
             [responsive]="pieChartOptions.responsive!"
             [chart]="pieChartOptions.chart"
-            [legend]="pieChartOptions.legend" />
+            [legend]="pieChartOptions.legend" 
+            class="flex-1"/>
         </div>
       </div>
     </div>
-    <div class="px-16 py-5">
+    <div class="pl-16 py-5">
       <div class="shadow-lg rounded-lg overflow-hidden">
         <div class="bg-primary p-4 flex justify-center items-center">
-          <span class="text-2xl text-white">{{ lang.map.rent_contracts_count_according_to_furniture }}</span>
+          <span class="text-2xl text-white">{{ lang.map.rent_contracts_count_according_to_furniture }} {{ getSelectedArea(true, true) }}</span>
         </div>
         <div dir="ltr" class="flex justify-center">
           <apx-chart
@@ -515,9 +517,11 @@
             [labels]="pieChartOptions.labels"
             [responsive]="pieChartOptions.responsive!"
             [chart]="pieChartOptions.chart"
-            [legend]="pieChartOptions.legend" />
+            [legend]="pieChartOptions.legend" 
+            class="flex-1"/>
         </div>
       </div>
     </div>
+  </div>
   </div>
 </div>
