@@ -3,6 +3,7 @@ import { Component, inject } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { ButtonComponent } from '@components/button/button.component';
 import { IconButtonComponent } from '@components/icon-button/icon-button.component';
+import { SideBarService } from '@services/side-bar.service';
 import { StickyService } from '@services/sticky.service';
 import { TranslationService } from '@services/translation.service';
 
@@ -16,6 +17,7 @@ import { TranslationService } from '@services/translation.service';
 export class MainHeaderComponent {
   lang = inject(TranslationService);
   sticky = inject(StickyService);
+  sideBarService = inject(SideBarService);
 
   links: { link: string; label: () => string }[] = [
     { link: '/home', label: () => this.lang.map.home },

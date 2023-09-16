@@ -34,7 +34,7 @@
         <li>
           <app-icon-button
             icon="MENU"
-            (click)="(null)"
+            (click)="sideBarService.open()"
             [ngClass]="{ 'text-primary': sticky.isSticky(), 'text-white': !sticky.isSticky() }"
             class="block lg:hidden !text-3xl"></app-icon-button>
         </li>
