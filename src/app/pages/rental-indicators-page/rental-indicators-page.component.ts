@@ -709,7 +709,14 @@ export default class RentalIndicatorsPageComponent implements OnInit {
     purpose.length && generatedTitle.push(purpose);
     return generatedTitle.length ? `(${generatedTitle.join(' , ')})` : '';
   }
-
+  protected getSelectedArea(isMuniciRequired: boolean, isZoneRequired:boolean): string {
+    const generatedTitle: string[] = [];
+    const municipality = isMuniciRequired ? this.getSelectedMunicipality() :'';
+    const district = isZoneRequired ? this.getSelectedZone(): '';
+    municipality.length && generatedTitle.push(municipality);
+    district.length && generatedTitle.push(district);
+    return generatedTitle.length ? `(${generatedTitle.join(' , ')})` : '';
+  }
   private getSelectedMunicipality(): string {
     if (this.criteria.criteria.municipalityId === -1) return '';
     return this.lookupService.rentMunicipalitiesMap[this.criteria.criteria.municipalityId].getNames() || '';
