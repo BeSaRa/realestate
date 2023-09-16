@@ -192,7 +192,7 @@
           <div *appTableColumnCellTemplate="let item; typeOf: transactions" class="flex justify-center">
             <div class="text-start">
               <p class="font-bold">{{ item.municipalityInfo.getNames() }}</p>
-              <p>{{ item.areaInfo?.getNames() ?? "---" }}</p>
+              <p>{{ item?.areaInfo?.getNames() ?? "---" }}</p>
             </div>
           </div>
         </ng-container>
@@ -346,7 +346,7 @@
     <div class="px-16 py-5 flex flex-col">
       <div class="flex justify-center mt-5">
         <h3 class="heading text-3xl text-primary border-secondary font-semibold inline-block">
-          {{ lang.map.top_10_areas }} {{ getSelectedArea }}
+          {{ lang.map.top_10_areas }} {{ getSelectedArea(true, false) }}
         </h3>
       </div>
       <div class="bg-sand shadow rounded-xl p-2 self-center mt-5">
