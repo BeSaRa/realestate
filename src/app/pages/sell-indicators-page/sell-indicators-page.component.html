@@ -1,19 +1,24 @@
 <app-extra-header class="flex -mt-32 relative text-white text-center">
   <div class="h-60 flex flex-col justify-center" id="logo-side">
-    <h1 class="text-5xl font-semibold">{{ lang.map.qatar_real_estate_platform }}</h1>
-    <h2 class="text-3xl font-semibold">
+    <h1 class="text-3xl lg:text-5xl font-semibold">{{ lang.map.qatar_real_estate_platform }}</h1>
+    <h2 class="text-xl lg:text-3xl font-semibold">
       {{ lang.toggleMap.qatar_real_estate_platform }} -
       <span class="text-gray-400 font-normal">({{ lang.map.trial_run }})</span>
     </h2>
-    <h2 class="mt-2 text-3xl font-semibold flex flex-col gap-3 items-center">
-      <span class="w-32 h-[3px] bg-secondary"></span>
+    <h2 class="text-xl lg:text-3xl font-semibold flex flex-col gap-3 items-center">
+      <span class="my-5 w-32 h-[3px] bg-secondary"></span>
       <span class="text-white">{{ lang.map.real_estate_sell_indicators }}</span>
     </h2>
+    <div class="flex justify-center mt-5 xl:mt-0">
+      <app-button size="md" (click)="toggleFilters()" buttonStyle="secondary" [isRounded]="true" [icon]="'FILTER_LIST'">
+        {{ lang.map.search_options }}
+      </app-button>
+    </div>
   </div>
 </app-extra-header>
 
 <div class="content-wrapper">
-  <div class="px-16">
+  <div [ngClass]="{ hidden: !isOpened }" class="p-3 lg:px-16">
     <app-transactions-filter
       indicatorType="sell"
       [municipalities]="municipalities"
@@ -47,7 +52,7 @@
   <div *ngIf="isSelectedTab('sell_indicators')" class="flex flex-col">
     <div class="p-3 lg:p-16">
       <div class="flex flex-col">
-        <h3 class="heading text-3xl self-start text-primary border-secondary font-semibold inline-block">
+        <h3 class="heading text-3xl self-start text-primary border-secondary font-semibold hidden lg:inline-block">
           {{ lang.map.sell_transactions_measuring_dashboard }} {{ basedOnCriteria }}
         </h3>
         <div class="flex flex-col gap-4 xl:flex-row">
@@ -80,18 +85,18 @@
           </ng-container>
         </div>  -->
         <div
-          class="w-full grid grid-cols-3 gap-3 lg:gap-0 xl:grid-cols-6 lg:border-2 lg:border-secondary overflow-hidden rounded-xl">
+          class="w-full flex flex-wrap justify-around lg:grid lg:grid-cols-3 gap-3 lg:gap-0 xl:grid-cols-6 lg:border-2 lg:border-secondary overflow-hidden rounded-xl">
           <app-purpose
             *ngFor="let item of purposeKPIS; let i = index"
             [item]="item"
             (click)="purposeSelected(item)"
-            class="rounded-3xl lg:rounded-none border-2  xl:border-e-2 border-secondary lg:last-of-type:border-e-0 {{
+            class=" self-auto rounded-3xl lg:rounded-none border-2  xl:border-e-2 border-secondary lg:last-of-type:border-e-0 {{
               i > 2 ? 'lg:border-t-2 xl:border-t-0' : ''
             }} {{ i % 3 === 2 ? 'lg:border-e-0 xl:border-e-2' : 'lg:border-e-2' }}" />
         </div>
 
-        <div class="mt-20 w-11/12" dir="ltr">
-          <div class="flex justify-center">
+        <div class="mt-20 w-5/6 lg:w-11/12" dir="ltr">
+          <div class="hidden lg:flex justify-center">
             <h3 *ngIf="selectedRoot" class="text-3xl mb-4 text-primary border-secondary font-semibold">
               {{ selectedRoot.getNames() }} ({{ lang.map.depending_on_type }}) {{ basedOnCriteria }}
             </h3>
@@ -100,7 +105,7 @@
             <app-property-block
               useAssetsFrom="sell"
               [ignoreLocalImages]="true"
-              class="carousel-cell"
+              class="carousel-cell m-0"
               *ngFor="let item of propertiesKPIS"
               [item]="item" />
           </carousel>
@@ -108,8 +113,8 @@
       </div>
     </div>
 
-    <div class="p-16 flex flex-col">
-      <div class="flex justify-center">
+    <div class="p-3 lg:p-16 flex flex-col">
+      <div class="hidden lg:flex justify-center">
         <h3 *ngIf="selectedRoot" class="text-3xl mb-4 text-primary border-secondary font-semibold">
           {{ selectedRoot.getNames() }} {{ basedOnCriteria }}
         </h3>
@@ -143,21 +148,30 @@
         </div>
       </div>
       <div class="flex flex-col lg:flex-row">
-        <div class="h-full flex flex-row lg:flex-col mt-4">
-          <app-icon-button
-            [ngClass]="{ 'text-primary': isSelectedChartType(ChartType.LINE) }"
-            (click)="updateChartType(ChartType.LINE)"
-            class="text-primary"
-            icon="LINE_CHART" />
-          <app-icon-button
-            [ngClass]="{ 'text-primary': isSelectedChartType(ChartType.BAR) }"
-            (click)="updateChartType(ChartType.BAR)"
-            icon="BAR_CHART" />
-          <app-icon-button
-            [ngClass]="{ 'text-primary': isSelectedChartType(ChartType.AREA) }"
-            (click)="updateChartType(ChartType.AREA)"
-            icon="AREA_CHART" />
+        <div class="flex flex-row justify-between">
+          <div class="h-full flex lg:hidden mt-4">
+            <h3 *ngIf="selectedRoot" class="text-lg text-primary border-secondary font-semibold">
+              {{ selectedRoot.getNames() }} {{ basedOnCriteria }}
+            </h3>
+          </div>
+
+          <div class="h-full flex flex-row lg:flex-col lg:mt-4">
+            <app-icon-button
+              [ngClass]="{ 'text-primary': isSelectedChartType(ChartType.LINE) }"
+              (click)="updateChartType(ChartType.LINE)"
+              class="text-primary"
+              icon="LINE_CHART" />
+            <app-icon-button
+              [ngClass]="{ 'text-primary': isSelectedChartType(ChartType.BAR) }"
+              (click)="updateChartType(ChartType.BAR)"
+              icon="BAR_CHART" />
+            <app-icon-button
+              [ngClass]="{ 'text-primary': isSelectedChartType(ChartType.AREA) }"
+              (click)="updateChartType(ChartType.AREA)"
+              icon="AREA_CHART" />
+          </div>
         </div>
+
         <div class="flex-auto" dir="ltr">
           <apx-chart
             #chart
@@ -177,8 +191,8 @@
         </div>
       </div>
     </div>
-    <div class="p-16">
-      <h3 class="text-3xl mb-4 text-primary border-secondary font-semibold">
+    <div class="p-3 lg:p-16">
+      <h3 class="text-lg lg:text-3xl lg:hidden mb-4 text-primary border-secondary font-semibold">
         {{ lang.map.sell_transactions_list }} {{ basedOnCriteria }}
       </h3>
       <app-table

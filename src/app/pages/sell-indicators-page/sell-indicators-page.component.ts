@@ -87,6 +87,12 @@ export default class SellIndicatorsPageComponent implements OnInit {
   destroy$ = new Subject<void>();
   adapter = inject(DateAdapter);
 
+  isOpened = false;
+
+  toggleFilters(): void {
+    this.isOpened = !this.isOpened;
+  }
+
   municipalities = this.lookupService.sellLookups.municipalityList;
   propertyTypes = this.lookupService.sellLookups.propertyTypeList;
   propertyUsages = this.lookupService.sellLookups.rentPurposeList.slice().sort((a, b) => a.lookupKey - b.lookupKey);
