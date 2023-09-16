@@ -136,8 +136,8 @@
       <!--        [options]="spaces" />-->
 
       <!-- street input was removed from mortgage filter as requested by QA -->
-      <app-input *ngIf="indicatorType !== 'mortgage'" formControlName="streetNo" [label]="lang.map.street">
-        <input appControl formControlName="streetNo" mask="9999" />
+      <app-input *ngIf="indicatorType !== 'mortgage'" formControlName="streetNo" [label]="lang.map.street" [isSecondary]="true">
+        <input appControl formControlName="streetNo" class="text-gray-500" mask="9999" />
       </app-input>
       <ng-container *ngIf="indicatorType === 'rent'">
         <app-input formControlName="rentPaymentMonthlyPerUnitFrom" [label]="lang.map.rental_value_per_month_from" [isSecondary]="true">
