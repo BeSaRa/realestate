@@ -14,7 +14,8 @@ export interface CriteriaContract {
   areaTo: number;
   streetNo: number;
   zoneId: number;
-
+  offset?: number;
+  limit?: number;
   // not related to model
   halfYearDuration: number;
 }
