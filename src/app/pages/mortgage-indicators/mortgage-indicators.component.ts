@@ -222,8 +222,12 @@ export default class MortgageIndicatorsComponent implements OnInit {
   ngOnInit() {}
 
   filterChange($event: { criteria: CriteriaContract; type: CriteriaType }): void {
+    console.log("$event: ", $event);
+    
     this.criteria = $event;
     this.dashboardService.loadMortgageRoots(this.criteria.criteria).subscribe((values) => {
+      console.log("values: ", values);
+      
       this.rootKpis.map((item, index) => {
         item.value = (values[index] && values[index].kpiVal) || 0;
         item.yoy = (values[index] && values[index].kpiYoYVal) || 0;

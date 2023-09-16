@@ -57,6 +57,7 @@ export interface LangKeysContract {
   sell_indicators: string;
   mortgage_indicator: string;
   mortgage_indicators: string;
+  real_estate_mortgage_indicators: string;
   news: string;
   about_us: string;
   laws_and_decisions: string;
