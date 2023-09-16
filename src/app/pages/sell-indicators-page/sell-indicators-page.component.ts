@@ -658,13 +658,21 @@ export default class SellIndicatorsPageComponent implements OnInit {
     purpose.length && generatedTitle.push(purpose);
     return generatedTitle.length ? `(${generatedTitle.join(' , ')})` : '';
   }
+  protected getSelectedArea(isMuniciRequired: boolean, isDistrictRequired:boolean): string {
+    const generatedTitle: string[] = [];
+    const municipality = isMuniciRequired ? this.getSelectedMunicipality() :'';
+    const district = isDistrictRequired ? this.getSelectedDistrict(): '';
+    municipality.length && generatedTitle.push(municipality);
+    district.length && generatedTitle.push(district);
+    return generatedTitle.length ? `(${generatedTitle.join(' , ')})` : '';
+  }
 
-  private getSelectedMunicipality(): string {
+  protected getSelectedMunicipality(): string {
     if (this.criteria.criteria.municipalityId === -1) return '';
     return this.lookupService.sellMunicipalitiesMap[this.criteria.criteria.municipalityId].getNames() || '';
   }
 
-  private getSelectedDistrict(): string {
+  protected getSelectedDistrict(): string {
     const areaCode = (this.criteria.criteria as SellCriteriaContract).areaCode;
     if (areaCode === -1) return '';
     return this.lookupService.sellDistrictMap[areaCode].getNames() || '';

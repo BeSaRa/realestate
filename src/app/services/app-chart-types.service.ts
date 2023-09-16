@@ -42,7 +42,9 @@ export class AppChartTypesService {
 
   private _pieChartOptions = pieChartOptions;
   get pieChartOptions() {
-    return { ...this._pieChartOptions, legend: { formatter: this.legendFormatter } };
+    return { ...this._pieChartOptions, legend: { 
+      width:250,
+    formatter: this.legendFormatter } };
   }
 
   private _popupChartOptions = popupChartOptions;
@@ -246,7 +248,7 @@ const top10BarChartOptions: Partial<PartialChartOptions> = {
 const pieChartOptions: PieChartOptions = {
   chart: {
     type: 'pie',
-    width: 480,
+    width: '100%',
   },
   labels: [],
   series: [1, 2, 53, 69, 7],
