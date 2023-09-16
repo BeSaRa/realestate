@@ -15,6 +15,7 @@ export const AppIcons = {
   LOGOUT: 'logout',
   FILTER_OUTLINE: 'filter-outline',
   FILTER_REMOVE: 'filter-remove',
+  FILTER_LIST: 'filter-variant',
   VALID_FORM: 'check',
   INVALID_FORM: 'alert-circle-outline',
   MORE_DETAILS: 'information-outline',

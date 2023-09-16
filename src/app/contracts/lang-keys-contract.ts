@@ -120,6 +120,7 @@ export interface LangKeysContract {
   number_of_rooms: string;
   duration: string;
   view_all_options: string;
+  search_options: string;
   clear_options: string;
   priceless_indicators: string;
   pricefull_indicators: string;
