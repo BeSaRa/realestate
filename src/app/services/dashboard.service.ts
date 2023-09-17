@@ -39,6 +39,7 @@ import { CastResponse } from 'cast-response';
 import { forkJoin, map, Observable } from 'rxjs';
 import { DialogService } from './dialog.service';
 import { TranslationService } from './translation.service';
+import { MortgageTransaction } from '@models/mortgage-transaction';
 
 @Injectable({
   providedIn: 'root',
@@ -133,6 +134,11 @@ export class DashboardService extends RegisterServiceMixin(class {}) implements 
   @CastResponse(() => SellTransaction)
   loadSellKpiTransactions(criteria: Partial<CriteriaContract>): Observable<SellTransaction[]> {
     return this.http.post<SellTransaction[]>(this.urlService.URLS.SELL_KPI29, criteria);
+  }
+
+  @CastResponse(() => MortgageTransaction)
+  loadMortgageKpiTransactions(criteria: Partial<CriteriaContract>): Observable<MortgageTransaction[]> {
+    return this.http.post<MortgageTransaction[]>(this.urlService.URLS.MORT_KPI7, criteria);
   }
 
   @CastResponse(() => RentTop10Model)

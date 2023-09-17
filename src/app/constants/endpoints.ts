@@ -111,7 +111,7 @@ const mortgageEndpoints = {
   MORT_KPI6_H: 'MORT|kpi6/chart/transaction-value-rate/halfly',
   MORT_KPI6_M: 'MORT|kpi6/chart/transaction-value-rate/monthly',
   MORT_KPI6_Q: 'MORT|kpi6/chart/transaction-value-rate/quartley',
-  MORT_KPI7: 'MORT|kpi6/detail/transaction',
+  MORT_KPI7: 'MORT|kpi7/detail/transaction',
 };
 const ownerEndpoints = {
   OWNER: 'BE|kpi/owner',
