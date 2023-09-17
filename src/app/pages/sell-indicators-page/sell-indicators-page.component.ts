@@ -87,12 +87,6 @@ export default class SellIndicatorsPageComponent implements OnInit {
   destroy$ = new Subject<void>();
   adapter = inject(DateAdapter);
 
-  isOpened = false;
-
-  toggleFilters(): void {
-    this.isOpened = !this.isOpened;
-  }
-
   municipalities = this.lookupService.sellLookups.municipalityList;
   propertyTypes = this.lookupService.sellLookups.propertyTypeList;
   propertyUsages = this.lookupService.sellLookups.rentPurposeList.slice().sort((a, b) => a.lookupKey - b.lookupKey);
@@ -334,6 +328,10 @@ export default class SellIndicatorsPageComponent implements OnInit {
   ngOnInit(): void {
     this._initializeChartsFormatters();
   }
+
+  // toggleFilters(): void {
+  //   this.isOpened = !this.isOpened;
+  // }
 
   switchTab(tab: string): void {
     this.selectedTab = tab;
@@ -665,15 +663,15 @@ export default class SellIndicatorsPageComponent implements OnInit {
     return generatedTitle.length ? `(${generatedTitle.join(' , ')})` : '';
   }
 
-  protected getSelectedArea(isMuniciRequired: boolean, isDistrictRequired:boolean): string {
+  protected getSelectedArea(isMuniciRequired: boolean, isDistrictRequired: boolean): string {
     const generatedTitle: string[] = [];
-    const municipality = isMuniciRequired ? this.getSelectedMunicipality() :'';
-    const district = isDistrictRequired ? this.getSelectedDistrict(): '';
+    const municipality = isMuniciRequired ? this.getSelectedMunicipality() : '';
+    const district = isDistrictRequired ? this.getSelectedDistrict() : '';
     municipality.length && generatedTitle.push(municipality);
     district.length && generatedTitle.push(district);
     return generatedTitle.length ? `(${generatedTitle.join(' , ')})` : '';
   }
-  
+
   private getSelectedMunicipality(): string {
     if (this.criteria.criteria.municipalityId === -1) return '';
     return this.lookupService.sellMunicipalitiesMap[this.criteria.criteria.municipalityId].getNames() || '';
