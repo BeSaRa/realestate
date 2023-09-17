@@ -9,7 +9,7 @@
       <span class="my-5 w-32 h-[3px] bg-secondary"></span>
       <span class="text-white">{{ lang.map.real_estate_sell_indicators }}</span>
     </h2>
-    <div class="flex justify-center mt-5 xl:mt-0">
+    <div class="flex justify-center lg:hidden mt-5 xl:mt-0">
       <app-button size="md" (click)="toggleFilters()" buttonStyle="secondary" [isRounded]="true" [icon]="'FILTER_LIST'">
         {{ lang.map.search_options }}
       </app-button>
@@ -18,18 +18,20 @@
 </app-extra-header>
 
 <div class="content-wrapper">
-  <div [ngClass]="{ hidden: !isOpened }" class="p-3 lg:px-16">
-    <app-transactions-filter
-      indicatorType="sell"
-      [municipalities]="municipalities"
-      [propertyTypes]="propertyTypes"
-      [propertyUsages]="propertyUsages"
-      [areas]="areas"
-      [rooms]="rooms"
-      [minMaxRealestateValue]="minMaxRealestateValue"
-      (fromChanged)="filterChange($event)"
-      (enableChangeAreaMinMaxValues)="enableChangeAreaMinMaxValues = $event"
-      (enableChangerealEstateValueMinMaxValues)="enableChangerealEstateValueMinMaxValues = $event" />
+  <div [ngClass]="{ hidden: !isOpened }" class="lg:block">
+    <div class="p-3 lg:px-16">
+      <app-transactions-filter
+        indicatorType="sell"
+        [municipalities]="municipalities"
+        [propertyTypes]="propertyTypes"
+        [propertyUsages]="propertyUsages"
+        [areas]="areas"
+        [rooms]="rooms"
+        [minMaxRealestateValue]="minMaxRealestateValue"
+        (fromChanged)="filterChange($event)"
+        (enableChangeAreaMinMaxValues)="enableChangeAreaMinMaxValues = $event"
+        (enableChangerealEstateValueMinMaxValues)="enableChangerealEstateValueMinMaxValues = $event" />
+    </div>
   </div>
   <div class="flex flex-col">
     <div class="px-3 lg:px-16 mt-5 flex justify-center">
@@ -155,7 +157,7 @@
             </h3>
           </div>
 
-          <div class="h-full flex flex-row lg:flex-col lg:mt-4">
+          <div class="h-full flex flex-row lg:flex-col lg:mt-10">
             <app-icon-button
               [ngClass]="{ 'text-primary': isSelectedChartType(ChartType.LINE) }"
               (click)="updateChartType(ChartType.LINE)"
@@ -172,7 +174,7 @@
           </div>
         </div>
 
-        <div class="flex-auto" dir="ltr">
+        <div class="lg:flex-auto" dir="ltr">
           <apx-chart
             #chart
             [series]="chartOptions.series!"
@@ -386,7 +388,7 @@
       </div>
       <div class="overflow-x-auto" dir="ltr">
         <div class="overflow-x-auto lg:flex">
-          <div class="h-full flex flex-row lg:flex-col lg:mt-4">
+          <div class="h-full flex flex-row lg:flex-col lg:mt-10">
             <app-icon-button
               [ngClass]="{ 'text-primary': isSelectedTop10ChartType(ChartType.LINE) }"
               (click)="updateTop10ChartType(ChartType.LINE)"
