@@ -95,6 +95,12 @@ export default class RentalIndicatorsPageComponent implements OnInit {
 
   destroy$ = new Subject<void>();
 
+  isOpened = false;
+
+  toggleFilters(): void {
+    this.isOpened = !this.isOpened;
+  }
+
   municipalities = this.lookupService.rentLookups.municipalityList;
   propertyTypes = this.lookupService.rentLookups.propertyTypeList;
   propertyUsages = this.lookupService.rentLookups.rentPurposeList.slice().sort((a, b) => a.lookupKey - b.lookupKey);
@@ -709,10 +715,10 @@ export default class RentalIndicatorsPageComponent implements OnInit {
     purpose.length && generatedTitle.push(purpose);
     return generatedTitle.length ? `(${generatedTitle.join(' , ')})` : '';
   }
-  protected getSelectedArea(isMuniciRequired: boolean, isZoneRequired:boolean): string {
+  protected getSelectedArea(isMuniciRequired: boolean, isZoneRequired: boolean): string {
     const generatedTitle: string[] = [];
-    const municipality = isMuniciRequired ? this.getSelectedMunicipality() :'';
-    const district = isZoneRequired ? this.getSelectedZone(): '';
+    const municipality = isMuniciRequired ? this.getSelectedMunicipality() : '';
+    const district = isZoneRequired ? this.getSelectedZone() : '';
     municipality.length && generatedTitle.push(municipality);
     district.length && generatedTitle.push(district);
     return generatedTitle.length ? `(${generatedTitle.join(' , ')})` : '';

@@ -1,84 +1,94 @@
 <app-extra-header class="flex -mt-32 relative text-white text-center">
   <div class="h-60 flex flex-col justify-center" id="logo-side">
-    <h1 class="text-5xl font-semibold">{{ lang.map.qatar_real_estate_platform }}</h1>
-    <h2 class="text-3xl font-semibold">
+    <h1 class="text-3xl lg:text-5xl font-semibold">{{ lang.map.qatar_real_estate_platform }}</h1>
+    <h2 class="text-xl lg:text-3xl font-semibold">
       {{ lang.toggleMap.qatar_real_estate_platform }} -
       <span class="text-gray-400 font-normal">({{ lang.map.trial_run }})</span>
     </h2>
-    <h2 class="mt-2 text-3xl font-semibold flex flex-col gap-3 items-center">
-      <span class="w-32 h-[3px] bg-secondary"></span>
+    <h2 class="text-xl lg:text-3xl font-semibold flex flex-col gap-3 items-center">
+      <span class="my-5 w-32 h-[3px] bg-secondary"></span>
       <span class="text-white">{{ lang.map.real_estate_rent_indicators }}</span>
     </h2>
+    <div class="flex justify-center lg:hidden mt-5 xl:mt-0">
+      <app-button size="md" (click)="toggleFilters()" buttonStyle="secondary" [isRounded]="true" [icon]="'FILTER_LIST'">
+        {{ lang.map.search_options }}
+      </app-button>
+    </div>
   </div>
 </app-extra-header>
 
 <div class="content-wrapper">
-  <div class="px-16">
-    <app-transactions-filter
-      [municipalities]="municipalities"
-      [propertyTypes]="propertyTypes"
-      [propertyUsages]="propertyUsages"
-      [zones]="zones"
-      [rooms]="rooms"
-      [furnitureStatus]="furnitureStatusList"
-      [minMaxArea]="minMaxArea"
-      [minMaxRentPaymentMonthly]="minMaxRentPaymentMonthly"
-      (fromChanged)="filterChange($event)"
-      (enableChangeAreaMinMaxValues)="enableChangeAreaMinMaxValues = $event"
-      (enableChangeRentPaymentMonthlyMinMaxValues)="enableChangeRentPaymentMonthlyMinMaxValues = $event" />
+  <div [ngClass]="{ hidden: !isOpened }" class="lg:block">
+    <div class="p-3 lg:px-16">
+      <app-transactions-filter
+        [municipalities]="municipalities"
+        [propertyTypes]="propertyTypes"
+        [propertyUsages]="propertyUsages"
+        [zones]="zones"
+        [rooms]="rooms"
+        [furnitureStatus]="furnitureStatusList"
+        [minMaxArea]="minMaxArea"
+        [minMaxRentPaymentMonthly]="minMaxRentPaymentMonthly"
+        (fromChanged)="filterChange($event)"
+        (enableChangeAreaMinMaxValues)="enableChangeAreaMinMaxValues = $event"
+        (enableChangeRentPaymentMonthlyMinMaxValues)="enableChangeRentPaymentMonthlyMinMaxValues = $event" />
+    </div>
   </div>
   <div class="flex flex-col">
-    <div class="px-16 mt-5 flex justify-center">
+    <div class="px-3 lg:px-16 mt-5 flex justify-center">
       <div class="flex justify-center gap-5 w-full lg:w-2/3 xl:w-1/2 text-3xl">
         <button
           [ngClass]="{ active: isSelectedTab('rental_indicators') }"
           (click)="switchTab('rental_indicators')"
-          class="flex-1 shadow-xl outline-none border border-secondary text-secondary p-5 rounded-2xl [&.active]:bg-secondary [&.active]:text-white [&.active]:ring-2 ring-black">
+          class="flex-1 shadow-xl outline-none border border-secondary text-secondaryp-2 lg:p-5 rounded-2xl [&.active]:bg-secondary [&.active]:text-white [&.active]:ring-2 ring-black">
           {{ lang.map.rental_indicators }}
         </button>
         <button
           [ngClass]="{ active: isSelectedTab('statistical_reports_for_rent') }"
           (click)="switchTab('statistical_reports_for_rent')"
-          class="flex-1 shadow-xl outline-none border border-secondary text-secondary p-5 rounded-2xl [&.active]:bg-secondary [&.active]:text-white [&.active]:ring-2 ring-black">
+          class="flex-1 shadow-xl outline-none border border-secondary text-secondary p-2 lg:p-5 rounded-2xl [&.active]:bg-secondary [&.active]:text-white [&.active]:ring-2 ring-black">
           {{ lang.map.statistical_reports_for_rent }}
         </button>
       </div>
     </div>
   </div>
   <div *ngIf="isSelectedTab('rental_indicators')" class="flex flex-col">
-    <div class="p-16">
+    <div class="p-3 lg:p-16">
       <div class="flex flex-col">
-        <h3 class="heading text-3xl self-start text-primary border-secondary font-semibold inline-block">
+        <h3 class="heading text-3xl self-start text-primary border-secondary font-semibold hidden lg:inline-block">
           {{ lang.map.rental_transactions_measuring_dashboard }} {{ basedOnCriteria }}
         </h3>
         <div class="flex flex-col gap-4 xl:flex-row">
-          <div class="flex-1 my-4 p-4 border border-primary rounded-lg grid grid-cols-3 justify-center gap-4">
+          <div
+            class="flex-1 my-4 p-4 border border-secondary lg:border-primary rounded-lg grid grid-rows-3 grid-cols-1 lg:grid-rows-1 lg:grid-cols-3 justify-center gap-4">
             <app-kpi-root (itemSelected)="rootItemSelected($event)" *ngFor="let item of nonePriceList" [item]="item" />
           </div>
-          <div class="flex-1 my-4 p-4 border border-primary rounded-lg grid grid-cols-3 justify-center gap-4">
+          <div
+            class="flex-1 my-4 p-4 border border-secondary lg:border-primary rounded-lg grid grid-rows-3 grid-cols-1 lg:grid-rows-1 lg:grid-cols-3 justify-center gap-4">
             <app-kpi-root (itemSelected)="rootItemSelected($event)" *ngFor="let item of priceList" [item]="item" />
           </div>
         </div>
       </div>
     </div>
-    <div class="bg-sand p-16">
-      <div class="px-16 flex flex-col justify-center items-center">
-        <div class="flex w-full justify-center">
+    <div class="lg:bg-sand lg:p-16 p-3">
+      <div class="px-3 lg:px-16 flex flex-col justify-center items-center">
+        <div class="hidden lg:flex lg:w-full lg:h-fit justify-center">
           <h3 *ngIf="selectedRoot" class="text-3xl mb-4 text-primary border-secondary font-semibold">
-            {{ selectedRoot.getNames() }} ({{ lang.map.depending_on_use }}) {{ getSelectedArea(true,true) }}
+            {{ selectedRoot.getNames() }} ({{ lang.map.depending_on_use }}) {{ getSelectedArea(true, true) }}
           </h3>
         </div>
-        <div class="w-full grid grid-cols-3 xl:grid-cols-6 border-2 border-secondary overflow-hidden rounded-xl">
+        <div
+          class="w-full flex flex-wrap justify-around lg:grid lg:grid-cols-3 gap-3 lg:gap-0 xl:grid-cols-6 lg:border-2 lg:border-secondary overflow-hidden rounded-xl">
           <app-purpose
             *ngFor="let item of purposeKPIS; let i = index"
             [item]="item"
             (click)="purposeSelected(item)"
-            class="xl:border-e-2 border-secondary last-of-type:border-e-0 {{
-              i > 2 ? 'border-t-2 xl:border-t-0' : ''
-            }} {{ i % 3 === 2 ? 'border-e-0 xl:border-e-2' : 'border-e-2' }}" />
+            class=" self-auto rounded-3xl lg:rounded-none border-2  xl:border-e-2 border-secondary lg:last-of-type:border-e-0 {{
+              i > 2 ? 'lg:border-t-2 xl:border-t-0' : ''
+            }} {{ i % 3 === 2 ? 'lg:border-e-0 xl:border-e-2' : 'lg:border-e-2' }}" />
         </div>
-        <div class="mt-20 w-11/12" dir="ltr">
-          <div class="flex justify-center">
+        <div class="mt-20 w-5/6 lg:w-11/12" dir="ltr">
+          <div class="hidden lg:flex justify-center">
             <h3 *ngIf="selectedRoot" class="text-3xl mb-4 text-primary border-secondary font-semibold">
               {{ selectedRoot.getNames() }} ({{ lang.map.depending_on_type }}) {{ getSelectedArea(true, true) }}
             </h3>
@@ -94,8 +104,8 @@
         </div>
       </div>
     </div>
-    <div class="p-16 flex flex-col">
-      <div class="flex justify-center">
+    <div class="p-3 lg:p-16 flex flex-col">
+      <div class="hidden lg:flex justify-center">
         <h3 *ngIf="selectedRoot" class="text-3xl mb-4 text-primary border-secondary font-semibold">
           {{ selectedRoot.getNames() }} {{ basedOnCriteria }}
         </h3>
@@ -128,8 +138,32 @@
           >
         </div>
       </div>
-      <div class="flex">
-        <div class="flex-auto" dir="ltr">
+      <div class="flex flex-col lg:flex-row">
+        <div class="flex flex-row justify-between">
+          <div class="h-full flex lg:hidden mt-4">
+            <h3 *ngIf="selectedRoot" class="text-lg text-primary border-secondary font-semibold">
+              {{ selectedRoot.getNames() }} {{ basedOnCriteria }}
+            </h3>
+          </div>
+
+          <div class="h-full flex flex-row lg:flex-col mt-4 lg:mt-10">
+            <app-icon-button
+              [ngClass]="{ 'text-primary': isSelectedChartType(ChartType.LINE) }"
+              (click)="updateChartType(ChartType.LINE)"
+              class="text-primary"
+              icon="LINE_CHART" />
+            <app-icon-button
+              [ngClass]="{ 'text-primary': isSelectedChartType(ChartType.BAR) }"
+              (click)="updateChartType(ChartType.BAR)"
+              icon="BAR_CHART" />
+            <app-icon-button
+              [ngClass]="{ 'text-primary': isSelectedChartType(ChartType.AREA) }"
+              (click)="updateChartType(ChartType.AREA)"
+              icon="AREA_CHART" />
+          </div>
+        </div>
+
+        <div class="lg:flex-auto" dir="ltr">
           <apx-chart
             #chart
             [series]="chartOptions.series!"
@@ -146,27 +180,14 @@
             [plotOptions]="chartOptions.plotOptions!"
             [title]="chartOptions.title!" />
         </div>
-        <div class="h-full flex flex-col mt-10">
-          <app-icon-button
-            [ngClass]="{ 'text-primary': isSelectedChartType(ChartType.LINE) }"
-            (click)="updateChartType(ChartType.LINE)"
-            class="text-primary"
-            icon="LINE_CHART" />
-          <app-icon-button
-            [ngClass]="{ 'text-primary': isSelectedChartType(ChartType.BAR) }"
-            (click)="updateChartType(ChartType.BAR)"
-            icon="BAR_CHART" />
-          <app-icon-button
-            [ngClass]="{ 'text-primary': isSelectedChartType(ChartType.AREA) }"
-            (click)="updateChartType(ChartType.AREA)"
-            icon="AREA_CHART" />
-        </div>
       </div>
     </div>
-    <div class="p-16">
-      <h3 class="text-3xl mb-4 text-primary border-secondary font-semibold">
-        {{ lang.map.rent_transactions_list }} {{ getSelectedArea(true, true) }}
-      </h3>
+    <div class="p-3 lg:p-16">
+      <div class="flex lg:justify-center mt-5">
+        <h3 class="text-lg lg:text-3xl mb-4 text-primary border-secondary font-semibold lg:inline-block">
+          {{ lang.map.rent_transactions_list }} {{ getSelectedArea(true, true) }}
+        </h3>
+      </div>
       <app-table
         minWidth="900px"
         [data]="transactions"
@@ -215,99 +236,102 @@
       </app-table>
     </div>
   </div>
-  <div *ngIf="isSelectedTab('statistical_reports_for_rent')" class="flex flex-col">
-    <div class="px-16 py-8 flex bg-sand mt-8 flex-col">
+  <div *ngIf="isSelectedTab('statistical_reports_for_rent')" class="px-3 lg:px-16 flex flex-col">
+    <div class="py-8 flex bg-sand mt-8 flex-col">
       <div class="flex justify-center mt-5">
-        <h3 class="heading text-3xl text-primary border-secondary font-semibold inline-block">
+        <h3 class="heading text-lg lg:text-3xl text-primary border-secondary font-semibold inline-block">
           {{ lang.map.rental_indicators }} ({{ lang.map.depending_on_use }}) {{ getSelectedArea(true, true) }}
         </h3>
       </div>
-      <table class="mt-5 custom-table" mat-table matSort [dataSource]="transactionsPurpose">
-        <!-- purpose -->
-        <ng-container matColumnDef="purpose">
-          <th mat-header-cell class="!text-white" mat-sort-header="purpose" *matHeaderCellDef>
-            {{ lang.map.purpose }}
-          </th>
-          <td mat-cell class="text-primary" *matCellDef="let element">{{ element.purposeInfo.getNames() }}</td>
-        </ng-container>
+      <div class="overflow-x-scroll">
+        <table class="mt-5 custom-table" mat-table matSort [dataSource]="transactionsPurpose">
+          <!-- purpose -->
+          <ng-container matColumnDef="purpose">
+            <th mat-header-cell class="!text-white" mat-sort-header="purpose" *matHeaderCellDef>
+              {{ lang.map.purpose }}
+            </th>
+            <td mat-cell class="text-primary" *matCellDef="let element">{{ element.purposeInfo.getNames() }}</td>
+          </ng-container>
 
-        <ng-container matColumnDef="average">
-          <th mat-header-cell class="!text-white" mat-sort-header="average" *matHeaderCellDef>
-            {{ lang.map.average_rental_price_per_unit_property }}
-          </th>
-          <td mat-cell class="text-primary" *matCellDef="let element">
-            {{ element.rentPaymentMonthly | formatNumbers }}
-          </td>
-        </ng-container>
-        <!-- count -->
-        <ng-container matColumnDef="certificates-count">
-          <th mat-header-cell class="!text-white" mat-sort-header="certificates-count" *matHeaderCellDef>
-            {{ lang.map.rent_contracts_count }}
-          </th>
-          <td mat-cell class="text-primary" *matCellDef="let element">
-            {{
-              element.certificateCount
-                | mask : maskSeparator.SEPARATOR : { thousandSeparator: maskSeparator.THOUSAND_SEPARATOR }
-            }}
-          </td>
-        </ng-container>
-        <!-- count -->
+          <ng-container matColumnDef="average">
+            <th mat-header-cell class="!text-white" mat-sort-header="average" *matHeaderCellDef>
+              {{ lang.map.average_rental_price_per_unit_property }}
+            </th>
+            <td mat-cell class="text-primary" *matCellDef="let element">
+              {{ element.rentPaymentMonthly | formatNumbers }}
+            </td>
+          </ng-container>
+          <!-- count -->
+          <ng-container matColumnDef="certificates-count">
+            <th mat-header-cell class="!text-white" mat-sort-header="certificates-count" *matHeaderCellDef>
+              {{ lang.map.rent_contracts_count }}
+            </th>
+            <td mat-cell class="text-primary" *matCellDef="let element">
+              {{
+                element.certificateCount
+                  | mask : maskSeparator.SEPARATOR : { thousandSeparator: maskSeparator.THOUSAND_SEPARATOR }
+              }}
+            </td>
+          </ng-container>
+          <!-- count -->
 
-        <ng-container matColumnDef="area">
-          <th mat-header-cell class="!text-white" mat-sort-header="area" *matHeaderCellDef>
-            {{ lang.map.total_area }}
-          </th>
-          <td mat-cell *matCellDef="let element">{{ element.sumArea | formatNumbers : 0 }}</td>
-        </ng-container>
+          <ng-container matColumnDef="area">
+            <th mat-header-cell class="!text-white" mat-sort-header="area" *matHeaderCellDef>
+              {{ lang.map.total_area }}
+            </th>
+            <td mat-cell *matCellDef="let element">{{ element.sumArea | formatNumbers : 0 }}</td>
+          </ng-container>
 
-        <ng-container matColumnDef="units-count">
-          <th mat-header-cell class="!text-white" mat-sort-header="units-count" *matHeaderCellDef>
-            {{ lang.map.number_of_sold_units }}
-          </th>
-          <td mat-cell *matCellDef="let element">{{ element.certificateCount | formatNumbers : 0 }}</td>
-        </ng-container>
+          <ng-container matColumnDef="units-count">
+            <th mat-header-cell class="!text-white" mat-sort-header="units-count" *matHeaderCellDef>
+              {{ lang.map.number_of_sold_units }}
+            </th>
+            <td mat-cell *matCellDef="let element">{{ element.certificateCount | formatNumbers : 0 }}</td>
+          </ng-container>
 
-        <ng-container matColumnDef="average-square">
-          <th mat-header-cell class="!text-white" mat-sort-header="average-square" *matHeaderCellDef>
-            {{
-              unitsService.selectedUnit() === 1
-                ? lang.map.average_price_per_square_meter
-                : lang.map.average_price_per_square_foot
-            }}
-          </th>
-          <td mat-cell *matCellDef="let element">{{ element.unitSquareRentPayment() | formatNumbers : 2 }}</td>
-        </ng-container>
+          <ng-container matColumnDef="average-square">
+            <th mat-header-cell class="!text-white" mat-sort-header="average-square" *matHeaderCellDef>
+              {{
+                unitsService.selectedUnit() === 1
+                  ? lang.map.average_price_per_square_meter
+                  : lang.map.average_price_per_square_foot
+              }}
+            </th>
+            <td mat-cell *matCellDef="let element">{{ element.unitSquareRentPayment() | formatNumbers : 2 }}</td>
+          </ng-container>
 
-        <ng-container matColumnDef="chart">
-          <th mat-header-cell class="!text-white" *matHeaderCellDef>{{ lang.map.chart }}</th>
-          <td mat-cell *matCellDef="let element">
-            <app-icon-button class="text-primary" (click)="openChart(element)" icon="BAR_CHART"></app-icon-button>
-          </td>
-        </ng-container>
+          <ng-container matColumnDef="chart">
+            <th mat-header-cell class="!text-white" *matHeaderCellDef>{{ lang.map.chart }}</th>
+            <td mat-cell *matCellDef="let element">
+              <app-icon-button class="text-primary" (click)="openChart(element)" icon="BAR_CHART"></app-icon-button>
+            </td>
+          </ng-container>
 
-        <tr
-          mat-header-row
-          class="rounded-first-tr !bg-primary !text-white"
-          *matHeaderRowDef="transactionsPurposeColumns"></tr>
-        <tr
-          mat-row
-          class="rounded-last-tr !bg-white"
-          *matRowDef="let element; columns: transactionsPurposeColumns"></tr>
-        <!-- Row shown when there is no matching data. -->
-        <tr class="mat-row" *matNoDataRow>
-          <td class="p-4" colspan="100">{{ lang.map.no_records_to_display }}</td>
-        </tr>
-      </table>
+          <tr
+            mat-header-row
+            class="rounded-first-tr !bg-primary !text-white"
+            *matHeaderRowDef="transactionsPurposeColumns"></tr>
+          <tr
+            mat-row
+            class="rounded-last-tr !bg-white"
+            *matRowDef="let element; columns: transactionsPurposeColumns"></tr>
+          <!-- Row shown when there is no matching data. -->
+          <tr class="mat-row" *matNoDataRow>
+            <td class="p-4" colspan="100">{{ lang.map.no_records_to_display }}</td>
+          </tr>
+        </table>
+      </div>
     </div>
-    <div class="px-16 py-5 flex flex-col">
-      <div class="flex justify-center mt-5">
-        <h3 class="heading text-3xl text-primary border-secondary font-semibold inline-block">
-          {{ lang.map.top_10_areas }} {{ getSelectedArea(true,false) }}
+
+    <div class="py-5 flex flex-col">
+      <div class="flex lg:justify-center mt-5">
+        <h3 class="heading text-lg lg:text-3xl text-primary border-secondary font-semibold inline-block">
+          {{ lang.map.top_10_areas }} {{ getSelectedArea(true, false) }}
         </h3>
       </div>
-      <div class="bg-sand shadow rounded-xl p-2 self-center mt-5">
-        <ul class="flex gap-2">
-          <li *ngFor="let item of accordingToList">
+      <div class="lg:bg-sand shadow rounded-xl p-2 lg:self-center mt-5">
+        <ul class="flex flex-wrap lg:flex-nowrap justify-around gap-2">
+          <li class="border-2 lg:border-opacity-0" *ngFor="let item of accordingToList">
             <app-button
               (click)="selectTop10Chart(item)"
               size="lg"
@@ -317,9 +341,20 @@
           </li>
         </ul>
       </div>
-      <div dir="ltr">
-        <div class="flex">
-          <div class="flex-auto">
+      <div class="overflow-x-auto" dir="ltr">
+        <div class="overflow-x-auto lg:flex">
+          <div class="h-full flex flex-row lg:flex-col mt-4 lg:mt-10">
+            <app-icon-button
+              [ngClass]="{ 'text-primary': isSelectedTop10ChartType(ChartType.LINE) }"
+              (click)="updateTop10ChartType(ChartType.LINE)"
+              class="text-primary"
+              icon="LINE_CHART" />
+            <app-icon-button
+              [ngClass]="{ 'text-primary': isSelectedTop10ChartType(ChartType.BAR) }"
+              (click)="updateTop10ChartType(ChartType.BAR)"
+              icon="BAR_CHART" />
+          </div>
+          <div class="lg:flex-auto">
             <apx-chart
               #top10Chart
               [series]="top10ChartOptions[selectedTop10ChartType].series!"
@@ -336,21 +371,10 @@
               [plotOptions]="top10ChartOptions[selectedTop10ChartType].plotOptions!"
               [title]="top10ChartOptions[selectedTop10ChartType].title!" />
           </div>
-          <div class="h-full flex flex-col mt-6">
-            <app-icon-button
-              [ngClass]="{ 'text-primary': isSelectedTop10ChartType(ChartType.LINE) }"
-              (click)="updateTop10ChartType(ChartType.LINE)"
-              class="text-primary"
-              icon="LINE_CHART" />
-            <app-icon-button
-              [ngClass]="{ 'text-primary': isSelectedTop10ChartType(ChartType.BAR) }"
-              (click)="updateTop10ChartType(ChartType.BAR)"
-              icon="BAR_CHART" />
-          </div>
         </div>
       </div>
     </div>
-    <div class="px-16 bg-sand py-5">
+    <div class="overflow-x-scroll bg-sand py-5 mt-5">
       <table class="custom-table p-5" mat-table matSort [dataSource]="compositeTransactions">
         <!-- arName -->
         <ng-container matColumnDef="municipality">
@@ -487,41 +511,45 @@
         </tr>
       </table>
     </div>
-    <div class="grid grid-cols-2 gap-2">
-      <div class="pr-16 py-5">
-      <div class="shadow-lg rounded-lg overflow-hidden">
-        <div class="bg-primary p-4 flex justify-center items-center">
-          <span class="text-2xl text-white">{{ lang.map.rent_contracts_count_according_to_bedrooms }} {{ getSelectedArea(true, true) }}</span>
+    <div class="grid grid-rows-2 grid-cols-1 lg:grid-rows-1 lg:grid-cols-2 gap-2">
+      <div class="lg:pr-16 py-5">
+        <div class="shadow-lg rounded-lg overflow-hidden">
+          <div class="bg-primary p-4 flex justify-center items-center">
+            <span class="text-2xl text-white"
+              >{{ lang.map.rent_contracts_count_according_to_bedrooms }} {{ getSelectedArea(true, true) }}</span
+            >
+          </div>
+          <div dir="ltr" class="flex justify-center">
+            <apx-chart
+              #pieChart
+              [series]="pieChartOptions.series"
+              [labels]="pieChartOptions.labels"
+              [responsive]="pieChartOptions.responsive!"
+              [chart]="pieChartOptions.chart"
+              [legend]="pieChartOptions.legend"
+              class="flex-1" />
+          </div>
         </div>
-        <div dir="ltr" class="flex justify-center">
-          <apx-chart
-            #pieChart
-            [series]="pieChartOptions.series"
-            [labels]="pieChartOptions.labels"
-            [responsive]="pieChartOptions.responsive!"
-            [chart]="pieChartOptions.chart"
-            [legend]="pieChartOptions.legend" 
-            class="flex-1"/>
+      </div>
+      <div class="lg:pl-16 py-5 overflow-y-visible">
+        <div class="shadow-lg rounded-lg lg:overflow-hidden">
+          <div class="bg-primary p-4 flex justify-center items-center">
+            <span class="text-2xl text-white"
+              >{{ lang.map.rent_contracts_count_according_to_furniture }} {{ getSelectedArea(true, true) }}</span
+            >
+          </div>
+          <div dir="ltr" class="flex justify-center">
+            <apx-chart
+              #pieChart
+              [series]="pieChartOptions.series"
+              [labels]="pieChartOptions.labels"
+              [responsive]="pieChartOptions.responsive!"
+              [chart]="pieChartOptions.chart"
+              [legend]="pieChartOptions.legend"
+              class="flex-1" />
+          </div>
         </div>
       </div>
     </div>
-    <div class="pl-16 py-5">
-      <div class="shadow-lg rounded-lg overflow-hidden">
-        <div class="bg-primary p-4 flex justify-center items-center">
-          <span class="text-2xl text-white">{{ lang.map.rent_contracts_count_according_to_furniture }} {{ getSelectedArea(true, true) }}</span>
-        </div>
-        <div dir="ltr" class="flex justify-center">
-          <apx-chart
-            #pieChart
-            [series]="pieChartOptions.series"
-            [labels]="pieChartOptions.labels"
-            [responsive]="pieChartOptions.responsive!"
-            [chart]="pieChartOptions.chart"
-            [legend]="pieChartOptions.legend" 
-            class="flex-1"/>
-        </div>
-      </div>
-    </div>
-  </div>
   </div>
 </div>
