@@ -15,6 +15,20 @@ export class CompositeTransaction {
   kpi3YoYVal!: number;
   municipalityId!: number;
   municipalityInfo!: Lookup;
+  constructor(_issueYear: number, _municipalityId: number,
+     _municipalityInfo: Lookup, _kpi1YoYVal:number, _kpi2YoYVal:number, _kpi3YoYVal:number,
+     _kpi1Val:number = 0, _kpi2Val:number = 0, _kpi3Val:number = 0
+     ){
+      this.issueYear = _issueYear;
+      this.kpi1Val = _kpi1Val;
+      this.kpi2Val = _kpi2Val;
+      this.kpi3Val = _kpi3Val;
+      this.kpi1YoYVal = _kpi1YoYVal;
+      this.kpi2YoYVal = _kpi2YoYVal;
+      this.kpi3YoYVal = _kpi3YoYVal;
+      this.municipalityId = _municipalityId;
+      this.municipalityInfo = _municipalityInfo;
+  }
 }
 
 const { send, rentReceive, sellReceive } = new CompositeTransactionInterceptor();

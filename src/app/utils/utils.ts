@@ -30,6 +30,7 @@ export function generateUUID() {
 export const range = (start: number, stop: number) => Array.from({ length: stop - start + 1 }, (_, i) => start + i);
 
 export function formatNumber(num: number, precision = 1): string | number {
+  // if (!num) return '---';
   const map = [
     { suffix: 'T', threshold: 1e12 },
     { suffix: 'B', threshold: 1e9 },
@@ -70,6 +71,17 @@ export function* chunks<T>(arr: T[], n: number): Generator<T[], void> {
     yield arr.slice(i, i + n);
   }
 }
+
+
+
+export const groupBy = <T>(array: Array<T>, property: (x: T) => number): { [key: number]: Array<T> } =>
+  array.reduce((memo: { [property:string]: Array<T> }, x: T) => {
+    if (!memo[property(x)]) {
+      memo[property(x)] = [];
+    }
+    memo[property(x)].push(x);
+    return memo;
+  }, {});
 
 export function minMaxAvg(values: number[]): MinMaxAvgContract {
   values = values.filter((v) => isValidValue(v));
