@@ -4,19 +4,27 @@ import { Component, inject, OnInit, ViewChild } from '@angular/core';
 import { FormControl, ReactiveFormsModule, UntypedFormBuilder } from '@angular/forms';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatOptionModule } from '@angular/material/core';
+import { MatTableModule } from '@angular/material/table';
 import { ChartOptions } from '@app-types/ChartOptions';
 import { ButtonComponent } from '@components/button/button.component';
 import { ExtraHeaderComponent } from '@components/extra-header/extra-header.component';
 import { IconButtonComponent } from '@components/icon-button/icon-button.component';
 import { KpiRootComponent } from '@components/kpi-root/kpi-root.component';
+import { TableComponent } from '@components/table/table.component';
 import { TransactionsFilterComponent } from '@components/transactions-filter/transactions-filter.component';
 import { CriteriaContract } from '@contracts/criteria-contract';
+import { MinMaxAvgContract } from '@contracts/min-max-avg-contract';
+import { TableColumnCellTemplateDirective } from '@directives/table-column-cell-template.directive';
+import { TableColumnHeaderTemplateDirective } from '@directives/table-column-header-template.directive';
+import { TableColumnTemplateDirective } from '@directives/table-column-template.directive';
 import { ChartType } from '@enums/chart-type';
 import { CriteriaType } from '@enums/criteria-type';
 import { DurationEndpoints } from '@enums/durations';
 import { TransactionType } from '@enums/transaction-type';
 import { KpiModel } from '@models/kpi-model';
 import { KpiRoot } from '@models/kpiRoot';
+import { MortgageTransaction } from '@models/mortgage-transaction';
+import { TableSortOption } from '@models/table-sort-option';
 import { AppChartTypesService } from '@services/app-chart-types.service';
 import { DashboardService } from '@services/dashboard.service';
 import { LookupService } from '@services/lookup.service';
@@ -24,6 +32,7 @@ import { TranslationService } from '@services/translation.service';
 import { UrlService } from '@services/url.service';
 import { formatNumber, minMaxAvg } from '@utils/utils';
 import { ChartComponent, NgApexchartsModule } from 'ng-apexcharts';
+import { ReplaySubject, Subject, takeUntil } from 'rxjs';
 
 @Component({
   selector: 'app-mortgage-indicators',
@@ -40,6 +49,11 @@ import { ChartComponent, NgApexchartsModule } from 'ng-apexcharts';
     KpiRootComponent,
     IconButtonComponent,
     ButtonComponent,
+    TableComponent,
+    TableColumnTemplateDirective,
+    TableColumnHeaderTemplateDirective,
+    TableColumnCellTemplateDirective,
+    MatTableModule,
   ],
   templateUrl: './mortgage-indicators.component.html',
   styleUrls: ['./mortgage-indicators.component.scss'],
@@ -50,6 +64,12 @@ export default class MortgageIndicatorsComponent implements OnInit {
   urlService = inject(UrlService);
   dashboardService = inject(DashboardService);
   appChartTypesService = inject(AppChartTypesService);
+  destroy$ = new Subject<void>();
+
+  minMaxRealestateValue: Partial<MinMaxAvgContract> = {};
+
+  enableChangeAreaMinMaxValues = true;
+  enableChangerealEstateValueMinMaxValues = true;
 
   criteria: { criteria: CriteriaContract; type: CriteriaType } = {} as {
     criteria: CriteriaContract;
@@ -105,6 +125,57 @@ export default class MortgageIndicatorsComponent implements OnInit {
     ),
   ];
 
+  transactions = new ReplaySubject<MortgageTransaction[]>(1);
+  transactionsSortOptions: TableSortOption[] = [
+    new TableSortOption().clone<TableSortOption>({
+      arName: this.lang.getArabicTranslation('most_recent'),
+      enName: this.lang.getEnglishTranslation('most_recent'),
+      value: {
+        column: 'issueDate',
+        direction: 'desc',
+      },
+    }),
+    new TableSortOption().clone<TableSortOption>({
+      arName: this.lang.getArabicTranslation('oldest'),
+      enName: this.lang.getEnglishTranslation('oldest'),
+      value: {
+        column: 'issueDate',
+        direction: 'asc',
+      },
+    }),
+    new TableSortOption().clone<TableSortOption>({
+      arName: this.lang.getArabicTranslation('the_higher_price'),
+      enName: this.lang.getEnglishTranslation('the_higher_price'),
+      value: {
+        column: 'realEstateValue',
+        direction: 'desc',
+      },
+    }),
+    new TableSortOption().clone<TableSortOption>({
+      arName: this.lang.getArabicTranslation('the_lowest_price'),
+      enName: this.lang.getEnglishTranslation('the_lowest_price'),
+      value: {
+        column: 'realEstateValue',
+        direction: 'asc',
+      },
+    }),
+    new TableSortOption().clone<TableSortOption>({
+      arName: this.lang.getArabicTranslation('highest_price_per_square_foot'),
+      enName: this.lang.getEnglishTranslation('highest_price_per_square_foot'),
+      value: {
+        column: 'priceMT',
+        direction: 'desc',
+      },
+    }),
+    new TableSortOption().clone<TableSortOption>({
+      arName: this.lang.getArabicTranslation('lowest_price_per_square_foot'),
+      enName: this.lang.getEnglishTranslation('lowest_price_per_square_foot'),
+      value: {
+        column: 'priceMT',
+        direction: 'asc',
+      },
+    }),
+  ];
   protected readonly DurationTypes = DurationEndpoints;
 
   transactionCount?: Record<number, KpiModel[]>;
@@ -221,16 +292,17 @@ export default class MortgageIndicatorsComponent implements OnInit {
   ngOnInit() {}
 
   filterChange($event: { criteria: CriteriaContract; type: CriteriaType }): void {
-    console.log("$event: ", $event);
-    
+    console.log('$event: ', $event);
+
     this.criteria = $event;
     this.dashboardService.loadMortgageRoots(this.criteria.criteria).subscribe((values) => {
-      console.log("values: ", values);
-      
+      console.log('values: ', values);
+
       this.rootKpis.map((item, index) => {
         item.value = (values[index] && values[index].kpiVal) || 0;
         item.yoy = (values[index] && values[index].kpiYoYVal) || 0;
       });
+      this.loadTransactions();
 
       this.loadMortgageTransactionChart();
       this.loadMortgageTransactionValueChart();
@@ -341,5 +413,20 @@ export default class MortgageIndicatorsComponent implements OnInit {
   updateChartDuration(durationType: DurationEndpoints) {
     this.transactionCountDuration = durationType;
     this.loadMortgageTransactionChart();
+  }
+
+  private loadTransactions() {
+    this.dashboardService
+      .loadMortgageKpiTransactions(this.criteria.criteria)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((list) => {
+        if (this.enableChangerealEstateValueMinMaxValues) {
+          this.minMaxRealestateValue = minMaxAvg(list.map((item) => item.realEstateValue));
+        }
+        if (this.enableChangeAreaMinMaxValues) {
+        }
+        console.log(list);
+        this.transactions.next(list);
+      });
   }
 }

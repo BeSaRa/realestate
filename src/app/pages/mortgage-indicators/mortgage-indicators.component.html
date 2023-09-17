@@ -165,6 +165,76 @@
           </div>
         </div>
       </div>
+      <div class="flex flex-col">
+        <h1 class="heading text-3xl self-center mb-4 text-primary border-secondary font-semibold inline-block">
+          {{ lang.map.mortgage_transactions_list }}
+        </h1>
+        <app-table
+          minWidth="900px"
+          headerBgColor="!bg-secondary"
+          [data]="transactions"
+          [sortOptions]="transactionsSortOptions"
+          [defaultSortOption]="transactionsSortOptions[0]">
+          <ng-container appTableColumnTemplate columnName="location">
+            <div *appTableColumnHeaderTemplate class="flex justify-center">
+              <div class="text-start">
+                <p>{{ this.lang.map.location }}</p>
+                <p class="font-normal">{{ this.lang.map.real_estate_status }}</p>
+              </div>
+            </div>
+            <div *appTableColumnCellTemplate="let item; typeOf: transactions" class="flex justify-center">
+              <div class="text-start">
+                <p class="font-bold">{{ item.municipalityInfo.getNames() }}</p>
+                <p>{{ item.areaInfo && item.areaInfo.getNames() && "---" }}</p>
+              </div>
+            </div>
+          </ng-container>
+          <ng-container appTableColumnTemplate columnName="mortgaged_for">
+            <span *appTableColumnHeaderTemplate>{{ this.lang.map.mortgaged_for }}</span>
+            <span *appTableColumnCellTemplate="let item; typeOf: transactions" class="font-bold">{{
+              item.realEstateValue | number
+            }}</span>
+          </ng-container>
+          <ng-container appTableColumnTemplate columnName="area_in_square_feet">
+            <span *appTableColumnHeaderTemplate>{{ this.lang.map.area_in_square_foot }}</span>
+            <span *appTableColumnCellTemplate="let item; typeOf: transactions" class="font-bold">---</span>
+          </ng-container>
+          <!-- <ng-container appTableColumnTemplate columnName="square_feet_price">
+            <span *appTableColumnHeaderTemplate>{{ this.lang.map.square_feet_price }}</span>
+            <span *appTableColumnCellTemplate="let item; typeOf: transactions" class="font-bold">{{
+              item.priceMT | number : "1.0-0"
+            }}</span>
+          </ng-container> -->
+          <ng-container appTableColumnTemplate columnName="issue_date">
+            <div *appTableColumnHeaderTemplate class="flex justify-center">
+              <div class="text-start">
+                <p>{{ this.lang.map.issue_date }}</p>
+                <p class="font-normal">{{ this.lang.map.sold_by }}</p>
+              </div>
+            </div>
+            <div *appTableColumnCellTemplate="let item; typeOf: transactions" class="text-center">
+              <p>{{ item.issueDate | date : "YYYY-MM-dd" }}</p>
+              <p class="font-bold">{{ item.seller || "أفراد" }}</p>
+            </div>
+          </ng-container>
+          <ng-container appTableColumnTemplate columnName="unit_parcel_no">
+            <span *appTableColumnHeaderTemplate>{{ this.lang.map.unit_parcel_no }}</span>
+            <span *appTableColumnCellTemplate="let item; typeOf: transactions" class="font-bold">{{
+              item.unitNo | number
+            }}</span>
+          </ng-container>
+          <!-- <ng-template appTableColumnTemplate columnName="area" [columnHeader]="lang.map.area" >
+            <span class="font-bold">{{ item.area === null ? "---" : (item.area | number ) }}</span>
+          </ng-template> -->
+          <!-- <ng-template
+            appTableColumnTemplate
+            columnName="unit_parcel_no"
+            [columnHeader]="this.lang.map.unit_parcel_no"
+            let-item
+            ><span class="font-bold">{{ item.unitNo ?? 13000 | number }}</span></ng-template
+          > -->
+        </app-table>
+      </div>
     </div>
   </div>
 </div>
