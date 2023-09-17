@@ -47,7 +47,7 @@
   </table>
 
   <!-- paginator -->
-  <div *ngIf="length" class="flex justify-between items-center">
+  <div *ngIf="length" class="flex justify-between items-center" [ngStyle]="{ minWidth}">
     <span class="text-primary/70">
       {{ lang.map.paginator_showing_label }} {{ length ? offset + 1 : 0 }}
       {{ lang.map.paginator_to_label }}
