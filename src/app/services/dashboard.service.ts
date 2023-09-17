@@ -34,7 +34,7 @@ import { SellTop10Model } from '@models/sell-top-10-model';
 import { SellTransaction } from '@models/sell-transaction';
 import { SellTransactionPurpose } from '@models/sell-transaction-purpose';
 import { UrlService } from '@services/url.service';
-import { chunks, minMaxAvg, range } from '@utils/utils';
+import { chunks, minMaxAvg, range, groupBy } from '@utils/utils';
 import { CastResponse } from 'cast-response';
 import { forkJoin, map, Observable } from 'rxjs';
 import { DialogService } from './dialog.service';
@@ -177,6 +177,7 @@ export class DashboardService extends RegisterServiceMixin(class {}) implements 
     return this.mapCompositeTransactions(this._loadRentCompositeTransactions(criteria));
   }
 
+  
   private mapCompositeTransactions(compositeTransactions: Observable<CompositeTransaction[]>): Observable<{
     years: { selectedYear: number; previousYear: number };
     items: CompositeTransaction[][];
@@ -187,15 +188,47 @@ export class DashboardService extends RegisterServiceMixin(class {}) implements 
           return values;
         }),
         map((values) => {
-          return [...chunks(values, 2)];
+          // instead of chunk each two consecutive items, we should group by municipalityId
+          // since may one municipality has no transaction in current or previous year
+          // as fetched data shows
+          return Object.values(groupBy(values,( x: CompositeTransaction ) => x.municipalityId));
+          // return [...chunks(values, 2)];
         })
       )
       .pipe(
         map((values) => {
+          // get the distinct years values instead of using first item, since
+          // it may have only one transaction
+          const years = [...new Set(values.flat().map( x=> x.issueYear))].sort();
+
+          // if some item has only one transaction fill another one with
+          // appropriate values i.e., zeros for kpi values and 100 or -100 to YoY values
+          values.forEach((item)=> {
+            if(item.length == 2) return;
+            else if (item.length == 1)
+            {
+              let secondCompositeTransaction = item[0].issueYear == years[0] 
+              ? new SellCompositeTransaction(years[1], item[0].municipalityId, item[0].municipalityInfo,
+                -100, -100, -100) 
+              : new SellCompositeTransaction(years[0], item[0].municipalityId, item[0].municipalityInfo,
+                100, 100, 100) ;
+              // secondCompositeTransaction.issueYear = item[0].issueYear == years[1] ? years[0] : years[1],
+              // secondCompositeTransaction.kpi1Val = 0;
+              // secondCompositeTransaction.kpi1YoYVal = item[0].issueYear == years[1] ? -100 : 100;
+              // secondCompositeTransaction.kpi2Val = 0;
+              // secondCompositeTransaction.kpi2YoYVal = item[0].issueYear == years[1] ? -100 : 100;
+              // secondCompositeTransaction.kpi3Val = 0;
+              // secondCompositeTransaction.kpi3YoYVal = item[0].issueYear == years[1] ? -100 : 100;
+              // secondCompositeTransaction.municipalityId = item[0].municipalityId;
+              // secondCompositeTransaction.municipalityInfo = item[0].municipalityInfo;
+              item.push(secondCompositeTransaction);
+            }
+          })
           return {
-            years: {
-              previousYear: values[0][0].issueYear,
-              selectedYear: values[0][1].issueYear,
+            years: 
+            {
+              previousYear: years[1] ? years[0] : years[0]-1,//values[0][0].issueYear,
+              selectedYear: years[1] ? years[1]: years[0],//values[0][1].issueYear,
             },
             items: values,
           };

@@ -218,7 +218,7 @@
         </ng-container>
         <ng-container appTableColumnTemplate columnName="area_in_square_feet">
           <span *appTableColumnHeaderTemplate>{{ this.lang.map.area_in_square_foot }}</span>
-          <span *appTableColumnCellTemplate="let item; typeOf: transactions" class="font-bold">---</span>
+          <span *appTableColumnCellTemplate="let item; typeOf: transactions" class="font-bold">{{item.realEstateSQT }}</span>
         </ng-container>
         <ng-container appTableColumnTemplate columnName="square_feet_price">
           <span *appTableColumnHeaderTemplate>{{ this.lang.map.square_feet_price }}</span>

@@ -23,7 +23,7 @@ import { ChartType } from '@enums/chart-type';
 import { CriteriaType } from '@enums/criteria-type';
 import { DurationEndpoints } from '@enums/durations';
 import { ChartOptionsModel } from '@models/chart-options-model';
-import { CompositeTransaction } from '@models/composite-transaction';
+import { CompositeTransaction, SellCompositeTransaction } from '@models/composite-transaction';
 import { KpiModel } from '@models/kpi-model';
 import { KpiRoot } from '@models/kpiRoot';
 import { Lookup } from '@models/lookup';
@@ -577,6 +577,7 @@ export default class SellIndicatorsPageComponent implements OnInit {
       .loadSellKpiTransactions(this.criteria.criteria)
       .pipe(takeUntil(this.destroy$))
       .subscribe((list) => {
+        console.log("mousa list", list)
         if (this.enableChangerealEstateValueMinMaxValues) {
           this.minMaxRealestateValue = minMaxAvg(list.map((item) => item.realEstateValue));
         }
@@ -589,6 +590,7 @@ export default class SellIndicatorsPageComponent implements OnInit {
 
   loadTransactionsBasedOnPurpose(): void {
     this.dashboardService.loadSellTransactionsBasedOnPurpose(this.criteria.criteria).subscribe((values) => {
+
       this.transactionsPurpose = values;
     });
   }
@@ -643,6 +645,26 @@ export default class SellIndicatorsPageComponent implements OnInit {
 
   loadCompositeTransactions(): void {
     this.dashboardService.loadSellCompositeTransactions(this.criteria.criteria).subscribe((value) => {
+      console.log("mousa value", value)
+      // ensure that each item has two sell composite transaction on for the seleccted year and another
+      // for the previous year. If not push new one with zero values
+      // value.items.forEach(item => {
+      //   if(item.length == 2) return;
+      //   let secondCompositeTransaction = new SellCompositeTransaction();
+      //   secondCompositeTransaction.issueYear = 
+      //     value.years.previousYear === item[0].issueYear 
+      //     ? value.years.selectedYear 
+      //     : value.years.previousYear;
+      //     secondCompositeTransaction.kpi1Val = 0;
+      //     secondCompositeTransaction.kpi1YoYVal = 0;
+      //     secondCompositeTransaction.kpi2Val = 0;
+      //     secondCompositeTransaction.kpi2YoYVal = 0;
+      //     secondCompositeTransaction.kpi3Val = 0;
+      //     secondCompositeTransaction.kpi3YoYVal = 0;
+      //     secondCompositeTransaction.municipalityId = item[0].municipalityId;
+      //     secondCompositeTransaction.municipalityInfo = item[0].municipalityInfo;
+      //   item.push(secondCompositeTransaction);
+      // })
       this.compositeTransactions = value.items;
       this.compositeYears = value.years;
     });

@@ -15,7 +15,7 @@ export class SellTransaction {
   soldTo!: string;
   unitNo!: number;
   unitStatus!: number;
-
+  realEstateSQT!: number;
   // not related to model
   municipalityInfo!: Lookup;
   areaInfo!: Lookup;
