@@ -225,4 +225,6 @@ export interface LangKeysContract {
   ownerships_count_per_municipality: string;
   ownerships_count_per_area: string;
   and_municipality: string;
+  nationality: string;
+  owner_type: string;
 }

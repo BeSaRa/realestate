@@ -75,6 +75,8 @@ export default class OwnershipIndicatorsPageComponent implements OnInit, AfterVi
   propertyTypes = this.lookupService.ownerLookups.propertyTypeList;
   propertyUsages = this.lookupService.ownerLookups.rentPurposeList.slice().sort((a, b) => a.lookupKey - b.lookupKey);
   areas = this.lookupService.ownerLookups.districtList.slice().sort((a, b) => a.lookupKey - b.lookupKey);
+  nationalities = this.lookupService.ownerLookups.nationalityList;
+  ownerTypes = this.lookupService.ownerLookups.ownerCategoryList;
 
   purposeKPIS = this.lookupService.ownerLookups.rentPurposeList;
   propertiesKPIS = this.lookupService.ownerLookups.propertyTypeList;

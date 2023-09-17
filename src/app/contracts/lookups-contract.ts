@@ -14,4 +14,5 @@ export interface LookupsContract {
   unitStatus: Lookup[];
   districtList: Lookup[];
   nationalityList: Lookup[];
+  ownerCategoryList: Lookup[];
 }
