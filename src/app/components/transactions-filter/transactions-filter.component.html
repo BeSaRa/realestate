@@ -41,6 +41,7 @@
       [label]="lang.map.property_type"
       bindLabel="getNames"
       [options]="propertyTypes" />
+
     <app-select-input
       [enableFilter]="true"
       bindFilter="getNames"
@@ -50,40 +51,47 @@
       bindValue="lookupKey"
       [label]="lang.map.property_usage"
       [options]="propertyUsages" />
+
     <app-select-input
+      *ngIf="!isOwner()"
       formControlName="durationType"
       bindLabel="getNames"
       bindValue="lookupKey"
       [label]="lang.map.duration"
       [options]="durations" />
+
     <app-select-input *ngIf="!displayRange" formControlName="issueDateYear" [label]="lang.map.year" [options]="years" />
+
     <app-select-input
-      *ngIf="displayHalf"
+      *ngIf="displayHalf && !isOwner()"
       formControlName="halfYearDuration"
       bindLabel="getNames"
       bindValue="lookupKey"
       [label]="lang.map.select_half"
-      [options]="halfYearDurations" 
-      [isSecondary]="true"/>
+      [options]="halfYearDurations"
+      [isSecondary]="true" />
+
     <app-select-input
       [isMultiple]="true"
-      *ngIf="displayQuarter"
+      *ngIf="displayQuarter && !isOwner()"
       formControlName="issueDateQuarterList"
       bindLabel="getNames"
       bindValue="lookupKey"
       [label]="lang.map.select_quarter"
       [options]="quarterYearDurations"
       [isSecondary]="true" />
+
     <app-select-input
-      *ngIf="displayMonth"
+      *ngIf="displayMonth && !isOwner()"
       formControlName="issueDateMonth"
       bindLabel="label"
       bindValue="value"
       [label]="lang.map.select_month"
-      [options]="months" 
+      [options]="months"
       [isSecondary]="true" />
+
     <app-input
-      *ngIf="displayRange"
+      *ngIf="displayRange && !isOwner()"
       formControlName="rangeDate"
       caretColor="caret-transparent"
       (click)="dateRange.open()"
@@ -100,34 +108,70 @@
         <mat-icon matDatepickerToggleIcon>keyboard_arrow_down</mat-icon>
       </mat-datepicker-toggle>
       <mat-date-range-input [max]="maxDate" [min]="minDate" class="!w-0 !h-0" [rangePicker]="dateRange">
-        <input matStartDate class="text-gray-500" formControlName="issueDateFrom" (dateChange)="rangeChange()" placeholder="Start date" />
-        <input matEndDate class="text-gray-500" formControlName="issueDateTo" (dateChange)="rangeChange()" placeholder="here is end date" />
+        <input
+          matStartDate
+          class="text-gray-500"
+          formControlName="issueDateFrom"
+          (dateChange)="rangeChange()"
+          placeholder="Start date" />
+        <input
+          matEndDate
+          class="text-gray-500"
+          formControlName="issueDateTo"
+          (dateChange)="rangeChange()"
+          placeholder="here is end date" />
       </mat-date-range-input>
       <mat-date-range-picker touchUi class="hidden" #dateRange></mat-date-range-picker>
     </app-input>
+
+    <app-select-input
+      *ngIf="isOwner()"
+      [enableFilter]="true"
+      bindFilter="getNames"
+      formControlName="nationalityCode"
+      [isMultiple]="true"
+      bindValue="lookupKey"
+      [label]="lang.map.nationality"
+      bindLabel="getNames"
+      [options]="nationalities" />
+
     <ng-container *ngIf="isOpened">
       <app-select-input
-        *ngIf="rooms.length"
+        *ngIf="isOwner()"
+        [isSecondary]="true"
+        [enableFilter]="true"
+        bindFilter="getNames"
+        formControlName="ownerCategoryCode"
+        [isMultiple]="true"
+        bindValue="lookupKey"
+        [label]="lang.map.owner_type"
+        bindLabel="getNames"
+        [options]="ownerTypes" />
+      <app-select-input
+        *ngIf="rooms.length && !(isOwner() || isSell())"
         formControlName="bedRoomsCount"
         bindLabel="getNames"
         bindValue="lookupKey"
         [label]="lang.map.number_of_rooms"
-        [options]="rooms" 
+        [options]="rooms"
         [isSecondary]="true" />
+
       <app-select-input
-        *ngIf="furnitureStatus.length"
+        *ngIf="furnitureStatus.length && !(isOwner() || isSell())"
         formControlName="furnitureStatus"
         bindLabel="getNames"
         bindValue="lookupKey"
         [label]="lang.map.furniture_status"
-        [options]="furnitureStatus" 
+        [options]="furnitureStatus"
         [isSecondary]="true" />
+
       <app-select-input
+        *ngIf="!isOwner()"
         formControlName="unit"
         bindLabel="getNames"
         bindValue="lookupKey"
         [label]="lang.map.unit"
-        [options]="unitsService.units" 
+        [options]="unitsService.units"
         [isSecondary]="true" />
       <!--      <app-select-input-->
       <!--        bindLabel="getNames"-->
@@ -136,23 +180,49 @@
       <!--        [options]="spaces" />-->
 
       <!-- street input was removed from mortgage filter as requested by QA -->
-      <app-input *ngIf="indicatorType !== 'mortgage'" formControlName="streetNo" [label]="lang.map.street" [isSecondary]="true">
+      <app-input *ngIf="!isMort()" formControlName="streetNo" [label]="lang.map.street" [isSecondary]="true">
         <input appControl formControlName="streetNo" class="text-gray-500" mask="9999" />
       </app-input>
-      <ng-container *ngIf="indicatorType === 'rent'">
-        <app-input formControlName="rentPaymentMonthlyPerUnitFrom" [label]="lang.map.rental_value_per_month_from" [isSecondary]="true">
-          <input appControl formControlName="rentPaymentMonthlyPerUnitFrom" class="text-gray-500" mask="separator" thousandSeparator="," />
+      <ng-container *ngIf="isRent()">
+        <app-input
+          formControlName="rentPaymentMonthlyPerUnitFrom"
+          [label]="lang.map.rental_value_per_month_from"
+          [isSecondary]="true">
+          <input
+            appControl
+            formControlName="rentPaymentMonthlyPerUnitFrom"
+            class="text-gray-500"
+            mask="separator"
+            thousandSeparator="," />
         </app-input>
-        <app-input formControlName="rentPaymentMonthlyPerUnitTo" [label]="lang.map.rental_value_per_month_to" [isSecondary]="true">
-          <input appControl formControlName="rentPaymentMonthlyPerUnitTo" class="text-gray-500" mask="separator" thousandSeparator="," />
+        <app-input
+          formControlName="rentPaymentMonthlyPerUnitTo"
+          [label]="lang.map.rental_value_per_month_to"
+          [isSecondary]="true">
+          <input
+            appControl
+            formControlName="rentPaymentMonthlyPerUnitTo"
+            class="text-gray-500"
+            mask="separator"
+            thousandSeparator="," />
         </app-input>
       </ng-container>
-      <ng-container *ngIf="indicatorType === 'sell'">
+      <ng-container *ngIf="isSell()">
         <app-input formControlName="realEstateValueFrom" [label]="lang.map.real_estate_value_from" [isSecondary]="true">
-          <input appControl formControlName="realEstateValueFrom" class="text-gray-500" mask="separator" thousandSeparator="," />
+          <input
+            appControl
+            formControlName="realEstateValueFrom"
+            class="text-gray-500"
+            mask="separator"
+            thousandSeparator="," />
         </app-input>
         <app-input formControlName="realEstateValueTo" [label]="lang.map.real_estate_value_to" [isSecondary]="true">
-          <input appControl formControlName="realEstateValueTo" class="text-gray-500" mask="separator" thousandSeparator="," />
+          <input
+            appControl
+            formControlName="realEstateValueTo"
+            class="text-gray-500"
+            mask="separator"
+            thousandSeparator="," />
         </app-input>
       </ng-container>
 

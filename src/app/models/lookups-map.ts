@@ -13,6 +13,7 @@ export class LookupsMap implements LookupsContract {
   municipalityList!: Lookup[];
   furnitureStatusList!: Lookup[];
   nationalityList!: Lookup[];
+  ownerCategoryList!: Lookup[];
   rooms = [
     new Lookup().clone<Lookup>({
       arName: 'ستوديو',

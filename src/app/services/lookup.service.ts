@@ -53,6 +53,8 @@ export class LookupService extends RegisterServiceMixin(class {}) implements Ser
 
   ownerNationalityMap: Record<number, Lookup> = {};
 
+  ownerOwnerCategoryMap: Record<number, Lookup> = {};
+
   @CastResponse(() => LookupsMap, {
     shape: {
       'districtList.*': () => Lookup,
@@ -105,6 +107,7 @@ export class LookupService extends RegisterServiceMixin(class {}) implements Ser
       'municipalityList.*': () => Lookup,
       'furnitureStatusList.*': () => Lookup,
       'nationalityList.*': () => Lookup,
+      'ownerCategoryList.*': () => Lookup,
     },
   })
   _loadOwnerLookups(): Observable<LookupsMap> {
@@ -136,7 +139,11 @@ export class LookupService extends RegisterServiceMixin(class {}) implements Ser
           this.rentLookups = this._addAllToMunicipalities(rent);
           this.sellLookups = this._addAllToMunicipalities(this._addAllToDistrict(this._addAllToPropertyType(sell)));
           this.mortLookups = this._addAllToMunicipalities(this._addAllToDistrict(this._addAllToPropertyType(mort)));
-          this.ownerLookups = this._addAllToDistrict(this._addAllToMunicipalities(this._addAllToPropertyType(owner)));
+          this.ownerLookups = this._addAllToOwnerCategories(
+            this._addAllToNationalities(
+              this._addAllToDistrict(this._addAllToMunicipalities(this._addAllToPropertyType(owner)))
+            )
+          );
         })
       )
       .pipe(
@@ -175,6 +182,9 @@ export class LookupService extends RegisterServiceMixin(class {}) implements Ser
         }),
         tap((res) => {
           this.ownerNationalityMap = this._initializeNationalityMap(res[3]);
+        }),
+        tap((res) => {
+          this.ownerOwnerCategoryMap = this._initializeOwnerCategoryMap(res[3]);
         })
       );
   }
@@ -221,6 +231,12 @@ export class LookupService extends RegisterServiceMixin(class {}) implements Ser
     }, {});
   }
 
+  private _initializeOwnerCategoryMap(lookups: LookupsMap) {
+    return lookups.ownerCategoryList.reduce((acc, i) => {
+      return { ...acc, [i.lookupKey]: i };
+    }, {});
+  }
+
   // Temporarily used until back team add all from backend
   private _addAllToPropertyType(lookups: LookupsContract) {
     if (lookups.propertyTypeList.find((p) => p.lookupKey === -1)) return lookups;
@@ -257,6 +273,32 @@ export class LookupService extends RegisterServiceMixin(class {}) implements Ser
         lookupKey: -1,
       }),
       ...lookups.municipalityList,
+    ];
+    return lookups;
+  }
+
+  private _addAllToNationalities(lookups: LookupsContract) {
+    if (lookups.nationalityList.find((p) => p.lookupKey === -1)) return lookups;
+    lookups.nationalityList = [
+      new Lookup().clone<Lookup>({
+        arName: 'الكل',
+        enName: 'All',
+        lookupKey: -1,
+      }),
+      ...lookups.nationalityList,
+    ];
+    return lookups;
+  }
+
+  private _addAllToOwnerCategories(lookups: LookupsContract) {
+    if (lookups.ownerCategoryList.find((p) => p.lookupKey === -1)) return lookups;
+    lookups.ownerCategoryList = [
+      new Lookup().clone<Lookup>({
+        arName: 'الكل',
+        enName: 'All',
+        lookupKey: -1,
+      }),
+      ...lookups.ownerCategoryList,
     ];
     return lookups;
   }

@@ -91,6 +91,8 @@ export class TransactionsFilterComponent implements OnInit, OnDestroy {
   @Input() rooms: Lookup[] = [];
   @Input() furnitureStatus: Lookup[] = [];
   @Input() areas: Lookup[] = [];
+  @Input() nationalities: Lookup[] = [];
+  @Input() ownerTypes: Lookup[] = [];
   @Input() minMaxArea: Partial<MinMaxAvgContract> = {};
   @Input() minMaxRealestateValue: Partial<MinMaxAvgContract> = {};
   @Input() minMaxRentPaymentMonthly: Partial<MinMaxAvgContract> = {};
@@ -128,8 +130,8 @@ export class TransactionsFilterComponent implements OnInit, OnDestroy {
 
   form = this.fb.group(
     {
+      areaCode: [],
       municipalityId: [],
-      zoneId: [],
       propertyTypeList: [],
       purposeList: [],
       issueDateQuarterList: [],
@@ -161,8 +163,11 @@ export class TransactionsFilterComponent implements OnInit, OnDestroy {
       areaFrom: ['', [(control: AbstractControl) => CustomValidators.minValue(this.minMaxArea.min)(control)]],
       areaTo: ['', [(control: AbstractControl) => CustomValidators.maxValue(this.minMaxArea.max)(control)]],
       baseYear: [],
+      zoneId: [],
       streetNo: [],
-      areaCode: [],
+      nationalityCode: [],
+      ownerCategoryCode: [],
+
       // not related to the criteria
       durationType: [],
       halfYearDuration: [],
@@ -189,28 +194,6 @@ export class TransactionsFilterComponent implements OnInit, OnDestroy {
   minDate: Date = new Date('2019-01-01');
   maxDate: Date = new Date();
   isOpened = false;
-
-  toggleFilters(): void {
-    this.isOpened = !this.isOpened;
-  }
-
-  ngOnDestroy(): void {
-    this.destroy$.next();
-    this.destroy$.complete();
-    this.destroy$.unsubscribe();
-  }
-
-  ngOnInit(): void {
-    this.years = range(this.isSell() ? 2006 : 2019, new Date().getFullYear());
-    this.listenToMunicipalityChange();
-    this.listenToPropertyTypeListChange();
-    this.listenToRentPurposeListChange();
-    this.listenToDurationTypeChange();
-    this.setDefaultValues();
-    this.listenToFormChanges();
-    this.listenToIssueYearChange();
-    this.listenToUnitChange();
-  }
 
   get municipalityId(): AbstractControl {
     return this.form.get('municipalityId') as AbstractControl;
@@ -260,6 +243,58 @@ export class TransactionsFilterComponent implements OnInit, OnDestroy {
     return this.form.get('unit') as AbstractControl;
   }
 
+  get nationalityCode(): AbstractControl {
+    return this.form.get('nationalityCode') as AbstractControl;
+  }
+
+  get ownerCategoryCode(): AbstractControl {
+    return this.form.get('ownerCategoryCode') as AbstractControl;
+  }
+
+  ngOnInit(): void {
+    this.years = range(this.isSell() ? 2006 : 2019, new Date().getFullYear());
+    this.listenToMunicipalityChange();
+    this.listenToPropertyTypeListChange();
+    this.listenToRentPurposeListChange();
+    this.listenToDurationTypeChange();
+    this.listenToFormChanges();
+    this.listenToIssueYearChange();
+    this.listenToUnitChange();
+    this.listenToNationalityChange();
+    this.listenToOwnerCategoryChange();
+    this.setDefaultValues();
+  }
+
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
+    this.destroy$.unsubscribe();
+  }
+
+  toggleFilters(): void {
+    this.isOpened = !this.isOpened;
+  }
+
+  private setDefaultValues() {
+    this.form.patchValue({
+      municipalityId: this.isSell() || this.isMort() || this.isOwner() ? 4 : 1,
+      propertyTypeList: [-1],
+      purposeList: [-1],
+      zoneId: -1,
+      durationType: 1,
+      issueDateYear: 2023,
+      issueDateStartMonth: 1,
+      issueDateEndMonth: 12,
+      areaCode: -1,
+      unit: this.unitsService.selectedUnit(),
+      bedRoomsCount: undefined,
+      furnitureStatus: this.furnitureStatus.length ? -1 : undefined,
+      nationalityCode: [-1],
+      ownerCategoryCode: [-1],
+    });
+    this.sendFilter(CriteriaType.DEFAULT);
+  }
+
   listenToMunicipalityChange(): void {
     this.municipalityId.valueChanges.pipe(takeUntil(this.destroy$)).subscribe((value: number) => {
       if (this.isSell() || this.isMort() || this.isOwner()) {
@@ -275,7 +310,8 @@ export class TransactionsFilterComponent implements OnInit, OnDestroy {
         return;
       }
       this.filteredZones = this.zones.filter((item) => item.municipalityId === value);
-      !this.filteredZones.find((i) => i.lookupKey === -1) && this.filteredZones.length > 1 &&
+      !this.filteredZones.find((i) => i.lookupKey === -1) &&
+        this.filteredZones.length > 1 &&
         this.filteredZones.unshift(
           new Lookup().clone<Lookup>({
             arName: 'الكل',
@@ -283,7 +319,9 @@ export class TransactionsFilterComponent implements OnInit, OnDestroy {
             lookupKey: -1,
           })
         );
-        this.filteredZones.length === 1 ? this.zoneId.setValue(this.filteredZones.at(0)?.lookupKey) : this.zoneId.setValue(-1) ;
+      this.filteredZones.length === 1
+        ? this.zoneId.setValue(this.filteredZones.at(0)?.lookupKey)
+        : this.zoneId.setValue(-1);
     });
   }
 
@@ -317,22 +355,40 @@ export class TransactionsFilterComponent implements OnInit, OnDestroy {
     });
   }
 
-  private setDefaultValues() {
-    this.form.patchValue({
-      municipalityId: this.isSell() || this.isMort() || this.isOwner() ? 4 : 1,
-      propertyTypeList: [-1],
-      purposeList: [-1],
-      zoneId: -1,
-      durationType: 1,
-      issueDateYear: 2023,
-      issueDateStartMonth: 1,
-      issueDateEndMonth: 12,
-      areaCode: -1,
-      unit: this.unitsService.selectedUnit(),
-      bedRoomsCount: undefined,
-      furnitureStatus: this.furnitureStatus.length ? -1 : undefined,
+  listenToNationalityChange(): void {
+    this.nationalityCode.valueChanges.pipe(takeUntil(this.destroy$)).subscribe((value: number[]) => {
+      this.nationalities.forEach((item) => {
+        (value ?? []).includes(-1)
+          ? item.lookupKey !== -1
+            ? (item.disabled = true)
+            : (item.disabled = false)
+          : (item.disabled = false);
+      });
+      this.nationalityCode.patchValue(value.includes(-1) ? [-1] : value.filter((item) => item !== -1), {
+        emitEvent: false,
+      });
     });
-    this.sendFilter(CriteriaType.DEFAULT);
+  }
+
+  listenToOwnerCategoryChange(): void {
+    this.ownerCategoryCode.valueChanges.pipe(takeUntil(this.destroy$)).subscribe((value: number[]) => {
+      this.ownerTypes.forEach((item) => {
+        (value ?? []).includes(-1)
+          ? item.lookupKey !== -1
+            ? (item.disabled = true)
+            : (item.disabled = false)
+          : (item.disabled = false);
+      });
+      this.ownerCategoryCode.patchValue(value.includes(-1) ? [-1] : value.filter((item) => item !== -1), {
+        emitEvent: false,
+      });
+    });
+  }
+
+  listenToUnitChange() {
+    this.unit.valueChanges.pipe(takeUntil(this.destroy$)).subscribe((value) => {
+      this.unitsService.setUnit(value);
+    });
   }
 
   private listenToDurationTypeChange() {
@@ -448,12 +504,6 @@ export class TransactionsFilterComponent implements OnInit, OnDestroy {
     this.displayRange = true;
   }
 
-  listenToUnitChange() {
-    this.unit.valueChanges.pipe(takeUntil(this.destroy$)).subscribe((value) => {
-      this.unitsService.setUnit(value);
-    });
-  }
-
   rangeChange() {
     this.rangeDate.patchValue(
       (this.issueDateFrom.value ? this.datePipe.transform(this.issueDateFrom.value, 'YYY-MM-dd') : '') +
@@ -478,8 +528,7 @@ export class TransactionsFilterComponent implements OnInit, OnDestroy {
   }
 
   sendFilter(criteriaType: CriteriaType): void {
-    let value = this.form.value;
-    value = this._removeUnusedProps(value) as Partial<CriteriaContract>;
+    let value = { ...this.form.value };
     if (this.displayYear) {
       const date = new Date();
       date.getFullYear() === value.issueDateYear ? (value.issueDateEndMonth = date.getMonth() + 1) : null;
@@ -495,6 +544,8 @@ export class TransactionsFilterComponent implements OnInit, OnDestroy {
         if (!this.issueDateFrom.value || !this.issueDateTo.value) return;
       }
     }
+
+    value = this._removeUnusedProps(value) as Partial<CriteriaContract>;
 
     this.fromChanged.emit({ criteria: value as CriteriaContract, type: criteriaType });
     this.enableChangeAreaMinMaxValues.emit(this._enableChangeAreaMinMaxValues(this.form.value));
@@ -517,16 +568,19 @@ export class TransactionsFilterComponent implements OnInit, OnDestroy {
   }
 
   _removeUnusedProps(value: any) {
-    if (this.indicatorType === 'sell') {
+    delete value.durationType;
+
+    if (this.isSell()) {
       delete value.rentPaymentMonthlyPerUnitFrom;
       delete value.rentPaymentMonthlyPerUnitTo;
+      delete value.zoneId;
 
       if (!this.filteredAreas.find((i) => i.lookupKey === this.areaCode.value)) {
         this.areaCode.patchValue(-1, { emitEvent: false });
         value.areaCode = -1;
       }
     }
-    if (this.indicatorType === 'rent') {
+    if (this.isRent()) {
       delete value.realEstateValueFrom;
       delete value.realEstateValueTo;
       delete value.areaCode;
@@ -536,8 +590,18 @@ export class TransactionsFilterComponent implements OnInit, OnDestroy {
         value.zoneId = -1;
       }
     }
-    if (this.isMort() || this.isSell() || this.isOwner()) {
+    if (this.isMort()) {
       delete value.zoneId;
+    }
+    if (this.isOwner()) {
+      console.log(value);
+      delete value.issueDateQuarterList;
+      delete value.issueDateStartMonth;
+      delete value.issueDateEndMonth;
+      delete value.issueDateFrom;
+      delete value.issueDateTo;
+      delete value.unit;
+      console.log(value);
     }
     Object.keys(value).forEach((key) => {
       if (typeof value[key] === 'string' && value[key] === '') delete value[key];
