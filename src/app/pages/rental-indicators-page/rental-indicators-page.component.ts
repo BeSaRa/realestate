@@ -594,7 +594,6 @@ export default class RentalIndicatorsPageComponent implements OnInit {
         })
       );
   }
-
   private goToFirstCell(): void {
     if (!this.carousel.length) return;
     this.carousel.first.cellsToScroll = this.carousel.first.cellLength;
@@ -619,7 +618,6 @@ export default class RentalIndicatorsPageComponent implements OnInit {
       this.updateFurnitureStatusPiChart();
     });
   }
-
   paginate($event: PageEvent) {
     this.paginate$.next({
       offset: $event.pageSize * $event.pageIndex,

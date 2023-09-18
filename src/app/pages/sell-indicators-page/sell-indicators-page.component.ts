@@ -676,26 +676,6 @@ export default class SellIndicatorsPageComponent implements OnInit {
 
   loadCompositeTransactions(): void {
     this.dashboardService.loadSellCompositeTransactions(this.criteria.criteria).subscribe((value) => {
-      console.log("mousa value", value)
-      // ensure that each item has two sell composite transaction on for the seleccted year and another
-      // for the previous year. If not push new one with zero values
-      // value.items.forEach(item => {
-      //   if(item.length == 2) return;
-      //   let secondCompositeTransaction = new SellCompositeTransaction();
-      //   secondCompositeTransaction.issueYear = 
-      //     value.years.previousYear === item[0].issueYear 
-      //     ? value.years.selectedYear 
-      //     : value.years.previousYear;
-      //     secondCompositeTransaction.kpi1Val = 0;
-      //     secondCompositeTransaction.kpi1YoYVal = 0;
-      //     secondCompositeTransaction.kpi2Val = 0;
-      //     secondCompositeTransaction.kpi2YoYVal = 0;
-      //     secondCompositeTransaction.kpi3Val = 0;
-      //     secondCompositeTransaction.kpi3YoYVal = 0;
-      //     secondCompositeTransaction.municipalityId = item[0].municipalityId;
-      //     secondCompositeTransaction.municipalityInfo = item[0].municipalityInfo;
-      //   item.push(secondCompositeTransaction);
-      // })
       this.compositeTransactions = value.items;
       this.compositeYears = value.years;
     });
