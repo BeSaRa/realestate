@@ -58,7 +58,7 @@
     </span>
     <div class="flex justify-between items-center gap-4">
       <mat-paginator
-        (page)="paginate($event)"
+        (page)="_paginate($event)"
         [pageSize]="pageSize"
         [showFirstLastButtons]="showFirstLastButtons"
         [hidePageSize]="true"

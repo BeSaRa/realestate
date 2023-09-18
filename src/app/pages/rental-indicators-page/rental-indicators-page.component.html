@@ -187,18 +187,20 @@
       </h3>
       <app-table
         minWidth="900px"
-        [data]="transactions"
+        (paginate)="paginate($event)"
+        [length]="length"
+        [dataSource]="dataSource"
         [sortOptions]="transactionsSortOptions"
         [defaultSortOption]="transactionsSortOptions[0]">
         <ng-container appTableColumnTemplate columnName="municipality_id"
           ><span *appTableColumnHeaderTemplate>{{ this.lang.map.municipal }}</span
-          ><span *appTableColumnCellTemplate="let item; typeOf: transactions">{{
+          ><span *appTableColumnCellTemplate="let item; typeOf: transactions$">{{
             item.municipalityInfo.getNames()
           }}</span></ng-container
         >
         <ng-container appTableColumnTemplate columnName="unit_details">
           <span *appTableColumnHeaderTemplate>{{ this.lang.map.unit_details }}</span>
-          <div *appTableColumnCellTemplate="let item; typeOf: transactions" class="flex justify-center">
+          <div *appTableColumnCellTemplate="let item; typeOf: transactions$" class="flex justify-center">
             <div class="text-start">
               <div>
                 <b>{{ lang.map.rooms }}</b> : {{ item.bedRoomsCount ? item.bedRoomsCount : "---" }}
@@ -214,19 +216,19 @@
         </ng-container>
         <ng-container appTableColumnTemplate columnName="rental_value"
           ><span *appTableColumnHeaderTemplate>{{ this.lang.map.rental_value }}</span
-          ><span *appTableColumnCellTemplate="let item; typeOf: transactions">
+          ><span *appTableColumnCellTemplate="let item; typeOf: transactions$">
             {{ item.rentPaymentMonthly ? item.rentPaymentMonthly : "---" }}</span
           >
         </ng-container>
         <ng-container appTableColumnTemplate columnName="contract_start_date"
           ><span *appTableColumnHeaderTemplate>{{ this.lang.map.contract_start_date }}</span>
-          <span *appTableColumnCellTemplate="let item; typeOf: transactions">{{
+          <span *appTableColumnCellTemplate="let item; typeOf: transactions$">{{
             item.startDate | date : "YYYY-MM-dd"
           }}</span></ng-container
         >
         <ng-container appTableColumnTemplate columnName="contract_end_date"
           ><span *appTableColumnHeaderTemplate>{{ this.lang.map.contract_end_date }}</span
-          ><span *appTableColumnCellTemplate="let item; typeOf: transactions">{{
+          ><span *appTableColumnCellTemplate="let item; typeOf: transactions$">{{
             item.endDate | date : "YYYY-MM-dd"
           }}</span></ng-container
         >
