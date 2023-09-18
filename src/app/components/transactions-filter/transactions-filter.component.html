@@ -148,7 +148,7 @@
         bindLabel="getNames"
         [options]="ownerTypes" />
       <app-select-input
-        *ngIf="rooms.length && !(isOwner() || isSell())"
+        *ngIf="rooms.length && !isOwner()"
         formControlName="bedRoomsCount"
         bindLabel="getNames"
         bindValue="lookupKey"
