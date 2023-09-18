@@ -212,15 +212,6 @@ export class DashboardService extends RegisterServiceMixin(class {}) implements 
                 -100, -100, -100) 
               : new SellCompositeTransaction(years[0], item[0].municipalityId, item[0].municipalityInfo,
                 100, 100, 100) ;
-              // secondCompositeTransaction.issueYear = item[0].issueYear == years[1] ? years[0] : years[1],
-              // secondCompositeTransaction.kpi1Val = 0;
-              // secondCompositeTransaction.kpi1YoYVal = item[0].issueYear == years[1] ? -100 : 100;
-              // secondCompositeTransaction.kpi2Val = 0;
-              // secondCompositeTransaction.kpi2YoYVal = item[0].issueYear == years[1] ? -100 : 100;
-              // secondCompositeTransaction.kpi3Val = 0;
-              // secondCompositeTransaction.kpi3YoYVal = item[0].issueYear == years[1] ? -100 : 100;
-              // secondCompositeTransaction.municipalityId = item[0].municipalityId;
-              // secondCompositeTransaction.municipalityInfo = item[0].municipalityInfo;
               item.push(secondCompositeTransaction);
             }
           })
