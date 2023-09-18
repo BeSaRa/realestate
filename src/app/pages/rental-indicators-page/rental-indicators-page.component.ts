@@ -49,7 +49,10 @@ import { minMaxAvg } from '@utils/utils';
 import { CarouselComponent, IvyCarouselModule } from 'angular-responsive-carousel2';
 import { ChartComponent, NgApexchartsModule } from 'ng-apexcharts';
 import { NgxMaskPipe } from 'ngx-mask';
-import { forkJoin, map, ReplaySubject, Subject, take, takeUntil } from 'rxjs';
+import { BehaviorSubject, combineLatest, delay, forkJoin, map, Observable, of, ReplaySubject, Subject, switchMap, take, takeUntil, tap } from 'rxjs';
+import { PageEvent } from '@angular/material/paginator';
+import { DataSource } from '@angular/cdk/collections';
+import { AppTableDataSource } from '@models/app-table-data-source';
 
 @Component({
   selector: 'app-rental-indicators-page',
@@ -102,7 +105,9 @@ export default class RentalIndicatorsPageComponent implements OnInit {
   rooms = this.lookupService.rentLookups.rooms;
   furnitureStatusList = this.lookupService.rentLookups.furnitureStatusList;
 
-  transactions = new ReplaySubject<RentTransaction[]>(1);
+  // transactions = new ReplaySubject<RentTransaction[]>(1);
+  transactions$: Observable<RentTransaction[]> = this.loadTransactions();
+  dataSource: AppTableDataSource<RentTransaction> = new AppTableDataSource(this.transactions$);
   transactionsSortOptions: TableSortOption[] = [
     new TableSortOption().clone<TableSortOption>({
       arName: this.lang.getArabicTranslation('most_recent'),
@@ -156,6 +161,7 @@ export default class RentalIndicatorsPageComponent implements OnInit {
   @ViewChildren('pieChart')
   pieChart!: QueryList<ChartComponent>;
 
+
   selectedRootChartData!: KpiModel[];
   DurationTypes = DurationEndpoints;
   selectedDurationType: DurationEndpoints = DurationEndpoints.YEARLY;
@@ -165,7 +171,10 @@ export default class RentalIndicatorsPageComponent implements OnInit {
 
   @ViewChildren('carousel')
   carousel!: QueryList<CarouselComponent>;
-
+  private paginate$ = new BehaviorSubject({
+    offset: 0,
+    limit: 5,
+  });
   rootKPIS = [
     new KpiRoot(
       1,
@@ -330,7 +339,9 @@ export default class RentalIndicatorsPageComponent implements OnInit {
     'average-square',
     'chart',
   ];
-
+  get length() {
+    return this.rootKPIS[0].value;
+  }
   get priceList() {
     return this.rootKPIS.filter((item) => item.hasPrice);
   }
@@ -349,7 +360,7 @@ export default class RentalIndicatorsPageComponent implements OnInit {
   }
 
   filterChange({ criteria, type }: { criteria: CriteriaContract; type: CriteriaType }) {
-    this.criteria = { criteria, type };
+    this.criteria = { criteria: { ...criteria, limit: 5 }, type };
     if (type === CriteriaType.DEFAULT) {
       // load default
       this.dashboardService.loadRentDefaults(criteria as Partial<RentCriteriaContract>).subscribe((result) => {
@@ -556,21 +567,33 @@ export default class RentalIndicatorsPageComponent implements OnInit {
     else this.updateChartHalfyOrQuarterly();
   }
 
-  private loadTransactions() {
-    this.dashboardService
-      .loadRentKpiTransactions(this.criteria.criteria)
-      .pipe(takeUntil(this.destroy$))
-      .subscribe((list) => {
-        if (this.enableChangeRentPaymentMonthlyMinMaxValues) {
-          this.minMaxRentPaymentMonthly = minMaxAvg(list.map((item) => item.rentPaymentMonthly));
-        }
-        if (this.enableChangeAreaMinMaxValues) {
-          this.minMaxArea = minMaxAvg(list.map((item) => item.area));
-        }
-        this.transactions.next(list);
-      });
+  protected loadTransactions(): Observable<RentTransaction[]> {
+    return of(undefined)
+      .pipe(delay(0))
+      .pipe(
+        switchMap(() => {
+          return this.paginate$.pipe(
+            switchMap((paginationOptions) => {
+              this.criteria.criteria.limit = paginationOptions.limit;
+              this.criteria.criteria.offset = paginationOptions.offset;
+              return (
+                this.dashboardService
+                  .loadRentKpiTransactions(this.criteria.criteria)
+              )
+            }),
+            map(list => {
+              if (this.enableChangeRentPaymentMonthlyMinMaxValues) {
+                this.minMaxRentPaymentMonthly = minMaxAvg(list.map((item) => item.rentPaymentMonthly));
+              }
+              if (this.enableChangeAreaMinMaxValues) {
+                this.minMaxArea = minMaxAvg(list.map((item) => item.area));
+              }
+              return list
+            })
+          );
+        })
+      );
   }
-
   private goToFirstCell(): void {
     if (!this.carousel.length) return;
     this.carousel.first.cellsToScroll = this.carousel.first.cellLength;
@@ -595,7 +618,12 @@ export default class RentalIndicatorsPageComponent implements OnInit {
       this.updateFurnitureStatusPiChart();
     });
   }
-
+  paginate($event: PageEvent) {
+    this.paginate$.next({
+      offset: $event.pageSize * $event.pageIndex,
+      limit: $event.pageSize,
+    });
+  }
   isSelectedTab(tab: string): boolean {
     return this.selectedTab === tab;
   }
@@ -709,10 +737,10 @@ export default class RentalIndicatorsPageComponent implements OnInit {
     purpose.length && generatedTitle.push(purpose);
     return generatedTitle.length ? `(${generatedTitle.join(' , ')})` : '';
   }
-  protected getSelectedArea(isMuniciRequired: boolean, isZoneRequired:boolean): string {
+  protected getSelectedArea(isMuniciRequired: boolean, isZoneRequired: boolean): string {
     const generatedTitle: string[] = [];
-    const municipality = isMuniciRequired ? this.getSelectedMunicipality() :'';
-    const district = isZoneRequired ? this.getSelectedZone(): '';
+    const municipality = isMuniciRequired ? this.getSelectedMunicipality() : '';
+    const district = isZoneRequired ? this.getSelectedZone() : '';
     municipality.length && generatedTitle.push(municipality);
     district.length && generatedTitle.push(district);
     return generatedTitle.length ? `(${generatedTitle.join(' , ')})` : '';

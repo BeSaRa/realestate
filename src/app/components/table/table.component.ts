@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, ContentChildren, Input, OnInit, QueryList, inject } from '@angular/core';
+import { Component, ContentChildren, Input, OnInit, Output, QueryList, inject, EventEmitter } from '@angular/core';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
 import { MatSortModule } from '@angular/material/sort';
@@ -19,19 +19,23 @@ import { Observable, isObservable, map, tap } from 'rxjs';
   styleUrls: ['./table.component.scss'],
 })
 export class TableComponent<T extends object> implements OnInit {
-  @Input({ required: true }) data!: T[] | Observable<T[]>;
+  // @Input({ required: true }) data!: T[] | Observable<T[]>;
   @Input() pageSize = 5;
   @Input() minWidth = '1000px';
   @Input() headerBgColor = '!bg-primary';
   @Input() sortOptions: TableSortOption[] = [];
   @Input() defaultSortOption?: TableSortOption;
+  @Input() length: number = 0;
+
+  @Output() paginate : EventEmitter<PageEvent> = new EventEmitter<PageEvent>();
 
   @ContentChildren(TableColumnTemplateDirective) columnsTemplates!: QueryList<TableColumnTemplateDirective>;
 
-  dataSource = new AppTableDataSource<T>([]);
+  @Input() dataSource = new AppTableDataSource<T>([]);
+  data : T[] | Observable<T[]> = this.dataSource.data as unknown as Observable<T[]>;
   sortedData!: T[] | Observable<T[]>;
 
-  length!: number;
+  // length!: number;
   pageSizeOptions: number[] = [2, 5, 10];
   showFirstLastButtons = true;
   offset = 0;
@@ -42,8 +46,8 @@ export class TableComponent<T extends object> implements OnInit {
 
   ngOnInit(): void {
     this.sortedData = this.data;
-    this._initializeLength();
-    this._initializeDataSource();
+    // this._initializeLength();
+    // this._initializeDataSource();
     this._initializeSort();
     this.sortControl.patchValue(this.defaultSortOption?.value);
   }
@@ -56,30 +60,31 @@ export class TableComponent<T extends object> implements OnInit {
     return this.columnsTemplates.map((c) => c.columnName);
   }
 
-  paginate($event: PageEvent) {
-    this.offset = $event.pageSize * $event.pageIndex;
-    this.pageSize = $event.pageSize;
-    this._initializeDataSource();
+  _paginate($event: PageEvent) {
+    this.paginate.emit($event);
+    // this.offset = $event.pageSize * $event.pageIndex;
+    // this.pageSize = $event.pageSize;
+    // this._initializeDataSource();
   }
 
-  private _initializeLength() {
-    if (isObservable(this.data)) {
-      this.data.pipe(
-        tap((data) => {
-          this.length = data.length;
-        })
-      );
-    } else {
-      this.length = this.data.length;
-    }
-  }
+  // private _initializeLength() {
+  //   if (isObservable(this.data)) {
+  //     this.data.pipe(
+  //       tap((data) => {
+  //         this.length = data.length;
+  //       })
+  //     );
+  //   } else {
+  //     this.length = this.data.length;
+  //   }
+  // }
 
   private _initializeDataSource() {
     let paginatedData = this.sortedData;
     if (isObservable(this.sortedData)) {
       paginatedData = this.sortedData.pipe(
         map((data) => {
-          this.length = data.length;
+          // this.length = data.length;
           if (this.offset + this.pageSize > this.length) return data.slice(this.offset);
           else return data.slice(this.offset, this.offset + this.pageSize);
         })

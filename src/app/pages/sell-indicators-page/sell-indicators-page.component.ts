@@ -1,6 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit, QueryList, ViewChildren, inject } from '@angular/core';
 import { DateAdapter, MatNativeDateModule } from '@angular/material/core';
+import { PageEvent } from '@angular/material/paginator';
 import { MatSortModule } from '@angular/material/sort';
 import { MatTableModule } from '@angular/material/table';
 import { ButtonComponent } from '@components/button/button.component';
@@ -22,6 +23,7 @@ import { TableColumnTemplateDirective } from '@directives/table-column-template.
 import { ChartType } from '@enums/chart-type';
 import { CriteriaType } from '@enums/criteria-type';
 import { DurationEndpoints } from '@enums/durations';
+import { AppTableDataSource } from '@models/app-table-data-source';
 import { ChartOptionsModel } from '@models/chart-options-model';
 import { CompositeTransaction, SellCompositeTransaction } from '@models/composite-transaction';
 import { KpiModel } from '@models/kpi-model';
@@ -43,7 +45,7 @@ import { minMaxAvg } from '@utils/utils';
 import { CarouselComponent, IvyCarouselModule } from 'angular-responsive-carousel2';
 import { ChartComponent, NgApexchartsModule } from 'ng-apexcharts';
 import { NgxMaskPipe } from 'ngx-mask';
-import { ReplaySubject, Subject, forkJoin, map, take, takeUntil } from 'rxjs';
+import { BehaviorSubject, Observable, ReplaySubject, Subject, delay, forkJoin, map, of, switchMap, take, takeUntil } from 'rxjs';
 
 @Component({
   selector: 'app-sell-indicators-page',
@@ -77,6 +79,11 @@ export default class SellIndicatorsPageComponent implements OnInit {
   @ViewChildren('carousel') carousel!: QueryList<CarouselComponent>;
   @ViewChildren('chart') chart!: QueryList<ChartComponent>;
   @ViewChildren('top10Chart') top10Chart!: QueryList<ChartComponent>;
+
+  private paginate$ = new BehaviorSubject({
+    offset: 0,
+    limit: 5,
+  });
 
   lang = inject(TranslationService);
   dashboardService = inject(DashboardService);
@@ -181,6 +188,10 @@ export default class SellIndicatorsPageComponent implements OnInit {
   selectedRoot?: KpiRoot;
   selectedPurpose?: Lookup = this.lookupService.sellLookups.rentPurposeList[0];
 
+  get length() {
+    return this.rootKPIS[0].value;
+  }
+
   get priceList() {
     return this.rootKPIS.filter((item) => item.hasPrice);
   }
@@ -236,7 +247,9 @@ export default class SellIndicatorsPageComponent implements OnInit {
     this.appChartTypesService.mainChartOptions
   );
 
-  transactions = new ReplaySubject<SellTransaction[]>(1);
+  // transactions = new ReplaySubject<SellTransaction[]>(1);
+  transactions$: Observable<SellTransaction[]> = this.loadTransactions();
+  dataSource: AppTableDataSource<SellTransaction> = new AppTableDataSource(this.transactions$);
   transactionsSortOptions: TableSortOption[] = [
     new TableSortOption().clone<TableSortOption>({
       arName: this.lang.getArabicTranslation('most_recent'),
@@ -341,6 +354,13 @@ export default class SellIndicatorsPageComponent implements OnInit {
     setTimeout(() => {
       this.updateChartDuration(this.selectedDurationType);
       this.updateTop10Chart();
+    });
+  }
+
+  paginate($event: PageEvent) {
+    this.paginate$.next({
+      offset: $event.pageSize * $event.pageIndex,
+      limit: $event.pageSize,
     });
   }
 
@@ -572,20 +592,31 @@ export default class SellIndicatorsPageComponent implements OnInit {
     return this.selectedChartType === type;
   }
 
-  private loadTransactions() {
-    this.dashboardService
-      .loadSellKpiTransactions(this.criteria.criteria)
-      .pipe(takeUntil(this.destroy$))
-      .subscribe((list) => {
-        console.log("mousa list", list)
-        if (this.enableChangerealEstateValueMinMaxValues) {
-          this.minMaxRealestateValue = minMaxAvg(list.map((item) => item.realEstateValue));
-        }
-        if (this.enableChangeAreaMinMaxValues) {
-        }
-        // console.log(list);
-        this.transactions.next(list);
-      });
+  protected loadTransactions(): Observable<SellTransaction[]> {
+    return of(undefined)
+      .pipe(delay(0))
+      .pipe(
+        switchMap(() => {
+          return this.paginate$.pipe(
+            switchMap((paginationOptions) => {
+              this.criteria.criteria.limit = paginationOptions.limit;
+              this.criteria.criteria.offset = paginationOptions.offset;
+              return (
+                this.dashboardService
+                  .loadSellKpiTransactions(this.criteria.criteria)
+              )
+            }),
+            map(list => {
+              if (this.enableChangerealEstateValueMinMaxValues) {
+                this.minMaxRealestateValue = minMaxAvg(list.map((item) => item.realEstateValue));
+              }
+              if (this.enableChangeAreaMinMaxValues) {
+              }
+              return list
+            })
+          );
+        })
+      );
   }
 
   loadTransactionsBasedOnPurpose(): void {
@@ -645,26 +676,6 @@ export default class SellIndicatorsPageComponent implements OnInit {
 
   loadCompositeTransactions(): void {
     this.dashboardService.loadSellCompositeTransactions(this.criteria.criteria).subscribe((value) => {
-      console.log("mousa value", value)
-      // ensure that each item has two sell composite transaction on for the seleccted year and another
-      // for the previous year. If not push new one with zero values
-      // value.items.forEach(item => {
-      //   if(item.length == 2) return;
-      //   let secondCompositeTransaction = new SellCompositeTransaction();
-      //   secondCompositeTransaction.issueYear = 
-      //     value.years.previousYear === item[0].issueYear 
-      //     ? value.years.selectedYear 
-      //     : value.years.previousYear;
-      //     secondCompositeTransaction.kpi1Val = 0;
-      //     secondCompositeTransaction.kpi1YoYVal = 0;
-      //     secondCompositeTransaction.kpi2Val = 0;
-      //     secondCompositeTransaction.kpi2YoYVal = 0;
-      //     secondCompositeTransaction.kpi3Val = 0;
-      //     secondCompositeTransaction.kpi3YoYVal = 0;
-      //     secondCompositeTransaction.municipalityId = item[0].municipalityId;
-      //     secondCompositeTransaction.municipalityInfo = item[0].municipalityInfo;
-      //   item.push(secondCompositeTransaction);
-      // })
       this.compositeTransactions = value.items;
       this.compositeYears = value.years;
     });
