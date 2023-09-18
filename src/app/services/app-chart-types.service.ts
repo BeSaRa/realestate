@@ -42,9 +42,13 @@ export class AppChartTypesService {
 
   private _pieChartOptions = pieChartOptions;
   get pieChartOptions() {
-    return { ...this._pieChartOptions, legend: { 
-      width:250,
-    formatter: this.legendFormatter } };
+    return {
+      ...this._pieChartOptions,
+      legend: {
+        width: 250,
+        formatter: this.legendFormatter,
+      },
+    };
   }
 
   private _popupChartOptions = popupChartOptions;
@@ -252,9 +256,35 @@ const pieChartOptions: PieChartOptions = {
   },
   labels: [],
   series: [1, 2, 53, 69, 7],
-  legend: {
-    // formatter: don't forget to set legend formatter when use chart
-  },
+
+  colors: [
+    AppColors.PRIMARY,
+    AppColors.SECONDARY,
+    AppColors.GRAY_TOO,
+    AppColors.INDIGO_RAINBOW,
+    AppColors.JUNGLE,
+    AppColors.AZURE,
+    AppColors.SAND,
+    AppColors.GRAY,
+    AppColors.GREEN_LIGHT,
+    AppColors.GRAY_LIGHT,
+    AppColors.BLACK,
+  ],
+
+  responsive: [
+    {
+      breakpoint: 2000,
+      options: {
+        chart: {
+          width: 400,
+        },
+        legend: {
+          show: false,
+          position: 'bottom',
+        },
+      },
+    },
+  ],
 };
 
 const popupChartOptions: Partial<PartialChartOptions> = {

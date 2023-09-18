@@ -378,7 +378,7 @@
     <div class="px-3 lg:px-16 bg-sand py-5">
       <div class="overflow-x-auto">
         <table
-          class="custom-table p-5"
+          class="custom-table p-5 w-full"
           [ngStyle]="{ minWidth: '1200px' }"
           mat-table
           matSort
@@ -519,11 +519,11 @@
         </table>
       </div>
     </div>
-    <div class="grid grid-cols-2 gap-2">
-      <div class="pr-16 py-5">
+    <div class="px-3 lg:px-16 grid grid-cols-1 lg:grid-cols-2 gap-2">
+      <div class="py-5">
         <div class="shadow-lg rounded-lg overflow-hidden">
           <div class="bg-primary p-4 flex justify-center items-center">
-            <span class="text-2xl text-white"
+            <span class="text-white text-center text-lg sm:text-xl font-semibold"
               >{{ lang.map.rent_contracts_count_according_to_bedrooms }} {{ getSelectedArea(true, true) }}</span
             >
           </div>
@@ -534,15 +534,15 @@
               [labels]="pieChartOptions.labels"
               [responsive]="pieChartOptions.responsive!"
               [chart]="pieChartOptions.chart"
-              [legend]="pieChartOptions.legend"
-              class="flex-1" />
+              [legend]="pieChartOptions.legend!"
+              [colors]="pieChartOptions.colors!" />
           </div>
         </div>
       </div>
-      <div class="pl-16 py-5">
+      <div class="py-5">
         <div class="shadow-lg rounded-lg overflow-hidden">
           <div class="bg-primary p-4 flex justify-center items-center">
-            <span class="text-2xl text-white"
+            <span class="text-white text-center text-lg sm:text-xl font-semibold"
               >{{ lang.map.rent_contracts_count_according_to_furniture }} {{ getSelectedArea(true, true) }}</span
             >
           </div>
@@ -553,8 +553,8 @@
               [labels]="pieChartOptions.labels"
               [responsive]="pieChartOptions.responsive!"
               [chart]="pieChartOptions.chart"
-              [legend]="pieChartOptions.legend"
-              class="flex-1" />
+              [legend]="pieChartOptions.legend!"
+              [colors]="pieChartOptions.colors!" />
           </div>
         </div>
       </div>
