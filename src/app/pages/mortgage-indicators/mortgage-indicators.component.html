@@ -172,7 +172,9 @@
         <app-table
           minWidth="900px"
           headerBgColor="!bg-secondary"
-          [data]="transactions"
+          (paginate)="paginate($event)"
+          [length]="length"
+          [dataSource]="dataSource"
           [sortOptions]="transactionsSortOptions"
           [defaultSortOption]="transactionsSortOptions[0]">
           <ng-container appTableColumnTemplate columnName="location">
@@ -182,7 +184,7 @@
                 <p class="font-normal">{{ this.lang.map.real_estate_status }}</p>
               </div>
             </div>
-            <div *appTableColumnCellTemplate="let item; typeOf: transactions" class="flex justify-center">
+            <div *appTableColumnCellTemplate="let item; typeOf: transactions$" class="flex justify-center">
               <div class="text-start">
                 <p class="font-bold">{{ item.municipalityInfo.getNames() }}</p>
                 <p>{{ item.areaInfo && item.areaInfo.getNames() && "---" }}</p>
@@ -191,13 +193,13 @@
           </ng-container>
           <ng-container appTableColumnTemplate columnName="mortgaged_for">
             <span *appTableColumnHeaderTemplate>{{ this.lang.map.mortgaged_for }}</span>
-            <span *appTableColumnCellTemplate="let item; typeOf: transactions" class="font-bold">{{
+            <span *appTableColumnCellTemplate="let item; typeOf: transactions$" class="font-bold">{{
               item.realEstateValue | number
             }}</span>
           </ng-container>
           <ng-container appTableColumnTemplate columnName="area_in_square_feet">
             <span *appTableColumnHeaderTemplate>{{ this.lang.map.area_in_square_foot }}</span>
-            <span *appTableColumnCellTemplate="let item; typeOf: transactions" class="font-bold">---</span>
+            <span *appTableColumnCellTemplate="let item; typeOf: transactions$" class="font-bold">---</span>
           </ng-container>
           <!-- <ng-container appTableColumnTemplate columnName="square_feet_price">
             <span *appTableColumnHeaderTemplate>{{ this.lang.map.square_feet_price }}</span>
@@ -212,14 +214,14 @@
                 <p class="font-normal">{{ this.lang.map.sold_by }}</p>
               </div>
             </div>
-            <div *appTableColumnCellTemplate="let item; typeOf: transactions" class="text-center">
+            <div *appTableColumnCellTemplate="let item; typeOf: transactions$" class="text-center">
               <p>{{ item.issueDate | date : "YYYY-MM-dd" }}</p>
               <p class="font-bold">{{ item.seller || "أفراد" }}</p>
             </div>
           </ng-container>
           <ng-container appTableColumnTemplate columnName="unit_parcel_no">
             <span *appTableColumnHeaderTemplate>{{ this.lang.map.unit_parcel_no }}</span>
-            <span *appTableColumnCellTemplate="let item; typeOf: transactions" class="font-bold">{{
+            <span *appTableColumnCellTemplate="let item; typeOf: transactions$" class="font-bold">{{
               item.unitNo | number
             }}</span>
           </ng-container>

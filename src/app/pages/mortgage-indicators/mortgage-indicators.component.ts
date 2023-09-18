@@ -4,6 +4,7 @@ import { Component, inject, OnInit, ViewChild } from '@angular/core';
 import { FormControl, ReactiveFormsModule, UntypedFormBuilder } from '@angular/forms';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatOptionModule } from '@angular/material/core';
+import { PageEvent } from '@angular/material/paginator';
 import { MatTableModule } from '@angular/material/table';
 import { ChartOptions } from '@app-types/ChartOptions';
 import { ButtonComponent } from '@components/button/button.component';
@@ -21,6 +22,7 @@ import { ChartType } from '@enums/chart-type';
 import { CriteriaType } from '@enums/criteria-type';
 import { DurationEndpoints } from '@enums/durations';
 import { TransactionType } from '@enums/transaction-type';
+import { AppTableDataSource } from '@models/app-table-data-source';
 import { KpiModel } from '@models/kpi-model';
 import { KpiRoot } from '@models/kpiRoot';
 import { MortgageTransaction } from '@models/mortgage-transaction';
@@ -32,7 +34,7 @@ import { TranslationService } from '@services/translation.service';
 import { UrlService } from '@services/url.service';
 import { formatNumber, minMaxAvg } from '@utils/utils';
 import { ChartComponent, NgApexchartsModule } from 'ng-apexcharts';
-import { ReplaySubject, Subject, takeUntil } from 'rxjs';
+import { BehaviorSubject, delay, map, Observable, of, ReplaySubject, Subject, switchMap, takeUntil } from 'rxjs';
 
 @Component({
   selector: 'app-mortgage-indicators',
@@ -89,6 +91,11 @@ export default class MortgageIndicatorsComponent implements OnInit {
   rooms = [] /*this.lookupService.mortLookups.rooms*/;
   areas = this.lookupService.mortLookups.districtList;
 
+  private paginate$ = new BehaviorSubject({
+    offset: 0,
+    limit: 5,
+  });
+
   rootKpis = [
     new KpiRoot(
       1,
@@ -125,7 +132,9 @@ export default class MortgageIndicatorsComponent implements OnInit {
     ),
   ];
 
-  transactions = new ReplaySubject<MortgageTransaction[]>(1);
+  // transactions = new ReplaySubject<MortgageTransaction[]>(1);
+  transactions$: Observable<MortgageTransaction[]> = this.loadTransactions();
+  dataSource: AppTableDataSource<MortgageTransaction> = new AppTableDataSource(this.transactions$);
   transactionsSortOptions: TableSortOption[] = [
     new TableSortOption().clone<TableSortOption>({
       arName: this.lang.getArabicTranslation('most_recent'),
@@ -415,18 +424,56 @@ export default class MortgageIndicatorsComponent implements OnInit {
     this.loadMortgageTransactionChart();
   }
 
-  private loadTransactions() {
-    this.dashboardService
-      .loadMortgageKpiTransactions(this.criteria.criteria)
-      .pipe(takeUntil(this.destroy$))
-      .subscribe((list) => {
-        if (this.enableChangerealEstateValueMinMaxValues) {
-          this.minMaxRealestateValue = minMaxAvg(list.map((item) => item.realEstateValue));
-        }
-        if (this.enableChangeAreaMinMaxValues) {
-        }
-        console.log(list);
-        this.transactions.next(list);
-      });
+  get length() {
+    return this.rootKpis[0].value;
+  }
+
+  paginate($event: PageEvent) {
+    this.paginate$.next({
+      offset: $event.pageSize * $event.pageIndex,
+      limit: $event.pageSize,
+    });
+  }
+
+  // private loadTransactions() {
+  //   this.dashboardService
+  //     .loadMortgageKpiTransactions(this.criteria.criteria)
+  //     .pipe(takeUntil(this.destroy$))
+  //     .subscribe((list) => {
+  //       if (this.enableChangerealEstateValueMinMaxValues) {
+  //         this.minMaxRealestateValue = minMaxAvg(list.map((item) => item.realEstateValue));
+  //       }
+  //       if (this.enableChangeAreaMinMaxValues) {
+  //       }
+  //       console.log(list);
+  //       this.transactions.next(list);
+  //     });
+  // }
+
+  protected loadTransactions(): Observable<MortgageTransaction[]> {
+    return of(undefined)
+      .pipe(delay(0))
+      .pipe(
+        switchMap(() => {
+          return this.paginate$.pipe(
+            switchMap((paginationOptions) => {
+              this.criteria.criteria.limit = paginationOptions.limit;
+              this.criteria.criteria.offset = paginationOptions.offset;
+              return (
+                this.dashboardService
+                  .loadMortgageKpiTransactions(this.criteria.criteria)
+              )
+            }),
+            map(list => {
+              if (this.enableChangerealEstateValueMinMaxValues) {
+                this.minMaxRealestateValue = minMaxAvg(list.map((item) => item.realEstateValue));
+              }
+              if (this.enableChangeAreaMinMaxValues) {
+              }
+              return list
+            })
+          );
+        })
+      );
   }
 }
