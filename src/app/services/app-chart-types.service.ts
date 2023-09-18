@@ -276,11 +276,13 @@ const pieChartOptions: PieChartOptions = {
       breakpoint: 2000,
       options: {
         chart: {
-          width: 400,
+          width: 450,
         },
         legend: {
-          show: false,
+          // show: false,
           position: 'bottom',
+          horizontalAlign: 'center',
+          width: '100%',
         },
       },
     },
