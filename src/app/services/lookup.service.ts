@@ -138,6 +138,10 @@ export class LookupService extends RegisterServiceMixin(class {}) implements Ser
     return this._load()
       .pipe(
         map(([rent, sell, mort, owner]) => {
+          console.log("mort: ", mort);
+          console.log("sell: ", sell);
+          
+          
           // rent.zoneList = rent.zoneList.filter((i) => i.lookupKey !== -1); // remove the all from zones
           sell.zoneList = sell.zoneList.filter((i) => i.lookupKey !== -1); // remove the all from zones
           mort.zoneList = mort.zoneList.filter((i) => i.lookupKey !== -1); // remove the all from zones
