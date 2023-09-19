@@ -35,35 +35,35 @@
         <h1 class="heading text-3xl self-center text-primary border-secondary font-semibold inline-block">
           {{ lang.map.number_of_transactions }}
         </h1>
-        <!--        <div class="flex">-->
-        <!--          <div class="flex-auto"></div>-->
-        <!--          <div class="grid grid-cols-4 gap-2">-->
-        <!--            <app-button-->
-        <!--              (click)="updateChartDuration(DurationTypes.YEARLY)"-->
-        <!--              [buttonStyle]="transactionCountDuration === DurationTypes.YEARLY ? 'secondary' : 'secondary-outline'"-->
-        <!--              [isRounded]="true"-->
-        <!--              >{{ lang.map.yearly }}</app-button-->
-        <!--            >-->
-        <!--            <app-button-->
-        <!--              (click)="updateChartDuration(DurationTypes.HALFY)"-->
-        <!--              [buttonStyle]="transactionCountDuration === DurationTypes.HALFY ? 'secondary' : 'secondary-outline'"-->
-        <!--              [isRounded]="true"-->
-        <!--              >{{ lang.map.half_yearly }}</app-button-->
-        <!--            >-->
-        <!--            <app-button-->
-        <!--              (click)="updateChartDuration(DurationTypes.QUARTERLY)"-->
-        <!--              [buttonStyle]="transactionCountDuration === DurationTypes.QUARTERLY ? 'secondary' : 'secondary-outline'"-->
-        <!--              [isRounded]="true"-->
-        <!--              >{{ lang.map.quarter_yearly }}</app-button-->
-        <!--            >-->
-        <!--            <app-button-->
-        <!--              (click)="updateChartDuration(DurationTypes.MONTHLY)"-->
-        <!--              [buttonStyle]="transactionCountDuration === DurationTypes.MONTHLY ? 'secondary' : 'secondary-outline'"-->
-        <!--              [isRounded]="true"-->
-        <!--              >{{ lang.map.monthly }}</app-button-->
-        <!--            >-->
-        <!--          </div>-->
-        <!--        </div>-->
+        <div class="flex">
+          <div class="flex-auto"></div>
+          <div class="grid grid-cols-4 gap-2">
+            <app-button
+              (click)="updateChartDuration(DurationTypes.YEARLY, ChartsIndicators.TransactionsNumber)"
+              [buttonStyle]="transactionCountDuration === DurationTypes.YEARLY ? 'secondary' : 'secondary-outline'"
+              [isRounded]="true"
+              >{{ lang.map.yearly }}</app-button
+            >
+            <app-button
+              (click)="updateChartDuration(DurationTypes.HALFY, ChartsIndicators.TransactionsNumber)"
+              [buttonStyle]="transactionCountDuration === DurationTypes.HALFY ? 'secondary' : 'secondary-outline'"
+              [isRounded]="true"
+              >{{ lang.map.half_yearly }}</app-button
+            >
+            <app-button
+              (click)="updateChartDuration(DurationTypes.QUARTERLY, ChartsIndicators.TransactionsNumber)"
+              [buttonStyle]="transactionCountDuration === DurationTypes.QUARTERLY ? 'secondary' : 'secondary-outline'"
+              [isRounded]="true"
+              >{{ lang.map.quarter_yearly }}</app-button
+            >
+            <app-button
+              (click)="updateChartDuration(DurationTypes.MONTHLY, ChartsIndicators.TransactionsNumber)"
+              [buttonStyle]="transactionCountDuration === DurationTypes.MONTHLY ? 'secondary' : 'secondary-outline'"
+              [isRounded]="true"
+              >{{ lang.map.monthly }}</app-button
+            >
+          </div>
+        </div>
         <div class="flex">
           <div dir="ltr" class="flex-auto">
             <apx-chart
@@ -98,39 +98,108 @@
           </div>
         </div>
       </div>
+
+      <div class="flex flex-col">
+        <h1 class="heading text-3xl self-center text-primary border-secondary font-semibold inline-block">
+          {{ lang.map.number_of_units }}
+        </h1>
+        <div class="flex">
+          <div class="flex-auto"></div>
+          <div class="grid grid-cols-4 gap-2">
+            <app-button
+              (click)="updateChartDuration(DurationTypes.YEARLY, ChartsIndicators.UnitsNumber)"
+              [buttonStyle]="unitsCountDuration === DurationTypes.YEARLY ? 'secondary' : 'secondary-outline'"
+              [isRounded]="true"
+              >{{ lang.map.yearly }}</app-button
+            >
+            <app-button
+              (click)="updateChartDuration(DurationTypes.HALFY, ChartsIndicators.UnitsNumber)"
+              [buttonStyle]="unitsCountDuration === DurationTypes.HALFY ? 'secondary' : 'secondary-outline'"
+              [isRounded]="true"
+              >{{ lang.map.half_yearly }}</app-button
+            >
+            <app-button
+              (click)="updateChartDuration(DurationTypes.QUARTERLY, ChartsIndicators.UnitsNumber)"
+              [buttonStyle]="unitsCountDuration === DurationTypes.QUARTERLY ? 'secondary' : 'secondary-outline'"
+              [isRounded]="true"
+              >{{ lang.map.quarter_yearly }}</app-button
+            >
+            <app-button
+              (click)="updateChartDuration(DurationTypes.MONTHLY, ChartsIndicators.UnitsNumber)"
+              [buttonStyle]="transactionCountDuration === DurationTypes.MONTHLY ? 'secondary' : 'secondary-outline'"
+              [isRounded]="true"
+              >{{ lang.map.monthly }}</app-button
+            >
+          </div>
+        </div>
+        <div class="flex">
+          <div dir="ltr" class="flex-auto">
+            <apx-chart
+              #chartUnitCount
+              [tooltip]="chartUnitCountOptions.tooltip!"
+              [colors]="chartUnitCountOptions.colors!"
+              [series]="chartUnitCountOptions.series!"
+              [chart]="chartUnitCountOptions.chart!"
+              [xaxis]="chartUnitCountOptions.xaxis!"
+              [dataLabels]="chartUnitCountOptions.dataLabels!"
+              [grid]="chartUnitCountOptions.grid!"
+              [stroke]="chartUnitCountOptions.stroke!"
+              [legend]="chartUnitCountOptions.legend!"
+              [plotOptions]="chartUnitCountOptions.plotOptions!"
+              [yaxis]="chartUnitCountOptions.yaxis!"
+              [title]="chartUnitCountOptions.title!"></apx-chart>
+          </div>
+          <div class="h-full flex flex-col mt-10">
+            <app-icon-button
+              [ngClass]="{ 'text-primary': isSelectedChartType(ChartType.LINE, 'unitCountChartType') }"
+              (click)="updateChartType(ChartType.LINE, 'unitCountChart', 'unitCountChartType')"
+              class="text-primary"
+              icon="LINE_CHART" />
+            <app-icon-button
+              [ngClass]="{ 'text-primary': isSelectedChartType(ChartType.BAR, 'unitCountChartType') }"
+              (click)="updateChartType(ChartType.BAR, 'unitCountChart', 'unitCountChartType')"
+              icon="BAR_CHART" />
+            <app-icon-button
+              [ngClass]="{ 'text-primary': isSelectedChartType(ChartType.AREA, 'unitCountChartType') }"
+              (click)="updateChartType(ChartType.AREA, 'unitCountChart', 'unitCountChartType')"
+              icon="AREA_CHART" />
+          </div>
+        </div>
+      </div>
+
       <div class="flex flex-col">
         <h1 class="heading text-3xl self-center text-primary border-secondary font-semibold inline-block">
           {{ lang.map.transactions_value }}
         </h1>
-        <!--        <div class="flex">-->
-        <!--          <div class="flex-auto"></div>-->
-        <!--          <div class="grid grid-cols-4 gap-2">-->
-        <!--            <app-button-->
-        <!--              (click)="updateChartDuration(DurationTypes.YEARLY)"-->
-        <!--              [buttonStyle]="transactionCountDuration === DurationTypes.YEARLY ? 'secondary' : 'secondary-outline'"-->
-        <!--              [isRounded]="true"-->
-        <!--              >{{ lang.map.yearly }}</app-button-->
-        <!--            >-->
-        <!--            <app-button-->
-        <!--              (click)="updateChartDuration(DurationTypes.HALFY)"-->
-        <!--              [buttonStyle]="transactionCountDuration === DurationTypes.HALFY ? 'secondary' : 'secondary-outline'"-->
-        <!--              [isRounded]="true"-->
-        <!--              >{{ lang.map.half_yearly }}</app-button-->
-        <!--            >-->
-        <!--            <app-button-->
-        <!--              (click)="updateChartDuration(DurationTypes.QUARTERLY)"-->
-        <!--              [buttonStyle]="transactionCountDuration === DurationTypes.QUARTERLY ? 'secondary' : 'secondary-outline'"-->
-        <!--              [isRounded]="true"-->
-        <!--              >{{ lang.map.quarter_yearly }}</app-button-->
-        <!--            >-->
-        <!--            <app-button-->
-        <!--              (click)="updateChartDuration(DurationTypes.MONTHLY)"-->
-        <!--              [buttonStyle]="transactionCountDuration === DurationTypes.MONTHLY ? 'secondary' : 'secondary-outline'"-->
-        <!--              [isRounded]="true"-->
-        <!--              >{{ lang.map.monthly }}</app-button-->
-        <!--            >-->
-        <!--          </div>-->
-        <!--        </div>-->
+        <div class="flex">
+          <div class="flex-auto"></div>
+          <div class="grid grid-cols-4 gap-2">
+            <app-button
+              (click)="updateChartDuration(DurationTypes.YEARLY, ChartsIndicators.TransactionsValues)"
+              [buttonStyle]="transactionValueDuration === DurationTypes.YEARLY ? 'secondary' : 'secondary-outline'"
+              [isRounded]="true"
+              >{{ lang.map.yearly }}</app-button
+            >
+            <app-button
+              (click)="updateChartDuration(DurationTypes.HALFY, ChartsIndicators.TransactionsValues)"
+              [buttonStyle]="transactionValueDuration === DurationTypes.HALFY ? 'secondary' : 'secondary-outline'"
+              [isRounded]="true"
+              >{{ lang.map.half_yearly }}</app-button
+            >
+            <app-button
+              (click)="updateChartDuration(DurationTypes.QUARTERLY, ChartsIndicators.TransactionsValues)"
+              [buttonStyle]="transactionValueDuration === DurationTypes.QUARTERLY ? 'secondary' : 'secondary-outline'"
+              [isRounded]="true"
+              >{{ lang.map.quarter_yearly }}</app-button
+            >
+            <app-button
+              (click)="updateChartDuration(DurationTypes.MONTHLY, ChartsIndicators.TransactionsValues)"
+              [buttonStyle]="transactionValueDuration === DurationTypes.MONTHLY ? 'secondary' : 'secondary-outline'"
+              [isRounded]="true"
+              >{{ lang.map.monthly }}</app-button
+            >
+          </div>
+        </div>
         <div class="flex">
           <div dir="ltr" class="flex-auto">
             <apx-chart
