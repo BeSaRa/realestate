@@ -268,7 +268,7 @@ const pieChartOptions: PieChartOptions = {
     AppColors.GRAY,
     AppColors.GREEN_LIGHT,
     AppColors.GRAY_LIGHT,
-    AppColors.BLACK,
+    AppColors.PRIMARY_LIGHT,
   ],
 
   responsive: [

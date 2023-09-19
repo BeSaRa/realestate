@@ -268,5 +268,117 @@
           [title]="areasChartOptions.title!" />
       </div>
     </div>
+
+    <div class="mt-8 py-8 px-3 lg:px-16 bg-sand grid grid-cols-1 lg:grid-cols-2 gap-2">
+      <div class="py-5">
+        <div class="shadow-lg rounded-lg overflow-hidden bg-white">
+          <div class="bg-primary p-4 flex justify-center items-center">
+            <span class="text-white text-center text-lg sm:text-xl font-semibold"
+              >{{ lang.map.ownerships_count_per_owner_category }} ({{
+                lookupService.ownerNationalityMap[selectedNationalityId].getNames()
+              }})
+            </span>
+          </div>
+          <div dir="ltr" class="flex justify-center">
+            <apx-chart
+              #ownerTypeChart
+              [series]="ownerTypeChartOptions.series"
+              [labels]="ownerTypeChartOptions.labels"
+              [responsive]="ownerTypeChartOptions.responsive!"
+              [chart]="ownerTypeChartOptions.chart"
+              [legend]="ownerTypeChartOptions.legend!"
+              [colors]="ownerTypeChartOptions.colors!" />
+          </div>
+        </div>
+      </div>
+      <div class="py-5">
+        <div class="shadow-lg rounded-lg overflow-hidden bg-white">
+          <div class="bg-primary p-4 flex justify-center items-center">
+            <span class="text-white text-center text-lg sm:text-xl font-semibold"
+              >{{ lang.map.ownerships_count_per_owner_age }} ({{
+                lookupService.ownerNationalityMap[selectedNationalityId].getNames()
+              }})
+            </span>
+          </div>
+          <div dir="ltr" class="flex justify-center">
+            <apx-chart
+              #ageCategoryChart
+              [series]="ageCategoryChartOptions.series"
+              [labels]="ageCategoryChartOptions.labels"
+              [responsive]="ageCategoryChartOptions.responsive!"
+              [chart]="ageCategoryChartOptions.chart"
+              [legend]="ageCategoryChartOptions.legend!"
+              [colors]="ageCategoryChartOptions.colors!" />
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div *ngIf="isSelectedTab('statistical_reports_for_ownership')" class="flex flex-col">
+    <div class="mt-8 py-8 px-3 lg:px-16 bg-sand grid grid-cols-1 lg:grid-cols-2 gap-2">
+      <div class="py-5">
+        <div class="shadow-lg rounded-lg overflow-hidden bg-white">
+          <div class="bg-primary p-4 flex justify-center items-center">
+            <span class="text-white text-center text-lg sm:text-xl font-semibold"
+              >{{ lang.map.ownerships_count_per_owner_sex }}
+            </span>
+          </div>
+          <div dir="ltr" class="flex justify-center">
+            <apx-chart
+              #genderChart
+              [series]="genderChartOptions.series"
+              [labels]="genderChartOptions.labels"
+              [responsive]="genderChartOptions.responsive!"
+              [chart]="genderChartOptions.chart"
+              [legend]="genderChartOptions.legend!"
+              [colors]="genderChartOptions.colors!" />
+          </div>
+        </div>
+      </div>
+      <div class="py-5">
+        <div class="shadow-lg rounded-lg overflow-hidden bg-white">
+          <div class="bg-primary p-4 flex justify-center items-center">
+            <span class="text-white text-center text-lg sm:text-xl font-semibold"
+              >{{ lang.map.ownerships_count_per_owner_age_summary }}
+            </span>
+          </div>
+          <div dir="ltr" class="flex justify-center">
+            <apx-chart
+              #ageCategorySummaryChart
+              [series]="ageCategorySummaryChartOptions.series"
+              [labels]="ageCategorySummaryChartOptions.labels"
+              [responsive]="ageCategorySummaryChartOptions.responsive!"
+              [chart]="ageCategorySummaryChartOptions.chart"
+              [legend]="ageCategorySummaryChartOptions.legend!"
+              [colors]="ageCategorySummaryChartOptions.colors!" />
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="p-16 flex flex-col">
+      <div class="flex justify-start">
+        <h3 class="text-3xl mb-4 text-primary border-secondary font-semibold">
+          {{ lang.map.ownerships_count_per_owner_category_summary }}
+        </h3>
+      </div>
+
+      <div class="flex-auto" dir="ltr">
+        <apx-chart
+          #ownerTypeSummaryChart
+          [series]="ownerTypeSummaryChartOptions.series!"
+          [chart]="ownerTypeSummaryChartOptions.chart!"
+          [xaxis]="ownerTypeSummaryChartOptions.xaxis!"
+          [stroke]="ownerTypeSummaryChartOptions.stroke!"
+          [colors]="ownerTypeSummaryChartOptions.colors!"
+          [dataLabels]="ownerTypeSummaryChartOptions.dataLabels!"
+          [legend]="ownerTypeSummaryChartOptions.legend!"
+          [markers]="ownerTypeSummaryChartOptions.markers!"
+          [grid]="ownerTypeSummaryChartOptions.grid!"
+          [yaxis]="ownerTypeSummaryChartOptions.yaxis!"
+          [tooltip]="ownerTypeSummaryChartOptions.tooltip!"
+          [plotOptions]="ownerTypeSummaryChartOptions.plotOptions!"
+          [title]="ownerTypeSummaryChartOptions.title!" />
+      </div>
+    </div>
   </div>
 </div>

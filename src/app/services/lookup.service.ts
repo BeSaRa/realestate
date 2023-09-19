@@ -55,6 +55,10 @@ export class LookupService extends RegisterServiceMixin(class {}) implements Ser
 
   ownerOwnerCategoryMap: Record<number, Lookup> = {};
 
+  ownerAgeCategoryMap: Record<number, Lookup> = {};
+
+  ownerGenderMap: Record<number, Lookup> = {};
+
   @CastResponse(() => LookupsMap, {
     shape: {
       'districtList.*': () => Lookup,
@@ -108,6 +112,8 @@ export class LookupService extends RegisterServiceMixin(class {}) implements Ser
       'furnitureStatusList.*': () => Lookup,
       'nationalityList.*': () => Lookup,
       'ownerCategoryList.*': () => Lookup,
+      'ageCategoryList.*': () => Lookup,
+      'genderList.*': () => Lookup,
     },
   })
   _loadOwnerLookups(): Observable<LookupsMap> {
@@ -185,6 +191,10 @@ export class LookupService extends RegisterServiceMixin(class {}) implements Ser
         }),
         tap((res) => {
           this.ownerOwnerCategoryMap = this._initializeOwnerCategoryMap(res[3]);
+        }),
+        tap((res) => {
+          this.ownerAgeCategoryMap = this._initializeAgeCategoryMap(res[3]);
+          this.ownerGenderMap = this._initializeGenderMap(res[3]);
         })
       );
   }
@@ -233,6 +243,18 @@ export class LookupService extends RegisterServiceMixin(class {}) implements Ser
 
   private _initializeOwnerCategoryMap(lookups: LookupsMap) {
     return lookups.ownerCategoryList.reduce((acc, i) => {
+      return { ...acc, [i.lookupKey]: i };
+    }, {});
+  }
+
+  private _initializeAgeCategoryMap(lookups: LookupsMap) {
+    return lookups.ageCategoryList.reduce((acc, i) => {
+      return { ...acc, [i.lookupKey]: i };
+    }, {});
+  }
+
+  private _initializeGenderMap(lookups: LookupsMap) {
+    return lookups.genderList.reduce((acc, i) => {
       return { ...acc, [i.lookupKey]: i };
     }, {});
   }
