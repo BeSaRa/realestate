@@ -61,7 +61,11 @@
       [label]="lang.map.duration"
       [options]="durations" />
 
-    <app-select-input *ngIf="!displayRange" formControlName="issueDateYear" [label]="lang.map.year" [options]="years" />
+    <app-select-input
+      *ngIf="!displayRange && !isOwner()"
+      formControlName="issueDateYear"
+      [label]="lang.map.year"
+      [options]="years" />
 
     <app-select-input
       *ngIf="displayHalf && !isOwner()"

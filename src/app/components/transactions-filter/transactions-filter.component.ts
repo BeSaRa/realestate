@@ -356,32 +356,32 @@ export class TransactionsFilterComponent implements OnInit, OnDestroy {
   }
   // until edit from be
   listenToNationalityChange(): void {
-    this.nationalityCode.valueChanges.pipe(takeUntil(this.destroy$)).subscribe((value: number[]) => {
-      this.nationalities.forEach((item) => {
-        (value ?? []).includes(-1)
-          ? item.lookupKey !== -1
-            ? (item.disabled = true)
-            : (item.disabled = false)
-          : (item.disabled = false);
-      });
-      this.nationalityCode.patchValue(value.includes(-1) ? [-1] : value.filter((item) => item !== -1), {
-        emitEvent: false,
-      });
+    this.nationalityCode.valueChanges.pipe(takeUntil(this.destroy$)).subscribe((value: number) => {
+      // this.nationalities.forEach((item) => {
+      //   (value ?? []).includes(-1)
+      //     ? item.lookupKey !== -1
+      //       ? (item.disabled = true)
+      //       : (item.disabled = false)
+      //     : (item.disabled = false);
+      // });
+      // this.nationalityCode.patchValue(value.includes(-1) ? [-1] : value.filter((item) => item !== -1), {
+      //   emitEvent: false,
+      // });
     });
   }
 
   listenToOwnerCategoryChange(): void {
-    this.ownerCategoryCode.valueChanges.pipe(takeUntil(this.destroy$)).subscribe((value: number[]) => {
-      this.ownerTypes.forEach((item) => {
-        (value ?? []).includes(-1)
-          ? item.lookupKey !== -1
-            ? (item.disabled = true)
-            : (item.disabled = false)
-          : (item.disabled = false);
-      });
-      this.ownerCategoryCode.patchValue(value.includes(-1) ? [-1] : value.filter((item) => item !== -1), {
-        emitEvent: false,
-      });
+    this.ownerCategoryCode.valueChanges.pipe(takeUntil(this.destroy$)).subscribe((value: number) => {
+      // this.ownerTypes.forEach((item) => {
+      //   (value ?? []).includes(-1)
+      //     ? item.lookupKey !== -1
+      //       ? (item.disabled = true)
+      //       : (item.disabled = false)
+      //     : (item.disabled = false);
+      // });
+      // this.ownerCategoryCode.patchValue(value.includes(-1) ? [-1] : value.filter((item) => item !== -1), {
+      //   emitEvent: false,
+      // });
     });
   }
 
@@ -639,12 +639,14 @@ export class TransactionsFilterComponent implements OnInit, OnDestroy {
       !Object.prototype.hasOwnProperty.call(value, 'areaTo');
     return enable;
   }
+
   private _enableChangeRealestateValueMinMaxValues(value: any): boolean {
     const enable =
       !Object.prototype.hasOwnProperty.call(value, 'realEstateValueFrom') &&
       !Object.prototype.hasOwnProperty.call(value, 'realEstateValueTo');
     return enable;
   }
+
   private _enableChangeRentPaymentMonthlyMinMaxValues(value: any): boolean {
     const enable =
       !Object.prototype.hasOwnProperty.call(value, 'rentPaymentMonthlyPerUnitFrom') &&
