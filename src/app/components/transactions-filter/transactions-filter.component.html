@@ -124,25 +124,25 @@
       <mat-date-range-picker touchUi class="hidden" #dateRange></mat-date-range-picker>
     </app-input>
 
+    <!-- [isMultiple]="true" should be added -->
     <app-select-input
       *ngIf="isOwner()"
       [enableFilter]="true"
       bindFilter="getNames"
       formControlName="nationalityCode"
-      [isMultiple]="true"
       bindValue="lookupKey"
       [label]="lang.map.nationality"
       bindLabel="getNames"
       [options]="nationalities" />
 
     <ng-container *ngIf="isOpened">
+      <!-- [isMultiple]="true" should be added -->
       <app-select-input
         *ngIf="isOwner()"
         [isSecondary]="true"
         [enableFilter]="true"
         bindFilter="getNames"
         formControlName="ownerCategoryCode"
-        [isMultiple]="true"
         bindValue="lookupKey"
         [label]="lang.map.owner_type"
         bindLabel="getNames"

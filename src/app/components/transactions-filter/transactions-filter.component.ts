@@ -289,8 +289,8 @@ export class TransactionsFilterComponent implements OnInit, OnDestroy {
       unit: this.unitsService.selectedUnit(),
       bedRoomsCount: undefined,
       furnitureStatus: this.furnitureStatus.length ? -1 : undefined,
-      nationalityCode: [-1],
-      ownerCategoryCode: [-1],
+      nationalityCode: -1,
+      ownerCategoryCode: -1,
     });
     this.sendFilter(CriteriaType.DEFAULT);
   }
@@ -601,9 +601,9 @@ export class TransactionsFilterComponent implements OnInit, OnDestroy {
       delete value.issueDateTo;
       delete value.unit;
 
-      // temporarly
-      delete value.nationalityCode;
-      delete value.ownerCategoryCode;
+      // // temporarly
+      // delete value.nationalityCode;
+      // delete value.ownerCategoryCode;
     }
     Object.keys(value).forEach((key) => {
       if (typeof value[key] === 'string' && value[key] === '') delete value[key];
