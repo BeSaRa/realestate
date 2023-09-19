@@ -1,4 +1,5 @@
 export interface LangKeysContract {
+  seller: string;
   mortgaged_for: string;
   mortgage_transactions_list: string;
   total_mortgage_transactions: string;
