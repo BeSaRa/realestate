@@ -260,8 +260,8 @@ export class TransactionsFilterComponent implements OnInit, OnDestroy {
     this.listenToFormChanges();
     this.listenToIssueYearChange();
     this.listenToUnitChange();
-    this.listenToNationalityChange();
-    this.listenToOwnerCategoryChange();
+    // this.listenToNationalityChange(); // it needs edit from be
+    // this.listenToOwnerCategoryChange(); // it needs edit from be
     this.setDefaultValues();
   }
 
@@ -354,7 +354,7 @@ export class TransactionsFilterComponent implements OnInit, OnDestroy {
       });
     });
   }
-
+  // until edit from be
   listenToNationalityChange(): void {
     this.nationalityCode.valueChanges.pipe(takeUntil(this.destroy$)).subscribe((value: number[]) => {
       this.nationalities.forEach((item) => {
