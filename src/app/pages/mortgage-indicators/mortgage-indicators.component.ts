@@ -242,7 +242,6 @@ export default class MortgageIndicatorsComponent implements OnInit {
         {
           title: {
             formatter: (seriesName) => {
-              console.log('first series name: ', seriesName);
               return seriesName;
             },
           },
@@ -251,7 +250,6 @@ export default class MortgageIndicatorsComponent implements OnInit {
         {
           title: {
             formatter: (seriesName) => {
-              console.log('second series name: ', seriesName);
               return seriesName;
             },
           },
@@ -260,7 +258,6 @@ export default class MortgageIndicatorsComponent implements OnInit {
         {
           title: {
             formatter: (seriesName) => {
-              console.log('third series name: ', seriesName);
               return seriesName;
             },
           },
@@ -317,7 +314,6 @@ export default class MortgageIndicatorsComponent implements OnInit {
         {
           title: {
             formatter: (seriesName) => {
-              console.log('first series name: ', seriesName);
               return seriesName;
             },
           },
@@ -326,7 +322,6 @@ export default class MortgageIndicatorsComponent implements OnInit {
         {
           title: {
             formatter: (seriesName) => {
-              console.log('second series name: ', seriesName);
               return seriesName;
             },
           },
@@ -335,7 +330,6 @@ export default class MortgageIndicatorsComponent implements OnInit {
         {
           title: {
             formatter: (seriesName) => {
-              console.log('third series name: ', seriesName);
               return seriesName;
             },
           },
@@ -417,12 +411,8 @@ export default class MortgageIndicatorsComponent implements OnInit {
   ngOnInit() {}
 
   filterChange($event: { criteria: CriteriaContract; type: CriteriaType }): void {
-    console.log('$event: ', $event);
-
     this.criteria = $event;
     this.dashboardService.loadMortgageRoots(this.criteria.criteria).subscribe((values) => {
-      console.log('values: ', values);
-
       this.rootKpis.map((item, index) => {
         item.value = (values[index] && values[index].kpiVal) || 0;
         item.yoy = (values[index] && values[index].kpiYoYVal) || 0;
@@ -440,7 +430,6 @@ export default class MortgageIndicatorsComponent implements OnInit {
       .loadMortgageTransactionCountChart(this.criteria.criteria, this.transactionCountDuration)
       .subscribe((value) => {
         this.transactionCount = this.arrangeMortgageChartsData(value);
-        console.log({ transactionCount: value });
         this.updateTransactionCountChart();
       });
   }
@@ -448,7 +437,6 @@ export default class MortgageIndicatorsComponent implements OnInit {
   loadMortgageTransactionValueChart(): void {
     this.dashboardService.loadMortgageTransactionValueChart(this.criteria.criteria, this.transactionValueDuration).subscribe((value) => {
       this.transactionValues = this.arrangeMortgageChartsData(value);
-      console.log({ transactionValues: value });
       this.updateTransactionValueChart();
     });
   }
@@ -458,7 +446,6 @@ export default class MortgageIndicatorsComponent implements OnInit {
       .loadMortgageUnitCountChart(this.criteria.criteria, this.unitsCountDuration)
       .subscribe((value) => {
         this.unitCount = this.arrangeMortgageChartsData(value);
-        console.log({ unitCount: value });
         this.updateUnitCountChart();
       });
   }
@@ -471,7 +458,6 @@ export default class MortgageIndicatorsComponent implements OnInit {
         ? Object.keys(this.transactionCount).slice(-8)
         : Object.keys(this.transactionCount);
     let mort = xaxis.reduce((acc, year) => {
-      // console.log(this.lineChartData[year]);
       return [...acc].concat(
         (this.transactionCount &&
           this.transactionCount[year].filter((item) => item.actionType === TransactionType.MORTGAGE)) ||
@@ -479,7 +465,6 @@ export default class MortgageIndicatorsComponent implements OnInit {
       );
     }, [] as KpiDurationModel[]);
     let sell = xaxis.reduce((acc, year) => {
-      // console.log(this.lineChartData[year]);
       return [...acc].concat(
         (this.transactionCount &&
           this.transactionCount[year].filter((item) => item.actionType === TransactionType.SELL)) ||
@@ -519,7 +504,6 @@ export default class MortgageIndicatorsComponent implements OnInit {
     const xaxis =
       Object.keys(this.unitCount).length > 8 ? Object.keys(this.unitCount).slice(-8) : Object.keys(this.unitCount);
     let mort = xaxis.reduce((acc, year) => {
-      // console.log(this.lineChartData[year]);
       return [...acc].concat(
         (this.unitCount &&
           this.unitCount[year].filter((item) => true /*item.actionType === TransactionType.MORTGAGE*/)) ||
@@ -527,14 +511,10 @@ export default class MortgageIndicatorsComponent implements OnInit {
       );
     }, [] as KpiDurationModel[]);
     let sell = xaxis.reduce((acc, year) => {
-      // console.log(this.lineChartData[year]);
       return [...acc].concat(
         (this.unitCount && this.unitCount[year].filter((item) => item.actionType === TransactionType.SELL)) || []
       );
     }, [] as KpiDurationModel[]);
-
-    console.log('updateUnitCountChart mort: ', mort);
-    console.log('updateUnitCountChart sell: ', sell);
 
     this.unitCountChart
       .updateOptions({
@@ -568,7 +548,6 @@ export default class MortgageIndicatorsComponent implements OnInit {
     const xaxis =
       Object.keys(this.transactionValues).length > 8 ? Object.keys(this.transactionValues).slice(-8) : Object.keys(this.transactionValues);
     let mort = xaxis.reduce((acc, year) => {
-      // console.log(this.lineChartData[year]);
       return [...acc].concat(
         (this.transactionValues &&
           this.transactionValues[year].filter((item) => true /*item.actionType === TransactionType.MORTGAGE*/)) ||
@@ -576,14 +555,10 @@ export default class MortgageIndicatorsComponent implements OnInit {
       );
     }, [] as KpiDurationModel[]);
     let sell = xaxis.reduce((acc, year) => {
-      // console.log(this.lineChartData[year]);
       return [...acc].concat(
         (this.transactionValues && this.transactionValues[year].filter((item) => item.actionType === TransactionType.SELL)) || []
       );
     }, [] as KpiDurationModel[]);
-
-    console.log('updateTransactionValueChart mort: ', mort);
-    console.log('updateTransactionValueChart sell: ', sell);
 
     this.transactionValueChart
       .updateOptions({
