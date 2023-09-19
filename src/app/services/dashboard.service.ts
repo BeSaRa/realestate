@@ -68,10 +68,6 @@ export class DashboardService extends RegisterServiceMixin(class {}) implements 
       this.http.post<KpiModel[]>(this.urlService.URLS.MORT_KPI5, criteria),
     ]).pipe(
       map(([first, second, third]) => {
-        console.log('first kpi: ', first);
-        console.log('second kpi: ', second);
-        console.log('third kpi: ', third);
-
         return [first[0], second[0], third[0]];
       })
     );
@@ -270,10 +266,8 @@ export class DashboardService extends RegisterServiceMixin(class {}) implements 
       .post<KpiDurationModel[]>(this.getSelectedDurationString(this.urlService.URLS.MORT_KPI2, duration), criteria)
       .pipe(
         map((values) => {
-          console.log('loadMortgageTransactionCountChart: ', values);
           values = values.sort((a, b) => a.actionType - b.actionType);
           values = values.sort((a, b) => a.issueYear - b.issueYear);
-          console.log('after sort values: ', values);
           return values;
           // return values.reduce((acc, item) => {
           //   if (
@@ -305,11 +299,9 @@ export class DashboardService extends RegisterServiceMixin(class {}) implements 
       .post<KpiDurationModel[]>(this.getSelectedDurationString(this.urlService.URLS.MORT_KPI6, duration), criteria)
       .pipe(
         map((values) => {
-          console.log('loadMortgageUnitCountChart: ', values);
           //values = values.sort((a, b) => a.actionType - b.actionType);
           values = values.sort((a, b) => a.issuePeriod - b.issuePeriod);
           values = values.sort((a, b) => a.issueYear - b.issueYear);
-          console.log('after sort values: ', values);
           return values;
           // return values.reduce((acc, item) => {
           //   if (!Object.prototype.hasOwnProperty.call(acc, item.issueYear)) {
@@ -330,13 +322,11 @@ export class DashboardService extends RegisterServiceMixin(class {}) implements 
       .post<KpiDurationModel[]>(this.getSelectedDurationString(this.urlService.URLS.MORT_KPI4, duration), criteria)
       .pipe(
         map((values) => {
-          console.log('loadMortgageUnitCountChart: ', values);
           //values = values.sort((a, b) => a.actionType - b.actionType);
           
           
           values = values.sort((a, b) => a.issuePeriod - b.issuePeriod);
           values = values.sort((a, b) => a.issueYear - b.issueYear);
-          console.log('after sort values: ', values);
           return values;
           // return values.reduce((acc, item) => {
           //   if (item.issueYear) {
@@ -365,11 +355,6 @@ export class DashboardService extends RegisterServiceMixin(class {}) implements 
           // }, {} as Record<string, KpiDurationModel[]>);
         })
       )
-      .pipe(
-        tap((reducedValues) => {
-          console.log('loadMortgageUnitCountChart reducedValues: ', reducedValues);
-        })
-      );
   }
 
   @CastResponse(() => OwnershipCountNationality)
