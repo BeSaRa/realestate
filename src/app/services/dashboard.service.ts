@@ -37,7 +37,7 @@ import { SellTransactionPurpose } from '@models/sell-transaction-purpose';
 import { UrlService } from '@services/url.service';
 import { chunks, minMaxAvg, range } from '@utils/utils';
 import { CastResponse } from 'cast-response';
-import { forkJoin, map, Observable } from 'rxjs';
+import { forkJoin, map, Observable, takeWhile, tap } from 'rxjs';
 import { DialogService } from './dialog.service';
 import { TranslationService } from './translation.service';
 
@@ -68,6 +68,10 @@ export class DashboardService extends RegisterServiceMixin(class {}) implements 
       this.http.post<KpiModel[]>(this.urlService.URLS.MORT_KPI5, criteria),
     ]).pipe(
       map(([first, second, third]) => {
+        console.log('first kpi: ', first);
+        console.log('second kpi: ', second);
+        console.log('third kpi: ', third);
+
         return [first[0], second[0], third[0]];
       })
     );
@@ -256,18 +260,34 @@ export class DashboardService extends RegisterServiceMixin(class {}) implements 
   loadMortgageTransactionCountChart(
     criteria: Partial<MortgageCriteriaContract>,
     duration: DurationEndpoints = DurationEndpoints.YEARLY
-  ): Observable<Record<number, KpiModel[]>> {
+  ): Observable<KpiDurationModel[]> {
     return this.http
-      .post<KpiModel[]>(this.getSelectedDurationString(this.urlService.URLS.MORT_KPI2, duration), criteria)
+      .post<KpiDurationModel[]>(this.getSelectedDurationString(this.urlService.URLS.MORT_KPI2, duration), criteria)
       .pipe(
         map((values) => {
-          return values.reduce((acc, item) => {
-            if (!Object.prototype.hasOwnProperty.call(acc, item.issueYear)) {
-              acc[item.issueYear] = [];
-            }
-            acc[item.issueYear].push(item);
-            return { ...acc };
-          }, {} as Record<number, KpiModel[]>);
+          console.log('loadMortgageTransactionCountChart: ', values);
+          values = values.sort((a, b) => a.actionType - b.actionType);
+          values = values.sort((a, b) => a.issueYear - b.issueYear);
+          console.log('after sort values: ', values);
+          return values;
+          // return values.reduce((acc, item) => {
+          //   if (
+          //     !Object.prototype.hasOwnProperty.call(
+          //       acc,
+          //       !item.issuePeriod
+          //         ? item.issueYear.toString()
+          //         : item.issueYear.toString() + '_' + item.issuePeriod.toString()
+          //     )
+          //   ) {
+          //     !item.issuePeriod
+          //       ? (acc[item.issueYear] = [])
+          //       : (acc[item.issueYear.toString() + '_' + item.issuePeriod.toString()] = []);
+          //   }
+          //   !item.issuePeriod
+          //     ? acc[item.issueYear].push(item)
+          //     : acc[item.issueYear.toString() + '_' + item.issuePeriod.toString()].push(item);
+          //   return { ...acc };
+          // }, {} as Record<string, KpiDurationModel[]>);
         })
       );
   }
@@ -275,18 +295,74 @@ export class DashboardService extends RegisterServiceMixin(class {}) implements 
   loadMortgageTransactionValueChart(
     criteria: Partial<MortgageCriteriaContract>,
     duration: DurationEndpoints = DurationEndpoints.YEARLY
-  ): Observable<Record<number, KpiBaseModel[]>> {
+  ): Observable<KpiDurationModel[]> {
     return this.http
-      .post<KpiBaseModel[]>(this.getSelectedDurationString(this.urlService.URLS.MORT_KPI6, duration), criteria)
+      .post<KpiDurationModel[]>(this.getSelectedDurationString(this.urlService.URLS.MORT_KPI6, duration), criteria)
       .pipe(
         map((values) => {
-          return values.reduce((acc, item) => {
-            if (!Object.prototype.hasOwnProperty.call(acc, item.issueYear)) {
-              acc[item.issueYear] = [];
-            }
-            acc[item.issueYear].push(item);
-            return { ...acc };
-          }, {} as Record<number, KpiBaseModel[]>);
+          console.log('loadMortgageUnitCountChart: ', values);
+          //values = values.sort((a, b) => a.actionType - b.actionType);
+          values = values.sort((a, b) => a.issuePeriod - b.issuePeriod);
+          values = values.sort((a, b) => a.issueYear - b.issueYear);
+          console.log('after sort values: ', values);
+          return values;
+          // return values.reduce((acc, item) => {
+          //   if (!Object.prototype.hasOwnProperty.call(acc, item.issueYear)) {
+          //     acc[item.issueYear] = [];
+          //   }
+          //   acc[item.issueYear].push(item);
+          //   return { ...acc };
+          // }, {} as Record<number, KpiBaseModel[]>);
+        })
+      );
+  }
+
+  loadMortgageUnitCountChart(
+    criteria: Partial<MortgageCriteriaContract>,
+    duration: DurationEndpoints = DurationEndpoints.YEARLY
+  ): Observable<KpiDurationModel[]> {
+    return this.http
+      .post<KpiDurationModel[]>(this.getSelectedDurationString(this.urlService.URLS.MORT_KPI4, duration), criteria)
+      .pipe(
+        map((values) => {
+          console.log('loadMortgageUnitCountChart: ', values);
+          //values = values.sort((a, b) => a.actionType - b.actionType);
+          
+          
+          values = values.sort((a, b) => a.issuePeriod - b.issuePeriod);
+          values = values.sort((a, b) => a.issueYear - b.issueYear);
+          console.log('after sort values: ', values);
+          return values;
+          // return values.reduce((acc, item) => {
+          //   if (item.issueYear) {
+          //     if (
+          //       !Object.prototype.hasOwnProperty.call(
+          //         acc,
+          //         !item.issuePeriod
+          //           ? item.issueYear.toString()
+          //           : item.issueYear.toString() + '_' + item.issuePeriod.toString()
+          //       )
+          //     ) {
+          //       !item.issuePeriod
+          //         ? (acc[item.issueYear] = [])
+          //         : (acc[item.issueYear.toString() + '_' + item.issuePeriod.toString()] = []);
+          //     }
+          //     !item.issuePeriod
+          //       ? acc[item.issueYear].push(item)
+          //       : acc[item.issueYear.toString() + '_' + item.issuePeriod.toString()].push(item);
+          //     return { ...acc };
+          //   } else {
+          //     this.adapter.setLocale(this.lang.getCurrent().code === 'ar-SA' ? 'ar-EG' : 'en-US');
+          //     const months = this.adapter.getMonthNames('long');
+          //     acc[months[item.issuePeriod - 1]].push(item);
+          //     return { ...acc };
+          //   }
+          // }, {} as Record<string, KpiDurationModel[]>);
+        })
+      )
+      .pipe(
+        tap((reducedValues) => {
+          console.log('loadMortgageUnitCountChart reducedValues: ', reducedValues);
         })
       );
   }
@@ -310,7 +386,7 @@ export class DashboardService extends RegisterServiceMixin(class {}) implements 
         : duration === DurationEndpoints.HALFY
         ? '/halfly'
         : duration === DurationEndpoints.QUARTERLY
-        ? '/quartley'
+        ? '/quarterly'
         : duration === DurationEndpoints.MONTHLY
         ? '/monthly'
         : '')
