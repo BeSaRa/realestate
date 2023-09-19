@@ -69,10 +69,6 @@ export class DashboardService extends RegisterServiceMixin(class {}) implements 
       this.http.post<KpiModel[]>(this.urlService.URLS.MORT_KPI5, criteria),
     ]).pipe(
       map(([first, second, third]) => {
-        console.log('first kpi: ', first);
-        console.log('second kpi: ', second);
-        console.log('third kpi: ', third);
-
         return [first[0], second[0], third[0]];
       })
     );
