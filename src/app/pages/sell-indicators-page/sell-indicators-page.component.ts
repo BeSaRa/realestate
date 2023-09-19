@@ -562,6 +562,8 @@ export default class SellIndicatorsPageComponent implements OnInit {
       .pipe(take(1))
       .pipe(
         map((durationData) => {
+          console.log('durationData: ', durationData);
+
           return this.dashboardService.mapDurationData(
             durationData,
             this.selectedDurationType === DurationEndpoints.HALFY
@@ -571,6 +573,8 @@ export default class SellIndicatorsPageComponent implements OnInit {
         })
       )
       .subscribe((data) => {
+        console.log('data: ', data);
+
         const _chartData = Object.keys(data).map((key) => ({
           name: data[key as unknown as number].period.getNames(),
           data: data[key as unknown as number].kpiValues.map((item) => item.value),
