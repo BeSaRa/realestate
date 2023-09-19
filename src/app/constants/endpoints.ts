@@ -135,6 +135,12 @@ const ownerEndpoints = {
   OWNER_KPI13_1: 'OWNER|kpi13_1/ownership/municipality',
   OWNER_KPI14: 'OWNER|kpi14/ownership/area',
   OWNER_KPI14_1: 'OWNER|kpi14_1/ownership/area',
+  OWNER_KPI15: 'OWNER|kpi15/ownership/owner-category',
+  OWNER_KPI15_1: 'OWNER|kpi15_1/ownership/owner-category',
+  OWNER_KPI16: 'OWNER|kpi16/ownership/age-category',
+  OWNER_KPI18: 'OWNER|kpi18/ownership/gender',
+  OWNER_KPI19: 'OWNER|kpi19/ownership/summary/age-category',
+  OWNER_KPI20: 'OWNER|kpi20/ownership/summary/owner-category',
 };
 
 export const EndPoints = {

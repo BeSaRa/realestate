@@ -594,14 +594,16 @@ export class TransactionsFilterComponent implements OnInit, OnDestroy {
       delete value.zoneId;
     }
     if (this.isOwner()) {
-      console.log(value);
       delete value.issueDateQuarterList;
       delete value.issueDateStartMonth;
       delete value.issueDateEndMonth;
       delete value.issueDateFrom;
       delete value.issueDateTo;
       delete value.unit;
-      console.log(value);
+
+      // temporarly
+      delete value.nationalityCode;
+      delete value.ownerCategoryCode;
     }
     Object.keys(value).forEach((key) => {
       if (typeof value[key] === 'string' && value[key] === '') delete value[key];

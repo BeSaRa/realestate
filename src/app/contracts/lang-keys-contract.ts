@@ -223,10 +223,15 @@ export interface LangKeysContract {
   qatari: string;
   gulf_cooperation_council_countries: string;
   other_nationalities: string;
-  ownerships_count_change_for_nationality: string;
-  ownerships_count_per_municipality: string;
-  ownerships_count_per_area: string;
   and_municipality: string;
   nationality: string;
   owner_type: string;
+  ownerships_count_change_for_nationality: string;
+  ownerships_count_per_municipality: string;
+  ownerships_count_per_area: string;
+  ownerships_count_per_owner_category: string;
+  ownerships_count_per_owner_age: string;
+  ownerships_count_per_owner_sex: string;
+  ownerships_count_per_owner_age_summary: string;
+  ownerships_count_per_owner_category_summary: string;
 }

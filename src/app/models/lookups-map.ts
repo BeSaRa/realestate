@@ -14,6 +14,8 @@ export class LookupsMap implements LookupsContract {
   furnitureStatusList!: Lookup[];
   nationalityList!: Lookup[];
   ownerCategoryList!: Lookup[];
+  ageCategoryList!: Lookup[];
+  genderList!: Lookup[];
   rooms = [
     new Lookup().clone<Lookup>({
       arName: 'ستوديو',

@@ -15,6 +15,7 @@ import {
   ApexTooltip,
   ApexXAxis,
   ApexYAxis,
+  ChartType,
 } from 'ng-apexcharts';
 
 export interface ChartContext {
@@ -105,6 +106,11 @@ export class ChartOptionsModel extends ClonerMixin(class {}) implements PartialC
       type: this.chart?.type ?? 'bar',
       events: { ...(this.chart?.events ?? {}), dataPointSelection: callback },
     };
+    return this;
+  }
+
+  updateChartType(chartType: ChartType) {
+    this.chart && (this.chart.type = chartType);
     return this;
   }
 }
