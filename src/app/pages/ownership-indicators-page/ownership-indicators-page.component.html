@@ -1,19 +1,23 @@
 <app-extra-header class="flex -mt-32 relative text-white text-center">
   <div class="h-60 flex flex-col justify-center" id="logo-side">
-    <h1 class="text-5xl font-semibold">{{ lang.map.qatar_real_estate_platform }}</h1>
-    <h2 class="text-3xl font-semibold">
+    <h1 class="text-3xl sm:text-4xl md:text-5xl font-semibold">{{ lang.map.qatar_real_estate_platform }}</h1>
+    <h2 class="text-xl sm:text-2xl md:text-3xl font-semibold">
       {{ lang.toggleMap.qatar_real_estate_platform }} -
       <span class="text-gray-400 font-normal">({{ lang.map.trial_run }})</span>
     </h2>
-    <h2 class="mt-2 text-3xl font-semibold flex flex-col gap-3 items-center">
-      <span class="w-32 h-[3px] bg-secondary"></span>
-      <span class="text-white">{{ lang.map.real_estate_ownership_indicators }}</span>
+    <h2 class="text-xl sm:text-2xl md:text-3xl font-semibold flex flex-col gap-3 items-center">
+      <span class="text-secondary">{{ lang.map.real_estate_ownership_indicators }}</span>
     </h2>
+    <!-- <div class="flex justify-center mt-5">
+      <app-button size="md" (click)="toggleFilters()" buttonStyle="secondary" [isRounded]="true" [icon]="'FILTER_LIST'">
+        {{ lang.map.search_options }}
+      </app-button>
+    </div> -->
   </div>
 </app-extra-header>
 
 <div class="content-wrapper">
-  <div class="px-16">
+  <div class="p-3 lg:px-16">
     <app-transactions-filter
       indicatorType="owner"
       [municipalities]="municipalities"
@@ -26,33 +30,34 @@
       (enableChangeAreaMinMaxValues)="enableChangeAreaMinMaxValues = $event" />
   </div>
   <div class="flex flex-col">
-    <div class="px-16 mt-5 flex justify-center">
-      <div class="flex justify-center gap-5 w-full lg:w-2/3 xl:w-1/2 text-3xl">
+    <div class="px-3 lg:px-16 mt-5 flex justify-center">
+      <div class="flex justify-center gap-2 lg:gap-5 w-full md:w-3/4 lg:w-2/3 text-lg sm:text-2xl">
         <button
           [ngClass]="{ active: isSelectedTab('ownership_indicators') }"
           (click)="switchTab('ownership_indicators')"
-          class="flex-1 shadow-xl outline-none border border-secondary text-secondary p-5 rounded-2xl [&.active]:bg-secondary [&.active]:text-white [&.active]:ring-2 ring-black">
+          class="flex-1 shadow-xl outline-none border border-secondary font-semibold px-2 py-3 lg:py-4 rounded-2xl [&.active]:bg-secondary [&.active]:text-white [&.active]:ring-2 ring-black">
           {{ lang.map.ownership_indicators }}
         </button>
         <button
           [ngClass]="{ active: isSelectedTab('statistical_reports_for_ownership') }"
           (click)="switchTab('statistical_reports_for_ownership')"
-          class="flex-1 shadow-xl outline-none border border-secondary text-secondary p-5 rounded-2xl [&.active]:bg-secondary [&.active]:text-white [&.active]:ring-2 ring-black">
+          class="flex-1 shadow-xl outline-none border border-secondary font-semibold px-2 py-3 lg:py-4 rounded-2xl [&.active]:bg-secondary [&.active]:text-white [&.active]:ring-2 ring-black">
           {{ lang.map.statistical_reports_for_ownership }}
         </button>
       </div>
     </div>
   </div>
   <div *ngIf="isSelectedTab('ownership_indicators')" class="flex flex-col">
-    <div class="p-16">
+    <div class="py-16 px-3 lg:px-16">
       <div class="flex flex-col">
-        <h3 class="heading text-3xl self-start text-primary border-secondary font-semibold inline-block">
+        <h3
+          class="heading text-xl sm:text-2xl md:text-3xl self-center md:self-start text-center text-primary border-secondary font-semibold">
           {{ lang.map.ownership_transactions_measuring_dashboard }}
           {{ basedOnCriteria }}
         </h3>
 
         <div
-          class="flex-1 my-4 p-4 border border-primary rounded-lg grid grid-cols-1 md:grid-cols-3 justify-center gap-4">
+          class="flex-1 my-4 p-4 border border-secondary rounded-lg grid grid-cols-1 md:grid-cols-3 justify-center gap-4">
           <app-kpi-root
             (itemSelected)="rootItemSelected($event)"
             [showYoy]="false"
@@ -61,64 +66,66 @@
         </div>
       </div>
     </div>
-    <div class="bg-sand p-16">
-      <div class="px-16 flex flex-col justify-center items-center">
-        <div class="flex w-full justify-center">
-          <h3 *ngIf="selectedRoot" class="text-3xl mb-4 text-primary border-secondary font-semibold">
-            {{ selectedRoot.getNames() }} ({{ lang.map.depending_on_use }})
-            {{ basedOnCriteria }}
-          </h3>
-        </div>
-        <!-- <div
-          class="w-5/6 grid grid-cols-3 xl:grid-cols-7 gap-2 xl:gap-0 border-0 xl:border-2 border-secondary overflow-hidden xl:rounded-xl">
+    <div class="bg-sand py-16 px-3 lg:px-16">
+      <div class="flex flex-col justify-center items-center">
+        <h3
+          *ngIf="selectedRoot"
+          class="heading text-xl sm:text-2xl md:text-3xl self-center text-center text-primary border-secondary font-semibold">
+          {{ selectedRoot.getNames() }} ({{ lang.map.depending_on_use }})
+          {{ basedOnCriteria }}
+        </h3>
+
+        <div class="mt-4 sm:hidden w-full grid grid-cols-2 gap-2 overflow-hidden">
           <ng-container *ngFor="let item of purposeKPIS; let i = index">
-            <span class="xl:hidden" *ngIf="i === 6"></span>
             <app-purpose
               [item]="item"
               (click)="purposeSelected(item)"
               class="border-2 rounded-xl overflow-hidden xl:border-0 xl:rounded-none xl:border-e-2 border-secondary xl:last-of-type:border-e-0" />
           </ng-container>
-        </div> -->
-        <div class="w-full grid grid-cols-3 xl:grid-cols-6 border-2 border-secondary overflow-hidden rounded-xl">
+        </div>
+        <div
+          class="mt-4 w-full hidden sm:grid grid-cols-3 xl:grid-cols-6 border-2 border-secondary overflow-hidden rounded-xl">
           <app-purpose
             *ngFor="let item of purposeKPIS; let i = index"
             [item]="item"
-            [showYoy]="false"
             (click)="purposeSelected(item)"
             class="xl:border-e-2 border-secondary last-of-type:border-e-0 {{
               i > 2 ? 'border-t-2 xl:border-t-0' : ''
             }} {{ i % 3 === 2 ? 'border-e-0 xl:border-e-2' : 'border-e-2' }}" />
         </div>
-        <div class="mt-20 w-11/12" dir="ltr">
-          <div class="flex justify-center">
-            <h3 *ngIf="selectedRoot" class="text-3xl mb-4 text-primary border-secondary font-semibold">
-              {{ selectedRoot.getNames() }} ({{ lang.map.depending_on_type }})
-              {{ basedOnCriteria }}
-            </h3>
+
+        <h3
+          *ngIf="selectedRoot"
+          class="heading mt-20 text-xl sm:text-2xl md:text-3xl self-center text-center text-primary border-secondary font-semibold">
+          {{ selectedRoot.getNames() }} ({{ lang.map.depending_on_type }}) {{ basedOnCriteria }}
+        </h3>
+        <div class="mt-4 w-4/6 sm:w-5/6 lg:w-11/12" dir="ltr">
+          <div>
+            <carousel #carousel [arrowsOutside]="true" [margin]="20" [cellWidth]="350">
+              <app-property-block
+                useAssetsFrom="sell"
+                [ignoreLocalImages]="true"
+                class="carousel-cell m-0"
+                *ngFor="let item of propertiesKPIS"
+                [item]="item" />
+            </carousel>
           </div>
-          <carousel #carousel [arrowsOutside]="true" [margin]="20" [cellWidth]="350">
-            <app-property-block
-              useAssetsFrom="sell"
-              [ignoreLocalImages]="true"
-              [showYoy]="false"
-              class="carousel-cell"
-              *ngFor="let item of propertiesKPIS"
-              [item]="item" />
-          </carousel>
         </div>
       </div>
     </div>
-    <div class="flex-1 w-full my-4 p-4 flex justify-center gap-4">
+    <!-- to be uncommented when be fix it -->
+    <!-- <div class="flex-1 w-full my-4 p-4 flex justify-center gap-4">
       <app-kpi-root class="w-full md:w-1/3" [showYoy]="false" [item]="totalOwnershipsRootKpi" />
-    </div>
-    <div class="px-16 flex flex-col">
-      <div class="flex justify-start">
-        <h3 class="text-3xl mb-4 text-primary border-secondary font-semibold">
-          {{ lang.map.distribution_of_ownerships_according_to_nationality }}
-        </h3>
-      </div>
-      <div class="flex justify-center lg:justify-end gap-2">
+    </div> -->
+    <div class="mt-8 px-3 lg:px-16 flex flex-col">
+      <h3
+        class="heading text-xl sm:text-2xl md:text-3xl self-center md:self-start text-center text-primary border-secondary font-semibold">
+        {{ lang.map.distribution_of_ownerships_according_to_nationality }}
+      </h3>
+
+      <div class="mt-4 flex justify-center md:justify-end gap-2">
         <app-button
+          size="sm"
           (click)="updateNationalitiesChartData(NationalityCategories.QATARI)"
           [buttonStyle]="
             selectedNationalityCategory === NationalityCategories.QATARI ? 'secondary' : 'secondary-outline'
@@ -127,12 +134,14 @@
           >{{ lang.map.qatari }}</app-button
         >
         <app-button
+          size="sm"
           (click)="updateNationalitiesChartData(NationalityCategories.GCC)"
           [buttonStyle]="selectedNationalityCategory === NationalityCategories.GCC ? 'secondary' : 'secondary-outline'"
           [isRounded]="true"
           >{{ lang.map.gulf_cooperation_council_countries }}</app-button
         >
         <app-button
+          size="sm"
           (click)="updateNationalitiesChartData(NationalityCategories.OTHER)"
           [buttonStyle]="
             selectedNationalityCategory === NationalityCategories.OTHER ? 'secondary' : 'secondary-outline'
@@ -159,40 +168,42 @@
           [title]="nationalitiesChartOptions.title!" />
       </div>
     </div>
-    <div class="px-16 flex flex-col">
-      <div class="flex justify-start">
-        <h3 class="text-3xl mb-4 text-primary border-secondary font-semibold">
-          {{ lang.map.ownerships_count_change_for_nationality }}
-          ({{ lookupService.ownerNationalityMap[selectedNationalityId].getNames() }})
-        </h3>
-      </div>
-      <div class="flex justify-center lg:justify-end">
-        <div class="grid grid-cols-4 gap-2">
-          <app-button
-            (click)="updateDurationsChartData(DurationTypes.YEARLY)"
-            [buttonStyle]="selectedDurationType === DurationTypes.YEARLY ? 'secondary' : 'secondary-outline'"
-            [isRounded]="true"
-            >{{ lang.map.yearly }}</app-button
-          >
-          <app-button
-            (click)="updateDurationsChartData(DurationTypes.HALFY)"
-            [buttonStyle]="selectedDurationType === DurationTypes.HALFY ? 'secondary' : 'secondary-outline'"
-            [isRounded]="true"
-            >{{ lang.map.half_yearly }}</app-button
-          >
-          <app-button
-            (click)="updateDurationsChartData(DurationTypes.QUARTERLY)"
-            [buttonStyle]="selectedDurationType === DurationTypes.QUARTERLY ? 'secondary' : 'secondary-outline'"
-            [isRounded]="true"
-            >{{ lang.map.quarter_yearly }}</app-button
-          >
-          <app-button
-            (click)="updateDurationsChartData(DurationTypes.MONTHLY)"
-            [buttonStyle]="selectedDurationType === DurationTypes.MONTHLY ? 'secondary' : 'secondary-outline'"
-            [isRounded]="true"
-            >{{ lang.map.monthly }}</app-button
-          >
-        </div>
+    <div class="px-3 lg:px-16 flex flex-col">
+      <h3
+        class="heading text-xl sm:text-2xl md:text-3xl self-center md:self-start text-center text-primary border-secondary font-semibold">
+        {{ lang.map.ownerships_count_change_for_nationality }}
+        ({{ lookupService.ownerNationalityMap[selectedNationalityId].getNames() }})
+      </h3>
+
+      <div class="mt-4 flex justify-center md:justify-end gap-2">
+        <app-button
+          size="sm"
+          (click)="updateDurationsChartData(DurationTypes.YEARLY)"
+          [buttonStyle]="selectedDurationType === DurationTypes.YEARLY ? 'secondary' : 'secondary-outline'"
+          [isRounded]="true"
+          >{{ lang.map.yearly }}</app-button
+        >
+        <app-button
+          size="sm"
+          (click)="updateDurationsChartData(DurationTypes.HALFY)"
+          [buttonStyle]="selectedDurationType === DurationTypes.HALFY ? 'secondary' : 'secondary-outline'"
+          [isRounded]="true"
+          >{{ lang.map.half_yearly }}</app-button
+        >
+        <app-button
+          size="sm"
+          (click)="updateDurationsChartData(DurationTypes.QUARTERLY)"
+          [buttonStyle]="selectedDurationType === DurationTypes.QUARTERLY ? 'secondary' : 'secondary-outline'"
+          [isRounded]="true"
+          >{{ lang.map.quarter_yearly }}</app-button
+        >
+        <app-button
+          size="sm"
+          (click)="updateDurationsChartData(DurationTypes.MONTHLY)"
+          [buttonStyle]="selectedDurationType === DurationTypes.MONTHLY ? 'secondary' : 'secondary-outline'"
+          [isRounded]="true"
+          >{{ lang.map.monthly }}</app-button
+        >
       </div>
 
       <div class="flex-auto" dir="ltr">
@@ -213,13 +224,12 @@
           [title]="durationsChartOptions.title!" />
       </div>
     </div>
-    <div class="px-16 flex flex-col">
-      <div class="flex justify-start">
-        <h3 class="text-3xl mb-4 text-primary border-secondary font-semibold">
-          {{ lang.map.ownerships_count_per_municipality }}
-          ({{ lookupService.ownerNationalityMap[selectedNationalityId].getNames() }})
-        </h3>
-      </div>
+    <div class="px-3 lg:px-16 flex flex-col">
+      <h3
+        class="heading text-xl sm:text-2xl md:text-3xl self-center md:self-start text-center text-primary border-secondary font-semibold">
+        {{ lang.map.ownerships_count_per_municipality }}
+        ({{ lookupService.ownerNationalityMap[selectedNationalityId].getNames() }})
+      </h3>
 
       <div class="flex-auto" dir="ltr">
         <apx-chart
@@ -239,16 +249,14 @@
           [title]="municipalitiesChartOptions.title!" />
       </div>
     </div>
-    <div class="px-16 flex flex-col">
-      <div class="flex justify-start">
-        <h3 class="text-3xl mb-4 text-primary border-secondary font-semibold">
-          {{ lang.map.ownerships_count_per_area }}
-          ({{ lookupService.ownerNationalityMap[selectedNationalityId].getNames() }})
-          {{ lang.map.and_municipality }} ({{
-            lookupService.ownerMunicipalitiesMap[selectedMunicipalityId].getNames()
-          }})
-        </h3>
-      </div>
+    <div class="px-3 lg:px-16 flex flex-col">
+      <h3
+        class="heading text-xl sm:text-2xl md:text-3xl self-center md:self-start text-center text-primary border-secondary font-semibold">
+        {{ lang.map.ownerships_count_per_area }}
+        ({{ lookupService.ownerNationalityMap[selectedNationalityId].getNames() }}) {{ lang.map.and_municipality }} ({{
+          lookupService.ownerMunicipalitiesMap[selectedMunicipalityId].getNames()
+        }})
+      </h3>
 
       <div class="flex-auto" dir="ltr">
         <apx-chart
@@ -355,12 +363,11 @@
         </div>
       </div>
     </div>
-    <div class="p-16 flex flex-col">
-      <div class="flex justify-start">
-        <h3 class="text-3xl mb-4 text-primary border-secondary font-semibold">
-          {{ lang.map.ownerships_count_per_owner_category_summary }}
-        </h3>
-      </div>
+    <div class="mt-8 px-3 lg:px-16 flex flex-col">
+      <h3
+        class="heading text-xl sm:text-2xl md:text-3xl self-center md:self-start text-center text-primary border-secondary font-semibold">
+        {{ lang.map.ownerships_count_per_owner_category_summary }}
+      </h3>
 
       <div class="flex-auto" dir="ltr">
         <apx-chart

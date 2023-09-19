@@ -124,24 +124,28 @@
       <div class="mt-4 flex justify-center md:justify-end">
         <div class="grid grid-cols-4 gap-2">
           <app-button
+            size="sm"
             (click)="updateChartDuration(DurationTypes.YEARLY)"
             [buttonStyle]="selectedDurationType === DurationTypes.YEARLY ? 'secondary' : 'secondary-outline'"
             [isRounded]="true"
             >{{ lang.map.yearly }}</app-button
           >
           <app-button
+            size="sm"
             (click)="updateChartDuration(DurationTypes.HALFY)"
             [buttonStyle]="selectedDurationType === DurationTypes.HALFY ? 'secondary' : 'secondary-outline'"
             [isRounded]="true"
             >{{ lang.map.half_yearly }}</app-button
           >
           <app-button
+            size="sm"
             (click)="updateChartDuration(DurationTypes.QUARTERLY)"
             [buttonStyle]="selectedDurationType === DurationTypes.QUARTERLY ? 'secondary' : 'secondary-outline'"
             [isRounded]="true"
             >{{ lang.map.quarter_yearly }}</app-button
           >
           <app-button
+            size="sm"
             (click)="updateChartDuration(DurationTypes.MONTHLY)"
             [buttonStyle]="selectedDurationType === DurationTypes.MONTHLY ? 'secondary' : 'secondary-outline'"
             [isRounded]="true"
@@ -374,7 +378,6 @@
             <app-button
               class="min-w-max w-max whitespace-nowrap"
               (click)="selectTop10Chart(item)"
-              size="lg"
               [buttonStyle]="item.selected ? 'secondary' : 'none-primary'"
               >{{ item.getNames() }}</app-button
             >
