@@ -485,7 +485,7 @@ export default class RentalIndicatorsPageComponent implements OnInit {
   updateChart(): void {
     if (!this.chart.length) return;
     const _minMaxAvg = minMaxAvg(this.selectedRootChartData.map((item) => item.kpiVal));
-
+    const dataSeries = this.selectedRootChartData;
     this.chart.first
       .updateOptions({
         series: [
@@ -499,6 +499,19 @@ export default class RentalIndicatorsPageComponent implements OnInit {
         },
         colors: [this.appChartTypesService.chartColorsFormatter(_minMaxAvg)],
         ...this.appChartTypesService.yearlyStaticChartOptions,
+        tooltip: {
+          shared: false,
+          custom: ({ series, seriesIndex, dataPointIndex, w }: any) =>
+            this.customChartTooltip(
+              {
+                series,
+                seriesIndex,
+                dataPointIndex,
+                w,
+              },
+              dataSeries
+            ),
+        },
       })
       .then();
     this.updateChartType(ChartType.BAR);
@@ -527,6 +540,19 @@ export default class RentalIndicatorsPageComponent implements OnInit {
             ],
             colors: [this.appChartTypesService.chartColorsFormatter(_minMaxAvg)],
             ...this.appChartTypesService.monthlyStaticChartOptions,
+            tooltip: {
+              shared: false,
+              custom: ({ series, seriesIndex, dataPointIndex, w }: any) =>
+                this.customChartTooltip(
+                  {
+                    series,
+                    seriesIndex,
+                    dataPointIndex,
+                    w,
+                  },
+                  data
+                ),
+            },
           })
           .then();
       });
@@ -540,17 +566,20 @@ export default class RentalIndicatorsPageComponent implements OnInit {
         this.criteria.criteria
       )
       .pipe(take(1))
-      .pipe(
-        map((durationData) => {
-          return this.dashboardService.mapDurationData(
-            durationData,
-            this.selectedDurationType === DurationEndpoints.HALFY
-              ? this.lookupService.sellLookups.halfYearDurations
-              : this.lookupService.sellLookups.quarterYearDurations
-          );
-        })
-      )
-      .subscribe((data) => {
+      .subscribe((durationData) => {
+        const data = this.dashboardService.mapDurationData(
+          durationData,
+          this.selectedDurationType === DurationEndpoints.HALFY
+            ? this.lookupService.sellLookups.halfYearDurations
+            : this.lookupService.sellLookups.quarterYearDurations
+        );
+        const tooltipData = this.dashboardService.mapDurationChartData(
+          durationData,
+          this.selectedDurationType === DurationEndpoints.HALFY
+            ? this.lookupService.sellLookups.halfYearDurations
+            : this.lookupService.sellLookups.quarterYearDurations
+        );
+
         const _chartData = Object.keys(data).map((key) => ({
           name: data[key as unknown as number].period.getNames(),
           data: data[key as unknown as number].kpiValues.map((item) => item.value),
@@ -562,9 +591,48 @@ export default class RentalIndicatorsPageComponent implements OnInit {
               categories: data[1].kpiValues.map((v) => v.year),
             },
             ...this.appChartTypesService.halflyAndQuarterlyStaticChartOptions,
+            tooltip: {
+              shared: false,
+              custom: ({ series, seriesIndex, dataPointIndex, w }: any) =>
+                this.customChartTooltip(
+                  {
+                    series,
+                    seriesIndex,
+                    dataPointIndex,
+                    w,
+                  },
+                  tooltipData
+                ),
+            },
           })
           .then();
       });
+  }
+
+  customChartTooltip({ series, seriesIndex, dataPointIndex, w }: any, dataSeries: any) {
+    const durationType = this.selectedDurationType;
+
+    var tooltipData = dataSeries[dataPointIndex];
+    const rentAvg = 100000;
+    if (durationType === this.DurationTypes.HALFY || durationType === this.DurationTypes.QUARTERLY) {
+      tooltipData = dataSeries[seriesIndex + 1].kpiValues[dataPointIndex];
+      // console.log(tooltipData);
+      return this.tooltipListDraw(tooltipData?.issueYear, rentAvg, tooltipData?.kpiP2PYoY, tooltipData?.kpiYoYBaseVal);
+    }
+    return this.tooltipListDraw(tooltipData?.issueYear, rentAvg, tooltipData?.kpiYoYVal, tooltipData?.kpiYoYBaseVal);
+  }
+
+  tooltipListDraw(issueYear?: number, rentAvg?: number, kpiYoYVal?: number, kpiYoYBaseVal?: number) {
+    return `<div><div m-2 p-2 class="grid grid-rows-4 grid-cols-2 gap-1" dir=${this.lang.isLtr ? 'ltr' : 'rtl'}>
+        <span>${this.lang.map.year}</span>
+        <span dir="ltr">${issueYear}</span>
+        <span>${this.lang.map.average_price}</span>
+        <span dir="ltr">${rentAvg}</span>
+        <span>${this.lang.map.yearly}</span>
+        <span dir="ltr">${(kpiYoYVal ?? 0).toFixed(2)}</span>
+        <span>${'مقابل 2019'}</span>
+        <span dir="ltr">${(kpiYoYBaseVal ?? 0).toFixed(2)}</span>
+        </div></div>`;
   }
 
   updateChartType(type: ChartType) {
