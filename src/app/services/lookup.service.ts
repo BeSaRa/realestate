@@ -150,6 +150,8 @@ export class LookupService extends RegisterServiceMixin(class {}) implements Ser
               this._addAllToDistrict(this._addAllToMunicipalities(this._addAllToPropertyType(owner)))
             )
           );
+          // remove unknown district from owner lookups until it removed from be
+          this.ownerLookups.districtList = this.ownerLookups.districtList.filter((item) => item.lookupKey !== 0);
         })
       )
       .pipe(
