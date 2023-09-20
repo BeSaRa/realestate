@@ -59,6 +59,11 @@ export class LookupService extends RegisterServiceMixin(class {}) implements Ser
 
   ownerGenderMap: Record<number, Lookup> = {};
 
+  rentMaxParamsMap: Record<string, Lookup> = {};
+  sellMaxParamsMap: Record<string, Lookup> = {};
+  mortMaxParamsMap: Record<string, Lookup> = {};
+  ownerMaxParamsMap: Record<string, Lookup> = {};
+
   @CastResponse(() => LookupsMap, {
     shape: {
       'districtList.*': () => Lookup,
@@ -68,6 +73,7 @@ export class LookupService extends RegisterServiceMixin(class {}) implements Ser
       'municipalityList.*': () => Lookup,
       'furnitureStatusList.*': () => Lookup,
       'nationalityList.*': () => Lookup,
+      'maxParams.*': () => Lookup,
     },
   })
   _loadRentLookups(): Observable<LookupsMap> {
@@ -82,6 +88,7 @@ export class LookupService extends RegisterServiceMixin(class {}) implements Ser
       'zoneList.*': () => Lookup,
       'municipalityList.*': () => Lookup,
       'nationalityList.*': () => Lookup,
+      'maxParams.*': () => Lookup,
     },
   })
   _loadSellLookups(): Observable<LookupsMap> {
@@ -96,6 +103,7 @@ export class LookupService extends RegisterServiceMixin(class {}) implements Ser
       'zoneList.*': () => Lookup,
       'municipalityList.*': () => Lookup,
       'nationalityList.*': () => Lookup,
+      'maxParams.*': () => Lookup,
     },
   })
   _loadMortLookups(): Observable<LookupsMap> {
@@ -114,6 +122,7 @@ export class LookupService extends RegisterServiceMixin(class {}) implements Ser
       'ownerCategoryList.*': () => Lookup,
       'ageCategoryList.*': () => Lookup,
       'genderList.*': () => Lookup,
+      'maxParams.*': () => Lookup,
     },
   })
   _loadOwnerLookups(): Observable<LookupsMap> {
@@ -152,6 +161,12 @@ export class LookupService extends RegisterServiceMixin(class {}) implements Ser
           );
           // remove unknown district from owner lookups until it removed from be
           this.ownerLookups.districtList = this.ownerLookups.districtList.filter((item) => item.lookupKey !== 0);
+        }),
+        tap((res) => {
+          this.rentMaxParamsMap = this._initializeMaxParamsMap(res[0]);
+          this.sellMaxParamsMap = this._initializeMaxParamsMap(res[1]);
+          this.mortMaxParamsMap = this._initializeMaxParamsMap(res[2]);
+          this.ownerMaxParamsMap = this._initializeMaxParamsMap(res[3]);
         })
       )
       .pipe(
@@ -261,6 +276,14 @@ export class LookupService extends RegisterServiceMixin(class {}) implements Ser
     }, {});
   }
 
+  private _initializeMaxParamsMap(lookups: LookupsMap) {
+    return lookups.maxParams.reduce((acc, i) => {
+      return {
+        ...acc,
+        [i.fieldName]: { id: i.id, fieldName: i.fieldName, minVal: i.minVal, maxVal: i.maxVal, isActive: i.isActive },
+      };
+    }, {});
+  }
   // Temporarily used until back team add all from backend
   private _addAllToPropertyType(lookups: LookupsContract) {
     if (lookups.propertyTypeList.find((p) => p.lookupKey === -1)) return lookups;

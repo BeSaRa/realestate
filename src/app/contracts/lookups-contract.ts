@@ -1,6 +1,7 @@
 import { Lookup } from '@models/lookup';
 
 export interface LookupsContract {
+  maxParams: Lookup[];
   propertyTypeList: Lookup[];
   rentPurposeList: Lookup[];
   zoneList: Lookup[];

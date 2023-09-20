@@ -6,6 +6,11 @@ export class Lookup extends ClonerMixin(GetNamesMixin(class {})) {
   isActive!: boolean;
   municipalityId!: number;
   disabled!: boolean;
+  // for max params
+  fieldName!: string;
+  minVal!: number;
+  maxVal!: number;
+  id!: number;
   // not related to the model
   value = 0;
   yoy = 0;
