@@ -23,6 +23,7 @@ import { KpiDurationModel } from '@models/kpi-duration-model';
 import { KpiModel } from '@models/kpi-model';
 import { KpiRoot } from '@models/kpiRoot';
 import { Lookup } from '@models/lookup';
+import { MortgageTransaction } from '@models/mortgage-transaction';
 import { OwnershipCountNationality } from '@models/ownership-count-nationality';
 import { RentDefaultValues } from '@models/rent-default-values';
 import { RentTop10Model } from '@models/rent-top-10-model';
@@ -33,14 +34,13 @@ import { SellDefaultValues } from '@models/sell-default-values';
 import { SellTop10Model } from '@models/sell-top-10-model';
 import { SellTransaction } from '@models/sell-transaction';
 import { SellTransactionPurpose } from '@models/sell-transaction-purpose';
+import { TransactionListModel } from '@models/transaction-list-model';
 import { UrlService } from '@services/url.service';
-import { chunks, minMaxAvg, range, groupBy } from '@utils/utils';
+import { groupBy, minMaxAvg, range } from '@utils/utils';
 import { CastResponse } from 'cast-response';
 import { forkJoin, map, Observable } from 'rxjs';
 import { DialogService } from './dialog.service';
 import { TranslationService } from './translation.service';
-import { MortgageTransaction } from '@models/mortgage-transaction';
-import { TransactionsList } from '@models/transactions-list';
 
 @Injectable({
   providedIn: 'root',
@@ -127,23 +127,23 @@ export class DashboardService extends RegisterServiceMixin(class {}) implements 
     return this.http.post<SellTransactionPurpose[]>(this.urlService.URLS.SELL_KPI26, criteria);
   }
 
-  @CastResponse(() => TransactionsList, {
-    shape: {
-      'transactionList.*': () => RentTransaction,
-    },
+  @CastResponse(() => TransactionListModel<RentTransaction>, { shape: { 'transactionList.*': () => RentTransaction } })
+  loadRentKpiTransactions(criteria: Partial<CriteriaContract>): Observable<TransactionListModel<RentTransaction>> {
+    return this.http.post<TransactionListModel<RentTransaction>>(this.urlService.URLS.RENT_KPI29, criteria);
+  }
+
+  @CastResponse(() => TransactionListModel<SellTransaction>, { shape: { 'transactionList.*': () => SellTransaction } })
+  loadSellKpiTransactions(criteria: Partial<CriteriaContract>): Observable<TransactionListModel<SellTransaction>> {
+    return this.http.post<TransactionListModel<SellTransaction>>(this.urlService.URLS.SELL_KPI29, criteria);
+  }
+
+  @CastResponse(() => TransactionListModel<MortgageTransaction>, {
+    shape: { 'transactionList.*': () => MortgageTransaction },
   })
-  loadRentKpiTransactions(criteria: Partial<CriteriaContract>): Observable<TransactionsList<RentTransaction>> {
-    return this.http.post<TransactionsList<RentTransaction>>(this.urlService.URLS.RENT_KPI29, criteria);
-  }
-
-  @CastResponse(() => SellTransaction)
-  loadSellKpiTransactions(criteria: Partial<CriteriaContract>): Observable<SellTransaction[]> {
-    return this.http.post<SellTransaction[]>(this.urlService.URLS.SELL_KPI29, criteria);
-  }
-
-  @CastResponse(() => MortgageTransaction)
-  loadMortgageKpiTransactions(criteria: Partial<CriteriaContract>): Observable<MortgageTransaction[]> {
-    return this.http.post<MortgageTransaction[]>(this.urlService.URLS.MORT_KPI7, criteria);
+  loadMortgageKpiTransactions(
+    criteria: Partial<CriteriaContract>
+  ): Observable<TransactionListModel<MortgageTransaction>> {
+    return this.http.post<TransactionListModel<MortgageTransaction>>(this.urlService.URLS.MORT_KPI7, criteria);
   }
 
   @CastResponse(() => RentTop10Model)
