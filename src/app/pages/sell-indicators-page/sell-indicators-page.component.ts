@@ -34,6 +34,7 @@ import { SellTop10Model } from '@models/sell-top-10-model';
 import { SellTransaction } from '@models/sell-transaction';
 import { SellTransactionPurpose } from '@models/sell-transaction-purpose';
 import { TableSortOption } from '@models/table-sort-option';
+import { TransactionListModel } from '@models/transaction-list-model';
 import { FormatNumbersPipe } from '@pipes/format-numbers.pipe';
 import { AppChartTypesService } from '@services/app-chart-types.service';
 import { DashboardService } from '@services/dashboard.service';
@@ -45,7 +46,20 @@ import { minMaxAvg } from '@utils/utils';
 import { CarouselComponent, IvyCarouselModule } from 'angular-responsive-carousel2';
 import { ChartComponent, NgApexchartsModule } from 'ng-apexcharts';
 import { NgxMaskPipe } from 'ngx-mask';
-import { BehaviorSubject, Observable, ReplaySubject, Subject, delay, forkJoin, map, of, switchMap, take, takeUntil } from 'rxjs';
+import {
+  BehaviorSubject,
+  Observable,
+  ReplaySubject,
+  Subject,
+  delay,
+  forkJoin,
+  map,
+  of,
+  switchMap,
+  take,
+  takeUntil,
+  tap,
+} from 'rxjs';
 
 @Component({
   selector: 'app-sell-indicators-page',
@@ -188,10 +202,6 @@ export default class SellIndicatorsPageComponent implements OnInit {
   selectedRoot?: KpiRoot;
   selectedPurpose?: Lookup = this.lookupService.sellLookups.rentPurposeList[0];
 
-  get length() {
-    return this.rootKPIS[0].value;
-  }
-
   get priceList() {
     return this.rootKPIS.filter((item) => item.hasPrice);
   }
@@ -250,6 +260,7 @@ export default class SellIndicatorsPageComponent implements OnInit {
   // transactions = new ReplaySubject<SellTransaction[]>(1);
   transactions$: Observable<SellTransaction[]> = this.loadTransactions();
   dataSource: AppTableDataSource<SellTransaction> = new AppTableDataSource(this.transactions$);
+  transactionsCount = 0;
   transactionsSortOptions: TableSortOption[] = [
     new TableSortOption().clone<TableSortOption>({
       arName: this.lang.getArabicTranslation('most_recent'),
@@ -601,18 +612,17 @@ export default class SellIndicatorsPageComponent implements OnInit {
             switchMap((paginationOptions) => {
               this.criteria.criteria.limit = paginationOptions.limit;
               this.criteria.criteria.offset = paginationOptions.offset;
-              return (
-                this.dashboardService
-                  .loadSellKpiTransactions(this.criteria.criteria)
-              )
+              return this.dashboardService.loadSellKpiTransactions(this.criteria.criteria);
             }),
-            map(list => {
+            tap((transactionsModel) => (this.transactionsCount = transactionsModel.count)),
+            map((transactionsModel) => transactionsModel.transactionList),
+            map((list) => {
               if (this.enableChangerealEstateValueMinMaxValues) {
                 this.minMaxRealestateValue = minMaxAvg(list.map((item) => item.realEstateValue));
               }
               if (this.enableChangeAreaMinMaxValues) {
               }
-              return list
+              return list;
             })
           );
         })
@@ -621,7 +631,6 @@ export default class SellIndicatorsPageComponent implements OnInit {
 
   loadTransactionsBasedOnPurpose(): void {
     this.dashboardService.loadSellTransactionsBasedOnPurpose(this.criteria.criteria).subscribe((values) => {
-
       this.transactionsPurpose = values;
     });
   }

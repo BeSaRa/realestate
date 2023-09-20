@@ -192,9 +192,9 @@
       <app-table
         minWidth="900px"
         (paginate)="paginate($event)"
-        [length]="length"
+        [length]="transactionsCount"
         [dataSource]="dataSource"
-        [sortOptions]="transactionsSortOptions"
+        [sortOptions]="[]"
         [defaultSortOption]="transactionsSortOptions[0]">
         <ng-container appTableColumnTemplate columnName="municipality_id"
           ><span *appTableColumnHeaderTemplate>{{ this.lang.map.municipal }}</span

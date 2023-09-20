@@ -121,6 +121,7 @@ export default class RentalIndicatorsPageComponent implements OnInit {
 
   // transactions = new ReplaySubject<RentTransaction[]>(1);
   transactions$: Observable<RentTransaction[]> = this.loadTransactions();
+  transactionsCount = 0;
   dataSource: AppTableDataSource<RentTransaction> = new AppTableDataSource(this.transactions$);
   transactionsSortOptions: TableSortOption[] = [
     new TableSortOption().clone<TableSortOption>({
@@ -352,10 +353,6 @@ export default class RentalIndicatorsPageComponent implements OnInit {
     'average-square',
     'chart',
   ];
-
-  get length() {
-    return this.rootKPIS[0].value;
-  }
 
   get priceList() {
     return this.rootKPIS.filter((item) => item.hasPrice);
@@ -593,14 +590,16 @@ export default class RentalIndicatorsPageComponent implements OnInit {
               this.criteria.criteria.offset = paginationOptions.offset;
               return this.dashboardService.loadRentKpiTransactions(this.criteria.criteria);
             }),
+            tap((transactionsModel) => (this.transactionsCount = transactionsModel.count)),
+            map((transactionsModel) => transactionsModel.transactionList),
             map((list) => {
               if (this.enableChangeRentPaymentMonthlyMinMaxValues) {
-                this.minMaxRentPaymentMonthly = minMaxAvg(list.transactionList.map((item) => item.rentPaymentMonthly));
+                this.minMaxRentPaymentMonthly = minMaxAvg(list.map((item) => item.rentPaymentMonthly));
               }
               if (this.enableChangeAreaMinMaxValues) {
-                this.minMaxArea = minMaxAvg(list.transactionList.map((item) => item.area));
+                this.minMaxArea = minMaxAvg(list.map((item) => item.area));
               }
-              return list.transactionList;
+              return list;
             })
           );
         })
