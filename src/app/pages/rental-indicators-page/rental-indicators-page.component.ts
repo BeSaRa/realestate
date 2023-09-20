@@ -49,7 +49,21 @@ import { minMaxAvg } from '@utils/utils';
 import { CarouselComponent, IvyCarouselModule } from 'angular-responsive-carousel2';
 import { ChartComponent, NgApexchartsModule } from 'ng-apexcharts';
 import { NgxMaskPipe } from 'ngx-mask';
-import { BehaviorSubject, combineLatest, delay, forkJoin, map, Observable, of, ReplaySubject, Subject, switchMap, take, takeUntil, tap } from 'rxjs';
+import {
+  BehaviorSubject,
+  combineLatest,
+  delay,
+  forkJoin,
+  map,
+  Observable,
+  of,
+  ReplaySubject,
+  Subject,
+  switchMap,
+  take,
+  takeUntil,
+  tap,
+} from 'rxjs';
 import { PageEvent } from '@angular/material/paginator';
 import { DataSource } from '@angular/cdk/collections';
 import { AppTableDataSource } from '@models/app-table-data-source';
@@ -160,7 +174,6 @@ export default class RentalIndicatorsPageComponent implements OnInit {
   top10Chart!: QueryList<ChartComponent>;
   @ViewChildren('pieChart')
   pieChart!: QueryList<ChartComponent>;
-
 
   selectedRootChartData!: KpiModel[];
   DurationTypes = DurationEndpoints;
@@ -339,9 +352,11 @@ export default class RentalIndicatorsPageComponent implements OnInit {
     'average-square',
     'chart',
   ];
+
   get length() {
     return this.rootKPIS[0].value;
   }
+
   get priceList() {
     return this.rootKPIS.filter((item) => item.hasPrice);
   }
@@ -576,19 +591,16 @@ export default class RentalIndicatorsPageComponent implements OnInit {
             switchMap((paginationOptions) => {
               this.criteria.criteria.limit = paginationOptions.limit;
               this.criteria.criteria.offset = paginationOptions.offset;
-              return (
-                this.dashboardService
-                  .loadRentKpiTransactions(this.criteria.criteria)
-              )
+              return this.dashboardService.loadRentKpiTransactions(this.criteria.criteria);
             }),
-            map(list => {
+            map((list) => {
               if (this.enableChangeRentPaymentMonthlyMinMaxValues) {
                 this.minMaxRentPaymentMonthly = minMaxAvg(list.map((item) => item.rentPaymentMonthly));
               }
               if (this.enableChangeAreaMinMaxValues) {
                 this.minMaxArea = minMaxAvg(list.map((item) => item.area));
               }
-              return list
+              return list;
             })
           );
         })
@@ -626,7 +638,7 @@ export default class RentalIndicatorsPageComponent implements OnInit {
       limit: $event.pageSize,
     });
   }
-  
+
   isSelectedTab(tab: string): boolean {
     return this.selectedTab === tab;
   }
@@ -740,6 +752,7 @@ export default class RentalIndicatorsPageComponent implements OnInit {
     purpose.length && generatedTitle.push(purpose);
     return generatedTitle.length ? `(${generatedTitle.join(' , ')})` : '';
   }
+
   protected getSelectedArea(isMuniciRequired: boolean, isZoneRequired: boolean): string {
     const generatedTitle: string[] = [];
     const municipality = isMuniciRequired ? this.getSelectedMunicipality() : '';
@@ -748,6 +761,7 @@ export default class RentalIndicatorsPageComponent implements OnInit {
     district.length && generatedTitle.push(district);
     return generatedTitle.length ? `(${generatedTitle.join(' , ')})` : '';
   }
+
   private getSelectedMunicipality(): string {
     if (this.criteria.criteria.municipalityId === -1) return '';
     return this.lookupService.rentMunicipalitiesMap[this.criteria.criteria.municipalityId].getNames() || '';

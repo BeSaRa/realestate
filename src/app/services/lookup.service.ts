@@ -287,15 +287,15 @@ export class LookupService extends RegisterServiceMixin(class {}) implements Ser
   }
 
   private _addAllToMunicipalities(lookups: LookupsContract) {
-    if (lookups.municipalityList.find((p) => p.lookupKey === -1)) return lookups;
-    lookups.municipalityList = [
-      new Lookup().clone<Lookup>({
-        arName: 'الكل',
-        enName: 'All',
-        lookupKey: -1,
-      }),
-      ...lookups.municipalityList,
-    ];
+    // if (lookups.municipalityList.find((p) => p.lookupKey === -1)) return lookups;
+    // lookups.municipalityList = [
+    //   new Lookup().clone<Lookup>({
+    //     arName: 'الكل',
+    //     enName: 'All',
+    //     lookupKey: -1,
+    //   }),
+    //   ...lookups.municipalityList,
+    // ];
     return lookups;
   }
 
