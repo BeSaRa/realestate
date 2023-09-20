@@ -7,6 +7,7 @@ import {
   ApexLegend,
   ApexMarkers,
   ApexPlotOptions,
+  ApexResponsive,
   ApexStroke,
   ApexTitleSubtitle,
   ApexTooltip,
@@ -29,4 +30,5 @@ export interface PartialChartOptions {
   tooltip?: ApexTooltip;
   plotOptions?: ApexPlotOptions;
   fill?: ApexFill;
+  responsive?: ApexResponsive[];
 }
