@@ -40,6 +40,7 @@ import { forkJoin, map, Observable } from 'rxjs';
 import { DialogService } from './dialog.service';
 import { TranslationService } from './translation.service';
 import { MortgageTransaction } from '@models/mortgage-transaction';
+import { TransactionsList } from '@models/transactions-list';
 
 @Injectable({
   providedIn: 'root',
@@ -126,9 +127,13 @@ export class DashboardService extends RegisterServiceMixin(class {}) implements 
     return this.http.post<SellTransactionPurpose[]>(this.urlService.URLS.SELL_KPI26, criteria);
   }
 
-  @CastResponse(() => RentTransaction)
-  loadRentKpiTransactions(criteria: Partial<CriteriaContract>): Observable<RentTransaction[]> {
-    return this.http.post<RentTransaction[]>(this.urlService.URLS.RENT_KPI29, criteria);
+  @CastResponse(() => TransactionsList, {
+    shape: {
+      'transactionList.*': () => RentTransaction,
+    },
+  })
+  loadRentKpiTransactions(criteria: Partial<CriteriaContract>): Observable<TransactionsList<RentTransaction>> {
+    return this.http.post<TransactionsList<RentTransaction>>(this.urlService.URLS.RENT_KPI29, criteria);
   }
 
   @CastResponse(() => SellTransaction)

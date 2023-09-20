@@ -25,14 +25,14 @@ export class TableComponent<T extends object> implements OnInit {
   @Input() headerBgColor = '!bg-primary';
   @Input() sortOptions: TableSortOption[] = [];
   @Input() defaultSortOption?: TableSortOption;
-  @Input() length: number = 0;
+  @Input() length = 0;
 
-  @Output() paginate : EventEmitter<PageEvent> = new EventEmitter<PageEvent>();
+  @Output() paginate: EventEmitter<PageEvent> = new EventEmitter<PageEvent>();
 
   @ContentChildren(TableColumnTemplateDirective) columnsTemplates!: QueryList<TableColumnTemplateDirective>;
 
   @Input() dataSource = new AppTableDataSource<T>([]);
-  data : T[] | Observable<T[]> = this.dataSource.data as unknown as Observable<T[]>;
+  data: T[] | Observable<T[]> = this.dataSource.data as unknown as Observable<T[]>;
   sortedData!: T[] | Observable<T[]>;
 
   // length!: number;

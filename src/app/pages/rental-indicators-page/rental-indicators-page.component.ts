@@ -595,13 +595,12 @@ export default class RentalIndicatorsPageComponent implements OnInit {
             }),
             map((list) => {
               if (this.enableChangeRentPaymentMonthlyMinMaxValues) {
-                this.minMaxRentPaymentMonthly = minMaxAvg(list.map((item) => item.rentPaymentMonthly));
+                this.minMaxRentPaymentMonthly = minMaxAvg(list.transactionList.map((item) => item.rentPaymentMonthly));
               }
               if (this.enableChangeAreaMinMaxValues) {
-                this.minMaxArea = minMaxAvg(list.map((item) => item.area));
+                this.minMaxArea = minMaxAvg(list.transactionList.map((item) => item.area));
               }
-              console.log('LIST', list);
-              return list;
+              return list.transactionList;
             })
           );
         })
