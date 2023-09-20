@@ -157,8 +157,11 @@ export default class RentalIndicatorsPageComponent implements OnInit {
       },
     }),
   ];
-
-  minMaxArea: Partial<MinMaxAvgContract> = {};
+  areaValidationParams = this.lookupService.rentMaxParamsMap['Area'];
+  minMaxArea: Partial<MinMaxAvgContract> = {
+    min: this.areaValidationParams.minVal,
+    max: this.areaValidationParams.maxVal,
+  };
   minMaxRentPaymentMonthly: Partial<MinMaxAvgContract> = {};
 
   enableChangeAreaMinMaxValues = true;
@@ -570,14 +573,14 @@ export default class RentalIndicatorsPageComponent implements OnInit {
         const data = this.dashboardService.mapDurationData(
           durationData,
           this.selectedDurationType === DurationEndpoints.HALFY
-            ? this.lookupService.sellLookups.halfYearDurations
-            : this.lookupService.sellLookups.quarterYearDurations
+            ? this.lookupService.rentLookups.halfYearDurations
+            : this.lookupService.rentLookups.quarterYearDurations
         );
         const tooltipData = this.dashboardService.mapDurationChartData(
           durationData,
           this.selectedDurationType === DurationEndpoints.HALFY
-            ? this.lookupService.sellLookups.halfYearDurations
-            : this.lookupService.sellLookups.quarterYearDurations
+            ? this.lookupService.rentLookups.halfYearDurations
+            : this.lookupService.rentLookups.quarterYearDurations
         );
 
         const _chartData = Object.keys(data).map((key) => ({

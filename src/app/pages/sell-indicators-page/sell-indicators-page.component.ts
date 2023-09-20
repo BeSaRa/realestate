@@ -118,7 +118,11 @@ export default class SellIndicatorsPageComponent implements OnInit {
   purposeKPIS = this.lookupService.sellLookups.rentPurposeList;
   propertiesKPIS = this.lookupService.sellLookups.propertyTypeList;
 
-  minMaxArea: Partial<MinMaxAvgContract> = {};
+  areaValidationParams = this.lookupService.rentMaxParamsMap['Area'];
+  minMaxArea: Partial<MinMaxAvgContract> = {
+    min: this.areaValidationParams.minVal,
+    max: this.areaValidationParams.maxVal,
+  };
   minMaxRealestateValue: Partial<MinMaxAvgContract> = {};
 
   enableChangeAreaMinMaxValues = true;

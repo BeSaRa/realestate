@@ -70,6 +70,12 @@ export default class MortgageIndicatorsComponent implements OnInit {
 
   minMaxRealestateValue: Partial<MinMaxAvgContract> = {};
 
+  areaValidationParams = this.lookupService.rentMaxParamsMap['Area'];
+  minMaxArea: Partial<MinMaxAvgContract> = {
+    min: this.areaValidationParams.minVal,
+    max: this.areaValidationParams.maxVal,
+  };
+
   enableChangeAreaMinMaxValues = true;
   enableChangerealEstateValueMinMaxValues = true;
 
