@@ -600,6 +600,7 @@ export default class RentalIndicatorsPageComponent implements OnInit {
               if (this.enableChangeAreaMinMaxValues) {
                 this.minMaxArea = minMaxAvg(list.map((item) => item.area));
               }
+              console.log('LIST', list);
               return list;
             })
           );

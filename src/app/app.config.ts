@@ -8,7 +8,6 @@ import { MAT_SNACK_BAR_DEFAULT_OPTIONS } from '@angular/material/snack-bar';
 import { DomSanitizer } from '@angular/platform-browser';
 import { provideAnimations } from '@angular/platform-browser/animations';
 import { ConfigService } from '@services/config.service';
-import { DataService } from '@services/data.service';
 import { TranslationService } from '@services/translation.service';
 import { UrlService } from '@services/url.service';
 import { forkJoin, switchMap, tap } from 'rxjs';
@@ -42,32 +41,15 @@ export const appConfig: ApplicationConfig = {
     },
     {
       provide: APP_INITIALIZER,
-      useFactory: (
-        config: ConfigService,
-        url: UrlService,
-        dataService: DataService,
-        translation: TranslationService,
-        lookups: LookupService
-      ) => {
+      useFactory: (config: ConfigService, url: UrlService, translation: TranslationService, lookups: LookupService) => {
         return () =>
-          forkJoin([
-            config.load(),
-            dataService.loadCategories(),
-            dataService.loadMunicipalities(),
-            dataService.loadKPIPricePerSqrf(),
-            dataService.loadKPIAvgUnitPrice(),
-            dataService.loadKPISellCount(),
-            dataService.loadKPIMortCount(),
-            dataService.loadKPIMortValue(),
-            dataService.loadKPIMortVsSellCount(),
-            dataService.loadKPIMortVsSellValue(),
-          ])
+          forkJoin([config.load()])
             .pipe(tap(() => url.setConfigService(config)))
             .pipe(tap(() => url.prepareUrls()))
             .pipe(switchMap(() => lookups.load()))
             .pipe(switchMap(() => translation.load()));
       },
-      deps: [ConfigService, UrlService, DataService, TranslationService, LookupService],
+      deps: [ConfigService, UrlService, TranslationService, LookupService],
       multi: true,
     },
     {
