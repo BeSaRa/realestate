@@ -57,6 +57,18 @@
       [label]="lang.map.property_usage"
       [options]="propertyUsages" />
 
+    <!-- [isMultiple]="true" should be added -->
+    <app-select-input
+      *ngIf="isOwner() || isRent()"
+      [enableFilter]="true"
+      bindFilter="getNames"
+      formControlName="nationalityCode"
+      [isMultiple]="true"
+      bindValue="lookupKey"
+      [label]="lang.map.nationality"
+      bindLabel="getNames"
+      [options]="nationalities" />
+
     <app-select-input
       *ngIf="!isOwner()"
       formControlName="durationType"
@@ -64,13 +76,7 @@
       bindValue="lookupKey"
       [label]="lang.map.duration"
       [options]="durations" />
-
-    <app-select-input
-      *ngIf="!displayRange && !isOwner()"
-      formControlName="issueDateYear"
-      [label]="lang.map.year"
-      [options]="years" />
-
+      
     <app-select-input
       *ngIf="displayHalf && !isOwner()"
       formControlName="halfYearDuration"
@@ -135,27 +141,27 @@
 
     <!-- [isMultiple]="true" should be added -->
     <app-select-input
-      *ngIf="isOwner()"
-      [enableFilter]="true"
-      bindFilter="getNames"
-      formControlName="nationalityCode"
-      bindValue="lookupKey"
-      [label]="lang.map.nationality"
-      bindLabel="getNames"
-      [options]="nationalities" />
+    *ngIf="isOwner()"
+    [enableFilter]="true"
+    bindFilter="getNames"
+    formControlName="ownerCategoryCode"
+    [isMultiple]="true"
+    bindValue="lookupKey"
+    [label]="lang.map.owner_type"
+    bindLabel="getNames"
+    [options]="ownerTypes" />
+    
+
+    <ng-container *ngIf="(isOpened || (!isOwner() && !isRent()))">
+      <app-select-input 
+      *ngIf="!displayRange" 
+      formControlName="issueDateYear" 
+      [label]="lang.map.year" 
+      [options]="years" 
+      [isSecondary]= "isRent() || isOwner() ? true : false"/>
+    </ng-container>
 
     <ng-container *ngIf="isOpened">
-      <!-- [isMultiple]="true" should be added -->
-      <app-select-input
-        *ngIf="isOwner()"
-        [isSecondary]="true"
-        [enableFilter]="true"
-        bindFilter="getNames"
-        formControlName="ownerCategoryCode"
-        bindValue="lookupKey"
-        [label]="lang.map.owner_type"
-        bindLabel="getNames"
-        [options]="ownerTypes" />
       <app-select-input
         *ngIf="rooms.length && !(isOwner() || isSell())"
         formControlName="bedRoomsCount"
@@ -235,12 +241,15 @@
         </app-input>
       </ng-container>
 
-      <!--    <app-input formControlName="rentPaymentMonthlyPerUnitFrom" [label]="lang.map.building_age_in_years_from">-->
-      <!--      <input appControl formControlName="streetNo" mask="separator" thousandSeparator="," />-->
-      <!--    </app-input>-->
-      <!--    <app-input formControlName="rentPaymentMonthlyPerUnitTo" [label]="lang.map.building_age_in_years_to">-->
-      <!--      <input appControl formControlName="streetNo" mask="separator" thousandSeparator="," />-->
-      <!--    </app-input>-->
+      <ng-container *ngIf="isRent()">
+        <app-input formControlName="rentPaymentMonthlyPerUnitFrom" [label]="lang.map.building_age_in_years_from" [isSecondary]="true">
+          <input appControl formControlName="streetNo" mask="separator" thousandSeparator="," />
+        </app-input>
+        <app-input formControlName="rentPaymentMonthlyPerUnitTo" [label]="lang.map.building_age_in_years_to" [isSecondary]="true">
+          <input appControl formControlName="streetNo" mask="separator" thousandSeparator="," />
+        </app-input>
+     </ng-container>
+     
       <app-input formControlName="areaFrom" [label]="lang.map.area_from" [isSecondary]="true">
         <input appControl formControlName="areaFrom" class="text-gray-500" mask="separator" thousandSeparator="," />
       </app-input>
