@@ -192,7 +192,7 @@
       <app-table
         minWidth="900px"
         (paginate)="paginate($event)"
-        [length]="length"
+        [length]="transactionsCount"
         [dataSource]="dataSource"
         [sortOptions]="transactionsSortOptions"
         [defaultSortOption]="transactionsSortOptions[0]">

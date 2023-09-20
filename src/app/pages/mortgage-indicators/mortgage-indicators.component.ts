@@ -34,7 +34,7 @@ import { TranslationService } from '@services/translation.service';
 import { UrlService } from '@services/url.service';
 import { formatNumber, minMaxAvg } from '@utils/utils';
 import { ChartComponent, NgApexchartsModule } from 'ng-apexcharts';
-import { BehaviorSubject, delay, map, Observable, of, ReplaySubject, Subject, switchMap, takeUntil } from 'rxjs';
+import { BehaviorSubject, delay, map, Observable, of, ReplaySubject, Subject, switchMap, takeUntil, tap } from 'rxjs';
 
 @Component({
   selector: 'app-mortgage-indicators',
@@ -135,6 +135,7 @@ export default class MortgageIndicatorsComponent implements OnInit {
   // transactions = new ReplaySubject<MortgageTransaction[]>(1);
   transactions$: Observable<MortgageTransaction[]> = this.loadTransactions();
   dataSource: AppTableDataSource<MortgageTransaction> = new AppTableDataSource(this.transactions$);
+  transactionsCount = 0;
   transactionsSortOptions: TableSortOption[] = [
     new TableSortOption().clone<TableSortOption>({
       arName: this.lang.getArabicTranslation('most_recent'),
@@ -424,10 +425,6 @@ export default class MortgageIndicatorsComponent implements OnInit {
     this.loadMortgageTransactionChart();
   }
 
-  get length() {
-    return this.rootKpis[0].value;
-  }
-
   paginate($event: PageEvent) {
     this.paginate$.next({
       offset: $event.pageSize * $event.pageIndex,
@@ -459,18 +456,18 @@ export default class MortgageIndicatorsComponent implements OnInit {
             switchMap((paginationOptions) => {
               this.criteria.criteria.limit = paginationOptions.limit;
               this.criteria.criteria.offset = paginationOptions.offset;
-              return (
-                this.dashboardService
-                  .loadMortgageKpiTransactions(this.criteria.criteria)
-              )
+              return this.dashboardService.loadMortgageKpiTransactions(this.criteria.criteria);
             }),
-            map(list => {
+            tap((transactionsModel) => (this.transactionsCount = transactionsModel.count)),
+            map((transactionsModel) => transactionsModel.transactionList),
+            map((list) => {
               if (this.enableChangerealEstateValueMinMaxValues) {
                 this.minMaxRealestateValue = minMaxAvg(list.map((item) => item.realEstateValue));
               }
               if (this.enableChangeAreaMinMaxValues) {
+                //
               }
-              return list
+              return list;
             })
           );
         })
