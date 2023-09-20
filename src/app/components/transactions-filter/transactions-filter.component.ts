@@ -354,6 +354,7 @@ export class TransactionsFilterComponent implements OnInit, OnDestroy {
       });
     });
   }
+
   // until edit from be
   listenToNationalityChange(): void {
     this.nationalityCode.valueChanges.pipe(takeUntil(this.destroy$)).subscribe((value: number) => {
@@ -560,7 +561,7 @@ export class TransactionsFilterComponent implements OnInit, OnDestroy {
       .pipe(
         takeUntil(this.destroy$),
         debounceTime(250),
-        filter((_) => this.form.valid)
+        filter(() => this.form.valid)
       )
       .subscribe(() => {
         this.sendFilter(CriteriaType.USER);
