@@ -160,8 +160,20 @@ export class TransactionsFilterComponent implements OnInit, OnDestroy {
         '',
         [(control: AbstractControl) => CustomValidators.maxValue(this.minMaxRealestateValue.max)(control)],
       ],
-      areaFrom: ['', [(control: AbstractControl) => CustomValidators.minValue(this.minMaxArea.min)(control)]],
-      areaTo: ['', [(control: AbstractControl) => CustomValidators.maxValue(this.minMaxArea.max)(control)]],
+      areaFrom: [
+        '',
+        [
+          (control: AbstractControl) => CustomValidators.minValue(this.minMaxArea.min)(control),
+          (control: AbstractControl) => CustomValidators.maxValue(this.minMaxArea.max)(control),
+        ],
+      ],
+      areaTo: [
+        '',
+        [
+          (control: AbstractControl) => CustomValidators.minValue(this.minMaxArea.min)(control),
+          (control: AbstractControl) => CustomValidators.maxValue(this.minMaxArea.max)(control),
+        ],
+      ],
       baseYear: [],
       zoneId: [],
       streetNo: [],
