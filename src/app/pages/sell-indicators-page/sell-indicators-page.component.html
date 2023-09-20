@@ -205,8 +205,8 @@
         <ng-container appTableColumnTemplate columnName="location">
           <div *appTableColumnHeaderTemplate class="flex justify-center">
             <div class="text-start">
-              <p>{{ this.lang.map.location }}</p>
-              <p class="font-normal">{{ this.lang.map.real_estate_status }}</p>
+              <p>{{ lang.map.location }}</p>
+              <p class="font-normal">{{ lang.map.real_estate_status }}</p>
             </div>
           </div>
           <div *appTableColumnCellTemplate="let item; typeOf: transactions$" class="flex justify-center">
@@ -217,19 +217,19 @@
           </div>
         </ng-container>
         <ng-container appTableColumnTemplate columnName="sold_for">
-          <span *appTableColumnHeaderTemplate>{{ this.lang.map.sold_for }}</span>
+          <span *appTableColumnHeaderTemplate>{{ lang.map.sold_for }}</span>
           <span *appTableColumnCellTemplate="let item; typeOf: transactions$" class="font-bold">{{
             item.realEstateValue | number
           }}</span>
         </ng-container>
         <ng-container appTableColumnTemplate columnName="area_in_square_feet">
-          <span *appTableColumnHeaderTemplate>{{ this.lang.map.area_in_square_foot }}</span>
+          <span *appTableColumnHeaderTemplate>{{ lang.map.area_in_square_foot }}</span>
           <span *appTableColumnCellTemplate="let item; typeOf: transactions$" class="font-bold">{{
             item.realEstateSQT
           }}</span>
         </ng-container>
         <ng-container appTableColumnTemplate columnName="square_feet_price">
-          <span *appTableColumnHeaderTemplate>{{ this.lang.map.square_feet_price }}</span>
+          <span *appTableColumnHeaderTemplate>{{ lang.map.square_feet_price }}</span>
           <span *appTableColumnCellTemplate="let item; typeOf: transactions$" class="font-bold">{{
             item.priceMT | number : "1.0-0"
           }}</span>
@@ -237,8 +237,8 @@
         <ng-container appTableColumnTemplate columnName="issue_date">
           <div *appTableColumnHeaderTemplate class="flex justify-center">
             <div class="text-start">
-              <p>{{ this.lang.map.issue_date }}</p>
-              <p class="font-normal">{{ this.lang.map.sold_by }}</p>
+              <p>{{ lang.map.issue_date }}</p>
+              <p class="font-normal">{{ lang.map.sold_by }}</p>
             </div>
           </div>
           <div *appTableColumnCellTemplate="let item; typeOf: transactions$" class="text-center">
@@ -259,7 +259,7 @@
         <!-- <ng-template
           appTableColumnTemplate
           columnName="unit_parcel_no"
-          [columnHeader]="this.lang.map.unit_parcel_no"
+          [columnHeader]="lang.map.unit_parcel_no"
           let-item
           ><span class="font-bold">{{ item.unitNo ?? 13000 | number }}</span></ng-template
         > -->
