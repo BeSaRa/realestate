@@ -29,6 +29,7 @@ const rentEndPoints = {
   // transactions based on (Purpose, type)
   RENT_KPI25: 'RENT|kpi25/chart/rent-sqt-meter/rent-purpose',
   RENT_KPI26: 'RENT|kpi26/chart/purpose',
+  RENT_KPI27: 'RENT|kpi27/chart/property',
   // RENT_KPI24: 'RENT|kpi24/chart/rent-sqt-meter',
 
   // summary transactions

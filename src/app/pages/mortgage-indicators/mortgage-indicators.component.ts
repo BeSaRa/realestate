@@ -34,7 +34,7 @@ import { TranslationService } from '@services/translation.service';
 import { UrlService } from '@services/url.service';
 import { formatNumber, minMaxAvg } from '@utils/utils';
 import { ChartComponent, NgApexchartsModule } from 'ng-apexcharts';
-import { BehaviorSubject, delay, map, Observable, of, ReplaySubject, Subject, switchMap, takeUntil, tap } from 'rxjs';
+import { BehaviorSubject, delay, map, Observable, of, ReplaySubject, combineLatest,Subject, switchMap, takeUntil } from 'rxjs';
 
 @Component({
   selector: 'app-mortgage-indicators',
@@ -67,6 +67,7 @@ export default class MortgageIndicatorsComponent implements OnInit {
   dashboardService = inject(DashboardService);
   appChartTypesService = inject(AppChartTypesService);
   destroy$ = new Subject<void>();
+  reload$ = new ReplaySubject<void>(1);
 
   minMaxRealestateValue: Partial<MinMaxAvgContract> = {};
 
@@ -77,7 +78,7 @@ export default class MortgageIndicatorsComponent implements OnInit {
     criteria: CriteriaContract;
     type: CriteriaType;
   };
-
+length: number = 50;
   control = new FormControl('', { nonNullable: true });
   fb = inject(UntypedFormBuilder);
 
@@ -299,7 +300,10 @@ export default class MortgageIndicatorsComponent implements OnInit {
     },
   };
 
-  ngOnInit() {}
+  ngOnInit() 
+  {
+    this.reload$.next();
+  }
 
   filterChange($event: { criteria: CriteriaContract; type: CriteriaType }): void {
     console.log('$event: ', $event);
@@ -312,7 +316,8 @@ export default class MortgageIndicatorsComponent implements OnInit {
         item.value = (values[index] && values[index].kpiVal) || 0;
         item.yoy = (values[index] && values[index].kpiYoYVal) || 0;
       });
-      this.loadTransactions();
+      // this.loadTransactions();
+      this.reload$.next();
 
       this.loadMortgageTransactionChart();
       this.loadMortgageTransactionValueChart();
@@ -452,22 +457,24 @@ export default class MortgageIndicatorsComponent implements OnInit {
       .pipe(delay(0))
       .pipe(
         switchMap(() => {
-          return this.paginate$.pipe(
-            switchMap((paginationOptions) => {
+          return combineLatest([this.reload$, this.paginate$]).pipe(
+            switchMap(([,paginationOptions]) => {
               this.criteria.criteria.limit = paginationOptions.limit;
               this.criteria.criteria.offset = paginationOptions.offset;
               return this.dashboardService.loadMortgageKpiTransactions(this.criteria.criteria);
             }),
-            tap((transactionsModel) => (this.transactionsCount = transactionsModel.count)),
-            map((transactionsModel) => transactionsModel.transactionList),
-            map((list) => {
+            map(({count, transactionList}) => {
+
+              this.length = count;
+              
               if (this.enableChangerealEstateValueMinMaxValues) {
-                this.minMaxRealestateValue = minMaxAvg(list.map((item) => item.realEstateValue));
+                this.minMaxRealestateValue = minMaxAvg(transactionList.map((item) => item.realEstateValue));
               }
               if (this.enableChangeAreaMinMaxValues) {
                 //
               }
-              return list;
+              
+              return transactionList;
             })
           );
         })
