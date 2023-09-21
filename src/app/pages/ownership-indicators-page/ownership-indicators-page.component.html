@@ -150,9 +150,10 @@
           >{{ lang.map.other_nationalities }}</app-button
         >
       </div>
-      <div dir="ltr">
+      <div class="overflow-hidden pt-1 mt-2" dir="ltr">
         <apx-chart
           #nationalitiesChart
+          class="custom-toolbar [&>div]:ml-[-22px]"
           [series]="nationalitiesChartOptions.series!"
           [chart]="nationalitiesChartOptions.chart!"
           [xaxis]="nationalitiesChartOptions.xaxis!"
@@ -206,9 +207,10 @@
         >
       </div>
 
-      <div class="flex-auto" dir="ltr">
+      <div class="flex-auto overflow-hidden mt-2 pt-1" dir="ltr">
         <apx-chart
           #durationsChart
+          class="custom-toolbar [&>div]:ml-[-22px]"
           [series]="durationsChartOptions.series!"
           [chart]="durationsChartOptions.chart!"
           [xaxis]="durationsChartOptions.xaxis!"
@@ -231,9 +233,10 @@
         ({{ lookupService.ownerNationalityMap[selectedNationalityId].getNames() }})
       </h3>
 
-      <div class="flex-auto" dir="ltr">
+      <div class="flex-auto overflow-hidden mt-2 pt-1" dir="ltr">
         <apx-chart
           #municipalitiesChart
+          class="custom-toolbar [&>div]:ml-[-22px]"
           [series]="municipalitiesChartOptions.series!"
           [chart]="municipalitiesChartOptions.chart!"
           [xaxis]="municipalitiesChartOptions.xaxis!"
@@ -258,9 +261,10 @@
         }})
       </h3>
 
-      <div class="flex-auto" dir="ltr">
+      <div class="flex-auto overflow-hidden mt-2 pt-1" dir="ltr">
         <apx-chart
           #areasChart
+          class="custom-toolbar [&>div]:ml-[-22px]"
           [series]="areasChartOptions.series!"
           [chart]="areasChartOptions.chart!"
           [xaxis]="areasChartOptions.xaxis!"

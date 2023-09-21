@@ -1,0 +1,13 @@
+.custom-toolbar .apexcharts-zoomin-icon,
+.custom-toolbar .apexcharts-zoomout-icon {
+  height: auto !important;
+  transform: scale(1.5) !important;
+}
+
+.custom-toolbar .apexcharts-zoomin-icon {
+  margin-right: 10px;
+}
+
+.apexcharts-xaxis-inversed {
+  transform: translateX(-20px);
+}
