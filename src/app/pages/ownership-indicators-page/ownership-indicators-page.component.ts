@@ -681,7 +681,7 @@ export default class OwnershipIndicatorsPageComponent implements OnInit, AfterVi
         this.genderChart.first
           .updateOptions({
             series: data.map((item) => item.kpiVal),
-            labels: data.map((item) => this.lookupService.ownerGenderMap[item.gender].getNames()),
+            labels: data.map((item) => this.lookupService.ownerGenderMap[item.gender]?.getNames() ?? '-'),
           })
           .then();
       });
@@ -714,6 +714,7 @@ export default class OwnershipIndicatorsPageComponent implements OnInit, AfterVi
       .pipe(map((data) => data as unknown as { kpiVal: number; ownerCategory: number }[]))
       .subscribe((data) => {
         const _minMaxAvg = minMaxAvg(data.map((item) => item.kpiVal));
+        this.ownerTypeSummaryDataLength = data.length;
 
         this.ownerTypeSummaryChart.first
           .updateOptions({
@@ -721,7 +722,7 @@ export default class OwnershipIndicatorsPageComponent implements OnInit, AfterVi
               {
                 name: this.lang.map.ownerships_count,
                 data: data.map((item, index) => ({
-                  x: this.lookupService.ownerOwnerCategoryMap[item.ownerCategory].getNames() || '',
+                  x: this.lookupService.ownerOwnerCategoryMap[item.ownerCategory]?.getNames() || '',
                   y: item.kpiVal,
                   id: item.ownerCategory,
                   index,
@@ -730,6 +731,11 @@ export default class OwnershipIndicatorsPageComponent implements OnInit, AfterVi
             ],
             colors: [this.appChartTypesService.chartColorsFormatter(_minMaxAvg)],
             ...this.appChartTypesService.yearlyStaticChartOptions,
+            ...this.appChartTypesService.getRangeOptions(
+              this.screenSize,
+              BarChartTypes.SINGLE_BAR,
+              this.ownerTypeSummaryDataLength
+            ),
           })
           .then();
       });
@@ -812,7 +818,8 @@ export default class OwnershipIndicatorsPageComponent implements OnInit, AfterVi
       .addDataLabelsFormatter((val, opts) =>
         this.appChartTypesService.dataLabelsFormatter({ val, opts }, { hasPrice: false })
       )
-      .addAxisYFormatter((val, opts) => this.appChartTypesService.axisYFormatter({ val, opts }, { hasPrice: false }));
+      .addAxisYFormatter((val, opts) => this.appChartTypesService.axisYFormatter({ val, opts }, { hasPrice: false }))
+      .addCustomToolbarOptions();
 
     setTimeout(() => {
       if (this.selectedTab === 'ownership_indicators') {
@@ -892,18 +899,24 @@ export default class OwnershipIndicatorsPageComponent implements OnInit, AfterVi
   _listenToScreenSize() {
     this.screenService.screenSizeObserver$.pipe(takeUntil(this.destroy$)).subscribe((size) => {
       this.screenSize = size;
-      this.nationalitiesChart.first.updateOptions(
-        this.appChartTypesService.getRangeOptions(size, BarChartTypes.SINGLE_BAR, this.nationalitiesDataLength)
-      );
-      this.durationsChart.first.updateOptions(
-        this.appChartTypesService.getRangeOptions(size, this.selectedDurationsBarChartType, this.durationsDataLength)
-      );
-      this.municipalitiesChart.first.updateOptions(
-        this.appChartTypesService.getRangeOptions(size, BarChartTypes.SINGLE_BAR, this.municipalitiesDataLength)
-      );
-      this.areasChart.first.updateOptions(
-        this.appChartTypesService.getRangeOptions(size, BarChartTypes.SINGLE_BAR, this.areasDataLength)
-      );
+      if (this.selectedTab === 'ownership_indicators') {
+        this.nationalitiesChart.first.updateOptions(
+          this.appChartTypesService.getRangeOptions(size, BarChartTypes.SINGLE_BAR, this.nationalitiesDataLength)
+        );
+        this.durationsChart.first.updateOptions(
+          this.appChartTypesService.getRangeOptions(size, this.selectedDurationsBarChartType, this.durationsDataLength)
+        );
+        this.municipalitiesChart.first.updateOptions(
+          this.appChartTypesService.getRangeOptions(size, BarChartTypes.SINGLE_BAR, this.municipalitiesDataLength)
+        );
+        this.areasChart.first.updateOptions(
+          this.appChartTypesService.getRangeOptions(size, BarChartTypes.SINGLE_BAR, this.areasDataLength)
+        );
+      } else {
+        this.ownerTypeSummaryChart.first.updateOptions(
+          this.appChartTypesService.getRangeOptions(size, BarChartTypes.SINGLE_BAR, this.ownerTypeSummaryDataLength)
+        );
+      }
     });
   }
 }
