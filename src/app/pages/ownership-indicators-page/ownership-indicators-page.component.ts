@@ -12,6 +12,8 @@ import { YoyIndicatorComponent } from '@components/yoy-indicator/yoy-indicator.c
 import { CriteriaContract } from '@contracts/criteria-contract';
 import { MinMaxAvgContract } from '@contracts/min-max-avg-contract';
 import { OwnerCriteriaContract } from '@contracts/owner-criteria-contract';
+import { BarChartTypes } from '@enums/bar-chart-type';
+import { Breakpoints } from '@enums/breakpoints';
 import { ChartType } from '@enums/chart-type';
 import { CriteriaType } from '@enums/criteria-type';
 import { DurationEndpoints } from '@enums/durations';
@@ -24,6 +26,7 @@ import { FormatNumbersPipe } from '@pipes/format-numbers.pipe';
 import { AppChartTypesService } from '@services/app-chart-types.service';
 import { DashboardService } from '@services/dashboard.service';
 import { LookupService } from '@services/lookup.service';
+import { ScreenBreakpointsService } from '@services/screen-breakpoints.service';
 import { TranslationService } from '@services/translation.service';
 import { UnitsService } from '@services/units.service';
 import { UrlService } from '@services/url.service';
@@ -73,8 +76,12 @@ export default class OwnershipIndicatorsPageComponent implements OnInit, AfterVi
   lookupService = inject(LookupService);
   unitsService = inject(UnitsService);
   appChartTypesService = inject(AppChartTypesService);
-  destroy$ = new Subject<void>();
   adapter = inject(DateAdapter);
+  screenService = inject(ScreenBreakpointsService);
+
+  screenSize = Breakpoints.LG;
+
+  destroy$ = new Subject<void>();
 
   municipalities = this.lookupService.ownerLookups.municipalityList;
   propertyTypes = this.lookupService.ownerLookups.propertyTypeList;
@@ -156,6 +163,7 @@ export default class OwnershipIndicatorsPageComponent implements OnInit, AfterVi
   selectedNationalityCategory = NationalityCategories.QATARI;
   isOnInitNationalitiesChart = true;
   selectedNationalityId = 634;
+  nationalitiesDataLength = 0;
 
   nationalitiesChartOptions: ChartOptionsModel = new ChartOptionsModel().clone<ChartOptionsModel>({
     ...this.appChartTypesService.mainChartOptions,
@@ -164,6 +172,8 @@ export default class OwnershipIndicatorsPageComponent implements OnInit, AfterVi
 
   selectedDurationType = DurationEndpoints.YEARLY;
   selectedDurationsChartType: ChartType = ChartType.LINE;
+  durationsDataLength = 0;
+  selectedDurationsBarChartType = BarChartTypes.SINGLE_BAR;
 
   durationsChartOptions = new ChartOptionsModel().clone<ChartOptionsModel>({
     ...this.appChartTypesService.mainChartOptions,
@@ -171,11 +181,14 @@ export default class OwnershipIndicatorsPageComponent implements OnInit, AfterVi
 
   isOnInitMunicipaliteisChart = true;
   selectedMunicipalityId = 1;
+  municipalitiesDataLength = 0;
 
   municipalitiesChartOptions = new ChartOptionsModel().clone<ChartOptionsModel>({
     ...this.appChartTypesService.mainChartOptions,
     ...this.appChartTypesService.yearlyStaticChartOptions,
   });
+
+  areasDataLength = 0;
 
   areasChartOptions = new ChartOptionsModel().clone<ChartOptionsModel>({
     ...this.appChartTypesService.mainChartOptions,
@@ -190,6 +203,7 @@ export default class OwnershipIndicatorsPageComponent implements OnInit, AfterVi
 
   ageCategorySummaryChartOptions = this.appChartTypesService.pieChartOptions;
 
+  ownerTypeSummaryDataLength = 0;
   ownerTypeSummaryChartOptions = new ChartOptionsModel().clone<ChartOptionsModel>({
     ...this.appChartTypesService.mainChartOptions,
     ...this.appChartTypesService.yearlyStaticChartOptions,
@@ -199,6 +213,9 @@ export default class OwnershipIndicatorsPageComponent implements OnInit, AfterVi
 
   ngAfterViewInit(): void {
     this._initializeChartsFormatters();
+    setTimeout(() => {
+      this._listenToScreenSize();
+    }, 0);
   }
 
   switchTab(tab: 'ownership_indicators' | 'statistical_reports_for_ownership'): void {
@@ -372,6 +389,7 @@ export default class OwnershipIndicatorsPageComponent implements OnInit, AfterVi
       .pipe(take(1))
       .subscribe((data) => {
         const _minMaxAvg = minMaxAvg(data.map((item) => item.kpiVal));
+        this.nationalitiesDataLength = data.length;
         this.nationalitiesChart.first
           .updateOptions({
             series: [
@@ -387,6 +405,11 @@ export default class OwnershipIndicatorsPageComponent implements OnInit, AfterVi
             ],
             colors: [this.appChartTypesService.chartColorsFormatter(_minMaxAvg)],
             ...this.appChartTypesService.yearlyStaticChartOptions,
+            ...this.appChartTypesService.getRangeOptions(
+              this.screenSize,
+              BarChartTypes.SINGLE_BAR,
+              this.nationalitiesDataLength
+            ),
           })
           .then();
       });
@@ -399,9 +422,20 @@ export default class OwnershipIndicatorsPageComponent implements OnInit, AfterVi
       ...this.criteria.criteria,
       nationalityCode: this.selectedNationalityId,
     } as OwnerCriteriaContract;
-    if (this.selectedDurationType === DurationEndpoints.YEARLY) this.updateDurationsChartDataYearly(_criteria);
-    else if (this.selectedDurationType === DurationEndpoints.MONTHLY) this.updateDurationsChartDataMonthly(_criteria);
-    else this.updateDurationsChartDataHalfyOrQuarterly(_criteria);
+
+    if (this.selectedDurationType === DurationEndpoints.YEARLY) {
+      this.updateDurationsChartDataYearly(_criteria);
+      this.selectedDurationsBarChartType = BarChartTypes.SINGLE_BAR;
+    } else if (this.selectedDurationType === DurationEndpoints.MONTHLY) {
+      this.updateDurationsChartDataMonthly(_criteria);
+      this.selectedDurationsBarChartType = BarChartTypes.SINGLE_BAR;
+    } else if (this.selectedDurationType === DurationEndpoints.HALFY) {
+      this.updateDurationsChartDataHalfyOrQuarterly(_criteria);
+      this.selectedDurationsBarChartType = BarChartTypes.DOUBLE_BAR;
+    } else {
+      this.updateDurationsChartDataHalfyOrQuarterly(_criteria);
+      this.selectedDurationsBarChartType = BarChartTypes.QUAD_BAR;
+    }
   }
 
   updateDurationsChartDataYearly(criteria: OwnerCriteriaContract) {
@@ -410,20 +444,23 @@ export default class OwnershipIndicatorsPageComponent implements OnInit, AfterVi
       .pipe(take(1))
       .subscribe((data) => {
         const _minMaxAvg = minMaxAvg(data.map((item) => item.kpiVal));
+        this.durationsDataLength = data.length;
 
         this.durationsChart.first
           .updateOptions({
             series: [
               {
                 name: this.lang.map.ownerships_count,
-                data: data.map((item) => item.kpiVal),
+                data: data.map((item) => ({ y: item.kpiVal, x: item.issueYear })),
               },
             ],
-            xaxis: {
-              categories: data.map((item) => item.issueYear),
-            },
             colors: [this.appChartTypesService.chartColorsFormatter(_minMaxAvg)],
             ...this.appChartTypesService.yearlyStaticChartOptions,
+            ...this.appChartTypesService.getRangeOptions(
+              this.screenSize,
+              this.selectedDurationsBarChartType,
+              this.durationsDataLength
+            ),
           })
           .then();
       });
@@ -442,6 +479,8 @@ export default class OwnershipIndicatorsPageComponent implements OnInit, AfterVi
       .subscribe((data) => {
         data.sort((a, b) => a.issuePeriod - b.issuePeriod);
         const _minMaxAvg = minMaxAvg(data.map((d) => d.kpiVal));
+        this.durationsDataLength = data.length;
+
         this.durationsChart.first
           .updateOptions({
             series: [
@@ -457,6 +496,11 @@ export default class OwnershipIndicatorsPageComponent implements OnInit, AfterVi
             ],
             colors: [this.appChartTypesService.chartColorsFormatter(_minMaxAvg)],
             ...this.appChartTypesService.monthlyStaticChartOptions,
+            ...this.appChartTypesService.getRangeOptions(
+              this.screenSize,
+              this.selectedDurationsBarChartType,
+              this.durationsDataLength
+            ),
           })
           .then();
       });
@@ -483,15 +527,20 @@ export default class OwnershipIndicatorsPageComponent implements OnInit, AfterVi
       .subscribe((data) => {
         const _chartData = Object.keys(data).map((key) => ({
           name: data[key as unknown as number].period.getNames(),
-          data: data[key as unknown as number].kpiValues.map((item) => item.value),
+          data: data[key as unknown as number].kpiValues.map((item) => ({ y: item.value, x: item.year })),
         }));
+        this.durationsDataLength = data[1].kpiValues.length;
+
         this.durationsChart.first
           .updateOptions({
             series: _chartData,
-            xaxis: {
-              categories: data[1].kpiValues.map((v) => v.year),
-            },
+
             ...this.appChartTypesService.halflyAndQuarterlyStaticChartOptions,
+            ...this.appChartTypesService.getRangeOptions(
+              this.screenSize,
+              this.selectedDurationsBarChartType,
+              this.durationsDataLength
+            ),
           })
           .then();
       });
@@ -509,6 +558,7 @@ export default class OwnershipIndicatorsPageComponent implements OnInit, AfterVi
       .pipe(map((data) => data as unknown as (KpiModel & { municipalityId: number })[]))
       .subscribe((data) => {
         const _minMaxAvg = minMaxAvg(data.map((item) => item.kpiVal));
+        this.municipalitiesDataLength = data.length;
 
         this.municipalitiesChart.first
           .updateOptions({
@@ -525,6 +575,11 @@ export default class OwnershipIndicatorsPageComponent implements OnInit, AfterVi
             ],
             colors: [this.appChartTypesService.chartColorsFormatter(_minMaxAvg)],
             ...this.appChartTypesService.yearlyStaticChartOptions,
+            ...this.appChartTypesService.getRangeOptions(
+              this.screenSize,
+              BarChartTypes.SINGLE_BAR,
+              this.municipalitiesDataLength
+            ),
           })
           .then();
       });
@@ -543,6 +598,7 @@ export default class OwnershipIndicatorsPageComponent implements OnInit, AfterVi
       .pipe(map((data) => data as unknown as (KpiModel & { areaCode: number })[]))
       .subscribe((data) => {
         const _minMaxAvg = minMaxAvg(data.map((item) => item.kpiVal));
+        this.areasDataLength = data.length;
 
         this.areasChart.first
           .updateOptions({
@@ -559,6 +615,11 @@ export default class OwnershipIndicatorsPageComponent implements OnInit, AfterVi
             ],
             colors: [this.appChartTypesService.chartColorsFormatter(_minMaxAvg)],
             ...this.appChartTypesService.yearlyStaticChartOptions,
+            ...this.appChartTypesService.getRangeOptions(
+              this.screenSize,
+              BarChartTypes.SINGLE_BAR,
+              this.areasDataLength
+            ),
           })
           .then();
       });
@@ -721,13 +782,15 @@ export default class OwnershipIndicatorsPageComponent implements OnInit, AfterVi
       )
       .addAxisYFormatter((val, opts) => this.appChartTypesService.axisYFormatter({ val, opts }, { hasPrice: false }))
       .addUpdatedCallback(this._onNationalitiesChartUpdated)
-      .addDataPointSelectionCallback(this._onNationalitiesChartDataPointSelection);
+      .addDataPointSelectionCallback(this._onNationalitiesChartDataPointSelection)
+      .addCustomToolbarOptions();
 
     this.durationsChartOptions
       .addDataLabelsFormatter((val, opts) =>
         this.appChartTypesService.dataLabelsFormatter({ val, opts }, { hasPrice: false })
       )
-      .addAxisYFormatter((val, opts) => this.appChartTypesService.axisYFormatter({ val, opts }, { hasPrice: false }));
+      .addAxisYFormatter((val, opts) => this.appChartTypesService.axisYFormatter({ val, opts }, { hasPrice: false }))
+      .addCustomToolbarOptions();
 
     this.municipalitiesChartOptions
       .addDataLabelsFormatter((val, opts) =>
@@ -735,13 +798,15 @@ export default class OwnershipIndicatorsPageComponent implements OnInit, AfterVi
       )
       .addAxisYFormatter((val, opts) => this.appChartTypesService.axisYFormatter({ val, opts }, { hasPrice: false }))
       .addUpdatedCallback(this._onMunicipalitiesChartUpdated)
-      .addDataPointSelectionCallback(this._onMunicipalitiesChartDataPointSelection);
+      .addDataPointSelectionCallback(this._onMunicipalitiesChartDataPointSelection)
+      .addCustomToolbarOptions();
 
     this.areasChartOptions
       .addDataLabelsFormatter((val, opts) =>
         this.appChartTypesService.dataLabelsFormatter({ val, opts }, { hasPrice: false })
       )
-      .addAxisYFormatter((val, opts) => this.appChartTypesService.axisYFormatter({ val, opts }, { hasPrice: false }));
+      .addAxisYFormatter((val, opts) => this.appChartTypesService.axisYFormatter({ val, opts }, { hasPrice: false }))
+      .addCustomToolbarOptions();
 
     this.ownerTypeSummaryChartOptions
       .addDataLabelsFormatter((val, opts) =>
@@ -823,4 +888,22 @@ export default class OwnershipIndicatorsPageComponent implements OnInit, AfterVi
     ).id;
     this.updateAreasChartData();
   };
+
+  _listenToScreenSize() {
+    this.screenService.screenSizeObserver$.pipe(takeUntil(this.destroy$)).subscribe((size) => {
+      this.screenSize = size;
+      this.nationalitiesChart.first.updateOptions(
+        this.appChartTypesService.getRangeOptions(size, BarChartTypes.SINGLE_BAR, this.nationalitiesDataLength)
+      );
+      this.durationsChart.first.updateOptions(
+        this.appChartTypesService.getRangeOptions(size, this.selectedDurationsBarChartType, this.durationsDataLength)
+      );
+      this.municipalitiesChart.first.updateOptions(
+        this.appChartTypesService.getRangeOptions(size, BarChartTypes.SINGLE_BAR, this.municipalitiesDataLength)
+      );
+      this.areasChart.first.updateOptions(
+        this.appChartTypesService.getRangeOptions(size, BarChartTypes.SINGLE_BAR, this.areasDataLength)
+      );
+    });
+  }
 }

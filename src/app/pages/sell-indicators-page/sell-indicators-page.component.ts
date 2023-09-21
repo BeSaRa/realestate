@@ -20,6 +20,8 @@ import { SellCriteriaContract } from '@contracts/sell-criteria-contract';
 import { TableColumnCellTemplateDirective } from '@directives/table-column-cell-template.directive';
 import { TableColumnHeaderTemplateDirective } from '@directives/table-column-header-template.directive';
 import { TableColumnTemplateDirective } from '@directives/table-column-template.directive';
+import { BarChartTypes } from '@enums/bar-chart-type';
+import { Breakpoints } from '@enums/breakpoints';
 import { ChartType } from '@enums/chart-type';
 import { CriteriaType } from '@enums/criteria-type';
 import { DurationEndpoints } from '@enums/durations';
@@ -39,6 +41,7 @@ import { FormatNumbersPipe } from '@pipes/format-numbers.pipe';
 import { AppChartTypesService } from '@services/app-chart-types.service';
 import { DashboardService } from '@services/dashboard.service';
 import { LookupService } from '@services/lookup.service';
+import { ScreenBreakpointsService } from '@services/screen-breakpoints.service';
 import { TranslationService } from '@services/translation.service';
 import { UnitsService } from '@services/units.service';
 import { UrlService } from '@services/url.service';
@@ -105,8 +108,12 @@ export default class SellIndicatorsPageComponent implements OnInit {
   lookupService = inject(LookupService);
   unitsService = inject(UnitsService);
   appChartTypesService = inject(AppChartTypesService);
-  destroy$ = new Subject<void>();
   adapter = inject(DateAdapter);
+  screenService = inject(ScreenBreakpointsService);
+
+  screenSize = Breakpoints.LG;
+
+  destroy$ = new Subject<void>();
 
   municipalities = this.lookupService.sellLookups.municipalityList;
   propertyTypes = this.lookupService.sellLookups.propertyTypeList;
@@ -253,6 +260,8 @@ export default class SellIndicatorsPageComponent implements OnInit {
   selectedRootChartData!: KpiModel[];
   DurationTypes = DurationEndpoints;
   selectedDurationType: DurationEndpoints = DurationEndpoints.YEARLY;
+  selectedDurationBarChartType = BarChartTypes.SINGLE_BAR;
+  durationDataLength = 0;
   chartOptions: ChartOptionsModel = new ChartOptionsModel().clone<ChartOptionsModel>(
     this.appChartTypesService.mainChartOptions
   );
@@ -351,6 +360,15 @@ export default class SellIndicatorsPageComponent implements OnInit {
 
   ngOnInit(): void {
     this._initializeChartsFormatters();
+
+    setTimeout(() => {
+      this.screenService.screenSizeObserver$.pipe(takeUntil(this.destroy$)).subscribe((size) => {
+        this.screenSize = size;
+        this.chart.first.updateOptions(
+          this.appChartTypesService.getRangeOptions(size, this.selectedDurationBarChartType, this.durationDataLength)
+        );
+      });
+    }, 0);
   }
 
   // toggleFilters(): void {
@@ -504,20 +522,23 @@ export default class SellIndicatorsPageComponent implements OnInit {
   updateChart(): void {
     if (!this.chart.length) return;
     const _minMaxAvg = minMaxAvg(this.selectedRootChartData.map((item) => item.kpiVal));
+    this.durationDataLength = this.selectedRootChartData.length;
 
     this.chart.first
       .updateOptions({
         series: [
           {
             name: this.selectedRoot?.getNames(),
-            data: this.selectedRootChartData.map((item) => item.kpiVal),
+            data: this.selectedRootChartData.map((item) => ({ y: item.kpiVal, x: item.issueYear })),
           },
         ],
-        xaxis: {
-          categories: this.selectedRootChartData.map((item) => item.issueYear),
-        },
         colors: [this.appChartTypesService.chartColorsFormatter(_minMaxAvg)],
         ...this.appChartTypesService.yearlyStaticChartOptions,
+        ...this.appChartTypesService.getRangeOptions(
+          this.screenSize,
+          this.selectedDurationBarChartType,
+          this.durationDataLength
+        ),
       })
       .then();
     this.updateChartType(ChartType.BAR);
@@ -530,6 +551,7 @@ export default class SellIndicatorsPageComponent implements OnInit {
       .loadChartKpiDataForDuration(DurationEndpoints.MONTHLY, this.selectedRoot!, this.criteria.criteria)
       .pipe(take(1))
       .subscribe((data) => {
+        this.durationDataLength = data.length;
         data.sort((a, b) => a.issuePeriod - b.issuePeriod);
         const _minMaxAvg = minMaxAvg(data.map((d) => d.kpiVal));
         this.chart.first
@@ -547,6 +569,11 @@ export default class SellIndicatorsPageComponent implements OnInit {
             ],
             colors: [this.appChartTypesService.chartColorsFormatter(_minMaxAvg)],
             ...this.appChartTypesService.monthlyStaticChartOptions,
+            ...this.appChartTypesService.getRangeOptions(
+              this.screenSize,
+              this.selectedDurationBarChartType,
+              this.durationDataLength
+            ),
           })
           .then();
       });
@@ -571,17 +598,20 @@ export default class SellIndicatorsPageComponent implements OnInit {
         })
       )
       .subscribe((data) => {
+        this.durationDataLength = data[1].kpiValues.length;
         const _chartData = Object.keys(data).map((key) => ({
           name: data[key as unknown as number].period.getNames(),
-          data: data[key as unknown as number].kpiValues.map((item) => item.value),
+          data: data[key as unknown as number].kpiValues.map((item) => ({ y: item.value, x: item.year })),
         }));
         this.chart.first
           .updateOptions({
             series: _chartData,
-            xaxis: {
-              categories: data[1].kpiValues.map((v) => v.year),
-            },
             ...this.appChartTypesService.halflyAndQuarterlyStaticChartOptions,
+            ...this.appChartTypesService.getRangeOptions(
+              this.screenSize,
+              this.selectedDurationBarChartType,
+              this.durationDataLength
+            ),
           })
           .then();
       });
@@ -594,9 +624,19 @@ export default class SellIndicatorsPageComponent implements OnInit {
 
   updateChartDuration(durationType: DurationEndpoints) {
     this.selectedDurationType = durationType;
-    if (this.selectedDurationType === DurationEndpoints.YEARLY) this.updateChart();
-    else if (this.selectedDurationType === DurationEndpoints.MONTHLY) this.updateChartMonthly();
-    else this.updateChartHalfyOrQuarterly();
+    if (this.selectedDurationType === DurationEndpoints.YEARLY) {
+      this.updateChart();
+      this.selectedDurationBarChartType = BarChartTypes.SINGLE_BAR;
+    } else if (this.selectedDurationType === DurationEndpoints.MONTHLY) {
+      this.updateChartMonthly();
+      this.selectedDurationBarChartType = BarChartTypes.SINGLE_BAR;
+    } else if (this.selectedDurationType === DurationEndpoints.HALFY) {
+      this.updateChartHalfyOrQuarterly();
+      this.selectedDurationBarChartType = BarChartTypes.DOUBLE_BAR;
+    } else {
+      this.updateChartHalfyOrQuarterly();
+      this.selectedDurationBarChartType = BarChartTypes.QUAD_BAR;
+    }
   }
 
   isSelectedChartType(type: ChartType) {
@@ -746,20 +786,21 @@ export default class SellIndicatorsPageComponent implements OnInit {
       .addDataLabelsFormatter((val, opts) =>
         this.appChartTypesService.dataLabelsFormatter({ val, opts }, this.selectedRoot)
       )
-      .addAxisYFormatter((val, opts) => this.appChartTypesService.axisYFormatter({ val, opts }, this.selectedRoot));
+      .addAxisYFormatter((val, opts) => this.appChartTypesService.axisYFormatter({ val, opts }, this.selectedRoot))
+      .addCustomToolbarOptions();
 
     this.top10ChartOptions.line
       .addDataLabelsFormatter((val, opts) =>
-        this.appChartTypesService.dataLabelsFormatter({ val, opts }, this.selectedRoot)
+        this.appChartTypesService.dataLabelsFormatter({ val, opts }, this.selectedTop10)
       )
-      .addAxisYFormatter((val, opts) => this.appChartTypesService.axisYFormatter({ val, opts }, this.selectedRoot))
-      .addAxisXFormatter((val, opts) => this.appChartTypesService.axisXFormatter({ val, opts }, this.selectedRoot));
+      .addAxisYFormatter((val, opts) => this.appChartTypesService.axisYFormatter({ val, opts }, this.selectedTop10))
+      .addAxisXFormatter((val, opts) => this.appChartTypesService.axisXFormatter({ val, opts }, this.selectedTop10));
 
     this.top10ChartOptions.bar
       .addDataLabelsFormatter((val, opts) =>
-        this.appChartTypesService.dataLabelsFormatter({ val, opts }, this.selectedRoot)
+        this.appChartTypesService.dataLabelsFormatter({ val, opts }, this.selectedTop10)
       )
-      .addAxisYFormatter((val, opts) => this.appChartTypesService.axisYFormatter({ val, opts }, this.selectedRoot))
-      .addAxisXFormatter((val, opts) => this.appChartTypesService.axisXFormatter({ val, opts }, this.selectedRoot));
+      .addAxisYFormatter((val, opts) => this.appChartTypesService.axisYFormatter({ val, opts }, this.selectedTop10))
+      .addAxisXFormatter((val, opts) => this.appChartTypesService.axisXFormatter({ val, opts }, this.selectedTop10));
   }
 }

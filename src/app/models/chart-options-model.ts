@@ -113,4 +113,24 @@ export class ChartOptionsModel extends ClonerMixin(class {}) implements PartialC
     this.chart && (this.chart.type = chartType);
     return this;
   }
+
+  addCustomToolbarOptions() {
+    this.chart = {
+      ...(this.chart ?? {}),
+      type: this.chart?.type ?? 'bar',
+      toolbar: {
+        show: true,
+        tools: {
+          selection: false,
+          zoom: false,
+          download: true,
+          zoomin: '<img src="assets/icons/chart/chevron-left-circle-outline.svg">',
+          zoomout: '<img src="assets/icons/chart/chevron-right-circle-outline.svg">',
+          pan: true,
+          reset: false,
+        },
+      },
+    };
+    return this;
+  }
 }

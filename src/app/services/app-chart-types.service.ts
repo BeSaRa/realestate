@@ -4,6 +4,8 @@ import { PieChartOptions } from '@app-types/pie-chart-options';
 import { AppColors } from '@constants/app-colors';
 import { maskSeparator } from '@constants/mask-separator';
 import { MinMaxAvgContract } from '@contracts/min-max-avg-contract';
+import { BarChartTypes } from '@enums/bar-chart-type';
+import { Breakpoints } from '@enums/breakpoints';
 import { formatNumber } from '@utils/utils';
 import { NgxMaskPipe } from 'ngx-mask';
 import { TranslationService } from './translation.service';
@@ -45,7 +47,6 @@ export class AppChartTypesService {
     return {
       ...this._pieChartOptions,
       legend: {
-        width: 250,
         formatter: this.legendFormatter,
       },
     };
@@ -55,6 +56,8 @@ export class AppChartTypesService {
   get popupChartOptions() {
     return { ...this._popupChartOptions };
   }
+
+  getRangeOptions = getRangeOptions;
 
   dataLabelsFormatter(
     value: { val: string | number | number[]; opts?: any },
@@ -139,7 +142,7 @@ const mainChartOptions: PartialChartOptions = {
   },
   plotOptions: {
     bar: {
-      columnWidth: '40%',
+      columnWidth: '80%',
     },
   },
   yaxis: {
@@ -191,7 +194,7 @@ const top10LineChartOptions: Partial<PartialChartOptions> = {
       // formatter: don't forget to set formatter when use chart
       style: {
         fontFamily: 'inherit',
-        fontSize: '15px',
+        fontSize: '12px',
       },
     },
   },
@@ -240,6 +243,7 @@ const top10BarChartOptions: Partial<PartialChartOptions> = {
     reversed: true,
     labels: {
       // formatter: don't forget to set formatter when use chart
+      maxWidth: 100,
       style: {
         fontFamily: 'inherit',
         fontSize: '15px',
@@ -346,3 +350,85 @@ const popupChartOptions: Partial<PartialChartOptions> = {
     },
   },
 };
+
+function getRangeOptions(screenSize: Breakpoints, barChartType: BarChartTypes, dataCount: number): PartialChartOptions {
+  function getRange(defaultRange: number) {
+    return dataCount <= defaultRange ? (dataCount <= 3 ? dataCount : dataCount - 1) : defaultRange;
+  }
+
+  let _range = 0;
+
+  if (barChartType === BarChartTypes.SINGLE_BAR) {
+    switch (screenSize) {
+      case Breakpoints.XS:
+        _range = getRange(4);
+        break;
+      case Breakpoints.SM:
+        _range = getRange(8);
+        break;
+      case Breakpoints.MD:
+        _range = getRange(12);
+        break;
+      case Breakpoints.LG:
+        _range = getRange(16);
+        break;
+      case Breakpoints.XL:
+        _range = getRange(20);
+        break;
+      case Breakpoints.XL2:
+        _range = getRange(25);
+        break;
+    }
+  } else if (barChartType === BarChartTypes.DOUBLE_BAR) {
+    switch (screenSize) {
+      case Breakpoints.XS:
+        _range = getRange(3);
+        break;
+      case Breakpoints.SM:
+        _range = getRange(6);
+        break;
+      case Breakpoints.MD:
+        _range = getRange(9);
+        break;
+      case Breakpoints.LG:
+        _range = getRange(12);
+        break;
+      case Breakpoints.XL:
+        _range = getRange(15);
+        break;
+      case Breakpoints.XL2:
+        _range = getRange(20);
+        break;
+    }
+  } else {
+    switch (screenSize) {
+      case Breakpoints.XS:
+        _range = getRange(3);
+        break;
+      case Breakpoints.SM:
+        _range = getRange(4);
+        break;
+      case Breakpoints.MD:
+        _range = getRange(6);
+        break;
+      case Breakpoints.LG:
+        _range = getRange(8);
+        break;
+      case Breakpoints.XL:
+        _range = getRange(10);
+        break;
+      case Breakpoints.XL2:
+        _range = getRange(12);
+        break;
+    }
+  }
+
+  return {
+    xaxis: { range: _range },
+    plotOptions: {
+      bar: {
+        columnWidth: dataCount <= _range ? '40%' : Math.round((dataCount / _range / 1.5) * 100).toString() + '%',
+      },
+    },
+  };
+}

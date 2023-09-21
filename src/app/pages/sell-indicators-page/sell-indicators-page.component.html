@@ -153,10 +153,11 @@
           >
         </div>
       </div>
-      <div class="flex flex-col md:flex-row">
-        <div class="flex-auto" dir="ltr">
+      <div class="flex flex-col mt-2 md:flex-row">
+        <div class="flex-auto overflow-hidden pt-1" dir="ltr">
           <apx-chart
             #chart
+            class="custom-toolbar [&>div]:ml-[-22px]"
             [series]="chartOptions.series!"
             [chart]="chartOptions.chart!"
             [xaxis]="chartOptions.xaxis!"
@@ -390,7 +391,7 @@
       </div>
       <div dir="ltr">
         <div class="flex flex-col md:flex-row">
-          <div class="flex-auto">
+          <div class="flex-auto pt-1" dir="ltr">
             <apx-chart
               #top10Chart
               [series]="top10ChartOptions[selectedTop10ChartType].series!"
