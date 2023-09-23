@@ -5,6 +5,7 @@ import { ServiceContract } from '@contracts/service-contract';
 import { RegisterServiceMixin } from '@mixins/register-service-mixin';
 import { Lookup } from '@models/lookup';
 import { LookupsMap } from '@models/lookups-map';
+import { ParamRange } from '@models/param-range';
 import { UrlService } from '@services/url.service';
 import { CastResponse } from 'cast-response';
 import { forkJoin, map, Observable, tap } from 'rxjs';
@@ -68,6 +69,7 @@ export class LookupService extends RegisterServiceMixin(class {}) implements Ser
       'municipalityList.*': () => Lookup,
       'furnitureStatusList.*': () => Lookup,
       'nationalityList.*': () => Lookup,
+      'maxParams.*': () => ParamRange,
     },
   })
   _loadRentLookups(): Observable<LookupsMap> {
@@ -82,6 +84,7 @@ export class LookupService extends RegisterServiceMixin(class {}) implements Ser
       'zoneList.*': () => Lookup,
       'municipalityList.*': () => Lookup,
       'nationalityList.*': () => Lookup,
+      'maxParams.*': () => ParamRange,
     },
   })
   _loadSellLookups(): Observable<LookupsMap> {
@@ -96,6 +99,7 @@ export class LookupService extends RegisterServiceMixin(class {}) implements Ser
       'zoneList.*': () => Lookup,
       'municipalityList.*': () => Lookup,
       'nationalityList.*': () => Lookup,
+      'maxParams.*': () => ParamRange,
     },
   })
   _loadMortLookups(): Observable<LookupsMap> {
@@ -114,6 +118,7 @@ export class LookupService extends RegisterServiceMixin(class {}) implements Ser
       'ownerCategoryList.*': () => Lookup,
       'ageCategoryList.*': () => Lookup,
       'genderList.*': () => Lookup,
+      'maxParams.*': () => ParamRange,
     },
   })
   _loadOwnerLookups(): Observable<LookupsMap> {

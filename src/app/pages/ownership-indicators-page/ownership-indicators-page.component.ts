@@ -10,7 +10,6 @@ import { PurposeComponent } from '@components/purpose/purpose.component';
 import { TransactionsFilterComponent } from '@components/transactions-filter/transactions-filter.component';
 import { YoyIndicatorComponent } from '@components/yoy-indicator/yoy-indicator.component';
 import { CriteriaContract } from '@contracts/criteria-contract';
-import { MinMaxAvgContract } from '@contracts/min-max-avg-contract';
 import { OwnerCriteriaContract } from '@contracts/owner-criteria-contract';
 import { BarChartTypes } from '@enums/bar-chart-type';
 import { Breakpoints } from '@enums/breakpoints';
@@ -92,10 +91,6 @@ export default class OwnershipIndicatorsPageComponent implements OnInit, AfterVi
 
   purposeKPIS = this.lookupService.ownerLookups.rentPurposeList;
   propertiesKPIS = this.lookupService.ownerLookups.propertyTypeList;
-
-  minMaxArea: Partial<MinMaxAvgContract> = {};
-
-  enableChangeAreaMinMaxValues = true;
 
   criteria!: {
     criteria: CriteriaContract;

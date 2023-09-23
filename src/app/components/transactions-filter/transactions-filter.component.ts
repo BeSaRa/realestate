@@ -1,17 +1,6 @@
 import { animate, state, style, transition, trigger } from '@angular/animations';
 import { CommonModule, DatePipe } from '@angular/common';
-import {
-  Component,
-  ElementRef,
-  EventEmitter,
-  HostListener,
-  Input,
-  OnDestroy,
-  OnInit,
-  Output,
-  computed,
-  inject,
-} from '@angular/core';
+import { Component, EventEmitter, HostListener, Input, OnDestroy, OnInit, Output, inject } from '@angular/core';
 import { AbstractControl, ReactiveFormsModule, UntypedFormBuilder } from '@angular/forms';
 import { DateAdapter, MatNativeDateModule, MatRippleModule } from '@angular/material/core';
 import { MatDatepickerModule } from '@angular/material/datepicker';
@@ -24,23 +13,24 @@ import { InputComponent } from '@components/input/input.component';
 import { SelectInputComponent } from '@components/select-input/select-input.component';
 import { AppIcons } from '@constants/app-icons';
 import { CriteriaContract } from '@contracts/criteria-contract';
-import { MinMaxAvgContract } from '@contracts/min-max-avg-contract';
 import { ControlDirective } from '@directives/control.directive';
 import { InputPrefixDirective } from '@directives/input-prefix.directive';
 import { InputSuffixDirective } from '@directives/input-suffix.directive';
 import { CriteriaType } from '@enums/criteria-type';
 import { Durations } from '@enums/durations';
 import { HalfYearDurations } from '@enums/half-year-durations';
+import { ParamRangeField } from '@enums/param-range-field';
 import { Lookup } from '@models/lookup';
+import { ParamRange } from '@models/param-range';
 import { LookupService } from '@services/lookup.service';
 import { StickyService } from '@services/sticky.service';
 import { TranslationService } from '@services/translation.service';
 import { UnitsService } from '@services/units.service';
 import { range } from '@utils/utils';
 import { CustomValidators } from '@validators/custom-validators';
+import { NgResizeObserver, ngResizeObserverProviders } from 'ng-resize-observer';
 import { NgxMaskDirective } from 'ngx-mask';
 import { Subject, debounceTime, filter, map, takeUntil, tap } from 'rxjs';
-import { NgResizeObserver, ngResizeObserverProviders } from 'ng-resize-observer';
 
 @Component({
   selector: 'app-transactions-filter',
@@ -95,14 +85,9 @@ export class TransactionsFilterComponent implements OnInit, OnDestroy {
   @Input() areas: Lookup[] = [];
   @Input() nationalities: Lookup[] = [];
   @Input() ownerTypes: Lookup[] = [];
-  @Input() minMaxArea: Partial<MinMaxAvgContract> = {};
-  @Input() minMaxRealestateValue: Partial<MinMaxAvgContract> = {};
-  @Input() minMaxRentPaymentMonthly: Partial<MinMaxAvgContract> = {};
+  @Input() paramsRange: ParamRange[] = [];
 
   @Output() fromChanged = new EventEmitter<{ criteria: CriteriaContract; type: CriteriaType }>();
-  @Output() enableChangeAreaMinMaxValues = new EventEmitter<boolean>();
-  @Output() enableChangeRentPaymentMonthlyMinMaxValues = new EventEmitter<boolean>();
-  @Output() enableChangerealEstateValueMinMaxValues = new EventEmitter<boolean>();
 
   lang = inject(TranslationService);
   fb = inject(UntypedFormBuilder);
@@ -143,6 +128,11 @@ export class TransactionsFilterComponent implements OnInit, OnDestroy {
   months: { label: string; value: number }[] = [];
   // spaces = this.lookupService.rentLookups.spaces; // will use it later
 
+  rentValueRange: ParamRange | undefined;
+  sellValueRange: ParamRange | undefined;
+  mortgageValueRange: ParamRange | undefined;
+  areaRange: ParamRange | undefined;
+
   form = this.fb.group(
     {
       areaCode: [],
@@ -161,22 +151,22 @@ export class TransactionsFilterComponent implements OnInit, OnDestroy {
       issueDateTo: [],
       rentPaymentMonthlyPerUnitFrom: [
         '',
-        [(control: AbstractControl) => CustomValidators.minValue(this.minMaxRentPaymentMonthly.min)(control)],
+        [(control: AbstractControl) => CustomValidators.minValue(this.rentValueRange?.minVal)(control)],
       ],
       rentPaymentMonthlyPerUnitTo: [
         '',
-        [(control: AbstractControl) => CustomValidators.maxValue(this.minMaxRentPaymentMonthly.max)(control)],
+        [(control: AbstractControl) => CustomValidators.maxValue(this.rentValueRange?.maxVal)(control)],
       ],
       realEstateValueFrom: [
         '',
-        [(control: AbstractControl) => CustomValidators.minValue(this.minMaxRealestateValue.min)(control)],
+        [(control: AbstractControl) => CustomValidators.minValue(this.sellValueRange?.minVal)(control)],
       ],
       realEstateValueTo: [
         '',
-        [(control: AbstractControl) => CustomValidators.maxValue(this.minMaxRealestateValue.max)(control)],
+        [(control: AbstractControl) => CustomValidators.maxValue(this.sellValueRange?.maxVal)(control)],
       ],
-      areaFrom: ['', [(control: AbstractControl) => CustomValidators.minValue(this.minMaxArea.min)(control)]],
-      areaTo: ['', [(control: AbstractControl) => CustomValidators.maxValue(this.minMaxArea.max)(control)]],
+      areaFrom: ['', [(control: AbstractControl) => CustomValidators.minValue(this.areaRange?.minVal)(control)]],
+      areaTo: ['', [(control: AbstractControl) => CustomValidators.maxValue(this.areaRange?.maxVal)(control)]],
       baseYear: [],
       zoneId: [],
       streetNo: [],
@@ -276,6 +266,7 @@ export class TransactionsFilterComponent implements OnInit, OnDestroy {
     // this.listenToNationalityChange(); // it needs edit from be
     // this.listenToOwnerCategoryChange(); // it needs edit from be
     this.setDefaultValues();
+    this.setParamsRange();
   }
 
   ngOnDestroy(): void {
@@ -565,11 +556,6 @@ export class TransactionsFilterComponent implements OnInit, OnDestroy {
     value = this._removeUnusedProps(value) as Partial<CriteriaContract>;
 
     this.fromChanged.emit({ criteria: value as CriteriaContract, type: criteriaType });
-    this.enableChangeAreaMinMaxValues.emit(this._enableChangeAreaMinMaxValues(this.form.value));
-    this.enableChangerealEstateValueMinMaxValues.emit(this._enableChangeRealestateValueMinMaxValues(this.form.value));
-    this.enableChangeRentPaymentMonthlyMinMaxValues.emit(
-      this._enableChangeRentPaymentMonthlyMinMaxValues(this.form.value)
-    );
   }
 
   private listenToFormChanges() {
@@ -650,24 +636,23 @@ export class TransactionsFilterComponent implements OnInit, OnDestroy {
     return this.isIndicator('owner');
   }
 
-  private _enableChangeAreaMinMaxValues(value: any): boolean {
-    const enable =
-      !Object.prototype.hasOwnProperty.call(value, 'areaFrom') &&
-      !Object.prototype.hasOwnProperty.call(value, 'areaTo');
-    return enable;
-  }
+  private setParamsRange() {
+    const _rentValueRange = this.paramsRange.filter(
+      (paramRange) => paramRange.fieldName === ParamRangeField.RENT_VALUE
+    );
+    this.rentValueRange = _rentValueRange.length ? _rentValueRange[0] : undefined;
 
-  private _enableChangeRealestateValueMinMaxValues(value: any): boolean {
-    const enable =
-      !Object.prototype.hasOwnProperty.call(value, 'realEstateValueFrom') &&
-      !Object.prototype.hasOwnProperty.call(value, 'realEstateValueTo');
-    return enable;
-  }
+    const _sellValueRange = this.paramsRange.filter(
+      (paramRange) => paramRange.fieldName === ParamRangeField.SELL_VALUE
+    );
+    this.sellValueRange = _sellValueRange.length ? _sellValueRange[0] : undefined;
 
-  private _enableChangeRentPaymentMonthlyMinMaxValues(value: any): boolean {
-    const enable =
-      !Object.prototype.hasOwnProperty.call(value, 'rentPaymentMonthlyPerUnitFrom') &&
-      !Object.prototype.hasOwnProperty.call(value, 'rentPaymentMonthlyPerUnitTo');
-    return enable;
+    const _mortgageValueRange = this.paramsRange.filter(
+      (paramRange) => paramRange.fieldName === ParamRangeField.MORTGAGE_VALUE
+    );
+    this.mortgageValueRange = _mortgageValueRange.length ? _mortgageValueRange[0] : undefined;
+
+    const _areaRange = this.paramsRange.filter((paramRange) => paramRange.fieldName === ParamRangeField.AREA);
+    this.areaRange = _areaRange.length ? _areaRange[0] : undefined;
   }
 }

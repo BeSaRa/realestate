@@ -15,7 +15,6 @@ import { TransactionsFilterComponent } from '@components/transactions-filter/tra
 import { YoyIndicatorComponent } from '@components/yoy-indicator/yoy-indicator.component';
 import { maskSeparator } from '@constants/mask-separator';
 import { CriteriaContract } from '@contracts/criteria-contract';
-import { MinMaxAvgContract } from '@contracts/min-max-avg-contract';
 import { SellCriteriaContract } from '@contracts/sell-criteria-contract';
 import { TableColumnCellTemplateDirective } from '@directives/table-column-cell-template.directive';
 import { TableColumnHeaderTemplateDirective } from '@directives/table-column-header-template.directive';
@@ -27,7 +26,7 @@ import { CriteriaType } from '@enums/criteria-type';
 import { DurationEndpoints } from '@enums/durations';
 import { AppTableDataSource } from '@models/app-table-data-source';
 import { ChartOptionsModel } from '@models/chart-options-model';
-import { CompositeTransaction, SellCompositeTransaction } from '@models/composite-transaction';
+import { CompositeTransaction } from '@models/composite-transaction';
 import { KpiModel } from '@models/kpi-model';
 import { KpiRoot } from '@models/kpiRoot';
 import { Lookup } from '@models/lookup';
@@ -36,7 +35,6 @@ import { SellTop10Model } from '@models/sell-top-10-model';
 import { SellTransaction } from '@models/sell-transaction';
 import { SellTransactionPurpose } from '@models/sell-transaction-purpose';
 import { TableSortOption } from '@models/table-sort-option';
-import { TransactionListModel } from '@models/transaction-list-model';
 import { FormatNumbersPipe } from '@pipes/format-numbers.pipe';
 import { AppChartTypesService } from '@services/app-chart-types.service';
 import { DashboardService } from '@services/dashboard.service';
@@ -49,20 +47,7 @@ import { minMaxAvg } from '@utils/utils';
 import { CarouselComponent, IvyCarouselModule } from 'angular-responsive-carousel2';
 import { ChartComponent, NgApexchartsModule } from 'ng-apexcharts';
 import { NgxMaskPipe } from 'ngx-mask';
-import {
-  BehaviorSubject,
-  Observable,
-  ReplaySubject,
-  Subject,
-  delay,
-  forkJoin,
-  map,
-  of,
-  switchMap,
-  take,
-  takeUntil,
-  tap,
-} from 'rxjs';
+import { BehaviorSubject, Observable, Subject, delay, forkJoin, map, of, switchMap, take, takeUntil, tap } from 'rxjs';
 
 @Component({
   selector: 'app-sell-indicators-page',
@@ -121,15 +106,10 @@ export default class SellIndicatorsPageComponent implements OnInit {
   areas = this.lookupService.sellLookups.districtList.slice().sort((a, b) => a.lookupKey - b.lookupKey);
   // zones = this.lookupService.sellLookups.zoneList;
   rooms = [] /*this.lookupService.sellLookups.rooms*/;
+  paramsRange = this.lookupService.sellLookups.maxParams;
 
   purposeKPIS = this.lookupService.sellLookups.rentPurposeList;
   propertiesKPIS = this.lookupService.sellLookups.propertyTypeList;
-
-  minMaxArea: Partial<MinMaxAvgContract> = {};
-  minMaxRealestateValue: Partial<MinMaxAvgContract> = {};
-
-  enableChangeAreaMinMaxValues = true;
-  enableChangerealEstateValueMinMaxValues = true;
 
   criteria!: {
     criteria: CriteriaContract;
@@ -655,15 +635,7 @@ export default class SellIndicatorsPageComponent implements OnInit {
               return this.dashboardService.loadSellKpiTransactions(this.criteria.criteria);
             }),
             tap((transactionsModel) => (this.transactionsCount = transactionsModel.count)),
-            map((transactionsModel) => transactionsModel.transactionList),
-            map((list) => {
-              if (this.enableChangerealEstateValueMinMaxValues) {
-                this.minMaxRealestateValue = minMaxAvg(list.map((item) => item.realEstateValue));
-              }
-              if (this.enableChangeAreaMinMaxValues) {
-              }
-              return list;
-            })
+            map((transactionsModel) => transactionsModel.transactionList)
           );
         })
       );

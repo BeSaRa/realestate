@@ -14,7 +14,6 @@ import { KpiRootComponent } from '@components/kpi-root/kpi-root.component';
 import { TableComponent } from '@components/table/table.component';
 import { TransactionsFilterComponent } from '@components/transactions-filter/transactions-filter.component';
 import { CriteriaContract } from '@contracts/criteria-contract';
-import { MinMaxAvgContract } from '@contracts/min-max-avg-contract';
 import { TableColumnCellTemplateDirective } from '@directives/table-column-cell-template.directive';
 import { TableColumnHeaderTemplateDirective } from '@directives/table-column-header-template.directive';
 import { TableColumnTemplateDirective } from '@directives/table-column-template.directive';
@@ -34,7 +33,7 @@ import { TranslationService } from '@services/translation.service';
 import { UrlService } from '@services/url.service';
 import { formatNumber, minMaxAvg } from '@utils/utils';
 import { ChartComponent, NgApexchartsModule } from 'ng-apexcharts';
-import { BehaviorSubject, delay, map, Observable, of, ReplaySubject, Subject, switchMap, takeUntil, tap } from 'rxjs';
+import { BehaviorSubject, delay, map, Observable, of, Subject, switchMap, tap } from 'rxjs';
 
 @Component({
   selector: 'app-mortgage-indicators',
@@ -68,11 +67,6 @@ export default class MortgageIndicatorsComponent implements OnInit {
   appChartTypesService = inject(AppChartTypesService);
   destroy$ = new Subject<void>();
 
-  minMaxRealestateValue: Partial<MinMaxAvgContract> = {};
-
-  enableChangeAreaMinMaxValues = true;
-  enableChangerealEstateValueMinMaxValues = true;
-
   criteria: { criteria: CriteriaContract; type: CriteriaType } = {} as {
     criteria: CriteriaContract;
     type: CriteriaType;
@@ -90,6 +84,7 @@ export default class MortgageIndicatorsComponent implements OnInit {
   propertyTypes = this.lookupService.mortLookups.propertyTypeList;
   rooms = [] /*this.lookupService.mortLookups.rooms*/;
   areas = this.lookupService.mortLookups.districtList;
+  paramsRange = this.lookupService.mortLookups.maxParams;
 
   private paginate$ = new BehaviorSubject({
     offset: 0,
@@ -459,16 +454,7 @@ export default class MortgageIndicatorsComponent implements OnInit {
               return this.dashboardService.loadMortgageKpiTransactions(this.criteria.criteria);
             }),
             tap((transactionsModel) => (this.transactionsCount = transactionsModel.count)),
-            map((transactionsModel) => transactionsModel.transactionList),
-            map((list) => {
-              if (this.enableChangerealEstateValueMinMaxValues) {
-                this.minMaxRealestateValue = minMaxAvg(list.map((item) => item.realEstateValue));
-              }
-              if (this.enableChangeAreaMinMaxValues) {
-                //
-              }
-              return list;
-            })
+            map((transactionsModel) => transactionsModel.transactionList)
           );
         })
       );

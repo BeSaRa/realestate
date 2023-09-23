@@ -16,6 +16,7 @@ import { RentDefaultValues } from '@models/rent-default-values';
 import { RentTop10Model } from '@models/rent-top-10-model';
 
 import { DateAdapter, MatNativeDateModule } from '@angular/material/core';
+import { PageEvent } from '@angular/material/paginator';
 import { MatSortModule } from '@angular/material/sort';
 import { MatTableModule } from '@angular/material/table';
 import { ButtonComponent } from '@components/button/button.component';
@@ -23,12 +24,14 @@ import { IconButtonComponent } from '@components/icon-button/icon-button.compone
 import { TableComponent } from '@components/table/table.component';
 import { YoyIndicatorComponent } from '@components/yoy-indicator/yoy-indicator.component';
 import { maskSeparator } from '@constants/mask-separator';
-import { MinMaxAvgContract } from '@contracts/min-max-avg-contract';
 import { TableColumnCellTemplateDirective } from '@directives/table-column-cell-template.directive';
 import { TableColumnHeaderTemplateDirective } from '@directives/table-column-header-template.directive';
 import { TableColumnTemplateDirective } from '@directives/table-column-template.directive';
+import { BarChartTypes } from '@enums/bar-chart-type';
+import { Breakpoints } from '@enums/breakpoints';
 import { ChartType } from '@enums/chart-type';
 import { DurationEndpoints } from '@enums/durations';
+import { AppTableDataSource } from '@models/app-table-data-source';
 import { ChartOptionsModel } from '@models/chart-options-model';
 import { RentCompositeTransaction } from '@models/composite-transaction';
 import { FurnitureStatusKpi } from '@models/furniture-status-kpi';
@@ -42,6 +45,7 @@ import { FormatNumbersPipe } from '@pipes/format-numbers.pipe';
 import { AppChartTypesService } from '@services/app-chart-types.service';
 import { DashboardService } from '@services/dashboard.service';
 import { LookupService } from '@services/lookup.service';
+import { ScreenBreakpointsService } from '@services/screen-breakpoints.service';
 import { TranslationService } from '@services/translation.service';
 import { UnitsService } from '@services/units.service';
 import { UrlService } from '@services/url.service';
@@ -49,27 +53,7 @@ import { minMaxAvg } from '@utils/utils';
 import { CarouselComponent, IvyCarouselModule } from 'angular-responsive-carousel2';
 import { ChartComponent, NgApexchartsModule } from 'ng-apexcharts';
 import { NgxMaskPipe } from 'ngx-mask';
-import {
-  BehaviorSubject,
-  combineLatest,
-  delay,
-  forkJoin,
-  map,
-  Observable,
-  of,
-  ReplaySubject,
-  Subject,
-  switchMap,
-  take,
-  takeUntil,
-  tap,
-} from 'rxjs';
-import { PageEvent } from '@angular/material/paginator';
-import { DataSource } from '@angular/cdk/collections';
-import { AppTableDataSource } from '@models/app-table-data-source';
-import { ScreenBreakpointsService } from '@services/screen-breakpoints.service';
-import { Breakpoints } from '@enums/breakpoints';
-import { BarChartTypes } from '@enums/bar-chart-type';
+import { BehaviorSubject, delay, forkJoin, map, Observable, of, Subject, switchMap, take, takeUntil, tap } from 'rxjs';
 
 @Component({
   selector: 'app-rental-indicators-page',
@@ -124,6 +108,7 @@ export default class RentalIndicatorsPageComponent implements OnInit {
   zones = this.lookupService.rentLookups.zoneList;
   rooms = this.lookupService.rentLookups.rooms;
   furnitureStatusList = this.lookupService.rentLookups.furnitureStatusList;
+  paramsRange = this.lookupService.rentLookups.maxParams;
 
   // transactions = new ReplaySubject<RentTransaction[]>(1);
   transactions$: Observable<RentTransaction[]> = this.loadTransactions();
@@ -163,12 +148,6 @@ export default class RentalIndicatorsPageComponent implements OnInit {
       },
     }),
   ];
-
-  minMaxArea: Partial<MinMaxAvgContract> = {};
-  minMaxRentPaymentMonthly: Partial<MinMaxAvgContract> = {};
-
-  enableChangeAreaMinMaxValues = true;
-  enableChangeRentPaymentMonthlyMinMaxValues = true;
 
   criteria!: {
     criteria: CriteriaContract;
@@ -630,16 +609,7 @@ export default class RentalIndicatorsPageComponent implements OnInit {
               return this.dashboardService.loadRentKpiTransactions(this.criteria.criteria);
             }),
             tap((transactionsModel) => (this.transactionsCount = transactionsModel.count)),
-            map((transactionsModel) => transactionsModel.transactionList),
-            map((list) => {
-              if (this.enableChangeRentPaymentMonthlyMinMaxValues) {
-                this.minMaxRentPaymentMonthly = minMaxAvg(list.map((item) => item.rentPaymentMonthly));
-              }
-              if (this.enableChangeAreaMinMaxValues) {
-                this.minMaxArea = minMaxAvg(list.map((item) => item.area));
-              }
-              return list;
-            })
+            map((transactionsModel) => transactionsModel.transactionList)
           );
         })
       );

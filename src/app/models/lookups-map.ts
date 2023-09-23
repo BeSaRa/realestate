@@ -4,6 +4,7 @@ import { Durations } from '@enums/durations';
 import { HalfYearDurations } from '@enums/half-year-durations';
 import { QuarterYearDurations } from '@enums/quarter-year-durations';
 import { Spaces } from '@enums/spaces';
+import { ParamRange } from './param-range';
 
 export class LookupsMap implements LookupsContract {
   districtList!: Lookup[];
@@ -16,6 +17,7 @@ export class LookupsMap implements LookupsContract {
   ownerCategoryList!: Lookup[];
   ageCategoryList!: Lookup[];
   genderList!: Lookup[];
+  maxParams!: ParamRange[];
   rooms = [
     new Lookup().clone<Lookup>({
       arName: 'ستوديو',
