@@ -180,7 +180,7 @@ export default class OwnershipIndicatorsPageComponent implements OnInit, AfterVi
   });
 
   isOnInitMunicipaliteisChart = true;
-  selectedMunicipalityId = 1;
+  selectedMunicipalityId = 4;
   municipalitiesDataLength = 0;
 
   municipalitiesChartOptions = new ChartOptionsModel().clone<ChartOptionsModel>({

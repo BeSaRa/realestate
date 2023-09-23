@@ -25,7 +25,7 @@ import {
 } from '@angular/forms';
 import { MatOption, MatOptionModule } from '@angular/material/core';
 import { MatIconModule } from '@angular/material/icon';
-import { MatSelect, MatSelectModule } from '@angular/material/select';
+import { MAT_SELECT_SCROLL_STRATEGY, MatSelect, MatSelectModule } from '@angular/material/select';
 import { ValidationErrorsComponent } from '@components/validation-errors/validation-errors.component';
 import { InputPrefixDirective } from '@directives/input-prefix.directive';
 import { InputSuffixDirective } from '@directives/input-suffix.directive';
@@ -35,6 +35,7 @@ import { TranslationService } from '@services/translation.service';
 import { generateUUID, objectHasOwnProperty } from '@utils/utils';
 import { debounceTime, map, Observable, of, Subject, takeUntil } from 'rxjs';
 import { InputComponent } from '../input/input.component';
+import { Overlay } from '@angular/cdk/overlay';
 
 @Component({
   selector: 'app-select-input',
@@ -56,6 +57,11 @@ import { InputComponent } from '../input/input.component';
       provide: NG_VALUE_ACCESSOR,
       multi: true,
       useExisting: SelectInputComponent,
+    },
+    {
+      provide: MAT_SELECT_SCROLL_STRATEGY,
+      useFactory: (overlay: Overlay) => () => overlay.scrollStrategies.close(),
+      deps: [Overlay],
     },
   ],
 })
@@ -119,8 +125,8 @@ export class SelectInputComponent implements ControlValueAccessor, OnInit, OnCha
   }
 
   ngOnInit(): void {
-    this.labelColor = this.isSecondary ? "text-gray-500" : 'text-black';
-    this.borderColor = this.isSecondary ? "border-gray-500" : "border-black";
+    this.labelColor = this.isSecondary ? 'text-gray-500' : 'text-black';
+    this.borderColor = this.isSecondary ? 'border-gray-500' : 'border-black';
     this.ctrl = this.injector.get(NgControl, null, {
       self: true,
       optional: true,
