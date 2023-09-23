@@ -192,6 +192,7 @@ const top10LineChartOptions: Partial<PartialChartOptions> = {
   xaxis: {
     categories: [],
     labels: {
+      trim: true,
       // formatter: don't forget to set formatter when use chart
     },
   },

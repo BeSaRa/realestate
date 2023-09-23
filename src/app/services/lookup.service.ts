@@ -145,9 +145,11 @@ export class LookupService extends RegisterServiceMixin(class {}) implements Ser
           this.rentLookups = this._addAllToMunicipalities(rent);
           this.sellLookups = this._addAllToMunicipalities(this._addAllToDistrict(this._addAllToPropertyType(sell)));
           this.mortLookups = this._addAllToMunicipalities(this._addAllToDistrict(this._addAllToPropertyType(mort)));
-          this.ownerLookups = this._addAllToOwnerCategories(
-            this._addAllToNationalities(
-              this._addAllToDistrict(this._addAllToMunicipalities(this._addAllToPropertyType(owner)))
+          this.ownerLookups = this._addStatePropertyToOwnerCategories(
+            this._addAllToOwnerCategories(
+              this._addAllToNationalities(
+                this._addAllToDistrict(this._addAllToMunicipalities(this._addAllToPropertyType(owner)))
+              )
             )
           );
           // remove unknown district from owner lookups until it removed from be
@@ -321,6 +323,19 @@ export class LookupService extends RegisterServiceMixin(class {}) implements Ser
         arName: 'الكل',
         enName: 'All',
         lookupKey: -1,
+      }),
+      ...lookups.ownerCategoryList,
+    ];
+    return lookups;
+  }
+
+  private _addStatePropertyToOwnerCategories(lookups: LookupsContract) {
+    if (lookups.ownerCategoryList.find((p) => p.lookupKey === 82804)) return lookups;
+    lookups.ownerCategoryList = [
+      new Lookup().clone<Lookup>({
+        arName: 'أملاك دولة',
+        enName: 'State property',
+        lookupKey: 82804,
       }),
       ...lookups.ownerCategoryList,
     ];
