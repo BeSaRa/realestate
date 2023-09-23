@@ -2,6 +2,7 @@ import { animate, state, style, transition, trigger } from '@angular/animations'
 import { CommonModule, DatePipe } from '@angular/common';
 import {
   Component,
+  ElementRef,
   EventEmitter,
   HostListener,
   Input,
@@ -38,7 +39,8 @@ import { UnitsService } from '@services/units.service';
 import { range } from '@utils/utils';
 import { CustomValidators } from '@validators/custom-validators';
 import { NgxMaskDirective } from 'ngx-mask';
-import { Subject, debounceTime, filter, takeUntil } from 'rxjs';
+import { Subject, debounceTime, filter, map, takeUntil, tap } from 'rxjs';
+import { NgResizeObserver, ngResizeObserverProviders } from 'ng-resize-observer';
 
 @Component({
   selector: 'app-transactions-filter',
@@ -61,7 +63,7 @@ import { Subject, debounceTime, filter, takeUntil } from 'rxjs';
     ControlDirective,
     NgxMaskDirective,
   ],
-  providers: [DatePipe],
+  providers: [DatePipe, ...ngResizeObserverProviders],
   templateUrl: './transactions-filter.component.html',
   styleUrls: ['./transactions-filter.component.scss'],
   animations: [
@@ -109,13 +111,26 @@ export class TransactionsFilterComponent implements OnInit, OnDestroy {
   stickyService = inject(StickyService);
   adapter = inject(DateAdapter);
   unitsService = inject(UnitsService);
+  resize$ = inject(NgResizeObserver);
+
+  private destroy$: Subject<void> = new Subject();
 
   @HostListener('window:scroll')
   windowScroll(): void {
-    this.stickyService.isFilterSticky.set(window.scrollY > 500);
+    this.stickyService.scrollY.set(window.scrollY);
   }
 
-  isFilterSticky = computed(() => this.stickyService.isFilterSticky());
+  prevHeight = 0;
+  height$ = this.resize$
+    .pipe(
+      takeUntil(this.destroy$),
+      map((entry) => entry.contentRect.height),
+      filter((height) => height !== this.prevHeight),
+      filter(() => !this.stickyService.isFilterSticky()),
+      tap((height) => (this.prevHeight = height)),
+      tap((height) => this.stickyService.filterHeigtht.set(height))
+    )
+    .subscribe();
 
   filteredZones: Lookup[] = [];
   filteredAreas: Lookup[] = [];
@@ -182,8 +197,6 @@ export class TransactionsFilterComponent implements OnInit, OnDestroy {
       ],
     }
   );
-
-  private destroy$: Subject<void> = new Subject();
 
   protected readonly AppIcons = AppIcons;
   displayYear = true;
