@@ -1,4 +1,5 @@
 import { Lookup } from '@models/lookup';
+import { ParamRange } from '@models/param-range';
 
 export interface LookupsContract {
   propertyTypeList: Lookup[];
@@ -17,4 +18,5 @@ export interface LookupsContract {
   ownerCategoryList: Lookup[];
   ageCategoryList: Lookup[];
   genderList: Lookup[];
+  maxParams: ParamRange[];
 }
