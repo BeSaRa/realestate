@@ -170,6 +170,7 @@ const top10LineChartOptions: Partial<PartialChartOptions> = {
   chart: {
     type: 'line',
     height: 400,
+    width: '100%',
   },
   dataLabels: {
     enabled: true,
@@ -197,6 +198,7 @@ const top10LineChartOptions: Partial<PartialChartOptions> = {
   yaxis: {
     labels: {
       // formatter: don't forget to set formatter when use chart
+      show: false,
       style: {
         fontFamily: 'inherit',
         fontSize: '12px',
@@ -211,6 +213,7 @@ const top10BarChartOptions: Partial<PartialChartOptions> = {
   chart: {
     type: 'bar',
     height: 400,
+    width: '100%',
   },
   dataLabels: {
     enabled: true,
@@ -232,6 +235,7 @@ const top10BarChartOptions: Partial<PartialChartOptions> = {
   xaxis: {
     categories: [],
     labels: {
+      show: false,
       // formatter: don't forget to set formatter when use chart
     },
   },
@@ -246,6 +250,7 @@ const top10BarChartOptions: Partial<PartialChartOptions> = {
   },
   yaxis: {
     reversed: true,
+
     labels: {
       // formatter: don't forget to set formatter when use chart
       maxWidth: 100,

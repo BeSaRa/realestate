@@ -703,9 +703,6 @@ export default class SellIndicatorsPageComponent implements OnInit {
               }),
             },
           ],
-          xaxis: {
-            categories: [],
-          },
         },
         true
       )
