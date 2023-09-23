@@ -1,6 +1,11 @@
 <div
-  [class.fixed]="isFilterSticky()"
-  [class.animate-sticky]="isFilterSticky()"
+  *ngIf="stickyService.isFilterSticky()"
+  class="w-full"
+  [ngStyle]="{ height: stickyService.filterHeigtht() + 'px' }"></div>
+
+<div
+  [class.fixed]="stickyService.isFilterSticky()"
+  [class.animate-sticky]="stickyService.isFilterSticky()"
   class="grid gap-4 grid-cols-3 md:grid-cols-4 xl:grid-cols-6 [&.fixed]:left-0 [&.fixed]:right-0 [&.fixed]:top-[70px] lg:[&.fixed]:top-[78px] [&.fixed]:h-[86px] [&.fixed]:overflow-hidden [&.fixed]:px-3 lg:[&.fixed]:px-16 [&.fixed]:pt-1.5 [&.fixed]:bg-sand [&.fixed]:shadow [&.fixed]:z-[12]">
   <ng-container [formGroup]="form">
     <app-select-input
