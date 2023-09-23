@@ -139,6 +139,11 @@ const mainChartOptions: PartialChartOptions = {
   },
   xaxis: {
     categories: [],
+    labels: {
+      trim: true,
+      rotate: -45,
+      rotateAlways: false,
+    },
   },
   plotOptions: {
     bar: {
@@ -147,7 +152,7 @@ const mainChartOptions: PartialChartOptions = {
   },
   yaxis: {
     min: 0,
-    max: (max: number) => 1.1 * max,
+    max: undefined,
     // tickAmount: 10,
     labels: {
       // formatter: don't forget to set formatter when use chart

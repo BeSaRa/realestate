@@ -444,6 +444,7 @@ export class TransactionsFilterComponent implements OnInit, OnDestroy {
         issueDateFrom: null,
         issueDateTo: null,
         issueDateMonth: null,
+        halfYearDuration: HalfYearDurations.FIRST_HALF,
       },
       { emitEvent: false }
     );
@@ -460,6 +461,7 @@ export class TransactionsFilterComponent implements OnInit, OnDestroy {
         issueDateFrom: null,
         issueDateTo: null,
         issueDateMonth: null,
+        issueDateQuarterList: [1],
       },
       { emitEvent: false }
     );
@@ -478,6 +480,7 @@ export class TransactionsFilterComponent implements OnInit, OnDestroy {
       {
         issueDateFrom: null,
         issueDateTo: null,
+        issueDateMonth: 0,
       },
       { emitEvent: false }
     );
@@ -541,9 +544,9 @@ export class TransactionsFilterComponent implements OnInit, OnDestroy {
     } else if (this.displayQuarter) {
       if (!this.issueDateQuarterList.value || !this.issueDateQuarterList.value.length) {
         return;
-      } else if (this.displayRange) {
-        if (!this.issueDateFrom.value || !this.issueDateTo.value) return;
       }
+    } else if (this.displayRange) {
+      if (!this.issueDateFrom.value || !this.issueDateTo.value) return;
     }
 
     value = this._removeUnusedProps(value) as Partial<CriteriaContract>;
