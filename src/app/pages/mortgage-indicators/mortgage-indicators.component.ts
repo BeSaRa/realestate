@@ -14,6 +14,7 @@ import { KpiRootComponent } from '@components/kpi-root/kpi-root.component';
 import { TableComponent } from '@components/table/table.component';
 import { TransactionsFilterComponent } from '@components/transactions-filter/transactions-filter.component';
 import { CriteriaContract } from '@contracts/criteria-contract';
+import { MinMaxAvgContract } from '@contracts/min-max-avg-contract';
 import { TableColumnCellTemplateDirective } from '@directives/table-column-cell-template.directive';
 import { TableColumnHeaderTemplateDirective } from '@directives/table-column-header-template.directive';
 import { TableColumnTemplateDirective } from '@directives/table-column-template.directive';
@@ -67,6 +68,11 @@ export default class MortgageIndicatorsComponent implements OnInit {
   appChartTypesService = inject(AppChartTypesService);
   destroy$ = new Subject<void>();
   reload$ = new ReplaySubject<void>(1);
+
+  minMaxRealestateValue: Partial<MinMaxAvgContract> = {};
+
+  enableChangeAreaMinMaxValues = true;
+  enableChangerealEstateValueMinMaxValues = true;
 
   criteria: { criteria: CriteriaContract; type: CriteriaType } = {} as {
     criteria: CriteriaContract;
@@ -461,6 +467,13 @@ length: number = 50;
             map(({count, transactionList}) => {
 
               this.length = count;
+              
+              if (this.enableChangerealEstateValueMinMaxValues) {
+                this.minMaxRealestateValue = minMaxAvg(transactionList.map((item) => item.realEstateValue));
+              }
+              if (this.enableChangeAreaMinMaxValues) {
+                //
+              }
               
               return transactionList;
             })

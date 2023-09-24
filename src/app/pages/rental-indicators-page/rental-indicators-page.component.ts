@@ -69,8 +69,9 @@ import {
   tap,
 } from 'rxjs';
 import { DataSource } from '@angular/cdk/collections';
-import { RentTransactionPropertyType } from '@models/rent-transaction-property-type';
 import { MinMaxAvgContract } from '@contracts/min-max-avg-contract';
+import { RentTransactionPropertyType } from '@models/rent-transaction-property-type';
+
 
 @Component({
   selector: 'app-rental-indicators-page',
