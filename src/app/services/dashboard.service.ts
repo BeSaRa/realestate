@@ -297,44 +297,6 @@ export class DashboardService extends RegisterServiceMixin(class {}) implements 
     );
   }
 
-  loadMortgageTransactionCountChart(
-    criteria: Partial<MortgageCriteriaContract>,
-    duration: DurationEndpoints = DurationEndpoints.YEARLY
-  ): Observable<Record<number, KpiModel[]>> {
-    return this.http
-      .post<KpiModel[]>(this.getSelectedDurationString(this.urlService.URLS.MORT_KPI2, duration), criteria)
-      .pipe(
-        map((values) => {
-          return values.reduce((acc, item) => {
-            if (!Object.prototype.hasOwnProperty.call(acc, item.issueYear)) {
-              acc[item.issueYear] = [];
-            }
-            acc[item.issueYear].push(item);
-            return { ...acc };
-          }, {} as Record<number, KpiModel[]>);
-        })
-      );
-  }
-
-  loadMortgageTransactionValueChart(
-    criteria: Partial<MortgageCriteriaContract>,
-    duration: DurationEndpoints = DurationEndpoints.YEARLY
-  ): Observable<Record<number, KpiModel[]>> {
-    return this.http
-      .post<KpiModel[]>(this.getSelectedDurationString(this.urlService.URLS.MORT_KPI6, duration), criteria)
-      .pipe(
-        map((values) => {
-          return values.reduce((acc, item) => {
-            if (!Object.prototype.hasOwnProperty.call(acc, item.issueYear)) {
-              acc[item.issueYear] = [];
-            }
-            acc[item.issueYear].push(item);
-            return { ...acc };
-          }, {} as Record<number, KpiModel[]>);
-        })
-      );
-  }
-
   @CastResponse(() => OwnershipCountNationality)
   loadOwnershipsCountNationality(
     criteria: Partial<OwnerCriteriaContract>,
@@ -343,21 +305,6 @@ export class DashboardService extends RegisterServiceMixin(class {}) implements 
     return this.http.post<OwnershipCountNationality[]>(
       this.getOwnershipCountNationalityEndpoint(nationalityCategory),
       criteria
-    );
-  }
-
-  private getSelectedDurationString(url: string, duration: DurationEndpoints): string {
-    return (
-      url +
-      (duration === DurationEndpoints.YEARLY
-        ? ''
-        : duration === DurationEndpoints.HALFY
-        ? '/halfly'
-        : duration === DurationEndpoints.QUARTERLY
-        ? '/quartley'
-        : duration === DurationEndpoints.MONTHLY
-        ? '/monthly'
-        : '')
     );
   }
 
