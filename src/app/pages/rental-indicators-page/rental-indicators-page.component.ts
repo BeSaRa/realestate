@@ -49,7 +49,7 @@ import { ScreenBreakpointsService } from '@services/screen-breakpoints.service';
 import { TranslationService } from '@services/translation.service';
 import { UnitsService } from '@services/units.service';
 import { UrlService } from '@services/url.service';
-import { minMaxAvg } from '@utils/utils';
+import { formatNumber, minMaxAvg } from '@utils/utils';
 import { CarouselComponent, IvyCarouselModule } from 'angular-responsive-carousel2';
 import { ChartComponent, NgApexchartsModule } from 'ng-apexcharts';
 import { NgxMaskPipe } from 'ngx-mask';
@@ -621,7 +621,6 @@ export default class RentalIndicatorsPageComponent implements OnInit {
     const durationType = this.selectedDurationType;
 
     var tooltipData = dataSeries[dataPointIndex];
-    const rentAvg = 100000;
     if (durationType === this.DurationTypes.HALFY || durationType === this.DurationTypes.QUARTERLY) {
       tooltipData = dataSeries[seriesIndex + 1].kpiValues[dataPointIndex];
       // console.log(tooltipData);
@@ -641,16 +640,29 @@ export default class RentalIndicatorsPageComponent implements OnInit {
   }
 
   tooltipListDraw(issueYear?: number, kpiVal?: number, kpiYoYVal?: number, kpiYoYBaseVal?: number) {
-    return `<div><div m-2 p-2 class="grid grid-rows-4 grid-cols-2 gap-1" dir=${this.lang.isLtr ? 'ltr' : 'rtl'}>
-        <span>${this.lang.map.year}</span>
-        <span dir="ltr">${issueYear}</span>
-        <span>${this.lang.map.total}</span>
-        <span dir="ltr">${kpiVal}</span>
-        <span>${this.lang.map.yearly}</span>
-        <span dir="ltr">${(kpiYoYVal ?? 0).toFixed(2)} %</span>
-        <span>${'مقابل 2019'}</span>
-        <span dir="ltr">${(kpiYoYBaseVal ?? 0).toFixed(2)} %</span>
-        </div></div>`;
+    var kpiValStr = this.selectedRoot?.hasPrice
+      ? (formatNumber(kpiVal!) as string)
+      : (this.maskPipe.transform(kpiVal!.toFixed(0), maskSeparator.SEPARATOR, {
+          thousandSeparator: ',',
+        }) as unknown as string);
+    return `
+    <div class="h-full flex flex-row justify-center outline-none border-2 rounded-md border-primary" dir=${
+      this.lang.isLtr ? 'ltr' : 'rtl'
+    }>
+    <div class="flex flex-col p-1">
+      <span>${this.lang.map.year}</span>
+      <span>${this.selectedRoot?.getNames()}</span>
+      <span>${this.lang.map.yearly}</span>
+      <span>${'مقابل 2019'}</span>
+
+    </div>
+    <div class="flex flex-col p-1">
+      <span dir="ltr">${issueYear}</span>
+      <span dir="ltr">${kpiValStr}</span>
+      <span dir="ltr">${(kpiYoYVal ?? 0).toFixed(2)} %</span>
+      <span dir="ltr">${(kpiYoYBaseVal ?? 0).toFixed(2)} %</span>
+
+    </div>`;
   }
 
   updateChartType(type: ChartType) {
