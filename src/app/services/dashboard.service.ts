@@ -336,6 +336,28 @@ export class DashboardService extends RegisterServiceMixin(class {}) implements 
     return durationData;
   }
 
+  mapDurationChartData(data: KpiDurationModel[], durations: Lookup[]) {
+    const durationData: {
+      [duration: number]: {
+        period: Lookup;
+        kpiValues: KpiDurationModel[];
+      };
+    } = {};
+    durations.forEach((item) => {
+      durationData[item.lookupKey] = { period: item, kpiValues: [] };
+    });
+
+    data.forEach((item) => {
+      durationData[item.issuePeriod].kpiValues.push(item);
+    });
+
+    durations.forEach((item) => {
+      durationData[item.lookupKey].kpiValues.sort((a, b) => a.issueYear - b.issueYear);
+    });
+
+    return durationData;
+  }
+
   private getOwnershipCountNationalityEndpoint(nationalityCategory: NationalityCategories) {
     return nationalityCategory === NationalityCategories.QATARI
       ? this.urlService.URLS.OWNER_KPI11
