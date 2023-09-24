@@ -34,7 +34,6 @@ import { SellDefaultValues } from '@models/sell-default-values';
 import { SellTop10Model } from '@models/sell-top-10-model';
 import { SellTransaction } from '@models/sell-transaction';
 import { SellTransactionPurpose } from '@models/sell-transaction-purpose';
-import { TransactionListModel } from '@models/transaction-list-model';
 import { UrlService } from '@services/url.service';
 import { groupBy, minMaxAvg, range } from '@utils/utils';
 import { CastResponse, CastResponseContainer } from 'cast-response';
@@ -170,7 +169,6 @@ export class DashboardService extends RegisterServiceMixin(class {}) implements 
     return this.http.post<SellTransactionPurpose[]>(this.urlService.URLS.SELL_KPI26, criteria);
   }
 
-  // @CastResponse(() => TransactionListModel<RentTransaction>, { shape: { 'transactionList.*': () => RentTransaction } })
   @CastResponse(undefined, {
     unwrap: '',
     fallback: '$rentPagination',
@@ -179,7 +177,6 @@ export class DashboardService extends RegisterServiceMixin(class {}) implements 
     return this.http.post<Pagination<RentTransaction[]>>(this.urlService.URLS.RENT_KPI29, criteria);
   }
 
-  // @CastResponse(() => SellTransaction)
   @CastResponse(undefined, {
     unwrap: '',
     fallback: '$sellPagination',
@@ -205,9 +202,6 @@ export class DashboardService extends RegisterServiceMixin(class {}) implements 
   }
 
 
-  // @CastResponse(() => TransactionListModel<MortgageTransaction>, {
-  //   shape: { 'transactionList.*': () => MortgageTransaction },
-  // })
   @CastResponse(undefined, {
     unwrap: '',
     fallback: '$mortgagePagination',
