@@ -501,13 +501,11 @@ export default class RentalIndicatorsPageComponent implements OnInit {
         ),
         tooltip: {
           shared: false,
-          custom: ({ series, seriesIndex, dataPointIndex, w }: any) =>
+          custom: ({ seriesIndex, dataPointIndex }: any) =>
             this.customChartTooltip(
               {
-                series,
                 seriesIndex,
                 dataPointIndex,
-                w,
               },
               dataSeries
             ),
@@ -548,13 +546,11 @@ export default class RentalIndicatorsPageComponent implements OnInit {
             ),
             tooltip: {
               shared: false,
-              custom: ({ series, seriesIndex, dataPointIndex, w }: any) =>
+              custom: ({ seriesIndex, dataPointIndex }: any) =>
                 this.customChartTooltip(
                   {
-                    series,
                     seriesIndex,
                     dataPointIndex,
-                    w,
                   },
                   data
                 ),
@@ -601,13 +597,11 @@ export default class RentalIndicatorsPageComponent implements OnInit {
             ),
             tooltip: {
               shared: false,
-              custom: ({ series, seriesIndex, dataPointIndex, w }: any) =>
+              custom: ({ seriesIndex, dataPointIndex }: any) =>
                 this.customChartTooltip(
                   {
-                    series,
                     seriesIndex,
                     dataPointIndex,
-                    w,
                   },
                   tooltipData
                 ),
@@ -617,7 +611,7 @@ export default class RentalIndicatorsPageComponent implements OnInit {
       });
   }
 
-  customChartTooltip({ series, seriesIndex, dataPointIndex, w }: any, dataSeries: any) {
+  customChartTooltip({ seriesIndex, dataPointIndex }: any, dataSeries: any) {
     const durationType = this.selectedDurationType;
 
     var tooltipData = dataSeries[dataPointIndex];
