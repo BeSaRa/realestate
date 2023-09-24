@@ -172,6 +172,7 @@ export interface LangKeysContract {
   real_estate_status: string;
   list_of_sell_transactions: string;
   sell_contracts_count_according_to_bedrooms: string;
+  // sell_contracts_count_according_to_price_range: string;
   sell_contracts_value: string;
   sell_contracts_count: string;
   district: string;
