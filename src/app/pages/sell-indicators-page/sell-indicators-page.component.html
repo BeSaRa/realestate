@@ -637,21 +637,27 @@
         </table>
       </div>
     </div>
-    <!--    <div class="px-16 py-5">-->
-    <!--      <div class="shadow-lg rounded-lg overflow-hidden">-->
-    <!--        <div class="bg-primary p-4 flex justify-center items-center">-->
-    <!--          <span class="text-2xl text-white">{{ lang.map.sell_contracts_count_according_to_bedrooms }}</span>-->
-    <!--        </div>-->
-    <!--        <div dir="ltr" class="flex justify-center">-->
-    <!--          <apx-chart-->
-    <!--            #pieChart-->
-    <!--            [series]="pieChartOptions.series"-->
-    <!--            [labels]="pieChartOptions.labels"-->
-    <!--            [responsive]="pieChartOptions.responsive!"-->
-    <!--            [chart]="pieChartOptions.chart"-->
-    <!--            [legend]="pieChartOptions.legend" />-->
-    <!--        </div>-->
-    <!--      </div>-->
-    <!--    </div>-->
+    <!-- TODO: Mousa To be added when KPI_34 is implemented by be team -->
+    <!-- <div class="px-3 lg:px-16">
+      <div class="py-5">
+        <div class="shadow-lg rounded-lg overflow-hidden">
+          <div class="bg-primary p-4 flex justify-center items-center">
+            <span class="text-white text-center text-lg sm:text-xl font-semibold"
+              >{{ lang.map.sell_contracts_count_according_to_price_range }} {{ getSelectedArea(true, true) }}</span
+            >
+          </div>
+          <div dir="ltr" class="flex justify-center">
+            <apx-chart
+              #pieChart
+              [series]="pieChartOptions.series"
+              [labels]="pieChartOptions.labels"
+              [responsive]="pieChartOptions.responsive!"
+              [chart]="pieChartOptions.chart"
+              [legend]="pieChartOptions.legend!"
+              [colors]="pieChartOptions.colors!" />
+          </div>
+        </div>
+      </div>
+      </div> -->
   </div>
 </div>
