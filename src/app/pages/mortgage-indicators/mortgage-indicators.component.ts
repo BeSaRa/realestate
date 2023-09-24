@@ -33,7 +33,7 @@ import { TranslationService } from '@services/translation.service';
 import { UrlService } from '@services/url.service';
 import { formatNumber, minMaxAvg } from '@utils/utils';
 import { ChartComponent, NgApexchartsModule } from 'ng-apexcharts';
-import { BehaviorSubject, delay, map, Observable, of, Subject, switchMap, tap } from 'rxjs';
+import { BehaviorSubject, delay, map, Observable, of, combineLatest, ReplaySubject, Subject, switchMap, takeUntil } from 'rxjs';
 
 @Component({
   selector: 'app-mortgage-indicators',
@@ -66,6 +66,11 @@ export default class MortgageIndicatorsComponent implements OnInit {
   dashboardService = inject(DashboardService);
   appChartTypesService = inject(AppChartTypesService);
   destroy$ = new Subject<void>();
+  reload$ = new ReplaySubject<void>(1);
+  private paginate$ = new BehaviorSubject({
+    offset: 0,
+    limit: 5,
+  });
 
   criteria: { criteria: CriteriaContract; type: CriteriaType } = {} as {
     criteria: CriteriaContract;
@@ -85,11 +90,6 @@ export default class MortgageIndicatorsComponent implements OnInit {
   rooms = [] /*this.lookupService.mortLookups.rooms*/;
   areas = this.lookupService.mortLookups.districtList;
   paramsRange = this.lookupService.mortLookups.maxParams;
-
-  private paginate$ = new BehaviorSubject({
-    offset: 0,
-    limit: 5,
-  });
 
   rootKpis = [
     new KpiRoot(
@@ -294,7 +294,9 @@ export default class MortgageIndicatorsComponent implements OnInit {
     },
   };
 
-  ngOnInit() {}
+  ngOnInit() {
+    this.reload$.next();
+  }
 
   filterChange($event: { criteria: CriteriaContract; type: CriteriaType }): void {
     console.log('$event: ', $event);
@@ -307,7 +309,8 @@ export default class MortgageIndicatorsComponent implements OnInit {
         item.value = (values[index] && values[index].kpiVal) || 0;
         item.yoy = (values[index] && values[index].kpiYoYVal) || 0;
       });
-      this.loadTransactions();
+      // this.loadTransactions();
+      this.reload$.next();
 
       this.loadMortgageTransactionChart();
       this.loadMortgageTransactionValueChart();
@@ -447,14 +450,19 @@ export default class MortgageIndicatorsComponent implements OnInit {
       .pipe(delay(0))
       .pipe(
         switchMap(() => {
-          return this.paginate$.pipe(
-            switchMap((paginationOptions) => {
+          return combineLatest([this.reload$, this.paginate$]).pipe(
+            switchMap(([,paginationOptions]) => {
               this.criteria.criteria.limit = paginationOptions.limit;
               this.criteria.criteria.offset = paginationOptions.offset;
-              return this.dashboardService.loadMortgageKpiTransactions(this.criteria.criteria);
+              return (
+                this.dashboardService
+                  .loadMortgageKpiTransactions(this.criteria.criteria)
+              )
             }),
-            tap((transactionsModel) => (this.transactionsCount = transactionsModel.count)),
-            map((transactionsModel) => transactionsModel.transactionList)
+            map(({count, transactionList}) => {
+              this.transactionsCount = count;
+              return transactionList;
+            })
           );
         })
       );
