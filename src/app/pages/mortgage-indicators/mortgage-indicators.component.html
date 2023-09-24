@@ -1,243 +1,337 @@
 <app-extra-header class="flex -mt-32 relative text-white text-center">
   <div class="h-60 flex flex-col justify-center" id="logo-side">
-    <h1 class="text-5xl font-semibold">{{ lang.map.qatar_real_estate_platform }}</h1>
-    <h2 class="text-3xl font-semibold">
+    <h1 class="text-3xl sm:text-4xl md:text-5xl font-semibold">{{ lang.map.qatar_real_estate_platform }}</h1>
+    <h2 class="text-xl sm:text-2xl md:text-3xl font-semibold">
       {{ lang.toggleMap.qatar_real_estate_platform }} -
       <span class="text-gray-400 font-normal">({{ lang.map.trial_run }})</span>
     </h2>
-    <h2 class="mt-2 text-3xl font-semibold flex flex-col gap-3 items-center">
-      <span class="w-32 h-[3px] bg-secondary"></span>
-      <span class="text-white">{{ lang.map.real_estate_mortgage_indicators }}</span>
+    <h2 class="text-xl sm:text-2xl md:text-3xl font-semibold flex flex-col gap-3 items-center">
+      <span class="text-secondary">{{ lang.map.real_estate_mortgage_indicators }}</span>
     </h2>
   </div>
 </app-extra-header>
-<div class="content-wrapper p-10">
-  <div class="flex justify-center">
-    <div class="flex flex-col w-3/4 gap-y-5">
-      <h1 class="heading text-3xl self-start text-primary border-secondary font-semibold inline-block">
-        {{ lang.map.mortgage_indicators }}
-      </h1>
-      <app-transactions-filter
-        indicatorType="mortgage"
-        [municipalities]="municipalities"
-        (fromChanged)="filterChange($event)"
-        [areas]="areas"
-        [rooms]="rooms"
-        [propertyTypes]="propertyTypes"
-        [propertyUsages]="propertyUsage"
-        [paramsRange]="paramsRange" />
-      <div class="flex justify-center items-stretch [&>div]:w-80 gap-x-5">
+<div class="content-wrapper">
+  <div class="p-3 lg:px-16">
+    <app-transactions-filter
+      indicatorType="mortgage"
+      [municipalities]="municipalities"
+      (fromChanged)="filterChange($event)"
+      [areas]="areas"
+      [propertyTypes]="propertyTypes"
+      [propertyUsages]="propertyUsage"
+      [paramsRange]="paramsRange" />
+  </div>
+
+  <div class="flex flex-col">
+    <div class="py-16 px-3 lg:px-16">
+      <div class="flex flex-col">
+        <h3
+          class="heading text-xl sm:text-2xl md:text-3xl self-center md:self-start text-center text-primary border-secondary font-semibold">
+          {{ lang.map.mortgage_transactions_measuring_dashboard }}
+        </h3>
         <div
-          class="flex-1 my-4 p-4 border border-primary rounded-lg grid grid-cols-1 lg:grid-cols-3 justify-center gap-4">
+          class="flex-1 my-4 p-4 border border-secondary rounded-lg grid grid-cols-1 md:grid-cols-3 justify-center gap-4">
           <app-kpi-root *ngFor="let item of rootKpis" [item]="item" />
         </div>
       </div>
-      <div class="flex flex-col">
-        <h1 class="heading text-3xl self-center text-primary border-secondary font-semibold inline-block">
-          {{ lang.map.number_of_transactions }}
-        </h1>
-        <!--        <div class="flex">-->
-        <!--          <div class="flex-auto"></div>-->
-        <!--          <div class="grid grid-cols-4 gap-2">-->
-        <!--            <app-button-->
-        <!--              (click)="updateChartDuration(DurationTypes.YEARLY)"-->
-        <!--              [buttonStyle]="transactionCountDuration === DurationTypes.YEARLY ? 'secondary' : 'secondary-outline'"-->
-        <!--              [isRounded]="true"-->
-        <!--              >{{ lang.map.yearly }}</app-button-->
-        <!--            >-->
-        <!--            <app-button-->
-        <!--              (click)="updateChartDuration(DurationTypes.HALFY)"-->
-        <!--              [buttonStyle]="transactionCountDuration === DurationTypes.HALFY ? 'secondary' : 'secondary-outline'"-->
-        <!--              [isRounded]="true"-->
-        <!--              >{{ lang.map.half_yearly }}</app-button-->
-        <!--            >-->
-        <!--            <app-button-->
-        <!--              (click)="updateChartDuration(DurationTypes.QUARTERLY)"-->
-        <!--              [buttonStyle]="transactionCountDuration === DurationTypes.QUARTERLY ? 'secondary' : 'secondary-outline'"-->
-        <!--              [isRounded]="true"-->
-        <!--              >{{ lang.map.quarter_yearly }}</app-button-->
-        <!--            >-->
-        <!--            <app-button-->
-        <!--              (click)="updateChartDuration(DurationTypes.MONTHLY)"-->
-        <!--              [buttonStyle]="transactionCountDuration === DurationTypes.MONTHLY ? 'secondary' : 'secondary-outline'"-->
-        <!--              [isRounded]="true"-->
-        <!--              >{{ lang.map.monthly }}</app-button-->
-        <!--            >-->
-        <!--          </div>-->
-        <!--        </div>-->
-        <div class="flex">
-          <div dir="ltr" class="flex-auto">
-            <apx-chart
-              #chart
-              [tooltip]="chartCountOptions.tooltip!"
-              [colors]="chartCountOptions.colors!"
-              [series]="chartCountOptions.series!"
-              [chart]="chartCountOptions.chart!"
-              [xaxis]="chartCountOptions.xaxis!"
-              [dataLabels]="chartCountOptions.dataLabels!"
-              [grid]="chartCountOptions.grid!"
-              [stroke]="chartCountOptions.stroke!"
-              [legend]="chartCountOptions.legend!"
-              [plotOptions]="chartCountOptions.plotOptions!"
-              [yaxis]="chartCountOptions.yaxis!"
-              [title]="chartCountOptions.title!"></apx-chart>
-          </div>
-          <div class="h-full flex flex-col mt-10">
-            <app-icon-button
-              [ngClass]="{ 'text-primary': isSelectedChartType(ChartType.LINE, 'countChartType') }"
-              (click)="updateChartType(ChartType.LINE, 'transactionCountChart', 'countChartType')"
-              class="text-primary"
-              icon="LINE_CHART" />
-            <app-icon-button
-              [ngClass]="{ 'text-primary': isSelectedChartType(ChartType.BAR, 'countChartType') }"
-              (click)="updateChartType(ChartType.BAR, 'transactionCountChart', 'countChartType')"
-              icon="BAR_CHART" />
-            <app-icon-button
-              [ngClass]="{ 'text-primary': isSelectedChartType(ChartType.AREA, 'countChartType') }"
-              (click)="updateChartType(ChartType.AREA, 'transactionCountChart', 'countChartType')"
-              icon="AREA_CHART" />
-          </div>
+    </div>
+    <div class="flex flex-col p-3 lg:px-16">
+      <h3
+        class="heading text-xl sm:text-2xl md:text-3xl self-center md:self-start text-center text-primary border-secondary font-semibold">
+        {{ lang.map.total_mortgage_transactions }}
+      </h3>
+      <div class="mt-4 flex justify-center md:justify-end">
+        <div class="grid grid-cols-4 gap-2">
+          <app-button
+            size="sm"
+            (click)="updateCountChartData(DurationTypes.YEARLY)"
+            [buttonStyle]="selectedCountChartDurationType === DurationTypes.YEARLY ? 'secondary' : 'secondary-outline'"
+            [isRounded]="true"
+            >{{ lang.map.yearly }}</app-button
+          >
+          <app-button
+            size="sm"
+            (click)="updateCountChartData(DurationTypes.HALFY)"
+            [buttonStyle]="selectedCountChartDurationType === DurationTypes.HALFY ? 'secondary' : 'secondary-outline'"
+            [isRounded]="true"
+            >{{ lang.map.half_yearly }}</app-button
+          >
+          <app-button
+            size="sm"
+            (click)="updateCountChartData(DurationTypes.QUARTERLY)"
+            [buttonStyle]="
+              selectedCountChartDurationType === DurationTypes.QUARTERLY ? 'secondary' : 'secondary-outline'
+            "
+            [isRounded]="true"
+            >{{ lang.map.quarter_yearly }}</app-button
+          >
+          <app-button
+            size="sm"
+            (click)="updateCountChartData(DurationTypes.MONTHLY)"
+            [buttonStyle]="selectedCountChartDurationType === DurationTypes.MONTHLY ? 'secondary' : 'secondary-outline'"
+            [isRounded]="true"
+            >{{ lang.map.monthly }}</app-button
+          >
         </div>
       </div>
-      <div class="flex flex-col">
-        <h1 class="heading text-3xl self-center text-primary border-secondary font-semibold inline-block">
-          {{ lang.map.transactions_value }}
-        </h1>
-        <!--        <div class="flex">-->
-        <!--          <div class="flex-auto"></div>-->
-        <!--          <div class="grid grid-cols-4 gap-2">-->
-        <!--            <app-button-->
-        <!--              (click)="updateChartDuration(DurationTypes.YEARLY)"-->
-        <!--              [buttonStyle]="transactionCountDuration === DurationTypes.YEARLY ? 'secondary' : 'secondary-outline'"-->
-        <!--              [isRounded]="true"-->
-        <!--              >{{ lang.map.yearly }}</app-button-->
-        <!--            >-->
-        <!--            <app-button-->
-        <!--              (click)="updateChartDuration(DurationTypes.HALFY)"-->
-        <!--              [buttonStyle]="transactionCountDuration === DurationTypes.HALFY ? 'secondary' : 'secondary-outline'"-->
-        <!--              [isRounded]="true"-->
-        <!--              >{{ lang.map.half_yearly }}</app-button-->
-        <!--            >-->
-        <!--            <app-button-->
-        <!--              (click)="updateChartDuration(DurationTypes.QUARTERLY)"-->
-        <!--              [buttonStyle]="transactionCountDuration === DurationTypes.QUARTERLY ? 'secondary' : 'secondary-outline'"-->
-        <!--              [isRounded]="true"-->
-        <!--              >{{ lang.map.quarter_yearly }}</app-button-->
-        <!--            >-->
-        <!--            <app-button-->
-        <!--              (click)="updateChartDuration(DurationTypes.MONTHLY)"-->
-        <!--              [buttonStyle]="transactionCountDuration === DurationTypes.MONTHLY ? 'secondary' : 'secondary-outline'"-->
-        <!--              [isRounded]="true"-->
-        <!--              >{{ lang.map.monthly }}</app-button-->
-        <!--            >-->
-        <!--          </div>-->
-        <!--        </div>-->
-        <div class="flex">
-          <div dir="ltr" class="flex-auto">
-            <apx-chart
-              #chartValues
-              [tooltip]="chartValueOptions.tooltip!"
-              [colors]="chartValueOptions.colors!"
-              [series]="chartValueOptions.series!"
-              [chart]="chartValueOptions.chart!"
-              [xaxis]="chartValueOptions.xaxis!"
-              [dataLabels]="chartValueOptions.dataLabels!"
-              [grid]="chartValueOptions.grid!"
-              [stroke]="chartValueOptions.stroke!"
-              [legend]="chartValueOptions.legend!"
-              [plotOptions]="chartValueOptions.plotOptions!"
-              [yaxis]="chartValueOptions.yaxis!"
-              [title]="chartValueOptions.title!"></apx-chart>
-          </div>
-          <div class="h-full flex flex-col mt-10">
-            <app-icon-button
-              [ngClass]="{ 'text-primary': isSelectedChartType(ChartType.LINE, 'valueChartType') }"
-              (click)="updateChartType(ChartType.LINE, 'transactionValueChart', 'valueChartType')"
-              class="text-primary"
-              icon="LINE_CHART" />
-            <app-icon-button
-              [ngClass]="{ 'text-primary': isSelectedChartType(ChartType.BAR, 'valueChartType') }"
-              (click)="updateChartType(ChartType.BAR, 'transactionValueChart', 'valueChartType')"
-              icon="BAR_CHART" />
-            <app-icon-button
-              [ngClass]="{ 'text-primary': isSelectedChartType(ChartType.AREA, 'valueChartType') }"
-              (click)="updateChartType(ChartType.AREA, 'transactionValueChart', 'valueChartType')"
-              icon="AREA_CHART" />
-          </div>
+      <div class="flex flex-col mt-2 md:flex-row">
+        <div class="flex-auto overflow-hidden pt-1" dir="ltr">
+          <apx-chart
+            #countChart
+            class="custom-toolbar [&>div]:ml-[-22px]"
+            [series]="countChartOptions.series!"
+            [chart]="countChartOptions.chart!"
+            [xaxis]="countChartOptions.xaxis!"
+            [stroke]="countChartOptions.stroke!"
+            [colors]="countChartOptions.colors!"
+            [dataLabels]="countChartOptions.dataLabels!"
+            [legend]="countChartOptions.legend!"
+            [markers]="countChartOptions.markers!"
+            [grid]="countChartOptions.grid!"
+            [yaxis]="countChartOptions.yaxis!"
+            [tooltip]="countChartOptions.tooltip!"
+            [plotOptions]="countChartOptions.plotOptions!"
+            [title]="countChartOptions.title!" />
+        </div>
+        <div class="h-full flex flex-row justify-center md:flex-col -mt-6 md:mt-4">
+          <app-icon-button
+            [ngClass]="{ 'text-primary': selectedCountChartType === ChartType.LINE }"
+            (click)="updateCountChartType(ChartType.LINE)"
+            class="text-primary"
+            icon="LINE_CHART" />
+          <app-icon-button
+            [ngClass]="{ 'text-primary': selectedCountChartType === ChartType.BAR }"
+            (click)="updateCountChartType(ChartType.BAR)"
+            icon="BAR_CHART" />
+          <app-icon-button
+            [ngClass]="{ 'text-primary': selectedCountChartType === ChartType.AREA }"
+            (click)="updateCountChartType(ChartType.AREA)"
+            icon="AREA_CHART" />
         </div>
       </div>
-      <div class="flex flex-col">
-        <h1 class="heading text-3xl self-center mb-4 text-primary border-secondary font-semibold inline-block">
-          {{ lang.map.mortgage_transactions_list }}
-        </h1>
-        <app-table
-          minWidth="900px"
-          headerBgColor="!bg-secondary"
-          (paginate)="paginate($event)"
-          [length]="transactionsCount"
-          [dataSource]="dataSource"
-          [sortOptions]="[]"
-          [defaultSortOption]="transactionsSortOptions[0]">
-          <ng-container appTableColumnTemplate columnName="location">
-            <div *appTableColumnHeaderTemplate class="flex justify-center">
-              <div class="text-start">
-                <p>{{ lang.map.location }}</p>
-                <p class="font-normal">{{ lang.map.real_estate_status }}</p>
-              </div>
+    </div>
+    <div class="flex flex-col mt-4 px-3 lg:px-16">
+      <h3
+        class="heading text-xl sm:text-2xl md:text-3xl self-center md:self-start text-center text-primary border-secondary font-semibold">
+        {{ lang.map.the_total_number_of_mortgaged_units }}
+      </h3>
+      <div class="mt-4 flex justify-center md:justify-end">
+        <div class="grid grid-cols-4 gap-2">
+          <app-button
+            size="sm"
+            (click)="updateUnitsChartData(DurationTypes.YEARLY)"
+            [buttonStyle]="selectedUnitsChartDurationType === DurationTypes.YEARLY ? 'secondary' : 'secondary-outline'"
+            [isRounded]="true"
+            >{{ lang.map.yearly }}</app-button
+          >
+          <app-button
+            size="sm"
+            (click)="updateUnitsChartData(DurationTypes.HALFY)"
+            [buttonStyle]="selectedUnitsChartDurationType === DurationTypes.HALFY ? 'secondary' : 'secondary-outline'"
+            [isRounded]="true"
+            >{{ lang.map.half_yearly }}</app-button
+          >
+          <app-button
+            size="sm"
+            (click)="updateUnitsChartData(DurationTypes.QUARTERLY)"
+            [buttonStyle]="
+              selectedUnitsChartDurationType === DurationTypes.QUARTERLY ? 'secondary' : 'secondary-outline'
+            "
+            [isRounded]="true"
+            >{{ lang.map.quarter_yearly }}</app-button
+          >
+          <app-button
+            size="sm"
+            (click)="updateUnitsChartData(DurationTypes.MONTHLY)"
+            [buttonStyle]="selectedUnitsChartDurationType === DurationTypes.MONTHLY ? 'secondary' : 'secondary-outline'"
+            [isRounded]="true"
+            >{{ lang.map.monthly }}</app-button
+          >
+        </div>
+      </div>
+      <div class="flex flex-col mt-2 md:flex-row">
+        <div class="flex-auto overflow-hidden pt-1" dir="ltr">
+          <apx-chart
+            #unitsChart
+            class="custom-toolbar [&>div]:ml-[-22px]"
+            [series]="unitsChartOptions.series!"
+            [chart]="unitsChartOptions.chart!"
+            [xaxis]="unitsChartOptions.xaxis!"
+            [stroke]="unitsChartOptions.stroke!"
+            [colors]="unitsChartOptions.colors!"
+            [dataLabels]="unitsChartOptions.dataLabels!"
+            [legend]="unitsChartOptions.legend!"
+            [markers]="unitsChartOptions.markers!"
+            [grid]="unitsChartOptions.grid!"
+            [yaxis]="unitsChartOptions.yaxis!"
+            [tooltip]="unitsChartOptions.tooltip!"
+            [plotOptions]="unitsChartOptions.plotOptions!"
+            [title]="unitsChartOptions.title!" />
+        </div>
+        <div class="h-full flex flex-row justify-center md:flex-col -mt-6 md:mt-4">
+          <app-icon-button
+            [ngClass]="{ 'text-primary': selectedUnitsChartType === ChartType.LINE }"
+            (click)="updateUnitsChartType(ChartType.LINE)"
+            class="text-primary"
+            icon="LINE_CHART" />
+          <app-icon-button
+            [ngClass]="{ 'text-primary': selectedUnitsChartType === ChartType.BAR }"
+            (click)="updateUnitsChartType(ChartType.BAR)"
+            icon="BAR_CHART" />
+          <app-icon-button
+            [ngClass]="{ 'text-primary': selectedUnitsChartType === ChartType.AREA }"
+            (click)="updateUnitsChartType(ChartType.AREA)"
+            icon="AREA_CHART" />
+        </div>
+      </div>
+    </div>
+    <div class="flex flex-col mt-4 px-3 lg:px-16">
+      <h3
+        class="heading text-xl sm:text-2xl md:text-3xl self-center md:self-start text-center text-primary border-secondary font-semibold">
+        {{ lang.map.total_value_of_mortgage_transactions }}
+      </h3>
+      <div class="mt-4 flex justify-center md:justify-end">
+        <div class="grid grid-cols-4 gap-2">
+          <app-button
+            size="sm"
+            (click)="updateValueChartData(DurationTypes.YEARLY)"
+            [buttonStyle]="selectedValueChartDurationType === DurationTypes.YEARLY ? 'secondary' : 'secondary-outline'"
+            [isRounded]="true"
+            >{{ lang.map.yearly }}</app-button
+          >
+          <app-button
+            size="sm"
+            (click)="updateValueChartData(DurationTypes.HALFY)"
+            [buttonStyle]="selectedValueChartDurationType === DurationTypes.HALFY ? 'secondary' : 'secondary-outline'"
+            [isRounded]="true"
+            >{{ lang.map.half_yearly }}</app-button
+          >
+          <app-button
+            size="sm"
+            (click)="updateValueChartData(DurationTypes.QUARTERLY)"
+            [buttonStyle]="
+              selectedValueChartDurationType === DurationTypes.QUARTERLY ? 'secondary' : 'secondary-outline'
+            "
+            [isRounded]="true"
+            >{{ lang.map.quarter_yearly }}</app-button
+          >
+          <app-button
+            size="sm"
+            (click)="updateValueChartData(DurationTypes.MONTHLY)"
+            [buttonStyle]="selectedValueChartDurationType === DurationTypes.MONTHLY ? 'secondary' : 'secondary-outline'"
+            [isRounded]="true"
+            >{{ lang.map.monthly }}</app-button
+          >
+        </div>
+      </div>
+      <div class="flex flex-col mt-2 md:flex-row">
+        <div class="flex-auto overflow-hidden pt-1" dir="ltr">
+          <apx-chart
+            #valueChart
+            class="custom-toolbar [&>div]:ml-[-22px]"
+            [series]="valueChartOptions.series!"
+            [chart]="valueChartOptions.chart!"
+            [xaxis]="valueChartOptions.xaxis!"
+            [stroke]="valueChartOptions.stroke!"
+            [colors]="valueChartOptions.colors!"
+            [dataLabels]="valueChartOptions.dataLabels!"
+            [legend]="valueChartOptions.legend!"
+            [markers]="valueChartOptions.markers!"
+            [grid]="valueChartOptions.grid!"
+            [yaxis]="valueChartOptions.yaxis!"
+            [tooltip]="valueChartOptions.tooltip!"
+            [plotOptions]="valueChartOptions.plotOptions!"
+            [title]="valueChartOptions.title!" />
+        </div>
+        <div class="h-full flex flex-row justify-center md:flex-col -mt-6 md:mt-4">
+          <app-icon-button
+            [ngClass]="{ 'text-primary': selectedValueChartType === ChartType.LINE }"
+            (click)="updateValueChartType(ChartType.LINE)"
+            class="text-primary"
+            icon="LINE_CHART" />
+          <app-icon-button
+            [ngClass]="{ 'text-primary': selectedValueChartType === ChartType.BAR }"
+            (click)="updateValueChartType(ChartType.BAR)"
+            icon="BAR_CHART" />
+          <app-icon-button
+            [ngClass]="{ 'text-primary': selectedValueChartType === ChartType.AREA }"
+            (click)="updateValueChartType(ChartType.AREA)"
+            icon="AREA_CHART" />
+        </div>
+      </div>
+    </div>
+    <div class="px-3 lg:px-16 flex flex-col gap-4">
+      <h3
+        class="heading text-xl sm:text-2xl md:text-3xl self-center md:self-start text-center text-primary border-secondary font-semibold">
+        {{ lang.map.mortgage_transactions_list }}
+      </h3>
+      <app-table
+        minWidth="900px"
+        headerBgColor="!bg-secondary"
+        (paginate)="paginate($event)"
+        [length]="transactionsCount"
+        [dataSource]="dataSource"
+        [sortOptions]="[]"
+        [defaultSortOption]="transactionsSortOptions[0]">
+        <ng-container appTableColumnTemplate columnName="location">
+          <div *appTableColumnHeaderTemplate class="flex justify-center">
+            <div class="text-start">
+              <p>{{ lang.map.location }}</p>
+              <p class="font-normal">{{ lang.map.real_estate_status }}</p>
             </div>
-            <div *appTableColumnCellTemplate="let item; typeOf: transactions$" class="flex justify-center">
-              <div class="text-start">
-                <p class="font-bold">{{ item.municipalityInfo.getNames() }}</p>
-                <p>{{ item.areaInfo && item.areaInfo.getNames() && "---" }}</p>
-              </div>
+          </div>
+          <div *appTableColumnCellTemplate="let item; typeOf: transactions$" class="flex justify-center">
+            <div class="text-start">
+              <p class="font-bold">{{ item.municipalityInfo.getNames() }}</p>
+              <p>{{ item.areaInfo && item.areaInfo.getNames() && "---" }}</p>
             </div>
-          </ng-container>
-          <ng-container appTableColumnTemplate columnName="mortgaged_for">
-            <span *appTableColumnHeaderTemplate>{{ lang.map.mortgaged_for }}</span>
-            <span *appTableColumnCellTemplate="let item; typeOf: transactions$" class="font-bold">{{
-              item.realEstateValue | number
-            }}</span>
-          </ng-container>
-          <ng-container appTableColumnTemplate columnName="area_in_square_feet">
-            <span *appTableColumnHeaderTemplate>{{ lang.map.area_in_square_foot }}</span>
-            <span *appTableColumnCellTemplate="let item; typeOf: transactions$" class="font-bold">---</span>
-          </ng-container>
-          <!-- <ng-container appTableColumnTemplate columnName="square_feet_price">
+          </div>
+        </ng-container>
+        <ng-container appTableColumnTemplate columnName="mortgaged_for">
+          <span *appTableColumnHeaderTemplate>{{ lang.map.mortgaged_for }}</span>
+          <span *appTableColumnCellTemplate="let item; typeOf: transactions$" class="font-bold">{{
+            item.realEstateValue | number
+          }}</span>
+        </ng-container>
+        <ng-container appTableColumnTemplate columnName="area_in_square_feet">
+          <span *appTableColumnHeaderTemplate>{{ lang.map.area_in_square_foot }}</span>
+          <span *appTableColumnCellTemplate="let item; typeOf: transactions$" class="font-bold">---</span>
+        </ng-container>
+        <!-- <ng-container appTableColumnTemplate columnName="square_feet_price">
             <span *appTableColumnHeaderTemplate>{{ lang.map.square_feet_price }}</span>
             <span *appTableColumnCellTemplate="let item; typeOf: transactions" class="font-bold">{{
               item.priceMT | number : "1.0-0"
             }}</span>
           </ng-container> -->
-          <ng-container appTableColumnTemplate columnName="issue_date">
-            <div *appTableColumnHeaderTemplate class="flex justify-center">
-              <div class="text-start">
-                <p>{{ lang.map.issue_date }}</p>
-                <!--                <p class="font-normal">{{ lang.map.sold_by }}</p>-->
-              </div>
+        <ng-container appTableColumnTemplate columnName="issue_date">
+          <div *appTableColumnHeaderTemplate class="flex justify-center">
+            <div class="text-start">
+              <p>{{ lang.map.issue_date }}</p>
+              <!--                <p class="font-normal">{{ lang.map.sold_by }}</p>-->
             </div>
-            <div *appTableColumnCellTemplate="let item; typeOf: transactions$" class="text-center">
-              <p>{{ item.issueDate | date : "YYYY-MM-dd" }}</p>
-              <p class="font-bold">{{ item.seller || "أفراد" }}</p>
-            </div>
-          </ng-container>
-          <!--          <ng-container appTableColumnTemplate columnName="unit_parcel_no">-->
-          <!--            <span *appTableColumnHeaderTemplate>{{ lang.map.unit_parcel_no }}</span>-->
-          <!--            <span *appTableColumnCellTemplate="let item; typeOf: transactions$" class="font-bold">{{-->
-          <!--              item.unitNo | number-->
-          <!--            }}</span>-->
-          <!--          </ng-container>-->
-          <!-- <ng-template appTableColumnTemplate columnName="area" [columnHeader]="lang.map.area" >
+          </div>
+          <div *appTableColumnCellTemplate="let item; typeOf: transactions$" class="text-center">
+            <p>{{ item.issueDate | date : "YYYY-MM-dd" }}</p>
+            <p class="font-bold">{{ item.seller || "أفراد" }}</p>
+          </div>
+        </ng-container>
+        <!--          <ng-container appTableColumnTemplate columnName="unit_parcel_no">-->
+        <!--            <span *appTableColumnHeaderTemplate>{{ lang.map.unit_parcel_no }}</span>-->
+        <!--            <span *appTableColumnCellTemplate="let item; typeOf: transactions$" class="font-bold">{{-->
+        <!--              item.unitNo | number-->
+        <!--            }}</span>-->
+        <!--          </ng-container>-->
+        <!-- <ng-template appTableColumnTemplate columnName="area" [columnHeader]="lang.map.area" >
             <span class="font-bold">{{ item.area === null ? "---" : (item.area | number ) }}</span>
           </ng-template> -->
-          <!-- <ng-template
+        <!-- <ng-template
             appTableColumnTemplate
             columnName="unit_parcel_no"
             [columnHeader]="lang.map.unit_parcel_no"
             let-item
             ><span class="font-bold">{{ item.unitNo ?? 13000 | number }}</span></ng-template
           > -->
-        </app-table>
-      </div>
+      </app-table>
     </div>
   </div>
 </div>

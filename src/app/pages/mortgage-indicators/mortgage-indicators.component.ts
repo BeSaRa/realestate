@@ -1,27 +1,31 @@
 import { BidiModule } from '@angular/cdk/bidi';
 import { CommonModule } from '@angular/common';
-import { Component, inject, OnInit, ViewChild } from '@angular/core';
-import { FormControl, ReactiveFormsModule, UntypedFormBuilder } from '@angular/forms';
+import { AfterViewInit, Component, inject, OnInit, QueryList, ViewChild, ViewChildren } from '@angular/core';
+import { ReactiveFormsModule } from '@angular/forms';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
-import { MatOptionModule } from '@angular/material/core';
+import { DateAdapter, MatOptionModule } from '@angular/material/core';
 import { PageEvent } from '@angular/material/paginator';
 import { MatTableModule } from '@angular/material/table';
-import { ChartOptions } from '@app-types/ChartOptions';
 import { ButtonComponent } from '@components/button/button.component';
 import { ExtraHeaderComponent } from '@components/extra-header/extra-header.component';
 import { IconButtonComponent } from '@components/icon-button/icon-button.component';
 import { KpiRootComponent } from '@components/kpi-root/kpi-root.component';
 import { TableComponent } from '@components/table/table.component';
 import { TransactionsFilterComponent } from '@components/transactions-filter/transactions-filter.component';
+import { AppColors } from '@constants/app-colors';
 import { CriteriaContract } from '@contracts/criteria-contract';
 import { TableColumnCellTemplateDirective } from '@directives/table-column-cell-template.directive';
 import { TableColumnHeaderTemplateDirective } from '@directives/table-column-header-template.directive';
 import { TableColumnTemplateDirective } from '@directives/table-column-template.directive';
+import { BarChartTypes } from '@enums/bar-chart-type';
+import { Breakpoints } from '@enums/breakpoints';
 import { ChartType } from '@enums/chart-type';
 import { CriteriaType } from '@enums/criteria-type';
 import { DurationEndpoints } from '@enums/durations';
 import { TransactionType } from '@enums/transaction-type';
 import { AppTableDataSource } from '@models/app-table-data-source';
+import { ChartOptionsModel } from '@models/chart-options-model';
+import { KpiDurationModel } from '@models/kpi-duration-model';
 import { KpiModel } from '@models/kpi-model';
 import { KpiRoot } from '@models/kpiRoot';
 import { MortgageTransaction } from '@models/mortgage-transaction';
@@ -29,11 +33,13 @@ import { TableSortOption } from '@models/table-sort-option';
 import { AppChartTypesService } from '@services/app-chart-types.service';
 import { DashboardService } from '@services/dashboard.service';
 import { LookupService } from '@services/lookup.service';
+import { ScreenBreakpointsService } from '@services/screen-breakpoints.service';
 import { TranslationService } from '@services/translation.service';
+import { UnitsService } from '@services/units.service';
 import { UrlService } from '@services/url.service';
-import { formatNumber, minMaxAvg } from '@utils/utils';
+import { minMaxAvg } from '@utils/utils';
 import { ChartComponent, NgApexchartsModule } from 'ng-apexcharts';
-import { BehaviorSubject, delay, map, Observable, of, Subject, switchMap, tap } from 'rxjs';
+import { BehaviorSubject, delay, map, Observable, of, Subject, switchMap, take, takeUntil, tap } from 'rxjs';
 
 @Component({
   selector: 'app-mortgage-indicators',
@@ -59,32 +65,41 @@ import { BehaviorSubject, delay, map, Observable, of, Subject, switchMap, tap } 
   templateUrl: './mortgage-indicators.component.html',
   styleUrls: ['./mortgage-indicators.component.scss'],
 })
-export default class MortgageIndicatorsComponent implements OnInit {
+export default class MortgageIndicatorsComponent implements OnInit, AfterViewInit {
+  @ViewChildren('countChart') countChart!: QueryList<ChartComponent>;
+  @ViewChildren('unitsChart') unitsChart!: QueryList<ChartComponent>;
+  @ViewChildren('valueChart') valueChart!: QueryList<ChartComponent>;
+
   lang = inject(TranslationService);
   lookupService = inject(LookupService);
   urlService = inject(UrlService);
   dashboardService = inject(DashboardService);
   appChartTypesService = inject(AppChartTypesService);
+  unitsService = inject(UnitsService);
+  adapter = inject(DateAdapter);
+  screenService = inject(ScreenBreakpointsService);
+
+  screenSize = Breakpoints.LG;
+
   destroy$ = new Subject<void>();
+
+  municipalities = this.lookupService.mortLookups.municipalityList;
+  areas = this.lookupService.mortLookups.districtList;
+  propertyUsage = this.lookupService.mortLookups.rentPurposeList.slice().sort((a, b) => a.lookupKey - b.lookupKey);
+  propertyTypes = this.lookupService.mortLookups.propertyTypeList;
+  paramsRange = this.lookupService.mortLookups.maxParams;
 
   criteria: { criteria: CriteriaContract; type: CriteriaType } = {} as {
     criteria: CriteriaContract;
     type: CriteriaType;
   };
 
-  control = new FormControl('', { nonNullable: true });
-  fb = inject(UntypedFormBuilder);
+  protected readonly DurationTypes = DurationEndpoints;
+  protected readonly ChartType = ChartType;
 
   @ViewChild('chart', { static: true }) transactionCountChart!: ChartComponent;
 
   @ViewChild('chartValues', { static: true }) transactionValueChart!: ChartComponent;
-
-  municipalities = this.lookupService.mortLookups.municipalityList;
-  propertyUsage = this.lookupService.mortLookups.rentPurposeList.slice().sort((a, b) => a.lookupKey - b.lookupKey);
-  propertyTypes = this.lookupService.mortLookups.propertyTypeList;
-  rooms = [] /*this.lookupService.mortLookups.rooms*/;
-  areas = this.lookupService.mortLookups.districtList;
-  paramsRange = this.lookupService.mortLookups.maxParams;
 
   private paginate$ = new BehaviorSubject({
     offset: 0,
@@ -127,7 +142,61 @@ export default class MortgageIndicatorsComponent implements OnInit {
     ),
   ];
 
-  // transactions = new ReplaySubject<MortgageTransaction[]>(1);
+  selectedCountChartDurationType = DurationEndpoints.YEARLY;
+  selectedCountChartType: ChartType = ChartType.LINE;
+  countChartDataLength = 0;
+  selectedCountBarChartType = BarChartTypes.SINGLE_BAR;
+
+  countChartOptions = new ChartOptionsModel().clone<ChartOptionsModel>({
+    ...this.appChartTypesService.mainChartOptions,
+  });
+
+  yearlyOrMonthlyChartOptions = new ChartOptionsModel().clone<ChartOptionsModel>({
+    ...this.appChartTypesService.mainChartOptions,
+  });
+
+  halfyCountChartOptions = new ChartOptionsModel().clone<ChartOptionsModel>({
+    ...this.appChartTypesService.mainChartOptions,
+    series: [
+      { group: '0', data: [] },
+      { group: '1', data: [] },
+      { group: '0', data: [] },
+      { group: '1', data: [] },
+    ],
+  });
+
+  quarterlyCountChartOptions = new ChartOptionsModel().clone<ChartOptionsModel>({
+    ...this.appChartTypesService.mainChartOptions,
+    series: [
+      { group: '0', data: [] },
+      { group: '1', data: [] },
+      { group: '2', data: [] },
+      { group: '3', data: [] },
+      { group: '0', data: [] },
+      { group: '1', data: [] },
+      { group: '2', data: [] },
+      { group: '3', data: [] },
+    ],
+  });
+
+  selectedUnitsChartDurationType = DurationEndpoints.YEARLY;
+  selectedUnitsChartType: ChartType = ChartType.LINE;
+  unitsChartDataLength = 0;
+  selectedUnitsBarChartType = BarChartTypes.SINGLE_BAR;
+
+  unitsChartOptions = new ChartOptionsModel().clone<ChartOptionsModel>({
+    ...this.appChartTypesService.mainChartOptions,
+  });
+
+  selectedValueChartDurationType = DurationEndpoints.YEARLY;
+  selectedValueChartType: ChartType = ChartType.LINE;
+  valueChartDataLength = 0;
+  selectedValueBarChartType = BarChartTypes.SINGLE_BAR;
+
+  valueChartOptions = new ChartOptionsModel().clone<ChartOptionsModel>({
+    ...this.appChartTypesService.mainChartOptions,
+  });
+
   transactions$: Observable<MortgageTransaction[]> = this.loadTransactions();
   dataSource: AppTableDataSource<MortgageTransaction> = new AppTableDataSource(this.transactions$);
   transactionsCount = 0;
@@ -181,243 +250,507 @@ export default class MortgageIndicatorsComponent implements OnInit {
       },
     }),
   ];
-  protected readonly DurationTypes = DurationEndpoints;
-
-  transactionCount?: Record<number, KpiModel[]>;
-  transactionValues?: Record<number, KpiModel[]>;
-  countChartType: ChartType = ChartType.LINE;
-  valueChartType: ChartType = ChartType.LINE;
-
-  transactionCountDuration = DurationEndpoints.YEARLY;
-
-  protected readonly ChartType = ChartType;
-
-  // total_mortgage_transactions
-  chartCountOptions: Partial<ChartOptions> = {
-    series: [],
-    chart: {
-      height: 350,
-      type: ChartType.LINE,
-    },
-    colors: ['#A29475', '#8A1538'],
-    dataLabels: {
-      enabled: true,
-      style: { colors: ['#259C80'] },
-    },
-    legend: {
-      fontFamily: 'inherit',
-    },
-    stroke: {
-      show: true,
-    },
-    grid: {
-      row: {
-        colors: ['#f3f3f3', 'transparent'], // takes an array which will be repeated on columns
-        opacity: 0.5,
-      },
-    },
-    xaxis: {
-      categories: [],
-    },
-    tooltip: {
-      theme: 'light',
-      shared: true,
-    },
-    plotOptions: {
-      bar: {
-        columnWidth: '30%',
-        dataLabels: {
-          position: 'top',
-        },
-      },
-    },
-    yaxis: {
-      title: {
-        text: this.lang.map.number_of_transactions,
-      },
-    },
-  };
-
-  chartValueOptions: Partial<ChartOptions> = {
-    series: [],
-    chart: {
-      height: 350,
-      type: ChartType.LINE,
-    },
-    colors: ['#A29475'],
-    dataLabels: {
-      enabled: true,
-      formatter(val: number): string | number {
-        return formatNumber(val) as string;
-      },
-      style: { colors: ['#259C80'] },
-    },
-    legend: {
-      fontFamily: 'inherit',
-    },
-    stroke: {
-      show: true,
-    },
-    grid: {
-      row: {
-        colors: ['#f3f3f3', 'transparent'], // takes an array which will be repeated on columns
-        opacity: 0.5,
-      },
-    },
-    xaxis: {
-      categories: [],
-    },
-    tooltip: {
-      theme: 'light',
-      shared: true,
-      marker: {
-        fillColors: ['#A29475'],
-      },
-    },
-    plotOptions: {
-      bar: {
-        columnWidth: '30%',
-        dataLabels: {
-          position: 'top',
-        },
-      },
-    },
-    yaxis: {
-      title: {
-        text: this.lang.map.transactions_value,
-      },
-      labels: {
-        formatter(val: number): string | string[] {
-          return formatNumber(val) as string;
-        },
-      },
-    },
-  };
 
   ngOnInit() {}
 
-  filterChange($event: { criteria: CriteriaContract; type: CriteriaType }): void {
-    console.log('$event: ', $event);
+  ngAfterViewInit(): void {
+    this._initializeChartsFormatters();
+    setTimeout(() => {
+      this._listenToScreenSize();
+    }, 0);
+  }
 
+  filterChange($event: { criteria: CriteriaContract; type: CriteriaType }): void {
     this.criteria = $event;
     this.dashboardService.loadMortgageRoots(this.criteria.criteria).subscribe((values) => {
-      console.log('values: ', values);
-
       this.rootKpis.map((item, index) => {
         item.value = (values[index] && values[index].kpiVal) || 0;
         item.yoy = (values[index] && values[index].kpiYoYVal) || 0;
       });
       this.loadTransactions();
 
-      this.loadMortgageTransactionChart();
-      this.loadMortgageTransactionValueChart();
+      this.updateCountChartData(this.selectedCountChartDurationType);
+      this.updateUnitsChartData(this.selectedUnitsChartDurationType);
+      this.updateValueChartData(this.selectedValueChartDurationType);
     });
   }
 
-  loadMortgageTransactionChart(): void {
+  updateCountChartData(durationType: DurationEndpoints) {
+    if (!this.countChart.length) return;
+    this.selectedCountChartDurationType = durationType;
+
+    if (this.selectedCountChartDurationType === DurationEndpoints.YEARLY) {
+      this.updateCountChartDataYearly();
+      this.selectedCountBarChartType = BarChartTypes.SINGLE_BAR;
+      this.countChartOptions = this.yearlyOrMonthlyChartOptions;
+    } else if (this.selectedCountChartDurationType === DurationEndpoints.MONTHLY) {
+      this.updateCountChartDataMonthly();
+      this.selectedCountBarChartType = BarChartTypes.SINGLE_BAR;
+      this.countChartOptions = this.yearlyOrMonthlyChartOptions;
+    } else if (this.selectedCountChartDurationType === DurationEndpoints.HALFY) {
+      this.updateCountChartDataHalfyOrQuarterly();
+      this.selectedCountBarChartType = BarChartTypes.DOUBLE_BAR;
+      this.countChartOptions = this.halfyCountChartOptions;
+    } else {
+      this.updateCountChartDataHalfyOrQuarterly();
+      this.selectedCountBarChartType = BarChartTypes.QUAD_BAR;
+      this.countChartOptions = this.quarterlyCountChartOptions;
+    }
+  }
+
+  updateCountChartDataYearly() {
     this.dashboardService
-      .loadMortgageTransactionCountChart(this.criteria.criteria, this.transactionCountDuration)
-      .subscribe((value) => {
-        this.transactionCount = value;
-        console.log({ transactionCount: value });
-        this.updateTransactionCountChart();
+      .loadChartKpiData({ chartDataUrl: this.urlService.URLS.MORT_KPI2 }, this.criteria.criteria)
+      .pipe(take(1))
+      .subscribe((data) => {
+        const _data = this._splitAccordingToActionType(data);
+        this.countChartDataLength = _data[TransactionType.MORTGAGE].length;
+        this.updateCountChartType(ChartType.BAR);
+
+        this.countChart.first
+          .updateOptions({
+            chart: {
+              stacked: true,
+            },
+            series: [
+              {
+                name: this.lang.map.mortgage,
+                group: '0',
+                data: _data[TransactionType.MORTGAGE].map((i) => ({ y: i.kpiVal, x: i.issueYear })),
+              },
+              {
+                name: this.lang.map.sell,
+                group: '0',
+                data: _data[TransactionType.SELL].map((i) => ({ y: i.kpiVal, x: i.issueYear })),
+              },
+            ],
+            colors: [AppColors.PRIMARY, AppColors.SECONDARY],
+            ...this.appChartTypesService.yearlyStaticChartOptions,
+            ...this.appChartTypesService.getRangeOptions(
+              this.screenSize,
+              this.selectedCountBarChartType,
+              this.countChartDataLength,
+              2
+            ),
+          })
+          .then();
       });
   }
 
-  loadMortgageTransactionValueChart(): void {
-    this.dashboardService.loadMortgageTransactionValueChart(this.criteria.criteria).subscribe((value) => {
-      this.transactionValues = value;
-      console.log({ transactionValues: value });
-      this.updateTransactionValueChart();
-    });
-  }
-
-  updateTransactionCountChart(): void {
-    if (!this.transactionCount) return;
-
-    const xaxis = Object.keys(this.transactionCount);
-    const mort = xaxis.reduce((acc, year) => {
-      // console.log(this.lineChartData[year]);
-      return [...acc].concat(
-        (this.transactionCount &&
-          this.transactionCount[Number(year)].filter((item) => item.actionType === TransactionType.MORTGAGE)) ||
-          []
-      );
-    }, [] as KpiModel[]);
-    const sell = xaxis.reduce((acc, year) => {
-      // console.log(this.lineChartData[year]);
-      return [...acc].concat(
-        (this.transactionCount &&
-          this.transactionCount[Number(year)].filter((item) => item.actionType === TransactionType.SELL)) ||
-          []
-      );
-    }, [] as KpiModel[]);
-
-    this.transactionCountChart
-      .updateOptions({
-        series: [
-          {
-            name: this.lang.map.mortgage,
-            data: mort.map((i) => i.kpiVal),
-          },
-          {
-            name: this.lang.map.sell,
-            data: sell.map((i) => i.kpiVal),
-          },
-        ],
-        xaxis: {
-          categories: xaxis,
-        },
-      })
-      .then();
-  }
-
-  updateTransactionValueChart(): void {
-    if (!this.transactionValues) return;
-    const _minMaxAvg = minMaxAvg(
-      Object.keys(this.transactionValues).map(
-        (year) => (this.transactionValues && this.transactionValues[year as unknown as number][0].kpiVal) || 0
+  updateCountChartDataMonthly() {
+    this.adapter.setLocale(this.lang.getCurrent().code === 'ar-SA' ? 'ar-EG' : 'en-US');
+    const months = this.adapter.getMonthNames('long');
+    this.dashboardService
+      .loadChartKpiDataForDuration(
+        DurationEndpoints.MONTHLY,
+        { chartDataUrl: this.urlService.URLS.MORT_KPI2 },
+        this.criteria.criteria
       )
+      .pipe(take(1))
+      .subscribe((data) => {
+        data.sort((a, b) => a.issuePeriod - b.issuePeriod);
+        this.updateCountChartType(ChartType.BAR);
+
+        const _data = this._splitAccordingToActionType(data as unknown as KpiModel[]) as unknown as Record<
+          number,
+          KpiDurationModel[]
+        >;
+        this.countChartDataLength = _data[TransactionType.MORTGAGE].length;
+
+        this.countChart.first
+          .updateOptions({
+            chart: {
+              stacked: true,
+            },
+            series: [
+              {
+                name: this.lang.map.mortgage,
+                data: _data[TransactionType.MORTGAGE].map((i) => ({ y: i.kpiVal, x: months[i.issuePeriod - 1] })),
+              },
+              {
+                name: this.lang.map.sell,
+                data: _data[TransactionType.SELL].map((i) => ({ y: i.kpiVal, x: months[i.issuePeriod - 1] })),
+              },
+            ],
+            colors: [AppColors.PRIMARY, AppColors.SECONDARY],
+            ...this.appChartTypesService.monthlyStaticChartOptions,
+            ...this.appChartTypesService.getRangeOptions(
+              this.screenSize,
+              this.selectedCountBarChartType,
+              this.countChartDataLength,
+              2
+            ),
+            // xaxis: {
+            //   categories:
+            // }
+          })
+          .then();
+      });
+  }
+
+  updateCountChartDataHalfyOrQuarterly() {
+    this.dashboardService
+      .loadChartKpiDataForDuration(
+        this.selectedCountChartDurationType === DurationEndpoints.HALFY
+          ? // ? DurationEndpoints.HALFY
+            ('halfly' as unknown as DurationEndpoints)
+          : DurationEndpoints.QUARTERLY,
+        { chartDataUrl: this.urlService.URLS.MORT_KPI2 },
+        this.criteria.criteria
+      )
+      .pipe(take(1))
+      .pipe(
+        map(
+          (data) =>
+            this._splitAccordingToActionType(data as unknown as KpiModel[]) as unknown as Record<
+              number,
+              KpiDurationModel[]
+            >
+        ),
+        map((data) => {
+          return {
+            [TransactionType.SELL]: this.dashboardService.mapDurationData(
+              data[TransactionType.SELL],
+              this.selectedCountChartDurationType === DurationEndpoints.HALFY
+                ? this.lookupService.ownerLookups.halfYearDurations
+                : this.lookupService.ownerLookups.quarterYearDurations
+            ),
+            [TransactionType.MORTGAGE]: this.dashboardService.mapDurationData(
+              data[TransactionType.MORTGAGE],
+              this.selectedCountChartDurationType === DurationEndpoints.HALFY
+                ? this.lookupService.ownerLookups.halfYearDurations
+                : this.lookupService.ownerLookups.quarterYearDurations
+            ),
+          };
+        })
+      )
+      .subscribe((data) => {
+        const _chartData = [
+          ...Object.keys(data[TransactionType.MORTGAGE]).map((key, index) => ({
+            name:
+              this.lang.map.mortgage +
+              ': ' +
+              data[TransactionType.MORTGAGE][key as unknown as number].period.getNames(),
+            group: index.toString(),
+            data: data[TransactionType.MORTGAGE][key as unknown as number].kpiValues.map((item) => ({
+              y: item.value,
+              x: item.year,
+            })),
+          })),
+          ...Object.keys(data[TransactionType.SELL]).map((key, index) => ({
+            name: this.lang.map.sell + ': ' + data[TransactionType.SELL][key as unknown as number].period.getNames(),
+            group: index.toString(),
+            data: data[TransactionType.SELL][key as unknown as number].kpiValues.map((item) => ({
+              y: item.value,
+              x: item.year,
+            })),
+          })),
+        ];
+        this.countChartDataLength = data[TransactionType.MORTGAGE][1].kpiValues.length;
+
+        this.updateCountChartType(ChartType.BAR);
+        this.countChart.first
+          .updateOptions({
+            chart: {
+              stacked: true,
+            },
+            series: _chartData,
+            ...this.appChartTypesService.halflyAndQuarterlyStaticChartOptions,
+            ...this.appChartTypesService.getRangeOptions(
+              this.screenSize,
+              this.selectedCountBarChartType,
+              this.countChartDataLength,
+              2
+            ),
+          })
+          .then();
+      });
+  }
+
+  updateCountChartType(type: ChartType) {
+    this.countChart.first.updateOptions({ chart: { type: type } }).then();
+    this.selectedCountChartType = type;
+  }
+
+  private _splitAccordingToActionType(data: KpiModel[]) {
+    return data.reduce(
+      (acc, cur) => {
+        if (cur.actionType === TransactionType.SELL) acc[TransactionType.SELL].push(cur);
+        else acc[TransactionType.MORTGAGE].push(cur);
+        return acc;
+      },
+      { [TransactionType.SELL]: [] as KpiModel[], [TransactionType.MORTGAGE]: [] as KpiModel[] }
     );
-    this.transactionValueChart
-      .updateOptions({
-        colors: [this.appChartTypesService.chartColorsFormatter(_minMaxAvg)],
-        series: [
-          {
-            name: this.lang.map.mortgage,
-            data: Object.keys(this.transactionValues).map((year: string) => {
-              return {
-                x: year,
-                y: this.transactionValues && this.transactionValues[year as unknown as number][0].kpiVal,
-              };
-            }),
-          },
-        ],
-      })
-      .then();
   }
 
-  updateChartType(
-    type: ChartType,
-    chart: 'transactionCountChart' | 'transactionValueChart',
-    chartProperty: 'countChartType' | 'valueChartType'
-  ) {
-    this[chart]
-      .updateOptions({
-        chart: { type: type, stacked: type === ChartType.BAR },
-        stroke: { show: type !== ChartType.BAR },
-      })
-      .then();
-    this[chartProperty] = type;
+  updateUnitsChartData(durationType: DurationEndpoints) {
+    this.selectedUnitsChartDurationType = durationType;
+    if (this.selectedUnitsChartDurationType === DurationEndpoints.YEARLY) {
+      this.updateUnitsChartDataYearly();
+      this.selectedUnitsBarChartType = BarChartTypes.SINGLE_BAR;
+    } else if (this.selectedUnitsChartDurationType === DurationEndpoints.MONTHLY) {
+      this.updateUnitsChartDataMonthly();
+      this.selectedUnitsBarChartType = BarChartTypes.SINGLE_BAR;
+    } else if (this.selectedUnitsChartDurationType === DurationEndpoints.HALFY) {
+      this.updateUnitsChartDataHalfyOrQuarterly();
+      this.selectedUnitsBarChartType = BarChartTypes.DOUBLE_BAR;
+    } else {
+      this.updateUnitsChartDataHalfyOrQuarterly();
+      this.selectedUnitsBarChartType = BarChartTypes.QUAD_BAR;
+    }
   }
 
-  isSelectedChartType(type: ChartType, chartProperty: 'countChartType' | 'valueChartType') {
-    return this[chartProperty] === type;
+  updateUnitsChartDataYearly(): void {
+    this.dashboardService
+      .loadChartKpiData({ chartDataUrl: this.urlService.URLS.MORT_KPI4 }, this.criteria.criteria)
+      .pipe(take(1))
+      .subscribe((data) => {
+        const _minMaxAvg = minMaxAvg(data.map((item) => item.kpiVal));
+        this.unitsChartDataLength = data.length;
+
+        this.updateUnitsChartType(ChartType.BAR);
+        this.unitsChart.first
+          .updateOptions({
+            series: [
+              {
+                name: this.lang.map.number_of_units,
+                data: data.map((item) => ({ y: item.kpiVal, x: item.issueYear })),
+              },
+            ],
+            colors: [this.appChartTypesService.chartColorsFormatter(_minMaxAvg)],
+            ...this.appChartTypesService.yearlyStaticChartOptions,
+            ...this.appChartTypesService.getRangeOptions(
+              this.screenSize,
+              this.selectedUnitsBarChartType,
+              this.unitsChartDataLength
+            ),
+          })
+          .then();
+      });
   }
 
-  updateChartDuration(durationType: DurationEndpoints) {
-    this.transactionCountDuration = durationType;
-    this.loadMortgageTransactionChart();
+  updateUnitsChartDataMonthly() {
+    this.adapter.setLocale(this.lang.getCurrent().code === 'ar-SA' ? 'ar-EG' : 'en-US');
+    const months = this.adapter.getMonthNames('long');
+    this.dashboardService
+      .loadChartKpiDataForDuration(
+        DurationEndpoints.MONTHLY,
+        { chartDataUrl: this.urlService.URLS.MORT_KPI4 },
+        this.criteria.criteria
+      )
+      .pipe(take(1))
+      .subscribe((data) => {
+        this.unitsChartDataLength = data.length;
+        data.sort((a, b) => a.issuePeriod - b.issuePeriod);
+        const _minMaxAvg = minMaxAvg(data.map((d) => d.kpiVal));
+
+        this.updateUnitsChartType(ChartType.BAR);
+        this.unitsChart.first
+          .updateOptions({
+            series: [
+              {
+                name: this.lang.map.number_of_units,
+                data: data.map((item) => {
+                  return {
+                    y: item.kpiVal,
+                    x: months[item.issuePeriod - 1],
+                  };
+                }),
+              },
+            ],
+            colors: [this.appChartTypesService.chartColorsFormatter(_minMaxAvg)],
+            ...this.appChartTypesService.monthlyStaticChartOptions,
+            ...this.appChartTypesService.getRangeOptions(
+              this.screenSize,
+              this.selectedUnitsBarChartType,
+              this.unitsChartDataLength
+            ),
+          })
+          .then();
+      });
+  }
+
+  updateUnitsChartDataHalfyOrQuarterly() {
+    this.dashboardService
+      .loadChartKpiDataForDuration(
+        this.selectedUnitsChartDurationType === DurationEndpoints.HALFY
+          ? // ? DurationEndpoints.HALFY
+            ('halfly' as unknown as DurationEndpoints)
+          : DurationEndpoints.QUARTERLY,
+        { chartDataUrl: this.urlService.URLS.MORT_KPI4 },
+        this.criteria.criteria
+      )
+      .pipe(take(1))
+      .pipe(
+        map((durationData) => {
+          return this.dashboardService.mapDurationData(
+            durationData,
+            this.selectedUnitsChartDurationType === DurationEndpoints.HALFY
+              ? this.lookupService.mortLookups.halfYearDurations
+              : this.lookupService.mortLookups.quarterYearDurations
+          );
+        })
+      )
+      .subscribe((data) => {
+        this.unitsChartDataLength = data[1].kpiValues.length;
+        const _chartData = Object.keys(data).map((key) => ({
+          name: data[key as unknown as number].period.getNames(),
+          data: data[key as unknown as number].kpiValues.map((item) => ({ y: item.value, x: item.year })),
+        }));
+
+        this.updateUnitsChartType(ChartType.BAR);
+        this.unitsChart.first
+          .updateOptions({
+            series: _chartData,
+            ...this.appChartTypesService.halflyAndQuarterlyStaticChartOptions,
+            ...this.appChartTypesService.getRangeOptions(
+              this.screenSize,
+              this.selectedUnitsBarChartType,
+              this.unitsChartDataLength
+            ),
+          })
+          .then();
+      });
+  }
+
+  updateUnitsChartType(type: ChartType) {
+    this.unitsChart.first.updateOptions({ chart: { type: type } }).then();
+    this.selectedUnitsChartType = type;
+  }
+
+  updateValueChartData(durationType: DurationEndpoints) {
+    this.selectedValueChartDurationType = durationType;
+    if (this.selectedValueChartDurationType === DurationEndpoints.YEARLY) {
+      this.updateValueChartDataYearly();
+      this.selectedValueBarChartType = BarChartTypes.SINGLE_BAR;
+    } else if (this.selectedValueChartDurationType === DurationEndpoints.MONTHLY) {
+      this.updateValueChartDataMonthly();
+      this.selectedValueBarChartType = BarChartTypes.SINGLE_BAR;
+    } else if (this.selectedValueChartDurationType === DurationEndpoints.HALFY) {
+      this.updateValueChartDataHalfyOrQuarterly();
+      this.selectedValueBarChartType = BarChartTypes.DOUBLE_BAR;
+    } else {
+      this.updateValueChartDataHalfyOrQuarterly();
+      this.selectedValueBarChartType = BarChartTypes.QUAD_BAR;
+    }
+  }
+
+  updateValueChartDataYearly(): void {
+    this.dashboardService
+      .loadChartKpiData({ chartDataUrl: this.urlService.URLS.MORT_KPI6 }, this.criteria.criteria)
+      .pipe(take(1))
+      .subscribe((data) => {
+        const _minMaxAvg = minMaxAvg(data.map((item) => item.kpiVal));
+        this.valueChartDataLength = data.length;
+
+        this.updateValueChartType(ChartType.BAR);
+        this.valueChart.first
+          .updateOptions({
+            series: [
+              {
+                name: this.lang.map.transactions_value,
+                data: data.map((item) => ({ y: item.kpiVal, x: item.issueYear })),
+              },
+            ],
+            colors: [this.appChartTypesService.chartColorsFormatter(_minMaxAvg)],
+            ...this.appChartTypesService.yearlyStaticChartOptions,
+            ...this.appChartTypesService.getRangeOptions(
+              this.screenSize,
+              this.selectedValueBarChartType,
+              this.valueChartDataLength
+            ),
+          })
+          .then();
+      });
+  }
+
+  updateValueChartDataMonthly() {
+    this.adapter.setLocale(this.lang.getCurrent().code === 'ar-SA' ? 'ar-EG' : 'en-US');
+    const months = this.adapter.getMonthNames('long');
+    this.dashboardService
+      .loadChartKpiDataForDuration(
+        DurationEndpoints.MONTHLY,
+        { chartDataUrl: this.urlService.URLS.MORT_KPI6 },
+        this.criteria.criteria
+      )
+      .pipe(take(1))
+      .subscribe((data) => {
+        this.valueChartDataLength = data.length;
+        data.sort((a, b) => a.issuePeriod - b.issuePeriod);
+        const _minMaxAvg = minMaxAvg(data.map((d) => d.kpiVal));
+
+        this.updateValueChartType(ChartType.BAR);
+        this.valueChart.first
+          .updateOptions({
+            series: [
+              {
+                name: this.lang.map.transactions_value,
+                data: data.map((item) => {
+                  return {
+                    y: item.kpiVal,
+                    x: months[item.issuePeriod - 1],
+                  };
+                }),
+              },
+            ],
+            colors: [this.appChartTypesService.chartColorsFormatter(_minMaxAvg)],
+            ...this.appChartTypesService.monthlyStaticChartOptions,
+            ...this.appChartTypesService.getRangeOptions(
+              this.screenSize,
+              this.selectedValueBarChartType,
+              this.valueChartDataLength
+            ),
+          })
+          .then();
+      });
+  }
+
+  updateValueChartDataHalfyOrQuarterly() {
+    this.dashboardService
+      .loadChartKpiDataForDuration(
+        this.selectedValueChartDurationType === DurationEndpoints.HALFY
+          ? // ? DurationEndpoints.HALFY
+            ('halfly' as unknown as DurationEndpoints)
+          : DurationEndpoints.QUARTERLY,
+        { chartDataUrl: this.urlService.URLS.MORT_KPI6 },
+        this.criteria.criteria
+      )
+      .pipe(take(1))
+      .pipe(
+        map((durationData) => {
+          return this.dashboardService.mapDurationData(
+            durationData,
+            this.selectedValueChartDurationType === DurationEndpoints.HALFY
+              ? this.lookupService.mortLookups.halfYearDurations
+              : this.lookupService.mortLookups.quarterYearDurations
+          );
+        })
+      )
+      .subscribe((data) => {
+        this.valueChartDataLength = data[1].kpiValues.length;
+        const _chartData = Object.keys(data).map((key) => ({
+          name: data[key as unknown as number].period.getNames(),
+          data: data[key as unknown as number].kpiValues.map((item) => ({ y: item.value, x: item.year })),
+        }));
+
+        this.updateValueChartType(ChartType.BAR);
+        this.valueChart.first
+          .updateOptions({
+            series: _chartData,
+            ...this.appChartTypesService.halflyAndQuarterlyStaticChartOptions,
+            ...this.appChartTypesService.getRangeOptions(
+              this.screenSize,
+              this.selectedValueBarChartType,
+              this.valueChartDataLength
+            ),
+          })
+          .then();
+      });
+  }
+
+  updateValueChartType(type: ChartType) {
+    this.valueChart.first.updateOptions({ chart: { type: type } }).then();
+    this.selectedValueChartType = type;
   }
 
   paginate($event: PageEvent) {
@@ -426,21 +759,6 @@ export default class MortgageIndicatorsComponent implements OnInit {
       limit: $event.pageSize,
     });
   }
-
-  // private loadTransactions() {
-  //   this.dashboardService
-  //     .loadMortgageKpiTransactions(this.criteria.criteria)
-  //     .pipe(takeUntil(this.destroy$))
-  //     .subscribe((list) => {
-  //       if (this.enableChangerealEstateValueMinMaxValues) {
-  //         this.minMaxRealestateValue = minMaxAvg(list.map((item) => item.realEstateValue));
-  //       }
-  //       if (this.enableChangeAreaMinMaxValues) {
-  //       }
-  //       console.log(list);
-  //       this.transactions.next(list);
-  //     });
-  // }
 
   protected loadTransactions(): Observable<MortgageTransaction[]> {
     return of(undefined)
@@ -458,5 +776,64 @@ export default class MortgageIndicatorsComponent implements OnInit {
           );
         })
       );
+  }
+
+  private _initializeChartsFormatters() {
+    this.countChartOptions
+      .addDataLabelsFormatter((val, opts) =>
+        this.appChartTypesService.dataLabelsFormatter({ val, opts }, { hasPrice: false })
+      )
+      .addAxisYFormatter((val, opts) => this.appChartTypesService.axisYFormatter({ val, opts }, { hasPrice: false }))
+      .addCustomToolbarOptions();
+
+    this.yearlyOrMonthlyChartOptions
+      .addDataLabelsFormatter((val, opts) =>
+        this.appChartTypesService.dataLabelsFormatter({ val, opts }, { hasPrice: false })
+      )
+      .addAxisYFormatter((val, opts) => this.appChartTypesService.axisYFormatter({ val, opts }, { hasPrice: false }))
+      .addCustomToolbarOptions();
+
+    this.halfyCountChartOptions
+      .addDataLabelsFormatter((val, opts) =>
+        this.appChartTypesService.dataLabelsFormatter({ val, opts }, { hasPrice: false })
+      )
+      .addAxisYFormatter((val, opts) => this.appChartTypesService.axisYFormatter({ val, opts }, { hasPrice: false }))
+      .addCustomToolbarOptions();
+
+    this.quarterlyCountChartOptions
+      .addDataLabelsFormatter((val, opts) =>
+        this.appChartTypesService.dataLabelsFormatter({ val, opts }, { hasPrice: false })
+      )
+      .addAxisYFormatter((val, opts) => this.appChartTypesService.axisYFormatter({ val, opts }, { hasPrice: false }))
+      .addCustomToolbarOptions();
+
+    this.unitsChartOptions
+      .addDataLabelsFormatter((val, opts) =>
+        this.appChartTypesService.dataLabelsFormatter({ val, opts }, { hasPrice: false })
+      )
+      .addAxisYFormatter((val, opts) => this.appChartTypesService.axisYFormatter({ val, opts }, { hasPrice: false }))
+      .addCustomToolbarOptions();
+
+    this.valueChartOptions
+      .addDataLabelsFormatter((val, opts) =>
+        this.appChartTypesService.dataLabelsFormatter({ val, opts }, { hasPrice: true })
+      )
+      .addAxisYFormatter((val, opts) => this.appChartTypesService.axisYFormatter({ val, opts }, { hasPrice: true }))
+      .addCustomToolbarOptions();
+  }
+
+  private _listenToScreenSize() {
+    this.screenService.screenSizeObserver$.pipe(takeUntil(this.destroy$)).subscribe((size) => {
+      this.screenSize = size;
+      this.countChart.first.updateOptions(
+        this.appChartTypesService.getRangeOptions(size, this.selectedCountBarChartType, this.countChartDataLength, 2)
+      );
+      this.unitsChart.first.updateOptions(
+        this.appChartTypesService.getRangeOptions(size, this.selectedUnitsBarChartType, this.unitsChartDataLength)
+      );
+      this.valueChart.first.updateOptions(
+        this.appChartTypesService.getRangeOptions(size, this.selectedValueBarChartType, this.valueChartDataLength)
+      );
+    });
   }
 }

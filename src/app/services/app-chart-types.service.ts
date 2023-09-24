@@ -26,9 +26,29 @@ export class AppChartTypesService {
   }
   get halflyAndQuarterlyStaticChartOptions() {
     return {
-      colors: [AppColors.PRIMARY, AppColors.SECONDARY, AppColors.GRAY, AppColors.INDIGO_RAINBOW],
+      colors: [
+        AppColors.PRIMARY,
+        AppColors.SECONDARY,
+        AppColors.GRAY,
+        AppColors.INDIGO_RAINBOW,
+        AppColors.PRIMARY_LIGHT,
+        AppColors.JUNGLE,
+        AppColors.GRAY_TOO,
+        AppColors.SAND,
+      ],
       tooltip: {
-        marker: { fillColors: [AppColors.PRIMARY, AppColors.SECONDARY, AppColors.GRAY, AppColors.INDIGO_RAINBOW] },
+        marker: {
+          fillColors: [
+            AppColors.PRIMARY,
+            AppColors.SECONDARY,
+            AppColors.GRAY,
+            AppColors.INDIGO_RAINBOW,
+            AppColors.PRIMARY_LIGHT,
+            AppColors.JUNGLE,
+            AppColors.GRAY_TOO,
+            AppColors.SAND,
+          ],
+        },
       },
     };
   }
@@ -362,7 +382,12 @@ const popupChartOptions: Partial<PartialChartOptions> = {
   },
 };
 
-function getRangeOptions(screenSize: Breakpoints, barChartType: BarChartTypes, dataCount: number): PartialChartOptions {
+function getRangeOptions(
+  screenSize: Breakpoints,
+  barChartType: BarChartTypes,
+  dataCount: number,
+  otherDenominator = 1
+): PartialChartOptions {
   function getRange(defaultRange: number) {
     return dataCount <= defaultRange ? (dataCount <= 3 ? dataCount : dataCount - 1) : defaultRange;
   }
@@ -438,7 +463,10 @@ function getRangeOptions(screenSize: Breakpoints, barChartType: BarChartTypes, d
     xaxis: { range: _range },
     plotOptions: {
       bar: {
-        columnWidth: dataCount <= _range ? '40%' : Math.round((dataCount / _range / 1.5) * 100).toString() + '%',
+        columnWidth:
+          dataCount <= _range
+            ? '40%'
+            : Math.round((dataCount / _range / 1.5 / otherDenominator) * 100).toString() + '%',
       },
     },
   };
