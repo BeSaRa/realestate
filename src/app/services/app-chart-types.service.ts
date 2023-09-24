@@ -172,7 +172,7 @@ const mainChartOptions: PartialChartOptions = {
   },
   yaxis: {
     min: 0,
-    max: undefined,
+    max: (max) => max / 0.95,
     // tickAmount: 10,
     labels: {
       // formatter: don't forget to set formatter when use chart
