@@ -625,14 +625,14 @@ export default class RentalIndicatorsPageComponent implements OnInit {
       tooltipData = dataSeries[seriesIndex + 1].kpiValues[dataPointIndex];
       // console.log(tooltipData);
       return this.tooltipListDraw(
-        tooltipData?.issueYear,
+        tooltipData?.issueYear ?? this.criteria.criteria.issueDateYear,
         tooltipData?.kpiVal,
         tooltipData?.kpiP2PYoY,
         tooltipData?.kpiYoYBaseVal
       );
     }
     return this.tooltipListDraw(
-      tooltipData?.issueYear,
+      tooltipData?.issueYear ?? this.criteria.criteria.issueDateYear,
       tooltipData?.kpiVal,
       tooltipData?.kpiYoYVal,
       tooltipData?.kpiYoYBaseVal
