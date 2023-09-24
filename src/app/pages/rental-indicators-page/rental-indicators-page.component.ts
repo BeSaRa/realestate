@@ -53,7 +53,8 @@ import { minMaxAvg } from '@utils/utils';
 import { CarouselComponent, IvyCarouselModule } from 'angular-responsive-carousel2';
 import { ChartComponent, NgApexchartsModule } from 'ng-apexcharts';
 import { NgxMaskPipe } from 'ngx-mask';
-import { BehaviorSubject, delay, forkJoin, map, Observable, of, Subject, switchMap, take, takeUntil, tap } from 'rxjs';
+import { BehaviorSubject, combineLatest, delay, forkJoin, map, Observable, of, ReplaySubject, Subject, switchMap, take, takeUntil, tap } from 'rxjs';
+import { RentTransactionPropertyType } from '@models/rent-transaction-property-type';
 
 @Component({
   selector: 'app-rental-indicators-page',
@@ -82,7 +83,7 @@ import { BehaviorSubject, delay, forkJoin, map, Observable, of, Subject, switchM
     NgxMaskPipe,
     MatNativeDateModule,
   ],
-  templateUrl: './rental-indicators-page.component.html',
+  templateUrl:'./rental-indicators-page.component.html',
   styleUrls: ['./rental-indicators-page.component.scss'],
 })
 export default class RentalIndicatorsPageComponent implements OnInit {
@@ -101,6 +102,7 @@ export default class RentalIndicatorsPageComponent implements OnInit {
   screenSize = Breakpoints.LG;
 
   destroy$ = new Subject<void>();
+  reload$ = new ReplaySubject<void>(1);
 
   municipalities = this.lookupService.rentLookups.municipalityList;
   propertyTypes = this.lookupService.rentLookups.propertyTypeList;
@@ -109,6 +111,8 @@ export default class RentalIndicatorsPageComponent implements OnInit {
   rooms = this.lookupService.rentLookups.rooms;
   furnitureStatusList = this.lookupService.rentLookups.furnitureStatusList;
   paramsRange = this.lookupService.rentLookups.maxParams;
+  nationalities = this.lookupService.ownerLookups.nationalityList;
+
 
   // transactions = new ReplaySubject<RentTransaction[]>(1);
   transactions$: Observable<RentTransaction[]> = this.loadTransactions();
@@ -331,15 +335,27 @@ export default class RentalIndicatorsPageComponent implements OnInit {
   compositeTransactionsExtraColumns = ['contractCounts', 'contractValues', 'avgContract'];
 
   transactionsPurpose: RentTransactionPurpose[] = [];
-  transactionsPurposeColumns = [
-    'purpose',
+  transactionsPropertyType: RentTransactionPropertyType[] = [];
+
+  transactionsStatisticsColumns = [
     'average',
     'certificates-count',
     'area',
     'units-count',
     'average-square',
     'chart',
+  ]
+
+  transactionsPurposeColumns = [
+    'purpose',
+    ...this.transactionsStatisticsColumns
   ];
+
+  transactionsPropertyTypeColumns = [
+    'propertyType',
+    ...this.transactionsStatisticsColumns
+  ];
+
 
   get priceList() {
     return this.rootKPIS.filter((item) => item.hasPrice);
@@ -359,6 +375,7 @@ export default class RentalIndicatorsPageComponent implements OnInit {
         );
       });
     }, 0);
+    this.reload$.next();
   }
 
   updateAllPurpose(value: number, yoy: number): void {
@@ -394,11 +411,13 @@ export default class RentalIndicatorsPageComponent implements OnInit {
       this.rootItemSelected(this.selectedRoot);
       this.selectTop10Chart(this.selectedTop10);
     }
-    this.loadTransactions();
+    // this.loadTransactions();
+    this.reload$.next();
     this.loadRoomCounts();
     this.loadFurnitureStatus();
     this.loadCompositeTransactions();
     this.loadTransactionsBasedOnPurpose();
+    this.loadTransactionsBasedOnPropertyType();
   }
 
   rootItemSelected(item?: KpiRoot) {
@@ -602,19 +621,23 @@ export default class RentalIndicatorsPageComponent implements OnInit {
       .pipe(delay(0))
       .pipe(
         switchMap(() => {
-          return this.paginate$.pipe(
-            switchMap((paginationOptions) => {
+          return combineLatest([this.reload$, this.paginate$]).pipe(
+            switchMap(([, paginationOptions]) => {
               this.criteria.criteria.limit = paginationOptions.limit;
               this.criteria.criteria.offset = paginationOptions.offset;
-              return this.dashboardService.loadRentKpiTransactions(this.criteria.criteria);
+              return (
+                this.dashboardService
+                  .loadRentKpiTransactions(this.criteria.criteria)
+              )
             }),
-            tap((transactionsModel) => (this.transactionsCount = transactionsModel.count)),
-            map((transactionsModel) => transactionsModel.transactionList)
+            map(({ count, transactionList }) => {
+              this.transactionsCount = count;
+              return transactionList
+            })
           );
         })
       );
   }
-
   private goToFirstCell(): void {
     if (!this.carousel.length) return;
     this.carousel.first.cellsToScroll = this.carousel.first.cellLength;
@@ -744,7 +767,13 @@ export default class RentalIndicatorsPageComponent implements OnInit {
     });
   }
 
-  openChart(item: RentTransactionPurpose): void {
+  loadTransactionsBasedOnPropertyType(): void {
+    this.dashboardService.loadRentTransactionsBasedOnPropertyType(this.criteria.criteria).subscribe((values) => {
+      this.transactionsPropertyType = values;
+    });
+  }
+
+  openChart(item: RentTransactionPurpose | RentTransactionPropertyType): void {
     item.openChart(this.criteria.criteria).subscribe();
   }
 

@@ -47,7 +47,8 @@ import { minMaxAvg } from '@utils/utils';
 import { CarouselComponent, IvyCarouselModule } from 'angular-responsive-carousel2';
 import { ChartComponent, NgApexchartsModule } from 'ng-apexcharts';
 import { NgxMaskPipe } from 'ngx-mask';
-import { BehaviorSubject, Observable, Subject, delay, forkJoin, map, of, switchMap, take, takeUntil, tap } from 'rxjs';
+import { BehaviorSubject, Observable,combineLatest, ReplaySubject, Subject, delay, forkJoin, map, of, switchMap, take, takeUntil } from 'rxjs';
+import { SellTransactionPropertyType } from '@models/sell-transaction-property-type';
 
 @Component({
   selector: 'app-sell-indicators-page',
@@ -99,6 +100,7 @@ export default class SellIndicatorsPageComponent implements OnInit {
   screenSize = Breakpoints.LG;
 
   destroy$ = new Subject<void>();
+  reload$ = new ReplaySubject<void>(1);
 
   municipalities = this.lookupService.sellLookups.municipalityList;
   propertyTypes = this.lookupService.sellLookups.propertyTypeList;
@@ -302,14 +304,24 @@ export default class SellIndicatorsPageComponent implements OnInit {
   ];
 
   transactionsPurpose: SellTransactionPurpose[] = [];
-  transactionsPurposeColumns = [
-    'purpose',
+  transactionsPropertyType: SellTransactionPropertyType[] = [];
+  
+  transactionsStatisticsColumns = [
     'average',
     'certificates-count',
     'area',
     'units-count',
     'average-square',
     'chart',
+  ]
+  transactionsPurposeColumns = [
+    'purpose',
+    ...this.transactionsStatisticsColumns
+  ];
+
+  transactionsPropertyTypeColumns = [
+    'propertyType',
+    ...this.transactionsStatisticsColumns
   ];
 
   top10ChartData: SellTop10Model[] = [];
@@ -349,6 +361,7 @@ export default class SellIndicatorsPageComponent implements OnInit {
         );
       });
     }, 0);
+    this.reload$.next();
   }
 
   // toggleFilters(): void {
@@ -405,9 +418,11 @@ export default class SellIndicatorsPageComponent implements OnInit {
       this.rootItemSelected(this.selectedRoot);
       this.selectTop10Chart(this.selectedTop10);
     }
-    this.loadTransactions();
+    // this.loadTransactions();
+    this.reload$.next();
     this.loadTransactionsBasedOnPurpose();
     this.loadCompositeTransactions();
+    this.loadTransactionsBasedOnType();
     // this.loadRoomCounts();
   }
 
@@ -628,14 +643,19 @@ export default class SellIndicatorsPageComponent implements OnInit {
       .pipe(delay(0))
       .pipe(
         switchMap(() => {
-          return this.paginate$.pipe(
-            switchMap((paginationOptions) => {
+          return combineLatest([this.reload$, this.paginate$]).pipe(
+            switchMap(([,paginationOptions]) => {
               this.criteria.criteria.limit = paginationOptions.limit;
               this.criteria.criteria.offset = paginationOptions.offset;
-              return this.dashboardService.loadSellKpiTransactions(this.criteria.criteria);
+              return (
+                this.dashboardService
+                  .loadSellKpiTransactions(this.criteria.criteria)
+              )
             }),
-            tap((transactionsModel) => (this.transactionsCount = transactionsModel.count)),
-            map((transactionsModel) => transactionsModel.transactionList)
+            map(({count,transactionList}) => {
+              this.transactionsCount = count;
+              return transactionList
+            })
           );
         })
       );
@@ -647,10 +667,17 @@ export default class SellIndicatorsPageComponent implements OnInit {
     });
   }
 
-  openChart(item: SellTransactionPurpose): void {
+  loadTransactionsBasedOnType(): void {
+    this.dashboardService.loadSellTransactionsBasedOnPropertyType(this.criteria.criteria).subscribe((values) => {
+      // ToDO: since limit filter is not working (we rigestered an issue to be team for that)
+      // ToDo: applay pagination on table
+      // For now we take only five records
+      this.transactionsPropertyType = values.slice(0, 5);
+    });
+  }
+  openChart(item: SellTransactionPurpose | SellTransactionPropertyType): void {
     item.openChart(this.criteria.criteria).subscribe();
   }
-
   selectTop10Chart(item: Lookup): void {
     this.accordingToList.forEach((i) => {
       i === item ? (i.selected = true) : (i.selected = false);
