@@ -624,7 +624,7 @@ export default class SellIndicatorsPageComponent implements OnInit {
         this.durationDataLength = data[1].kpiValues.length;
         const _chartData = Object.keys(data).map((key) => ({
           name: data[key as unknown as number].period.getNames(),
-          data: data[key as unknown as number].kpiValues.map((item) => ({ y: item.value, x: item.year })),
+          data: data[key as unknown as number].kpiValues.map((item) => ({ y: item.kpiVal, x: item.issueYear })),
         }));
         this.chart.first
           .updateOptions({
