@@ -55,6 +55,8 @@ import { ChartComponent, NgApexchartsModule } from 'ng-apexcharts';
 import { NgxMaskPipe } from 'ngx-mask';
 import { BehaviorSubject, combineLatest, delay, forkJoin, map, Observable, of, ReplaySubject, Subject, switchMap, take, takeUntil, tap } from 'rxjs';
 import { RentTransactionPropertyType } from '@models/rent-transaction-property-type';
+import { indicatorsTypes } from '@enums/Indicators-type';
+import { RentTransactionIndicator } from '@app-types/rent-indicators-type';
 
 @Component({
   selector: 'app-rental-indicators-page',
@@ -86,8 +88,10 @@ import { RentTransactionPropertyType } from '@models/rent-transaction-property-t
   templateUrl:'./rental-indicators-page.component.html',
   styleUrls: ['./rental-indicators-page.component.scss'],
 })
+
 export default class RentalIndicatorsPageComponent implements OnInit {
   protected readonly ChartType = ChartType;
+  protected readonly IndicatorsType = indicatorsTypes;
 
   lang = inject(TranslationService);
   dashboardService = inject(DashboardService);
@@ -103,7 +107,7 @@ export default class RentalIndicatorsPageComponent implements OnInit {
 
   destroy$ = new Subject<void>();
   reload$ = new ReplaySubject<void>(1);
-  private basedOn$: BehaviorSubject<string> = new BehaviorSubject("");
+  private basedOn$ = new BehaviorSubject<indicatorsTypes>(indicatorsTypes.PURPOSE);
 
   municipalities = this.lookupService.rentLookups.municipalityList;
   propertyTypes = this.lookupService.rentLookups.propertyTypeList;
@@ -120,8 +124,9 @@ export default class RentalIndicatorsPageComponent implements OnInit {
   transactionsCount = 0;
   dataSource: AppTableDataSource<RentTransaction> = new AppTableDataSource(this.transactions$);
 
-  transactionsStatistics$: Observable<any[]> = this.setDataSource();
-  transactionsStatisticsDatasource = new AppTableDataSource(this.transactionsStatistics$)
+  
+  transactionsStatistics$: Observable<RentTransactionIndicator[]> = this.setIndicatorsTableDataSource();
+  transactionsStatisticsDatasource = new AppTableDataSource<RentTransactionIndicator>(this.transactionsStatistics$)
   transactionsSortOptions: TableSortOption[] = [
     new TableSortOption().clone<TableSortOption>({
       arName: this.lang.getArabicTranslation('most_recent'),
@@ -174,6 +179,7 @@ export default class RentalIndicatorsPageComponent implements OnInit {
   DurationTypes = DurationEndpoints;
   selectedDurationType: DurationEndpoints = DurationEndpoints.YEARLY;
   selectedDurationBarChartType = BarChartTypes.SINGLE_BAR;
+  selectedIndicators = this.IndicatorsType.PURPOSE;
 
   roomsPieChartData: RoomNumberKpi[] = [];
   furnitureStatusPieChartData: FurnitureStatusKpi[] = [];
@@ -338,9 +344,6 @@ export default class RentalIndicatorsPageComponent implements OnInit {
   ];
   compositeTransactionsExtraColumns = ['contractCounts', 'contractValues', 'avgContract'];
 
-  transactionsPurpose: RentTransactionPurpose[] = [];
-  transactionsPropertyType: RentTransactionPropertyType[] = [];
-
   transactionsStatisticsColumns = [
     'average',
     'certificates-count',
@@ -349,17 +352,6 @@ export default class RentalIndicatorsPageComponent implements OnInit {
     'average-square',
     'chart',
   ]
-
-  transactionsPurposeColumns = [
-    'purpose',
-    ...this.transactionsStatisticsColumns
-  ];
-
-  transactionsPropertyTypeColumns = [
-    'propertyType',
-    ...this.transactionsStatisticsColumns
-  ];
-
 
   get priceList() {
     return this.rootKPIS.filter((item) => item.hasPrice);
@@ -383,20 +375,24 @@ export default class RentalIndicatorsPageComponent implements OnInit {
 
   }
 
-  protected setDataSource(): Observable<any[]> {
+  protected setIndicatorsTableDataSource(): Observable<RentTransactionIndicator[]>  {
     return of(undefined)
       .pipe(delay(0))
       .pipe(
         switchMap(() => {
-          return this.basedOn$.pipe(
-            switchMap((basedOn) => {
+          return combineLatest([this.reload$, this.basedOn$]).pipe(
+            switchMap(([,basedOn]) => {
               this.transactionsStatisticsColumns.length === 7
-                ? this.transactionsStatisticsColumns[7] = basedOn
-                : this.transactionsStatisticsColumns.push(basedOn)
+                ? this.transactionsStatisticsColumns[0] = basedOn
+                : this.transactionsStatisticsColumns.unshift(basedOn)
+              this.selectedIndicators = basedOn;
               return (
-                basedOn === 'purpose'
-                  ? this.dashboardService.loadRentTransactionsBasedOnPurpose(this.criteria.criteria)
-                  : this.dashboardService.loadRentTransactionsBasedOnPropertyType(this.criteria.criteria)
+                basedOn === indicatorsTypes.PURPOSE
+                  // ToDO: since limit filter is not working (we rigestered an issue to be team for that)
+                  // ToDo: applay pagination on table
+                  // For now we take only five records
+                  ? this.dashboardService.loadRentTransactionsBasedOnPurpose(this.criteria.criteria).pipe(map((items) => { return items.slice(0, 5) }))
+                  : this.dashboardService.loadRentTransactionsBasedOnPropertyType(this.criteria.criteria).pipe(map((items) => { return items.slice(0, 5) }))
               )
             }),
             map((response) => {
@@ -446,7 +442,7 @@ export default class RentalIndicatorsPageComponent implements OnInit {
     this.loadFurnitureStatus();
     this.loadCompositeTransactions();
     // this.basedOn$.next("purpose");
-    this.setDataSource()
+    this.setIndicatorsTableDataSource()
   }
 
   rootItemSelected(item?: KpiRoot) {
@@ -729,7 +725,7 @@ export default class RentalIndicatorsPageComponent implements OnInit {
     }
   }
 
-  updateRentIndicatorsTable(basedOn: string)
+  updateRentIndicatorsTable(basedOn: indicatorsTypes)
   {
     this.basedOn$.next(basedOn);
   }

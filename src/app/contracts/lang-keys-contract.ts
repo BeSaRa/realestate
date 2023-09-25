@@ -159,6 +159,7 @@ export interface LangKeysContract {
   // //////
   number_of_sell_contracts: string;
   number_of_sold_units: string;
+  number_of_rented_units: string;
   sold_areas: string;
   average_price_per_unit: string;
   average_price_per_square_meter: string;

@@ -47,8 +47,10 @@ import { minMaxAvg } from '@utils/utils';
 import { CarouselComponent, IvyCarouselModule } from 'angular-responsive-carousel2';
 import { ChartComponent, NgApexchartsModule } from 'ng-apexcharts';
 import { NgxMaskPipe } from 'ngx-mask';
-import { BehaviorSubject, Observable,combineLatest, ReplaySubject, Subject, delay, forkJoin, map, of, switchMap, take, takeUntil } from 'rxjs';
+import { BehaviorSubject, Observable, combineLatest, ReplaySubject, Subject, delay, forkJoin, map, of, switchMap, take, takeUntil } from 'rxjs';
 import { SellTransactionPropertyType } from '@models/sell-transaction-property-type';
+import { indicatorsTypes } from '@enums/Indicators-type';
+import { SellTransactionIndicator } from '@app-types/sell-indicators-type';
 
 @Component({
   selector: 'app-sell-indicators-page',
@@ -79,6 +81,7 @@ import { SellTransactionPropertyType } from '@models/sell-transaction-property-t
   styleUrls: ['./sell-indicators-page.component.scss'],
 })
 export default class SellIndicatorsPageComponent implements OnInit {
+  protected readonly IndicatorsType = indicatorsTypes;
   @ViewChildren('carousel') carousel!: QueryList<CarouselComponent>;
   @ViewChildren('chart') chart!: QueryList<ChartComponent>;
   @ViewChildren('top10Chart') top10Chart!: QueryList<ChartComponent>;
@@ -101,6 +104,8 @@ export default class SellIndicatorsPageComponent implements OnInit {
 
   destroy$ = new Subject<void>();
   reload$ = new ReplaySubject<void>(1);
+
+  private basedOn$ = new BehaviorSubject<indicatorsTypes>(indicatorsTypes.PURPOSE);
 
   municipalities = this.lookupService.sellLookups.municipalityList;
   propertyTypes = this.lookupService.sellLookups.propertyTypeList;
@@ -252,6 +257,9 @@ export default class SellIndicatorsPageComponent implements OnInit {
   transactions$: Observable<SellTransaction[]> = this.loadTransactions();
   dataSource: AppTableDataSource<SellTransaction> = new AppTableDataSource(this.transactions$);
   transactionsCount = 0;
+
+  transactionsStatistics$: Observable<SellTransactionIndicator[]> = this.setIndicatorsTableDataSource();
+  transactionsStatisticsDatasource = new AppTableDataSource<SellTransactionIndicator>(this.transactionsStatistics$);
   transactionsSortOptions: TableSortOption[] = [
     new TableSortOption().clone<TableSortOption>({
       arName: this.lang.getArabicTranslation('most_recent'),
@@ -303,9 +311,6 @@ export default class SellIndicatorsPageComponent implements OnInit {
     }),
   ];
 
-  transactionsPurpose: SellTransactionPurpose[] = [];
-  transactionsPropertyType: SellTransactionPropertyType[] = [];
-  
   transactionsStatisticsColumns = [
     'average',
     'certificates-count',
@@ -314,19 +319,12 @@ export default class SellIndicatorsPageComponent implements OnInit {
     'average-square',
     'chart',
   ]
-  transactionsPurposeColumns = [
-    'purpose',
-    ...this.transactionsStatisticsColumns
-  ];
 
-  transactionsPropertyTypeColumns = [
-    'propertyType',
-    ...this.transactionsStatisticsColumns
-  ];
 
   top10ChartData: SellTop10Model[] = [];
   selectedTop10: Lookup = this.accordingToList[0];
   selectedTop10ChartType: 'bar' | 'line' = ChartType.BAR;
+  selectedIndicators = this.IndicatorsType.PURPOSE;
   top10ChartOptions = {
     bar: new ChartOptionsModel().clone<ChartOptionsModel>(this.appChartTypesService.top10ChartOptions.bar),
     line: new ChartOptionsModel().clone<ChartOptionsModel>(this.appChartTypesService.top10ChartOptions.line),
@@ -367,6 +365,33 @@ export default class SellIndicatorsPageComponent implements OnInit {
   // toggleFilters(): void {
   //   this.isOpened = !this.isOpened;
   // }
+  protected setIndicatorsTableDataSource(): Observable<SellTransactionIndicator[]> {
+    return of(undefined)
+      .pipe(delay(0))
+      .pipe(
+        switchMap(() => {
+          return combineLatest([this.reload$, this.basedOn$]).pipe(
+            switchMap(([, basedOn]) => {
+              this.transactionsStatisticsColumns.length === 7
+                ? this.transactionsStatisticsColumns[0] = basedOn
+                : this.transactionsStatisticsColumns.unshift(basedOn)
+              this.selectedIndicators = basedOn;
+              return (
+                basedOn === indicatorsTypes.PURPOSE
+                  // ToDO: since limit filter is not working (we rigestered an issue to be team for that)
+                  // ToDo: applay pagination on table
+                  // For now we take only five records
+                  ? this.dashboardService.loadSellTransactionsBasedOnPurpose(this.criteria.criteria).pipe(map((items) => { return items.slice(0, 5) }))
+                  : this.dashboardService.loadSellTransactionsBasedOnPropertyType(this.criteria.criteria).pipe(map((items) => { return items.slice(0, 5) }))
+              )
+            }),
+            map((response) => {
+              return response
+            })
+          );
+        })
+      );
+  }
 
   switchTab(tab: string): void {
     this.selectedTab = tab;
@@ -377,6 +402,10 @@ export default class SellIndicatorsPageComponent implements OnInit {
       this.updateChartDuration(this.selectedDurationType);
       this.updateTop10Chart();
     });
+  }
+
+  updateSellIndicatorsTable(basedOn: indicatorsTypes) {
+    this.basedOn$.next(basedOn);
   }
 
   paginate($event: PageEvent) {
@@ -420,9 +449,8 @@ export default class SellIndicatorsPageComponent implements OnInit {
     }
     // this.loadTransactions();
     this.reload$.next();
-    this.loadTransactionsBasedOnPurpose();
     this.loadCompositeTransactions();
-    this.loadTransactionsBasedOnType();
+    this.setIndicatorsTableDataSource();
     // this.loadRoomCounts();
   }
 
@@ -644,7 +672,7 @@ export default class SellIndicatorsPageComponent implements OnInit {
       .pipe(
         switchMap(() => {
           return combineLatest([this.reload$, this.paginate$]).pipe(
-            switchMap(([,paginationOptions]) => {
+            switchMap(([, paginationOptions]) => {
               this.criteria.criteria.limit = paginationOptions.limit;
               this.criteria.criteria.offset = paginationOptions.offset;
               return (
@@ -652,7 +680,7 @@ export default class SellIndicatorsPageComponent implements OnInit {
                   .loadSellKpiTransactions(this.criteria.criteria)
               )
             }),
-            map(({count,transactionList}) => {
+            map(({ count, transactionList }) => {
               this.transactionsCount = count;
               return transactionList
             })
@@ -661,20 +689,6 @@ export default class SellIndicatorsPageComponent implements OnInit {
       );
   }
 
-  loadTransactionsBasedOnPurpose(): void {
-    this.dashboardService.loadSellTransactionsBasedOnPurpose(this.criteria.criteria).subscribe((values) => {
-      this.transactionsPurpose = values;
-    });
-  }
-
-  loadTransactionsBasedOnType(): void {
-    this.dashboardService.loadSellTransactionsBasedOnPropertyType(this.criteria.criteria).subscribe((values) => {
-      // ToDO: since limit filter is not working (we rigestered an issue to be team for that)
-      // ToDo: applay pagination on table
-      // For now we take only five records
-      this.transactionsPropertyType = values.slice(0, 5);
-    });
-  }
   openChart(item: SellTransactionPurpose | SellTransactionPropertyType): void {
     item.openChart(this.criteria.criteria).subscribe();
   }

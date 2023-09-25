@@ -242,23 +242,25 @@
     <div class="px-3 lg:px-16 py-8 flex bg-sand mt-8 flex-col">
       <h3
         class="heading text-xl sm:text-2xl md:text-3xl self-center md:self-start text-center text-primary border-secondary font-semibold">
-        {{ lang.map.rental_indicators }} ({{ lang.map.depending_on_use }}) {{ getSelectedArea(true, true) }}
+        {{ lang.map.rental_indicators }} ({{ selectedIndicators === IndicatorsType.PURPOSE 
+          ? lang.map.depending_on_use 
+          : lang.map.depending_on_type  }}) {{ getSelectedArea(true, true) }}
       </h3>
       <div class="mt-4 flex justify-center md:justify-end">
-        <div class="grid grid-cols-4 gap-2">
+        <div class="grid grid-cols-2 gap-2">
           <app-button
             size="sm"
-            (click)="updateRentIndicatorsTable('purpose')"
-            [buttonStyle]="selectedDurationType === DurationTypes.YEARLY ? 'secondary' : 'secondary-outline'"
+            (click)="updateRentIndicatorsTable(IndicatorsType.PURPOSE)"
+            [buttonStyle]="selectedIndicators === IndicatorsType.PURPOSE ? 'secondary' : 'secondary-outline'"
             [isRounded]="true"
-            >{{ lang.map.yearly }}</app-button
+            >{{ lang.map.depending_on_use }}</app-button
           >
           <app-button
             size="sm"
-            (click)="updateRentIndicatorsTable('property_type')"
-            [buttonStyle]="selectedDurationType === DurationTypes.HALFY ? 'secondary' : 'secondary-outline'"
+            (click)="updateRentIndicatorsTable(IndicatorsType.TYPE)"
+            [buttonStyle]="selectedIndicators === IndicatorsType.TYPE ? 'secondary' : 'secondary-outline'"
             [isRounded]="true"
-            >{{ lang.map.half_yearly }}</app-button
+            >{{ lang.map.depending_on_type  }}</app-button
           >
         </div>
       </div>
@@ -270,11 +272,11 @@
           matSort
           [dataSource]="transactionsStatisticsDatasource">
           <!-- purpose -->
-          <ng-container matColumnDef={{transactionsPurposeColumns[0]}}>
-            <th mat-header-cell class="!text-white" mat-sort-header={{transactionsPurposeColumns[0]}} *matHeaderCellDef>
-              {{ lang.map.purpose }}
+          <ng-container matColumnDef={{transactionsStatisticsColumns[0]}}>
+            <th mat-header-cell class="!text-white" mat-sort-header={{transactionsStatisticsColumns[0]}} *matHeaderCellDef>
+              {{ selectedIndicators === IndicatorsType.PURPOSE ? lang.map.purpose : lang.map.property_type }}
             </th>
-            <td mat-cell class="text-primary" *matCellDef="let element">{{ element.purposeInfo.getNames() || element.propertyTypeInfo.getNames()}}</td>
+            <td mat-cell class="text-primary" *matCellDef="let element">{{ element.purposeInfo?.getNames() ?? element.propertyTypeInfo?.getNames()}}</td>
           </ng-container>
 
           <ng-container matColumnDef="average">
@@ -334,11 +336,11 @@
           <tr
             mat-header-row
             class="rounded-first-tr !bg-primary !text-white"
-            *matHeaderRowDef="transactionsPurposeColumns"></tr>
+            *matHeaderRowDef="transactionsStatisticsColumns"></tr>
           <tr
             mat-row
             class="rounded-last-tr !bg-white"
-            *matRowDef="let element; columns: transactionsPurposeColumns"></tr>
+            *matRowDef="let element; columns: transactionsStatisticsColumns"></tr>
           <!-- Row shown when there is no matching data. -->
           <tr class="mat-row" *matNoDataRow>
             <td class="p-4" colspan="100">{{ lang.map.no_records_to_display }}</td>
