@@ -103,6 +103,7 @@ export default class RentalIndicatorsPageComponent implements OnInit {
 
   destroy$ = new Subject<void>();
   reload$ = new ReplaySubject<void>(1);
+  private basedOn$: BehaviorSubject<string> = new BehaviorSubject("");
 
   municipalities = this.lookupService.rentLookups.municipalityList;
   propertyTypes = this.lookupService.rentLookups.propertyTypeList;
@@ -118,6 +119,9 @@ export default class RentalIndicatorsPageComponent implements OnInit {
   transactions$: Observable<RentTransaction[]> = this.loadTransactions();
   transactionsCount = 0;
   dataSource: AppTableDataSource<RentTransaction> = new AppTableDataSource(this.transactions$);
+
+  transactionsStatistics$: Observable<any[]> = this.setDataSource();
+  transactionsStatisticsDatasource = new AppTableDataSource(this.transactionsStatistics$)
   transactionsSortOptions: TableSortOption[] = [
     new TableSortOption().clone<TableSortOption>({
       arName: this.lang.getArabicTranslation('most_recent'),
@@ -376,6 +380,31 @@ export default class RentalIndicatorsPageComponent implements OnInit {
       });
     }, 0);
     this.reload$.next();
+
+  }
+
+  protected setDataSource(): Observable<any[]> {
+    return of(undefined)
+      .pipe(delay(0))
+      .pipe(
+        switchMap(() => {
+          return this.basedOn$.pipe(
+            switchMap((basedOn) => {
+              this.transactionsStatisticsColumns.length === 7
+                ? this.transactionsStatisticsColumns[7] = basedOn
+                : this.transactionsStatisticsColumns.push(basedOn)
+              return (
+                basedOn === 'purpose'
+                  ? this.dashboardService.loadRentTransactionsBasedOnPurpose(this.criteria.criteria)
+                  : this.dashboardService.loadRentTransactionsBasedOnPropertyType(this.criteria.criteria)
+              )
+            }),
+            map((response) => {
+              return response
+            })
+          );
+        })
+      );
   }
 
   updateAllPurpose(value: number, yoy: number): void {
@@ -416,8 +445,8 @@ export default class RentalIndicatorsPageComponent implements OnInit {
     this.loadRoomCounts();
     this.loadFurnitureStatus();
     this.loadCompositeTransactions();
-    this.loadTransactionsBasedOnPurpose();
-    this.loadTransactionsBasedOnPropertyType();
+    // this.basedOn$.next("purpose");
+    this.setDataSource()
   }
 
   rootItemSelected(item?: KpiRoot) {
@@ -700,6 +729,10 @@ export default class RentalIndicatorsPageComponent implements OnInit {
     }
   }
 
+  updateRentIndicatorsTable(basedOn: string)
+  {
+    this.basedOn$.next(basedOn);
+  }
   protected loadTransactions(): Observable<RentTransaction[]> {
     return of(undefined)
       .pipe(delay(0))
@@ -845,17 +878,17 @@ export default class RentalIndicatorsPageComponent implements OnInit {
     });
   }
 
-  loadTransactionsBasedOnPurpose(): void {
-    this.dashboardService.loadRentTransactionsBasedOnPurpose(this.criteria.criteria).subscribe((values) => {
-      this.transactionsPurpose = values;
-    });
-  }
+  // loadTransactionsBasedOnPurpose(): Observable< {
+  //   .subscribe((values) => {
+  //     this.transactionsPurpose = values;
+  //   });
+  // }
 
-  loadTransactionsBasedOnPropertyType(): void {
-    this.dashboardService.loadRentTransactionsBasedOnPropertyType(this.criteria.criteria).subscribe((values) => {
-      this.transactionsPropertyType = values;
-    });
-  }
+  // loadTransactionsBasedOnPropertyType(): void {
+  //   .subscribe((values) => {
+  //     this.transactionsPropertyType = values;
+  //   });
+  // }
 
   openChart(item: RentTransactionPurpose | RentTransactionPropertyType): void {
     item.openChart(this.criteria.criteria).subscribe();
