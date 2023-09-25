@@ -12,9 +12,7 @@ import { UserClick } from '@enums/user-click';
   providedIn: 'root',
 })
 export class DialogService implements DialogContract {
-  constructor(private dialog: MatDialog, private lang: TranslationService) {
-    this.listenToLanguageChanges();
-  }
+  constructor(private dialog: MatDialog, private lang: TranslationService) {}
 
   error<R = unknown>(content: string, title?: string, disableClose = true): MatDialogRef<DialogComponent, R> {
     return this.open<DialogComponent, DefaultDialogDataContract<string>, R>(DialogComponent, {
@@ -88,15 +86,6 @@ export class DialogService implements DialogContract {
     return this.dialog.open<T, D, R>(template, {
       ...config,
       direction: this.lang.getCurrent().direction,
-    });
-  }
-
-  private listenToLanguageChanges() {
-    this.lang.change$.subscribe((current) => {
-      const overlayWrapper = document.querySelectorAll<HTMLDivElement>('.cdk-global-overlay-wrapper');
-      overlayWrapper.forEach((item: HTMLDivElement) => {
-        item.dir = current.direction;
-      });
     });
   }
 }
