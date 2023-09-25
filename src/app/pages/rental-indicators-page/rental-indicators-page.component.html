@@ -187,6 +187,7 @@
         class="heading text-xl sm:text-2xl md:text-3xl self-center md:self-start text-center text-primary border-secondary font-semibold">
         {{ lang.map.rent_transactions_list }} {{ getSelectedArea(true, true) }}
       </h3>
+      
       <app-table
         minWidth="900px"
         (paginate)="paginate($event)"
@@ -243,19 +244,37 @@
         class="heading text-xl sm:text-2xl md:text-3xl self-center md:self-start text-center text-primary border-secondary font-semibold">
         {{ lang.map.rental_indicators }} ({{ lang.map.depending_on_use }}) {{ getSelectedArea(true, true) }}
       </h3>
+      <div class="mt-4 flex justify-center md:justify-end">
+        <div class="grid grid-cols-4 gap-2">
+          <app-button
+            size="sm"
+            (click)="updateRentIndicatorsTable('purpose')"
+            [buttonStyle]="selectedDurationType === DurationTypes.YEARLY ? 'secondary' : 'secondary-outline'"
+            [isRounded]="true"
+            >{{ lang.map.yearly }}</app-button
+          >
+          <app-button
+            size="sm"
+            (click)="updateRentIndicatorsTable('property_type')"
+            [buttonStyle]="selectedDurationType === DurationTypes.HALFY ? 'secondary' : 'secondary-outline'"
+            [isRounded]="true"
+            >{{ lang.map.half_yearly }}</app-button
+          >
+        </div>
+      </div>
       <div class="overflow-x-auto">
         <table
           class="mt-5 custom-table w-full"
           [ngStyle]="{ minWidth: '1200px' }"
           mat-table
           matSort
-          [dataSource]="transactionsPurpose">
+          [dataSource]="transactionsStatisticsDatasource">
           <!-- purpose -->
-          <ng-container matColumnDef="purpose">
-            <th mat-header-cell class="!text-white" mat-sort-header="purpose" *matHeaderCellDef>
+          <ng-container matColumnDef={{transactionsPurposeColumns[0]}}>
+            <th mat-header-cell class="!text-white" mat-sort-header={{transactionsPurposeColumns[0]}} *matHeaderCellDef>
               {{ lang.map.purpose }}
             </th>
-            <td mat-cell class="text-primary" *matCellDef="let element">{{ element.purposeInfo.getNames() }}</td>
+            <td mat-cell class="text-primary" *matCellDef="let element">{{ element.purposeInfo.getNames() || element.propertyTypeInfo.getNames()}}</td>
           </ng-container>
 
           <ng-container matColumnDef="average">
@@ -327,95 +346,7 @@
         </table>
       </div>
     </div>
-    <div class="px-3 lg:px-16 py-8 flex bg-sand mt-8 flex-col">
-      <h3
-        class="heading text-xl sm:text-2xl md:text-3xl self-center md:self-start text-center text-primary border-secondary font-semibold">
-        {{ lang.map.rental_indicators }} ({{ lang.map.depending_on_type }}) {{ getSelectedArea(true, true) }}
-      </h3>
-      <div class="overflow-x-auto">
-        <table
-          class="mt-5 custom-table w-full"
-          [ngStyle]="{ minWidth: '1200px' }"
-          mat-table
-          matSort
-          [dataSource]="transactionsPropertyType">
-          <!-- purpose -->
-          <ng-container matColumnDef="propertyType">
-            <th mat-header-cell class="!text-white" mat-sort-header="purpose" *matHeaderCellDef>
-              {{ lang.map.property_type }}
-            </th>
-            <td mat-cell class="text-primary" *matCellDef="let element">{{ element.propertyTypeInfo.getNames() || "---" }}</td>
-          </ng-container>
-
-          <ng-container matColumnDef="average">
-            <th mat-header-cell class="!text-white" mat-sort-header="average" *matHeaderCellDef>
-              {{ lang.map.average_rental_price_per_unit_property }}
-            </th>
-            <td mat-cell class="text-primary" *matCellDef="let element">
-              {{ element.rentPaymentMonthly | formatNumbers }}
-            </td>
-          </ng-container>
-          <!-- count -->
-          <ng-container matColumnDef="certificates-count">
-            <th mat-header-cell class="!text-white" mat-sort-header="certificates-count" *matHeaderCellDef>
-              {{ lang.map.rent_contracts_count }}
-            </th>
-            <td mat-cell class="text-primary" *matCellDef="let element">
-              {{
-                element.certificateCount
-                  | mask : maskSeparator.SEPARATOR : { thousandSeparator: maskSeparator.THOUSAND_SEPARATOR }
-              }}
-            </td>
-          </ng-container>
-          <!-- count -->
-
-          <ng-container matColumnDef="area">
-            <th mat-header-cell class="!text-white" mat-sort-header="area" *matHeaderCellDef>
-              {{ lang.map.total_area }}
-            </th>
-            <td mat-cell *matCellDef="let element">{{ element.sumArea | formatNumbers : 0 }}</td>
-          </ng-container>
-
-          <ng-container matColumnDef="units-count">
-            <th mat-header-cell class="!text-white" mat-sort-header="units-count" *matHeaderCellDef>
-              {{ lang.map.number_of_sold_units }}
-            </th>
-            <td mat-cell *matCellDef="let element">{{ element.certificateCount | formatNumbers : 0 }}</td>
-          </ng-container>
-
-          <ng-container matColumnDef="average-square">
-            <th mat-header-cell class="!text-white" mat-sort-header="average-square" *matHeaderCellDef>
-              {{
-                unitsService.selectedUnit() === 1
-                  ? lang.map.average_price_per_square_meter
-                  : lang.map.average_price_per_square_foot
-              }}
-            </th>
-            <td mat-cell *matCellDef="let element">{{ element.unitSquareRentPayment() | formatNumbers : 2 }}</td>
-          </ng-container>
-
-          <ng-container matColumnDef="chart">
-            <th mat-header-cell class="!text-white" *matHeaderCellDef>{{ lang.map.chart }}</th>
-            <td mat-cell *matCellDef="let element">
-              <app-icon-button class="text-primary" (click)="openChart(element)" icon="BAR_CHART"></app-icon-button>
-            </td>
-          </ng-container>
-
-          <tr
-            mat-header-row
-            class="rounded-first-tr !bg-primary !text-white"
-            *matHeaderRowDef="transactionsPropertyTypeColumns"></tr>
-          <tr
-            mat-row
-            class="rounded-last-tr !bg-white"
-            *matRowDef="let element; columns: transactionsPropertyTypeColumns"></tr>
-          <!-- Row shown when there is no matching data. -->
-          <tr class="mat-row" *matNoDataRow>
-            <td class="p-4" colspan="100">{{ lang.map.no_records_to_display }}</td>
-          </tr>
-        </table>
-      </div>
-    </div>
+   
     <div class="px-3 lg:px-16 py-5 flex flex-col">
       <h3
         class="heading text-xl sm:text-2xl md:text-3xl self-center md:self-start text-center text-primary border-secondary font-semibold">
