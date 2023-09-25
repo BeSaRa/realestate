@@ -53,7 +53,21 @@ import { formatNumber, minMaxAvg } from '@utils/utils';
 import { CarouselComponent, IvyCarouselModule } from 'angular-responsive-carousel2';
 import { ChartComponent, NgApexchartsModule } from 'ng-apexcharts';
 import { NgxMaskPipe } from 'ngx-mask';
-import { BehaviorSubject, combineLatest, delay, forkJoin, map, Observable, of, ReplaySubject, Subject, switchMap, take, takeUntil, tap } from 'rxjs';
+import {
+  BehaviorSubject,
+  combineLatest,
+  delay,
+  forkJoin,
+  map,
+  Observable,
+  of,
+  ReplaySubject,
+  Subject,
+  switchMap,
+  take,
+  takeUntil,
+  tap,
+} from 'rxjs';
 import { RentTransactionPropertyType } from '@models/rent-transaction-property-type';
 import { indicatorsTypes } from '@enums/Indicators-type';
 import { RentTransactionIndicator } from '@app-types/rent-indicators-type';
@@ -85,10 +99,9 @@ import { RentTransactionIndicator } from '@app-types/rent-indicators-type';
     NgxMaskPipe,
     MatNativeDateModule,
   ],
-  templateUrl:'./rental-indicators-page.component.html',
+  templateUrl: './rental-indicators-page.component.html',
   styleUrls: ['./rental-indicators-page.component.scss'],
 })
-
 export default class RentalIndicatorsPageComponent implements OnInit {
   protected readonly ChartType = ChartType;
   protected readonly IndicatorsType = indicatorsTypes;
@@ -118,15 +131,13 @@ export default class RentalIndicatorsPageComponent implements OnInit {
   paramsRange = this.lookupService.rentLookups.maxParams;
   nationalities = this.lookupService.ownerLookups.nationalityList;
 
-
   // transactions = new ReplaySubject<RentTransaction[]>(1);
   transactions$: Observable<RentTransaction[]> = this.loadTransactions();
   transactionsCount = 0;
   dataSource: AppTableDataSource<RentTransaction> = new AppTableDataSource(this.transactions$);
 
-  
   transactionsStatistics$: Observable<RentTransactionIndicator[]> = this.setIndicatorsTableDataSource();
-  transactionsStatisticsDatasource = new AppTableDataSource<RentTransactionIndicator>(this.transactionsStatistics$)
+  transactionsStatisticsDatasource = new AppTableDataSource<RentTransactionIndicator>(this.transactionsStatistics$);
   transactionsSortOptions: TableSortOption[] = [
     new TableSortOption().clone<TableSortOption>({
       arName: this.lang.getArabicTranslation('most_recent'),
@@ -344,14 +355,7 @@ export default class RentalIndicatorsPageComponent implements OnInit {
   ];
   compositeTransactionsExtraColumns = ['contractCounts', 'contractValues', 'avgContract'];
 
-  transactionsStatisticsColumns = [
-    'average',
-    'certificates-count',
-    'area',
-    'units-count',
-    'average-square',
-    'chart',
-  ]
+  transactionsStatisticsColumns = ['average', 'certificates-count', 'area', 'units-count', 'average-square', 'chart'];
 
   get priceList() {
     return this.rootKPIS.filter((item) => item.hasPrice);
@@ -372,31 +376,36 @@ export default class RentalIndicatorsPageComponent implements OnInit {
       });
     }, 0);
     this.reload$.next();
-
   }
 
-  protected setIndicatorsTableDataSource(): Observable<RentTransactionIndicator[]>  {
+  protected setIndicatorsTableDataSource(): Observable<RentTransactionIndicator[]> {
     return of(undefined)
       .pipe(delay(0))
       .pipe(
         switchMap(() => {
           return combineLatest([this.reload$, this.basedOn$]).pipe(
-            switchMap(([,basedOn]) => {
+            switchMap(([, basedOn]) => {
               this.transactionsStatisticsColumns.length === 7
-                ? this.transactionsStatisticsColumns[0] = basedOn
-                : this.transactionsStatisticsColumns.unshift(basedOn)
+                ? (this.transactionsStatisticsColumns[0] = basedOn)
+                : this.transactionsStatisticsColumns.unshift(basedOn);
               this.selectedIndicators = basedOn;
-              return (
-                basedOn === indicatorsTypes.PURPOSE
-                  // ToDO: since limit filter is not working (we rigestered an issue to be team for that)
+              return basedOn === indicatorsTypes.PURPOSE
+                ? // ToDO: since limit filter is not working (we rigestered an issue to be team for that)
                   // ToDo: applay pagination on table
                   // For now we take only five records
-                  ? this.dashboardService.loadRentTransactionsBasedOnPurpose(this.criteria.criteria).pipe(map((items) => { return items.slice(0, 5) }))
-                  : this.dashboardService.loadRentTransactionsBasedOnPropertyType(this.criteria.criteria).pipe(map((items) => { return items.slice(0, 5) }))
-              )
+                  this.dashboardService.loadRentTransactionsBasedOnPurpose(this.criteria.criteria).pipe(
+                    map((items) => {
+                      return items.slice(0, 5);
+                    })
+                  )
+                : this.dashboardService.loadRentTransactionsBasedOnPropertyType(this.criteria.criteria).pipe(
+                    map((items) => {
+                      return items.slice(0, 5);
+                    })
+                  );
             }),
             map((response) => {
-              return response
+              return response;
             })
           );
         })
@@ -442,7 +451,7 @@ export default class RentalIndicatorsPageComponent implements OnInit {
     this.loadFurnitureStatus();
     this.loadCompositeTransactions();
     // this.basedOn$.next("purpose");
-    this.setIndicatorsTableDataSource()
+    this.setIndicatorsTableDataSource();
   }
 
   rootItemSelected(item?: KpiRoot) {
@@ -612,23 +621,21 @@ export default class RentalIndicatorsPageComponent implements OnInit {
         this.criteria.criteria
       )
       .pipe(take(1))
-      .subscribe((durationData) => {
-        const data = this.dashboardService.mapDurationData(
-          durationData,
-          this.selectedDurationType === DurationEndpoints.HALFY
-            ? this.lookupService.rentLookups.halfYearDurations
-            : this.lookupService.rentLookups.quarterYearDurations
-        );
-        const tooltipData = this.dashboardService.mapDurationChartData(
-          durationData,
-          this.selectedDurationType === DurationEndpoints.HALFY
-            ? this.lookupService.rentLookups.halfYearDurations
-            : this.lookupService.rentLookups.quarterYearDurations
-        );
-
+      .pipe(
+        map((durationData) => {
+          return this.dashboardService.mapDurationData(
+            durationData,
+            this.selectedDurationType === DurationEndpoints.HALFY
+              ? this.lookupService.sellLookups.halfYearDurations
+              : this.lookupService.sellLookups.quarterYearDurations
+          );
+        })
+      )
+      .subscribe((data) => {
+        console.log(data);
         const _chartData = Object.keys(data).map((key) => ({
           name: data[key as unknown as number].period.getNames(),
-          data: data[key as unknown as number].kpiValues.map((item) => ({ y: item.value, x: item.year })),
+          data: data[key as unknown as number].kpiValues.map((item) => ({ y: item.kpiVal, x: item.issueYear })),
         }));
         this.chart.first
           .updateOptions({
@@ -647,7 +654,7 @@ export default class RentalIndicatorsPageComponent implements OnInit {
                     seriesIndex,
                     dataPointIndex,
                   },
-                  tooltipData
+                  data
                 ),
             },
           })
@@ -725,8 +732,7 @@ export default class RentalIndicatorsPageComponent implements OnInit {
     }
   }
 
-  updateRentIndicatorsTable(basedOn: indicatorsTypes)
-  {
+  updateRentIndicatorsTable(basedOn: indicatorsTypes) {
     this.basedOn$.next(basedOn);
   }
   protected loadTransactions(): Observable<RentTransaction[]> {
@@ -738,14 +744,11 @@ export default class RentalIndicatorsPageComponent implements OnInit {
             switchMap(([, paginationOptions]) => {
               this.criteria.criteria.limit = paginationOptions.limit;
               this.criteria.criteria.offset = paginationOptions.offset;
-              return (
-                this.dashboardService
-                  .loadRentKpiTransactions(this.criteria.criteria)
-              )
+              return this.dashboardService.loadRentKpiTransactions(this.criteria.criteria);
             }),
             map(({ count, transactionList }) => {
               this.transactionsCount = count;
-              return transactionList
+              return transactionList;
             })
           );
         })

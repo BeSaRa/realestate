@@ -164,6 +164,9 @@ const mainChartOptions: PartialChartOptions = {
       rotate: -45,
       rotateAlways: false,
     },
+    tooltip: {
+      enabled: false,
+    },
   },
   plotOptions: {
     bar: {
@@ -180,6 +183,9 @@ const mainChartOptions: PartialChartOptions = {
       style: {
         fontWeight: 'bold',
       },
+    },
+    tooltip: {
+      enabled: false,
     },
   },
   tooltip: { marker: { fillColors: [AppColors.JUNGLE] } },
