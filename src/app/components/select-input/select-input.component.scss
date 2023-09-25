@@ -10,18 +10,61 @@
   @apply text-slate-300;
 }
 
+::ng-deep .cdk-overlay-connected-position-bounding-box:has(.app-select-input) {
+  &[dir="rtl"]:has(.sm) {
+    & .cdk-overlay-pane {
+      @apply translate-x-1.5;
+    }
+  }
+  &[dir="ltr"]:has(.sm) {
+    & .cdk-overlay-pane {
+      @apply -translate-x-1.5;
+    }
+  }
+  &[dir="rtl"]:has(.md) {
+    & .cdk-overlay-pane {
+      @apply translate-x-2;
+    }
+  }
+  &[dir="ltr"]:has(.md) {
+    & .cdk-overlay-pane {
+      @apply -translate-x-2;
+    }
+  }
+  &[dir="rtl"]:has(.lg) {
+    & .cdk-overlay-pane {
+      @apply translate-x-3;
+    }
+  }
+  &[dir="ltr"]:has(.lg) {
+    & .cdk-overlay-pane {
+      @apply -translate-x-3;
+    }
+  }
+  &[dir="rtl"]:has(.xl) {
+    & .cdk-overlay-pane {
+      @apply translate-x-4;
+    }
+  }
+  &[dir="ltr"]:has(.xl) {
+    & .cdk-overlay-pane {
+      @apply -translate-x-4;
+    }
+  }
+}
+
 ::ng-deep .cdk-overlay-pane:has(> .app-select-input) {
   &:has(> .sm) {
-    @apply translate-x-1.5 translate-y-2 [&.mat-mdc-select-panel-above]:-translate-y-2;
+    @apply translate-y-2 [&.mat-mdc-select-panel-above]:-translate-y-2;
   }
   &:has(> .md) {
-    @apply translate-x-2 translate-y-2.5 [&.mat-mdc-select-panel-above]:-translate-y-2.5;
+    @apply translate-y-2.5 [&.mat-mdc-select-panel-above]:-translate-y-2.5;
   }
   &:has(> .lg) {
-    @apply translate-x-3 translate-y-3.5 [&.mat-mdc-select-panel-above]:-translate-y-3.5;
+    @apply translate-y-3.5 [&.mat-mdc-select-panel-above]:-translate-y-3.5;
   }
   &:has(> .xl) {
-    @apply translate-x-4 translate-y-4 [&.mat-mdc-select-panel-above]:-translate-y-4;
+    @apply translate-y-4 [&.mat-mdc-select-panel-above]:-translate-y-4;
   }
 }
 

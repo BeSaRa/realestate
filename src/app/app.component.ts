@@ -1,3 +1,4 @@
+import { BidiModule } from '@angular/cdk/bidi';
 import { CommonModule, registerLocaleData } from '@angular/common';
 import localeAr from '@angular/common/locales/ar';
 import { Component, HostListener, OnInit, inject } from '@angular/core';
@@ -32,6 +33,7 @@ import { map, startWith } from 'rxjs';
     ChatGptComponent,
     SideBarComponent,
     ButtonComponent,
+    BidiModule,
   ],
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss'],

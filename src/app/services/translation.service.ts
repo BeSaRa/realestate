@@ -1,4 +1,3 @@
-import { DOCUMENT } from '@angular/common';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
 import { LangContract } from '@contracts/lang-contract';
@@ -19,7 +18,6 @@ export class TranslationService extends RegisterServiceMixin(class {}) implement
 
   private http = inject(HttpClient);
   private urlService = inject(UrlService);
-  private document = inject(DOCUMENT);
 
   private arabic: Record<keyof LangKeysContract, string> = {} as Record<keyof LangKeysContract, string>;
   private english: Record<keyof LangKeysContract, string> = {} as Record<keyof LangKeysContract, string>;
@@ -54,11 +52,6 @@ export class TranslationService extends RegisterServiceMixin(class {}) implement
 
   change$ = this.change.asObservable();
   langChangeProcess$ = this.langChangerNotifier.asObservable().pipe(distinctUntilChanged());
-
-  constructor() {
-    super();
-    this.setDirection(this.current.direction);
-  }
 
   add(translations: TranslationAddContract[]) {
     return this.http
@@ -107,7 +100,6 @@ export class TranslationService extends RegisterServiceMixin(class {}) implement
       .pipe(tap(() => this.setCurrentLanguageMap()))
       .subscribe(() => {
         this.change.next(this.current);
-        this.setDirection(this.current.direction);
         this.langChangerNotifier.next(LangChangeProcess.END);
       });
   }
@@ -126,11 +118,5 @@ export class TranslationService extends RegisterServiceMixin(class {}) implement
 
   getTranslate(langKey: keyof LangKeysContract): string {
     return this.map[langKey] || `messing Lang Key ${langKey}`;
-  }
-
-  private setDirection(direction: 'rtl' | 'ltr'): void {
-    const html = this.document.querySelector('html');
-    if (!html) return;
-    html.dir = direction;
   }
 }
