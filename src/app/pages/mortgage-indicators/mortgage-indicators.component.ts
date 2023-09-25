@@ -429,16 +429,16 @@ export default class MortgageIndicatorsComponent implements OnInit, AfterViewIni
               data[TransactionType.MORTGAGE][key as unknown as number].period.getNames(),
             group: index.toString(),
             data: data[TransactionType.MORTGAGE][key as unknown as number].kpiValues.map((item) => ({
-              y: item.value,
-              x: item.year,
+              y: item.kpiVal,
+              x: item.issueYear,
             })),
           })),
           ...Object.keys(data[TransactionType.SELL]).map((key, index) => ({
             name: this.lang.map.sell + ': ' + data[TransactionType.SELL][key as unknown as number].period.getNames(),
             group: index.toString(),
             data: data[TransactionType.SELL][key as unknown as number].kpiValues.map((item) => ({
-              y: item.value,
-              x: item.year,
+              y: item.kpiVal,
+              x: item.issueYear,
             })),
           })),
         ];
@@ -590,7 +590,7 @@ export default class MortgageIndicatorsComponent implements OnInit, AfterViewIni
         this.unitsChartDataLength = data[1].kpiValues.length;
         const _chartData = Object.keys(data).map((key) => ({
           name: data[key as unknown as number].period.getNames(),
-          data: data[key as unknown as number].kpiValues.map((item) => ({ y: item.value, x: item.year })),
+          data: data[key as unknown as number].kpiValues.map((item) => ({ y: item.kpiVal, x: item.issueYear })),
         }));
 
         this.updateUnitsChartType(ChartType.BAR);
@@ -724,7 +724,7 @@ export default class MortgageIndicatorsComponent implements OnInit, AfterViewIni
         this.valueChartDataLength = data[1].kpiValues.length;
         const _chartData = Object.keys(data).map((key) => ({
           name: data[key as unknown as number].period.getNames(),
-          data: data[key as unknown as number].kpiValues.map((item) => ({ y: item.value, x: item.year })),
+          data: data[key as unknown as number].kpiValues.map((item) => ({ y: item.kpiVal, x: item.issueYear })),
         }));
 
         this.updateValueChartType(ChartType.BAR);

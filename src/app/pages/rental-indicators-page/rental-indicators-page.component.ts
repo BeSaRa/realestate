@@ -568,23 +568,20 @@ export default class RentalIndicatorsPageComponent implements OnInit {
         this.criteria.criteria
       )
       .pipe(take(1))
-      .subscribe((durationData) => {
-        const data = this.dashboardService.mapDurationData(
-          durationData,
-          this.selectedDurationType === DurationEndpoints.HALFY
-            ? this.lookupService.rentLookups.halfYearDurations
-            : this.lookupService.rentLookups.quarterYearDurations
-        );
-        const tooltipData = this.dashboardService.mapDurationChartData(
-          durationData,
-          this.selectedDurationType === DurationEndpoints.HALFY
-            ? this.lookupService.rentLookups.halfYearDurations
-            : this.lookupService.rentLookups.quarterYearDurations
-        );
-
+      .pipe(
+        map((durationData) => {
+          return this.dashboardService.mapDurationData(
+            durationData,
+            this.selectedDurationType === DurationEndpoints.HALFY
+              ? this.lookupService.sellLookups.halfYearDurations
+              : this.lookupService.sellLookups.quarterYearDurations
+          );
+        })
+      )
+      .subscribe((data) => {
         const _chartData = Object.keys(data).map((key) => ({
           name: data[key as unknown as number].period.getNames(),
-          data: data[key as unknown as number].kpiValues.map((item) => ({ y: item.value, x: item.year })),
+          data: data[key as unknown as number].kpiValues.map((item) => ({ y: item.kpiVal, x: item.issueYear })),
         }));
         this.chart.first
           .updateOptions({
@@ -603,7 +600,7 @@ export default class RentalIndicatorsPageComponent implements OnInit {
                     seriesIndex,
                     dataPointIndex,
                   },
-                  tooltipData
+                  data
                 ),
             },
           })
@@ -617,7 +614,7 @@ export default class RentalIndicatorsPageComponent implements OnInit {
     var tooltipData = dataSeries[dataPointIndex];
     if (durationType === this.DurationTypes.HALFY || durationType === this.DurationTypes.QUARTERLY) {
       tooltipData = dataSeries[seriesIndex + 1].kpiValues[dataPointIndex];
-      // console.log(tooltipData);
+      console.log(tooltipData);
       return this.tooltipListDraw(
         tooltipData?.issueYear ?? this.criteria.criteria.issueDateYear,
         tooltipData?.kpiVal,
@@ -625,6 +622,8 @@ export default class RentalIndicatorsPageComponent implements OnInit {
         tooltipData?.kpiYoYBaseVal
       );
     }
+    console.log(tooltipData);
+
     return this.tooltipListDraw(
       tooltipData?.issueYear ?? this.criteria.criteria.issueDateYear,
       tooltipData?.kpiVal,

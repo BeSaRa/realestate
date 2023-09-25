@@ -43,7 +43,7 @@ import { ScreenBreakpointsService } from '@services/screen-breakpoints.service';
 import { TranslationService } from '@services/translation.service';
 import { UnitsService } from '@services/units.service';
 import { UrlService } from '@services/url.service';
-import { minMaxAvg } from '@utils/utils';
+import { formatNumber, minMaxAvg } from '@utils/utils';
 import { CarouselComponent, IvyCarouselModule } from 'angular-responsive-carousel2';
 import { ChartComponent, NgApexchartsModule } from 'ng-apexcharts';
 import { NgxMaskPipe } from 'ngx-mask';
@@ -93,6 +93,8 @@ export default class SellIndicatorsPageComponent implements OnInit {
   lookupService = inject(LookupService);
   unitsService = inject(UnitsService);
   appChartTypesService = inject(AppChartTypesService);
+  maskPipe = inject(NgxMaskPipe);
+
   adapter = inject(DateAdapter);
   screenService = inject(ScreenBreakpointsService);
 
@@ -503,7 +505,7 @@ export default class SellIndicatorsPageComponent implements OnInit {
     if (!this.chart.length) return;
     const _minMaxAvg = minMaxAvg(this.selectedRootChartData.map((item) => item.kpiVal));
     this.durationDataLength = this.selectedRootChartData.length;
-
+    const data = this.selectedRootChartData;
     this.chart.first
       .updateOptions({
         series: [
@@ -519,6 +521,18 @@ export default class SellIndicatorsPageComponent implements OnInit {
           this.selectedDurationBarChartType,
           this.durationDataLength
         ),
+
+        tooltip: {
+          shared: false,
+          custom: ({ seriesIndex, dataPointIndex }: any) =>
+            this.customChartTooltip(
+              {
+                seriesIndex,
+                dataPointIndex,
+              },
+              data
+            ),
+        },
       })
       .then();
     this.updateChartType(ChartType.BAR);
@@ -554,6 +568,17 @@ export default class SellIndicatorsPageComponent implements OnInit {
               this.selectedDurationBarChartType,
               this.durationDataLength
             ),
+            tooltip: {
+              shared: false,
+              custom: ({ seriesIndex, dataPointIndex }: any) =>
+                this.customChartTooltip(
+                  {
+                    seriesIndex,
+                    dataPointIndex,
+                  },
+                  data
+                ),
+            },
           })
           .then();
       });
@@ -581,7 +606,7 @@ export default class SellIndicatorsPageComponent implements OnInit {
         this.durationDataLength = data[1].kpiValues.length;
         const _chartData = Object.keys(data).map((key) => ({
           name: data[key as unknown as number].period.getNames(),
-          data: data[key as unknown as number].kpiValues.map((item) => ({ y: item.value, x: item.year })),
+          data: data[key as unknown as number].kpiValues.map((item) => ({ y: item.kpiVal, x: item.issueYear })),
         }));
         this.chart.first
           .updateOptions({
@@ -592,9 +617,70 @@ export default class SellIndicatorsPageComponent implements OnInit {
               this.selectedDurationBarChartType,
               this.durationDataLength
             ),
+            tooltip: {
+              shared: false,
+              custom: ({ seriesIndex, dataPointIndex }: any) =>
+                this.customChartTooltip(
+                  {
+                    seriesIndex,
+                    dataPointIndex,
+                  },
+                  data
+                ),
+            },
           })
           .then();
       });
+  }
+
+  customChartTooltip({ seriesIndex, dataPointIndex }: any, dataSeries: any) {
+    const durationType = this.selectedDurationType;
+
+    var tooltipData = dataSeries[dataPointIndex];
+    if (durationType === this.DurationTypes.HALFY || durationType === this.DurationTypes.QUARTERLY) {
+      tooltipData = dataSeries[seriesIndex + 1].kpiValues[dataPointIndex];
+      console.log(tooltipData);
+      return this.tooltipListDraw(
+        tooltipData?.issueYear,
+        tooltipData?.kpiVal,
+        tooltipData?.kpiP2PYoY,
+        tooltipData?.kpiYoYBaseVal
+      );
+    }
+    console.log(tooltipData);
+
+    return this.tooltipListDraw(
+      tooltipData?.issueYear ?? this.criteria.criteria.issueDateYear,
+      tooltipData?.kpiVal,
+      tooltipData?.kpiYoYVal,
+      tooltipData?.kpiYoYBaseVal
+    );
+  }
+
+  tooltipListDraw(issueYear?: number, kpiVal?: number, kpiYoYVal?: number, kpiYoYBaseVal?: number) {
+    var kpiValStr = this.selectedRoot?.hasPrice
+      ? (formatNumber(kpiVal!) as string)
+      : (this.maskPipe.transform(kpiVal!.toFixed(0), maskSeparator.SEPARATOR, {
+          thousandSeparator: ',',
+        }) as unknown as string);
+    return `
+    <div class="h-full flex flex-row justify-center outline-none border-2 rounded-md border-primary" dir=${
+      this.lang.isLtr ? 'ltr' : 'rtl'
+    }>
+    <div class="flex flex-col p-1">
+      <span>${this.lang.map.year}</span>
+      <span>${this.selectedRoot?.getNames()}</span>
+      <span>${this.lang.map.yearly}</span>
+      <span>${'مقابل 2019'}</span>
+
+    </div>
+    <div class="flex flex-col p-1">
+      <span dir="ltr">${issueYear}</span>
+      <span dir="ltr">${kpiValStr}</span>
+      <span dir="ltr">${(kpiYoYVal ?? 0).toFixed(2)} %</span>
+      <span dir="ltr">${(kpiYoYBaseVal ?? 0).toFixed(2)} %</span>
+
+    </div>`;
   }
 
   updateChartType(type: ChartType) {

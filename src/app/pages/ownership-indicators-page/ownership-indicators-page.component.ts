@@ -522,7 +522,7 @@ export default class OwnershipIndicatorsPageComponent implements OnInit, AfterVi
       .subscribe((data) => {
         const _chartData = Object.keys(data).map((key) => ({
           name: data[key as unknown as number].period.getNames(),
-          data: data[key as unknown as number].kpiValues.map((item) => ({ y: item.value, x: item.year })),
+          data: data[key as unknown as number].kpiValues.map((item) => ({ y: item.kpiVal, x: item.issueYear })),
         }));
         this.durationsDataLength = data[1].kpiValues.length;
 

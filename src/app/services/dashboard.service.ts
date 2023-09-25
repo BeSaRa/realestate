@@ -319,37 +319,15 @@ export class DashboardService extends RegisterServiceMixin(class {}) implements 
     });
 
     data.forEach((item) => {
-      durationData[item.issuePeriod].kpiValues.push({ year: item.issueYear, value: item.kpiVal });
-    });
-
-    yearRange.forEach((year) => {
-      durations.forEach((item) => {
-        durationData[item.lookupKey].kpiValues.find((d) => d.year === year) ??
-          durationData[item.lookupKey].kpiValues.push({ year, value: 0 });
-      });
-    });
-
-    durations.forEach((item) => {
-      durationData[item.lookupKey].kpiValues.sort((a, b) => a.year - b.year);
-    });
-
-    return durationData;
-  }
-
-  mapDurationChartData(data: KpiDurationModel[], durations: Lookup[]) {
-    const durationData: {
-      [duration: number]: {
-        period: Lookup;
-        kpiValues: KpiDurationModel[];
-      };
-    } = {};
-    durations.forEach((item) => {
-      durationData[item.lookupKey] = { period: item, kpiValues: [] };
-    });
-
-    data.forEach((item) => {
       durationData[item.issuePeriod].kpiValues.push(item);
     });
+
+    // yearRange.forEach((year) => {
+    //   durations.forEach((item) => {
+    //     durationData[item.lookupKey].kpiValues.find((d) => d.issueYear === year) ??
+    //       durationData[item.lookupKey].kpiValues.push({ issueYear:year, kpiVal: 0 });
+    //   });
+    // });
 
     durations.forEach((item) => {
       durationData[item.lookupKey].kpiValues.sort((a, b) => a.issueYear - b.issueYear);
