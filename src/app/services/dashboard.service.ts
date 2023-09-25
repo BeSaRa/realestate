@@ -44,36 +44,7 @@ import { SellTransactionPropertyType } from '@models/sell-transaction-property-t
 import { RentTransactionPropertyType } from '@models/rent-transaction-property-type';
 import { Pagination } from '@models/pagination';
 
-// TODO: separated these when implementing separate services for each (Rent, Sell, Mortgage)
-@CastResponseContainer({
-  $rentPagination: {
-    model: () => Pagination,
-    shape: {
-      'transactionList.*': () => RentTransaction,
-    },
-  },
-  $sellPagination: {
-    model: () => Pagination,
-    shape: {
-      'transactionList.*': () => SellTransaction,
-    },
-  },
-  $mortgagePagination: {
-    model: () => Pagination,
-    shape: {
-      'transactionList.*': () => MortgageTransaction,
-    },
-  },
-  $rentDefault: {
-    model: () => RentTransaction,
-  },
-  $sellDefault: {
-    model: () => SellTransaction,
-  },
-  $mortgageDefault: {
-    model: () => RentTransaction,
-  },
-})
+
 @Injectable({
   providedIn: 'root',
 })
@@ -169,18 +140,12 @@ export class DashboardService extends RegisterServiceMixin(class {}) implements 
     return this.http.post<SellTransactionPurpose[]>(this.urlService.URLS.SELL_KPI26, criteria);
   }
 
-  @CastResponse(undefined, {
-    unwrap: '',
-    fallback: '$rentPagination',
-  })
+  @CastResponse(() => Pagination<RentTransaction>, { shape: { 'transactionList.*': () => RentTransaction } })
   loadRentKpiTransactions(criteria: Partial<CriteriaContract>): Observable<Pagination<RentTransaction[]>> {
     return this.http.post<Pagination<RentTransaction[]>>(this.urlService.URLS.RENT_KPI29, criteria);
   }
 
-  @CastResponse(undefined, {
-    unwrap: '',
-    fallback: '$sellPagination',
-  })
+  @CastResponse(() => Pagination<SellTransaction>, { shape: { 'transactionList.*': () => SellTransaction } })
   loadSellKpiTransactions(criteria: Partial<CriteriaContract>): Observable<Pagination<SellTransaction[]>> {
     return this.http.post<Pagination<SellTransaction[]>>(this.urlService.URLS.SELL_KPI29, criteria);
   }
@@ -202,10 +167,7 @@ export class DashboardService extends RegisterServiceMixin(class {}) implements 
   }
 
 
-  @CastResponse(undefined, {
-    unwrap: '',
-    fallback: '$mortgagePagination',
-  })
+  @CastResponse(() => Pagination<MortgageTransaction>, { shape: { 'transactionList.*': () => MortgageTransaction } })
   loadMortgageKpiTransactions(criteria: Partial<CriteriaContract>): Observable<Pagination<MortgageTransaction[]>> {
     return this.http.post<Pagination<MortgageTransaction[]>>(this.urlService.URLS.MORT_KPI7, criteria);
   }
