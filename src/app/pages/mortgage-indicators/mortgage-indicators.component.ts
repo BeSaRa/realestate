@@ -330,7 +330,7 @@ export default class MortgageIndicatorsComponent implements OnInit, AfterViewIni
               this.screenSize,
               this.selectedCountBarChartType,
               this.countChartDataLength,
-              2
+              this.screenSize !== Breakpoints.XS && this.screenSize !== Breakpoints.SM ? 1 : 2
             ),
           })
           .then();
@@ -378,11 +378,8 @@ export default class MortgageIndicatorsComponent implements OnInit, AfterViewIni
               this.screenSize,
               this.selectedCountBarChartType,
               this.countChartDataLength,
-              2
+              this.screenSize !== Breakpoints.XS && this.screenSize !== Breakpoints.SM ? 1 : 2
             ),
-            // xaxis: {
-            //   categories:
-            // }
           })
           .then();
       });
@@ -392,8 +389,7 @@ export default class MortgageIndicatorsComponent implements OnInit, AfterViewIni
     this.dashboardService
       .loadChartKpiDataForDuration(
         this.selectedCountChartDurationType === DurationEndpoints.HALFY
-          ? // ? DurationEndpoints.HALFY
-            ('halfly' as unknown as DurationEndpoints)
+          ? DurationEndpoints.HALFY
           : DurationEndpoints.QUARTERLY,
         { chartDataUrl: this.urlService.URLS.MORT_KPI2 },
         this.criteria.criteria
@@ -460,7 +456,7 @@ export default class MortgageIndicatorsComponent implements OnInit, AfterViewIni
               this.screenSize,
               this.selectedCountBarChartType,
               this.countChartDataLength,
-              2
+              this.screenSize !== Breakpoints.XS && this.screenSize !== Breakpoints.SM ? 1 : 2
             ),
           })
           .then();
@@ -574,8 +570,7 @@ export default class MortgageIndicatorsComponent implements OnInit, AfterViewIni
     this.dashboardService
       .loadChartKpiDataForDuration(
         this.selectedUnitsChartDurationType === DurationEndpoints.HALFY
-          ? // ? DurationEndpoints.HALFY
-            ('halfly' as unknown as DurationEndpoints)
+          ? DurationEndpoints.HALFY
           : DurationEndpoints.QUARTERLY,
         { chartDataUrl: this.urlService.URLS.MORT_KPI4 },
         this.criteria.criteria
@@ -709,8 +704,7 @@ export default class MortgageIndicatorsComponent implements OnInit, AfterViewIni
     this.dashboardService
       .loadChartKpiDataForDuration(
         this.selectedValueChartDurationType === DurationEndpoints.HALFY
-          ? // ? DurationEndpoints.HALFY
-            ('halfly' as unknown as DurationEndpoints)
+          ? DurationEndpoints.HALFY
           : DurationEndpoints.QUARTERLY,
         { chartDataUrl: this.urlService.URLS.MORT_KPI6 },
         this.criteria.criteria
@@ -826,7 +820,12 @@ export default class MortgageIndicatorsComponent implements OnInit, AfterViewIni
     this.screenService.screenSizeObserver$.pipe(takeUntil(this.destroy$)).subscribe((size) => {
       this.screenSize = size;
       this.countChart.first.updateOptions(
-        this.appChartTypesService.getRangeOptions(size, this.selectedCountBarChartType, this.countChartDataLength, 2)
+        this.appChartTypesService.getRangeOptions(
+          size,
+          this.selectedCountBarChartType,
+          this.countChartDataLength,
+          size !== Breakpoints.XS && size !== Breakpoints.SM ? 1 : 2
+        )
       );
       this.unitsChart.first.updateOptions(
         this.appChartTypesService.getRangeOptions(size, this.selectedUnitsBarChartType, this.unitsChartDataLength)
