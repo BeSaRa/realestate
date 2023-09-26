@@ -334,7 +334,7 @@ export default class RentalIndicatorsPageComponent implements OnInit {
   selectedRoot?: KpiRoot;
 
   selectedPurpose?: Lookup = this.lookupService.rentLookups.rentPurposeList[0];
-  selectedTab = 'rental_indicators';
+  selectedTab: 'rental_indicators' | 'statistical_reports_for_rent' = 'rental_indicators';
   // selectedTab = 'statistical_reports_for_rent';
 
   protected readonly maskSeparator = maskSeparator;
@@ -370,9 +370,11 @@ export default class RentalIndicatorsPageComponent implements OnInit {
     setTimeout(() => {
       this.screenService.screenSizeObserver$.pipe(takeUntil(this.destroy$)).subscribe((size) => {
         this.screenSize = size;
-        this.chart.first.updateOptions(
-          this.appChartTypesService.getRangeOptions(size, this.selectedDurationBarChartType, this.durationDataLength)
-        );
+        if (this.selectedTab === 'rental_indicators') {
+          this.chart.first.updateOptions(
+            this.appChartTypesService.getRangeOptions(size, this.selectedDurationBarChartType, this.durationDataLength)
+          );
+        }
       });
     }, 0);
     this.reload$.next();
@@ -481,8 +483,11 @@ export default class RentalIndicatorsPageComponent implements OnInit {
       });
       this.selectedRoot && this.updateAllPurpose(this.selectedRoot.value, this.selectedRoot.yoy);
       this.selectedPurpose && this.purposeSelected(this.selectedPurpose);
-      this.updateChartDuration(this.selectedDurationType);
-      this.updateTop10Chart();
+      if (this.selectedTab === 'rental_indicators') {
+        this.updateChartDuration(this.selectedDurationType);
+      } else {
+        this.updateTop10Chart();
+      }
     });
   }
 
@@ -765,17 +770,23 @@ export default class RentalIndicatorsPageComponent implements OnInit {
     return this.selectedChartType === type;
   }
 
-  switchTab(tab: string): void {
+  switchTab(tab: 'rental_indicators' | 'statistical_reports_for_rent'): void {
     this.selectedTab = tab;
-    this.carousel.setDirty();
-    this.chart.setDirty();
-    this.top10Chart.setDirty();
-    this.pieChart.setDirty();
+    if (this.selectedTab === 'rental_indicators') {
+      this.carousel.setDirty();
+      this.chart.setDirty();
+    } else {
+      this.top10Chart.setDirty();
+      this.pieChart.setDirty();
+    }
     setTimeout(() => {
-      this.updateChartDuration(this.selectedDurationType);
-      this.updateTop10Chart();
-      this.updateRoomsPiChart();
-      this.updateFurnitureStatusPiChart();
+      if (this.selectedTab === 'rental_indicators') {
+        this.updateChartDuration(this.selectedDurationType);
+      } else {
+        this.updateTop10Chart();
+        this.updateRoomsPiChart();
+        this.updateFurnitureStatusPiChart();
+      }
     });
   }
 
