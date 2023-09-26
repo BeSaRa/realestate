@@ -47,7 +47,20 @@ import { minMaxAvg } from '@utils/utils';
 import { CarouselComponent, IvyCarouselModule } from 'angular-responsive-carousel2';
 import { ChartComponent, NgApexchartsModule } from 'ng-apexcharts';
 import { NgxMaskPipe } from 'ngx-mask';
-import { BehaviorSubject, Observable, combineLatest, ReplaySubject, Subject, delay, forkJoin, map, of, switchMap, take, takeUntil } from 'rxjs';
+import {
+  BehaviorSubject,
+  Observable,
+  combineLatest,
+  ReplaySubject,
+  Subject,
+  delay,
+  forkJoin,
+  map,
+  of,
+  switchMap,
+  take,
+  takeUntil,
+} from 'rxjs';
 import { SellTransactionPropertyType } from '@models/sell-transaction-property-type';
 import { indicatorsTypes } from '@enums/Indicators-type';
 import { SellTransactionIndicator } from '@app-types/sell-indicators-type';
@@ -311,15 +324,7 @@ export default class SellIndicatorsPageComponent implements OnInit {
     }),
   ];
 
-  transactionsStatisticsColumns = [
-    'average',
-    'certificates-count',
-    'area',
-    'units-count',
-    'average-square',
-    'chart',
-  ]
-
+  transactionsStatisticsColumns = ['average', 'certificates-count', 'area', 'units-count', 'average-square', 'chart'];
 
   top10ChartData: SellTop10Model[] = [];
   selectedTop10: Lookup = this.accordingToList[0];
@@ -346,7 +351,7 @@ export default class SellIndicatorsPageComponent implements OnInit {
   ];
   compositeTransactionsExtraColumns = ['contractCounts', 'contractValues', 'avgContract'];
 
-  selectedTab = 'sell_indicators';
+  selectedTab: 'sell_indicators' | 'statistical_reports_for_sell' = 'sell_indicators';
 
   ngOnInit(): void {
     this._initializeChartsFormatters();
@@ -354,9 +359,11 @@ export default class SellIndicatorsPageComponent implements OnInit {
     setTimeout(() => {
       this.screenService.screenSizeObserver$.pipe(takeUntil(this.destroy$)).subscribe((size) => {
         this.screenSize = size;
-        this.chart.first.updateOptions(
-          this.appChartTypesService.getRangeOptions(size, this.selectedDurationBarChartType, this.durationDataLength)
-        );
+        if (this.selectedTab === 'sell_indicators') {
+          this.chart.first.updateOptions(
+            this.appChartTypesService.getRangeOptions(size, this.selectedDurationBarChartType, this.durationDataLength)
+          );
+        }
       });
     }, 0);
     this.reload$.next();
@@ -373,34 +380,46 @@ export default class SellIndicatorsPageComponent implements OnInit {
           return combineLatest([this.reload$, this.basedOn$]).pipe(
             switchMap(([, basedOn]) => {
               this.transactionsStatisticsColumns.length === 7
-                ? this.transactionsStatisticsColumns[0] = basedOn
-                : this.transactionsStatisticsColumns.unshift(basedOn)
+                ? (this.transactionsStatisticsColumns[0] = basedOn)
+                : this.transactionsStatisticsColumns.unshift(basedOn);
               this.selectedIndicators = basedOn;
-              return (
-                basedOn === indicatorsTypes.PURPOSE
-                  // ToDO: since limit filter is not working (we rigestered an issue to be team for that)
+              return basedOn === indicatorsTypes.PURPOSE
+                ? // ToDO: since limit filter is not working (we rigestered an issue to be team for that)
                   // ToDo: applay pagination on table
                   // For now we take only five records
-                  ? this.dashboardService.loadSellTransactionsBasedOnPurpose(this.criteria.criteria).pipe(map((items) => { return items.slice(0, 5) }))
-                  : this.dashboardService.loadSellTransactionsBasedOnPropertyType(this.criteria.criteria).pipe(map((items) => { return items.slice(0, 5) }))
-              )
+                  this.dashboardService.loadSellTransactionsBasedOnPurpose(this.criteria.criteria).pipe(
+                    map((items) => {
+                      return items.slice(0, 5);
+                    })
+                  )
+                : this.dashboardService.loadSellTransactionsBasedOnPropertyType(this.criteria.criteria).pipe(
+                    map((items) => {
+                      return items.slice(0, 5);
+                    })
+                  );
             }),
             map((response) => {
-              return response
+              return response;
             })
           );
         })
       );
   }
 
-  switchTab(tab: string): void {
+  switchTab(tab: 'sell_indicators' | 'statistical_reports_for_sell'): void {
     this.selectedTab = tab;
-    this.carousel.setDirty();
-    this.chart.setDirty();
-    this.top10Chart.setDirty();
+    if (this.selectedTab === 'sell_indicators') {
+      this.carousel.setDirty();
+      this.chart.setDirty();
+    } else {
+      this.top10Chart.setDirty();
+    }
     setTimeout(() => {
-      this.updateChartDuration(this.selectedDurationType);
-      this.updateTop10Chart();
+      if (this.selectedTab === 'sell_indicators') {
+        this.updateChartDuration(this.selectedDurationType);
+      } else {
+        this.updateTop10Chart();
+      }
     });
   }
 
@@ -498,8 +517,11 @@ export default class SellIndicatorsPageComponent implements OnInit {
       });
       this.selectedRoot && this.updateAllPurpose(this.selectedRoot.value, this.selectedRoot.yoy);
       this.selectedPurpose && this.purposeSelected(this.selectedPurpose);
-      this.updateChartDuration(this.selectedDurationType);
-      this.updateTop10Chart();
+      if (this.selectedTab === 'sell_indicators') {
+        this.updateChartDuration(this.selectedDurationType);
+      } else {
+        this.updateTop10Chart();
+      }
     });
   }
 
@@ -675,14 +697,11 @@ export default class SellIndicatorsPageComponent implements OnInit {
             switchMap(([, paginationOptions]) => {
               this.criteria.criteria.limit = paginationOptions.limit;
               this.criteria.criteria.offset = paginationOptions.offset;
-              return (
-                this.dashboardService
-                  .loadSellKpiTransactions(this.criteria.criteria)
-              )
+              return this.dashboardService.loadSellKpiTransactions(this.criteria.criteria);
             }),
             map(({ count, transactionList }) => {
               this.transactionsCount = count;
-              return transactionList
+              return transactionList;
             })
           );
         })

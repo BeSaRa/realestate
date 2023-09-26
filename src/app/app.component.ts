@@ -65,7 +65,9 @@ export class AppComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.splashService.removeSplash();
+    setTimeout(() => {
+      this.splashService.removeSplash();
+    }, 500);
   }
 
   @HostListener('window:scroll')
