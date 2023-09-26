@@ -147,9 +147,9 @@ export class LookupService extends RegisterServiceMixin(class {}) implements Ser
           return [rent, sell, mort, owner];
         }),
         tap(([rent, sell, mort, owner]) => {
-          this.rentLookups = this._addAllToMunicipalities(rent);
-          this.sellLookups = this._addAllToMunicipalities(this._addAllToDistrict(this._addAllToPropertyType(sell)));
-          this.mortLookups = this._addAllToMunicipalities(this._addAllToDistrict(this._addAllToPropertyType(mort)));
+          this.rentLookups = rent;
+          this.sellLookups = this._addAllToDistrict(this._addAllToPropertyType(sell));
+          this.mortLookups = this._addAllToDistrict(this._addAllToPropertyType(mort));
           this.ownerLookups = this._addStatePropertyToOwnerCategories(
             this._addAllToOwnerCategories(
               this._addAllToNationalities(
@@ -296,15 +296,15 @@ export class LookupService extends RegisterServiceMixin(class {}) implements Ser
   }
 
   private _addAllToMunicipalities(lookups: LookupsContract) {
-    // if (lookups.municipalityList.find((p) => p.lookupKey === -1)) return lookups;
-    // lookups.municipalityList = [
-    //   new Lookup().clone<Lookup>({
-    //     arName: 'الكل',
-    //     enName: 'All',
-    //     lookupKey: -1,
-    //   }),
-    //   ...lookups.municipalityList,
-    // ];
+    if (lookups.municipalityList.find((p) => p.lookupKey === -1)) return lookups;
+    lookups.municipalityList = [
+      new Lookup().clone<Lookup>({
+        arName: 'الكل',
+        enName: 'All',
+        lookupKey: -1,
+      }),
+      ...lookups.municipalityList,
+    ];
     return lookups;
   }
 
