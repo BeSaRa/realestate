@@ -211,7 +211,7 @@ export default class RentalIndicatorsPageComponent implements OnInit {
       this.urlService.URLS.RENT_KPI2,
       this.urlService.URLS.RENT_KPI3,
       this.urlService.URLS.RENT_KPI19,
-      'assets/icons/kpi/8.png'
+      'assets/icons/kpi/svg/8.svg'
     ),
     new KpiRoot(
       4,
@@ -222,7 +222,7 @@ export default class RentalIndicatorsPageComponent implements OnInit {
       this.urlService.URLS.RENT_KPI5,
       this.urlService.URLS.RENT_KPI6,
       this.urlService.URLS.RENT_KPI20,
-      'assets/icons/kpi/1.png'
+      'assets/icons/kpi/svg/1.svg'
     ),
 
     new KpiRoot(
@@ -234,7 +234,7 @@ export default class RentalIndicatorsPageComponent implements OnInit {
       this.urlService.URLS.RENT_KPI11,
       this.urlService.URLS.RENT_KPI12,
       this.urlService.URLS.RENT_KPI21,
-      'assets/icons/kpi/5.png'
+      'assets/icons/kpi/svg/5.svg'
     ),
     new KpiRoot(
       7,
@@ -245,7 +245,7 @@ export default class RentalIndicatorsPageComponent implements OnInit {
       this.urlService.URLS.RENT_KPI8,
       this.urlService.URLS.RENT_KPI9,
       this.urlService.URLS.RENT_KPI22,
-      'assets/icons/kpi/4.png'
+      'assets/icons/kpi/svg/4.svg'
     ),
     new KpiRoot(
       16,
@@ -256,7 +256,7 @@ export default class RentalIndicatorsPageComponent implements OnInit {
       this.urlService.URLS.RENT_KPI17,
       this.urlService.URLS.RENT_KPI18,
       this.urlService.URLS.RENT_KPI24,
-      'assets/icons/kpi/3.png'
+      'assets/icons/kpi/svg/3.svg'
     ),
     new KpiRoot(
       13,
@@ -267,7 +267,7 @@ export default class RentalIndicatorsPageComponent implements OnInit {
       this.urlService.URLS.RENT_KPI14,
       this.urlService.URLS.RENT_KPI15,
       this.urlService.URLS.RENT_KPI23,
-      'assets/icons/kpi/2.png'
+      'assets/icons/kpi/svg/2.svg'
     ),
   ];
 
