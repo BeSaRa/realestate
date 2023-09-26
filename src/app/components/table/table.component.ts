@@ -62,22 +62,11 @@ export class TableComponent<T extends object> implements OnInit {
 
   _paginate($event: PageEvent) {
     this.paginate.emit($event);
-    // this.offset = $event.pageSize * $event.pageIndex;
-    // this.pageSize = $event.pageSize;
+    this.offset = $event.pageSize * $event.pageIndex;
+    this.pageSize = $event.pageSize;
     // this._initializeDataSource();
   }
 
-  // private _initializeLength() {
-  //   if (isObservable(this.data)) {
-  //     this.data.pipe(
-  //       tap((data) => {
-  //         this.length = data.length;
-  //       })
-  //     );
-  //   } else {
-  //     this.length = this.data.length;
-  //   }
-  // }
 
   private _initializeDataSource() {
     let paginatedData = this.sortedData;
