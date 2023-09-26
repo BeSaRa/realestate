@@ -146,7 +146,7 @@ export default class SellIndicatorsPageComponent implements OnInit {
       this.urlService.URLS.SELL_KPI2,
       this.urlService.URLS.SELL_KPI3,
       this.urlService.URLS.SELL_KPI19,
-      'assets/icons/kpi/7.png'
+      'assets/icons/kpi/svg/7.svg'
     ),
     new KpiRoot(
       4,
@@ -157,7 +157,7 @@ export default class SellIndicatorsPageComponent implements OnInit {
       this.urlService.URLS.SELL_KPI5,
       this.urlService.URLS.SELL_KPI6,
       this.urlService.URLS.SELL_KPI20,
-      'assets/icons/kpi/1.png'
+      'assets/icons/kpi/svg/1.svg'
     ),
 
     new KpiRoot(
@@ -169,7 +169,7 @@ export default class SellIndicatorsPageComponent implements OnInit {
       this.urlService.URLS.SELL_KPI11,
       this.urlService.URLS.SELL_KPI12,
       this.urlService.URLS.SELL_KPI22,
-      'assets/icons/kpi/3.png'
+      'assets/icons/kpi/svg/3.svg'
     ),
     new KpiRoot(
       7,
@@ -180,7 +180,7 @@ export default class SellIndicatorsPageComponent implements OnInit {
       this.urlService.URLS.SELL_KPI8,
       this.urlService.URLS.SELL_KPI9,
       this.urlService.URLS.SELL_KPI21,
-      'assets/icons/kpi/6.png'
+      'assets/icons/kpi/svg/6.svg'
     ),
     new KpiRoot(
       16,
@@ -191,7 +191,7 @@ export default class SellIndicatorsPageComponent implements OnInit {
       this.urlService.URLS.SELL_KPI17,
       this.urlService.URLS.SELL_KPI18,
       this.urlService.URLS.SELL_KPI24,
-      'assets/icons/kpi/5.png'
+      'assets/icons/kpi/svg/5.svg'
     ),
     new KpiRoot(
       13,
@@ -202,7 +202,7 @@ export default class SellIndicatorsPageComponent implements OnInit {
       this.urlService.URLS.SELL_KPI14,
       this.urlService.URLS.SELL_KPI15,
       this.urlService.URLS.SELL_KPI23,
-      'assets/icons/kpi/2.png'
+      'assets/icons/kpi/svg/2.svg'
     ),
   ];
 

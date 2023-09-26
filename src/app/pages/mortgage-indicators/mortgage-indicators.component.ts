@@ -39,7 +39,19 @@ import { UnitsService } from '@services/units.service';
 import { UrlService } from '@services/url.service';
 import { minMaxAvg } from '@utils/utils';
 import { ChartComponent, NgApexchartsModule } from 'ng-apexcharts';
-import { BehaviorSubject, delay, map, Observable, of, combineLatest, ReplaySubject, Subject, switchMap, takeUntil, take } from 'rxjs';
+import {
+  BehaviorSubject,
+  delay,
+  map,
+  Observable,
+  of,
+  combineLatest,
+  ReplaySubject,
+  Subject,
+  switchMap,
+  takeUntil,
+  take,
+} from 'rxjs';
 
 @Component({
   selector: 'app-mortgage-indicators',
@@ -116,7 +128,7 @@ export default class MortgageIndicatorsComponent implements OnInit, AfterViewIni
       '',
       '',
       '',
-      'assets/icons/kpi/1.png'
+      'assets/icons/kpi/svg/1.svg'
     ),
     new KpiRoot(
       3,
@@ -127,7 +139,7 @@ export default class MortgageIndicatorsComponent implements OnInit, AfterViewIni
       '',
       '',
       '',
-      'assets/icons/kpi/2.png'
+      'assets/icons/kpi/svg/2.svg'
     ),
     new KpiRoot(
       5,
@@ -138,7 +150,7 @@ export default class MortgageIndicatorsComponent implements OnInit, AfterViewIni
       '',
       '',
       '',
-      'assets/icons/kpi/6.png'
+      'assets/icons/kpi/svg/6.svg'
     ),
   ];
 
@@ -763,15 +775,12 @@ export default class MortgageIndicatorsComponent implements OnInit, AfterViewIni
       .pipe(
         switchMap(() => {
           return combineLatest([this.reload$, this.paginate$]).pipe(
-            switchMap(([,paginationOptions]) => {
+            switchMap(([, paginationOptions]) => {
               this.criteria.criteria.limit = paginationOptions.limit;
               this.criteria.criteria.offset = paginationOptions.offset;
-              return (
-                this.dashboardService
-                  .loadMortgageKpiTransactions(this.criteria.criteria)
-              )
+              return this.dashboardService.loadMortgageKpiTransactions(this.criteria.criteria);
             }),
-            map(({count, transactionList}) => {
+            map(({ count, transactionList }) => {
               this.transactionsCount = count;
               return transactionList;
             })
