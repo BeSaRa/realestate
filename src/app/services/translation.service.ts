@@ -88,6 +88,7 @@ export class TranslationService extends RegisterServiceMixin(class {}) implement
   };
 
   setCurrentLanguageMap(): void {
+    this._addLangClassToBody();
     this.map = this.current.code === LangCodes.AR ? this.arabic : this.english;
     this.toggleMap = this.current.code === LangCodes.AR ? this.english : this.arabic;
   }
@@ -100,6 +101,7 @@ export class TranslationService extends RegisterServiceMixin(class {}) implement
       .pipe(tap(() => this.setCurrentLanguageMap()))
       .subscribe(() => {
         this.change.next(this.current);
+        this._addLangClassToBody();
         this.langChangerNotifier.next(LangChangeProcess.END);
       });
   }
@@ -118,5 +120,10 @@ export class TranslationService extends RegisterServiceMixin(class {}) implement
 
   getTranslate(langKey: keyof LangKeysContract): string {
     return this.map[langKey] || `messing Lang Key ${langKey}`;
+  }
+
+  private _addLangClassToBody() {
+    document.body.classList.remove('rtl', 'ltr');
+    document.body.classList.add(this.current.direction);
   }
 }
