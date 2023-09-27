@@ -13,7 +13,7 @@ body {
   min-height: 100vh;
 }
 
-body:has(.app-root-element[dir="rtl"]) {
+body.rtl {
   font-family: "Lusail", "Open Sans", sans-serif !important;
 }
 
