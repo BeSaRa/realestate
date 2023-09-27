@@ -6,9 +6,11 @@ import { maskSeparator } from '@constants/mask-separator';
 import { MinMaxAvgContract } from '@contracts/min-max-avg-contract';
 import { BarChartTypes } from '@enums/bar-chart-type';
 import { Breakpoints } from '@enums/breakpoints';
-import { formatNumber } from '@utils/utils';
+import { formatNumber, minMaxAvg } from '@utils/utils';
 import { NgxMaskPipe } from 'ngx-mask';
 import { TranslationService } from './translation.service';
+import { KpiModel } from '@models/kpi-model';
+import { KpiDurationModel } from '@models/kpi-duration-model';
 
 @Injectable({
   providedIn: 'root',
@@ -105,8 +107,8 @@ export class AppChartTypesService {
     return opts?.seriesIndex === 0
       ? (formatNumber(value) as string)
       : (this.maskPipe.transform(value.toFixed(0), maskSeparator.SEPARATOR, {
-          thousandSeparator: ',',
-        }) as unknown as string);
+        thousandSeparator: ',',
+      }) as unknown as string);
   };
 
   legendFormatter = (legendName: string, opts: any) => {
@@ -123,6 +125,43 @@ export class AppChartTypesService {
     };
   }
 
+  splitChartDataToLevels(name: string | undefined, data: (KpiModel[] | KpiDurationModel[]), months?: string[]) {
+    const _minMaxAvg = minMaxAvg(data.map((item) => item.kpiVal));
+    const series = [
+      {
+        name: name + "_low",
+        data: data.map((item) => {
+          return {
+            y: item.kpiVal >= _minMaxAvg.min ? _minMaxAvg.min : item.kpiVal,
+            x: item instanceof KpiModel ? item.issueYear : months?.at(item?.issuePeriod - 1)
+          }
+        }),
+        color: AppColors.GRAY
+      },
+      {
+        name: name + "_mid",
+        data: data.map((item) => {
+          return {
+            y: item.kpiVal > _minMaxAvg.avg ? _minMaxAvg.avg : item.kpiVal - _minMaxAvg.min,
+            x: item instanceof KpiModel ? item.issueYear : months?.at(item?.issuePeriod - 1)
+          }
+        }),
+        color: AppColors.SECONDARY
+      },
+      {
+        name: name + "_high",
+        data: data.map((item) => {
+          return {
+            y: item.kpiVal > _minMaxAvg.avg ? item.kpiVal - _minMaxAvg.avg : 0,
+            x: item instanceof KpiModel ? item.issueYear : months?.at(item?.issuePeriod - 1)
+          }
+        }),
+        color: AppColors.PRIMARY
+      },
+    ];
+    return series;
+  }
+
   private _labelFormatter(val: string | number | number[], root?: { hasPrice: boolean }) {
     if (typeof val === 'undefined') return val;
     if (typeof val === 'string' && (val as unknown as number) !== undefined && (val as unknown as number) !== null)
@@ -131,8 +170,8 @@ export class AppChartTypesService {
     return root?.hasPrice
       ? (formatNumber(value) as string)
       : (this.maskPipe.transform(value.toFixed(0), maskSeparator.SEPARATOR, {
-          thousandSeparator: ',',
-        }) as unknown as string);
+        thousandSeparator: ',',
+      }) as unknown as string);
   }
 }
 
@@ -188,6 +227,7 @@ const mainChartOptions: PartialChartOptions = {
       enabled: false,
     },
   },
+  legend: { show: false },
   tooltip: { marker: { fillColors: [AppColors.JUNGLE] } },
 };
 

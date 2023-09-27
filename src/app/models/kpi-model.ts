@@ -1,6 +1,7 @@
 import { TransactionType } from '@enums/transaction-type';
 import { KpiBaseModel } from './kpi-base-model';
-
+import { KpiModelInterceptor } from '@model-interceptors/kpi-model-iterceptor';
+const { send, receive } = new KpiModelInterceptor();
 export class KpiModel extends KpiBaseModel {
   actionType!: TransactionType;
 
