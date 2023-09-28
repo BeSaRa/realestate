@@ -56,6 +56,11 @@ export class AppChartTypesService {
     return { tooltip: { marker: { fillColors: [AppColors.JUNGLE] } } };
   }
 
+  private _minMaxAvgBarChartOptions = minMaxAvgBarChartOptions;
+  get minMaxAvgBarChartOptions() {
+    return { ...this._minMaxAvgBarChartOptions };
+  }
+
   private _top10LineChartOptions = top10LineChartOptions;
   private _top10BarChartOptions = top10BarChartOptions;
   get top10ChartOptions(): { line: Partial<PartialChartOptions>; bar: Partial<PartialChartOptions> } {
@@ -76,8 +81,6 @@ export class AppChartTypesService {
   get popupChartOptions() {
     return { ...this._popupChartOptions };
   }
-
-  getRangeOptions = getRangeOptions;
 
   dataLabelsFormatter(
     value: { val: string | number | number[]; opts?: any },
@@ -123,6 +126,54 @@ export class AppChartTypesService {
     };
   }
 
+  getRangeOptions = getRangeOptions;
+
+  getSplittedSeriesChartOptions(
+    series: { name?: string; data: { y: number; x: number | string }[] }[],
+    minMaxAvg: MinMaxAvgContract[]
+  ): PartialChartOptions {
+    const _colors: string[] = [];
+    [AppColors.GRAY, AppColors.SECONDARY, AppColors.PRIMARY].forEach((c) => {
+      for (let i = 0; i < series.length; i++) _colors.push(c);
+    });
+    const _newSeries: typeof series = [];
+    series.forEach((s, index) =>
+      _newSeries.push(...this.splitSeriesDataPointAccordingToMinMaxAvg(s, minMaxAvg[index]))
+    );
+    return {
+      series: _newSeries,
+      colors: _colors,
+    };
+  }
+
+  splitSeriesDataPointAccordingToMinMaxAvg(
+    series: { name?: string; data: { y: number; x: number | string }[] },
+    minMaxAvg: MinMaxAvgContract
+  ): { name?: string; data: { y: number; x: number | string }[] }[] {
+    return [
+      {
+        name: series.name,
+        data: series.data.map((item) => ({ x: item.x, y: item.y >= minMaxAvg.min ? minMaxAvg.min : item.y })),
+      },
+      {
+        name: series.name,
+        data: series.data.map((item) => ({
+          x: item.x,
+          y:
+            item.y >= minMaxAvg.min
+              ? item.y >= minMaxAvg.avg
+                ? minMaxAvg.avg - minMaxAvg.min
+                : item.y - minMaxAvg.min
+              : 0,
+        })),
+      },
+      {
+        name: series.name,
+        data: series.data.map((item) => ({ x: item.x, y: item.y >= minMaxAvg.avg ? item.y - minMaxAvg.avg : 0 })),
+      },
+    ];
+  }
+
   private _labelFormatter(val: string | number | number[], root?: { hasPrice: boolean }) {
     if (typeof val === 'undefined') return val;
     if (typeof val === 'string' && (val as unknown as number) !== undefined && (val as unknown as number) !== null)
@@ -144,7 +195,7 @@ const mainChartOptions: PartialChartOptions = {
   },
   dataLabels: {
     enabled: true,
-    // formatter: don't forget to set formatter when use chart
+    enabledOnSeries: undefined,
     style: { colors: [AppColors.JUNGLE] },
   },
   stroke: {
@@ -168,6 +219,7 @@ const mainChartOptions: PartialChartOptions = {
       enabled: false,
     },
   },
+
   plotOptions: {
     bar: {
       columnWidth: '80%',
@@ -175,7 +227,7 @@ const mainChartOptions: PartialChartOptions = {
   },
   yaxis: {
     min: 0,
-    max: (max) => max / 0.95,
+    max: (max) => max / 0.9,
     // tickAmount: 10,
     labels: {
       // formatter: don't forget to set formatter when use chart
@@ -189,6 +241,68 @@ const mainChartOptions: PartialChartOptions = {
     },
   },
   tooltip: { marker: { fillColors: [AppColors.JUNGLE] } },
+};
+
+const minMaxAvgBarChartOptions: Partial<PartialChartOptions> = {
+  series: [],
+  chart: {
+    height: 350,
+    type: 'line',
+    stacked: true,
+  },
+  dataLabels: {
+    enabled: false,
+  },
+  stroke: {
+    curve: 'smooth',
+    width: 0,
+  },
+  grid: {
+    row: {
+      colors: [AppColors.GRAY_LIGHT, 'transparent'],
+      opacity: 0.5,
+    },
+  },
+  xaxis: {
+    categories: [],
+    labels: {
+      trim: true,
+      rotate: -45,
+      rotateAlways: false,
+    },
+    tooltip: {
+      enabled: false,
+    },
+  },
+
+  plotOptions: {
+    bar: {
+      columnWidth: '80%',
+      dataLabels: {
+        total: {
+          enabled: true,
+          style: { color: AppColors.JUNGLE },
+        },
+      },
+    },
+  },
+  yaxis: {
+    min: 0,
+    max: (max) => max / 0.9,
+    // tickAmount: 10,
+    labels: {
+      // formatter: don't forget to set formatter when use chart
+      minWidth: 50,
+      style: {
+        fontWeight: 'bold',
+      },
+    },
+    tooltip: {
+      enabled: false,
+    },
+  },
+  tooltip: { marker: { fillColors: [AppColors.JUNGLE] } },
+  legend: { show: false },
 };
 
 const top10LineChartOptions: Partial<PartialChartOptions> = {
@@ -392,7 +506,7 @@ function getRangeOptions(
   screenSize: Breakpoints,
   barChartType: BarChartTypes,
   dataCount: number,
-  otherDenominator = 1
+  isStacked = false
 ): PartialChartOptions {
   function getRange(defaultRange: number) {
     return dataCount <= defaultRange ? (dataCount <= 3 ? dataCount : dataCount - 1) : defaultRange;
@@ -464,16 +578,17 @@ function getRangeOptions(
         break;
     }
   }
-
-  return {
+  const returned = {
     xaxis: { range: _range },
     plotOptions: {
       bar: {
-        columnWidth:
-          dataCount <= _range
-            ? '40%'
-            : Math.round((dataCount / _range / 1.5 / otherDenominator) * 100).toString() + '%',
+        columnWidth: isStacked
+          ? '80%'
+          : dataCount <= _range
+          ? '40%'
+          : Math.round((dataCount / _range / 1.5) * 100).toString() + '%',
       },
     },
   };
+  return returned;
 }

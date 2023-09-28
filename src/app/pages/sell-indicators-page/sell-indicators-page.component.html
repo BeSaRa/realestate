@@ -172,16 +172,16 @@
         </div>
         <div class="h-full flex flex-row justify-center md:flex-col -mt-6 md:mt-4">
           <app-icon-button
-            [ngClass]="{ 'text-primary': isSelectedChartType(ChartType.LINE) }"
+            [ngClass]="{ 'text-primary': selectedChartType === ChartType.LINE }"
             (click)="updateChartType(ChartType.LINE)"
             class="text-primary"
             icon="LINE_CHART" />
           <app-icon-button
-            [ngClass]="{ 'text-primary': isSelectedChartType(ChartType.BAR) }"
+            [ngClass]="{ 'text-primary': selectedChartType === ChartType.BAR }"
             (click)="updateChartType(ChartType.BAR)"
             icon="BAR_CHART" />
           <app-icon-button
-            [ngClass]="{ 'text-primary': isSelectedChartType(ChartType.AREA) }"
+            [ngClass]="{ 'text-primary': selectedChartType === ChartType.AREA }"
             (click)="updateChartType(ChartType.AREA)"
             icon="AREA_CHART" />
         </div>

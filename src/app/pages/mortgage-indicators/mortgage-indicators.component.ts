@@ -1,6 +1,6 @@
 import { BidiModule } from '@angular/cdk/bidi';
 import { CommonModule } from '@angular/common';
-import { AfterViewInit, Component, inject, OnInit, QueryList, ViewChild, ViewChildren } from '@angular/core';
+import { AfterViewInit, Component, inject, OnDestroy, OnInit, QueryList, ViewChild, ViewChildren } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { DateAdapter, MatOptionModule } from '@angular/material/core';
@@ -77,7 +77,7 @@ import {
   templateUrl: './mortgage-indicators.component.html',
   styleUrls: ['./mortgage-indicators.component.scss'],
 })
-export default class MortgageIndicatorsComponent implements OnInit, AfterViewInit {
+export default class MortgageIndicatorsComponent implements OnInit, AfterViewInit, OnDestroy {
   @ViewChildren('countChart') countChart!: QueryList<ChartComponent>;
   @ViewChildren('unitsChart') unitsChart!: QueryList<ChartComponent>;
   @ViewChildren('valueChart') valueChart!: QueryList<ChartComponent>;
@@ -274,6 +274,12 @@ export default class MortgageIndicatorsComponent implements OnInit, AfterViewIni
     }, 0);
   }
 
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
+    this.destroy$.unsubscribe();
+  }
+
   filterChange($event: { criteria: CriteriaContract; type: CriteriaType }): void {
     this.criteria = $event;
     this.dashboardService.loadMortgageRoots(this.criteria.criteria).subscribe((values) => {
@@ -345,7 +351,7 @@ export default class MortgageIndicatorsComponent implements OnInit, AfterViewIni
               this.screenSize,
               this.selectedCountBarChartType,
               this.countChartDataLength,
-              this.screenSize !== Breakpoints.XS && this.screenSize !== Breakpoints.SM ? 1 : 2
+              true
             ),
           })
           .then();
@@ -393,7 +399,7 @@ export default class MortgageIndicatorsComponent implements OnInit, AfterViewIni
               this.screenSize,
               this.selectedCountBarChartType,
               this.countChartDataLength,
-              this.screenSize !== Breakpoints.XS && this.screenSize !== Breakpoints.SM ? 1 : 2
+              true
             ),
           })
           .then();
@@ -471,7 +477,7 @@ export default class MortgageIndicatorsComponent implements OnInit, AfterViewIni
               this.screenSize,
               this.selectedCountBarChartType,
               this.countChartDataLength,
-              this.screenSize !== Breakpoints.XS && this.screenSize !== Breakpoints.SM ? 1 : 2
+              true
             ),
           })
           .then();
@@ -790,59 +796,30 @@ export default class MortgageIndicatorsComponent implements OnInit, AfterViewIni
   }
 
   private _initializeChartsFormatters() {
-    this.countChartOptions
-      .addDataLabelsFormatter((val, opts) =>
-        this.appChartTypesService.dataLabelsFormatter({ val, opts }, { hasPrice: false })
-      )
-      .addAxisYFormatter((val, opts) => this.appChartTypesService.axisYFormatter({ val, opts }, { hasPrice: false }))
-      .addCustomToolbarOptions();
-
-    this.yearlyOrMonthlyChartOptions
-      .addDataLabelsFormatter((val, opts) =>
-        this.appChartTypesService.dataLabelsFormatter({ val, opts }, { hasPrice: false })
-      )
-      .addAxisYFormatter((val, opts) => this.appChartTypesService.axisYFormatter({ val, opts }, { hasPrice: false }))
-      .addCustomToolbarOptions();
-
-    this.halfyCountChartOptions
-      .addDataLabelsFormatter((val, opts) =>
-        this.appChartTypesService.dataLabelsFormatter({ val, opts }, { hasPrice: false })
-      )
-      .addAxisYFormatter((val, opts) => this.appChartTypesService.axisYFormatter({ val, opts }, { hasPrice: false }))
-      .addCustomToolbarOptions();
-
-    this.quarterlyCountChartOptions
-      .addDataLabelsFormatter((val, opts) =>
-        this.appChartTypesService.dataLabelsFormatter({ val, opts }, { hasPrice: false })
-      )
-      .addAxisYFormatter((val, opts) => this.appChartTypesService.axisYFormatter({ val, opts }, { hasPrice: false }))
-      .addCustomToolbarOptions();
-
-    this.unitsChartOptions
-      .addDataLabelsFormatter((val, opts) =>
-        this.appChartTypesService.dataLabelsFormatter({ val, opts }, { hasPrice: false })
-      )
-      .addAxisYFormatter((val, opts) => this.appChartTypesService.axisYFormatter({ val, opts }, { hasPrice: false }))
-      .addCustomToolbarOptions();
-
-    this.valueChartOptions
-      .addDataLabelsFormatter((val, opts) =>
-        this.appChartTypesService.dataLabelsFormatter({ val, opts }, { hasPrice: true })
-      )
-      .addAxisYFormatter((val, opts) => this.appChartTypesService.axisYFormatter({ val, opts }, { hasPrice: true }))
-      .addCustomToolbarOptions();
+    [
+      this.countChartOptions,
+      this.yearlyOrMonthlyChartOptions,
+      this.halfyCountChartOptions,
+      this.quarterlyCountChartOptions,
+      this.unitsChartOptions,
+      this.valueChartOptions,
+    ].forEach((chart, index) =>
+      chart
+        .addDataLabelsFormatter((val, opts) =>
+          this.appChartTypesService.dataLabelsFormatter({ val, opts }, { hasPrice: index === 5 ? true : false })
+        )
+        .addAxisYFormatter((val, opts) =>
+          this.appChartTypesService.axisYFormatter({ val, opts }, { hasPrice: index === 5 ? true : false })
+        )
+        .addCustomToolbarOptions()
+    );
   }
 
   private _listenToScreenSize() {
     this.screenService.screenSizeObserver$.pipe(takeUntil(this.destroy$)).subscribe((size) => {
       this.screenSize = size;
       this.countChart.first.updateOptions(
-        this.appChartTypesService.getRangeOptions(
-          size,
-          this.selectedCountBarChartType,
-          this.countChartDataLength,
-          size !== Breakpoints.XS && size !== Breakpoints.SM ? 1 : 2
-        )
+        this.appChartTypesService.getRangeOptions(size, this.selectedCountBarChartType, this.countChartDataLength, true)
       );
       this.unitsChart.first.updateOptions(
         this.appChartTypesService.getRangeOptions(size, this.selectedUnitsBarChartType, this.unitsChartDataLength)
