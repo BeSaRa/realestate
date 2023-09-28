@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { AfterViewInit, Component, OnInit, QueryList, ViewChildren, inject } from '@angular/core';
+import { AfterViewInit, Component, OnDestroy, OnInit, QueryList, ViewChildren, inject } from '@angular/core';
 import { DateAdapter, MatNativeDateModule } from '@angular/material/core';
 import { ButtonComponent } from '@components/button/button.component';
 import { ExtraHeaderComponent } from '@components/extra-header/extra-header.component';
@@ -57,7 +57,7 @@ import { Subject, map, take, takeUntil } from 'rxjs';
   templateUrl: './ownership-indicators-page.component.html',
   styleUrls: ['./ownership-indicators-page.component.scss'],
 })
-export default class OwnershipIndicatorsPageComponent implements OnInit, AfterViewInit {
+export default class OwnershipIndicatorsPageComponent implements OnInit, AfterViewInit, OnDestroy {
   @ViewChildren('carousel') carousel!: QueryList<CarouselComponent>;
   @ViewChildren('nationalitiesChart') nationalitiesChart!: QueryList<ChartComponent>;
   @ViewChildren('durationsChart') durationsChart!: QueryList<ChartComponent>;
@@ -211,6 +211,12 @@ export default class OwnershipIndicatorsPageComponent implements OnInit, AfterVi
     setTimeout(() => {
       this._listenToScreenSize();
     }, 0);
+  }
+
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
+    this.destroy$.unsubscribe();
   }
 
   switchTab(tab: 'ownership_indicators' | 'statistical_reports_for_ownership'): void {
