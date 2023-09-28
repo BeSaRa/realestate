@@ -191,6 +191,10 @@ export default class MortgageIndicatorsComponent implements OnInit, AfterViewIni
     ],
   });
 
+  unitKPIsData: KpiModel[] = [];
+  valueKPIsData: KpiModel[] = [];
+  unitMonthlyChartData: KpiDurationModel[] = [];
+  valueMonthlyChartData: KpiDurationModel[] = [];
   selectedUnitsChartDurationType = DurationEndpoints.YEARLY;
   selectedUnitsChartType: ChartType = ChartType.LINE;
   unitsChartDataLength = 0;
@@ -516,27 +520,14 @@ export default class MortgageIndicatorsComponent implements OnInit, AfterViewIni
       .loadChartKpiData({ chartDataUrl: this.urlService.URLS.MORT_KPI4 }, this.criteria.criteria)
       .pipe(take(1))
       .subscribe((data) => {
-        const _minMaxAvg = minMaxAvg(data.map((item) => item.kpiVal));
+        this.unitKPIsData = [];
+        data.forEach(model => this.unitKPIsData.push(new KpiModel().clone<KpiModel>(model)));
         this.unitsChartDataLength = data.length;
-
         this.updateUnitsChartType(ChartType.BAR);
-        this.unitsChart.first
-          .updateOptions({
-            series: [
-              {
-                name: this.lang.map.number_of_units,
-                data: data.map((item) => ({ y: item.kpiVal, x: item.issueYear })),
-              },
-            ],
-            colors: [this.appChartTypesService.chartColorsFormatter(_minMaxAvg)],
-            ...this.appChartTypesService.yearlyStaticChartOptions,
-            ...this.appChartTypesService.getRangeOptions(
-              this.screenSize,
-              this.selectedUnitsBarChartType,
-              this.unitsChartDataLength
-            ),
-          })
-          .then();
+        this.appChartTypesService.updateChartHelper(this.unitsChart.first,
+          this.unitKPIsData, true, this.screenSize,
+          this.selectedUnitsBarChartType, this.unitsChartDataLength,
+          false, true, this.lang.map.number_of_units);
       });
   }
 
@@ -553,31 +544,13 @@ export default class MortgageIndicatorsComponent implements OnInit, AfterViewIni
       .subscribe((data) => {
         this.unitsChartDataLength = data.length;
         data.sort((a, b) => a.issuePeriod - b.issuePeriod);
-        const _minMaxAvg = minMaxAvg(data.map((d) => d.kpiVal));
+        this.unitMonthlyChartData = [];
+        data.forEach(model => this.unitMonthlyChartData.push(new KpiDurationModel().clone<KpiDurationModel>(model)));
 
         this.updateUnitsChartType(ChartType.BAR);
-        this.unitsChart.first
-          .updateOptions({
-            series: [
-              {
-                name: this.lang.map.number_of_units,
-                data: data.map((item) => {
-                  return {
-                    y: item.kpiVal,
-                    x: months[item.issuePeriod - 1],
-                  };
-                }),
-              },
-            ],
-            colors: [this.appChartTypesService.chartColorsFormatter(_minMaxAvg)],
-            ...this.appChartTypesService.monthlyStaticChartOptions,
-            ...this.appChartTypesService.getRangeOptions(
-              this.screenSize,
-              this.selectedUnitsBarChartType,
-              this.unitsChartDataLength
-            ),
-          })
-          .then();
+        this.appChartTypesService.updateChartHelper(this.unitsChart.first, this.unitMonthlyChartData, true, this.screenSize,
+          this.selectedUnitsBarChartType, this.unitsChartDataLength, false, true,
+          this.lang.map.number_of_units, months);
       });
   }
 
@@ -608,23 +581,19 @@ export default class MortgageIndicatorsComponent implements OnInit, AfterViewIni
           data: data[key as unknown as number].kpiValues.map((item) => ({ y: item.kpiVal, x: item.issueYear })),
         }));
 
+        const enableDataLable: boolean = this.selectedUnitsChartType === ChartType.BAR;
+
         this.updateUnitsChartType(ChartType.BAR);
-        this.unitsChart.first
-          .updateOptions({
-            series: _chartData,
-            ...this.appChartTypesService.halflyAndQuarterlyStaticChartOptions,
-            ...this.appChartTypesService.getRangeOptions(
-              this.screenSize,
-              this.selectedUnitsBarChartType,
-              this.unitsChartDataLength
-            ),
-          })
-          .then();
+        this.appChartTypesService.updateChartHelper(this.unitsChart.first, _chartData, false, this.screenSize,
+          this.selectedUnitsBarChartType, this.unitsChartDataLength, enableDataLable, false, '', [], true);
       });
   }
 
   updateUnitsChartType(type: ChartType) {
-    this.unitsChart.first.updateOptions({ chart: { type: type } }).then();
+    const months = this.adapter.getMonthNames('long');
+    this.appChartTypesService.resetChartState(this.unitsChart.first, this.unitKPIsData, 
+      this.unitMonthlyChartData, this.selectedUnitsChartDurationType, type, 
+      this.lang.map.number_of_units, months);
     this.selectedUnitsChartType = type;
   }
 
@@ -650,27 +619,16 @@ export default class MortgageIndicatorsComponent implements OnInit, AfterViewIni
       .loadChartKpiData({ chartDataUrl: this.urlService.URLS.MORT_KPI6 }, this.criteria.criteria)
       .pipe(take(1))
       .subscribe((data) => {
+        this.valueKPIsData = [];
+        data.forEach(model => this.valueKPIsData.push(new KpiModel().clone<KpiModel>(model)));
         const _minMaxAvg = minMaxAvg(data.map((item) => item.kpiVal));
         this.valueChartDataLength = data.length;
 
         this.updateValueChartType(ChartType.BAR);
-        this.valueChart.first
-          .updateOptions({
-            series: [
-              {
-                name: this.lang.map.transactions_value,
-                data: data.map((item) => ({ y: item.kpiVal, x: item.issueYear })),
-              },
-            ],
-            colors: [this.appChartTypesService.chartColorsFormatter(_minMaxAvg)],
-            ...this.appChartTypesService.yearlyStaticChartOptions,
-            ...this.appChartTypesService.getRangeOptions(
-              this.screenSize,
-              this.selectedValueBarChartType,
-              this.valueChartDataLength
-            ),
-          })
-          .then();
+        this.appChartTypesService.updateChartHelper(this.valueChart.first,
+          this.valueKPIsData, true, this.screenSize,
+          this.selectedValueBarChartType, this.valueChartDataLength,
+          false, true, this.lang.map.transactions_value);
       });
   }
 
@@ -690,28 +648,13 @@ export default class MortgageIndicatorsComponent implements OnInit, AfterViewIni
         const _minMaxAvg = minMaxAvg(data.map((d) => d.kpiVal));
 
         this.updateValueChartType(ChartType.BAR);
-        this.valueChart.first
-          .updateOptions({
-            series: [
-              {
-                name: this.lang.map.transactions_value,
-                data: data.map((item) => {
-                  return {
-                    y: item.kpiVal,
-                    x: months[item.issuePeriod - 1],
-                  };
-                }),
-              },
-            ],
-            colors: [this.appChartTypesService.chartColorsFormatter(_minMaxAvg)],
-            ...this.appChartTypesService.monthlyStaticChartOptions,
-            ...this.appChartTypesService.getRangeOptions(
-              this.screenSize,
-              this.selectedValueBarChartType,
-              this.valueChartDataLength
-            ),
-          })
-          .then();
+        this.valueMonthlyChartData = [];
+        data.forEach(model => this.valueMonthlyChartData.push(new KpiDurationModel().clone<KpiDurationModel>(model)));
+
+        this.updateUnitsChartType(ChartType.BAR);
+        this.appChartTypesService.updateChartHelper(this.valueChart.first, this.valueMonthlyChartData, true, this.screenSize,
+          this.selectedValueBarChartType, this.valueChartDataLength, false, true,
+          this.lang.map.transactions_value, months);
       });
   }
 
@@ -743,22 +686,22 @@ export default class MortgageIndicatorsComponent implements OnInit, AfterViewIni
         }));
 
         this.updateValueChartType(ChartType.BAR);
-        this.valueChart.first
-          .updateOptions({
-            series: _chartData,
-            ...this.appChartTypesService.halflyAndQuarterlyStaticChartOptions,
-            ...this.appChartTypesService.getRangeOptions(
-              this.screenSize,
-              this.selectedValueBarChartType,
-              this.valueChartDataLength
-            ),
-          })
-          .then();
+        const enableDataLable: boolean = this.selectedValueChartType === ChartType.BAR;
+
+        this.updateUnitsChartType(ChartType.BAR);
+        this.appChartTypesService.updateChartHelper(this.valueChart.first, _chartData, false, this.screenSize,
+          this.selectedValueBarChartType, this.valueChartDataLength, enableDataLable, false, '', [], true);
+
       });
   }
 
   updateValueChartType(type: ChartType) {
-    this.valueChart.first.updateOptions({ chart: { type: type } }).then();
+    
+    const months = this.adapter.getMonthNames('long');
+    this.appChartTypesService.resetChartState(this.valueChart.first, this.valueKPIsData,
+      this.valueMonthlyChartData, this.selectedValueChartDurationType, type, 
+      this.lang.map.transactions_value, months);
+
     this.selectedValueChartType = type;
   }
 

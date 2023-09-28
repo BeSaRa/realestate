@@ -11,6 +11,9 @@ import { NgxMaskPipe } from 'ngx-mask';
 import { TranslationService } from './translation.service';
 import { KpiModel } from '@models/kpi-model';
 import { KpiDurationModel } from '@models/kpi-duration-model';
+import { ChartComponent } from 'ng-apexcharts';
+import { DurationEndpoints } from '@enums/durations';
+import { ChartType} from '@enums/chart-type';
 
 @Injectable({
   providedIn: 'root',
@@ -18,6 +21,8 @@ import { KpiDurationModel } from '@models/kpi-duration-model';
 export class AppChartTypesService {
   lang = inject(TranslationService);
   maskPipe = inject(NgxMaskPipe);
+  // protected readonly DurationTypes = DurationEndpoints;
+  // protected readonly ChartType = ChartType;
 
   private _mainChartOptions: PartialChartOptions = mainChartOptions;
   get mainChartOptions() {
@@ -173,7 +178,79 @@ export class AppChartTypesService {
         thousandSeparator: ',',
       }) as unknown as string);
   }
+
+  updateChartHelper(chart: ChartComponent, data: KpiModel[] | KpiDurationModel[] | any[], isStacked: boolean,
+    screenSize: Breakpoints, selectedDurationBarChartType: BarChartTypes, durationDataLength: number,
+    enableDataLable: boolean, enableTotalLable: boolean, selectedRoot: string = '', months: string[] = [], isHalfy: boolean = false) {
+    chart.updateOptions({
+        chart: { stacked: isStacked },
+        series: isHalfy ? data : this.splitChartDataToLevels(selectedRoot, data, months),
+        ...this.yearlyStaticChartOptions,
+        ...this.getRangeOptions(
+          screenSize,
+          selectedDurationBarChartType,
+          durationDataLength
+        ),
+        dataLabels: { enabled: enableDataLable },
+        plotOptions: {
+          bar: {
+            dataLabels: {
+              total: {
+                enabled: enableTotalLable,
+                formatter: (val: string): string => {
+                  return formatNumber(Number(val)) as string;
+                },
+                style: { color: '#259C80' },
+              },
+            },
+          },
+        },
+      }).then();
+  }
+
+  resetChartState(chart: ChartComponent, data: KpiModel[]| any[], monthlydata: KpiDurationModel[] , 
+    durationType: DurationEndpoints, type: ChartType, name?: string, months: string[] = []) {
+      if (durationType === DurationEndpoints.YEARLY) {
+
+        chart.updateOptions({
+          series: (type !== ChartType.BAR)
+            ? [
+              {
+                name: name,
+                data: data.map((item) => ({ y: item.kpiVal, x: item.issueYear })),
+                color: AppColors.PRIMARY
+              },
+            ]
+            : this.splitChartDataToLevels(name, data),
+        }).then();
+      }
+      else if (durationType === DurationEndpoints.MONTHLY) {
+        chart.updateOptions({
+          series: type !== ChartType.BAR
+            ? [{
+              name: name,
+              data: monthlydata.map((item) => {
+                return {
+                  y: item.kpiVal,
+                  x: months[item.issuePeriod - 1],
+                };
+              },),
+              color: AppColors.PRIMARY
+            }]
+            : this.splitChartDataToLevels(name, monthlydata, months),
+        }).then();
+      }
+      else {
+        chart.updateOptions({
+          dataLabels: { enabled: type === ChartType.BAR, style: { colors: [AppColors.JUNGLE] } },
+          colors: [AppColors.PRIMARY, AppColors.SECONDARY, AppColors.PRIMARY, AppColors.INDIGO_RAINBOW],
+        })
+      }
+      chart.updateOptions({ chart: { type: type } })
+  }
 }
+
+
 
 const mainChartOptions: PartialChartOptions = {
   series: [],

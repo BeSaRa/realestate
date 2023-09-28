@@ -470,6 +470,7 @@ export default class RentalIndicatorsPageComponent implements OnInit {
       this.dashboardService.loadPurposeKpi(item, this.criteria.criteria),
       this.dashboardService.loadChartKpiData(item, this.criteria.criteria),
     ]).subscribe(([subKPI, lineChartData]) => {
+      this.selectedRootChartData = [];
       lineChartData.forEach(model => this.selectedRootChartData.push(new KpiModel().clone<KpiModel>(model)))
       const purpose = subKPI.reduce((acc, item) => {
         return { ...acc, [item.purposeId]: item };
@@ -542,46 +543,10 @@ export default class RentalIndicatorsPageComponent implements OnInit {
   updateChart(): void {
     if (!this.chart.length) return;
     this.durationDataLength = this.selectedRootChartData.length;
-
-    const dataSeries = this.selectedRootChartData;
-    this.chart.first
-      .updateOptions({
-        chart: { stacked: true },
-        series: this.appChartTypesService.splitChartDataToLevels(this.selectedRoot?.getNames(), this.selectedRootChartData),
-        // colors: [AppColors.GRAY, AppColors.SECONDARY, AppColors.PRIMARY],
-        ...this.appChartTypesService.yearlyStaticChartOptions,
-        ...this.appChartTypesService.getRangeOptions(
-          this.screenSize,
-          this.selectedDurationBarChartType,
-          this.durationDataLength
-        ),
-        dataLabels: { enabled: false },
-        plotOptions: {
-          bar: {
-            dataLabels: {
-              total: {
-                enabled: true,
-                formatter: (val: string): string => {
-                  return formatNumber(Number(val)) as string;
-                },
-                style: { color: '#259C80' },
-              },
-            },
-          },
-        },
-        tooltip: {
-          shared: false,
-          custom: ({ seriesIndex, dataPointIndex }: any) =>
-            this.customChartTooltip(
-              {
-                seriesIndex,
-                dataPointIndex,
-              },
-              dataSeries
-            ),
-        },
-
-      }).then();
+    this.appChartTypesService.updateChartHelper(this.chart.first,
+      this.selectedRootChartData, true, this.screenSize,
+      this.selectedDurationBarChartType, this.durationDataLength,
+      false, true, this.selectedRoot?.getNames())
     this.updateChartType(ChartType.BAR);
   }
 
@@ -592,47 +557,12 @@ export default class RentalIndicatorsPageComponent implements OnInit {
       .loadChartKpiDataForDuration(DurationEndpoints.MONTHLY, this.selectedRoot!, this.criteria.criteria)
       .pipe(take(1))
       .subscribe((data) => {
-        this.monthlyChartData = data;
-        const _minMaxAvg = minMaxAvg(data.map((d) => d.kpiVal));
+        this.monthlyChartData = [];
+        data.forEach(model => this.monthlyChartData.push(new KpiDurationModel().clone<KpiDurationModel>(model)))
         this.durationDataLength = data.length;
-        this.chart.first
-          .updateOptions({
-            chart: { stacked: true },
-            series: this.appChartTypesService.splitChartDataToLevels(this.selectedRoot?.getNames(), data, months),
-            dataLabels: { enabled: false },
-            // colors: [AppColors.GRAY, AppColors.SECONDARY, AppColors.PRIMARY],
-            ...this.appChartTypesService.monthlyStaticChartOptions,
-            ...this.appChartTypesService.getRangeOptions(
-              this.screenSize,
-              this.selectedDurationBarChartType,
-              this.durationDataLength
-            ),
-            plotOptions: {
-              bar: {
-                dataLabels: {
-                  total: {
-                    enabled: true,
-                    formatter: (val: string): string => {
-                      return formatNumber(Number(val)) as string;
-                    },
-                    style: { color: '#259C80' },
-                  },
-                },
-              },
-            },
-            tooltip: {
-              shared: false,
-              custom: ({ seriesIndex, dataPointIndex }: any) =>
-                this.customChartTooltip(
-                  {
-                    seriesIndex,
-                    dataPointIndex,
-                  },
-                  data
-                ),
-            },
-          })
-          .then();
+        this.appChartTypesService.updateChartHelper(this.chart.first, data, true, this.screenSize,
+          this.selectedDurationBarChartType, this.durationDataLength, false, true,
+          this.selectedRoot?.getNames(), months);
         this.updateChartType(ChartType.BAR);
       });
   }
@@ -656,43 +586,14 @@ export default class RentalIndicatorsPageComponent implements OnInit {
         })
       )
       .subscribe((data) => {
-        console.log(data);
         const _chartData = Object.keys(data).map((key) => ({
           name: data[key as unknown as number].period.getNames(),
           data: data[key as unknown as number].kpiValues.map((item) => ({ y: item.kpiVal, x: item.issueYear })),
         }));
-        this.chart.first
-          .updateOptions({
-            chart: { stacked: false },
-            series: _chartData,
-            colors: [AppColors.PRIMARY, AppColors.SECONDARY, AppColors.PRIMARY, AppColors.INDIGO_RAINBOW],
-            // ...this.appChartTypesService.halflyAndQuarterlyStaticChartOptions,
-            ...this.appChartTypesService.getRangeOptions(
-              this.screenSize,
-              this.selectedDurationBarChartType,
-              this.durationDataLength
-            ),
-            dataLabels: { enabled: this.selectedChartType === ChartType.BAR, style: { colors: [AppColors.JUNGLE] } },
-            plotOptions: {
-              bar: {
-                dataLabels: {
-                  total: {
-                    enabled: false
-                  },
-                },
-              },
-            },
-            tooltip: {
-              custom: ({ seriesIndex, dataPointIndex }: any) =>
-                this.customChartTooltip(
-                  {
-                    seriesIndex,
-                    dataPointIndex,
-                  },
-                  data
-                ),
-            },
-          }).then();
+        const enableDataLable: boolean = this.selectedChartType === ChartType.BAR;
+        
+        this.appChartTypesService.updateChartHelper(this.chart.first,_chartData, false, this.screenSize,
+          this.selectedDurationBarChartType, this.durationDataLength, enableDataLable, false, '',[],true);
       });
   }
 
@@ -744,45 +645,12 @@ export default class RentalIndicatorsPageComponent implements OnInit {
   }
 
   updateChartType(type: ChartType) {
-    if (this.selectedDurationType === this.DurationTypes.YEARLY) {
 
-      this.chart.first.updateOptions({
-        series: (type !== ChartType.BAR)
-          ? [
-            {
-              name: this.selectedRoot?.getNames(),
-              data: this.selectedRootChartData.map((item) => ({ y: item.kpiVal, x: item.issueYear })),
-              color: AppColors.PRIMARY
-            },
-          ]
-          : this.appChartTypesService.splitChartDataToLevels(this.selectedRoot?.getNames(), this.selectedRootChartData),
-        // dataLabels: { enabled: true, style: { colors: [AppColors.JUNGLE] } },
-      }).then();
-    }
-    else if (this.selectedDurationType === this.DurationTypes.MONTHLY) {
-      const months = this.adapter.getMonthNames('long');
-      this.chart.first.updateOptions({
-        series: type !== ChartType.BAR
-          ? [{
-            name: this.selectedRoot?.getNames(),
-            data: this.monthlyChartData.map((item) => {
-              return {
-                y: item.kpiVal,
-                x: months[item.issuePeriod - 1],
-              };
-            },),
-            color: AppColors.PRIMARY
-          }]
-          : this.appChartTypesService.splitChartDataToLevels(this.selectedRoot?.getNames(), this.monthlyChartData, months),
-        // dataLabels: { enabled: true, style: { colors: [AppColors.JUNGLE] } },
-      }).then();
-    }
-    else {
-      this.chart.first.updateOptions({ 
-        dataLabels: { enabled: type === ChartType.BAR, style: { colors: [AppColors.JUNGLE] } },
-        colors: [AppColors.PRIMARY, AppColors.SECONDARY, AppColors.PRIMARY, AppColors.INDIGO_RAINBOW], })
-    }
-    this.chart.first.updateOptions({ chart: { type: type } })
+    const months = this.adapter.getMonthNames('long');
+    this.appChartTypesService.resetChartState(this.chart.first, this.selectedRootChartData,
+      this.monthlyChartData, this.selectedDurationType, type, 
+      this.selectedRoot?.getNames(), months);
+
     this.selectedChartType = type;
   }
 
@@ -953,18 +821,6 @@ export default class RentalIndicatorsPageComponent implements OnInit {
       this.updateFurnitureStatusPiChart();
     });
   }
-
-  // loadTransactionsBasedOnPurpose(): Observable< {
-  //   .subscribe((values) => {
-  //     this.transactionsPurpose = values;
-  //   });
-  // }
-
-  // loadTransactionsBasedOnPropertyType(): void {
-  //   .subscribe((values) => {
-  //     this.transactionsPropertyType = values;
-  //   });
-  // }
 
   openChart(item: RentTransactionPurpose | RentTransactionPropertyType): void {
     item.openChart(this.criteria.criteria).subscribe();

@@ -1,4 +1,11 @@
-export class KpiDurationModel {
+import { ClonerMixin } from "@mixins/cloner-mixin";
+import { GetNamesMixin } from "@mixins/get-names-mixin";
+import { KpiDurationInterceptor } from "@model-interceptors/kpi-duration-interceptor";
+import { InterceptModel } from "cast-response";
+const { send, receive } = new KpiDurationInterceptor();
+
+@InterceptModel({ send, receive })
+export class KpiDurationModel extends ClonerMixin(GetNamesMixin(class {})) {
   actionType!: number;
   issuePeriod!: number;
   issueYear!: number;
