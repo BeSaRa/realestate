@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, inject, OnInit, QueryList, ViewChildren } from '@angular/core';
+import { Component, inject, OnDestroy, OnInit, QueryList, ViewChildren } from '@angular/core';
 
 import { ExtraHeaderComponent } from '@components/extra-header/extra-header.component';
 import { KpiRootComponent } from '@components/kpi-root/kpi-root.component';
@@ -102,7 +102,7 @@ import { RentTransactionIndicator } from '@app-types/rent-indicators-type';
   templateUrl: './rental-indicators-page.component.html',
   styleUrls: ['./rental-indicators-page.component.scss'],
 })
-export default class RentalIndicatorsPageComponent implements OnInit {
+export default class RentalIndicatorsPageComponent implements OnInit, OnDestroy {
   protected readonly ChartType = ChartType;
   protected readonly IndicatorsType = indicatorsTypes;
 
@@ -378,6 +378,12 @@ export default class RentalIndicatorsPageComponent implements OnInit {
       });
     }, 0);
     this.reload$.next();
+  }
+
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
+    this.destroy$.unsubscribe();
   }
 
   protected setIndicatorsTableDataSource(): Observable<RentTransactionIndicator[]> {
