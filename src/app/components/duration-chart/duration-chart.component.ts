@@ -1,6 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { AfterViewInit, Component, Input, OnDestroy, OnInit, QueryList, ViewChildren, inject } from '@angular/core';
 import { DateAdapter } from '@angular/material/core';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { ButtonComponent } from '@components/button/button.component';
 import { IconButtonComponent } from '@components/icon-button/icon-button.component';
 import { AppColors } from '@constants/app-colors';
@@ -21,12 +22,20 @@ import { UrlService } from '@services/url.service';
 import { minMaxAvg } from '@utils/utils';
 import { ChartComponent, NgApexchartsModule } from 'ng-apexcharts';
 import { NgxMaskPipe } from 'ngx-mask';
-import { Observable, Subject, combineLatest, map, take, takeUntil } from 'rxjs';
+import { Observable, Subject, combineLatest, finalize, map, take, takeUntil } from 'rxjs';
 
 @Component({
   selector: 'app-duration-chart',
   standalone: true,
-  imports: [CommonModule, ButtonComponent, IconButtonComponent, NgApexchartsModule, FormatNumbersPipe, NgxMaskPipe],
+  imports: [
+    CommonModule,
+    ButtonComponent,
+    IconButtonComponent,
+    NgApexchartsModule,
+    FormatNumbersPipe,
+    NgxMaskPipe,
+    MatProgressSpinnerModule,
+  ],
   templateUrl: './duration-chart.component.html',
   styleUrls: ['./duration-chart.component.scss'],
 })
@@ -48,6 +57,7 @@ export class DurationChartComponent implements OnInit, AfterViewInit, OnDestroy 
   screenService = inject(ScreenBreakpointsService);
 
   screenSize = Breakpoints.LG;
+  isLoading = false;
 
   destroy$ = new Subject<void>();
 
@@ -103,6 +113,7 @@ export class DurationChartComponent implements OnInit, AfterViewInit, OnDestroy 
   }
 
   updateChartDataForDuration(durationType: DurationEndpoints) {
+    this.isLoading = true;
     this.selectedDurationType = durationType;
     if (this.selectedDurationType === DurationEndpoints.YEARLY) {
       this._updateForYearly();
@@ -124,7 +135,12 @@ export class DurationChartComponent implements OnInit, AfterViewInit, OnDestroy 
 
     this.dashboardService
       .loadChartKpiData(this.rootData, this.criteria)
-      .pipe(takeUntil(this.destroy$))
+      .pipe(
+        take(1),
+        finalize(() => {
+          this.isLoading = false;
+        })
+      )
       .subscribe((data) => {
         this.durationDataLength = data.length;
         this.minMaxAvgChartData = minMaxAvg(data.map((item) => item.kpiVal));
@@ -143,7 +159,12 @@ export class DurationChartComponent implements OnInit, AfterViewInit, OnDestroy 
     const months = this.adapter.getMonthNames('long');
     this.dashboardService
       .loadChartKpiDataForDuration(DurationEndpoints.MONTHLY, this.rootData, this.criteria)
-      .pipe(take(1))
+      .pipe(
+        take(1),
+        finalize(() => {
+          this.isLoading = false;
+        })
+      )
       .subscribe((data) => {
         this.durationDataLength = data.length;
         this.minMaxAvgChartData = minMaxAvg(data.map((d) => d.kpiVal));
@@ -170,7 +191,12 @@ export class DurationChartComponent implements OnInit, AfterViewInit, OnDestroy 
         this.rootData,
         this.criteria
       )
-      .pipe(take(1))
+      .pipe(
+        take(1),
+        finalize(() => {
+          this.isLoading = false;
+        })
+      )
       .pipe(
         map((durationData) => {
           return this.dashboardService.mapDurationData(
@@ -218,6 +244,7 @@ export class DurationChartComponent implements OnInit, AfterViewInit, OnDestroy 
   }
 
   private _updateOptions(staticOptions: any) {
+    this.isLoading = false;
     const _seriesData = this.isMinMaxAvgBar
       ? this.appChartTypesService.getSplittedSeriesChartOptions(this.chartSeriesData, [this.minMaxAvgChartData])
       : { series: this.chartSeriesData };

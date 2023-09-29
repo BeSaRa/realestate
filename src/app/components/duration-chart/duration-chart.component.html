@@ -11,29 +11,53 @@
         (click)="updateChartDataForDuration(DurationTypes.YEARLY)"
         [buttonStyle]="selectedDurationType === DurationTypes.YEARLY ? 'secondary' : 'secondary-outline'"
         [isRounded]="true"
-        >{{ lang.map.yearly }}</app-button
-      >
+        ><ng-container *ngIf="!isLoading || selectedDurationType !== DurationTypes.YEARLY">{{
+          lang.map.yearly
+        }}</ng-container
+        ><mat-spinner
+          diameter="20"
+          strokeWidth="2"
+          *ngIf="isLoading && selectedDurationType === DurationTypes.YEARLY"></mat-spinner>
+      </app-button>
       <app-button
         size="sm"
         (click)="updateChartDataForDuration(DurationTypes.HALFY)"
         [buttonStyle]="selectedDurationType === DurationTypes.HALFY ? 'secondary' : 'secondary-outline'"
         [isRounded]="true"
-        >{{ lang.map.half_yearly }}</app-button
-      >
+        ><ng-container *ngIf="!isLoading || selectedDurationType !== DurationTypes.HALFY">{{
+          lang.map.half_yearly
+        }}</ng-container
+        ><mat-spinner
+          diameter="20"
+          strokeWidth="2"
+          *ngIf="isLoading && selectedDurationType === DurationTypes.HALFY"></mat-spinner
+      ></app-button>
       <app-button
         size="sm"
         (click)="updateChartDataForDuration(DurationTypes.QUARTERLY)"
         [buttonStyle]="selectedDurationType === DurationTypes.QUARTERLY ? 'secondary' : 'secondary-outline'"
         [isRounded]="true"
-        >{{ lang.map.quarter_yearly }}</app-button
-      >
+        ><ng-container *ngIf="!isLoading || selectedDurationType !== DurationTypes.QUARTERLY">{{
+          lang.map.quarter_yearly
+        }}</ng-container
+        ><mat-spinner
+          diameter="20"
+          strokeWidth="2"
+          *ngIf="isLoading && selectedDurationType === DurationTypes.QUARTERLY"></mat-spinner
+      ></app-button>
       <app-button
         size="sm"
         (click)="updateChartDataForDuration(DurationTypes.MONTHLY)"
         [buttonStyle]="selectedDurationType === DurationTypes.MONTHLY ? 'secondary' : 'secondary-outline'"
         [isRounded]="true"
-        >{{ lang.map.monthly }}</app-button
-      >
+        ><ng-container *ngIf="!isLoading || selectedDurationType !== DurationTypes.MONTHLY">{{
+          lang.map.monthly
+        }}</ng-container
+        ><mat-spinner
+          diameter="20"
+          strokeWidth="2"
+          *ngIf="isLoading && selectedDurationType === DurationTypes.MONTHLY"></mat-spinner
+      ></app-button>
     </div>
   </div>
   <div class="flex flex-col mt-2 md:flex-row">
