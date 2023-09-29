@@ -33,8 +33,8 @@ import { Observable, Subject, combineLatest, map, take, takeUntil } from 'rxjs';
 export class DurationChartComponent implements OnInit, AfterViewInit, OnDestroy {
   @Input({ required: true }) title!: string;
   @Input({ required: true }) name!: string;
-  @Input({ required: true }) filterCriteria$!: Observable<CriteriaContract>;
-  @Input({ required: true }) rootData$!: Observable<{ chartDataUrl: string; hasPrice: boolean }>;
+  @Input({ required: true }) filterCriteria$!: Observable<CriteriaContract | undefined>;
+  @Input({ required: true }) rootData$!: Observable<{ chartDataUrl: string; hasPrice: boolean } | undefined>;
   @Input() showSelectChartType = true;
 
   @ViewChildren('chart') chart!: QueryList<ChartComponent>;
@@ -79,14 +79,16 @@ export class DurationChartComponent implements OnInit, AfterViewInit, OnDestroy 
 
   chartOptions: ChartOptionsModel = this.nonMinMaxAvgBarChartOptions;
 
-  ngOnInit(): void {
-    this._listenToCriteriaAndRootChange();
-    this._initializeFormatters();
-    this._listenToScreenSizeChange();
-  }
+  ngOnInit(): void {}
 
   ngAfterViewInit(): void {
-    this.chart.setDirty();
+    // this.chart.setDirty();
+    setTimeout(() => {
+      this.updateChartType(ChartType.BAR);
+      this._listenToCriteriaAndRootChange();
+      this._initializeFormatters();
+      this._listenToScreenSizeChange();
+    }, 0);
   }
 
   ngOnDestroy(): void {
@@ -193,7 +195,7 @@ export class DurationChartComponent implements OnInit, AfterViewInit, OnDestroy 
     if (!this.chartSeriesData.length) {
       return;
     }
-    let _staticOptions = undefined;
+    let _staticOptions = {};
     if (
       this.selectedDurationType === DurationEndpoints.HALFY ||
       this.selectedDurationType === DurationEndpoints.QUARTERLY
@@ -205,7 +207,7 @@ export class DurationChartComponent implements OnInit, AfterViewInit, OnDestroy 
       if (this.selectedChartType === ChartType.BAR) {
         this.isMinMaxAvgBar = true;
         this.chartOptions = this.minMaxAvgBarChartOptions;
-        _staticOptions = undefined;
+        _staticOptions = {};
       } else {
         this.isMinMaxAvgBar = false;
         this.chartOptions = this.nonMinMaxAvgBarChartOptions;
@@ -215,30 +217,35 @@ export class DurationChartComponent implements OnInit, AfterViewInit, OnDestroy 
     this._updateOptions(_staticOptions);
   }
 
-  private _updateOptions(staticOptions?: any) {
+  private _updateOptions(staticOptions: any) {
     const _seriesData = this.isMinMaxAvgBar
       ? this.appChartTypesService.getSplittedSeriesChartOptions(this.chartSeriesData, [this.minMaxAvgChartData])
-      : this.chartSeriesData;
-
-    this.chart.first.updateOptions({
-      chart: { type: this.selectedChartType },
-      series: _seriesData,
-      ...staticOptions,
-      ...this.appChartTypesService.getRangeOptions(
-        this.screenSize,
-        this.selectedDurationBarChartType,
-        this.durationDataLength,
-        this.isMinMaxAvgBar
-      ),
-    });
+      : { series: this.chartSeriesData };
+    setTimeout(() => {
+      this.chart.first
+        .updateOptions({
+          chart: { type: this.selectedChartType },
+          ..._seriesData,
+          ...staticOptions,
+          ...this.appChartTypesService.getRangeOptions(
+            this.screenSize,
+            this.selectedDurationBarChartType,
+            this.durationDataLength,
+            this.isMinMaxAvgBar
+          ),
+        })
+        .then();
+    }, 0);
   }
 
   private _listenToCriteriaAndRootChange() {
     combineLatest([this.filterCriteria$, this.rootData$])
       .pipe(takeUntil(this.destroy$))
       .subscribe(([criteria, root]) => {
+        if (!criteria || !root) return;
         this.criteria = criteria;
         this.rootData = root;
+        this.updateChartDataForDuration(this.selectedDurationType);
       });
   }
 
