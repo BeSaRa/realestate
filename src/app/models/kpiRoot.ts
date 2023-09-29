@@ -17,7 +17,7 @@ export class KpiRoot extends ClonerMixin(GetNamesMixin(class {})) implements Kpi
     public url: string,
     public subUrl?: string,
     public secondSubUrl?: string,
-    public chartDataUrl?: string,
+    public chartDataUrl = '',
     public iconUrl: string = 'assets/icons/kpi/svg/1.svg'
   ) {
     super();

@@ -1,10 +1,12 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnDestroy, OnInit, QueryList, ViewChildren, inject } from '@angular/core';
-import { DateAdapter, MatNativeDateModule } from '@angular/material/core';
+import { MatNativeDateModule } from '@angular/material/core';
 import { PageEvent } from '@angular/material/paginator';
 import { MatSortModule } from '@angular/material/sort';
 import { MatTableModule } from '@angular/material/table';
+import { SellTransactionIndicator } from '@app-types/sell-indicators-type';
 import { ButtonComponent } from '@components/button/button.component';
+import { DurationChartComponent } from '@components/duration-chart/duration-chart.component';
 import { ExtraHeaderComponent } from '@components/extra-header/extra-header.component';
 import { IconButtonComponent } from '@components/icon-button/icon-button.component';
 import { KpiRootComponent } from '@components/kpi-root/kpi-root.component';
@@ -19,11 +21,9 @@ import { SellCriteriaContract } from '@contracts/sell-criteria-contract';
 import { TableColumnCellTemplateDirective } from '@directives/table-column-cell-template.directive';
 import { TableColumnHeaderTemplateDirective } from '@directives/table-column-header-template.directive';
 import { TableColumnTemplateDirective } from '@directives/table-column-template.directive';
-import { BarChartTypes } from '@enums/bar-chart-type';
-import { Breakpoints } from '@enums/breakpoints';
+import { indicatorsTypes } from '@enums/Indicators-type';
 import { ChartType } from '@enums/chart-type';
 import { CriteriaType } from '@enums/criteria-type';
-import { DurationEndpoints } from '@enums/durations';
 import { AppTableDataSource } from '@models/app-table-data-source';
 import { ChartOptionsModel } from '@models/chart-options-model';
 import { CompositeTransaction } from '@models/composite-transaction';
@@ -33,39 +33,32 @@ import { Lookup } from '@models/lookup';
 import { SellDefaultValues } from '@models/sell-default-values';
 import { SellTop10Model } from '@models/sell-top-10-model';
 import { SellTransaction } from '@models/sell-transaction';
+import { SellTransactionPropertyType } from '@models/sell-transaction-property-type';
 import { SellTransactionPurpose } from '@models/sell-transaction-purpose';
 import { TableSortOption } from '@models/table-sort-option';
 import { FormatNumbersPipe } from '@pipes/format-numbers.pipe';
 import { AppChartTypesService } from '@services/app-chart-types.service';
 import { DashboardService } from '@services/dashboard.service';
 import { LookupService } from '@services/lookup.service';
-import { ScreenBreakpointsService } from '@services/screen-breakpoints.service';
 import { TranslationService } from '@services/translation.service';
 import { UnitsService } from '@services/units.service';
 import { UrlService } from '@services/url.service';
-import { minMaxAvg } from '@utils/utils';
 import { CarouselComponent, IvyCarouselModule } from 'angular-responsive-carousel2';
 import { ChartComponent, NgApexchartsModule } from 'ng-apexcharts';
 import { NgxMaskPipe } from 'ngx-mask';
 import {
   BehaviorSubject,
   Observable,
-  combineLatest,
   ReplaySubject,
   Subject,
+  combineLatest,
   delay,
-  forkJoin,
   map,
   of,
   switchMap,
   take,
   takeUntil,
 } from 'rxjs';
-import { SellTransactionPropertyType } from '@models/sell-transaction-property-type';
-import { indicatorsTypes } from '@enums/Indicators-type';
-import { SellTransactionIndicator } from '@app-types/sell-indicators-type';
-import { MinMaxAvgContract } from '@contracts/min-max-avg-contract';
-import { AppColors } from '@constants/app-colors';
 
 @Component({
   selector: 'app-sell-indicators-page',
@@ -91,6 +84,7 @@ import { AppColors } from '@constants/app-colors';
     NgxMaskPipe,
     MatSortModule,
     MatNativeDateModule,
+    DurationChartComponent,
   ],
   templateUrl: './sell-indicators-page.component.html',
   styleUrls: ['./sell-indicators-page.component.scss'],
@@ -98,7 +92,6 @@ import { AppColors } from '@constants/app-colors';
 export default class SellIndicatorsPageComponent implements OnInit, OnDestroy {
   protected readonly IndicatorsType = indicatorsTypes;
   @ViewChildren('carousel') carousel!: QueryList<CarouselComponent>;
-  @ViewChildren('chart') chart!: QueryList<ChartComponent>;
   @ViewChildren('top10Chart') top10Chart!: QueryList<ChartComponent>;
 
   private paginate$ = new BehaviorSubject({
@@ -112,10 +105,6 @@ export default class SellIndicatorsPageComponent implements OnInit, OnDestroy {
   lookupService = inject(LookupService);
   unitsService = inject(UnitsService);
   appChartTypesService = inject(AppChartTypesService);
-  adapter = inject(DateAdapter);
-  screenService = inject(ScreenBreakpointsService);
-
-  screenSize = Breakpoints.LG;
 
   destroy$ = new Subject<void>();
   reload$ = new ReplaySubject<void>(1);
@@ -137,6 +126,9 @@ export default class SellIndicatorsPageComponent implements OnInit, OnDestroy {
     criteria: CriteriaContract;
     type: CriteriaType;
   };
+
+  criteriaSubject = new BehaviorSubject<CriteriaContract | undefined>(undefined);
+  criteria$ = this.criteriaSubject.asObservable();
 
   rootKPIS = [
     new KpiRoot(
@@ -209,6 +201,9 @@ export default class SellIndicatorsPageComponent implements OnInit, OnDestroy {
   ];
 
   selectedRoot?: KpiRoot;
+  rootDataSubject = new BehaviorSubject<KpiRoot | undefined>(undefined);
+  rootData$ = this.rootDataSubject.asObservable();
+
   selectedPurpose?: Lookup = this.lookupService.sellLookups.rentPurposeList[0];
 
   get priceList() {
@@ -256,29 +251,6 @@ export default class SellIndicatorsPageComponent implements OnInit, OnDestroy {
       hasPrice: true,
     }),
   ];
-
-  protected readonly ChartType = ChartType;
-  selectedChartType: ChartType = ChartType.LINE;
-  selectedRootChartData: {
-    name?: string;
-    data: { y: number; x: number | string }[];
-  }[] = [];
-  minMaxAvgChartData!: MinMaxAvgContract;
-
-  DurationTypes = DurationEndpoints;
-  selectedDurationType: DurationEndpoints = DurationEndpoints.YEARLY;
-  selectedDurationBarChartType = BarChartTypes.SINGLE_BAR;
-  durationDataLength = 0;
-  isStacked = false;
-  chartOptions: ChartOptionsModel = new ChartOptionsModel().clone<ChartOptionsModel>(
-    this.appChartTypesService.mainChartOptions
-  );
-  nonMinMaxAvgBarChartOptions: ChartOptionsModel = new ChartOptionsModel().clone<ChartOptionsModel>(
-    this.appChartTypesService.mainChartOptions
-  );
-  minMaxAvgBarChartOptions: ChartOptionsModel = new ChartOptionsModel().clone<ChartOptionsModel>(
-    this.appChartTypesService.minMaxAvgBarChartOptions
-  );
 
   // transactions = new ReplaySubject<SellTransaction[]>(1);
   transactions$: Observable<SellTransaction[]> = this.loadTransactions();
@@ -340,6 +312,7 @@ export default class SellIndicatorsPageComponent implements OnInit, OnDestroy {
 
   transactionsStatisticsColumns = ['average', 'certificates-count', 'area', 'units-count', 'average-square', 'chart'];
 
+  protected readonly ChartType = ChartType;
   top10ChartData: SellTop10Model[] = [];
   selectedTop10: Lookup = this.accordingToList[0];
   selectedTop10ChartType: 'bar' | 'line' = ChartType.BAR;
@@ -369,23 +342,6 @@ export default class SellIndicatorsPageComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this._initializeChartsFormatters();
-
-    setTimeout(() => {
-      this.updateChartType(ChartType.BAR);
-      this.screenService.screenSizeObserver$.pipe(takeUntil(this.destroy$)).subscribe((size) => {
-        this.screenSize = size;
-        if (this.selectedTab === 'sell_indicators') {
-          this.chart.first.updateOptions(
-            this.appChartTypesService.getRangeOptions(
-              size,
-              this.selectedDurationBarChartType,
-              this.durationDataLength,
-              this.isStacked
-            )
-          );
-        }
-      });
-    }, 0);
     this.reload$.next();
   }
 
@@ -436,14 +392,11 @@ export default class SellIndicatorsPageComponent implements OnInit, OnDestroy {
     this.selectedTab = tab;
     if (this.selectedTab === 'sell_indicators') {
       this.carousel.setDirty();
-      this.chart.setDirty();
     } else {
       this.top10Chart.setDirty();
     }
     setTimeout(() => {
-      if (this.selectedTab === 'sell_indicators') {
-        this.updateChartDuration(this.selectedDurationType);
-      } else {
+      if (this.selectedTab === 'statistical_reports_for_sell') {
         this.updateTop10Chart();
       }
     });
@@ -466,6 +419,7 @@ export default class SellIndicatorsPageComponent implements OnInit, OnDestroy {
 
   filterChange({ criteria, type }: { criteria: CriteriaContract; type: CriteriaType }) {
     this.criteria = { criteria, type };
+    this.criteriaSubject.next(criteria);
     if (type === CriteriaType.DEFAULT) {
       // load default
       this.dashboardService.loadSellDefaults(criteria as Partial<SellCriteriaContract>).subscribe((result) => {
@@ -523,28 +477,30 @@ export default class SellIndicatorsPageComponent implements OnInit, OnDestroy {
       item !== i ? (i.selected = false) : (item.selected = true);
     });
 
-    this.dashboardService.loadPurposeKpi(item, this.criteria.criteria).subscribe((subKPI) => {
-      const purpose = subKPI.reduce((acc, item) => {
-        return { ...acc, [item.purposeId]: item };
-      }, {} as Record<number, KpiModel>);
+    this.dashboardService
+      .loadPurposeKpi(item, this.criteria.criteria)
+      .pipe(take(1))
+      .subscribe((subKPI) => {
+        const purpose = subKPI.reduce((acc, item) => {
+          return { ...acc, [item.purposeId]: item };
+        }, {} as Record<number, KpiModel>);
 
-      this.purposeKPIS = this.purposeKPIS.map((item) => {
-        Object.prototype.hasOwnProperty.call(purpose, item.lookupKey)
-          ? (item.value = purpose[item.lookupKey].kpiVal)
-          : (item.value = 0);
-        Object.prototype.hasOwnProperty.call(purpose, item.lookupKey)
-          ? (item.yoy = purpose[item.lookupKey].kpiYoYVal)
-          : (item.yoy = 0);
-        return item;
+        this.purposeKPIS = this.purposeKPIS.map((item) => {
+          Object.prototype.hasOwnProperty.call(purpose, item.lookupKey)
+            ? (item.value = purpose[item.lookupKey].kpiVal)
+            : (item.value = 0);
+          Object.prototype.hasOwnProperty.call(purpose, item.lookupKey)
+            ? (item.yoy = purpose[item.lookupKey].kpiYoYVal)
+            : (item.yoy = 0);
+          return item;
+        });
+        this.selectedRoot && this.updateAllPurpose(this.selectedRoot.value, this.selectedRoot.yoy);
+        this.selectedPurpose && this.purposeSelected(this.selectedPurpose);
+        this.rootDataSubject.next(this.selectedRoot);
+        if (this.selectedTab === 'statistical_reports_for_sell') {
+          this.updateTop10Chart();
+        }
       });
-      this.selectedRoot && this.updateAllPurpose(this.selectedRoot.value, this.selectedRoot.yoy);
-      this.selectedPurpose && this.purposeSelected(this.selectedPurpose);
-      if (this.selectedTab === 'sell_indicators') {
-        this.updateChartDuration(this.selectedDurationType);
-      } else {
-        this.updateTop10Chart();
-      }
-    });
   }
 
   updateAllPurpose(value: number, yoy: number): void {
@@ -584,164 +540,6 @@ export default class SellIndicatorsPageComponent implements OnInit, OnDestroy {
     this.carousel.first.cellsToScroll = this.carousel.first.cellLength;
     this.carousel.first.next();
     this.carousel.first.cellsToScroll = 1;
-  }
-
-  updateChartYearly(): void {
-    if (!this.chart.length) return;
-
-    this.dashboardService
-      .loadChartKpiData(this.selectedRoot!, this.criteria.criteria)
-      .pipe(takeUntil(this.destroy$))
-      .subscribe((data) => {
-        this.durationDataLength = data.length;
-        this.minMaxAvgChartData = minMaxAvg(data.map((item) => item.kpiVal));
-        this.selectedRootChartData = [
-          {
-            name: this.selectedRoot?.getNames(),
-            data: data.map((item) => ({ y: item.kpiVal, x: item.issueYear })),
-          },
-        ];
-        this.updateChartType(this.selectedChartType);
-      });
-  }
-
-  updateChartMonthly() {
-    this.adapter.setLocale(this.lang.getCurrent().code === 'ar-SA' ? 'ar-EG' : 'en-US');
-    const months = this.adapter.getMonthNames('long');
-    this.dashboardService
-      .loadChartKpiDataForDuration(DurationEndpoints.MONTHLY, this.selectedRoot!, this.criteria.criteria)
-      .pipe(take(1))
-      .subscribe((data) => {
-        this.durationDataLength = data.length;
-        this.minMaxAvgChartData = minMaxAvg(data.map((d) => d.kpiVal));
-        data.sort((a, b) => a.issuePeriod - b.issuePeriod);
-        this.selectedRootChartData = [
-          {
-            name: this.selectedRoot?.getNames(),
-            data: data.map((item) => {
-              return {
-                y: item.kpiVal,
-                x: months[item.issuePeriod - 1],
-              };
-            }),
-          },
-        ];
-        this.updateChartType(this.selectedChartType);
-      });
-  }
-
-  updateChartHalfyOrQuarterly() {
-    this.dashboardService
-      .loadChartKpiDataForDuration(
-        this.selectedDurationType === DurationEndpoints.HALFY ? DurationEndpoints.HALFY : DurationEndpoints.QUARTERLY,
-        this.selectedRoot!,
-        this.criteria.criteria
-      )
-      .pipe(take(1))
-      .pipe(
-        map((durationData) => {
-          return this.dashboardService.mapDurationData(
-            durationData,
-            this.selectedDurationType === DurationEndpoints.HALFY
-              ? this.lookupService.sellLookups.halfYearDurations
-              : this.lookupService.sellLookups.quarterYearDurations
-          );
-        })
-      )
-      .subscribe((data) => {
-        this.durationDataLength = data[1].kpiValues.length;
-        this.selectedRootChartData = Object.keys(data).map((key) => ({
-          name: data[key as unknown as number].period.getNames(),
-          data: data[key as unknown as number].kpiValues.map((item) => ({ y: item.kpiVal, x: item.issueYear })),
-        }));
-        this.updateChartType(this.selectedChartType);
-      });
-  }
-
-  updateChartType(type: ChartType) {
-    this.selectedChartType = type;
-    if (!this.selectedRootChartData.length) {
-      return;
-    }
-    if (
-      this.selectedDurationType === DurationEndpoints.HALFY ||
-      this.selectedDurationType === DurationEndpoints.QUARTERLY
-    ) {
-      this.isStacked = false;
-      this.chartOptions = this.nonMinMaxAvgBarChartOptions;
-      setTimeout(() => {
-        this.chart.first.updateOptions({
-          chart: { type: type },
-          series: this.selectedRootChartData,
-          ...this.appChartTypesService.halflyAndQuarterlyStaticChartOptions,
-          ...this.appChartTypesService.getRangeOptions(
-            this.screenSize,
-            this.selectedDurationBarChartType,
-            this.durationDataLength
-          ),
-        });
-      }, 0);
-    } else {
-      if (type === ChartType.BAR) {
-        this.isStacked = true;
-        this.chartOptions = this.minMaxAvgBarChartOptions;
-        setTimeout(() => {
-          this.chart.first
-            .updateOptions({
-              chart: {
-                type,
-              },
-              ...this.appChartTypesService.getSplittedSeriesChartOptions(this.selectedRootChartData, [
-                this.minMaxAvgChartData,
-              ]),
-              ...this.appChartTypesService.getRangeOptions(
-                this.screenSize,
-                this.selectedDurationBarChartType,
-                this.durationDataLength,
-                true
-              ),
-            })
-            .then();
-        }, 0);
-      } else {
-        this.isStacked = false;
-        this.chartOptions = this.nonMinMaxAvgBarChartOptions;
-        setTimeout(() => {
-          this.chart.first
-            .updateOptions({
-              chart: {
-                type,
-              },
-              series: this.selectedRootChartData,
-              colors: [AppColors.PRIMARY],
-              ...this.appChartTypesService.yearlyStaticChartOptions,
-              ...this.appChartTypesService.getRangeOptions(
-                this.screenSize,
-                this.selectedDurationBarChartType,
-                this.durationDataLength
-              ),
-            })
-            .then();
-        }, 0);
-      }
-    }
-  }
-
-  updateChartDuration(durationType: DurationEndpoints) {
-    this.selectedDurationType = durationType;
-    if (this.selectedDurationType === DurationEndpoints.YEARLY) {
-      this.updateChartYearly();
-      this.selectedDurationBarChartType = BarChartTypes.SINGLE_BAR;
-    } else if (this.selectedDurationType === DurationEndpoints.MONTHLY) {
-      this.updateChartMonthly();
-      this.selectedDurationBarChartType = BarChartTypes.SINGLE_BAR;
-    } else if (this.selectedDurationType === DurationEndpoints.HALFY) {
-      this.updateChartHalfyOrQuarterly();
-      this.selectedDurationBarChartType = BarChartTypes.DOUBLE_BAR;
-    } else {
-      this.updateChartHalfyOrQuarterly();
-      this.selectedDurationBarChartType = BarChartTypes.QUAD_BAR;
-    }
   }
 
   protected loadTransactions(): Observable<SellTransaction[]> {
@@ -867,15 +665,6 @@ export default class SellIndicatorsPageComponent implements OnInit, OnDestroy {
   }
 
   private _initializeChartsFormatters() {
-    [this.chartOptions, this.nonMinMaxAvgBarChartOptions, this.minMaxAvgBarChartOptions].forEach((chart) => {
-      chart
-        .addDataLabelsFormatter((val, opts) =>
-          this.appChartTypesService.dataLabelsFormatter({ val, opts }, this.selectedRoot)
-        )
-        .addAxisYFormatter((val, opts) => this.appChartTypesService.axisYFormatter({ val, opts }, this.selectedRoot))
-        .addCustomToolbarOptions();
-    });
-
     [this.top10ChartOptions.line, this.top10ChartOptions.bar].forEach((chart) => {
       chart
         .addDataLabelsFormatter((val, opts) =>
