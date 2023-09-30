@@ -171,7 +171,7 @@
       <h3
         class="heading text-xl sm:text-2xl md:text-3xl self-center md:self-start text-center text-primary border-secondary font-semibold">
         {{ lang.map.ownerships_count_change_for_nationality }}
-        ({{ lookupService.ownerNationalityMap[selectedNationalityId].getNames() }})
+        ({{ getNationalityNames(selectedNationality.id) }})
       </h3>
 
       <div class="mt-4 flex justify-center md:justify-end gap-2">
@@ -228,7 +228,7 @@
       <h3
         class="heading text-xl sm:text-2xl md:text-3xl self-center md:self-start text-center text-primary border-secondary font-semibold">
         {{ lang.map.ownerships_count_per_municipality }}
-        ({{ lookupService.ownerNationalityMap[selectedNationalityId].getNames() }})
+        ({{ getNationalityNames(selectedNationality.id) }})
       </h3>
 
       <div class="flex-auto overflow-hidden mt-2 pt-1" dir="ltr">
@@ -254,8 +254,8 @@
       <h3
         class="heading text-xl sm:text-2xl md:text-3xl self-center md:self-start text-center text-primary border-secondary font-semibold">
         {{ lang.map.ownerships_count_per_area }}
-        ({{ lookupService.ownerNationalityMap[selectedNationalityId].getNames() }}) {{ lang.map.and_municipality }} ({{
-          lookupService.ownerMunicipalitiesMap[selectedMunicipalityId].getNames()
+        ({{ getNationalityNames(selectedNationality.id) }}) {{ lang.map.and_municipality }} ({{
+          lookupService.ownerMunicipalitiesMap[selectedMunicipality.id].getNames()
         }})
       </h3>
 
@@ -284,9 +284,7 @@
         <div class="shadow-lg rounded-lg overflow-hidden bg-white">
           <div class="bg-primary p-4 flex justify-center items-center">
             <span class="text-white text-center text-lg sm:text-xl font-semibold"
-              >{{ lang.map.ownerships_count_per_owner_category }} ({{
-                lookupService.ownerNationalityMap[selectedNationalityId].getNames()
-              }})
+              >{{ lang.map.ownerships_count_per_owner_category }} ({{ getNationalityNames(selectedNationality.id) }})
             </span>
           </div>
           <div dir="ltr" class="flex justify-center">
@@ -301,13 +299,11 @@
           </div>
         </div>
       </div>
-      <div class="py-5">
+      <div class="py-5" [ngClass]="{ hidden: selectedNationality.id === specialNationality.lookupKey }">
         <div class="shadow-lg rounded-lg overflow-hidden bg-white">
           <div class="bg-primary p-4 flex justify-center items-center">
             <span class="text-white text-center text-lg sm:text-xl font-semibold"
-              >{{ lang.map.ownerships_count_per_owner_age }} ({{
-                lookupService.ownerNationalityMap[selectedNationalityId].getNames()
-              }})
+              >{{ lang.map.ownerships_count_per_owner_age }} ({{ getNationalityNames(selectedNationality.id) }})
             </span>
           </div>
           <div dir="ltr" class="flex justify-center">

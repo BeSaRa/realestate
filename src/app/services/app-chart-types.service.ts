@@ -174,6 +174,27 @@ export class AppChartTypesService {
     ];
   }
 
+  getXAnnotaionForSelectedBar(text: string) {
+    return {
+      x: text,
+      opacity: 1,
+      borderColor: AppColors.SECONDARY,
+      label: {
+        text,
+        orientation: 'horizontal',
+        borderWidth: 0,
+        borderRadius: 4,
+        position: 'bottom',
+        offsetY: 25,
+        style: {
+          background: AppColors.SECONDARY,
+          color: '#ffffff',
+          fontSize: '18px',
+        },
+      },
+    };
+  }
+
   private _labelFormatter(val: string | number | number[], root?: { hasPrice: boolean }) {
     if (typeof val === 'undefined') return val;
     if (typeof val === 'string' && (val as unknown as number) !== undefined && (val as unknown as number) !== null)

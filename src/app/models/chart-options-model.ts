@@ -35,6 +35,7 @@ export interface DataPointSelectionConfig {
 
 export interface ChartConfig {
   config: Required<PartialChartOptions>;
+  globals: { selectedDataPoints: number[][] };
 }
 
 export class ChartOptionsModel extends ClonerMixin(class {}) implements PartialChartOptions {
