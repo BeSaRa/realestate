@@ -93,6 +93,7 @@ const sellEndPoints = {
   SELL_KPI34: 'SELL|kpi34/stats/bed-rooms-count',
 
   SELL_KPI35_36_37: 'SELL|kpi35_36_37/stats/indicators',
+  SELL_KPI_ML: 'SELL|kpi_ml',
 };
 const mortgageEndpoints = {
   MORT: 'BE|kpi/mortgage',
