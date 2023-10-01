@@ -237,4 +237,8 @@ export interface LangKeysContract {
   ownerships_count_per_owner_sex: string;
   ownerships_count_per_owner_age_summary: string;
   ownerships_count_per_owner_category_summary: string;
+
+  current_average_price: string;
+  average_price_five_years_ago : string;
+  average_forecast_price : string;
 }

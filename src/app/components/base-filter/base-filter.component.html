@@ -1,0 +1,34 @@
+<div
+  class="grid gap-4 grid-cols-3 md:grid-cols-3 xl:grid-cols-3 [&.fixed]:left-0 [&.fixed]:right-0 [&.fixed]:top-[70px] lg:[&.fixed]:top-[78px] [&.fixed]:h-[86px] [&.fixed]:overflow-hidden [&.fixed]:px-3 lg:[&.fixed]:px-16 [&.fixed]:pt-1.5 [&.fixed]:bg-sand [&.fixed]:shadow [&.fixed]:z-[12]">
+  <ng-container [formGroup]="priceForm">
+    <app-select-input
+      [enableFilter]="true"
+      bindFilter="getNames"
+      formControlName="municipalityId"
+      bindLabel="getNames"
+      bindValue="lookupKey"
+      [label]="lang.map.municipal"
+      [options]="priceMunicipalities" 
+      [isSecondary]="true"/>
+
+    <app-select-input
+      [enableFilter]="true"
+      bindFilter="getNames"
+      formControlName="areaCode"
+      bindValue="lookupKey"
+      bindLabel="getNames"
+      [label]="lang.map.district"
+      [options]="filteredAreas"
+      [isSecondary]="true" />
+
+    <app-select-input
+      [enableFilter]="false"
+      bindFilter="getNames"
+      formControlName="propertyTypeList"
+      bindValue="lookupKey"
+      [label]="lang.map.property_type"
+      bindLabel="getNames"
+      [options]="pricePropertyTypes"
+      [isSecondary]="true" />
+  </ng-container>
+</div>

@@ -43,6 +43,8 @@ import { TranslationService } from './translation.service';
 import { SellTransactionPropertyType } from '@models/sell-transaction-property-type';
 import { RentTransactionPropertyType } from '@models/rent-transaction-property-type';
 import { Pagination } from '@models/pagination';
+import { MLPriceItem } from '@models/ml-price-item';
+import { PriceCriteriaContract } from '@contracts/price-criteria-contract';
 
 
 @Injectable({
@@ -79,6 +81,10 @@ export class DashboardService extends RegisterServiceMixin(class {}) implements 
 
   loadKpiRoot(kpi: KpiRoot, criteria: CriteriaContract): Observable<KpiModel[]> {
     return this.http.post<KpiModel[]>(kpi.url, criteria);
+  }
+
+  loadPropertyTypePrice(criteria: Partial<PriceCriteriaContract>): Observable<MLPriceItem[]> {
+    return this.http.post<MLPriceItem[]>(this.urlService.URLS.SELL_KPI_ML, criteria);
   }
 
   loadPurposeKpi(kpi: KpiRoot, criteria: Partial<CriteriaContract>): Observable<KpiModel[]> {
