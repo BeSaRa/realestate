@@ -59,6 +59,10 @@ import {
   take,
   takeUntil,
 } from 'rxjs';
+import { BaseFilterComponent } from '@components/base-filter/base-filter.component';
+import { PropertyPriceBlockComponent } from '@components/property-price-block/property-price-block.component';
+import { MLPriceItem } from '@models/ml-price-item';
+import { PriceCriteriaContract } from '@contracts/price-criteria-contract';
 
 @Component({
   selector: 'app-sell-indicators-page',
@@ -85,6 +89,8 @@ import {
     MatSortModule,
     MatNativeDateModule,
     DurationChartComponent,
+    BaseFilterComponent,
+    PropertyPriceBlockComponent,
   ],
   templateUrl: './sell-indicators-page.component.html',
   styleUrls: ['./sell-indicators-page.component.scss'],
@@ -113,6 +119,7 @@ export default class SellIndicatorsPageComponent implements OnInit, OnDestroy {
 
   municipalities = this.lookupService.sellLookups.municipalityList;
   propertyTypes = this.lookupService.sellLookups.propertyTypeList;
+  pricePropertyTypes = this.lookupService.sellLookups.propertyTypeList.filter(x => x.lookupKey !== -1);
   propertyUsages = this.lookupService.sellLookups.rentPurposeList.slice().sort((a, b) => a.lookupKey - b.lookupKey);
   areas = this.lookupService.sellLookups.districtList.slice().sort((a, b) => a.lookupKey - b.lookupKey);
   // zones = this.lookupService.sellLookups.zoneList;
@@ -127,7 +134,12 @@ export default class SellIndicatorsPageComponent implements OnInit, OnDestroy {
     type: CriteriaType;
   };
 
+  priceCriteria!: {
+    criteria: PriceCriteriaContract;
+  };
+
   criteriaSubject = new BehaviorSubject<CriteriaContract | undefined>(undefined);
+  priceCriteriaSubject = new BehaviorSubject<PriceCriteriaContract | undefined>(undefined);
   criteria$ = this.criteriaSubject.asObservable();
 
   rootKPIS = [
@@ -256,6 +268,11 @@ export default class SellIndicatorsPageComponent implements OnInit, OnDestroy {
   transactions$: Observable<SellTransaction[]> = this.loadTransactions();
   dataSource: AppTableDataSource<SellTransaction> = new AppTableDataSource(this.transactions$);
   transactionsCount = 0;
+
+  //MLPriceItemSubject :BehaviorSubject<MLPriceItem>;//= new BehaviorSubject<MLPriceItem>();
+  priceItem!: MLPriceItem;// = this.MLPriceItemSubject.asObservable();
+
+  
 
   transactionsStatistics$: Observable<SellTransactionIndicator[]> = this.setIndicatorsTableDataSource();
   transactionsStatisticsDatasource = new AppTableDataSource<SellTransactionIndicator>(this.transactionsStatistics$);
@@ -451,6 +468,20 @@ export default class SellIndicatorsPageComponent implements OnInit, OnDestroy {
     this.loadCompositeTransactions();
     this.setIndicatorsTableDataSource();
     // this.loadRoomCounts();
+  }
+  priceFilterChange(criteria: PriceCriteriaContract) {
+    console.log("criteria", criteria)
+    this.priceCriteria = {criteria};
+    this.priceCriteriaSubject.next(criteria);
+      this.dashboardService.loadPropertyTypePrice(criteria).pipe(take(1)).subscribe((result) => {
+        this.priceItem = new MLPriceItem().clone<MLPriceItem>({
+          kpiCurrent: result[0].kpiCurrent,
+          kpiPast: result[0].kpiPast,
+          kpiPredicated: result[0].kpiPredicated,
+          propertyTypeId: criteria.propertyTypeList[0],
+          propertyTypeInfo: this.lookupService.sellPropertyTypeMap[criteria.propertyTypeList[0]]
+        });
+      });
   }
 
   private setDefaultRoots(sellDefaultValue?: SellDefaultValues) {
