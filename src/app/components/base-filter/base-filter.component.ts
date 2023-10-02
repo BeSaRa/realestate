@@ -130,7 +130,7 @@ export class BaseFilterComponent implements OnInit, OnDestroy {
   private setDefaultValues() {
     this.priceForm.patchValue({
       municipalityId: 4,
-      propertyTypeList: [1],
+      propertyTypeList: 1,
       areaCode: 4
     });
     this.sendFilter();
@@ -158,7 +158,7 @@ export class BaseFilterComponent implements OnInit, OnDestroy {
   }
 
   sendFilter(): void {
-    let value = { ...this.priceForm.value };
+    let value = { ...this.priceForm.value, propertyTypeList : [this.priceForm.value.propertyTypeList]};
     this.fromChanged.emit(value as PriceCriteriaContract);
   }
 

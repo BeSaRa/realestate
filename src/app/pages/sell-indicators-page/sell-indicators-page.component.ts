@@ -119,7 +119,9 @@ export default class SellIndicatorsPageComponent implements OnInit, OnDestroy {
 
   municipalities = this.lookupService.sellLookups.municipalityList;
   propertyTypes = this.lookupService.sellLookups.propertyTypeList;
-  pricePropertyTypes = this.lookupService.sellLookups.propertyTypeList.filter(x => x.lookupKey !== -1);
+  pricePropertyTypes = this.lookupService.sellLookups.propertyTypeList
+    .filter(x => x.lookupKey !== -1)
+    .map(e => new Lookup().clone<Lookup>(e));
   propertyUsages = this.lookupService.sellLookups.rentPurposeList.slice().sort((a, b) => a.lookupKey - b.lookupKey);
   areas = this.lookupService.sellLookups.districtList.slice().sort((a, b) => a.lookupKey - b.lookupKey);
   // zones = this.lookupService.sellLookups.zoneList;
@@ -272,7 +274,7 @@ export default class SellIndicatorsPageComponent implements OnInit, OnDestroy {
   //MLPriceItemSubject :BehaviorSubject<MLPriceItem>;//= new BehaviorSubject<MLPriceItem>();
   priceItem!: MLPriceItem;// = this.MLPriceItemSubject.asObservable();
 
-  
+
 
   transactionsStatistics$: Observable<SellTransactionIndicator[]> = this.setIndicatorsTableDataSource();
   transactionsStatisticsDatasource = new AppTableDataSource<SellTransactionIndicator>(this.transactionsStatistics$);
