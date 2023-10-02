@@ -150,8 +150,8 @@ export class LookupService extends RegisterServiceMixin(class {}) implements Ser
           this.rentLookups = rent;
           this.sellLookups = this._addAllToDistrict(this._addAllToPropertyType(sell));
           this.mortLookups = this._addAllToDistrict(this._addAllToPropertyType(mort));
-          this.ownerLookups = this._addStatePropertyToOwnerCategories(
-            this._addAllToOwnerCategories(
+          this.ownerLookups = this._addAllToOwnerCategories(
+            this._addStatePropertyToOwnerCategories(
               this._addAllToNationalities(
                 this._addAllToDistrict(this._addAllToMunicipalities(this._addAllToPropertyType(owner)))
               )
