@@ -107,80 +107,12 @@
         </div>
       </div>
     </div>
-    <div class="py-16 px-3 lg:px-16 flex flex-col">
-      <h3
-        *ngIf="selectedRoot"
-        class="heading text-xl sm:text-2xl md:text-3xl self-center md:self-start text-center text-primary border-secondary font-semibold">
-        {{ selectedRoot.getNames() }} {{ basedOnCriteria }}
-      </h3>
-
-      <div class="mt-4 flex justify-center md:justify-end">
-        <div class="grid grid-cols-4 gap-2">
-          <app-button
-            size="sm"
-            (click)="updateChartDuration(DurationTypes.YEARLY)"
-            [buttonStyle]="selectedDurationType === DurationTypes.YEARLY ? 'secondary' : 'secondary-outline'"
-            [isRounded]="true"
-            >{{ lang.map.yearly }}</app-button
-          >
-          <app-button
-            size="sm"
-            (click)="updateChartDuration(DurationTypes.HALFY)"
-            [buttonStyle]="selectedDurationType === DurationTypes.HALFY ? 'secondary' : 'secondary-outline'"
-            [isRounded]="true"
-            >{{ lang.map.half_yearly }}</app-button
-          >
-          <app-button
-            size="sm"
-            (click)="updateChartDuration(DurationTypes.QUARTERLY)"
-            [buttonStyle]="selectedDurationType === DurationTypes.QUARTERLY ? 'secondary' : 'secondary-outline'"
-            [isRounded]="true"
-            >{{ lang.map.quarter_yearly }}</app-button
-          >
-          <app-button
-            size="sm"
-            (click)="updateChartDuration(DurationTypes.MONTHLY)"
-            [buttonStyle]="selectedDurationType === DurationTypes.MONTHLY ? 'secondary' : 'secondary-outline'"
-            [isRounded]="true"
-            >{{ lang.map.monthly }}</app-button
-          >
-        </div>
-      </div>
-      <div class="flex flex-col mt-2 md:flex-row">
-        <div class="flex-auto overflow-hidden pt-1" dir="ltr">
-          <apx-chart
-            #chart
-            class="custom-toolbar [&>div]:ml-[-22px]"
-            [series]="chartOptions.series!"
-            [chart]="chartOptions.chart!"
-            [xaxis]="chartOptions.xaxis!"
-            [stroke]="chartOptions.stroke!"
-            [colors]="chartOptions.colors!"
-            [dataLabels]="chartOptions.dataLabels!"
-            [legend]="chartOptions.legend!"
-            [markers]="chartOptions.markers!"
-            [grid]="chartOptions.grid!"
-            [yaxis]="chartOptions.yaxis!"
-            [tooltip]="chartOptions.tooltip!"
-            [plotOptions]="chartOptions.plotOptions!"
-            [title]="chartOptions.title!" />
-        </div>
-        <div class="h-full flex flex-row justify-center md:flex-col -mt-6 md:mt-4">
-          <app-icon-button
-            [ngClass]="{ 'text-primary': isSelectedChartType(ChartType.LINE) }"
-            (click)="updateChartType(ChartType.LINE)"
-            class="text-primary"
-            icon="LINE_CHART" />
-          <app-icon-button
-            [ngClass]="{ 'text-primary': isSelectedChartType(ChartType.BAR) }"
-            (click)="updateChartType(ChartType.BAR)"
-            icon="BAR_CHART" />
-          <app-icon-button
-            [ngClass]="{ 'text-primary': isSelectedChartType(ChartType.AREA) }"
-            (click)="updateChartType(ChartType.AREA)"
-            icon="AREA_CHART" />
-        </div>
-      </div>
+    <div class="py-16 px-3 lg:px-16">
+      <app-duration-chart
+        [title]="(selectedRoot?.getNames() ?? '') + ' ' + basedOnCriteria"
+        [name]="selectedRoot?.getNames() ?? ''"
+        [filterCriteria$]="criteria$"
+        [rootData$]="rootData$"></app-duration-chart>
     </div>
     <div class="px-3 lg:px-16 flex flex-col gap-4">
       <h3

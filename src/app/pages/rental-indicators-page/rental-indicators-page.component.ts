@@ -15,11 +15,13 @@ import { KpiRoot } from '@models/kpiRoot';
 import { RentDefaultValues } from '@models/rent-default-values';
 import { RentTop10Model } from '@models/rent-top-10-model';
 
-import { DateAdapter, MatNativeDateModule } from '@angular/material/core';
+import { MatNativeDateModule } from '@angular/material/core';
 import { PageEvent } from '@angular/material/paginator';
 import { MatSortModule } from '@angular/material/sort';
 import { MatTableModule } from '@angular/material/table';
+import { RentTransactionIndicator } from '@app-types/rent-indicators-type';
 import { ButtonComponent } from '@components/button/button.component';
+import { DurationChartComponent } from '@components/duration-chart/duration-chart.component';
 import { IconButtonComponent } from '@components/icon-button/icon-button.component';
 import { TableComponent } from '@components/table/table.component';
 import { YoyIndicatorComponent } from '@components/yoy-indicator/yoy-indicator.component';
@@ -27,10 +29,8 @@ import { maskSeparator } from '@constants/mask-separator';
 import { TableColumnCellTemplateDirective } from '@directives/table-column-cell-template.directive';
 import { TableColumnHeaderTemplateDirective } from '@directives/table-column-header-template.directive';
 import { TableColumnTemplateDirective } from '@directives/table-column-template.directive';
-import { BarChartTypes } from '@enums/bar-chart-type';
-import { Breakpoints } from '@enums/breakpoints';
 import { ChartType } from '@enums/chart-type';
-import { DurationEndpoints } from '@enums/durations';
+import { indicatorsTypes } from '@enums/Indicators-type';
 import { AppTableDataSource } from '@models/app-table-data-source';
 import { ChartOptionsModel } from '@models/chart-options-model';
 import { RentCompositeTransaction } from '@models/composite-transaction';
@@ -38,6 +38,7 @@ import { FurnitureStatusKpi } from '@models/furniture-status-kpi';
 import { KpiModel } from '@models/kpi-model';
 import { Lookup } from '@models/lookup';
 import { RentTransaction } from '@models/rent-transaction';
+import { RentTransactionPropertyType } from '@models/rent-transaction-property-type';
 import { RentTransactionPurpose } from '@models/rent-transaction-purpose';
 import { RoomNumberKpi } from '@models/room-number-kpi';
 import { TableSortOption } from '@models/table-sort-option';
@@ -45,11 +46,9 @@ import { FormatNumbersPipe } from '@pipes/format-numbers.pipe';
 import { AppChartTypesService } from '@services/app-chart-types.service';
 import { DashboardService } from '@services/dashboard.service';
 import { LookupService } from '@services/lookup.service';
-import { ScreenBreakpointsService } from '@services/screen-breakpoints.service';
 import { TranslationService } from '@services/translation.service';
 import { UnitsService } from '@services/units.service';
 import { UrlService } from '@services/url.service';
-import { formatNumber, minMaxAvg } from '@utils/utils';
 import { CarouselComponent, IvyCarouselModule } from 'angular-responsive-carousel2';
 import { ChartComponent, NgApexchartsModule } from 'ng-apexcharts';
 import { NgxMaskPipe } from 'ngx-mask';
@@ -66,11 +65,7 @@ import {
   switchMap,
   take,
   takeUntil,
-  tap,
 } from 'rxjs';
-import { RentTransactionPropertyType } from '@models/rent-transaction-property-type';
-import { indicatorsTypes } from '@enums/Indicators-type';
-import { RentTransactionIndicator } from '@app-types/rent-indicators-type';
 
 @Component({
   selector: 'app-rental-indicators-page',
@@ -98,6 +93,7 @@ import { RentTransactionIndicator } from '@app-types/rent-indicators-type';
     YoyIndicatorComponent,
     NgxMaskPipe,
     MatNativeDateModule,
+    DurationChartComponent,
   ],
   templateUrl: './rental-indicators-page.component.html',
   styleUrls: ['./rental-indicators-page.component.scss'],
@@ -110,13 +106,8 @@ export default class RentalIndicatorsPageComponent implements OnInit, OnDestroy 
   dashboardService = inject(DashboardService);
   urlService = inject(UrlService);
   lookupService = inject(LookupService);
-  adapter = inject(DateAdapter);
   unitsService = inject(UnitsService);
   appChartTypesService = inject(AppChartTypesService);
-  maskPipe = inject(NgxMaskPipe);
-  screenService = inject(ScreenBreakpointsService);
-
-  screenSize = Breakpoints.LG;
 
   destroy$ = new Subject<void>();
   reload$ = new ReplaySubject<void>(1);
@@ -130,6 +121,9 @@ export default class RentalIndicatorsPageComponent implements OnInit, OnDestroy 
   furnitureStatusList = this.lookupService.rentLookups.furnitureStatusList;
   paramsRange = this.lookupService.rentLookups.maxParams;
   nationalities = this.lookupService.ownerLookups.nationalityList;
+
+  criteriaSubject = new BehaviorSubject<CriteriaContract | undefined>(undefined);
+  criteria$ = this.criteriaSubject.asObservable();
 
   // transactions = new ReplaySubject<RentTransaction[]>(1);
   transactions$: Observable<RentTransaction[]> = this.loadTransactions();
@@ -178,18 +172,11 @@ export default class RentalIndicatorsPageComponent implements OnInit, OnDestroy 
     type: CriteriaType;
   };
 
-  @ViewChildren('chart')
-  chart!: QueryList<ChartComponent>;
   @ViewChildren('top10Chart')
   top10Chart!: QueryList<ChartComponent>;
   @ViewChildren('pieChart')
   pieChart!: QueryList<ChartComponent>;
 
-  selectedRootChartData!: KpiModel[];
-  durationDataLength = 0;
-  DurationTypes = DurationEndpoints;
-  selectedDurationType: DurationEndpoints = DurationEndpoints.YEARLY;
-  selectedDurationBarChartType = BarChartTypes.SINGLE_BAR;
   selectedIndicators = this.IndicatorsType.PURPOSE;
 
   roomsPieChartData: RoomNumberKpi[] = [];
@@ -271,8 +258,6 @@ export default class RentalIndicatorsPageComponent implements OnInit, OnDestroy 
     ),
   ];
 
-  selectedChartType: ChartType = ChartType.LINE;
-
   accordingToList: Lookup[] = [
     new Lookup().clone<Lookup>({
       arName: this.lang.getArabicTranslation('number_of_lease_contracts'),
@@ -316,10 +301,6 @@ export default class RentalIndicatorsPageComponent implements OnInit, OnDestroy 
   selectedTop10: Lookup = this.accordingToList[0];
   selectedTop10ChartType: 'bar' | 'line' = ChartType.BAR;
 
-  chartOptions: ChartOptionsModel = new ChartOptionsModel().clone<ChartOptionsModel>(
-    this.appChartTypesService.mainChartOptions
-  );
-
   top10ChartOptions = {
     bar: new ChartOptionsModel().clone<ChartOptionsModel>(this.appChartTypesService.top10ChartOptions.bar),
     line: new ChartOptionsModel().clone<ChartOptionsModel>(this.appChartTypesService.top10ChartOptions.line),
@@ -332,6 +313,8 @@ export default class RentalIndicatorsPageComponent implements OnInit, OnDestroy 
   propertiesKPIS = this.lookupService.rentLookups.propertyTypeList;
 
   selectedRoot?: KpiRoot;
+  rootDataSubject = new BehaviorSubject<KpiRoot | undefined>(undefined);
+  rootData$ = this.rootDataSubject.asObservable();
 
   selectedPurpose?: Lookup = this.lookupService.rentLookups.rentPurposeList[0];
   selectedTab: 'rental_indicators' | 'statistical_reports_for_rent' = 'rental_indicators';
@@ -367,16 +350,6 @@ export default class RentalIndicatorsPageComponent implements OnInit, OnDestroy 
 
   ngOnInit(): void {
     this._initializeChartsFormatters();
-    setTimeout(() => {
-      this.screenService.screenSizeObserver$.pipe(takeUntil(this.destroy$)).subscribe((size) => {
-        this.screenSize = size;
-        if (this.selectedTab === 'rental_indicators') {
-          this.chart.first.updateOptions(
-            this.appChartTypesService.getRangeOptions(size, this.selectedDurationBarChartType, this.durationDataLength)
-          );
-        }
-      });
-    }, 0);
     this.reload$.next();
   }
 
@@ -427,6 +400,8 @@ export default class RentalIndicatorsPageComponent implements OnInit, OnDestroy 
 
   filterChange({ criteria, type }: { criteria: CriteriaContract; type: CriteriaType }) {
     this.criteria = { criteria: { ...criteria, limit: 5 }, type };
+    this.criteriaSubject.next(criteria);
+
     if (type === CriteriaType.DEFAULT) {
       // load default
       this.dashboardService.loadRentDefaults(criteria as Partial<RentCriteriaContract>).subscribe((result) => {
@@ -469,11 +444,7 @@ export default class RentalIndicatorsPageComponent implements OnInit, OnDestroy 
       item !== i ? (i.selected = false) : (item.selected = true);
     });
 
-    forkJoin([
-      this.dashboardService.loadPurposeKpi(item, this.criteria.criteria),
-      this.dashboardService.loadChartKpiData(item, this.criteria.criteria),
-    ]).subscribe(([subKPI, lineChartData]) => {
-      this.selectedRootChartData = lineChartData;
+    this.dashboardService.loadPurposeKpi(item, this.criteria.criteria).subscribe((subKPI) => {
       const purpose = subKPI.reduce((acc, item) => {
         return { ...acc, [item.purposeId]: item };
       }, {} as Record<number, KpiModel>);
@@ -489,9 +460,9 @@ export default class RentalIndicatorsPageComponent implements OnInit, OnDestroy 
       });
       this.selectedRoot && this.updateAllPurpose(this.selectedRoot.value, this.selectedRoot.yoy);
       this.selectedPurpose && this.purposeSelected(this.selectedPurpose);
-      if (this.selectedTab === 'rental_indicators') {
-        this.updateChartDuration(this.selectedDurationType);
-      } else {
+      this.rootDataSubject.next(this.selectedRoot);
+
+      if (this.selectedTab === 'statistical_reports_for_rent') {
         this.updateTop10Chart();
       }
     });
@@ -541,208 +512,6 @@ export default class RentalIndicatorsPageComponent implements OnInit, OnDestroy 
         });
   }
 
-  updateChart(): void {
-    if (!this.chart.length) return;
-    const _minMaxAvg = minMaxAvg(this.selectedRootChartData.map((item) => item.kpiVal));
-    this.durationDataLength = this.selectedRootChartData.length;
-
-    const dataSeries = this.selectedRootChartData;
-    this.chart.first
-      .updateOptions({
-        series: [
-          {
-            name: this.selectedRoot?.getNames(),
-            data: this.selectedRootChartData.map((item) => ({ y: item.kpiVal, x: item.issueYear })),
-          },
-        ],
-
-        colors: [this.appChartTypesService.chartColorsFormatter(_minMaxAvg)],
-        ...this.appChartTypesService.yearlyStaticChartOptions,
-        ...this.appChartTypesService.getRangeOptions(
-          this.screenSize,
-          this.selectedDurationBarChartType,
-          this.durationDataLength
-        ),
-        tooltip: {
-          shared: false,
-          custom: ({ seriesIndex, dataPointIndex }: any) =>
-            this.customChartTooltip(
-              {
-                seriesIndex,
-                dataPointIndex,
-              },
-              dataSeries
-            ),
-        },
-      })
-      .then();
-    this.updateChartType(ChartType.BAR);
-  }
-
-  updateChartMonthly() {
-    this.adapter.setLocale(this.lang.getCurrent().code === 'ar-SA' ? 'ar-EG' : 'en-US');
-    const months = this.adapter.getMonthNames('long');
-    this.dashboardService
-      .loadChartKpiDataForDuration(DurationEndpoints.MONTHLY, this.selectedRoot!, this.criteria.criteria)
-      .pipe(take(1))
-      .subscribe((data) => {
-        const _minMaxAvg = minMaxAvg(data.map((d) => d.kpiVal));
-        this.durationDataLength = data.length;
-        this.chart.first
-          .updateOptions({
-            series: [
-              {
-                name: this.selectedRoot?.getNames(),
-                data: data.map((item) => {
-                  return {
-                    y: item.kpiVal,
-                    x: months[item.issuePeriod - 1],
-                  };
-                }),
-              },
-            ],
-            colors: [this.appChartTypesService.chartColorsFormatter(_minMaxAvg)],
-            ...this.appChartTypesService.monthlyStaticChartOptions,
-            ...this.appChartTypesService.getRangeOptions(
-              this.screenSize,
-              this.selectedDurationBarChartType,
-              this.durationDataLength
-            ),
-            tooltip: {
-              shared: false,
-              custom: ({ seriesIndex, dataPointIndex }: any) =>
-                this.customChartTooltip(
-                  {
-                    seriesIndex,
-                    dataPointIndex,
-                  },
-                  data
-                ),
-            },
-          })
-          .then();
-      });
-  }
-
-  updateChartHalfyOrQuarterly() {
-    this.dashboardService
-      .loadChartKpiDataForDuration(
-        this.selectedDurationType === DurationEndpoints.HALFY ? DurationEndpoints.HALFY : DurationEndpoints.QUARTERLY,
-        this.selectedRoot!,
-        this.criteria.criteria
-      )
-      .pipe(take(1))
-      .pipe(
-        map((durationData) => {
-          return this.dashboardService.mapDurationData(
-            durationData,
-            this.selectedDurationType === DurationEndpoints.HALFY
-              ? this.lookupService.sellLookups.halfYearDurations
-              : this.lookupService.sellLookups.quarterYearDurations
-          );
-        })
-      )
-      .subscribe((data) => {
-        console.log(data);
-        const _chartData = Object.keys(data).map((key) => ({
-          name: data[key as unknown as number].period.getNames(),
-          data: data[key as unknown as number].kpiValues.map((item) => ({ y: item.kpiVal, x: item.issueYear })),
-        }));
-        this.chart.first
-          .updateOptions({
-            series: _chartData,
-            ...this.appChartTypesService.halflyAndQuarterlyStaticChartOptions,
-            ...this.appChartTypesService.getRangeOptions(
-              this.screenSize,
-              this.selectedDurationBarChartType,
-              this.durationDataLength
-            ),
-            tooltip: {
-              shared: false,
-              custom: ({ seriesIndex, dataPointIndex }: any) =>
-                this.customChartTooltip(
-                  {
-                    seriesIndex,
-                    dataPointIndex,
-                  },
-                  data
-                ),
-            },
-          })
-          .then();
-      });
-  }
-
-  customChartTooltip({ seriesIndex, dataPointIndex }: any, dataSeries: any) {
-    const durationType = this.selectedDurationType;
-
-    var tooltipData = dataSeries[dataPointIndex];
-    if (durationType === this.DurationTypes.HALFY || durationType === this.DurationTypes.QUARTERLY) {
-      tooltipData = dataSeries[seriesIndex + 1].kpiValues[dataPointIndex];
-      // console.log(tooltipData);
-      return this.tooltipListDraw(
-        tooltipData?.issueYear ?? this.criteria.criteria.issueDateYear,
-        tooltipData?.kpiVal,
-        tooltipData?.kpiP2PYoY,
-        tooltipData?.kpiYoYBaseVal
-      );
-    }
-    return this.tooltipListDraw(
-      tooltipData?.issueYear ?? this.criteria.criteria.issueDateYear,
-      tooltipData?.kpiVal,
-      tooltipData?.kpiYoYVal,
-      tooltipData?.kpiYoYBaseVal
-    );
-  }
-
-  tooltipListDraw(issueYear?: number, kpiVal?: number, kpiYoYVal?: number, kpiYoYBaseVal?: number) {
-    var kpiValStr = this.selectedRoot?.hasPrice
-      ? (formatNumber(kpiVal!) as string)
-      : (this.maskPipe.transform(kpiVal!.toFixed(0), maskSeparator.SEPARATOR, {
-          thousandSeparator: ',',
-        }) as unknown as string);
-    return `
-    <div class="h-full flex flex-row justify-center outline-none border-2 rounded-md border-primary" dir=${
-      this.lang.isLtr ? 'ltr' : 'rtl'
-    }>
-    <div class="flex flex-col p-1">
-      <span>${this.lang.map.year}</span>
-      <span>${this.selectedRoot?.getNames()}</span>
-      <span>${this.lang.map.yearly}</span>
-      <span>${'مقابل 2019'}</span>
-
-    </div>
-    <div class="flex flex-col p-1">
-      <span dir="ltr">${issueYear}</span>
-      <span dir="ltr">${kpiValStr}</span>
-      <span dir="ltr">${(kpiYoYVal ?? 0).toFixed(2)} %</span>
-      <span dir="ltr">${(kpiYoYBaseVal ?? 0).toFixed(2)} %</span>
-
-    </div>`;
-  }
-
-  updateChartType(type: ChartType) {
-    this.chart.first.updateOptions({ chart: { type: type } }).then();
-    this.selectedChartType = type;
-  }
-
-  updateChartDuration(durationType: DurationEndpoints) {
-    this.selectedDurationType = durationType;
-    if (this.selectedDurationType === DurationEndpoints.YEARLY) {
-      this.updateChart();
-      this.selectedDurationBarChartType = BarChartTypes.SINGLE_BAR;
-    } else if (this.selectedDurationType === DurationEndpoints.MONTHLY) {
-      this.updateChartMonthly();
-      this.selectedDurationBarChartType = BarChartTypes.SINGLE_BAR;
-    } else if (this.selectedDurationType === DurationEndpoints.HALFY) {
-      this.updateChartHalfyOrQuarterly();
-      this.selectedDurationBarChartType = BarChartTypes.DOUBLE_BAR;
-    } else {
-      this.updateChartHalfyOrQuarterly();
-      this.selectedDurationBarChartType = BarChartTypes.QUAD_BAR;
-    }
-  }
-
   updateRentIndicatorsTable(basedOn: indicatorsTypes) {
     this.basedOn$.next(basedOn);
   }
@@ -772,23 +541,16 @@ export default class RentalIndicatorsPageComponent implements OnInit, OnDestroy 
     this.carousel.first.cellsToScroll = 1;
   }
 
-  isSelectedChartType(type: ChartType) {
-    return this.selectedChartType === type;
-  }
-
   switchTab(tab: 'rental_indicators' | 'statistical_reports_for_rent'): void {
     this.selectedTab = tab;
     if (this.selectedTab === 'rental_indicators') {
       this.carousel.setDirty();
-      this.chart.setDirty();
     } else {
       this.top10Chart.setDirty();
       this.pieChart.setDirty();
     }
     setTimeout(() => {
-      if (this.selectedTab === 'rental_indicators') {
-        this.updateChartDuration(this.selectedDurationType);
-      } else {
+      if (this.selectedTab === 'statistical_reports_for_rent') {
         this.updateTop10Chart();
         this.updateRoomsPiChart();
         this.updateFurnitureStatusPiChart();
@@ -960,13 +722,6 @@ export default class RentalIndicatorsPageComponent implements OnInit, OnDestroy 
   }
 
   private _initializeChartsFormatters() {
-    this.chartOptions
-      .addDataLabelsFormatter((val, opts) =>
-        this.appChartTypesService.dataLabelsFormatter({ val, opts }, this.selectedRoot)
-      )
-      .addAxisYFormatter((val, opts) => this.appChartTypesService.axisYFormatter({ val, opts }, this.selectedRoot))
-      .addCustomToolbarOptions();
-
     this.top10ChartOptions.line
       .addDataLabelsFormatter((val, opts) =>
         this.appChartTypesService.dataLabelsFormatter({ val, opts }, this.selectedTop10)
