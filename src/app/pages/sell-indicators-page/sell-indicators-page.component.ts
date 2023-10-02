@@ -472,7 +472,6 @@ export default class SellIndicatorsPageComponent implements OnInit, OnDestroy {
     // this.loadRoomCounts();
   }
   priceFilterChange(criteria: PriceCriteriaContract) {
-    console.log("criteria", criteria)
     this.priceCriteria = {criteria};
     this.priceCriteriaSubject.next(criteria);
       this.dashboardService.loadPropertyTypePrice(criteria).pipe(take(1)).subscribe((result) => {
