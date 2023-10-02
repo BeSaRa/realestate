@@ -72,10 +72,8 @@ export function* chunks<T>(arr: T[], n: number): Generator<T[], void> {
   }
 }
 
-
-
 export const groupBy = <T>(array: Array<T>, property: (x: T) => number): { [key: number]: Array<T> } =>
-  array.reduce((memo: { [property:string]: Array<T> }, x: T) => {
+  array.reduce((memo: { [property: string]: Array<T> }, x: T) => {
     if (!memo[property(x)]) {
       memo[property(x)] = [];
     }
@@ -97,5 +95,6 @@ export function minMaxAvg(values: number[]): MinMaxAvgContract {
     }
     sum = sum + values[i];
   }
-  return { min, max, avg: sum / values.length };
+  // return { min, max, avg: sum / values.length }; because of customer requirements
+  return { min: 0.6 * max, avg: 0.9 * max, max };
 }
