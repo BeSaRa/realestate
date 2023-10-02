@@ -9,11 +9,17 @@ import { Breakpoints } from '@enums/breakpoints';
 import { formatNumber } from '@utils/utils';
 import { NgxMaskPipe } from 'ngx-mask';
 import { TranslationService } from './translation.service';
+import { RegisterServiceMixin } from '@mixins/register-service-mixin';
+import { ServiceContract } from '@contracts/service-contract';
+import { DurationSeriesDataContract } from '@contracts/duration-series-data-contract';
+import { DurationEndpoints } from '@enums/durations';
 
 @Injectable({
   providedIn: 'root',
 })
-export class AppChartTypesService {
+export class AppChartTypesService extends RegisterServiceMixin(class {}) implements ServiceContract {
+  serviceName = 'AppChartTypesService';
+
   lang = inject(TranslationService);
   maskPipe = inject(NgxMaskPipe);
 
@@ -195,6 +201,30 @@ export class AppChartTypesService {
     };
   }
 
+  durationCustomTooltip(
+    opts: { seriesIndex: number; dataPointIndex: number },
+    data: DurationSeriesDataContract[],
+    durationType: DurationEndpoints,
+    hasPrice: boolean,
+    isMultiSeries: boolean
+  ) {
+    const _series = isMultiSeries ? data[opts.seriesIndex] : data[0];
+    const _dataPoint = _series.data[opts.dataPointIndex];
+    if (durationType === DurationEndpoints.MONTHLY || isMultiSeries) {
+      return this._getDurationDefaultTemplate(_dataPoint.x, _dataPoint.y, _series.name ?? '', hasPrice);
+    } else {
+      return this._getDurationCustomTemplate(
+        _dataPoint.x,
+        _dataPoint.y,
+        _dataPoint.yoy ?? 0,
+        _dataPoint.baseYear ?? 2019,
+        _dataPoint.yoyBase ?? 0,
+        _series.name ?? '',
+        hasPrice
+      );
+    }
+  }
+
   private _labelFormatter(val: string | number | number[], root?: { hasPrice: boolean }) {
     if (typeof val === 'undefined') return val;
     if (typeof val === 'string' && (val as unknown as number) !== undefined && (val as unknown as number) !== null)
@@ -205,6 +235,68 @@ export class AppChartTypesService {
       : (this.maskPipe.transform(value.toFixed(0), maskSeparator.SEPARATOR, {
           thousandSeparator: ',',
         }) as unknown as string);
+  }
+
+  private _getDurationDefaultTemplate(x: string | number, y: number, name: string, hasPrice: boolean) {
+    return `
+      <div dir="${
+        this.lang.isLtr ? 'ltr' : 'rtl'
+      }" class="apexcharts-tooltip-title" style="font-family: Helvetica, Arial, sans-serif; font-size: 12px">${x}</div>
+      <div dir="${
+        this.lang.isLtr ? 'ltr' : 'rtl'
+      }" class="apexcharts-tooltip-series-group apexcharts-active" style="order: 1; display: flex">
+        <div class="apexcharts-tooltip-text" style="font-family: Helvetica, Arial, sans-serif; font-size: 12px">
+          <div class="apexcharts-tooltip-y-group flex justify-between gap-2">
+            <span class="apexcharts-tooltip-text-y-label">${name}: </span>
+            <span class="apexcharts-tooltip-text-y-value">${this.axisYFormatter(
+              {
+                val: y,
+              },
+              { hasPrice }
+            )}</span>
+          </div>
+        </div>
+      </div>
+    `;
+  }
+
+  private _getDurationCustomTemplate(
+    x: string | number,
+    y: number,
+    yoy: number,
+    baseYear: number,
+    yoyBase: number,
+    name: string,
+    hasPrice: boolean
+  ) {
+    return `
+      <div dir="${
+        this.lang.isLtr ? 'ltr' : 'rtl'
+      }" class="apexcharts-tooltip-title" style="font-family: Helvetica, Arial, sans-serif; font-size: 12px">${x}</div>
+      <div dir="${
+        this.lang.isLtr ? 'ltr' : 'rtl'
+      }" class="apexcharts-tooltip-series-group apexcharts-active" style="order: 1; display: flex">
+        <div class="apexcharts-tooltip-text" style="font-family: Helvetica, Arial, sans-serif; font-size: 12px">
+          <div class="apexcharts-tooltip-y-group flex justify-between gap-2">
+            <span class="apexcharts-tooltip-text-y-label">${name}: </span>
+            <span class="apexcharts-tooltip-text-y-value">${this.axisYFormatter(
+              {
+                val: y,
+              },
+              { hasPrice }
+            )}</span>
+          </div>
+          <div class="apexcharts-tooltip-y-group flex justify-between gap-2">
+            <span class="apexcharts-tooltip-text-y-label">${this.lang.map.annually}: </span>
+            <span class="apexcharts-tooltip-text-y-value">${yoy.toFixed(1)}%</span>
+          </div>
+          <div class="apexcharts-tooltip-y-group flex justify-between gap-2">
+            <span class="apexcharts-tooltip-text-y-label">${this.lang.map.vs} ${baseYear}: </span>
+            <span class="apexcharts-tooltip-text-y-value">${yoyBase.toFixed(1)}%</span>
+          </div>
+        </div>
+      </div>
+    `;
   }
 }
 

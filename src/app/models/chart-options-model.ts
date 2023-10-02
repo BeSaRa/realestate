@@ -1,4 +1,6 @@
 import { PartialChartOptions } from '@app-types/partialChartOptions';
+import { DurationSeriesDataContract } from '@contracts/duration-series-data-contract';
+import { DurationEndpoints } from '@enums/durations';
 import { ClonerMixin } from '@mixins/cloner-mixin';
 import { isArray } from '@utils/utils';
 import {
@@ -131,6 +133,18 @@ export class ChartOptionsModel extends ClonerMixin(class {}) implements PartialC
           reset: false,
         },
       },
+    };
+    return this;
+  }
+
+  addDurationCustomTooltip(
+    customTooltip: (opts: { seriesIndex: number; dataPointIndex: number }) => string | undefined,
+    isMinMaxAvg: boolean
+  ) {
+    this.tooltip = {
+      ...(this.tooltip ?? {}),
+      shared: isMinMaxAvg,
+      custom: customTooltip,
     };
     return this;
   }
