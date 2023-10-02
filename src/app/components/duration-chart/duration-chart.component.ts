@@ -6,6 +6,7 @@ import { ButtonComponent } from '@components/button/button.component';
 import { IconButtonComponent } from '@components/icon-button/icon-button.component';
 import { AppColors } from '@constants/app-colors';
 import { CriteriaContract } from '@contracts/criteria-contract';
+import { DurationSeriesDataContract } from '@contracts/duration-series-data-contract';
 import { MinMaxAvgContract } from '@contracts/min-max-avg-contract';
 import { BarChartTypes } from '@enums/bar-chart-type';
 import { Breakpoints } from '@enums/breakpoints';
@@ -22,7 +23,7 @@ import { UrlService } from '@services/url.service';
 import { minMaxAvg } from '@utils/utils';
 import { ChartComponent, NgApexchartsModule } from 'ng-apexcharts';
 import { NgxMaskPipe } from 'ngx-mask';
-import { Observable, Subject, combineLatest, finalize, map, take, takeUntil } from 'rxjs';
+import { Observable, Subject, catchError, combineLatest, map, take, takeUntil, throwError } from 'rxjs';
 
 @Component({
   selector: 'app-duration-chart',
@@ -69,12 +70,10 @@ export class DurationChartComponent implements OnInit, AfterViewInit, OnDestroy 
 
   selectedChartType: ChartType = ChartType.LINE;
   selectedDurationType: DurationEndpoints = DurationEndpoints.YEARLY;
-  selectedDurationBarChartType = BarChartTypes.SINGLE_BAR;
+  prevDurationType: DurationEndpoints = DurationEndpoints.YEARLY;
+  selectedBarChartType = BarChartTypes.SINGLE_BAR;
 
-  chartSeriesData: {
-    name?: string;
-    data: { y: number; x: number | string }[];
-  }[] = [];
+  chartSeriesData: DurationSeriesDataContract[] = [];
   minMaxAvgChartData!: MinMaxAvgContract;
   durationDataLength = 0;
 
@@ -112,21 +111,23 @@ export class DurationChartComponent implements OnInit, AfterViewInit, OnDestroy 
     this._updateChart();
   }
 
-  updateChartDataForDuration(durationType: DurationEndpoints) {
+  updateChartDataForDuration(durationType: DurationEndpoints, isLoadingNewData = false) {
+    if (this.selectedDurationType === durationType && !isLoadingNewData) return;
     this.isLoading = true;
+    this.prevDurationType = this.selectedDurationType;
     this.selectedDurationType = durationType;
     if (this.selectedDurationType === DurationEndpoints.YEARLY) {
       this._updateForYearly();
-      this.selectedDurationBarChartType = BarChartTypes.SINGLE_BAR;
+      this.selectedBarChartType = BarChartTypes.SINGLE_BAR;
     } else if (this.selectedDurationType === DurationEndpoints.MONTHLY) {
       this._updateForMonthly();
-      this.selectedDurationBarChartType = BarChartTypes.SINGLE_BAR;
+      this.selectedBarChartType = BarChartTypes.SINGLE_BAR;
     } else if (this.selectedDurationType === DurationEndpoints.HALFY) {
       this._updateForHalfyOrQuarterly();
-      this.selectedDurationBarChartType = BarChartTypes.DOUBLE_BAR;
+      this.selectedBarChartType = BarChartTypes.DOUBLE_BAR;
     } else {
       this._updateForHalfyOrQuarterly();
-      this.selectedDurationBarChartType = BarChartTypes.QUAD_BAR;
+      this.selectedBarChartType = BarChartTypes.QUAD_BAR;
     }
   }
 
@@ -137,8 +138,10 @@ export class DurationChartComponent implements OnInit, AfterViewInit, OnDestroy 
       .loadChartKpiData(this.rootData, this.criteria)
       .pipe(
         take(1),
-        finalize(() => {
+        catchError((err) => {
           this.isLoading = false;
+          this.selectedDurationType = this.prevDurationType;
+          return throwError(() => err);
         })
       )
       .subscribe((data) => {
@@ -147,7 +150,13 @@ export class DurationChartComponent implements OnInit, AfterViewInit, OnDestroy 
         this.chartSeriesData = [
           {
             name: this.name,
-            data: data.map((item) => ({ y: item.kpiVal, x: item.issueYear })),
+            data: data.map((item) => ({
+              y: item.kpiVal,
+              x: item.issueYear,
+              yoy: item.kpiYoYVal,
+              baseYear: item.issueBaseYear ?? 2019,
+              yoyBase: item.kpiYoYBaseVal,
+            })),
           },
         ];
         this._updateChart();
@@ -161,8 +170,10 @@ export class DurationChartComponent implements OnInit, AfterViewInit, OnDestroy 
       .loadChartKpiDataForDuration(DurationEndpoints.MONTHLY, this.rootData, this.criteria)
       .pipe(
         take(1),
-        finalize(() => {
+        catchError((err) => {
           this.isLoading = false;
+          this.selectedDurationType = this.prevDurationType;
+          return throwError(() => err);
         })
       )
       .subscribe((data) => {
@@ -193,8 +204,10 @@ export class DurationChartComponent implements OnInit, AfterViewInit, OnDestroy 
       )
       .pipe(
         take(1),
-        finalize(() => {
+        catchError((err) => {
           this.isLoading = false;
+          this.selectedDurationType = this.prevDurationType;
+          return throwError(() => err);
         })
       )
       .pipe(
@@ -256,7 +269,7 @@ export class DurationChartComponent implements OnInit, AfterViewInit, OnDestroy 
           ...staticOptions,
           ...this.appChartTypesService.getRangeOptions(
             this.screenSize,
-            this.selectedDurationBarChartType,
+            this.selectedBarChartType,
             this.durationDataLength,
             this.isMinMaxAvgBar
           ),
@@ -272,7 +285,7 @@ export class DurationChartComponent implements OnInit, AfterViewInit, OnDestroy 
         if (!criteria || !root) return;
         this.criteria = criteria;
         this.rootData = root;
-        this.updateChartDataForDuration(this.selectedDurationType);
+        this.updateChartDataForDuration(this.selectedDurationType, true);
       });
   }
 
@@ -283,7 +296,17 @@ export class DurationChartComponent implements OnInit, AfterViewInit, OnDestroy 
           this.appChartTypesService.dataLabelsFormatter({ val, opts }, this.rootData)
         )
         .addAxisYFormatter((val, opts) => this.appChartTypesService.axisYFormatter({ val, opts }, this.rootData))
-        .addCustomToolbarOptions();
+        .addCustomToolbarOptions()
+        .addDurationCustomTooltip((opts: { seriesIndex: number; dataPointIndex: number }) => {
+          return this.appChartTypesService.durationCustomTooltip(
+            opts,
+            this.chartSeriesData,
+            this.selectedDurationType,
+            this.rootData.hasPrice,
+            this.selectedDurationType === DurationEndpoints.HALFY ||
+              this.selectedDurationType === DurationEndpoints.QUARTERLY
+          );
+        }, this.isMinMaxAvgBar);
     });
   }
 
@@ -294,7 +317,7 @@ export class DurationChartComponent implements OnInit, AfterViewInit, OnDestroy 
         this.chart.first.updateOptions(
           this.appChartTypesService.getRangeOptions(
             size,
-            this.selectedDurationBarChartType,
+            this.selectedBarChartType,
             this.durationDataLength,
             this.isMinMaxAvgBar
           )
