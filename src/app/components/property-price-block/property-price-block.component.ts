@@ -1,7 +1,6 @@
 import { Component, inject, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { TranslationService } from '@services/translation.service';
-import { Lookup } from '@models/lookup';
 import { ChangeIndicatorComponent } from '@components/change-indicator/change-indicator.component';
 import { CountUpOptionsContract } from '@contracts/countup-options-contract';
 import { NGX_COUNTUP_OPTIONS } from '@constants/injection-tokens';

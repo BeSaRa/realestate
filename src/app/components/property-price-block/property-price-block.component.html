@@ -11,7 +11,6 @@
     <span class="flex-1 text-xl text-black font-bold group-hover:text-white transition">{{ item?.propertyTypeInfo?.getNames() }}</span>
     <span class="mt-2 text-2xl text-primary font-bold group-hover:text-white transition">
       <span [countUp]="item?.kpiPredicated || 0" [options]="countUpOptions"></span>
-      <!--      {{ !item.hasPrice ? lang.map.qr : "" }}-->
     </span>
   </div>
 </div>
@@ -27,7 +26,6 @@
     <span class="flex-1 text-xl text-black font-bold group-hover:text-white transition">{{ item?.propertyTypeInfo?.getNames()}}</span>
     <span class="mt-2 text-2xl text-primary font-bold group-hover:text-white transition">
       <span [countUp]="item?.kpiCurrent || 0" [options]="countUpOptions"></span>
-      <!--      {{ !item.hasPrice ? lang.map.qr : "" }}-->
     </span>
   </div>
 </div>
@@ -43,7 +41,6 @@
     <span class="flex-1 text-xl text-black font-bold group-hover:text-white transition">{{ item?.propertyTypeInfo?.getNames() }}</span>
     <span class="mt-2 text-2xl text-primary font-bold group-hover:text-white transition">
       <span [countUp]="item?.kpiPast || 0" [options]="countUpOptions"></span>
-      <!--      {{ !item.hasPrice ? lang.map.qr : "" }}-->
     </span>
   </div>
 </div>
