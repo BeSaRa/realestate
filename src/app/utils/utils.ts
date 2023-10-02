@@ -95,6 +95,6 @@ export function minMaxAvg(values: number[]): MinMaxAvgContract {
     }
     sum = sum + values[i];
   }
-  // return { min, max, avg: sum / values.length }; because of customer requirements
-  return { min: 0.6 * max, avg: 0.9 * max, max };
+  // return { min: 0.5 * max, avg: 0.8 * max, max: max }; // this makes app to crash when trying to change to another duration type
+  return { min: min, max: max, avg: sum / values.length }; // because of customer requirements
 }
