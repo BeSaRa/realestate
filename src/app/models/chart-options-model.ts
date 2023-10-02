@@ -1,6 +1,4 @@
 import { PartialChartOptions } from '@app-types/partialChartOptions';
-import { DurationSeriesDataContract } from '@contracts/duration-series-data-contract';
-import { DurationEndpoints } from '@enums/durations';
 import { ClonerMixin } from '@mixins/cloner-mixin';
 import { isArray } from '@utils/utils';
 import {
@@ -127,8 +125,10 @@ export class ChartOptionsModel extends ClonerMixin(class {}) implements PartialC
           selection: false,
           zoom: false,
           download: true,
-          zoomin: '<img class="hover:invert-[0.5]" src="assets/icons/chart/chevron-left-circle-outline.svg">',
-          zoomout: '<img class="hover:invert-[0.5]" src="assets/icons/chart/chevron-right-circle-outline.svg">',
+          zoomin:
+            '<img class="hover:invert-[0.5]" title="scroll left" src="assets/icons/chart/chevron-left-circle-outline.svg">',
+          zoomout:
+            '<img class="hover:invert-[0.5]" title="scroll right" src="assets/icons/chart/chevron-right-circle-outline.svg">',
           pan: true,
           reset: false,
         },
