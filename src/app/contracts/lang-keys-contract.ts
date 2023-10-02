@@ -241,4 +241,5 @@ export interface LangKeysContract {
   current_average_price: string;
   average_price_five_years_ago : string;
   average_forecast_price : string;
+  average_price_according_to_property_type: string;
 }
