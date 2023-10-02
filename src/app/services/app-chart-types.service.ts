@@ -327,6 +327,7 @@ const mainChartOptions: PartialChartOptions = {
       trim: true,
       rotate: -45,
       rotateAlways: false,
+      hideOverlappingLabels: false,
     },
     tooltip: {
       enabled: false,
@@ -382,6 +383,7 @@ const minMaxAvgBarChartOptions: Partial<PartialChartOptions> = {
       trim: true,
       rotate: -45,
       rotateAlways: false,
+      hideOverlappingLabels: false,
     },
     tooltip: {
       enabled: false,
