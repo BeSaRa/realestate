@@ -311,6 +311,7 @@ export class TransactionsFilterComponent implements OnInit, OnDestroy {
               lookupKey: -1,
             })
           );
+        this.areaCode.patchValue(-1, { emitEvent: false });
         return;
       }
       this.filteredZones = this.zones.filter((item) => item.municipalityId === value);
