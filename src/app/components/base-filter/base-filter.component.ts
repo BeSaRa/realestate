@@ -68,7 +68,6 @@ export class BaseFilterComponent implements OnInit, OnDestroy {
   lang = inject(TranslationService);
   fb = inject(UntypedFormBuilder);
   lookupService = inject(LookupService);
-  resize$ = inject(NgResizeObserver);
 
   private destroy$: Subject<void> = new Subject();
 
