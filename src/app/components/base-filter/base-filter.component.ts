@@ -56,24 +56,7 @@ import { Subject, debounceTime, filter, map, takeUntil, tap } from 'rxjs';
   ],
   providers: [DatePipe, ...ngResizeObserverProviders],
   templateUrl: './base-filter.component.html',
-  styleUrls: ['./base-filter.component.scss'],
-  animations: [
-    trigger('openClose', [
-      state(
-        'true',
-        style({
-          height: '*',
-        })
-      ),
-      state(
-        'false',
-        style({
-          height: 0,
-        })
-      ),
-      transition('true <=> false', animate('150ms ease-in-out')),
-    ]),
-  ],
+  styleUrls: ['./base-filter.component.scss']
 })
 export class BaseFilterComponent implements OnInit, OnDestroy {
   @Input() priceMunicipalities: Lookup[] = [];
@@ -116,7 +99,6 @@ export class BaseFilterComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.listenToMunicipalityChange();
-    // this.listenToPropertyTypeListChange();
     this.listenToFormChanges();
     this.setDefaultValues();
   }
@@ -140,15 +122,6 @@ export class BaseFilterComponent implements OnInit, OnDestroy {
     this.municipalityId.valueChanges.pipe(takeUntil(this.destroy$)).subscribe((value: number) => {
         this.filteredAreas = this.priceAreas.filter((item) => item.municipalityId === value);
         this.areaCode.setValue(this.filteredAreas.at(0)?.lookupKey);
-        // this.propertyTypeList.setValue(this.propertyTypes[0])
-    });
-  }
-
-  listenToPropertyTypeListChange(): void {
-    this.propertyTypeList.valueChanges.pipe(takeUntil(this.destroy$)).subscribe((value: number) => {
-      this.propertyTypeList.patchValue(value, {
-        emitEvent: false,
-      });
     });
   }
 
