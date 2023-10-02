@@ -696,9 +696,9 @@ function getRangeOptions(
     plotOptions: {
       bar: {
         columnWidth: isStacked
-          ? '80%'
-          : dataCount <= _range
-          ? '40%'
+          ? '50%'
+          : dataCount <= _range + 1
+          ? '30%'
           : Math.round((dataCount / _range / 1.5) * 100).toString() + '%',
       },
     },
