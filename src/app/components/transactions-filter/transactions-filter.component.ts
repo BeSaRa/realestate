@@ -550,6 +550,11 @@ export class TransactionsFilterComponent implements OnInit, OnDestroy {
       if (!this.issueDateQuarterList.value || !this.issueDateQuarterList.value.length) {
         return;
       }
+    }
+    else if (this.displayMonth) {
+      value.issueDateStartMonth = this.form.value.issueDateMonth;
+      value.issueDateEndMonth = this.form.value.issueDateMonth + 1;
+      value.issueDateMonth = null;
     } else if (this.displayRange) {
       if (!this.issueDateFrom.value || !this.issueDateTo.value) return;
     }
@@ -610,7 +615,7 @@ export class TransactionsFilterComponent implements OnInit, OnDestroy {
       // delete value.ownerCategoryCode;
     }
     Object.keys(value).forEach((key) => {
-      if (typeof value[key] === 'string' && value[key] === '') delete value[key];
+      if (typeof value[key] === 'string' && (value[key] === '') || value[key] === null) delete value[key];
       if (Array.isArray(value[key]) && value[key].length === 0) delete value[key];
       typeof value[key] === 'undefined' ? delete value[key] : null;
     });
