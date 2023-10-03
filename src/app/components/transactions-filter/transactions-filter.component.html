@@ -207,7 +207,8 @@
             formControlName="rentPaymentMonthlyPerUnitFrom"
             class="text-gray-500"
             mask="separator"
-            thousandSeparator="," />
+            thousandSeparator=","
+            [maxlength]="rentPaymentMaxLength" />
         </app-input>
         <app-input
           formControlName="rentPaymentMonthlyPerUnitTo"
@@ -218,7 +219,8 @@
             formControlName="rentPaymentMonthlyPerUnitTo"
             class="text-gray-500"
             mask="separator"
-            thousandSeparator="," />
+            thousandSeparator="," 
+            [maxlength]="rentPaymentMaxLength"/>
         </app-input>
       </ng-container>
       <ng-container *ngIf="isSell()">
@@ -228,7 +230,8 @@
             formControlName="realEstateValueFrom"
             class="text-gray-500"
             mask="separator"
-            thousandSeparator="," />
+            thousandSeparator="," 
+            [maxlength]="realEstateMaxLength" />
         </app-input>
         <app-input formControlName="realEstateValueTo" [label]="lang.map.real_estate_value_to" [isSecondary]="true">
           <input
@@ -236,7 +239,8 @@
             formControlName="realEstateValueTo"
             class="text-gray-500"
             mask="separator"
-            thousandSeparator="," />
+            thousandSeparator=","
+            [maxlength]="realEstateMaxLength" />
         </app-input>
       </ng-container>
 
@@ -250,10 +254,10 @@
       </ng-container> -->
       
       <app-input formControlName="areaFrom" [label]="lang.map.area_from" [isSecondary]="true">
-        <input appControl formControlName="areaFrom" class="text-gray-500" mask="separator" thousandSeparator="," />
+        <input appControl formControlName="areaFrom" class="text-gray-500" mask="separator" thousandSeparator="," [maxlength]="areaMaxLength" />
       </app-input>
       <app-input formControlName="areaTo" [label]="lang.map.area_to" [isSecondary]="true">
-        <input appControl formControlName="areaTo" class="text-gray-500" mask="separator" thousandSeparator="," />
+        <input appControl formControlName="areaTo" class="text-gray-500" mask="separator" thousandSeparator=","  [maxlength]="areaMaxLength"/>
       </app-input>
     </ng-container>
   </ng-container>

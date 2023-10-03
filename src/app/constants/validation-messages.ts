@@ -8,6 +8,7 @@ export const ValidationMessages: Record<string, ValidationMessageContract> = {
   largerThanToValue: { key: 'larger_than_to_value' },
   maxValue: { key: 'max_value' },
   minValue: { key: 'min_value' },
+  maxLength: {key: 'max_length'},
 };
 
 export type ValidationMessagesType = typeof ValidationMessages;
