@@ -1,5 +1,5 @@
 import { BidiModule } from '@angular/cdk/bidi';
-import { CommonModule, registerLocaleData } from '@angular/common';
+import { CommonModule, registerLocaleData} from '@angular/common';
 import localeAr from '@angular/common/locales/ar';
 import { Component, HostListener, OnInit, inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
@@ -17,7 +17,8 @@ import { SplashService } from '@services/splash.service';
 import { StickyService } from '@services/sticky.service';
 import { TranslationService } from '@services/translation.service';
 import '@utils/prototypes/custom-prototypes';
-import { map, startWith } from 'rxjs';
+import { Observable, fromEvent, map, startWith } from 'rxjs';
+import { ScrollToTopComponent } from '@components/scroll-to-top/scroll-to-top.component';
 
 @Component({
   selector: 'app-root',
@@ -34,6 +35,7 @@ import { map, startWith } from 'rxjs';
     SideBarComponent,
     ButtonComponent,
     BidiModule,
+    ScrollToTopComponent
   ],
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss'],
@@ -48,6 +50,13 @@ export class AppComponent implements OnInit {
     startWith(this.lang.isLtr ? SideBarDirection.RIGHT : SideBarDirection.LEFT),
     map(() => (this.lang.isLtr ? SideBarDirection.RIGHT : SideBarDirection.LEFT))
   );
+  
+  backtoTopFloat$ = this.lang.change$.pipe(
+    startWith(this.lang.isLtr ? SideBarDirection.LEFT : SideBarDirection.RIGHT),
+    map(() => (this.lang.isLtr ? SideBarDirection.LEFT : SideBarDirection.RIGHT))
+  );
+
+  showBackToTopScroll: boolean = false;
 
   links: { link: string; label: () => string }[] = [
     { link: '/home', label: () => this.lang.map.home },
@@ -73,10 +82,15 @@ export class AppComponent implements OnInit {
   @HostListener('window:scroll')
   windowScroll(): void {
     this.stickyService.isSticky.set(window.scrollY > 120);
+    this.showBackToTopScroll = window.scrollY > 120;
   }
   @HostListener('window:keydown.control.alt.ش')
   @HostListener('window:keydown.control.alt.a')
   openTranslationPopup() {
     this.dialog.open(TranslationPopupComponent);
+  }
+
+  onScrollToTop(): void {
+    window.scrollTo(0,0);
   }
 }
