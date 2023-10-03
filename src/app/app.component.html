@@ -24,4 +24,5 @@
       <app-button buttonStyle="secondary">{{ lang.map.staff_login }}</app-button>
     </div>
   </app-side-bar>
+  <app-scroll-to-top [floating]="(backtoTopFloat$ | async)!" *ngIf="showBackToTopScroll" (scrollToTop)="onScrollToTop()"></app-scroll-to-top>
 </div>
