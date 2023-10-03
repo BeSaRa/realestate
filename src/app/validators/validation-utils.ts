@@ -90,11 +90,13 @@ export function decimalValidator(numberOfPlaces = 2): ValidatorFn {
   };
 }
 
-function getValueLength(control: AbstractControl): number {
-  return typeof control.value !== 'undefined' || control.value !== null ? ('' + control.value).length : 0;
+function getValueLength(control: AbstractControl ): number {
+  return typeof control.value !== 'undefined' || control.value !== null ? control.value.toString().length : 0;
 }
 
-export function maxlengthValidator(maxLength: number): ValidatorFn {
+
+
+export function maxLengthValidator(maxLength?: number): ValidatorFn {
   if (maxLength === 0 || !isValidValue(maxLength)) {
     return Validators.nullValidator;
   }
@@ -102,12 +104,14 @@ export function maxlengthValidator(maxLength: number): ValidatorFn {
     if (!isValidValue(control.value) || !hasValidLength(control.value)) {
       return null;
     }
+    
     const valueLength = getValueLength(control);
-    return valueLength > maxLength ? { maxlength: { requiredLength: maxLength, actualLength: valueLength } } : null;
+    const _maxLength = maxLength as number;
+    return valueLength > _maxLength ? { maxLength: { maxLength: maxLength, actualLength: valueLength } } : null;
   };
 }
 
-export function minlengthValidator(minLength: number): ValidatorFn {
+export function minLengthValidator(minLength?: number): ValidatorFn {
   if (!isValidValue(minLength)) {
     return Validators.nullValidator;
   }
@@ -116,7 +120,8 @@ export function minlengthValidator(minLength: number): ValidatorFn {
       return null;
     }
     const valueLength = getValueLength(control);
-    return getValueLength(control) < minLength
+    const _minLength = minLength as number;
+    return getValueLength(control) < _minLength
       ? { minlength: { requiredLength: minLength, actualLength: valueLength } }
       : null;
   };
