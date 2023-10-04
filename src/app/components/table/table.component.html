@@ -36,11 +36,11 @@
     <tr
       mat-header-row
       *matHeaderRowDef="displayedColumnNames"
-      class="{{ headerBgColor }} !text-white text-xl font-bold"></tr>
+      class="{{ headerBgColor }} !text-white !text-xl font-bold"></tr>
     <tr
       mat-row
       *matRowDef="let row; columns: displayedColumnNames"
-      class="text-center text-xl border-b border-gray-200"></tr>
+      class="text-center !text-xl border-b border-gray-200"></tr>
     <tr *matNoDataRow>
       <td class="p-4" colspan="100">{{ lang.map.no_records_to_display }}</td>
     </tr>
