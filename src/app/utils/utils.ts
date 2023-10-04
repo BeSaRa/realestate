@@ -85,7 +85,8 @@ export function minMaxAvg(values: number[]): MinMaxAvgContract {
   values = values.filter((v) => isValidValue(v));
   let max = values[0];
   let min = values[0];
-  let sum = values[0]; //changed from original post
+  let sum = values[0];
+  let avg = values[0]; //changed from original post
   for (let i = 1; i < values.length; i++) {
     if (values[i] > max) {
       max = values[i];
@@ -95,6 +96,8 @@ export function minMaxAvg(values: number[]): MinMaxAvgContract {
     }
     sum = sum + values[i];
   }
+  avg = sum / values.length;
+  avg = avg + (max - avg) * 0.4;
   // return { min: 0.5 * max, avg: 0.8 * max, max: max }; // this makes app to crash when trying to change to another duration type
-  return { min: min, max: max, avg: sum / values.length }; // because of customer requirements
+  return { min, max, avg }; // because of customer requirements
 }
