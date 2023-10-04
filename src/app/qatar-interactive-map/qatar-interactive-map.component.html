@@ -1,0 +1,14 @@
+<div class="w-[200px]">
+  <svg class="h-full" viewBox="150 0 300 600">
+    <g>
+      <path
+        *ngFor="let municipality of municipalities"
+        class="fill-primary-light opacity-100 stroke-white stroke-[0.5] transition-all hover:fill-primary hover:stroke-primary hover:stroke-2"
+        [attr.d]="municipality.path"
+        [matTooltip]="lang.getTranslate(municipality.langKey)"
+        matTooltipPosition="above"
+        [matTooltipPositionAtOrigin]="true"
+        matTooltipClass="!bg-secondary rounded-md" />
+    </g>
+  </svg>
+</div>

@@ -240,4 +240,13 @@ export interface LangKeysContract {
 
   annually: string;
   vs: string;
+
+  doha: string;
+  al_rayyan: string;
+  al_wakra: string;
+  al_khor: string;
+  al_shahaniya: string;
+  al_daayen: string;
+  umm_slal: string;
+  madinat_al_shamal: string;
 }
