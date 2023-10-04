@@ -54,3 +54,12 @@
     color: white;
   }
 }
+
+body.rtl {
+  .mat-mdc-header-row,
+  .mat-mdc-header-row,
+  .mat-mdc-row,
+  .mdc-data-table__content {
+    font-family: "Lusail", "Open Sans", sans-serif !important;
+  }
+}
