@@ -9,5 +9,5 @@ export const AppColors = {
   AZURE: '#4E94B3',
   JUNGLE: '#259C80',
   INDIGO_RAINBOW: '#1A4161',
-  PRIMARY_LIGHT: '#6F4551',
+  PRIMARY_LIGHT: '#ae4967',
 };
