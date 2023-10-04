@@ -693,17 +693,25 @@ function getRangeOptions(
         break;
     }
   }
-  const returned = {
-    xaxis: { range: _range },
-    plotOptions: {
-      bar: {
-        columnWidth: isStacked
-          ? '50%'
-          : dataCount <= _range + 1
-          ? '30%'
-          : Math.round((dataCount / _range / 1.5) * 100).toString() + '%',
-      },
-    },
-  };
+  const returned =
+    dataCount <= _range + 1
+      ? {
+          plotOptions: {
+            bar: {
+              columnWidth: (dataCount * 10) / 2 <= 80 ? ((dataCount * 10) / 2).toString() + '%' : '70%',
+            },
+          },
+          xaxis: {
+            range: dataCount <= 3 ? 4 : undefined,
+          },
+        }
+      : {
+          xaxis: { range: _range },
+          plotOptions: {
+            bar: {
+              columnWidth: isStacked ? '50%' : Math.round((dataCount / _range / 1.5) * 100).toString() + '%',
+            },
+          },
+        };
   return returned;
 }
