@@ -148,6 +148,8 @@ const ownerEndpoints = {
 export const EndPoints = {
   BASE_URL: '',
   TRANSLATION: 'translations',
+  ADMIN: 'admin/login',
+  AUTH: '/auth/login/ldap',
   BE: 'http://192.168.52.4:9080/mme-services/',
   ...rentEndPoints,
   ...sellEndPoints,
