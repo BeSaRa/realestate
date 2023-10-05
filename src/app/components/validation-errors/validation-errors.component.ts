@@ -4,6 +4,7 @@ import { ValidationErrors } from '@angular/forms';
 import { ValidationMessages, ValidationMessagesType } from '@constants/validation-messages';
 import { LangKeysContract } from '@contracts/lang-keys-contract';
 import { TranslationService } from '@services/translation.service';
+import { BehaviorSubject, Observable } from 'rxjs';
 
 @Component({
   selector: 'app-validation-errors',
@@ -28,12 +29,12 @@ export class ValidationErrorsComponent {
   get errors(): ValidationErrors | null | undefined {
     return this._errors;
   }
-
-  currentError?: string = '';
+  currentErrorSubject = new BehaviorSubject<string>('');
+  currentError$?: Observable<string> = this.currentErrorSubject.asObservable();
 
   private getCurrentError(errors: ValidationErrors | null | undefined): void {
     if (!errors) {
-      this.currentError = '';
+      this.currentErrorSubject.next('');
       this.errorContent = undefined;
       return;
     }
@@ -52,11 +53,13 @@ export class ValidationErrorsComponent {
     const validation = ValidationMessages[validationKey];
     if (typeof errors[validationKey] === 'object') this.errorContent = errors[validationKey][validationKey] as string;
     if (!validation) {
-      this.currentError = `Error: key not exists (${validationKey}) in ValidationMessages`;
+      this.currentErrorSubject.next(`Error: key not exists (${validationKey}) in ValidationMessages`);
       return;
     }
     // this.currentError = validation.replace ? validation.replace(validation.key) : identity(validation.key);
     const languageKey = validation.key as keyof LangKeysContract;
-    this.currentError = this.lang.map[languageKey];
+    this.lang.change$.subscribe( ()=> {
+      this.currentErrorSubject.next(this.lang.map[languageKey]);
+    })
   }
 }
