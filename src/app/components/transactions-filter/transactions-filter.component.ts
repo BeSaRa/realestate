@@ -158,42 +158,42 @@ export class TransactionsFilterComponent implements OnInit, OnDestroy {
         '',
         [
           (control: AbstractControl) => CustomValidators.minValue(this.rentValueRange?.minVal)(control),
-          (control: AbstractControl) => CustomValidators.maxLength(this.rentValueRange?.maxVal.toString().length)(control),
+          (control: AbstractControl) => CustomValidators.maxValue(this.rentValueRange?.maxVal)(control),
         ],
       ],
       rentPaymentMonthlyPerUnitTo: [
         '',
         [
+          (control: AbstractControl) => CustomValidators.minValue(this.rentValueRange?.minVal)(control),
           (control: AbstractControl) => CustomValidators.maxValue(this.rentValueRange?.maxVal)(control),
-          (control: AbstractControl) => CustomValidators.maxLength(this.rentValueRange?.maxVal.toString().length)(control),
         ]
       ],
       realEstateValueFrom: [
         '',
         [
           (control: AbstractControl) => CustomValidators.minValue(this.sellValueRange?.minVal)(control),
-          (control: AbstractControl) => CustomValidators.maxLength(this.sellValueRange?.maxVal.toString().length)(control),
+          (control: AbstractControl) => CustomValidators.maxValue(this.sellValueRange?.maxVal)(control),
         ],
       ],
       realEstateValueTo: [
         '',
         [
+          (control: AbstractControl) => CustomValidators.minValue(this.sellValueRange?.minVal)(control),
           (control: AbstractControl) => CustomValidators.maxValue(this.sellValueRange?.maxVal)(control),
-          (control: AbstractControl) => CustomValidators.maxLength(this.sellValueRange?.maxVal.toString().length)(control),
         ],
       ],
       areaFrom: [
-        '', 
+        '',
         [
           (control: AbstractControl) => CustomValidators.minValue(this.areaRange?.minVal)(control),
-          (control: AbstractControl) => CustomValidators.maxLength(this.areaRange?.maxVal.toString().length)(control),
+          (control: AbstractControl) => CustomValidators.maxValue(this.areaRange?.maxVal)(control),
         ]
       ],
       areaTo: [
-        '', 
+        '',
         [
+          (control: AbstractControl) => CustomValidators.minValue(this.areaRange?.minVal)(control),
           (control: AbstractControl) => CustomValidators.maxValue(this.areaRange?.maxVal)(control),
-          (control: AbstractControl) => CustomValidators.maxLength(this.areaRange?.maxVal.toString().length)(control),
         ]
       ],
       baseYear: [],
@@ -587,7 +587,7 @@ export class TransactionsFilterComponent implements OnInit, OnDestroy {
     } else if (this.displayRange) {
       if (!this.issueDateFrom.value || !this.issueDateTo.value) return;
     }
-    
+
     value = this._removeUnusedProps(value) as Partial<CriteriaContract>;
     this.fromChanged.emit({ criteria: value as CriteriaContract, type: criteriaType });
   }
@@ -675,28 +675,28 @@ export class TransactionsFilterComponent implements OnInit, OnDestroy {
       (paramRange) => paramRange.fieldName === ParamRangeField.RENT_VALUE
     );
     this.rentValueRange = _rentValueRange.length ? _rentValueRange[0] : undefined;
-    (this.rentValueRange) && (this.rentPaymentMaxLength = 
-      this.rentValueRange.maxVal.toString().length 
-      + Math.ceil(this.rentValueRange.maxVal.toString().length/3))
+    (this.rentValueRange) && (this.rentPaymentMaxLength =
+      this.rentValueRange.maxVal.toString().length
+      + Math.ceil(this.rentValueRange.maxVal.toString().length / 3))
 
 
     const _sellValueRange = this.paramsRange.filter(
       (paramRange) => paramRange.fieldName === ParamRangeField.SELL_VALUE
     );
     this.sellValueRange = _sellValueRange.length ? _sellValueRange[0] : undefined;
-    (this.sellValueRange) && (this.realEstateMaxLength = this.sellValueRange.maxVal.toString().length 
-    + Math.ceil(this.sellValueRange.maxVal.toString().length/3))
+    (this.sellValueRange) && (this.realEstateMaxLength = this.sellValueRange.maxVal.toString().length
+      + Math.ceil(this.sellValueRange.maxVal.toString().length / 3))
 
     const _mortgageValueRange = this.paramsRange.filter(
       (paramRange) => paramRange.fieldName === ParamRangeField.MORTGAGE_VALUE
     );
     this.mortgageValueRange = _mortgageValueRange.length ? _mortgageValueRange[0] : undefined;
-    (this.mortgageValueRange) && (this.mortgageMaxLength = this.mortgageValueRange.maxVal.toString().length 
-    + Math.ceil(this.mortgageValueRange.maxVal.toString().length/3))
+    (this.mortgageValueRange) && (this.mortgageMaxLength = this.mortgageValueRange.maxVal.toString().length
+      + Math.ceil(this.mortgageValueRange.maxVal.toString().length / 3))
 
     const _areaRange = this.paramsRange.filter((paramRange) => paramRange.fieldName === ParamRangeField.AREA);
     this.areaRange = _areaRange.length ? _areaRange[0] : undefined;
-    (this.areaRange) && (this.areaMaxLength = this.areaRange.maxVal.toString().length 
-    + Math.ceil(this.areaRange.maxVal.toString().length/3))
+    (this.areaRange) && (this.areaMaxLength = this.areaRange.maxVal.toString().length
+      + Math.ceil(this.areaRange.maxVal.toString().length / 3))
   }
 }
