@@ -592,7 +592,6 @@ export default class OwnershipIndicatorsPageComponent implements OnInit, AfterVi
       .pipe(map((data) => data as unknown as (KpiModel & { municipalityId: number })[]))
       .subscribe((data) => {
         data.sort((a, b) => a.kpiVal - b.kpiVal);
-        console.log(data);
         const _minMaxAvg = minMaxAvg(data.map((item) => item.kpiVal));
         this.municipalitiesDataLength = data.length;
 
@@ -642,7 +641,6 @@ export default class OwnershipIndicatorsPageComponent implements OnInit, AfterVi
       .pipe(map((data) => data as unknown as (KpiModel & { areaCode: number })[]))
       .subscribe((data) => {
         data.sort((a, b) => a.kpiVal - b.kpiVal);
-        console.log(data);
         const _minMaxAvg = minMaxAvg(data.map((item) => item.kpiVal));
         this.areasDataLength = data.length;
 
