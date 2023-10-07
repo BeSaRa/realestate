@@ -703,7 +703,7 @@ function getRangeOptions(
             },
           },
           xaxis: {
-            range: dataCount <= 3 ? 3 : dataCount - 1,
+            range: dataCount <= 3 ? 2 : dataCount - 1,
           },
         }
       : {
