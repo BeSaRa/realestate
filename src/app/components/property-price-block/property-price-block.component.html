@@ -1,50 +1,56 @@
 <div class="px-3 lg:px-16 my-4 flex flex-wrap items-center justify-center gap-3 [&>div]:flex-1">
-  - <div [dir]="lang.isLtr ? 'ltr' : 'rtl'" class="group  px-4 py-6 h-[200px] min-w-[350px] max-w-[450px] grid grid-cols-3 gap-2 justify-between items-center text-center rounded-lg bg-white custom-shadow shadow-slate-200 transition {{
+  <div
+    [dir]="lang.isLtr ? 'ltr' : 'rtl'"
+    class="group  px-4 py-6 h-[200px] min-w-[350px] max-w-[450px] grid grid-cols-3 gap-2 justify-between items-center text-center rounded-lg bg-white custom-shadow shadow-slate-200 transition {{
       lang.isLtr ? 'ltr-gradient' : 'gradient'
     }}">
     <img class="!h-[150px] col-span-1" [src]="getItemImage(item)" [alt]="item?.propertyTypeInfo?.getNames()" />
     <div class="flex flex-col col-span-2 items-center">
       <span class="flex-1 text-lg text-black font-bold group-hover:text-white transition">{{
         lang.map.average_forecast_price
-        }}</span>
+      }}</span>
       <span class="my-2 h-0 w-full border-t border-primary/50 group-hover:border-white"></span>
       <span class="flex-1 text-xl text-black font-bold group-hover:text-white transition">{{
         item?.propertyTypeInfo?.getNames()
-        }}</span>
+      }}</span>
       <span class="mt-2 text-2xl text-primary font-bold group-hover:text-white transition">
         <span [countUp]="item?.kpiPredicated || 0" [options]="countUpOptions"></span>
       </span>
     </div>
   </div>
-  <div [dir]="lang.isLtr ? 'ltr' : 'rtl'" class="group  px-4 py-6 h-[200px] min-w-[350px] max-w-[450px] grid grid-cols-3 gap-2 justify-between items-center text-center rounded-lg bg-white custom-shadow shadow-slate-200 transition {{
-    lang.isLtr ? 'ltr-gradient' : 'gradient'
-  }}">
+  <div
+    [dir]="lang.isLtr ? 'ltr' : 'rtl'"
+    class="group  px-4 py-6 h-[200px] min-w-[350px] max-w-[450px] grid grid-cols-3 gap-2 justify-between items-center text-center rounded-lg bg-white custom-shadow shadow-slate-200 transition {{
+      lang.isLtr ? 'ltr-gradient' : 'gradient'
+    }}">
     <img class="!h-[150px] col-span-1" [src]="getItemImage(item)" [alt]="item?.propertyTypeInfo?.getNames()" />
     <div class="flex flex-col col-span-2 items-center">
       <span class="flex-1 text-lg text-black font-bold group-hover:text-white transition">{{
         lang.map.current_average_price
-        }}</span>
+      }}</span>
       <span class="my-2 h-0 w-full border-t border-primary/50 group-hover:border-white"></span>
       <span class="flex-1 text-xl text-black font-bold group-hover:text-white transition">{{
         item?.propertyTypeInfo?.getNames()
-        }}</span>
+      }}</span>
       <span class="mt-2 text-2xl text-primary font-bold group-hover:text-white transition">
         <span [countUp]="item?.kpiCurrent || 0" [options]="countUpOptions"></span>
       </span>
     </div>
   </div>
-  <div [dir]="lang.isLtr ? 'ltr' : 'rtl'" class="group  px-4 py-6 h-[200px] min-w-[350px] max-w-[450px] grid grid-cols-3 gap-2 justify-between items-center text-center rounded-lg bg-white custom-shadow shadow-slate-200 transition {{
-    lang.isLtr ? 'ltr-gradient' : 'gradient'
-  }}">
+  <div
+    [dir]="lang.isLtr ? 'ltr' : 'rtl'"
+    class="group  px-4 py-6 h-[200px] min-w-[350px] max-w-[450px] grid grid-cols-3 gap-2 justify-between items-center text-center rounded-lg bg-white custom-shadow shadow-slate-200 transition {{
+      lang.isLtr ? 'ltr-gradient' : 'gradient'
+    }}">
     <img class="!h-[150px] col-span-1" [src]="getItemImage(item)" [alt]="item?.propertyTypeInfo?.getNames()" />
     <div class="flex flex-col col-span-2 items-center">
       <span class="flex-1 text-lg text-black font-bold group-hover:text-white transition">{{
         lang.map.average_price_five_years_ago
-        }}</span>
+      }}</span>
       <span class="my-2 h-0 w-full border-t border-primary/50 group-hover:border-white"></span>
       <span class="flex-1 text-xl text-black font-bold group-hover:text-white transition">{{
         item?.propertyTypeInfo?.getNames()
-        }}</span>
+      }}</span>
       <span class="mt-2 text-2xl text-primary font-bold group-hover:text-white transition">
         <span [countUp]="item?.kpiPast || 0" [options]="countUpOptions"></span>
       </span>
