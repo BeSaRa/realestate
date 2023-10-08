@@ -1,3 +1,11 @@
+:host {
+  @apply w-full;
+}
+
 ::ng-deep .mat-mdc-tooltip .mdc-tooltip__surface {
   background-color: transparent !important;
+}
+
+.gradient-legend {
+  background: linear-gradient(rgba(138, 21, 56, 1), rgba(138, 21, 56, 0.2));
 }
