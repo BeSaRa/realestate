@@ -576,17 +576,6 @@ export default class OwnershipIndicatorsPageComponent implements OnInit, AfterVi
       });
   }
 
-  updateMunicipalitesChartType(type: ChartType) {
-    this.selectedMunicipalityChartType = type;
-    if (type === ChartType.BAR) {
-      // isChangingMunicipalityChartType = true;
-      this.municipalitiesChart.setDirty();
-      setTimeout(() => {
-        this.updateMunicipalitiesBarChartData();
-      }, 0);
-    }
-  }
-
   updateMunicipalitiesChartData() {
     this.isLoadingUpdatedMunicipalitiesData = true;
     const _criteria = {
@@ -640,6 +629,14 @@ export default class OwnershipIndicatorsPageComponent implements OnInit, AfterVi
         ),
       })
       .then();
+  }
+
+  onMapSelectedMunicipalityChanged(event: KpiModel & { municipalityId: number }) {
+    this.selectedMunicipality.id = event.municipalityId;
+    this.selectedMunicipality.dataPointIndex = this.municipalitiesData.findIndex(
+      (m) => m.municipalityId === event.municipalityId
+    );
+    this.updateAreasChartData();
   }
 
   updateAreasChartData() {
