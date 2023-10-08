@@ -24,13 +24,13 @@
       <div class="bg-secondary text-white font-bold px-2 py-1">{{ getName(selectedMunicipalityId) }}</div>
       <div class="flex justify-between items-end px-2 py-1 gap-2">
         <span>عدد الملكيات: </span>
-        <span class="font-bold">{{ getSelectedMunicipality()!.kpiVal }}</span>
+        <span class="font-bold">{{ getFormatedValue(getSelectedMunicipality()!.kpiVal) }}</span>
       </div>
     </div>
     <div class="flex justify-end gap-2 flex-1">
       <div class="flex flex-col justify-between items-end -my-1">
-        <span>{{ minMaxKpis.max }}</span>
-        <span>{{ minMaxKpis.min }}</span>
+        <span>{{ getFormatedValue(minMaxKpis.max) }}</span>
+        <span>{{ getFormatedValue(minMaxKpis.min) }}</span>
       </div>
       <div class="gradient-legend flex-1 h-full w-5"></div>
     </div>
@@ -41,6 +41,6 @@
   <div class="bg-secondary text-white font-bold px-2 py-1">{{ getName(municipality.municipalityId) }}</div>
   <div class="flex justify-between px-2 py-1 gap-2">
     <span>عدد الملكيات: </span>
-    <span class="font-bold">{{ municipality.kpiVal }}</span>
+    <span class="font-bold">{{ getFormatedValue(municipality.kpiVal) }}</span>
   </div>
 </ng-template>
