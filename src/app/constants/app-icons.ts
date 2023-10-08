@@ -48,6 +48,7 @@ export const AppIcons = {
   DOWNLOAD: 'cloud-download',
   CLOCK: 'clock-time-eight',
   MENU: 'menu',
+  MAP_CHART: 'map-marker-radius',
 };
 
 export type AppIconsType = typeof AppIcons;

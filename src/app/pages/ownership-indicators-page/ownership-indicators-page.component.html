@@ -230,24 +230,42 @@
         {{ lang.map.ownerships_count_per_municipality }}
         ({{ getNationalityNames(selectedNationality.id) }})
       </h3>
-
-      <div class="flex-auto overflow-hidden mt-2 pt-1" dir="ltr">
-        <apx-chart
-          #municipalitiesChart
-          class="custom-toolbar [&>div]:ml-[-22px]"
-          [series]="municipalitiesChartOptions.series!"
-          [chart]="municipalitiesChartOptions.chart!"
-          [xaxis]="municipalitiesChartOptions.xaxis!"
-          [stroke]="municipalitiesChartOptions.stroke!"
-          [colors]="municipalitiesChartOptions.colors!"
-          [dataLabels]="municipalitiesChartOptions.dataLabels!"
-          [legend]="municipalitiesChartOptions.legend!"
-          [markers]="municipalitiesChartOptions.markers!"
-          [grid]="municipalitiesChartOptions.grid!"
-          [yaxis]="municipalitiesChartOptions.yaxis!"
-          [tooltip]="municipalitiesChartOptions.tooltip!"
-          [plotOptions]="municipalitiesChartOptions.plotOptions!"
-          [title]="municipalitiesChartOptions.title!" />
+      <div class="flex flex-col mt-2 md:flex-row">
+        <div class="flex-auto overflow-hidden mt-2 pt-1" dir="ltr">
+          <apx-chart
+            [ngClass]="{ hidden: selectedMunicipalityChartType !== ChartType.BAR }"
+            #municipalitiesChart
+            class="custom-toolbar [&>div]:ml-[-22px]"
+            [series]="municipalitiesChartOptions.series!"
+            [chart]="municipalitiesChartOptions.chart!"
+            [xaxis]="municipalitiesChartOptions.xaxis!"
+            [stroke]="municipalitiesChartOptions.stroke!"
+            [colors]="municipalitiesChartOptions.colors!"
+            [dataLabels]="municipalitiesChartOptions.dataLabels!"
+            [legend]="municipalitiesChartOptions.legend!"
+            [markers]="municipalitiesChartOptions.markers!"
+            [grid]="municipalitiesChartOptions.grid!"
+            [yaxis]="municipalitiesChartOptions.yaxis!"
+            [tooltip]="municipalitiesChartOptions.tooltip!"
+            [plotOptions]="municipalitiesChartOptions.plotOptions!"
+            [title]="municipalitiesChartOptions.title!" />
+        </div>
+        <div class="w-full my-4">
+          <app-qatar-interactive-map
+            [municipalitiesData]="municipalitiesData"
+            [selectedMunicipalityId]="selectedMunicipality.id"
+            [ngClass]="{ hidden: selectedMunicipalityChartType !== ChartType.MAP }" />
+        </div>
+        <div class="h-full flex flex-row justify-center md:flex-col -mt-6 md:mt-4">
+          <app-icon-button
+            [ngClass]="{ 'text-primary': selectedMunicipalityChartType === ChartType.BAR }"
+            (click)="updateMunicipalitesChartType(ChartType.BAR)"
+            icon="BAR_CHART" />
+          <app-icon-button
+            [ngClass]="{ 'text-primary': selectedMunicipalityChartType === ChartType.MAP }"
+            (click)="updateMunicipalitesChartType(ChartType.MAP)"
+            icon="MAP_CHART" />
+        </div>
       </div>
     </div>
     <div class="px-3 lg:px-16 flex flex-col">
