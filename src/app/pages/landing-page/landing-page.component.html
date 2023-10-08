@@ -1,25 +1,21 @@
 <app-extra-header class="flex -mt-32 relative text-white">
-  <div class="flex justify-between items-center h-60">
-    <div class="h-60 flex flex-col justify-center items-start" id="logo-side">
-      <h1 class="text-5xl font-semibold">{{ lang.map.qatar_real_estate_platform }}</h1>
-      <h2 class="text-3xl font-semibold">
+  <div class="flex flex-col justify-start -mt-4 md:mt-0 md:flex-row md:justify-between items-center h-60">
+    <div class="h-60 flex flex-col justify-center items-center md:items-start" id="logo-side">
+      <h1 class="text-3xl sm:text-4xl md:text-5xl font-semibold">{{ lang.map.qatar_real_estate_platform }}</h1>
+      <h2 class="text-xl sm:text-2xl md:text-3xl font-semibold">
         {{ lang.toggleMap.qatar_real_estate_platform }} -
         <span class="text-gray-400 font-normal">({{ lang.map.trial_run }})</span>
       </h2>
     </div>
-    <div id="slider-side" class="flex flex-col gap-5">
+    <div id="slider-side" class="flex flex-col gap-2 text-sm md:text-base">
       <!-- <img class="w-auto h-auto" ngSrc="assets/images/slider.png" alt="slider" height="240" width="470" />-->
-      <div class="bg-black/50 p-5 rounded-xl flex flex-col items-center">
-        <p>
-          {{ lang.map.average_price_per_square_foot_of_vacant_land_in_doha_since_the_beginning_of_the_year_until_now }}
-        </p>
-        <p class="text-2xl text-secondary">619 QR</p>
+      <div class="bg-black/50 py-2 px-5 rounded-xl flex flex-col items-center">
+        <p>{{ lang.map.the_total_number_of_sell_contracts }} ({{ lang.map.second_quarter_of_2023 }})</p>
+        <p class="text-xl md:text-2xl text-secondary">237</p>
       </div>
-      <div class="bg-black/50 p-5 rounded-xl flex flex-col items-center">
-        <p>
-          {{ lang.map.average_price_per_square_foot_of_villas_in_doha_since_the_beginning_of_the_year_until_now }}
-        </p>
-        <p class="text-2xl text-secondary">625 QR</p>
+      <div class="bg-black/50 py-2 px-5 rounded-xl flex flex-col items-center">
+        <p>{{ lang.map.average_sell_price_per_unit_property }} ({{ lang.map.second_quarter_of_2023 }})</p>
+        <p class="text-xl md:text-2xl text-secondary">4,434,942 {{ lang.map.qr }}</p>
       </div>
     </div>
   </div>
