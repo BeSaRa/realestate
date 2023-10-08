@@ -1,14 +1,46 @@
-<div class="w-[200px]">
-  <svg class="h-full" viewBox="150 0 300 600">
-    <g>
-      <path
-        *ngFor="let municipality of municipalities"
-        class="fill-primary-light opacity-100 stroke-white stroke-[0.5] transition-all hover:fill-primary hover:stroke-primary hover:stroke-2"
-        [attr.d]="municipality.path"
-        [matTooltip]="lang.getTranslate(municipality.langKey)"
-        matTooltipPosition="above"
-        [matTooltipPositionAtOrigin]="true"
-        matTooltipClass="!bg-secondary rounded-md" />
-    </g>
-  </svg>
+<div class="flex justify-between items-start p-4 border border-primary rounded-lg">
+  <div></div>
+  <div class="w-[200px]">
+    <svg class="h-full" viewBox="150 0 300 600">
+      <g>
+        <path
+          *ngFor="let municipalitySvgPath of municipalitiesSvgPath"
+          [ngStyle]="{ opacity: getOpacity(municipalitiesDataMap[municipalitySvgPath.id].kpiVal) }"
+          class="fill-primary stroke-primary stroke-1 cursor-pointer transition-all hover:brightness-[0.25] hover:stroke-[4]"
+          [ngClass]="{
+            'brightness-50 stroke-[4]': selectedMunicipalityId === municipalitySvgPath.id
+          }"
+          [attr.d]="municipalitySvgPath.path"
+          (click)="onMunicipalityClick(municipalitiesDataMap[municipalitySvgPath.id])"
+          appCustomTooltip
+          [tooltipContent]="tooltipTemplate"
+          [tooltipContentContext]="municipalitiesDataMap[municipalitySvgPath.id]"
+          matTooltipClass="!bg-secondary rounded-md" />
+      </g>
+    </svg>
+  </div>
+  <div class="py-4 flex flex-col justify-between items-end self-stretch gap-8">
+    <div class="bg-white border border-secondary rounded-md overflow-hidden">
+      <div class="bg-secondary text-white font-bold px-2 py-1">{{ getName(selectedMunicipalityId) }}</div>
+      <div class="flex justify-between items-end px-2 py-1 gap-2">
+        <span>عدد الملكيات: </span>
+        <span class="font-bold">{{ getSelectedMunicipality()!.kpiVal }}</span>
+      </div>
+    </div>
+    <div class="flex justify-end gap-2 flex-1">
+      <div class="flex flex-col justify-between items-end -my-1">
+        <span>{{ minMaxKpis.max }}</span>
+        <span>{{ minMaxKpis.min }}</span>
+      </div>
+      <div class="gradient-legend flex-1 h-full w-5"></div>
+    </div>
+  </div>
 </div>
+
+<ng-template #tooltipTemplate let-municipality>
+  <div class="bg-secondary text-white font-bold px-2 py-1">{{ getName(municipality.municipalityId) }}</div>
+  <div class="flex justify-between px-2 py-1 gap-2">
+    <span>عدد الملكيات: </span>
+    <span class="font-bold">{{ municipality.kpiVal }}</span>
+  </div>
+</ng-template>
