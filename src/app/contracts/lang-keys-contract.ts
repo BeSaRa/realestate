@@ -196,7 +196,7 @@ export interface LangKeysContract {
   max_value: string;
   min_value: string;
   max_length: string;
-  
+
   sort_order: string;
   most_recent: string;
   oldest: string;
@@ -251,7 +251,9 @@ export interface LangKeysContract {
   umm_slal: string;
   madinat_al_shamal: string;
   current_average_price: string;
-  average_price_five_years_ago : string;
-  average_forecast_price : string;
+  average_price_five_years_ago: string;
+  average_forecast_price: string;
   average_price_according_to_property_type: string;
+  second_quarter_of_2023: string;
+  data_is_being_collected_and_audited: string;
 }

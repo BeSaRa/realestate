@@ -17,6 +17,7 @@ import { RentTop10Model } from '@models/rent-top-10-model';
 
 import { MatNativeDateModule } from '@angular/material/core';
 import { PageEvent } from '@angular/material/paginator';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatSortModule } from '@angular/material/sort';
 import { MatTableModule } from '@angular/material/table';
 import { RentTransactionIndicator } from '@app-types/rent-indicators-type';
@@ -56,7 +57,6 @@ import {
   BehaviorSubject,
   combineLatest,
   delay,
-  forkJoin,
   map,
   Observable,
   of,
@@ -221,7 +221,8 @@ export default class RentalIndicatorsPageComponent implements OnInit, OnDestroy 
       this.urlService.URLS.RENT_KPI11,
       this.urlService.URLS.RENT_KPI12,
       this.urlService.URLS.RENT_KPI21,
-      'assets/icons/kpi/svg/5.svg'
+      'assets/icons/kpi/svg/5.svg',
+      false
     ),
     new KpiRoot(
       7,
@@ -243,7 +244,8 @@ export default class RentalIndicatorsPageComponent implements OnInit, OnDestroy 
       this.urlService.URLS.RENT_KPI17,
       this.urlService.URLS.RENT_KPI18,
       this.urlService.URLS.RENT_KPI24,
-      'assets/icons/kpi/svg/3.svg'
+      'assets/icons/kpi/svg/3.svg',
+      false
     ),
     new KpiRoot(
       13,
@@ -283,6 +285,7 @@ export default class RentalIndicatorsPageComponent implements OnInit, OnDestroy 
       enName: this.lang.getEnglishTranslation('average_price_per_meter'),
       url: this.urlService.URLS.RENT_KPI31_1,
       hasPrice: true,
+      isActive: false,
     }),
     new Lookup().clone<Lookup>({
       arName: this.lang.getArabicTranslation('contracts_values'),
@@ -295,6 +298,7 @@ export default class RentalIndicatorsPageComponent implements OnInit, OnDestroy 
       enName: this.lang.getEnglishTranslation('rented_spaces'),
       url: this.urlService.URLS.RENT_KPI33,
       hasPrice: false,
+      isActive: false,
     }),
   ];
   top10ChartData: RentTop10Model[] = [];
