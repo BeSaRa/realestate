@@ -128,7 +128,7 @@ export default class MortgageIndicatorsComponent implements OnInit, AfterViewIni
       '',
       '',
       '',
-      'assets/icons/kpi/svg/1.svg'
+      'assets/icons/kpi/svg/mort/1.svg'
     ),
     new KpiRoot(
       3,
@@ -139,7 +139,7 @@ export default class MortgageIndicatorsComponent implements OnInit, AfterViewIni
       '',
       '',
       '',
-      'assets/icons/kpi/svg/2.svg'
+      'assets/icons/kpi/svg/mort/2.svg'
     ),
     new KpiRoot(
       5,
@@ -150,7 +150,7 @@ export default class MortgageIndicatorsComponent implements OnInit, AfterViewIni
       '',
       '',
       '',
-      'assets/icons/kpi/svg/6.svg'
+      'assets/icons/kpi/svg/mort/3.svg'
     ),
   ];
 
