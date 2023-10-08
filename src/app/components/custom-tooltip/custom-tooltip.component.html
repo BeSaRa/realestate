@@ -1,0 +1,5 @@
+<div class="custom-tooltip" [ngClass]="tooltipClass">
+  <ng-container
+    [ngTemplateOutlet]="tooltipData.tooltipContent"
+    [ngTemplateOutletContext]="{ $implicit: tooltipData.tooltipContentContext }"></ng-container>
+</div>
