@@ -1,0 +1,99 @@
+import { Directionality } from '@angular/cdk/bidi';
+import { Overlay, OverlayPositionBuilder, OverlayRef, RepositionScrollStrategy } from '@angular/cdk/overlay';
+import { ComponentPortal } from '@angular/cdk/portal';
+import {
+  ComponentRef,
+  Directive,
+  ElementRef,
+  HostListener,
+  InjectionToken,
+  Injector,
+  Input,
+  OnChanges,
+  OnDestroy,
+  OnInit,
+  SimpleChanges,
+  TemplateRef,
+  inject,
+} from '@angular/core';
+import { CustomTooltipComponent } from '@components/custom-tooltip/custom-tooltip.component';
+import { Subject, takeUntil } from 'rxjs';
+
+export interface CustomTooltipDataContract {
+  tooltipContent: TemplateRef<any>;
+  tooltipContentContext: any;
+}
+
+export const CUSTOM_TOOLTIP_DATA = new InjectionToken<CustomTooltipDataContract>('CUSTOM_TOOLTIP_DATA');
+
+@Directive({
+  selector: '[appCustomTooltip]',
+  standalone: true,
+})
+export class CustomTooltipDirective implements OnInit, OnDestroy {
+  @Input({ required: true }) tooltipContent!: TemplateRef<any>;
+  @Input({ required: true }) tooltipContentContext!: any;
+
+  private _elementRef = inject(ElementRef);
+  private _overlay = inject(Overlay);
+  private _overlayPositionBuilder = inject(OverlayPositionBuilder);
+  private _injector = inject(Injector);
+  private _dir = inject(Directionality);
+
+  private _overlayRef!: OverlayRef;
+
+  private _tooltipRef?: ComponentRef<CustomTooltipComponent>;
+
+  destroy$ = new Subject<void>();
+
+  ngOnInit(): void {
+    const _postitionStrategy = this._overlayPositionBuilder.flexibleConnectedTo(this._elementRef).withPositions([
+      {
+        originX: 'start',
+        originY: 'top',
+        overlayX: 'center',
+        overlayY: 'center',
+      },
+    ]);
+    this._overlayRef = this._overlay.create({
+      positionStrategy: _postitionStrategy,
+      direction: this._dir,
+      scrollStrategy: this._overlay.scrollStrategies.reposition(),
+    });
+  }
+
+  @HostListener('mouseenter') show() {
+    if (this._tooltipRef) return;
+
+    const _injector = Injector.create({
+      parent: this._injector,
+      providers: [
+        {
+          provide: CUSTOM_TOOLTIP_DATA,
+          useValue: {
+            tooltipContent: this.tooltipContent,
+            tooltipContentContext: this.tooltipContentContext,
+          } as CustomTooltipDataContract,
+        },
+      ],
+    });
+
+    this._tooltipRef = this._overlayRef.attach(
+      new ComponentPortal<CustomTooltipComponent>(CustomTooltipComponent, null, _injector)
+    );
+  }
+
+  @HostListener('mouseleave') hide() {
+    this._tooltipRef && (this._tooltipRef.instance.tooltipClass = 'custom-tooltip-hide');
+    this._tooltipRef = undefined;
+    this._overlayRef.detach();
+  }
+
+  ngOnDestroy(): void {
+    this._overlayRef.detach();
+
+    this.destroy$.next();
+    this.destroy$.complete();
+    this.destroy$.unsubscribe();
+  }
+}
