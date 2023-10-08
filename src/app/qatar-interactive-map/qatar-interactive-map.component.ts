@@ -3,6 +3,7 @@ import { Component, EventEmitter, Input, OnChanges, OnInit, Output, inject } fro
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { CustomTooltipDirective } from '@directives/custom-tooltip.directive';
 import { KpiModel } from '@models/kpi-model';
+import { AppChartTypesService } from '@services/app-chart-types.service';
 import { LookupService } from '@services/lookup.service';
 import { TranslationService } from '@services/translation.service';
 import { minMaxAvg } from '@utils/utils';
@@ -17,10 +18,12 @@ import { minMaxAvg } from '@utils/utils';
 export class QatarInteractiveMapComponent implements OnChanges {
   @Input() municipalitiesData: (KpiModel & { municipalityId: number })[] = [];
   @Input() selectedMunicipalityId = 4;
+  @Input() hasPrice = false;
 
   @Output() selectedMunicipalityChanged = new EventEmitter<KpiModel & { municipalityId: number }>();
 
   lookups = inject(LookupService);
+  appChartTypesService = inject(AppChartTypesService);
   lang = inject(TranslationService);
 
   municipalitiesSvgPath = [
@@ -77,6 +80,10 @@ export class QatarInteractiveMapComponent implements OnChanges {
 
   getName(municipalityId: number) {
     return this.lookups.ownerMunicipalitiesMap[municipalityId].getNames();
+  }
+
+  getFormatedValue(value: number) {
+    return this.appChartTypesService.dataLabelsFormatter({ val: value }, { hasPrice: this.hasPrice });
   }
 
   onMunicipalityClick(municipality: KpiModel & { municipalityId: number }) {
