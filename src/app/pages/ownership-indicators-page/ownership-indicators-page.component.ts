@@ -111,7 +111,7 @@ export default class OwnershipIndicatorsPageComponent implements OnInit, AfterVi
       this.urlService.URLS.OWNER_KPI2,
       this.urlService.URLS.OWNER_KPI3,
       '',
-      'assets/icons/kpi/svg/2.svg'
+      'assets/icons/kpi/svg/owner/1.svg'
     ),
     new KpiRoot(
       4,
@@ -122,7 +122,7 @@ export default class OwnershipIndicatorsPageComponent implements OnInit, AfterVi
       this.urlService.URLS.OWNER_KPI5,
       this.urlService.URLS.OWNER_KPI6,
       '',
-      'assets/icons/kpi/svg/4.svg'
+      'assets/icons/kpi/svg/owner/2.svg'
     ),
 
     new KpiRoot(
@@ -134,7 +134,7 @@ export default class OwnershipIndicatorsPageComponent implements OnInit, AfterVi
       this.urlService.URLS.OWNER_KPI8,
       this.urlService.URLS.OWNER_KPI9,
       '',
-      'assets/icons/kpi/svg/8.svg'
+      'assets/icons/kpi/svg/owner/3.svg'
     ),
   ];
 
@@ -147,7 +147,7 @@ export default class OwnershipIndicatorsPageComponent implements OnInit, AfterVi
     '',
     '',
     '',
-    'assets/icons/kpi/svg/7.svg'
+    'assets/icons/kpi/svg/owner/4.svg'
   );
 
   selectedRoot?: KpiRoot;
