@@ -9,17 +9,24 @@
   <div class="w-2/6 md:w-full flex justify-center">
     <img class="w-[90px]" [src]="iconUrl" [ngClass]="{ 'white-filter': isHovered || item.selected }" alt="" />
   </div>
-  <div class="group h-full flex flex-col items-center w-4/6 md:w-full">
+  <div class="group h-full flex flex-col items-center justify-start w-4/6 md:w-full">
     <span
       class="mt-2 flex-1 text-lg text-black font-bold group-hover:text-white group-[.selected]:text-white transition"
       >{{ item.getNames() }}</span
     >
     <span
+      *ngIf="item.isDataAvailable"
       class="mt-2 text-2xl md:text-3xl text-primary font-bold group-hover:text-white group-[.selected]:text-white transition"
-      ><span [countUp]="item.value" [options]="countUpOptions"></span> {{ item.hasPrice ? lang.map.qr : "" }}</span
+      ><span *ngIf="item.isDataAvailable" [countUp]="item.value" [options]="countUpOptions"></span>
+      {{ item.hasPrice ? lang.map.qr : "" }}</span
     >
+    <span
+      *ngIf="!item.isDataAvailable"
+      class="flex-1 mt-2 text-lg md:text-xl text-primary font-bold group-hover:text-white group-[.selected]:text-white transition">
+      "{{ lang.map.data_is_being_collected_and_audited }}"
+    </span>
     <app-change-indicator
-      *ngIf="showYoy"
+      *ngIf="showYoy && item.isDataAvailable"
       class="mt-2"
       [value]="item.yoy"
       [isHovered]="isHovered || item.selected"></app-change-indicator>
