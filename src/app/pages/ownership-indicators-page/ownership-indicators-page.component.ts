@@ -11,6 +11,7 @@ import { TransactionsFilterComponent } from '@components/transactions-filter/tra
 import { YoyIndicatorComponent } from '@components/yoy-indicator/yoy-indicator.component';
 import { AppColors } from '@constants/app-colors';
 import { CriteriaContract } from '@contracts/criteria-contract';
+import { MinMaxAvgContract } from '@contracts/min-max-avg-contract';
 import { OwnerCriteriaContract } from '@contracts/owner-criteria-contract';
 import { BarChartTypes } from '@enums/bar-chart-type';
 import { Breakpoints } from '@enums/breakpoints';
@@ -35,6 +36,7 @@ import { CarouselComponent, IvyCarouselModule } from 'angular-responsive-carouse
 import { ChartComponent, NgApexchartsModule } from 'ng-apexcharts';
 import { NgxMaskPipe } from 'ngx-mask';
 import { Subject, map, take, takeUntil } from 'rxjs';
+import { QatarInteractiveMapComponent } from 'src/app/qatar-interactive-map/qatar-interactive-map.component';
 
 @Component({
   selector: 'app-owner-page',
@@ -54,6 +56,7 @@ import { Subject, map, take, takeUntil } from 'rxjs';
     YoyIndicatorComponent,
     NgxMaskPipe,
     MatNativeDateModule,
+    QatarInteractiveMapComponent,
   ],
   templateUrl: './ownership-indicators-page.component.html',
   styleUrls: ['./ownership-indicators-page.component.scss'],
@@ -179,7 +182,9 @@ export default class OwnershipIndicatorsPageComponent implements OnInit, AfterVi
 
   isOnInitMunicipaliteisChart = true;
   isLoadingUpdatedMunicipalitiesData = false;
+  selectedMunicipalityChartType = ChartType.MAP;
   selectedMunicipality = { id: 4, seriesIndex: 0, dataPointIndex: 0 };
+  municipalitiesData: (KpiModel & { municipalityId: number })[] = [];
   municipalitiesDataLength = 0;
 
   municipalitiesChartOptions = new ChartOptionsModel().clone<ChartOptionsModel>({
@@ -571,6 +576,17 @@ export default class OwnershipIndicatorsPageComponent implements OnInit, AfterVi
       });
   }
 
+  updateMunicipalitesChartType(type: ChartType) {
+    this.selectedMunicipalityChartType = type;
+    if (type === ChartType.BAR) {
+      // isChangingMunicipalityChartType = true;
+      this.municipalitiesChart.setDirty();
+      setTimeout(() => {
+        this.updateMunicipalitiesBarChartData();
+      }, 0);
+    }
+  }
+
   updateMunicipalitiesChartData() {
     this.isLoadingUpdatedMunicipalitiesData = true;
     const _criteria = {
@@ -592,32 +608,38 @@ export default class OwnershipIndicatorsPageComponent implements OnInit, AfterVi
       .pipe(map((data) => data as unknown as (KpiModel & { municipalityId: number })[]))
       .subscribe((data) => {
         data.sort((a, b) => a.kpiVal - b.kpiVal);
-        const _minMaxAvg = minMaxAvg(data.map((item) => item.kpiVal));
+        this.municipalitiesData = data;
         this.municipalitiesDataLength = data.length;
 
-        this.municipalitiesChart.first
-          .updateOptions({
-            series: [
-              {
-                name: this.lang.map.ownerships_count,
-                data: data.map((item, index) => ({
-                  x: this.lookupService.ownerMunicipalitiesMap[item.municipalityId]?.getNames() ?? '',
-                  y: item.kpiVal,
-                  id: item.municipalityId,
-                  index,
-                })),
-              },
-            ],
-            colors: [this.appChartTypesService.chartColorsFormatter(_minMaxAvg)],
-            ...this.appChartTypesService.yearlyStaticChartOptions,
-            ...this.appChartTypesService.getRangeOptions(
-              this.screenSize,
-              BarChartTypes.SINGLE_BAR,
-              this.municipalitiesDataLength
-            ),
-          })
-          .then();
+        this.updateMunicipalitiesBarChartData();
       });
+  }
+
+  updateMunicipalitiesBarChartData() {
+    const _minMaxAvg = minMaxAvg(this.municipalitiesData.map((item) => item.kpiVal));
+
+    this.municipalitiesChart.first
+      .updateOptions({
+        series: [
+          {
+            name: this.lang.map.ownerships_count,
+            data: this.municipalitiesData.map((item, index) => ({
+              x: this.lookupService.ownerMunicipalitiesMap[item.municipalityId]?.getNames() ?? '',
+              y: item.kpiVal,
+              id: item.municipalityId,
+              index,
+            })),
+          },
+        ],
+        colors: [this.appChartTypesService.chartColorsFormatter(_minMaxAvg)],
+        ...this.appChartTypesService.yearlyStaticChartOptions,
+        ...this.appChartTypesService.getRangeOptions(
+          this.screenSize,
+          BarChartTypes.SINGLE_BAR,
+          this.municipalitiesDataLength
+        ),
+      })
+      .then();
   }
 
   updateAreasChartData() {
