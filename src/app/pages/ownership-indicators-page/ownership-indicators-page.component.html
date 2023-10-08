@@ -231,9 +231,11 @@
         ({{ getNationalityNames(selectedNationality.id) }})
       </h3>
       <div class="flex flex-col mt-2 md:flex-row">
-        <div class="flex-auto overflow-hidden mt-2 pt-1" dir="ltr">
+        <div
+          [ngClass]="{ hidden: selectedMunicipalityChartType !== ChartType.BAR }"
+          class="flex-auto overflow-hidden mt-2 pt-1"
+          dir="ltr">
           <apx-chart
-            [ngClass]="{ hidden: selectedMunicipalityChartType !== ChartType.BAR }"
             #municipalitiesChart
             class="custom-toolbar [&>div]:ml-[-22px]"
             [series]="municipalitiesChartOptions.series!"
@@ -250,11 +252,10 @@
             [plotOptions]="municipalitiesChartOptions.plotOptions!"
             [title]="municipalitiesChartOptions.title!" />
         </div>
-        <div class="w-full my-4">
+        <div [ngClass]="{ hidden: selectedMunicipalityChartType !== ChartType.MAP }" class="w-full my-4">
           <app-qatar-interactive-map
             [municipalitiesData]="municipalitiesData"
-            [selectedMunicipalityId]="selectedMunicipality.id"
-            [ngClass]="{ hidden: selectedMunicipalityChartType !== ChartType.MAP }" />
+            [selectedMunicipalityId]="selectedMunicipality.id" />
         </div>
         <div class="h-full flex flex-row justify-center md:flex-col -mt-6 md:mt-4">
           <app-icon-button
