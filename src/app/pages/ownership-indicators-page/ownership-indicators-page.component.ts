@@ -986,7 +986,6 @@ export default class OwnershipIndicatorsPageComponent implements OnInit, AfterVi
           this.selectedMunicipality.dataPointIndex
         );
       }
-      console.log(chartContext.w.config.series[0].data);
       this.municipalitiesChart.first.toggleDataPointSelection(
         0,
         (chartContext.w.config.series[0].data as unknown as { index: number; id: number }[]).length - 1
