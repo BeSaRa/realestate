@@ -150,14 +150,14 @@ export const cmsEndpoints = {
   ADMIN: 'admin/login',
   AUTH: '/auth/login/ldap',
   MAIN_VOTE: 'flows/trigger/6FED838F-BD3D-400A-9342-6559B48980CA',
+  LOGOUT: '/auth/logout',
+  REFRESH_TOKEN: '/auth/refresh',
+  USERS: '/users/',
+  README: '/users/me',
 };
 
 export const EndPoints = {
   BASE_URL: '',
-  LOGOUT: '/auth/logout',
-  REFRESH_TOKEN:"/auth/refresh",
-  USERS: '/users/',
-  README: '/users/me',
   BE: 'http://192.168.52.4:9080/mme-services/',
   ...cmsEndpoints,
   ...rentEndPoints,
