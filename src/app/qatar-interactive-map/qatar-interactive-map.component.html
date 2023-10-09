@@ -20,17 +20,17 @@
     </svg>
   </div>
   <div class="py-4 flex flex-col justify-between items-end self-stretch gap-8">
-    <div class="bg-white border border-secondary rounded-md overflow-hidden">
-      <div class="bg-secondary text-white font-bold px-2 py-1">{{ getName(selectedMunicipalityId) }}</div>
+    <div class="bg-white border border-primary rounded-md overflow-hidden">
+      <div class="bg-primary text-white font-bold px-2 py-1">{{ getName(selectedMunicipalityId) }}</div>
       <div class="flex justify-between items-end px-2 py-1 gap-2">
-        <span>عدد الملكيات: </span>
+        <span>{{ lang.map.number_of_ownerships }}: </span>
         <span class="font-bold">{{ getFormatedValue(getSelectedMunicipality()!.kpiVal) }}</span>
       </div>
     </div>
     <div class="flex justify-end gap-2 flex-1">
       <div class="flex flex-col justify-between items-end -my-1">
-        <span>{{ getFormatedValue(minMaxKpis.max) }}</span>
-        <span>{{ getFormatedValue(minMaxKpis.min) }}</span>
+        <span>{{ getFormatedValue(minMaxKpis.max) }} ({{ lang.map.ownership }})</span>
+        <span>{{ getFormatedValue(minMaxKpis.min) }} ({{ lang.map.ownership }})</span>
       </div>
       <div class="gradient-legend flex-1 h-full w-5"></div>
     </div>
@@ -40,7 +40,7 @@
 <ng-template #tooltipTemplate let-municipality>
   <div class="bg-secondary text-white font-bold px-2 py-1">{{ getName(municipality.municipalityId) }}</div>
   <div class="flex justify-between px-2 py-1 gap-2">
-    <span>عدد الملكيات: </span>
+    <span>{{ lang.map.number_of_ownerships }}: </span>
     <span class="font-bold">{{ getFormatedValue(municipality.kpiVal) }}</span>
   </div>
 </ng-template>

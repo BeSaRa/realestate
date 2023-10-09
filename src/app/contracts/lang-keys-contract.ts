@@ -256,4 +256,6 @@ export interface LangKeysContract {
   average_price_according_to_property_type: string;
   second_quarter_of_2023: string;
   data_is_being_collected_and_audited: string;
+  ownership: string;
+  number_of_ownerships: string;
 }
