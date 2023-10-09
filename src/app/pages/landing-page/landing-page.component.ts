@@ -45,15 +45,15 @@ export default class LandingPageComponent implements OnInit {
 
   lang = inject(TranslationService);
 
-  async ngOnInit(): Promise<void> {
-    const values = await this.service.client.request(
-      readItems('surveys', {
-        filter: {
-          is_main: {},
-        },
-        fields: ['*', { choices: ['*'] }],
-      })
-    );
-    console.log(values);
+  ngOnInit() {
+    // const values = await this.service.client.request(
+    //   readItems('surveys', {
+    //     filter: {
+    //       is_main: {},
+    //     },
+    //     fields: ['*', { choices: ['*'] }],
+    //   })
+    // );
+    // console.log(values);
   }
 }
