@@ -636,10 +636,9 @@ export default class OwnershipIndicatorsPageComponent implements OnInit, AfterVi
     this.selectedMunicipality.dataPointIndex = this.municipalitiesData.findIndex(
       (m) => m.municipalityId === event.municipalityId
     );
-    setTimeout(() => {
-      this.isLoadingUpdatedMunicipalitiesData = true;
-      this.municipalitiesChart.first.updateOptions({});
-    }, 0);
+
+    this.isLoadingUpdatedMunicipalitiesData = true;
+    this.municipalitiesChart.first.toggleDataPointSelection(0, this.selectedMunicipality.dataPointIndex);
   }
 
   updateAreasChartData() {
@@ -987,6 +986,7 @@ export default class OwnershipIndicatorsPageComponent implements OnInit, AfterVi
           this.selectedMunicipality.dataPointIndex
         );
       }
+      console.log(chartContext.w.config.series[0].data);
       this.municipalitiesChart.first.toggleDataPointSelection(
         0,
         (chartContext.w.config.series[0].data as unknown as { index: number; id: number }[]).length - 1
