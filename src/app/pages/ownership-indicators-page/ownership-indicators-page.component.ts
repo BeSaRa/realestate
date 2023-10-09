@@ -636,7 +636,10 @@ export default class OwnershipIndicatorsPageComponent implements OnInit, AfterVi
     this.selectedMunicipality.dataPointIndex = this.municipalitiesData.findIndex(
       (m) => m.municipalityId === event.municipalityId
     );
-    this.updateAreasChartData();
+    setTimeout(() => {
+      this.isLoadingUpdatedMunicipalitiesData = true;
+      this.municipalitiesChart.first.updateOptions({});
+    }, 0);
   }
 
   updateAreasChartData() {
