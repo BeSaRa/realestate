@@ -10,14 +10,31 @@
     </h2>
   </div>
   <div class="flex flex-col w-full lg:w-3/4 gap-y-5">
-    <h2 class="text-xl text-primary">ما مدي سهولة الوصول للمعلومة</h2>
-    <mat-radio-group class="flex-col flex border rounded-xl p-5 border-secondary/50" aria-label="Select an option">
-      <mat-radio-button class="font-semibold text-primary" value="1">سهل جدا</mat-radio-button>
-      <mat-radio-button class="font-semibold text-primary" value="2">سهل</mat-radio-button>
-      <mat-radio-button class="font-semibold text-primary" value="3">عادي</mat-radio-button>
-      <mat-radio-button class="font-semibold text-primary" value="3">صعب</mat-radio-button>
-      <mat-radio-button class="font-semibold text-primary" value="3">صعب جدا</mat-radio-button>
+    <h2 class="text-xl text-primary">{{ vote && vote.title }}</h2>
+    <mat-radio-group
+      [formControl]="voteControl"
+      class="flex-col flex border rounded-xl p-5 border-secondary/50"
+      aria-label="Select an option">
+      <mat-radio-button
+        [disabled]="isLoading || (vote && vote.voted)"
+        *ngFor="let item of vote?.vote_items ?? []"
+        class="font-semibold text-primary"
+        [value]="item.id"
+        >{{ item.title }}</mat-radio-button
+      >
     </mat-radio-group>
-    <app-button class="self-center" buttonStyle="secondary">{{ lang.map.send }}</app-button>
+    <app-button
+      *ngIf="!vote?.voted"
+      [disabled]="isLoading || !this.voteControl.valid"
+      (click)="onVote()"
+      class="self-center"
+      buttonStyle="secondary"
+      ><span *ngIf="!isLoading">{{ lang.map.send }}</span>
+      <mat-spinner diameter="20" strokeWidth="2" *ngIf="isLoading"></mat-spinner
+    ></app-button>
+    <span *ngIf="vote?.voted" class="text-primary flex items-center gap-2">
+      <mat-icon class="text-secondary" [svgIcon]="appIcons.CHECK"></mat-icon>
+      {{ lang.map.you_have_successfully_voted_on_this_poll }}</span
+    >
   </div>
 </div>
