@@ -258,4 +258,5 @@ export interface LangKeysContract {
   data_is_being_collected_and_audited: string;
   ownership: string;
   number_of_ownerships: string;
+  you_have_successfully_voted_on_this_poll: string;
 }
