@@ -6,9 +6,9 @@
         <path
           *ngFor="let municipalitySvgPath of municipalitiesSvgPath"
           [ngStyle]="{ opacity: getOpacity(municipalitiesDataMap[municipalitySvgPath.id].kpiVal) }"
-          class="fill-primary stroke-primary stroke-1 cursor-pointer transition-all hover:brightness-[0.25] hover:stroke-[4]"
+          class="fill-primary stroke-primary stroke-1 cursor-pointer transition-all hover:brightness-[0.25] hover:stroke-[4] hover:stroke-white"
           [ngClass]="{
-            'brightness-50 stroke-[4]': selectedMunicipalityId === municipalitySvgPath.id
+            'brightness-50 stroke-[4] stroke-white': selectedMunicipalityId === municipalitySvgPath.id
           }"
           [attr.d]="municipalitySvgPath.path"
           (click)="onMunicipalityClick(municipalitiesDataMap[municipalitySvgPath.id])"
