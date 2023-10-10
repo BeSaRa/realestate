@@ -7,12 +7,12 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatRadioModule } from '@angular/material/radio';
 import { ButtonComponent } from '@components/button/button.component';
 import { AppIcons } from '@constants/app-icons';
-import { createItem, readItems } from '@directus/sdk';
+import { createItem } from '@directus/sdk';
 import { Vote } from '@models/vote';
 import { DirectusClientService } from '@services/directus-client.service';
 import { TranslationService } from '@services/translation.service';
 import { UrlService } from '@services/url.service';
-import { Subject, from, switchMap, take, tap } from 'rxjs';
+import { Subject, from, switchMap, take, takeUntil, tap } from 'rxjs';
 
 @Component({
   selector: 'app-voting-form',
@@ -55,9 +55,6 @@ export class VotingFormComponent implements OnInit, OnDestroy {
             this.voteControl.setValue(_vote.vote_items.find((item) => item.voted)?.id);
           }
         }),
-        switchMap((vote) =>
-          from(this.directusClient.client.request(readItems('vote_history', { filter: { vote_id: { _eq: vote.id } } })))
-        ),
         tap(() => (this.isLoading = false))
       )
       .subscribe();
@@ -72,7 +69,7 @@ export class VotingFormComponent implements OnInit, OnDestroy {
       )
     )
       .pipe(
-        take(1),
+        takeUntil(this.destroy$),
         switchMap(() => this.http.get<Vote>(this.urlService.URLS.MAIN_VOTE)),
         tap((_vote) => (this.vote = _vote)),
         tap(() => (this.isLoading = false))
