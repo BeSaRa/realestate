@@ -11,18 +11,35 @@
   </div>
   <div class="flex flex-col w-full lg:w-3/4 gap-y-5">
     <h2 class="text-xl text-primary">{{ vote && vote.title }}</h2>
-    <mat-radio-group
-      [formControl]="voteControl"
-      class="flex-col flex border rounded-xl p-5 border-secondary/50"
-      aria-label="Select an option">
-      <mat-radio-button
-        [disabled]="isLoading || (vote && vote.voted)"
-        *ngFor="let item of vote?.vote_items ?? []"
-        class="font-semibold text-primary"
-        [value]="item.id"
-        >{{ item.title }}</mat-radio-button
-      >
-    </mat-radio-group>
+    <div class="border rounded-xl p-5 border-secondary/50">
+      <mat-radio-group
+        *ngIf="!vote?.voted"
+        class="flex flex-col"
+        [formControl]="voteControl"
+        aria-label="Select an option">
+        <mat-radio-button
+          [disabled]="isLoading || (vote && vote.voted)"
+          *ngFor="let item of vote?.vote_items ?? []"
+          class="font-semibold text-primary"
+          [value]="item.id"
+          >{{ item.title }}</mat-radio-button
+        >
+      </mat-radio-group>
+      <div *ngIf="vote?.voted" class="flex flex-col gap-4">
+        <div
+          *ngFor="let item of vote?.vote_items"
+          class="relative w-full px-2 py-1 flex justify-end items-center border border-secondary rounded-full overflow-hidden">
+          <div
+            [ngStyle]="{ width: ((item.counts / getTotalVotes()) * 100).toString() + '%' }"
+            class="absolute overflow-visible top-0 right-0 ps-2 bg-secondary h-full flex items-center gap-2">
+            <mat-icon *ngIf="item.voted" class="text-white" [svgIcon]="appIcons.CHECK"></mat-icon>
+            <span class="flex-1 text-primary">{{ item.title }}</span>
+          </div>
+          <span class="relative text-primary">{{ item.counts / getTotalVotes() | percent }}</span>
+        </div>
+      </div>
+    </div>
+
     <app-button
       *ngIf="!vote?.voted"
       [disabled]="isLoading || !this.voteControl.valid"
@@ -33,7 +50,7 @@
       <mat-spinner diameter="20" strokeWidth="2" *ngIf="isLoading"></mat-spinner
     ></app-button>
     <span *ngIf="vote?.voted" class="text-primary flex items-center gap-2">
-      <mat-icon class="text-secondary" [svgIcon]="appIcons.CHECK"></mat-icon>
+      <mat-icon class="text-secondary" [svgIcon]="appIcons.CHECK_OUTLINE"></mat-icon>
       {{ lang.map.you_have_successfully_voted_on_this_poll }}</span
     >
   </div>

@@ -49,7 +49,8 @@ export const AppIcons = {
   CLOCK: 'clock-time-eight',
   MENU: 'menu',
   MAP_CHART: 'map-marker-radius',
-  CHECK: 'check-circle-outline',
+  CHECK_OUTLINE: 'check-circle-outline',
+  CHECK: 'check-circle',
 };
 
 export type AppIconsType = typeof AppIcons;

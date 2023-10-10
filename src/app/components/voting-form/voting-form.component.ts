@@ -76,4 +76,10 @@ export class VotingFormComponent extends OnDestroyMixin(class {}) implements OnI
       )
       .subscribe();
   }
+
+  getTotalVotes() {
+    let sum = 0;
+    this.vote?.vote_items.forEach((i) => (sum += i.counts));
+    return sum;
+  }
 }
