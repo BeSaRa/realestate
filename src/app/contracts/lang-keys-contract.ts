@@ -280,4 +280,5 @@ export interface LangKeysContract {
   login_as_employee: string;
   invalid_user_credentials: string;
   contract: string;
+  you_have_successfully_subscribed_to_the_newsletter: string;
 }
