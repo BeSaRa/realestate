@@ -13,10 +13,19 @@
     class="w-full"
     size="xl"
     label=""
+    [formControl]="newsletterControl"
+    [displayErrors]="false"
     [placeholder]="lang.map.enter_your_email_to_receive_all_new"
     bgColor="bg-white"
     caretColor="caret-secondary"
     borderColor="border-secondary"
-    ><app-icon-button appInputSuffix class="!text-primary" icon="SEND"></app-icon-button
-  ></app-input>
+    ><app-icon-button
+      *ngIf="!isLoading"
+      (click)="onSubscribe()"
+      [disabled]="!newsletterControl.valid"
+      appInputSuffix
+      class="!text-primary"
+      icon="SEND"></app-icon-button
+    ><mat-spinner class="ms-2" appInputSuffix *ngIf="isLoading" diameter="20" strokeWidth="2"></mat-spinner>
+  </app-input>
 </div>

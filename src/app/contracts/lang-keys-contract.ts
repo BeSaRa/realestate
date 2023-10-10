@@ -263,4 +263,5 @@ export interface LangKeysContract {
   sell_average_price_per_square_meter: string;
   contract: string;
   you_have_successfully_voted_on_this_poll: string;
+  you_have_successfully_subscribed_to_the_newsletter: string;
 }
