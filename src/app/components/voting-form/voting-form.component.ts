@@ -30,7 +30,7 @@ import { from, switchMap, takeUntil, tap } from 'rxjs';
   templateUrl: './voting-form.component.html',
   styleUrls: ['./voting-form.component.scss'],
 })
-export class VotingFormComponent extends OnDestroyMixin({}) implements OnInit {
+export class VotingFormComponent extends OnDestroyMixin(class {}) implements OnInit {
   http = inject(HttpClient);
   urlService = inject(UrlService);
   directusClient = inject(DirectusClientService);
