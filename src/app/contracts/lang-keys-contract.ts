@@ -281,4 +281,6 @@ export interface LangKeysContract {
   invalid_user_credentials: string;
   contract: string;
   you_have_successfully_subscribed_to_the_newsletter: string;
+  entered_email_already_subscribed: string;
+  email_is_invalid_please_try_again: string;
 }
