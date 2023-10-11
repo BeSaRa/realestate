@@ -18,7 +18,6 @@ import { MatPaginatorIntl } from '@angular/material/paginator';
 import { PaginatorLocal } from '@constants/paginator-local';
 import { LookupService } from '@services/lookup.service';
 import { NgxMaskPipe, provideNgxMask } from 'ngx-mask';
-
 export const appConfig: ApplicationConfig = {
   providers: [
     provideRouter(routes, withComponentInputBinding(), withInMemoryScrolling({ scrollPositionRestoration: 'top' })),

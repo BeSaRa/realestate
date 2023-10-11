@@ -1,0 +1,18 @@
+<div class="login-dialog-container">
+  <div class="dialog-header bg-primary">
+    <h1>{{ lang.map.login }}</h1>
+    <app-icon-button tabindex="-1" mat-dialog-close class="close-btn" icon="CLOSE"></app-icon-button>
+  </div>
+  <div class="dialog-content">
+    <div class="grid grid-cols-2 gap-4 [&>*]:col-span-2">
+      <div [formGroup]="LoginForm">
+        <app-input formControlName="identifier" [label]="lang.map.identifier"></app-input>
+        <app-input formControlName="password" [label]="lang.map.password"></app-input>
+      </div>
+    </div>
+  </div>
+  <div class="dialog-footer justify-end">
+    <app-button (click)="onLogin()" buttonStyle="primary">{{ lang.map.sign_in }}</app-button>
+    <app-button mat-dialog-close buttonStyle="primary-outline">{{ lang.map.cancel }}</app-button>
+  </div>
+</div>

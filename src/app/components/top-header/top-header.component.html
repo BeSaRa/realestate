@@ -50,15 +50,22 @@
       <app-icon-button [icon]="'VIEW'" (click)="toggleFilter()"></app-icon-button>
     </li>
     <li>
-      <app-button buttonStyle="none">{{ lang.map.login }}</app-button>
-      <!-- <a class="text-white" (click)="$event.preventDefault()" mat-button href="#">{{
+      <!-- <button mat-button [matMenuTriggerFor]="menu">{{ lang.map.login }}</button>
+      <mat-menu #menu="matMenu">
+        <button mat-menu-item>Item 1</button>
+        <button mat-menu-item>Item 2</button>
+      </mat-menu> -->
+      <a class="text-white" (click)="openLoginPopup()" mat-button>{{
         lang.map.login
-      }}</a> -->
+      }}</a>
     </li>
     <li>
-      <!-- <a mat-button (click)="$event.preventDefault()" href="#">{{ lang.map.staff_login }}</a> -->
-      <app-button buttonStyle="none">{{ lang.map.staff_login }}</app-button>
+      <a class="text-white" (click)="onLogOut()" mat-button>log out</a>
     </li>
+    <!-- <li> -->
+      <!-- <a mat-button (click)="$event.preventDefault()" href="#">{{ lang.map.staff_login }}</a> -->
+      <!-- <app-button buttonStyle="none">{{ lang.map.staff_login }}</app-button> -->
+    <!-- </li> -->
     <li>
       <app-button (click)="changeLang($event)" buttonStyle="none">{{
         lang.getCurrent().toggleTo.substring(0, 2).toUpperCase()

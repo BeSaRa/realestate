@@ -262,4 +262,13 @@ export interface LangKeysContract {
   you_have_successfully_subscribed_to_the_newsletter: string;
   entered_email_already_subscribed: string;
   email_is_invalid_please_try_again: string;
+
+  email: string;
+  identifier:string;
+  password: string;
+  sign_in: string;
+  cancel: string;
+
+  logged_in_successfully: string;
+  logged_in_failed: string;
 }
