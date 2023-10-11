@@ -46,7 +46,6 @@ import { Pagination } from '@models/pagination';
 import { MLPriceItem } from '@models/ml-price-item';
 import { PriceCriteriaContract } from '@contracts/price-criteria-contract';
 
-
 @Injectable({
   providedIn: 'root',
 })
@@ -118,7 +117,9 @@ export class DashboardService extends RegisterServiceMixin(class {}) implements 
   }
 
   @CastResponse(() => RentTransactionPropertyType)
-  loadRentTransactionsBasedOnPropertyType(criteria: Partial<RentCriteriaContract>): Observable<RentTransactionPropertyType[]> {
+  loadRentTransactionsBasedOnPropertyType(
+    criteria: Partial<RentCriteriaContract>
+  ): Observable<RentTransactionPropertyType[]> {
     return this.http.post<RentTransactionPropertyType[]>(this.urlService.URLS.RENT_KPI27, criteria);
   }
 
@@ -135,7 +136,9 @@ export class DashboardService extends RegisterServiceMixin(class {}) implements 
   }
 
   @CastResponse(() => SellTransactionPropertyType)
-  loadSellTransactionsBasedOnPropertyType(criteria: Partial<SellCriteriaContract>): Observable<SellTransactionPropertyType[]> {
+  loadSellTransactionsBasedOnPropertyType(
+    criteria: Partial<SellCriteriaContract>
+  ): Observable<SellTransactionPropertyType[]> {
     return this.http.post<SellTransactionPropertyType[]>(this.urlService.URLS.SELL_KPI27, criteria);
   }
 
@@ -171,7 +174,6 @@ export class DashboardService extends RegisterServiceMixin(class {}) implements 
     // so just for testing the built UI (table) we will use KPI26
     return this.http.post<SellTransactionPropertyType[]>(this.urlService.URLS.SELL_KPI26, criteria);
   }
-
 
   @CastResponse(() => Pagination<MortgageTransaction>, { shape: { 'transactionList.*': () => MortgageTransaction } })
   loadMortgageKpiTransactions(criteria: Partial<CriteriaContract>): Observable<Pagination<MortgageTransaction[]>> {
@@ -340,7 +342,7 @@ export class DashboardService extends RegisterServiceMixin(class {}) implements 
             data: {
               title: data[0].propertyTypeInfo.getNames(),
               list: data,
-              mainChart: { title: this.lang.map.average_price, bindValue: 'medianPrice' },
+              mainChart: { title: this.lang.map.average_sell_price_per_unit_property, bindValue: 'medianPrice' },
               oppositeChart: { title: this.lang.map.number_of_sell_contracts, bindValue: 'countCertificateCode' },
             },
           }
@@ -360,7 +362,7 @@ export class DashboardService extends RegisterServiceMixin(class {}) implements 
             data: {
               title: data[0].purposeInfo.getNames(),
               list: data,
-              mainChart: { title: this.lang.map.average_price, bindValue: 'medianPrice' },
+              mainChart: { title: this.lang.map.average_sell_price_per_unit_property, bindValue: 'medianPrice' },
               oppositeChart: { title: this.lang.map.number_of_sell_contracts, bindValue: 'countCertificateCode' },
             },
           }
