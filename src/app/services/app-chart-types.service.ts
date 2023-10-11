@@ -462,7 +462,7 @@ const top10LineChartOptions: Partial<PartialChartOptions> = {
       },
     },
   },
-  colors: [AppColors.GREEN_LIGHT],
+  colors: [AppColors.PRIMARY],
 };
 
 const top10BarChartOptions: Partial<PartialChartOptions> = {
@@ -517,7 +517,7 @@ const top10BarChartOptions: Partial<PartialChartOptions> = {
       },
     },
   },
-  colors: [AppColors.GREEN_LIGHT],
+  colors: [AppColors.PRIMARY],
 };
 
 const pieChartOptions: PieChartOptions = {
