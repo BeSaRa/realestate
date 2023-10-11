@@ -20,9 +20,9 @@ export class AppTableDataSource<M> extends MatTableDataSource<M> {
   }
 
   override disconnect(): void {
-    this._destroy$.next();
-    this._destroy$.complete();
-    this._destroy$.unsubscribe();
+    // this._destroy$.next();
+    // this._destroy$.complete();
+    // this._destroy$.unsubscribe();
   }
 
   setItems(items: Observable<M[]> | M[]) {

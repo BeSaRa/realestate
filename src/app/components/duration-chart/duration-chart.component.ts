@@ -96,6 +96,8 @@ export class DurationChartComponent implements OnInit, AfterViewInit, OnDestroy 
       this.updateChartType(ChartType.BAR);
       this._listenToCriteriaAndRootChange();
       this._initializeFormatters();
+    }, 0);
+    setTimeout(() => {
       this._listenToScreenSizeChange();
     }, 0);
   }
@@ -259,11 +261,11 @@ export class DurationChartComponent implements OnInit, AfterViewInit, OnDestroy 
   private _updateOptions(staticOptions: any) {
     this.isLoading = false;
     const _seriesData = this.isMinMaxAvgBar
-      ? this.appChartTypesService.getSplittedSeriesChartOptions(this.chartSeriesData, [this.minMaxAvgChartData])
-      : { series: this.chartSeriesData };
+      ? this.appChartTypesService.getSplittedSeriesChartOptions(this.chartSeriesData ?? [], [this.minMaxAvgChartData])
+      : { series: this.chartSeriesData ?? [] };
     setTimeout(() => {
       this.chart.first
-        .updateOptions({
+        ?.updateOptions({
           chart: { type: this.selectedChartType },
           ..._seriesData,
           ...staticOptions,
@@ -311,18 +313,16 @@ export class DurationChartComponent implements OnInit, AfterViewInit, OnDestroy 
   }
 
   private _listenToScreenSizeChange() {
-    setTimeout(() => {
-      this.screenService.screenSizeObserver$.pipe(takeUntil(this.destroy$)).subscribe((size) => {
-        this.screenSize = size;
-        this.chart.first.updateOptions(
-          this.appChartTypesService.getRangeOptions(
-            size,
-            this.selectedBarChartType,
-            this.durationDataLength,
-            this.isMinMaxAvgBar
-          )
-        );
-      });
-    }, 0);
+    this.screenService.screenSizeObserver$.pipe(takeUntil(this.destroy$)).subscribe((size) => {
+      this.screenSize = size;
+      this.chart.first?.updateOptions(
+        this.appChartTypesService.getRangeOptions(
+          size,
+          this.selectedBarChartType,
+          this.durationDataLength,
+          this.isMinMaxAvgBar
+        )
+      );
+    });
   }
 }

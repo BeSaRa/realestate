@@ -120,8 +120,8 @@ export default class SellIndicatorsPageComponent implements OnInit, OnDestroy {
   municipalities = this.lookupService.sellLookups.municipalityList;
   propertyTypes = this.lookupService.sellLookups.propertyTypeList;
   pricePropertyTypes = this.lookupService.sellLookups.propertyTypeList
-    .filter(x => x.lookupKey !== -1)
-    .map(e => new Lookup().clone<Lookup>(e));
+    .filter((x) => x.lookupKey !== -1)
+    .map((e) => new Lookup().clone<Lookup>(e));
   propertyUsages = this.lookupService.sellLookups.rentPurposeList.slice().sort((a, b) => a.lookupKey - b.lookupKey);
   areas = this.lookupService.sellLookups.districtList.slice().sort((a, b) => a.lookupKey - b.lookupKey);
   // zones = this.lookupService.sellLookups.zoneList;
@@ -272,9 +272,7 @@ export default class SellIndicatorsPageComponent implements OnInit, OnDestroy {
   transactionsCount = 0;
 
   //MLPriceItemSubject :BehaviorSubject<MLPriceItem>;//= new BehaviorSubject<MLPriceItem>();
-  priceItem!: MLPriceItem;// = this.MLPriceItemSubject.asObservable();
-
-
+  priceItem!: MLPriceItem; // = this.MLPriceItemSubject.asObservable();
 
   transactionsStatistics$: Observable<SellTransactionIndicator[]> = this.setIndicatorsTableDataSource();
   transactionsStatisticsDatasource = new AppTableDataSource<SellTransactionIndicator>(this.transactionsStatistics$);
@@ -441,11 +439,14 @@ export default class SellIndicatorsPageComponent implements OnInit, OnDestroy {
     this.criteriaSubject.next(criteria);
     if (type === CriteriaType.DEFAULT) {
       // load default
-      this.dashboardService.loadSellDefaults(criteria as Partial<SellCriteriaContract>).subscribe((result) => {
-        this.setDefaultRoots(result[0]);
-        this.rootItemSelected(this.rootKPIS[0]);
-        this.selectTop10Chart(this.selectedTop10);
-      });
+      this.dashboardService
+        .loadSellDefaults(criteria as Partial<SellCriteriaContract>)
+        .pipe(take(1))
+        .subscribe((result) => {
+          this.setDefaultRoots(result[0]);
+          this.rootItemSelected(this.rootKPIS[0]);
+          this.selectTop10Chart(this.selectedTop10);
+        });
     } else {
       this.rootKPIS.map((item) => {
         this.dashboardService
@@ -472,15 +473,18 @@ export default class SellIndicatorsPageComponent implements OnInit, OnDestroy {
     // this.loadRoomCounts();
   }
   priceFilterChange(criteria: PriceCriteriaContract) {
-    this.priceCriteria = {criteria};
+    this.priceCriteria = { criteria };
     this.priceCriteriaSubject.next(criteria);
-      this.dashboardService.loadPropertyTypePrice(criteria).pipe(take(1)).subscribe((result) => {
+    this.dashboardService
+      .loadPropertyTypePrice(criteria)
+      .pipe(take(1))
+      .subscribe((result) => {
         this.priceItem = new MLPriceItem().clone<MLPriceItem>({
           kpiCurrent: result[0].kpiCurrent,
           kpiPast: result[0].kpiPast,
           kpiPredicated: result[0].kpiPredicated,
           propertyTypeId: criteria.propertyTypeList[0],
-          propertyTypeInfo: this.lookupService.sellPropertyTypeMap[criteria.propertyTypeList[0]]
+          propertyTypeInfo: this.lookupService.sellPropertyTypeMap[criteria.propertyTypeList[0]],
         });
       });
   }
@@ -595,17 +599,20 @@ export default class SellIndicatorsPageComponent implements OnInit, OnDestroy {
   }
 
   openChart(item: SellTransactionPurpose | SellTransactionPropertyType): void {
-    item.openChart(this.criteria.criteria).subscribe();
+    item.openChart(this.criteria.criteria).pipe(take(1)).subscribe();
   }
   selectTop10Chart(item: Lookup): void {
     this.accordingToList.forEach((i) => {
       i === item ? (i.selected = true) : (i.selected = false);
     });
     this.selectedTop10 = item;
-    this.dashboardService.loadSellTop10BasedOnCriteria(item, this.criteria.criteria).subscribe((top10ChartData) => {
-      this.top10ChartData = top10ChartData;
-      this.updateTop10Chart();
-    });
+    this.dashboardService
+      .loadSellTop10BasedOnCriteria(item, this.criteria.criteria)
+      .pipe(take(1))
+      .subscribe((top10ChartData) => {
+        this.top10ChartData = top10ChartData;
+        this.updateTop10Chart();
+      });
   }
 
   updateTop10Chart(): void {
@@ -639,10 +646,13 @@ export default class SellIndicatorsPageComponent implements OnInit, OnDestroy {
   }
 
   loadCompositeTransactions(): void {
-    this.dashboardService.loadSellCompositeTransactions(this.criteria.criteria).subscribe((value) => {
-      this.compositeTransactions = value.items;
-      this.compositeYears = value.years;
-    });
+    this.dashboardService
+      .loadSellCompositeTransactions(this.criteria.criteria)
+      .pipe(take(1))
+      .subscribe((value) => {
+        this.compositeTransactions = value.items;
+        this.compositeYears = value.years;
+      });
   }
 
   protected readonly maskSeparator = maskSeparator;

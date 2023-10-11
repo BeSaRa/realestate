@@ -6,10 +6,11 @@ import { MatSortModule } from '@angular/material/sort';
 import { MatTableModule } from '@angular/material/table';
 import { SelectInputComponent } from '@components/select-input/select-input.component';
 import { TableColumnTemplateDirective } from '@directives/table-column-template.directive';
+import { OnDestroyMixin } from '@mixins/on-destroy-mixin';
 import { AppTableDataSource } from '@models/app-table-data-source';
 import { TableSortOption } from '@models/table-sort-option';
 import { TranslationService } from '@services/translation.service';
-import { Observable, isObservable, map, tap } from 'rxjs';
+import { Observable, isObservable, map, takeUntil, tap } from 'rxjs';
 
 @Component({
   selector: 'app-table',
@@ -18,7 +19,7 @@ import { Observable, isObservable, map, tap } from 'rxjs';
   templateUrl: './table.component.html',
   styleUrls: ['./table.component.scss'],
 })
-export class TableComponent<T extends object> implements OnInit {
+export class TableComponent<T extends object> extends OnDestroyMixin(class {}) implements OnInit {
   // @Input({ required: true }) data!: T[] | Observable<T[]>;
   @Input() pageSize = 5;
   @Input() minWidth = '1000px';
@@ -97,7 +98,7 @@ export class TableComponent<T extends object> implements OnInit {
   }
 
   private _initializeSort() {
-    this.sortControl.valueChanges.subscribe((value) => {
+    this.sortControl.valueChanges.pipe(takeUntil(this.destroy$)).subscribe((value) => {
       if (!value) return;
       if (isObservable(this.data)) {
         this.sortedData = this.data.pipe(
