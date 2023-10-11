@@ -1,5 +1,5 @@
 import { APP_INITIALIZER, ApplicationConfig, importProvidersFrom } from '@angular/core';
-import { provideRouter, withComponentInputBinding } from '@angular/router';
+import { provideRouter, withComponentInputBinding, withInMemoryScrolling } from '@angular/router';
 
 import { HTTP_INTERCEPTORS, provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { MatDialogModule } from '@angular/material/dialog';
@@ -21,7 +21,7 @@ import { NgxMaskPipe, provideNgxMask } from 'ngx-mask';
 
 export const appConfig: ApplicationConfig = {
   providers: [
-    provideRouter(routes, withComponentInputBinding()),
+    provideRouter(routes, withComponentInputBinding(), withInMemoryScrolling({ scrollPositionRestoration: 'top' })),
     provideAnimations(),
     provideHttpClient(withInterceptorsFromDi()),
     provideNgxMask(),
