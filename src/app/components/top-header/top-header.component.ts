@@ -10,6 +10,11 @@ import { News } from '@models/news';
 import { NewsService } from '@services/news.service';
 import { TranslationService } from '@services/translation.service';
 import { Subject, debounceTime, takeUntil, tap } from 'rxjs';
+import { MatMenu, MatMenuModule } from '@angular/material/menu';
+import { DialogService } from '@services/dialog.service';
+import { LoginPopupComponent } from '@components/login-popup/login-popup.component';
+import { CmsAuthenticationService } from '@services/auth.service';
+import { UrlService } from '@services/url.service';
 
 @Component({
   selector: 'app-top-header',
@@ -22,13 +27,15 @@ import { Subject, debounceTime, takeUntil, tap } from 'rxjs';
     NewsItemComponent,
     ButtonComponent,
     IconButtonComponent,
+    MatMenuModule
   ],
   templateUrl: './top-header.component.html',
   styleUrls: ['./top-header.component.scss'],
 })
 export class TopHeaderComponent implements OnInit, OnDestroy {
   search = new FormControl('', { nonNullable: true });
-
+  authService = inject(CmsAuthenticationService);
+  urlService = inject(UrlService)
   news: News[] = [];
   filteredNews: News[] = [];
 
@@ -36,6 +43,7 @@ export class TopHeaderComponent implements OnInit, OnDestroy {
 
   newsService = inject(NewsService);
   lang = inject(TranslationService);
+  dialog = inject(DialogService);
 
   ngOnInit(): void {
     this._listenToSearchChanges();
@@ -78,6 +86,18 @@ export class TopHeaderComponent implements OnInit, OnDestroy {
   changeLang(event: Event) {
     event.preventDefault();
     this.lang.toggleLang();
+  }
+
+  openLoginPopup() {
+    this.dialog.open(LoginPopupComponent);
+    
+  }
+
+  onLogOut()
+  {
+    // window.open(this.urlService.URLS.ADMIN)
+    window.location.href = this.urlService.URLS.ADMIN;
+    // this.authService.logout();
   }
 
   ngOnDestroy(): void {

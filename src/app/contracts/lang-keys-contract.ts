@@ -260,4 +260,13 @@ export interface LangKeysContract {
   number_of_ownerships: string;
   you_have_successfully_voted_on_this_poll: string;
   you_have_successfully_subscribed_to_the_newsletter: string;
+
+  email: string;
+  identifier:string;
+  password: string;
+  sign_in: string;
+  cancel: string;
+
+  logged_in_successfully: string;
+  logged_in_failed: string;
 }
