@@ -260,4 +260,6 @@ export interface LangKeysContract {
   number_of_ownerships: string;
   you_have_successfully_voted_on_this_poll: string;
   you_have_successfully_subscribed_to_the_newsletter: string;
+  entered_email_already_subscribed: string;
+  email_is_invalid_please_try_again: string;
 }

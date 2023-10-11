@@ -5,12 +5,14 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { IconButtonComponent } from '@components/icon-button/icon-button.component';
 import { InputComponent } from '@components/input/input.component';
+import { CmsErrorContract } from '@contracts/cms-error-contract';
 import { InputSuffixDirective } from '@directives/input-suffix.directive';
 import { createItem } from '@directus/sdk';
+import { CmsErrorStatus } from '@enums/cms-error-status';
 import { OnDestroyMixin } from '@mixins/on-destroy-mixin';
 import { DirectusClientService } from '@services/directus-client.service';
 import { TranslationService } from '@services/translation.service';
-import { catchError, from, takeUntil, tap, throwError } from 'rxjs';
+import { catchError, from, of, takeUntil, tap, throwError } from 'rxjs';
 
 @Component({
   selector: 'app-newsletter-form',
@@ -50,9 +52,19 @@ export class NewsletterFormComponent extends OnDestroyMixin(class {}) {
         tap(() => (this.isLoading = false)),
         tap(() => this.snackBar.open(this.lang.map.you_have_successfully_subscribed_to_the_newsletter)),
         tap(() => this.newsletterControl.reset()),
-        catchError((err) => {
+        catchError((err: CmsErrorContract) => {
           this.isLoading = false;
-          return throwError(() => err);
+          if (err.errors) {
+            err.errors.forEach((e) => {
+              if (e.extensions.code === CmsErrorStatus.RECORD_NOT_UNIQUE) {
+                this.snackBar.open(this.lang.map.entered_email_already_subscribed);
+              }
+              if (e.extensions.code === CmsErrorStatus.FAILED_VALIDATION) {
+                this.snackBar.open(this.lang.map.email_is_invalid_please_try_again);
+              }
+            });
+          }
+          return of();
         })
       )
       .subscribe();
