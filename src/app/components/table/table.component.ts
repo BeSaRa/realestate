@@ -63,8 +63,8 @@ export class TableComponent<T extends object> extends OnDestroyMixin(class {}) i
 
   _paginate($event: PageEvent) {
     this.paginate.emit($event);
-    // this.offset = $event.pageSize * $event.pageIndex;
-    // this.pageSize = $event.pageSize;
+    this.offset = $event.pageSize * $event.pageIndex;
+    this.pageSize = $event.pageSize;
     // this._initializeDataSource();
   }
 

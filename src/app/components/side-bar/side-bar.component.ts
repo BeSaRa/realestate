@@ -3,11 +3,11 @@ import { Component, Input, inject } from '@angular/core';
 import { SideBarDirection } from '@enums/side-bar-direction';
 import { SideBarService } from '@services/side-bar.service';
 import { TranslationService } from '@services/translation.service';
-
+import {MatMenuModule} from '@angular/material/menu';
 @Component({
   selector: 'app-side-bar',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, MatMenuModule],
   templateUrl: './side-bar.component.html',
   styleUrls: ['./side-bar.component.scss'],
 })

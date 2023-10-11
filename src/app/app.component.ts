@@ -19,7 +19,8 @@ import { TranslationService } from '@services/translation.service';
 import '@utils/prototypes/custom-prototypes';
 import { Observable, fromEvent, map, startWith } from 'rxjs';
 import { ScrollToTopComponent } from '@components/scroll-to-top/scroll-to-top.component';
-
+import {MatMenuModule} from '@angular/material/menu';
+import { LoginPopupComponent } from '@components/login-popup/login-popup.component';
 @Component({
   selector: 'app-root',
   standalone: true,
@@ -35,7 +36,8 @@ import { ScrollToTopComponent } from '@components/scroll-to-top/scroll-to-top.co
     SideBarComponent,
     ButtonComponent,
     BidiModule,
-    ScrollToTopComponent
+    ScrollToTopComponent,
+    MatMenuModule,
   ],
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss'],
@@ -90,6 +92,9 @@ export class AppComponent implements OnInit {
     this.dialog.open(TranslationPopupComponent);
   }
 
+  openLoginPopup() {
+    this.dialog.open(LoginPopupComponent);
+  }
   onScrollToTop(): void {
     window.scrollTo({top: 0, behavior: 'smooth'});
   }
