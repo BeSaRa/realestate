@@ -54,7 +54,7 @@ export interface LangKeysContract {
   select_quarter: string;
   select_half: string;
   login: string;
-  log_out:string;
+  log_out: string;
   staff_login: string;
   search: string;
   home: string;
@@ -259,7 +259,6 @@ export interface LangKeysContract {
   data_is_being_collected_and_audited: string;
   ownership: string;
   number_of_ownerships: string;
-
   sell_average_price_per_square_foot: string;
   sell_average_price_per_square_meter: string;
   contract: string;
@@ -269,7 +268,7 @@ export interface LangKeysContract {
   email_is_invalid_please_try_again: string;
 
   email: string;
-  identifier:string;
+  identifier: string;
   password: string;
   sign_in: string;
   cancel: string;
@@ -281,5 +280,4 @@ export interface LangKeysContract {
   login_as_editor_content_manager: string;
   login_as_employee: string;
   invalid_user_credentials: string;
-
 }
