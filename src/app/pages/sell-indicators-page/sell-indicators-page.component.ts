@@ -192,8 +192,8 @@ export default class SellIndicatorsPageComponent implements OnInit, OnDestroy {
     ),
     new KpiRoot(
       16,
-      this.lang.getArabicTranslation('sell_average_price_per_square_meter_square_foot'),
-      this.lang.getEnglishTranslation('sell_average_price_per_square_meter_square_foot'),
+      this.lang.getArabicTranslation('sell_average_price_per_square_foot'),
+      this.lang.getEnglishTranslation('sell_average_price_per_square_foot'),
       true,
       this.urlService.URLS.SELL_KPI16,
       this.urlService.URLS.SELL_KPI17,
@@ -259,8 +259,8 @@ export default class SellIndicatorsPageComponent implements OnInit, OnDestroy {
       url: this.urlService.URLS.SELL_KPI33_1,
     }),
     new Lookup().clone<Lookup>({
-      arName: this.lang.getArabicTranslation('average_price_per_square_meter'),
-      enName: this.lang.getEnglishTranslation('average_price_per_square_meter'),
+      arName: this.lang.getArabicTranslation('average_price_per_square_foot'),
+      enName: this.lang.getEnglishTranslation('average_price_per_square_foot'),
       url: this.urlService.URLS.SELL_KPI33_2,
       hasPrice: true,
     }),

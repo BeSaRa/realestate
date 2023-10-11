@@ -258,4 +258,7 @@ export interface LangKeysContract {
   data_is_being_collected_and_audited: string;
   ownership: string;
   number_of_ownerships: string;
+
+  sell_average_price_per_square_foot: string;
+  sell_average_price_per_square_meter: string;
 }
