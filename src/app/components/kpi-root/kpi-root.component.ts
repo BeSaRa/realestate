@@ -35,6 +35,7 @@ export class KpiRootComponent {
   }
 
   selectItem(): void {
+    if (!this.item.isDataAvailable) return;
     this.isHovered = true;
     this.itemSelected.emit(this.item);
   }
