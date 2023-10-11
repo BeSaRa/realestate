@@ -408,11 +408,14 @@ export default class RentalIndicatorsPageComponent implements OnInit, OnDestroy 
 
     if (type === CriteriaType.DEFAULT) {
       // load default
-      this.dashboardService.loadRentDefaults(criteria as Partial<RentCriteriaContract>).subscribe((result) => {
-        this.setDefaultRoots(result[0]);
-        this.rootItemSelected(this.rootKPIS[0]);
-        this.selectTop10Chart(this.selectedTop10);
-      });
+      this.dashboardService
+        .loadRentDefaults(criteria as Partial<RentCriteriaContract>)
+        .pipe(take(1))
+        .subscribe((result) => {
+          this.setDefaultRoots(result[0]);
+          this.rootItemSelected(this.rootKPIS[0]);
+          this.selectTop10Chart(this.selectedTop10);
+        });
     } else {
       this.rootKPIS.map((item) => {
         this.dashboardService
@@ -448,28 +451,31 @@ export default class RentalIndicatorsPageComponent implements OnInit, OnDestroy 
       item !== i ? (i.selected = false) : (item.selected = true);
     });
 
-    this.dashboardService.loadPurposeKpi(item, this.criteria.criteria).subscribe((subKPI) => {
-      const purpose = subKPI.reduce((acc, item) => {
-        return { ...acc, [item.purposeId]: item };
-      }, {} as Record<number, KpiModel>);
+    this.dashboardService
+      .loadPurposeKpi(item, this.criteria.criteria)
+      .pipe(take(1))
+      .subscribe((subKPI) => {
+        const purpose = subKPI.reduce((acc, item) => {
+          return { ...acc, [item.purposeId]: item };
+        }, {} as Record<number, KpiModel>);
 
-      this.purposeKPIS = this.purposeKPIS.map((item) => {
-        Object.prototype.hasOwnProperty.call(purpose, item.lookupKey)
-          ? (item.value = purpose[item.lookupKey].kpiVal)
-          : (item.value = 0);
-        Object.prototype.hasOwnProperty.call(purpose, item.lookupKey)
-          ? (item.yoy = purpose[item.lookupKey].kpiYoYVal)
-          : (item.yoy = 0);
-        return item;
+        this.purposeKPIS = this.purposeKPIS.map((item) => {
+          Object.prototype.hasOwnProperty.call(purpose, item.lookupKey)
+            ? (item.value = purpose[item.lookupKey].kpiVal)
+            : (item.value = 0);
+          Object.prototype.hasOwnProperty.call(purpose, item.lookupKey)
+            ? (item.yoy = purpose[item.lookupKey].kpiYoYVal)
+            : (item.yoy = 0);
+          return item;
+        });
+        this.selectedRoot && this.updateAllPurpose(this.selectedRoot.value, this.selectedRoot.yoy);
+        this.selectedPurpose && this.purposeSelected(this.selectedPurpose);
+        this.rootDataSubject.next(this.selectedRoot);
+
+        if (this.selectedTab === 'statistical_reports_for_rent') {
+          this.updateTop10Chart();
+        }
       });
-      this.selectedRoot && this.updateAllPurpose(this.selectedRoot.value, this.selectedRoot.yoy);
-      this.selectedPurpose && this.purposeSelected(this.selectedPurpose);
-      this.rootDataSubject.next(this.selectedRoot);
-
-      if (this.selectedTab === 'statistical_reports_for_rent') {
-        this.updateTop10Chart();
-      }
-    });
   }
 
   private setDefaultRoots(rentDefaultValue?: RentDefaultValues) {
@@ -578,10 +584,13 @@ export default class RentalIndicatorsPageComponent implements OnInit, OnDestroy 
       i === item ? (i.selected = true) : (i.selected = false);
     });
     this.selectedTop10 = item;
-    this.dashboardService.loadRentTop10BasedOnCriteria(item, this.criteria.criteria).subscribe((top10ChartData) => {
-      this.top10ChartData = top10ChartData;
-      this.updateTop10Chart();
-    });
+    this.dashboardService
+      .loadRentTop10BasedOnCriteria(item, this.criteria.criteria)
+      .pipe(take(1))
+      .subscribe((top10ChartData) => {
+        this.top10ChartData = top10ChartData;
+        this.updateTop10Chart();
+      });
   }
 
   updateTop10Chart(): void {
@@ -640,24 +649,33 @@ export default class RentalIndicatorsPageComponent implements OnInit, OnDestroy 
   }
 
   loadCompositeTransactions(): void {
-    this.dashboardService.loadRentCompositeTransactions(this.criteria.criteria).subscribe((value) => {
-      this.compositeTransactions = value.items;
-      this.compositeYears = value.years;
-    });
+    this.dashboardService
+      .loadRentCompositeTransactions(this.criteria.criteria)
+      .pipe(take(1))
+      .subscribe((value) => {
+        this.compositeTransactions = value.items;
+        this.compositeYears = value.years;
+      });
   }
 
   loadRoomCounts(): void {
-    this.dashboardService.loadRentRoomCounts(this.criteria.criteria).subscribe((value) => {
-      this.roomsPieChartData = value;
-      this.updateRoomsPiChart();
-    });
+    this.dashboardService
+      .loadRentRoomCounts(this.criteria.criteria)
+      .pipe(take(1))
+      .subscribe((value) => {
+        this.roomsPieChartData = value;
+        this.updateRoomsPiChart();
+      });
   }
 
   loadFurnitureStatus(): void {
-    this.dashboardService.loadRentFurnitureStatus(this.criteria.criteria).subscribe((value) => {
-      this.furnitureStatusPieChartData = value;
-      this.updateFurnitureStatusPiChart();
-    });
+    this.dashboardService
+      .loadRentFurnitureStatus(this.criteria.criteria)
+      .pipe(take(1))
+      .subscribe((value) => {
+        this.furnitureStatusPieChartData = value;
+        this.updateFurnitureStatusPiChart();
+      });
   }
 
   // loadTransactionsBasedOnPurpose(): Observable< {
@@ -673,7 +691,7 @@ export default class RentalIndicatorsPageComponent implements OnInit, OnDestroy 
   // }
 
   openChart(item: RentTransactionPurpose | RentTransactionPropertyType): void {
-    item.openChart(this.criteria.criteria).subscribe();
+    item.openChart(this.criteria.criteria).pipe(take(1)).subscribe();
   }
 
   get basedOnCriteria(): string {

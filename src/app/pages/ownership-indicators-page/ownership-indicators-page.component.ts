@@ -261,12 +261,12 @@ export default class OwnershipIndicatorsPageComponent implements OnInit, AfterVi
 
     setTimeout(() => {
       if (this.selectedTab === 'ownership_indicators') {
-        this.nationalitiesChart.first.updateOptions({ chart: { type: 'bar' } }).then();
-        this.durationsChart.first.updateOptions({ chart: { type: 'bar' } }).then();
-        this.municipalitiesChart.first.updateOptions({ chart: { type: 'bar' } }).then();
-        this.areasChart.first.updateOptions({ chart: { type: 'bar' } }).then();
+        this.nationalitiesChart.first?.updateOptions({ chart: { type: 'bar' } }).then();
+        this.durationsChart.first?.updateOptions({ chart: { type: 'bar' } }).then();
+        this.municipalitiesChart.first?.updateOptions({ chart: { type: 'bar' } }).then();
+        this.areasChart.first?.updateOptions({ chart: { type: 'bar' } }).then();
       } else {
-        this.ownerTypeSummaryChart.first.updateOptions({ chart: { type: 'bar' } }).then();
+        this.ownerTypeSummaryChart.first?.updateOptions({ chart: { type: 'bar' } }).then();
       }
     }, 0);
   }
@@ -330,23 +330,26 @@ export default class OwnershipIndicatorsPageComponent implements OnInit, AfterVi
       item !== i ? (i.selected = false) : (item.selected = true);
     });
 
-    this.dashboardService.loadPurposeKpi(item, this.criteria.criteria).subscribe((subKPI) => {
-      const purpose = subKPI.reduce((acc, item) => {
-        return { ...acc, [item.purposeId]: item };
-      }, {} as Record<number, KpiModel>);
+    this.dashboardService
+      .loadPurposeKpi(item, this.criteria.criteria)
+      .pipe(take(1))
+      .subscribe((subKPI) => {
+        const purpose = subKPI.reduce((acc, item) => {
+          return { ...acc, [item.purposeId]: item };
+        }, {} as Record<number, KpiModel>);
 
-      this.purposeKPIS = this.purposeKPIS.map((item) => {
-        Object.prototype.hasOwnProperty.call(purpose, item.lookupKey)
-          ? (item.value = purpose[item.lookupKey].kpiVal)
-          : (item.value = 0);
-        Object.prototype.hasOwnProperty.call(purpose, item.lookupKey)
-          ? (item.yoy = purpose[item.lookupKey].kpiYoYVal)
-          : (item.yoy = 0);
-        return item;
+        this.purposeKPIS = this.purposeKPIS.map((item) => {
+          Object.prototype.hasOwnProperty.call(purpose, item.lookupKey)
+            ? (item.value = purpose[item.lookupKey].kpiVal)
+            : (item.value = 0);
+          Object.prototype.hasOwnProperty.call(purpose, item.lookupKey)
+            ? (item.yoy = purpose[item.lookupKey].kpiYoYVal)
+            : (item.yoy = 0);
+          return item;
+        });
+        this.selectedRoot && this.updateAllPurpose(this.selectedRoot.value, this.selectedRoot.yoy);
+        this.selectedPurpose && this.purposeSelected(this.selectedPurpose);
       });
-      this.selectedRoot && this.updateAllPurpose(this.selectedRoot.value, this.selectedRoot.yoy);
-      this.selectedPurpose && this.purposeSelected(this.selectedPurpose);
-    });
   }
 
   updateAllPurpose(value: number, yoy: number): void {
@@ -403,7 +406,7 @@ export default class OwnershipIndicatorsPageComponent implements OnInit, AfterVi
         this.nationalitiesDataLength = data.length;
         data.sort((a, b) => a.kpiVal - b.kpiVal);
         this.nationalitiesChart.first
-          .updateOptions({
+          ?.updateOptions({
             series: [
               {
                 name: this.lang.map.ownerships_count,
@@ -467,7 +470,7 @@ export default class OwnershipIndicatorsPageComponent implements OnInit, AfterVi
         this.durationsDataLength = data.length;
 
         this.durationsChart.first
-          .updateOptions({
+          ?.updateOptions({
             series: [
               {
                 name: this.lang.map.ownerships_count,
@@ -507,7 +510,7 @@ export default class OwnershipIndicatorsPageComponent implements OnInit, AfterVi
         this.durationsDataLength = data.length;
 
         this.durationsChart.first
-          .updateOptions({
+          ?.updateOptions({
             series: [
               {
                 name: this.lang.map.ownerships_count,
@@ -562,7 +565,7 @@ export default class OwnershipIndicatorsPageComponent implements OnInit, AfterVi
         this.durationsDataLength = data[1].kpiValues.length;
 
         this.durationsChart.first
-          .updateOptions({
+          ?.updateOptions({
             series: _chartData,
 
             ...this.appChartTypesService.halflyAndQuarterlyStaticChartOptions,
@@ -608,7 +611,7 @@ export default class OwnershipIndicatorsPageComponent implements OnInit, AfterVi
     const _minMaxAvg = minMaxAvg(this.municipalitiesData.map((item) => item.kpiVal));
 
     this.municipalitiesChart.first
-      .updateOptions({
+      ?.updateOptions({
         series: [
           {
             name: this.lang.map.ownerships_count,
@@ -638,7 +641,7 @@ export default class OwnershipIndicatorsPageComponent implements OnInit, AfterVi
     );
 
     this.isLoadingUpdatedMunicipalitiesData = true;
-    this.municipalitiesChart.first.toggleDataPointSelection(0, this.selectedMunicipality.dataPointIndex);
+    this.municipalitiesChart.first?.toggleDataPointSelection(0, this.selectedMunicipality.dataPointIndex);
   }
 
   updateAreasChartData() {
@@ -666,7 +669,7 @@ export default class OwnershipIndicatorsPageComponent implements OnInit, AfterVi
         this.areasDataLength = data.length;
 
         this.areasChart.first
-          .updateOptions({
+          ?.updateOptions({
             series: [
               {
                 name: this.lang.map.ownerships_count,
@@ -713,7 +716,7 @@ export default class OwnershipIndicatorsPageComponent implements OnInit, AfterVi
       .pipe(map((data) => data as unknown as (KpiModel & { ownerCategory: number })[]))
       .subscribe((data) => {
         this.ownerTypeChart.first
-          .updateOptions({
+          ?.updateOptions({
             series: data.map((item) => item.kpiVal),
             labels: data.map((item) => this.lookupService.ownerOwnerCategoryMap[item.ownerCategory].getNames()),
           })
@@ -735,7 +738,7 @@ export default class OwnershipIndicatorsPageComponent implements OnInit, AfterVi
       .pipe(map((data) => data as unknown as (KpiModel & { ageCategory: number })[]))
       .subscribe((data) => {
         this.ageCategoryChart.first
-          .updateOptions({
+          ?.updateOptions({
             series: data.map((item) => item.kpiVal),
             labels: data.map((item) => this.lookupService.ownerAgeCategoryMap[item.ageCategory].getNames()),
           })
@@ -752,7 +755,7 @@ export default class OwnershipIndicatorsPageComponent implements OnInit, AfterVi
       .pipe(map((data) => data as unknown as { kpiVal: number; gender: number }[]))
       .subscribe((data) => {
         this.genderChart.first
-          .updateOptions({
+          ?.updateOptions({
             series: data.map((item) => item.kpiVal),
             labels: data.map((item) => this.lookupService.ownerGenderMap[item.gender]?.getNames() ?? '-'),
           })
@@ -769,7 +772,7 @@ export default class OwnershipIndicatorsPageComponent implements OnInit, AfterVi
       .pipe(map((data) => data as unknown as { kpiVal: number; ageCategory: number }[]))
       .subscribe((data) => {
         this.ageCategorySummaryChart.first
-          .updateOptions({
+          ?.updateOptions({
             series: data.map((item) => item.kpiVal),
             labels: data.map((item) => this.lookupService.ownerAgeCategoryMap[item.ageCategory].getNames()),
           })
@@ -790,7 +793,7 @@ export default class OwnershipIndicatorsPageComponent implements OnInit, AfterVi
         this.ownerTypeSummaryDataLength = data.length;
 
         this.ownerTypeSummaryChart.first
-          .updateOptions({
+          ?.updateOptions({
             series: [
               {
                 name: this.lang.map.ownerships_count,
@@ -896,12 +899,12 @@ export default class OwnershipIndicatorsPageComponent implements OnInit, AfterVi
 
     setTimeout(() => {
       if (this.selectedTab === 'ownership_indicators') {
-        this.nationalitiesChart.first.updateOptions({ chart: { type: 'bar' } }).then();
-        this.durationsChart.first.updateOptions({ chart: { type: 'bar' } }).then();
-        this.municipalitiesChart.first.updateOptions({ chart: { type: 'bar' } }).then();
-        this.areasChart.first.updateOptions({ chart: { type: 'bar' } }).then();
+        this.nationalitiesChart.first?.updateOptions({ chart: { type: 'bar' } }).then();
+        this.durationsChart.first?.updateOptions({ chart: { type: 'bar' } }).then();
+        this.municipalitiesChart.first?.updateOptions({ chart: { type: 'bar' } }).then();
+        this.areasChart.first?.updateOptions({ chart: { type: 'bar' } }).then();
       } else {
-        this.ownerTypeSummaryChart.first.updateOptions({ chart: { type: 'bar' } }).then();
+        this.ownerTypeSummaryChart.first?.updateOptions({ chart: { type: 'bar' } }).then();
       }
     }, 0);
   }
@@ -914,7 +917,7 @@ export default class OwnershipIndicatorsPageComponent implements OnInit, AfterVi
       return;
     }
     if (this.isOnInitNationalitiesChart) {
-      this.nationalitiesChart.first.toggleDataPointSelection(
+      this.nationalitiesChart.first?.toggleDataPointSelection(
         0,
         (chartContext.w.config.series[0].data as unknown as { index: number; id: number }[]).filter(
           (item) => item.id === this.selectedNationality.id
@@ -923,12 +926,12 @@ export default class OwnershipIndicatorsPageComponent implements OnInit, AfterVi
     } else {
       if (!this.isLoadingUpdatedNationalitiesData) return;
       if (this.selectedNationality.dataPointIndex < (chartContext.w.config.series[0].data as unknown[]).length) {
-        this.nationalitiesChart.first.toggleDataPointSelection(
+        this.nationalitiesChart.first?.toggleDataPointSelection(
           this.selectedNationality.seriesIndex,
           this.selectedNationality.dataPointIndex
         );
       }
-      this.nationalitiesChart.first.toggleDataPointSelection(
+      this.nationalitiesChart.first?.toggleDataPointSelection(
         0,
         (chartContext.w.config.series[0].data as unknown as { index: number; id: number }[]).length - 1
       );
@@ -951,8 +954,8 @@ export default class OwnershipIndicatorsPageComponent implements OnInit, AfterVi
       dataPointIndex: config.dataPointIndex,
     };
 
-    this.nationalitiesChart.first.clearAnnotations();
-    this.nationalitiesChart.first.addXaxisAnnotation(
+    this.nationalitiesChart.first?.clearAnnotations();
+    this.nationalitiesChart.first?.addXaxisAnnotation(
       this.appChartTypesService.getXAnnotaionForSelectedBar(this.getNationalityNames(this.selectedNationality.id)),
       true
     );
@@ -972,7 +975,7 @@ export default class OwnershipIndicatorsPageComponent implements OnInit, AfterVi
       return;
     }
     if (this.isOnInitMunicipaliteisChart) {
-      this.municipalitiesChart.first.toggleDataPointSelection(
+      this.municipalitiesChart.first?.toggleDataPointSelection(
         0,
         (chartContext.w.config.series[0].data as unknown as { index: number; id: number }[]).filter(
           (item) => item.id === this.selectedMunicipality.id
@@ -981,12 +984,12 @@ export default class OwnershipIndicatorsPageComponent implements OnInit, AfterVi
     } else {
       if (!this.isLoadingUpdatedMunicipalitiesData) return;
       if (this.selectedMunicipality.dataPointIndex < (chartContext.w.config.series[0].data as unknown[]).length) {
-        this.municipalitiesChart.first.toggleDataPointSelection(
+        this.municipalitiesChart.first?.toggleDataPointSelection(
           this.selectedMunicipality.seriesIndex,
           this.selectedMunicipality.dataPointIndex
         );
       }
-      this.municipalitiesChart.first.toggleDataPointSelection(
+      this.municipalitiesChart.first?.toggleDataPointSelection(
         0,
         (chartContext.w.config.series[0].data as unknown as { index: number; id: number }[]).length - 1
       );
@@ -1009,8 +1012,8 @@ export default class OwnershipIndicatorsPageComponent implements OnInit, AfterVi
       dataPointIndex: config.dataPointIndex,
     };
     const _municipalityName = this.lookupService.ownerMunicipalitiesMap[this.selectedMunicipality.id].getNames();
-    this.municipalitiesChart.first.clearAnnotations();
-    this.municipalitiesChart.first.addXaxisAnnotation(
+    this.municipalitiesChart.first?.clearAnnotations();
+    this.municipalitiesChart.first?.addXaxisAnnotation(
       this.appChartTypesService.getXAnnotaionForSelectedBar(_municipalityName),
       true
     );
@@ -1022,20 +1025,20 @@ export default class OwnershipIndicatorsPageComponent implements OnInit, AfterVi
       this.screenSize = size;
 
       if (this.selectedTab === 'ownership_indicators') {
-        this.nationalitiesChart.first.updateOptions(
+        this.nationalitiesChart.first?.updateOptions(
           this.appChartTypesService.getRangeOptions(size, BarChartTypes.SINGLE_BAR, this.nationalitiesDataLength)
         );
-        this.durationsChart.first.updateOptions(
+        this.durationsChart.first?.updateOptions(
           this.appChartTypesService.getRangeOptions(size, this.selectedDurationsBarChartType, this.durationsDataLength)
         );
-        this.municipalitiesChart.first.updateOptions(
+        this.municipalitiesChart.first?.updateOptions(
           this.appChartTypesService.getRangeOptions(size, BarChartTypes.SINGLE_BAR, this.municipalitiesDataLength)
         );
-        this.areasChart.first.updateOptions(
+        this.areasChart.first?.updateOptions(
           this.appChartTypesService.getRangeOptions(size, BarChartTypes.SINGLE_BAR, this.areasDataLength)
         );
       } else {
-        this.ownerTypeSummaryChart.first.updateOptions(
+        this.ownerTypeSummaryChart.first?.updateOptions(
           this.appChartTypesService.getRangeOptions(size, BarChartTypes.SINGLE_BAR, this.ownerTypeSummaryDataLength)
         );
       }

@@ -282,18 +282,21 @@ export default class MortgageIndicatorsComponent implements OnInit, AfterViewIni
 
   filterChange($event: { criteria: CriteriaContract; type: CriteriaType }): void {
     this.criteria = $event;
-    this.dashboardService.loadMortgageRoots(this.criteria.criteria).subscribe((values) => {
-      this.rootKpis.map((item, index) => {
-        item.value = (values[index] && values[index].kpiVal) || 0;
-        item.yoy = (values[index] && values[index].kpiYoYVal) || 0;
-      });
-      // this.loadTransactions();
-      this.reload$.next();
+    this.dashboardService
+      .loadMortgageRoots(this.criteria.criteria)
+      .pipe(take(1))
+      .subscribe((values) => {
+        this.rootKpis.map((item, index) => {
+          item.value = (values[index] && values[index].kpiVal) || 0;
+          item.yoy = (values[index] && values[index].kpiYoYVal) || 0;
+        });
+        // this.loadTransactions();
+        this.reload$.next();
 
-      this.updateCountChartData(this.selectedCountChartDurationType);
-      this.updateUnitsChartData(this.selectedUnitsChartDurationType);
-      this.updateValueChartData(this.selectedValueChartDurationType);
-    });
+        this.updateCountChartData(this.selectedCountChartDurationType);
+        this.updateUnitsChartData(this.selectedUnitsChartDurationType);
+        this.updateValueChartData(this.selectedValueChartDurationType);
+      });
   }
 
   updateCountChartData(durationType: DurationEndpoints) {
@@ -816,17 +819,25 @@ export default class MortgageIndicatorsComponent implements OnInit, AfterViewIni
   }
 
   private _listenToScreenSize() {
-    this.screenService.screenSizeObserver$.pipe(takeUntil(this.destroy$)).subscribe((size) => {
-      this.screenSize = size;
-      this.countChart.first.updateOptions(
-        this.appChartTypesService.getRangeOptions(size, this.selectedCountBarChartType, this.countChartDataLength, true)
-      );
-      this.unitsChart.first.updateOptions(
-        this.appChartTypesService.getRangeOptions(size, this.selectedUnitsBarChartType, this.unitsChartDataLength)
-      );
-      this.valueChart.first.updateOptions(
-        this.appChartTypesService.getRangeOptions(size, this.selectedValueBarChartType, this.valueChartDataLength)
-      );
-    });
+    this.screenService.screenSizeObserver$
+      .pipe(takeUntil(this.destroy$))
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((size) => {
+        this.screenSize = size;
+        this.countChart.first.updateOptions(
+          this.appChartTypesService.getRangeOptions(
+            size,
+            this.selectedCountBarChartType,
+            this.countChartDataLength,
+            true
+          )
+        );
+        this.unitsChart.first.updateOptions(
+          this.appChartTypesService.getRangeOptions(size, this.selectedUnitsBarChartType, this.unitsChartDataLength)
+        );
+        this.valueChart.first.updateOptions(
+          this.appChartTypesService.getRangeOptions(size, this.selectedValueBarChartType, this.valueChartDataLength)
+        );
+      });
   }
 }
