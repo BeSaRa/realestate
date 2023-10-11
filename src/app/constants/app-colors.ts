@@ -1,6 +1,7 @@
 export const AppColors = {
   PRIMARY: '#8A1538',
   SECONDARY: '#A29475',
+  BLACK: '#000000',
   SAND: '#F4F4F4',
   GRAY: '#C0C0C0',
   GRAY_LIGHT: '#f3f3f3',
@@ -10,4 +11,8 @@ export const AppColors = {
   JUNGLE: '#259C80',
   INDIGO_RAINBOW: '#1A4161',
   PRIMARY_LIGHT: '#ae4967',
+  LEAD: '#333333',
+  LEAD_80: '#555555',
+  LEAD_60: '#777777',
+  LEAD_40: '#999999',
 };
