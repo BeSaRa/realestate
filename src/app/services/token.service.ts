@@ -1,61 +1,122 @@
 import { inject, Injectable } from '@angular/core';
-import { RegisterServiceMixin } from '@mixins/register-service-mixin';
-import { ECookieService } from '@services/e-cookie.service';
-import { ConfigService } from '@services/config.service';
 import { HttpClient } from '@angular/common/http';
 import { UrlService } from '@services/url.service';
-import { Observable } from 'rxjs';
-// import { LoginDataContract } from '@contracts/login-data-contract';
-import { CastResponse } from 'cast-response';
-import { ServiceContract } from '@contracts/service-contract';
-
+import { Observable, from, tap, of } from 'rxjs';
+import jwt_decode from 'jwt-decode';
+import { Storage } from '@models/storage';
+import { AuthenticationDataModel } from '@models/authentication-data';
 @Injectable({
   providedIn: 'root',
 })
-export class TokenService extends RegisterServiceMixin(class {}) implements ServiceContract {
-  serviceName = 'TokenService';
-  eCookieService = inject(ECookieService);
-  private readonly tokenStoreKey = inject(ConfigService).CONFIG.TOKEN_STORE_KEY;
-  private readonly http = inject(HttpClient);
+
+export class TokenService {
+
   private readonly urlService = inject(UrlService);
-  private token?: string;
+  http = inject(HttpClient);
 
-  setToken(token: string | undefined): void {
-    this.token = token;
-    // this.token && this.eCookieService.putE(this.tokenStoreKey, this.token);
+  private refreshInProgress?: Observable<Storage>;
+  Storage: Storage = new Storage();
+  // current user id after authenticate; this is used to prevent access token from overwriting
+  // by another login from the same browser.
+  private userId?: string;
+
+  constructor() {
+    const storage = Storage.load().subscribe(x => {
+      if (x) {
+        this.userId = this.decodeUserId(x.accessToken);
+      }
+    }
+    );
+  }
+  
+  getToken() {
+    Storage.load().subscribe(x => {
+      if (!x) {
+        throw new Error("never login");
+      }
+
+      const expiresAt = x.expiresAt;
+      if (expiresAt < Date.now() + 30000) {
+        if (this.refreshInProgress) {
+          return this.waitForRefresh();
+        }
+
+        this.refresh(x);
+        return this.waitForRefresh();
+      }
+
+      this.Storage = x;
+      return of(this.Storage);
+    });
+    return of(this.Storage);
   }
 
-  getToken(): string | undefined {
-    return this.token;
+  getAccessToken(): string {
+    const storage = this.getToken();
+    const userId = this.decodeUserId(this.Storage.accessToken);
+    if (this.userId !== userId) {
+      throw new Error('user mismatch');
+    }
+    return this.Storage.accessToken;
   }
 
-  // hasStoredToken(): boolean {
-  //   return !!this.getTokenFromStore()?.length;
-  // }
-
-  // getTokenFromStore(): string | undefined {
-  //   return this.eCookieService.getE(this.tokenStoreKey);
-  // }
-
-  hasToken(): boolean {
-    return !!this.getToken()?.length;
+  getRefreshToken(): string {
+    const storage = this.getToken();
+    return this.Storage.refreshToken;
   }
 
-  isSameToken(token: string | undefined): token is string {
-    return this.token === token;
+  private waitForRefresh(): Observable<Storage> {
+    if (!this.refreshInProgress) {
+      throw new Error("no refresh in progress");
+    }
+
+    try {
+      return this.refreshInProgress;
+    } finally {
+      this.refreshInProgress = undefined;
+    }
   }
 
-  // clearToken(): void {
-  //   this.token = undefined;
-  //   this.eCookieService.removeE(this.tokenStoreKey);
-  // }
+  private refresh(storage: Storage): void {
+    const refreshPromise = async () => {
+      const refreshToken = storage.refreshToken;
+      this._refresh(refreshToken).pipe(
+        tap((x) => {
+          if (x) {
+            storage = new Storage(x);
+            storage.save();
+            return storage;
+          } else {
+            throw new Error("refresh failure");
+          }
+        })
+      );
+    };
 
-  // @CastResponse()
-  // private _validateToken(): Observable<LoginDataContract> {
-  //   return this.http.post<LoginDataContract>(this.urlService.URLS.VALIDATE_TOKEN, {});
-  // }
+    // this.refreshInProgress = refreshPromise();
+  }
 
-  // validateToken(): Observable<LoginDataContract> {
-  //   return this._validateToken();
-  // }
+  private _refresh(refreshToken: string): Observable<AuthenticationDataModel> {
+
+    return from(this.http.post<AuthenticationDataModel>(this.urlService.URLS.REFRESH_TOKEN, {
+      refresh_token: refreshToken,
+      mode: "json",
+    }));
+  }
+
+  saveToken(loginInfo: AuthenticationDataModel) {
+    const storage = new Storage(loginInfo);
+    storage.save();
+    this.userId = this.decodeUserId(loginInfo.access_token);
+  }
+
+  resetToken() {
+    Storage.reset();
+    this.userId = undefined;
+  }
+
+  private decodeUserId(token: string) {
+    const decoded = jwt_decode<{ id: string; }>(token);
+    return decoded.id;
+  }
 }

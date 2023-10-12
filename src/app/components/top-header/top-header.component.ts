@@ -10,11 +10,13 @@ import { News } from '@models/news';
 import { NewsService } from '@services/news.service';
 import { TranslationService } from '@services/translation.service';
 import { Subject, debounceTime, takeUntil, tap } from 'rxjs';
-import { MatMenu, MatMenuModule } from '@angular/material/menu';
+import { MatMenuModule, MenuPositionX } from '@angular/material/menu';
 import { DialogService } from '@services/dialog.service';
 import { LoginPopupComponent } from '@components/login-popup/login-popup.component';
 import { CmsAuthenticationService } from '@services/auth.service';
 import { UrlService } from '@services/url.service';
+import { UsersService } from '@services/user.service';
+import { UserInfo } from '@models/user-info';
 
 @Component({
   selector: 'app-top-header',
@@ -27,7 +29,7 @@ import { UrlService } from '@services/url.service';
     NewsItemComponent,
     ButtonComponent,
     IconButtonComponent,
-    MatMenuModule
+    MatMenuModule,
   ],
   templateUrl: './top-header.component.html',
   styleUrls: ['./top-header.component.scss'],
@@ -44,11 +46,32 @@ export class TopHeaderComponent implements OnInit, OnDestroy {
   newsService = inject(NewsService);
   lang = inject(TranslationService);
   dialog = inject(DialogService);
+  userService = inject(UsersService);
+  isLtr: boolean = false;
+  xPosition:MenuPositionX = 'before';
+  userInfo?: UserInfo;
+
+  recheckIfInMenu: boolean = false;
 
   ngOnInit(): void {
     this._listenToSearchChanges();
+    this._listenToUserChange();
     this.onFocus(true);
+    this.lang.change$.subscribe(x => {
+      x.direction === 'ltr' ? this.xPosition = 'before' : 'after'});
+    
   }
+
+  private _listenToUserChange() {
+    this.userService.currentUser.pipe(
+      takeUntil(this.destroy$),
+      debounceTime(200),
+      tap((user) => {
+        this.userInfo = user;
+      })
+    ).subscribe();
+  }
+
 
   private _listenToSearchChanges() {
     this.search.valueChanges
@@ -90,14 +113,14 @@ export class TopHeaderComponent implements OnInit, OnDestroy {
 
   openLoginPopup() {
     this.dialog.open(LoginPopupComponent);
-    
+
   }
 
-  onLogOut()
-  {
-    // window.open(this.urlService.URLS.ADMIN)
+  OnStaffLogin() {
     window.location.href = this.urlService.URLS.ADMIN;
-    // this.authService.logout();
+  }
+  onLogOut() {
+    this.authService.logout().subscribe();
   }
 
   ngOnDestroy(): void {
