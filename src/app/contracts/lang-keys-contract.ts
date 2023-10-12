@@ -54,6 +54,7 @@ export interface LangKeysContract {
   select_quarter: string;
   select_half: string;
   login: string;
+  log_out:string;
   staff_login: string;
   search: string;
   home: string;
@@ -275,4 +276,9 @@ export interface LangKeysContract {
 
   logged_in_successfully: string;
   logged_in_failed: string;
+  welcome: string;
+
+  editor_content_manager: string;
+  employee: string;
+
 }

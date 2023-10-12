@@ -12,8 +12,7 @@ import { CmsAuthenticationService } from '@services/auth.service';
 import { CustomValidators } from '@validators/custom-validators';
 import { catchError, tap } from 'rxjs';
 import { CredentialsContract } from '@contracts/credentials-contract';
-import { CookieService } from 'ngx-cookie';
-import { CookieModule } from 'ngx-cookie';
+
 @Component({
   selector: 'app-translation-popup',
   standalone: true,
@@ -26,7 +25,6 @@ import { CookieModule } from 'ngx-cookie';
     ButtonComponent,
     IconButtonComponent,
     MatSnackBarModule,
-    CookieModule
   ],
   templateUrl: './login-popup.component.html',
   styleUrls: ['./login-popup.component.scss'],
