@@ -1,32 +1,22 @@
-<div
-  id="top-header"
+<div id="top-header"
   class="h-12 flex justify-between items-center border-b border-b-secondary/50 w-full text-white px-10">
   <div class="w-72"></div>
-  <div
-    id="search-header"
-    class="flex relative items-center bg-secondary/20 h-10 w-80 rounded"
-    matAutocompleteOrigin
+  <div id="search-header" class="flex relative items-center bg-secondary/20 h-10 w-80 rounded" matAutocompleteOrigin
     #origin="matAutocompleteOrigin">
-    <input
-      type="text"
-      [placeholder]="lang.map.search + '...'"
-      id="top-search-input"
-      [matAutocomplete]="auto"
-      [matAutocompleteConnectedTo]="origin"
-      [formControl]="search"
-      (focus)="onFocus()"
+    <input type="text" [placeholder]="lang.map.search + '...'" id="top-search-input" [matAutocomplete]="auto"
+      [matAutocompleteConnectedTo]="origin" [formControl]="search" (focus)="onFocus()"
       class="bg-transparent w-full border-b-white/50 outline-none pe-10 px-5 placeholder:text-white/80" />
     <div class="absolute rtl:left-0 ltr:right-0">
       <app-icon-button icon="SEARCH"></app-icon-button>
     </div>
-    <mat-autocomplete #auto="matAutocomplete"
-      ><div [dir]="lang.getCurrent().direction">
+    <mat-autocomplete #auto="matAutocomplete">
+      <div [dir]="lang.getCurrent().direction">
         <mat-option *ngFor="let item of filteredNews">
           <div class="py-2 px-2 rounded-md hover:bg-gray-100">
             <app-news-item type="concise" [newsItemData]="item" />
           </div>
-          <div class="my-1 w-full h-0 border-b border-b-primary last-of-type:hidden"></div
-        ></mat-option>
+          <div class="my-1 w-full h-0 border-b border-b-primary last-of-type:hidden"></div>
+        </mat-option>
         <ng-container *ngIf="!filteredNews.length && search.value">
           <mat-option class="!hidden"></mat-option>
           <p class="px-4 text-xl">{{ lang.map.there_are_no_matching_results }}!</p>
@@ -46,30 +36,45 @@
         <mat-icon>text_decrease</mat-icon>
       </button>
     </li> -->
+    
+    <button *ngIf="userInfo?.id == ''" mat-button [matMenuTriggerFor]="beforeMenu" >
+      {{lang.map.login}}
+    </button>
+    <mat-menu #beforeMenu="matMenu" [xPosition]="xPosition">
+      <button mat-menu-item (click)="openLoginPopup()">
+        <mat-icon svgIcon="account" ></mat-icon>
+        <span class="text-sm">
+          {{ lang.map.employee }}
+        </span>
+      </button>
+      <button mat-menu-item (click)="OnStaffLogin()">
+        <mat-icon svgIcon="account-cog"></mat-icon>
+        <span class="text-sm">
+          {{ lang.map.editor_content_manager }}
+        </span>
+      </button>
+    </mat-menu>
+    <!-- <li>
+      <a class="text-white" (click)="openLoginPopup()" mat-button *ngIf="userInfo?.id == ''">{{
+        lang.map.login
+        }}</a>
+    </li> -->
+    <li *ngIf="userInfo?.id != ''">
+      <a class="text-white">{{lang.map.welcome}}</a><a class="text-xl text-secondary"> {{ userInfo?.first_name }}</a>
+    </li>
+    <li *ngIf="userInfo?.id != ''">
+      <a class="text-white" (click)="onLogOut()" mat-button>{{lang.map.log_out}}</a>
+    </li>
+    <!-- <li>
+      <a class="text-white" (click)="OnStaffLogin()" *ngIf="userInfo?.id == ''">{{ lang.map.staff_login }}</a>
+    </li> -->
     <li>
       <app-icon-button [icon]="'VIEW'" (click)="toggleFilter()"></app-icon-button>
     </li>
     <li>
-      <!-- <button mat-button [matMenuTriggerFor]="menu">{{ lang.map.login }}</button>
-      <mat-menu #menu="matMenu">
-        <button mat-menu-item>Item 1</button>
-        <button mat-menu-item>Item 2</button>
-      </mat-menu> -->
-      <a class="text-white" (click)="openLoginPopup()" mat-button>{{
-        lang.map.login
-      }}</a>
-    </li>
-    <li>
-      <a class="text-white" (click)="onLogOut()" mat-button>log out</a>
-    </li>
-    <!-- <li> -->
-      <!-- <a mat-button (click)="$event.preventDefault()" href="#">{{ lang.map.staff_login }}</a> -->
-      <!-- <app-button buttonStyle="none">{{ lang.map.staff_login }}</app-button> -->
-    <!-- </li> -->
-    <li>
       <app-button (click)="changeLang($event)" buttonStyle="none">{{
         lang.getCurrent().toggleTo.substring(0, 2).toUpperCase()
-      }}</app-button>
+        }}</app-button>
     </li>
   </ul>
   <!-- top-header-menu -->
