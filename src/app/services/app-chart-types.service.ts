@@ -3,16 +3,17 @@ import { PartialChartOptions } from '@app-types/partialChartOptions';
 import { PieChartOptions } from '@app-types/pie-chart-options';
 import { AppColors } from '@constants/app-colors';
 import { maskSeparator } from '@constants/mask-separator';
+import { DurationSeriesDataContract } from '@contracts/duration-series-data-contract';
 import { MinMaxAvgContract } from '@contracts/min-max-avg-contract';
+import { ServiceContract } from '@contracts/service-contract';
 import { BarChartTypes } from '@enums/bar-chart-type';
 import { Breakpoints } from '@enums/breakpoints';
+import { DurationEndpoints } from '@enums/durations';
+import { RegisterServiceMixin } from '@mixins/register-service-mixin';
+import { ChartConfig } from '@models/chart-options-model';
 import { formatNumber } from '@utils/utils';
 import { NgxMaskPipe } from 'ngx-mask';
 import { TranslationService } from './translation.service';
-import { RegisterServiceMixin } from '@mixins/register-service-mixin';
-import { ServiceContract } from '@contracts/service-contract';
-import { DurationSeriesDataContract } from '@contracts/duration-series-data-contract';
-import { DurationEndpoints } from '@enums/durations';
 
 @Injectable({
   providedIn: 'root',
@@ -75,7 +76,7 @@ export class AppChartTypesService extends RegisterServiceMixin(class {}) impleme
   }
 
   private _pieChartOptions = pieChartOptions;
-  get pieChartOptions() {
+  get pieChartOptions(): PieChartOptions {
     return {
       ...this._pieChartOptions,
       legend: {
@@ -212,9 +213,9 @@ export class AppChartTypesService extends RegisterServiceMixin(class {}) impleme
     const _series = isMultiSeries ? data[opts.seriesIndex] : data[0];
     const _dataPoint = _series.data[opts.dataPointIndex];
     if (durationType === DurationEndpoints.MONTHLY || isMultiSeries) {
-      return this._getDurationDefaultTemplate(_dataPoint.x, _dataPoint.y, _series.name ?? '', hasPrice);
+      return this._getDurationDefaultTooltipTemplate(_dataPoint.x, _dataPoint.y, _series.name ?? '', hasPrice);
     } else {
-      return this._getDurationCustomTemplate(
+      return this._getDurationCustomTooltipTemplate(
         _dataPoint.x,
         _dataPoint.y,
         _dataPoint.yoy ?? 0,
@@ -224,6 +225,33 @@ export class AppChartTypesService extends RegisterServiceMixin(class {}) impleme
         hasPrice
       );
     }
+  }
+
+  getPieCustomTooltip(
+    opts: { seriesIndex: number; series: number[]; w: ChartConfig },
+    hasPrice: boolean,
+    unit?: string
+  ) {
+    const _bgColor = opts.w.config.colors[opts.seriesIndex];
+    const _label = opts.w.config.labels[opts.seriesIndex];
+    const _total = opts.series.reduce((acc, cur) => (acc += cur), 0);
+    const _value = opts.series[opts.seriesIndex];
+    const _percent = ((_value / _total) * 100).toFixed(2) + '%';
+    return `
+      <div dir="${this.lang.isLtr ? 'ltr' : 'rtl'}"
+        class="apexcharts-tooltip-series-group apexcharts-active"
+        style="order: 1; display: flex; background-color: ${_bgColor}">
+        <span class="apexcharts-tooltip-marker" style="background-color: ${_bgColor}; display: none"></span>
+        <div class="apexcharts-tooltip-text" style="font-family: Helvetica, Arial, sans-serif; font-size: 12px">
+          <div class="apexcharts-tooltip-y-group">
+            <span class="apexcharts-tooltip-text-y-label">${_label}: </span
+            ><span class="apexcharts-tooltip-text-y-value">${this._labelFormatter(_value, {
+              hasPrice,
+            })} ${unit ? unit + ' ' : ''}<span class="font-normal">(${_percent})</span></span>
+          </div>
+        </div>
+      </div>
+    `;
   }
 
   private _labelFormatter(val: string | number | number[], root?: { hasPrice: boolean }) {
@@ -238,7 +266,7 @@ export class AppChartTypesService extends RegisterServiceMixin(class {}) impleme
         }) as unknown as string);
   }
 
-  private _getDurationDefaultTemplate(x: string | number, y: number, name: string, hasPrice: boolean) {
+  private _getDurationDefaultTooltipTemplate(x: string | number, y: number, name: string, hasPrice: boolean) {
     return `
       <div dir="${
         this.lang.isLtr ? 'ltr' : 'rtl'
@@ -261,7 +289,7 @@ export class AppChartTypesService extends RegisterServiceMixin(class {}) impleme
     `;
   }
 
-  private _getDurationCustomTemplate(
+  private _getDurationCustomTooltipTemplate(
     x: string | number,
     y: number,
     yoy: number,

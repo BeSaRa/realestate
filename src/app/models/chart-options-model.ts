@@ -34,7 +34,7 @@ export interface DataPointSelectionConfig {
 }
 
 export interface ChartConfig {
-  config: Required<PartialChartOptions>;
+  config: Required<PartialChartOptions> & { labels: string[] };
   globals: { selectedDataPoints: number[][] };
 }
 
