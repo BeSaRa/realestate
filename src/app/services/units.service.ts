@@ -27,7 +27,7 @@ export class UnitsService extends RegisterServiceMixin(class {}) implements Serv
     {} as Record<number, Lookup>
   );
 
-  private _selectedUnitSignal = signal(this._units[1].lookupKey);
+  private _selectedUnitSignal = signal(this._units[2].lookupKey);
 
   selectedUnit = computed(() => this._selectedUnitSignal());
   selectedUnitInfo = computed(() => this._units[this._selectedUnitSignal()]);
