@@ -1,6 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { AfterViewInit, Component, OnDestroy, OnInit, QueryList, ViewChildren, inject } from '@angular/core';
 import { DateAdapter, MatNativeDateModule } from '@angular/material/core';
+import { PieChartOptions } from '@app-types/pie-chart-options';
 import { ButtonComponent } from '@components/button/button.component';
 import { ExtraHeaderComponent } from '@components/extra-header/extra-header.component';
 import { IconButtonComponent } from '@components/icon-button/icon-button.component';
@@ -199,13 +200,25 @@ export default class OwnershipIndicatorsPageComponent implements OnInit, AfterVi
     ...this.appChartTypesService.yearlyStaticChartOptions,
   });
 
-  ownerTypeChartOptions = this.appChartTypesService.pieChartOptions;
+  ownerTypeChartOptions: PieChartOptions = {
+    ...this.appChartTypesService.pieChartOptions,
+    tooltip: { custom: (opts) => this.appChartTypesService.getPieCustomTooltip(opts, false, this.lang.map.ownership) },
+  };
 
-  ageCategoryChartOptions = this.appChartTypesService.pieChartOptions;
+  ageCategoryChartOptions: PieChartOptions = {
+    ...this.appChartTypesService.pieChartOptions,
+    tooltip: { custom: (opts) => this.appChartTypesService.getPieCustomTooltip(opts, false, this.lang.map.ownership) },
+  };
 
-  genderChartOptions = this.appChartTypesService.pieChartOptions;
+  genderChartOptions: PieChartOptions = {
+    ...this.appChartTypesService.pieChartOptions,
+    tooltip: { custom: (opts) => this.appChartTypesService.getPieCustomTooltip(opts, false, this.lang.map.ownership) },
+  };
 
-  ageCategorySummaryChartOptions = this.appChartTypesService.pieChartOptions;
+  ageCategorySummaryChartOptions: PieChartOptions = {
+    ...this.appChartTypesService.pieChartOptions,
+    tooltip: { custom: (opts) => this.appChartTypesService.getPieCustomTooltip(opts, false, this.lang.map.ownership) },
+  };
 
   ownerTypeSummaryDataLength = 0;
   ownerTypeSummaryChartOptions = new ChartOptionsModel().clone<ChartOptionsModel>({
