@@ -28,7 +28,7 @@
     >
     <span
       *ngIf="item.isDataAvailable"
-      class="mt-2 text-2xl md:text-3xl text-primary font-bold group-[.selected]:text-white transition"
+      class="mt-2 text-2xl md:text-3xl text-primary font-bold group-hover:text-white group-[.selected]:text-white transition"
       ><span *ngIf="item.isDataAvailable" [countUp]="item.value" [options]="countUpOptions"></span>
       {{ item.hasPrice ? lang.map.qr : "" }}</span
     >
