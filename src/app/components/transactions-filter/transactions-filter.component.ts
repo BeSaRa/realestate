@@ -583,6 +583,7 @@ export class TransactionsFilterComponent implements OnInit, OnDestroy {
     else if (this.displayMonth) {
       value.issueDateStartMonth = this.form.value.issueDateMonth;
       value.issueDateEndMonth = this.form.value.issueDateMonth + 1;
+      value.issueDateQuarterList = [1, 2, 3, 4];
       value.issueDateMonth = null;
     } else if (this.displayRange) {
       if (!this.issueDateFrom.value || !this.issueDateTo.value) return;
