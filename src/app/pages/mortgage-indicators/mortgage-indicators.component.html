@@ -111,154 +111,18 @@
       </div>
     </div>
     <div class="flex flex-col mt-4 px-3 lg:px-16">
-      <h3
-        class="heading text-xl sm:text-2xl md:text-3xl self-center md:self-start text-center text-primary border-secondary font-semibold">
-        {{ lang.map.the_total_number_of_mortgaged_units }}
-      </h3>
-      <div class="mt-4 flex justify-center md:justify-end">
-        <div class="grid grid-cols-4 gap-2">
-          <app-button
-            size="sm"
-            (click)="updateUnitsChartData(DurationTypes.YEARLY)"
-            [buttonStyle]="selectedUnitsChartDurationType === DurationTypes.YEARLY ? 'secondary' : 'secondary-outline'"
-            [isRounded]="true"
-            >{{ lang.map.yearly }}</app-button
-          >
-          <app-button
-            size="sm"
-            (click)="updateUnitsChartData(DurationTypes.HALFY)"
-            [buttonStyle]="selectedUnitsChartDurationType === DurationTypes.HALFY ? 'secondary' : 'secondary-outline'"
-            [isRounded]="true"
-            >{{ lang.map.half_yearly }}</app-button
-          >
-          <app-button
-            size="sm"
-            (click)="updateUnitsChartData(DurationTypes.QUARTERLY)"
-            [buttonStyle]="
-              selectedUnitsChartDurationType === DurationTypes.QUARTERLY ? 'secondary' : 'secondary-outline'
-            "
-            [isRounded]="true"
-            >{{ lang.map.quarter_yearly }}</app-button
-          >
-          <app-button
-            size="sm"
-            (click)="updateUnitsChartData(DurationTypes.MONTHLY)"
-            [buttonStyle]="selectedUnitsChartDurationType === DurationTypes.MONTHLY ? 'secondary' : 'secondary-outline'"
-            [isRounded]="true"
-            >{{ lang.map.monthly }}</app-button
-          >
-        </div>
-      </div>
-      <div class="flex flex-col mt-2 md:flex-row">
-        <div class="flex-auto overflow-hidden pt-1" dir="ltr">
-          <apx-chart
-            #unitsChart
-            class="custom-toolbar [&>div]:ml-[-22px]"
-            [series]="unitsChartOptions.series!"
-            [chart]="unitsChartOptions.chart!"
-            [xaxis]="unitsChartOptions.xaxis!"
-            [stroke]="unitsChartOptions.stroke!"
-            [colors]="unitsChartOptions.colors!"
-            [dataLabels]="unitsChartOptions.dataLabels!"
-            [legend]="unitsChartOptions.legend!"
-            [markers]="unitsChartOptions.markers!"
-            [grid]="unitsChartOptions.grid!"
-            [yaxis]="unitsChartOptions.yaxis!"
-            [tooltip]="unitsChartOptions.tooltip!"
-            [plotOptions]="unitsChartOptions.plotOptions!"
-            [title]="unitsChartOptions.title!" />
-        </div>
-        <div class="h-full flex flex-row justify-center md:flex-col -mt-6 md:mt-4">
-          <app-icon-button
-            [ngClass]="{ 'text-primary': selectedUnitsChartType === ChartType.LINE }"
-            (click)="updateUnitsChartType(ChartType.LINE)"
-            class="text-primary"
-            icon="LINE_CHART" />
-          <app-icon-button
-            [ngClass]="{ 'text-primary': selectedUnitsChartType === ChartType.BAR }"
-            (click)="updateUnitsChartType(ChartType.BAR)"
-            icon="BAR_CHART" />
-          <app-icon-button
-            [ngClass]="{ 'text-primary': selectedUnitsChartType === ChartType.AREA }"
-            (click)="updateUnitsChartType(ChartType.AREA)"
-            icon="AREA_CHART" />
-        </div>
-      </div>
+      <app-duration-chart
+        [title]="lang.map.the_total_number_of_mortgaged_units"
+        [name]="lang.map.number_of_units"
+        [filterCriteria$]="criteria$"
+        [rootData$]="unitsRootData$"></app-duration-chart>
     </div>
     <div class="flex flex-col mt-4 px-3 lg:px-16">
-      <h3
-        class="heading text-xl sm:text-2xl md:text-3xl self-center md:self-start text-center text-primary border-secondary font-semibold">
-        {{ lang.map.total_value_of_mortgage_transactions }}
-      </h3>
-      <div class="mt-4 flex justify-center md:justify-end">
-        <div class="grid grid-cols-4 gap-2">
-          <app-button
-            size="sm"
-            (click)="updateValueChartData(DurationTypes.YEARLY)"
-            [buttonStyle]="selectedValueChartDurationType === DurationTypes.YEARLY ? 'secondary' : 'secondary-outline'"
-            [isRounded]="true"
-            >{{ lang.map.yearly }}</app-button
-          >
-          <app-button
-            size="sm"
-            (click)="updateValueChartData(DurationTypes.HALFY)"
-            [buttonStyle]="selectedValueChartDurationType === DurationTypes.HALFY ? 'secondary' : 'secondary-outline'"
-            [isRounded]="true"
-            >{{ lang.map.half_yearly }}</app-button
-          >
-          <app-button
-            size="sm"
-            (click)="updateValueChartData(DurationTypes.QUARTERLY)"
-            [buttonStyle]="
-              selectedValueChartDurationType === DurationTypes.QUARTERLY ? 'secondary' : 'secondary-outline'
-            "
-            [isRounded]="true"
-            >{{ lang.map.quarter_yearly }}</app-button
-          >
-          <app-button
-            size="sm"
-            (click)="updateValueChartData(DurationTypes.MONTHLY)"
-            [buttonStyle]="selectedValueChartDurationType === DurationTypes.MONTHLY ? 'secondary' : 'secondary-outline'"
-            [isRounded]="true"
-            >{{ lang.map.monthly }}</app-button
-          >
-        </div>
-      </div>
-      <div class="flex flex-col mt-2 md:flex-row">
-        <div class="flex-auto overflow-hidden pt-1" dir="ltr">
-          <apx-chart
-            #valueChart
-            class="custom-toolbar [&>div]:ml-[-22px]"
-            [series]="valueChartOptions.series!"
-            [chart]="valueChartOptions.chart!"
-            [xaxis]="valueChartOptions.xaxis!"
-            [stroke]="valueChartOptions.stroke!"
-            [colors]="valueChartOptions.colors!"
-            [dataLabels]="valueChartOptions.dataLabels!"
-            [legend]="valueChartOptions.legend!"
-            [markers]="valueChartOptions.markers!"
-            [grid]="valueChartOptions.grid!"
-            [yaxis]="valueChartOptions.yaxis!"
-            [tooltip]="valueChartOptions.tooltip!"
-            [plotOptions]="valueChartOptions.plotOptions!"
-            [title]="valueChartOptions.title!" />
-        </div>
-        <div class="h-full flex flex-row justify-center md:flex-col -mt-6 md:mt-4">
-          <app-icon-button
-            [ngClass]="{ 'text-primary': selectedValueChartType === ChartType.LINE }"
-            (click)="updateValueChartType(ChartType.LINE)"
-            class="text-primary"
-            icon="LINE_CHART" />
-          <app-icon-button
-            [ngClass]="{ 'text-primary': selectedValueChartType === ChartType.BAR }"
-            (click)="updateValueChartType(ChartType.BAR)"
-            icon="BAR_CHART" />
-          <app-icon-button
-            [ngClass]="{ 'text-primary': selectedValueChartType === ChartType.AREA }"
-            (click)="updateValueChartType(ChartType.AREA)"
-            icon="AREA_CHART" />
-        </div>
-      </div>
+      <app-duration-chart
+        [title]="lang.map.total_value_of_mortgage_transactions"
+        [name]="lang.map.transactions_value"
+        [filterCriteria$]="criteria$"
+        [rootData$]="valueRootData$"></app-duration-chart>
     </div>
     <div class="px-3 lg:px-16 flex flex-col gap-4">
       <h3
