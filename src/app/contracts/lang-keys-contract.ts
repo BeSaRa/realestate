@@ -280,4 +280,5 @@ export interface LangKeysContract {
   login_as_editor_content_manager: string;
   login_as_employee: string;
   invalid_user_credentials: string;
+  contract: string;
 }
