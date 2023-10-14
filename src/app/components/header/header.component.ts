@@ -1,4 +1,4 @@
-import { Component, computed, inject } from '@angular/core';
+import { Component, Output, computed, inject, EventEmitter } from '@angular/core';
 import { CommonModule, NgOptimizedImage } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
@@ -14,6 +14,7 @@ import { StickyService } from '@services/sticky.service';
   styleUrls: ['./header.component.scss'],
 })
 export class HeaderComponent {
+
   stickyService = inject(StickyService);
   isSticky = computed(() => this.stickyService.isSticky());
 }

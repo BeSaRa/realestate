@@ -44,30 +44,22 @@
       <button mat-menu-item (click)="openLoginPopup()">
         <mat-icon svgIcon="account" ></mat-icon>
         <span class="text-sm">
-          {{ lang.map.employee }}
+          {{ lang.map.login_as_employee }}
         </span>
       </button>
       <button mat-menu-item (click)="OnStaffLogin()">
         <mat-icon svgIcon="account-cog"></mat-icon>
         <span class="text-sm">
-          {{ lang.map.editor_content_manager }}
+          {{ lang.map.login_as_editor_content_manager }}
         </span>
       </button>
     </mat-menu>
-    <!-- <li>
-      <a class="text-white" (click)="openLoginPopup()" mat-button *ngIf="userInfo?.id == ''">{{
-        lang.map.login
-        }}</a>
-    </li> -->
     <li *ngIf="userInfo?.id != ''">
       <a class="text-white">{{lang.map.welcome}}</a><a class="text-xl text-secondary"> {{ userInfo?.first_name }}</a>
     </li>
     <li *ngIf="userInfo?.id != ''">
-      <a class="text-white" (click)="onLogOut()" mat-button>{{lang.map.log_out}}</a>
+      <button class="text-white" (click)="onLogOut()" mat-button>{{lang.map.log_out}}</button>
     </li>
-    <!-- <li>
-      <a class="text-white" (click)="OnStaffLogin()" *ngIf="userInfo?.id == ''">{{ lang.map.staff_login }}</a>
-    </li> -->
     <li>
       <app-icon-button [icon]="'VIEW'" (click)="toggleFilter()"></app-icon-button>
     </li>

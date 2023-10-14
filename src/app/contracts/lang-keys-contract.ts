@@ -278,7 +278,8 @@ export interface LangKeysContract {
   logged_in_failed: string;
   welcome: string;
 
-  editor_content_manager: string;
-  employee: string;
+  login_as_editor_content_manager: string;
+  login_as_employee: string;
+  invalid_user_credentials: string;
 
 }

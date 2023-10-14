@@ -10,19 +10,22 @@
 
   <app-side-bar [direction]="(direction$ | async)!">
     <ul class="flex flex-col gap-y-1">
+      <li *ngIf="userInfo?.id != ''">
+        <a class="text-white">{{lang.map.welcome}}</a><a class="text-xl text-secondary"> {{ userInfo?.first_name }}</a>
+      </li>
       <li class="pb-1 border-b border-secondary/20 last-of-type:border-0" *ngFor="let link of links">
-        <a
-          class="block w-full text-xl px-3 py-2 text-white rounded-md transition hover:bg-white/20 [&.active]:bg-white/20"
-          [routerLink]="link.link"
-          routerLinkActive="active"
-          >{{ link.label() }}</a
-        >
+        <a class="block w-full text-xl px-3 py-2 text-white rounded-md transition hover:bg-white/20 [&.active]:bg-white/20"
+          [routerLink]="link.link" routerLinkActive="active">{{ link.label() }}</a>
       </li>
     </ul>
-    <div class="flex flex-col gap-2 mt-3">
-      <app-button buttonStyle="secondary">{{lang.map.login}}</app-button>
-      <!-- <app-button buttonStyle="secondary">{{ lang.map.staff_login }}</app-button> -->
+    <div *ngIf="userInfo?.id == ''" class="flex flex-col gap-y-1">
+      <app-button buttonStyle="secondary" (click)="openLoginPopup()">{{lang.map.login_as_employee}}</app-button>
+      <app-button buttonStyle="secondary" (click)="OnStaffLogin()">{{ lang.map.login_as_editor_content_manager }}</app-button>
+    </div>
+    <div *ngIf="userInfo?.id != ''" class="flex flex-col gap-2 mt-3">
+      <app-button buttonStyle="secondary" (click)="logOut()">{{lang.map.log_out}}</app-button>
     </div>
   </app-side-bar>
-  <app-scroll-to-top [floating]="(backtoTopFloat$ | async)!" *ngIf="showBackToTopScroll" (scrollToTop)="onScrollToTop()"></app-scroll-to-top>
+  <app-scroll-to-top [floating]="(backtoTopFloat$ | async)!" *ngIf="showBackToTopScroll"
+    (scrollToTop)="onScrollToTop()"></app-scroll-to-top>
 </div>

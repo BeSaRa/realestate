@@ -157,6 +157,7 @@ export const EndPoints = {
   LOGOUT: '/auth/logout',
   REFRESH_TOKEN:"/auth/refresh",
   USERS: '/users/',
+  README: '/users/me',
   BE: 'http://192.168.52.4:9080/mme-services/',
   ...cmsEndpoints,
   ...rentEndPoints,

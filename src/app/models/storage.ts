@@ -3,11 +3,11 @@ import { Injectable, inject } from '@angular/core';
 import { ConfigService } from "@services/config.service";
 import { Observable, from, tap, of } from 'rxjs';
 
-@Injectable({providedIn: 'root'})
+// @Injectable({providedIn: 'root'})
 
 export class Storage {
 
-  private static LOCAL_STORAGE_KEY = '$$_T_$$';
+  private static readonly LOCAL_STORAGE_KEY = '$$_T_$$';
 
   private _accessToken = '';
   private _refreshToken = '';
@@ -22,10 +22,10 @@ export class Storage {
     }
   }
 
-  static load(): Observable<Storage | null> {
+  static load(): Storage | null {
     const item = localStorage.getItem(Storage.LOCAL_STORAGE_KEY);
     if (!item) {
-      return of(null);
+      return null;
     }
 
     const object = JSON.parse(item);
@@ -33,7 +33,7 @@ export class Storage {
     storage._accessToken = object.a;
     storage._refreshToken = object.r;
     storage._expiresAt = object.e;
-    return of(storage);
+    return storage;
   }
 
   save() {
