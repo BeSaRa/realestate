@@ -481,44 +481,19 @@
       </div>
     </div>
     <div class="px-3 lg:px-16 grid grid-cols-1 lg:grid-cols-2 gap-2">
-      <div class="py-5">
-        <div class="shadow-lg rounded-lg overflow-hidden">
-          <div class="bg-primary p-4 flex justify-center items-center">
-            <span class="text-white text-center text-lg sm:text-xl font-semibold"
-              >{{ lang.map.rent_contracts_count_according_to_bedrooms }} {{ getSelectedArea(true, true) }}</span
-            >
-          </div>
-          <div dir="ltr" class="flex justify-center">
-            <apx-chart
-              #pieChart
-              [series]="pieChartOptions.series"
-              [labels]="pieChartOptions.labels"
-              [responsive]="pieChartOptions.responsive!"
-              [chart]="pieChartOptions.chart"
-              [legend]="pieChartOptions.legend!"
-              [colors]="pieChartOptions.colors!" />
-          </div>
-        </div>
-      </div>
-      <div class="py-5">
-        <div class="shadow-lg rounded-lg overflow-hidden">
-          <div class="bg-primary p-4 flex justify-center items-center">
-            <span class="text-white text-center text-lg sm:text-xl font-semibold"
-              >{{ lang.map.rent_contracts_count_according_to_furniture }} {{ getSelectedArea(true, true) }}</span
-            >
-          </div>
-          <div dir="ltr" class="flex justify-center">
-            <apx-chart
-              #pieChart
-              [series]="pieChartOptions.series"
-              [labels]="pieChartOptions.labels"
-              [responsive]="pieChartOptions.responsive!"
-              [chart]="pieChartOptions.chart"
-              [legend]="pieChartOptions.legend!"
-              [colors]="pieChartOptions.colors!" />
-          </div>
-        </div>
-      </div>
+      <app-pie-chart
+        [title]="lang.map.rent_contracts_count_according_to_bedrooms + ' ' + getSelectedArea(true, true)"
+        [filterCriteria$]="criteria$"
+        [rootData$]="roomsRootData$"
+        [bindLabel]="roomLabel"
+        [valueUnit]="lang.map.contract" />
+
+      <app-pie-chart
+        [title]="lang.map.rent_contracts_count_according_to_furniture + ' ' + getSelectedArea(true, true)"
+        [filterCriteria$]="criteria$"
+        [rootData$]="furnitureRootData$"
+        [bindLabel]="furnitureLabel"
+        [valueUnit]="lang.map.contract" />
     </div>
   </div>
 </div>
