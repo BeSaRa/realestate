@@ -5,10 +5,13 @@
   </div>
   <div class="dialog-content">
     <div class="grid grid-cols-2 gap-4 [&>*]:col-span-2">
-      <div [formGroup]="LoginForm">
+      <div #f="ngForm" [formGroup]="LoginForm">
         <app-input formControlName="identifier" [label]="lang.map.identifier"></app-input>
         <app-input formControlName="password" [label]="lang.map.password"></app-input>
       </div>
+    </div>
+    <div *ngIf="isLoggedInfailed" class="alert alert-danger" role="alert">
+      <span class="mt-2 text-sm text-primary font-bold transition"> {{ lang.map.invalid_user_credentials }}</span>
     </div>
   </div>
   <div class="dialog-footer justify-end">

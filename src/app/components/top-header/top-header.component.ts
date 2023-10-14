@@ -15,8 +15,9 @@ import { DialogService } from '@services/dialog.service';
 import { LoginPopupComponent } from '@components/login-popup/login-popup.component';
 import { CmsAuthenticationService } from '@services/auth.service';
 import { UrlService } from '@services/url.service';
-import { UsersService } from '@services/user.service';
 import { UserInfo } from '@models/user-info';
+import { EventBusService } from '@services/event-bus.service';
+import { EventData } from '@models/event.class';
 
 @Component({
   selector: 'app-top-header',
@@ -37,7 +38,9 @@ import { UserInfo } from '@models/user-info';
 export class TopHeaderComponent implements OnInit, OnDestroy {
   search = new FormControl('', { nonNullable: true });
   authService = inject(CmsAuthenticationService);
-  urlService = inject(UrlService)
+  urlService = inject(UrlService);
+  eventBusService = inject(EventBusService);
+
   news: News[] = [];
   filteredNews: News[] = [];
 
@@ -45,8 +48,6 @@ export class TopHeaderComponent implements OnInit, OnDestroy {
 
   newsService = inject(NewsService);
   lang = inject(TranslationService);
-  dialog = inject(DialogService);
-  userService = inject(UsersService);
   isLtr: boolean = false;
   xPosition:MenuPositionX = 'before';
   userInfo?: UserInfo;
@@ -63,7 +64,7 @@ export class TopHeaderComponent implements OnInit, OnDestroy {
   }
 
   private _listenToUserChange() {
-    this.userService.currentUser.pipe(
+    this.authService.currentUser.pipe(
       takeUntil(this.destroy$),
       debounceTime(200),
       tap((user) => {
@@ -112,15 +113,15 @@ export class TopHeaderComponent implements OnInit, OnDestroy {
   }
 
   openLoginPopup() {
-    this.dialog.open(LoginPopupComponent);
+    this.eventBusService.emit(new EventData('openLoginPopup', null));
 
   }
 
   OnStaffLogin() {
-    window.location.href = this.urlService.URLS.ADMIN;
+    this.eventBusService.emit(new EventData('OnStaffLogin', null));
   }
   onLogOut() {
-    this.authService.logout().subscribe();
+    this.eventBusService.emit(new EventData('onLogOut', null));
   }
 
   ngOnDestroy(): void {
