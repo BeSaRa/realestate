@@ -34,13 +34,16 @@ export class LoginPopupComponent implements OnInit {
   fb = inject(UntypedFormBuilder);
   snackbar = inject(MatSnackBar);
   authService = inject(CmsAuthenticationService)
-  
+
   dialogRef = inject(MatDialogRef);
 
   LoginForm = this.fb.group({
     identifier: ['', [CustomValidators.required]],
     password: ['', [CustomValidators.required]],
   });
+
+  isLoggedInfailed = false;
+  errorMessage = '';
 
   ngOnInit(): void {
     this.listenToLanguageChanges();
@@ -68,19 +71,21 @@ export class LoginPopupComponent implements OnInit {
     if (this.LoginForm.invalid) {
       return;
     }
-    const credentials: CredentialsContract = { identifier: this.getIdentifier(), password:this.getPassword(), mode: 'json'}
+    const credentials: CredentialsContract = { identifier: this.getIdentifier(), password: this.getPassword(), mode: 'json' }
     this.authService.login(credentials).pipe(
       tap(() => {
-        this.dialogRef.close()
-        this.snackbar.open(this.lang.map.logged_in_successfully,'',{panelClass:'toast-success',verticalPosition:'top'});
-        
+        this.isLoggedInfailed = false;
+        this.dialogRef.close();
+        this.snackbar.open(this.lang.map.logged_in_successfully, '', { panelClass: 'toast-success', verticalPosition: 'top' });
+        this.LoginForm.reset();
       }),
       catchError((err) => {
-        this.snackbar.open(this.lang.map.logged_in_failed,'',{panelClass:'toast-error',verticalPosition:'top'});
+        this.isLoggedInfailed = true;
+        this.snackbar.open(this.lang.map.logged_in_failed, '', { panelClass: 'toast-error', verticalPosition: 'top' });
         throw err;
       })
     )
-    .subscribe();
-    this.LoginForm.reset();
+      .subscribe();
+    
   }
 }

@@ -9,6 +9,6 @@ import { UrlService } from './url.service';
 })
 export class DirectusClientService {
   config = inject(ConfigService);
-  urlService = inject(UrlService)
-  client = createDirectus<DirectusSchemaContract>(this.urlService.URLS.BASE_URL, {}).with(rest()).with(authentication('json',{credentials:'include'}));
+  urlService = inject(UrlService);
+  client = createDirectus<DirectusSchemaContract>(this.urlService.URLS.BASE_URL, {}).with(rest()).with(authentication('json', {credentials:'include'}));
 }

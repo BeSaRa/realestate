@@ -18,8 +18,6 @@ import { MatPaginatorIntl } from '@angular/material/paginator';
 import { PaginatorLocal } from '@constants/paginator-local';
 import { LookupService } from '@services/lookup.service';
 import { NgxMaskPipe, provideNgxMask } from 'ngx-mask';
-import { httpInterceptorProviders } from './interceptors/http.interceptor';
-import { UsersService } from '@services/user.service';
 export const appConfig: ApplicationConfig = {
   providers: [
     provideRouter(routes, withComponentInputBinding(), withInMemoryScrolling({ scrollPositionRestoration: 'top' })),
@@ -42,16 +40,15 @@ export const appConfig: ApplicationConfig = {
     },
     {
       provide: APP_INITIALIZER,
-      useFactory: (config: ConfigService, url: UrlService, translation: TranslationService, lookups: LookupService, userService : UsersService) => {
+      useFactory: (config: ConfigService, url: UrlService, translation: TranslationService, lookups: LookupService) => {
         return () =>
           forkJoin([config.load()])
             .pipe(tap(() => url.setConfigService(config)))
             .pipe(tap(() => url.prepareUrls()))
             .pipe(switchMap(() => lookups.load()))
-            .pipe(switchMap(() => translation.load()))
-            .pipe(tap(()=> userService.loadUserFromLocalStorage()));
+            .pipe(switchMap(() => translation.load()));
       },
-      deps: [ConfigService, UrlService, TranslationService, LookupService, UsersService],
+      deps: [ConfigService, UrlService, TranslationService, LookupService],
       multi: true,
     },
     {

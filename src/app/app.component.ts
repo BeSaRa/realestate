@@ -17,10 +17,14 @@ import { SplashService } from '@services/splash.service';
 import { StickyService } from '@services/sticky.service';
 import { TranslationService } from '@services/translation.service';
 import '@utils/prototypes/custom-prototypes';
-import { Observable, fromEvent, map, startWith } from 'rxjs';
+import { debounceTime, map, startWith, tap } from 'rxjs';
 import { ScrollToTopComponent } from '@components/scroll-to-top/scroll-to-top.component';
 import {MatMenuModule} from '@angular/material/menu';
 import { LoginPopupComponent } from '@components/login-popup/login-popup.component';
+import { CmsAuthenticationService } from '@services/auth.service';
+import { UrlService } from '@services/url.service';
+import { UserInfo } from '@models/user-info';
+import { EventBusService } from '@services/event-bus.service';
 @Component({
   selector: 'app-root',
   standalone: true,
@@ -47,6 +51,10 @@ export class AppComponent implements OnInit {
   stickyService = inject(StickyService);
   dialog = inject(DialogService);
   splashService = inject(SplashService);
+  authService = inject(CmsAuthenticationService)
+  urlService = inject(UrlService);
+  eventBusService = inject(EventBusService);
+  userInfo?: UserInfo;
 
   direction$ = this.lang.change$.pipe(
     startWith(this.lang.isLtr ? SideBarDirection.RIGHT : SideBarDirection.LEFT),
@@ -57,6 +65,15 @@ export class AppComponent implements OnInit {
     startWith(this.lang.isLtr ? SideBarDirection.LEFT : SideBarDirection.RIGHT),
     map(() => (this.lang.isLtr ? SideBarDirection.LEFT : SideBarDirection.RIGHT))
   );
+
+  private _listenToUserChange() {
+    this.authService.currentUser.pipe(
+      debounceTime(200),
+      tap((user) => {
+        this.userInfo = user;
+      })
+    ).subscribe();
+  }
 
   showBackToTopScroll: boolean = false;
 
@@ -79,6 +96,20 @@ export class AppComponent implements OnInit {
     setTimeout(() => {
       this.splashService.removeSplash();
     }, 500);
+    this.authService.loadUserFromLocalStorage();
+    this._listenToUserChange();
+
+   this.eventBusService.on('onLogOut', () => {
+      this.logOut();
+    });
+
+    this.eventBusService.on('openLoginPopup', () => {
+      this.openLoginPopup();
+    });
+
+    this.eventBusService.on('OnStaffLogin', () => {
+      this.OnStaffLogin();
+    });
   }
 
   @HostListener('window:scroll')
@@ -95,7 +126,16 @@ export class AppComponent implements OnInit {
   openLoginPopup() {
     this.dialog.open(LoginPopupComponent);
   }
+
+  OnStaffLogin() {
+    window.location.href = this.urlService.URLS.ADMIN;
+  }
   onScrollToTop(): void {
     window.scrollTo({top: 0, behavior: 'smooth'});
+  }
+
+  logOut() {
+    this.authService.logout();
+    
   }
 }
