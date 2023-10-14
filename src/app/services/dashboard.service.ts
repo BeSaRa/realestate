@@ -7,6 +7,7 @@ import { CriteriaContract } from '@contracts/criteria-contract';
 import { DurationDataContract } from '@contracts/duration-data-contract';
 import { MortgageCriteriaContract } from '@contracts/mortgage-criteria-contract';
 import { OwnerCriteriaContract } from '@contracts/owner-criteria-contract';
+import { PriceCriteriaContract } from '@contracts/price-criteria-contract';
 import { RentCriteriaContract } from '@contracts/rent-criteria-contract';
 import { SellCriteriaContract } from '@contracts/sell-criteria-contract';
 import { ServiceContract } from '@contracts/service-contract';
@@ -18,33 +19,30 @@ import {
   RentCompositeTransaction,
   SellCompositeTransaction,
 } from '@models/composite-transaction';
-import { FurnitureStatusKpi } from '@models/furniture-status-kpi';
 import { KpiDurationModel } from '@models/kpi-duration-model';
 import { KpiModel } from '@models/kpi-model';
 import { KpiRoot } from '@models/kpiRoot';
 import { Lookup } from '@models/lookup';
+import { MLPriceItem } from '@models/ml-price-item';
 import { MortgageTransaction } from '@models/mortgage-transaction';
 import { OwnershipCountNationality } from '@models/ownership-count-nationality';
+import { Pagination } from '@models/pagination';
 import { RentDefaultValues } from '@models/rent-default-values';
 import { RentTop10Model } from '@models/rent-top-10-model';
 import { RentTransaction } from '@models/rent-transaction';
+import { RentTransactionPropertyType } from '@models/rent-transaction-property-type';
 import { RentTransactionPurpose } from '@models/rent-transaction-purpose';
-import { RoomNumberKpi } from '@models/room-number-kpi';
 import { SellDefaultValues } from '@models/sell-default-values';
 import { SellTop10Model } from '@models/sell-top-10-model';
 import { SellTransaction } from '@models/sell-transaction';
+import { SellTransactionPropertyType } from '@models/sell-transaction-property-type';
 import { SellTransactionPurpose } from '@models/sell-transaction-purpose';
 import { UrlService } from '@services/url.service';
 import { groupBy, minMaxAvg, range } from '@utils/utils';
-import { CastResponse, CastResponseContainer } from 'cast-response';
+import { CastResponse } from 'cast-response';
 import { forkJoin, map, Observable } from 'rxjs';
 import { DialogService } from './dialog.service';
 import { TranslationService } from './translation.service';
-import { SellTransactionPropertyType } from '@models/sell-transaction-property-type';
-import { RentTransactionPropertyType } from '@models/rent-transaction-property-type';
-import { Pagination } from '@models/pagination';
-import { MLPriceItem } from '@models/ml-price-item';
-import { PriceCriteriaContract } from '@contracts/price-criteria-contract';
 
 @Injectable({
   providedIn: 'root',
@@ -274,21 +272,6 @@ export class DashboardService extends RegisterServiceMixin(class {}) implements 
           };
         })
       );
-  }
-
-  @CastResponse(() => RoomNumberKpi)
-  loadRentRoomCounts(criteria: Partial<RentCriteriaContract>): Observable<RoomNumberKpi[]> {
-    return this.http.post<RoomNumberKpi[]>(this.urlService.URLS.RENT_KPI34, criteria);
-  }
-
-  @CastResponse(() => RoomNumberKpi)
-  loadSellRoomCounts(criteria: Partial<SellCriteriaContract>): Observable<RoomNumberKpi[]> {
-    return this.http.post<RoomNumberKpi[]>(this.urlService.URLS.SELL_KPI34, criteria);
-  }
-
-  @CastResponse(() => FurnitureStatusKpi)
-  loadRentFurnitureStatus(criteria: Partial<RentCriteriaContract>): Observable<FurnitureStatusKpi[]> {
-    return this.http.post<FurnitureStatusKpi[]>(this.urlService.URLS.RENT_KPI34_1, criteria);
   }
 
   openRentChartDialogBasedOnPurpose(

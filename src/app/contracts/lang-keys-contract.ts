@@ -261,4 +261,5 @@ export interface LangKeysContract {
 
   sell_average_price_per_square_foot: string;
   sell_average_price_per_square_meter: string;
+  contract: string;
 }
