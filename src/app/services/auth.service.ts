@@ -46,7 +46,7 @@ export class CmsAuthenticationService {
             return source.pipe(
                 tap(data => this.tokenService.saveToken(data)),
                 tap((data) => this.setClientAccesToken(data.access_token)),
-                tap(() => window.location.reload()),
+                // tap(() => window.location.reload()),
                 tap(_ => this.setCurrentUSer()),
                 tap(() => (this.authenticated = true))
             );
