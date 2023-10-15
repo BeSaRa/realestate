@@ -5,6 +5,8 @@ import { Observable, from, tap, of, map , lastValueFrom} from 'rxjs';
 import jwt_decode from 'jwt-decode';
 import { Storage } from '@models/storage';
 import { AuthenticationDataModel } from '@models/authentication-data';
+import { DirectusClientService } from './directus-client.service';
+import { refresh } from '@directus/sdk';
 @Injectable({
   providedIn: 'root',
 })
@@ -69,7 +71,9 @@ export class TokenService {
   private refresh(storage: Storage): void {
     const refreshPromise = async () => {
       const refreshToken = storage.refreshToken;
+      
       const loginResult = await this._refresh(refreshToken);
+      
       if (loginResult) {
         storage = new Storage(loginResult);
         storage.save();
@@ -83,7 +87,8 @@ export class TokenService {
   }
 
   private async _refresh(refreshToken: string): Promise<AuthenticationDataModel> {
-    return lastValueFrom( this.http.post<AuthenticationDataModel>(this.urlService.URLS.REFRESH_TOKEN, {
+    // return this.directusService.client.request<AuthenticationDataModel>(refresh('json', refreshToken));
+    return lastValueFrom( this.http.post<AuthenticationDataModel>(this.urlService.URLS.REFRESH_TOKEN, {mode:'json',
       refresh_token: refreshToken}));
   }
 
