@@ -45,18 +45,8 @@ export class LoginPopupComponent implements OnInit {
   isLoggedInfailed = false;
   errorMessage = '';
 
-  ngOnInit(): void {
-    this.listenToLanguageChanges();
-  }
+  ngOnInit(): void { }
 
-  private listenToLanguageChanges() {
-    this.lang.change$.subscribe((current) => {
-      const overlayWrapper = document.querySelectorAll<HTMLDivElement>('.cdk-global-overlay-wrapper');
-      overlayWrapper.forEach((item: HTMLDivElement) => {
-        item.dir = current.direction;
-      });
-    });
-  }
 
   getIdentifier() {
     return this.LoginForm.controls['identifier'].value;
