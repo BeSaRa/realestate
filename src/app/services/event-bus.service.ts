@@ -1,21 +1,22 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { Subject, Subscription } from 'rxjs';
 import { filter, map } from 'rxjs/operators';
 import { EventData } from '@models/event.class';
+import { DialogService } from './dialog.service';
+import { LoginPopupComponent } from '@components/login-popup/login-popup.component';
+import { UrlService } from './url.service';
 
 @Injectable({
   providedIn: 'root',
 })
-export class EventBusService {
-  private subject$ = new Subject<EventData>();
-
-  emit(event: EventData) {
-    this.subject$.next(event);
+export class UserService {
+  dialog = inject(DialogService);
+  urlService = inject(UrlService);
+  openLoginPopup() {
+    this.dialog.open(LoginPopupComponent);
   }
 
-  on(eventName: string, action: any): Subscription {
-    return this.subject$.pipe(
-      filter((e: EventData) => e.name === eventName),
-      map((e: EventData) => e["value"])).subscribe(action);
+  OnStaffLogin() {
+    window.location.href = this.urlService.URLS.ADMIN;
   }
 }
