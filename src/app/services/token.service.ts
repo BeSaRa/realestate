@@ -76,7 +76,6 @@ export class TokenService {
       const loginResult = await lastValueFrom(  this._refresh(refreshToken));
 
       if (loginResult) {
-        console.log("refre", loginResult)
         storage = new Storage(loginResult);
         storage.save();
         return storage;

@@ -16,7 +16,7 @@ import { LoginPopupComponent } from '@components/login-popup/login-popup.compone
 import { CmsAuthenticationService } from '@services/auth.service';
 import { UrlService } from '@services/url.service';
 import { UserInfo } from '@models/user-info';
-import { EventBusService } from '@services/event-bus.service';
+import { UserService } from '@services/event-bus.service';
 import { EventData } from '@models/event.class';
 
 @Component({
@@ -39,7 +39,7 @@ export class TopHeaderComponent implements OnInit, OnDestroy {
   search = new FormControl('', { nonNullable: true });
   authService = inject(CmsAuthenticationService);
   urlService = inject(UrlService);
-  eventBusService = inject(EventBusService);
+  userService = inject(UserService);
 
   news: News[] = [];
   filteredNews: News[] = [];
@@ -113,15 +113,15 @@ export class TopHeaderComponent implements OnInit, OnDestroy {
   }
 
   openLoginPopup() {
-    this.eventBusService.emit(new EventData('openLoginPopup', null));
+    this.userService.openLoginPopup();
 
   }
 
   OnStaffLogin() {
-    this.eventBusService.emit(new EventData('OnStaffLogin', null));
+    this.userService.OnStaffLogin();
   }
   onLogOut() {
-    this.eventBusService.emit(new EventData('onLogOut', null));
+    this.authService.logout();
   }
 
   ngOnDestroy(): void {

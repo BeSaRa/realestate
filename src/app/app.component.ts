@@ -24,7 +24,7 @@ import { LoginPopupComponent } from '@components/login-popup/login-popup.compone
 import { CmsAuthenticationService } from '@services/auth.service';
 import { UrlService } from '@services/url.service';
 import { UserInfo } from '@models/user-info';
-import { EventBusService } from '@services/event-bus.service';
+import { UserService } from '@services/event-bus.service';
 @Component({
   selector: 'app-root',
   standalone: true,
@@ -53,7 +53,7 @@ export class AppComponent implements OnInit {
   splashService = inject(SplashService);
   authService = inject(CmsAuthenticationService)
   urlService = inject(UrlService);
-  eventBusService = inject(EventBusService);
+  userService = inject(UserService);
   userInfo?: UserInfo;
 
   direction$ = this.lang.change$.pipe(
@@ -95,18 +95,7 @@ export class AppComponent implements OnInit {
     }, 500);
     this.authService.loadUserFromLocalStorage();
     this._listenToUserChange();
-
-   this.eventBusService.on('onLogOut', () => {
-      this.logOut();
-    });
-
-    this.eventBusService.on('openLoginPopup', () => {
-      this.openLoginPopup();
-    });
-
-    this.eventBusService.on('OnStaffLogin', () => {
-      this.OnStaffLogin();
-    });
+    
   }
 
   @HostListener('window:scroll')
@@ -121,11 +110,11 @@ export class AppComponent implements OnInit {
   }
 
   openLoginPopup() {
-    this.dialog.open(LoginPopupComponent);
+    this.userService.openLoginPopup();
   }
 
   OnStaffLogin() {
-    window.location.href = this.urlService.URLS.ADMIN;
+    this.userService.OnStaffLogin();
   }
   onScrollToTop(): void {
     window.scrollTo({top: 0, behavior: 'smooth'});
