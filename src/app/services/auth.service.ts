@@ -24,12 +24,13 @@ export class CmsAuthenticationService {
     tokenService = inject(TokenService);
     authenticated = false;
 
-    currentUser: BehaviorSubject<UserInfo> = new BehaviorSubject<UserInfo>({
+    private currentUserSubject$: BehaviorSubject<UserInfo> = new BehaviorSubject<UserInfo>({
         first_name: '',
         avatar: '',
         id: '',
         last_name: '',
     });
+    public currentUser= this.currentUserSubject$.asObservable();
 
 
     @CastResponse(() => AuthenticationDataModel, { unwrap: 'data', fallback: '$default' })
@@ -69,22 +70,21 @@ export class CmsAuthenticationService {
                     tap(() => this.setClientAccesToken(null)),
                     tap(() => (this.authenticated = false)),
                     tap(() => this.removeCurrentUSer()),
-                    tap(() => window.location.reload())
+                    // tap(() => window.location.reload())
                 ).subscribe();
             });
     }
 
-    loadUserFromLocalStorage(): UserInfo {
-        if (this.currentUser.value.id == '') {
+    loadUserFromLocalStorage(): Observable<UserInfo> {
+        if (this.currentUserSubject$.value.id == '') {
             let fromLocalStorage = localStorage.getItem('user-profile');
-            // TODO : Check if the token is expires then refresh token
             if (fromLocalStorage) {
                 let userInfo = JSON.parse(fromLocalStorage);
                 this.authenticated = true;
-                this.currentUser.next(userInfo);
+                this.currentUserSubject$.next(userInfo);
             }
         }
-        return this.currentUser.value;
+        return this.currentUser;
     }
 
     isLoggedIn() {
@@ -105,13 +105,13 @@ export class CmsAuthenticationService {
 
     setCurrentUSer() {
         this._getCurrentUser().subscribe(user => {
-            this.currentUser.next(user);
+            this.currentUserSubject$.next(user);
             localStorage.setItem('user-profile', JSON.stringify(user));
         });
     }
 
     removeCurrentUSer() {
-        this.currentUser.next({
+        this.currentUserSubject$.next({
             first_name: '',
             avatar: '',
             id: '',
