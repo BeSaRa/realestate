@@ -89,7 +89,6 @@ export class TokenService {
   @CastResponse(() => AuthenticationDataModel, { unwrap: 'data', fallback: '$default' })
   private _refresh(refreshToken: string): Observable<AuthenticationDataModel> {
      return from(this.directusService.client.request<AuthenticationDataModel>(refresh('json', refreshToken)));
-    // return this.http.post<AuthenticationDataModel>(this.urlService.URLS.REFRESH_TOKEN, { refresh_token: refreshToken });
   }
 
   saveToken(loginInfo: AuthenticationDataModel) {
