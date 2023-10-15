@@ -22,7 +22,9 @@ import { Observable, combineLatest, take, takeUntil } from 'rxjs';
 export class PieChartComponent extends OnDestroyMixin(class {}) implements AfterViewInit {
   @Input({ required: true }) title!: string;
   @Input({ required: true }) filterCriteria$!: Observable<CriteriaContract | undefined>;
-  @Input({ required: true }) rootData$!: Observable<{ chartDataUrl: string; hasPrice: boolean } | undefined>;
+  @Input({ required: true }) rootData$!: Observable<
+    { chartDataUrl: string; hasPrice: boolean; makeUpdate?: boolean } | undefined
+  >;
   @Input({ required: true }) bindLabel!: string | ((item: any) => string);
   @Input() bindValue: string | ((item: any) => number) = 'kpiVal';
   @Input() valueUnit?: string;
@@ -58,6 +60,10 @@ export class PieChartComponent extends OnDestroyMixin(class {}) implements After
       .subscribe(([criteria, root]) => {
         if (!criteria || !root) return;
         this.criteria = criteria;
+        if (this.rootData !== root && root.makeUpdate === false) {
+          this.rootData = root;
+          return;
+        }
         this.rootData = root;
         this._updatePieChartData();
       });
