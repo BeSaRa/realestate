@@ -8,7 +8,10 @@ export class TokenInterceptor implements HttpInterceptor {
   token!: string;
   public tokenService = inject(TokenService);
   intercept(request: HttpRequest<unknown>, next: HttpHandler): Observable<HttpEvent<unknown>> {
-
+    if (!request.url.includes('http') || request.url.includes('refresh'))
+    {
+      return next.handle(request);
+    } 
     return from(this.tokenService.getAccessToken())
       .pipe(
         switchMap(token => {

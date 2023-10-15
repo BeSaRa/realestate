@@ -67,12 +67,9 @@ export class AppComponent implements OnInit {
   );
 
   private _listenToUserChange() {
-    this.authService.currentUser.pipe(
-      debounceTime(200),
-      tap((user) => {
-        this.userInfo = user;
-      })
-    ).subscribe();
+    this.authService.currentUser.subscribe(userInfo =>{
+      this.userInfo = userInfo
+    });
   }
 
   showBackToTopScroll: boolean = false;
