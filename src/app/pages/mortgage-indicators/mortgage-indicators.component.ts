@@ -153,17 +153,15 @@ export default class MortgageIndicatorsComponent implements OnInit, AfterViewIni
     ),
   ];
 
-  unitsRootDataSubject = new BehaviorSubject({
+  unitsRootData$ = new BehaviorSubject({
     chartDataUrl: this.urlService.URLS.MORT_KPI4,
     hasPrice: false,
-  });
-  unitsRootData$ = this.unitsRootDataSubject.asObservable();
+  }).asObservable();
 
-  valueRootDataSubject = new BehaviorSubject({
+  valueRootData$ = new BehaviorSubject({
     chartDataUrl: this.urlService.URLS.MORT_KPI6,
     hasPrice: true,
-  });
-  valueRootData$ = this.valueRootDataSubject.asObservable();
+  }).asObservable();
 
   selectedCountChartDurationType = DurationEndpoints.YEARLY;
   selectedCountChartType: ChartType = ChartType.LINE;

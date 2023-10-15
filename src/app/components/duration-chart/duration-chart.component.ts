@@ -44,7 +44,9 @@ export class DurationChartComponent implements OnInit, AfterViewInit, OnDestroy 
   @Input({ required: true }) title!: string;
   @Input({ required: true }) name!: string;
   @Input({ required: true }) filterCriteria$!: Observable<CriteriaContract | undefined>;
-  @Input({ required: true }) rootData$!: Observable<{ chartDataUrl: string; hasPrice: boolean } | undefined>;
+  @Input({ required: true }) rootData$!: Observable<
+    { chartDataUrl: string; hasPrice: boolean; makeUpdate?: boolean } | undefined
+  >;
   @Input() showSelectChartType = true;
 
   @ViewChildren('chart') chart!: QueryList<ChartComponent>;
@@ -286,6 +288,10 @@ export class DurationChartComponent implements OnInit, AfterViewInit, OnDestroy 
       .subscribe(([criteria, root]) => {
         if (!criteria || !root) return;
         this.criteria = criteria;
+        if (this.rootData !== root && root.makeUpdate === false) {
+          this.rootData = root;
+          return;
+        }
         this.rootData = root;
         this.updateChartDataForDuration(this.selectedDurationType, true);
       });
