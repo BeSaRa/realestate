@@ -9,7 +9,7 @@ import { Config, ConfigType } from '@constants/config';
 export class ConfigService {
   private http = inject(HttpClient);
   CONFIG: ConfigType = Config;
-  BASE_URL = '';
+  BASE_URL = 'http://192.168.52.5:8055/';
 
   load(): Observable<ConfigType> {
     return this.http
