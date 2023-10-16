@@ -1,13 +1,11 @@
 import { CommonModule } from '@angular/common';
 import { AfterViewInit, Component, Input, QueryList, ViewChildren, inject } from '@angular/core';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { PieChartOptions } from '@app-types/pie-chart-options';
 import { CriteriaContract } from '@contracts/criteria-contract';
 import { OnDestroyMixin } from '@mixins/on-destroy-mixin';
-import { KpiModel } from '@models/kpi-model';
 import { AppChartTypesService } from '@services/app-chart-types.service';
 import { DashboardService } from '@services/dashboard.service';
-import { TranslationService } from '@services/translation.service';
-import { UrlService } from '@services/url.service';
 import { objectHasOwnProperty } from '@utils/utils';
 import { ChartComponent, NgApexchartsModule } from 'ng-apexcharts';
 import { Observable, combineLatest, take, takeUntil } from 'rxjs';
@@ -15,7 +13,7 @@ import { Observable, combineLatest, take, takeUntil } from 'rxjs';
 @Component({
   selector: 'app-pie-chart',
   standalone: true,
-  imports: [CommonModule, NgApexchartsModule],
+  imports: [CommonModule, NgApexchartsModule, MatProgressSpinnerModule],
   templateUrl: './pie-chart.component.html',
   styleUrls: ['./pie-chart.component.scss'],
 })
@@ -31,10 +29,8 @@ export class PieChartComponent extends OnDestroyMixin(class {}) implements After
 
   @ViewChildren('pieChart') pieChart!: QueryList<ChartComponent>;
 
-  lang = inject(TranslationService);
   appChartTypesService = inject(AppChartTypesService);
   dashboardService = inject(DashboardService);
-  urlService = inject(UrlService);
 
   criteria!: CriteriaContract;
   rootData!: { chartDataUrl: string; hasPrice: boolean };
@@ -70,10 +66,12 @@ export class PieChartComponent extends OnDestroyMixin(class {}) implements After
   }
 
   private _updatePieChartData() {
+    this.isLoading = true;
     this.dashboardService
       .loadChartKpiData(this.rootData, this.criteria)
       .pipe(take(1))
       .subscribe((data) => {
+        this.isLoading = false;
         this.pieChart.first
           ?.updateOptions({
             series: data.map((item) => this._getValue(item)),

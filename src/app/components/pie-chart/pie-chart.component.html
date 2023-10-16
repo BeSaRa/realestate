@@ -3,7 +3,12 @@
     <div class="bg-primary p-4 flex justify-center items-center">
       <span class="text-white text-center text-lg sm:text-xl font-semibold">{{ title }} </span>
     </div>
-    <div dir="ltr" class="flex justify-center">
+    <div dir="ltr" class="relative flex justify-center">
+      <div
+        *ngIf="isLoading"
+        class="absolute top-0 left-0 h-full w-full bg-white/80 z-[1] flex items-center justify-center transition-all">
+        <mat-spinner></mat-spinner>
+      </div>
       <apx-chart
         #pieChart
         [series]="pieChartOptions.series"
