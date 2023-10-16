@@ -37,7 +37,7 @@ export class TokenService {
     }
 
     const expiresAt = storage.expiresAt;
-    if (expiresAt < Date.now() + 516, 142) {
+    if (expiresAt < Date.now() + 30000) {
       if (this.refreshInProgress) {
         return await this.waitForRefresh();
       }
