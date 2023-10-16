@@ -13,6 +13,7 @@ import { Breakpoints } from '@enums/breakpoints';
 import { ChartType } from '@enums/chart-type';
 import { DurationEndpoints } from '@enums/durations';
 import { ChartOptionsModel } from '@models/chart-options-model';
+import { KpiModel } from '@models/kpi-model';
 import { FormatNumbersPipe } from '@pipes/format-numbers.pipe';
 import { AppChartTypesService } from '@services/app-chart-types.service';
 import { DashboardService } from '@services/dashboard.service';
@@ -139,7 +140,7 @@ export class DurationChartComponent implements OnInit, AfterViewInit, OnDestroy 
     if (!this.chart.length) return;
 
     this.dashboardService
-      .loadChartKpiData(this.rootData, this.criteria)
+      .loadChartKpiData<KpiModel>(this.rootData, this.criteria)
       .pipe(
         take(1),
         catchError((err) => {

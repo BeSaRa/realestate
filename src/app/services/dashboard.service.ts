@@ -92,13 +92,16 @@ export class DashboardService extends RegisterServiceMixin(class {}) implements 
     return this.http.post<KpiModel[]>(kpi.secondSubUrl!, criteria);
   }
 
-  loadChartKpiData(chartData: { chartDataUrl?: string }, criteria: Partial<CriteriaContract>): Observable<KpiModel[]> {
+  loadChartKpiData<T extends { kpiVal: number } = { kpiVal: number }>(
+    chartData: { chartDataUrl?: string },
+    criteria: Partial<CriteriaContract>
+  ): Observable<T[]> {
     // forkJoin([
     //   this.loadLineChartKpiForDuration(DurationEndpoints.HALFY, kpi, criteria),
     //   this.loadLineChartKpiForDuration(DurationEndpoints.RENT_QUARTERLY, kpi, criteria),
     //   this.loadLineChartKpiForDuration(DurationEndpoints.MONTHLY, kpi, criteria),
     // ]).subscribe(console.log);
-    return this.http.post<KpiModel[]>(chartData.chartDataUrl!, criteria);
+    return this.http.post<T[]>(chartData.chartDataUrl!, criteria);
   }
 
   loadChartKpiDataForDuration(
