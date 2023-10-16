@@ -1,5 +1,5 @@
 import { Injectable, inject } from '@angular/core';
-import { Observable, OperatorFunction, tap, map, from, BehaviorSubject } from 'rxjs';
+import { Observable, OperatorFunction, tap, map, from, BehaviorSubject, switchMap, of, timer, take, delay } from 'rxjs';
 import { DirectusClientService } from './directus-client.service';
 import { HttpClient } from '@angular/common/http';
 import { UrlService } from './url.service';
@@ -22,7 +22,8 @@ export class CmsAuthenticationService {
     urlService = inject(UrlService)
     http = inject(HttpClient);
     tokenService = inject(TokenService);
-    authenticated = false;
+    private isAuthenticatedSubject = new BehaviorSubject<boolean>(false);
+    private isAuthenticated$ = this.isAuthenticatedSubject.asObservable();
 
     private currentUserSubject$: BehaviorSubject<UserInfo> = new BehaviorSubject<UserInfo>({
         first_name: '',
@@ -49,7 +50,7 @@ export class CmsAuthenticationService {
                 tap((data) => this.setClientAccesToken(data.access_token)),
                 // tap(() => window.location.reload()),
                 tap(_ => this.setCurrentUSer()),
-                tap(() => (this.authenticated = true))
+                tap(() => (this.isAuthenticatedSubject.next(true)))
             );
         };
     }
@@ -68,7 +69,7 @@ export class CmsAuthenticationService {
                 return this._logOut(refreshToken).pipe(
                     tap(_ => this.tokenService.resetToken()),
                     tap(() => this.setClientAccesToken(null)),
-                    tap(() => (this.authenticated = false)),
+                    tap(() => (this.isAuthenticatedSubject.next(false))),
                     tap(() => this.removeCurrentUSer()),
                     // tap(() => window.location.reload())
                 ).subscribe();
@@ -80,7 +81,7 @@ export class CmsAuthenticationService {
             let fromLocalStorage = localStorage.getItem('user-profile');
             if (fromLocalStorage) {
                 let userInfo = JSON.parse(fromLocalStorage);
-                this.authenticated = true;
+                this.isAuthenticatedSubject.next(true)
                 this.currentUserSubject$.next(userInfo);
             }
         }
@@ -88,7 +89,7 @@ export class CmsAuthenticationService {
     }
 
     isLoggedIn() {
-        return this.authenticated;
+        return this.isAuthenticated$;
     }
     @CastResponse(() => UserInfo, { unwrap: 'data', fallback: '$default' })
     private _getCurrentUser(): Observable<UserInfo> {

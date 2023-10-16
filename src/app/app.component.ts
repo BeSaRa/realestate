@@ -17,14 +17,15 @@ import { SplashService } from '@services/splash.service';
 import { StickyService } from '@services/sticky.service';
 import { TranslationService } from '@services/translation.service';
 import '@utils/prototypes/custom-prototypes';
-import { debounceTime, map, startWith, tap } from 'rxjs';
+import { map, startWith } from 'rxjs';
 import { ScrollToTopComponent } from '@components/scroll-to-top/scroll-to-top.component';
 import {MatMenuModule} from '@angular/material/menu';
-import { LoginPopupComponent } from '@components/login-popup/login-popup.component';
 import { CmsAuthenticationService } from '@services/auth.service';
 import { UrlService } from '@services/url.service';
 import { UserInfo } from '@models/user-info';
-import { UserService } from '@services/event-bus.service';
+import { UserService } from '@services/user.service';
+import { Link } from '@models/link.model';
+import { LinkService } from '@services/link.service';
 @Component({
   selector: 'app-root',
   standalone: true,
@@ -54,7 +55,9 @@ export class AppComponent implements OnInit {
   authService = inject(CmsAuthenticationService)
   urlService = inject(UrlService);
   userService = inject(UserService);
+  linkService = inject(LinkService);
   userInfo?: UserInfo;
+  isAuthenticated: boolean = false;
 
   direction$ = this.lang.change$.pipe(
     startWith(this.lang.isLtr ? SideBarDirection.RIGHT : SideBarDirection.LEFT),
@@ -68,22 +71,13 @@ export class AppComponent implements OnInit {
 
   private _listenToUserChange() {
     this.authService.currentUser.subscribe(userInfo =>{
-      this.userInfo = userInfo
+      this.userInfo = userInfo;
     });
   }
 
   showBackToTopScroll: boolean = false;
 
-  links: { link: string; label: () => string }[] = [
-    { link: '/home', label: () => this.lang.map.home },
-    { link: '/sell-indicators', label: () => this.lang.map.sell_indicator },
-    { link: '/mortgage-indicators', label: () => this.lang.map.mortgage_indicator },
-    { link: '/rental-indicators', label: () => this.lang.map.rental_indicator },
-    { link: '/ownership-indicators', label: () => this.lang.map.ownership_indicator },
-    { link: '/news', label: () => this.lang.map.news },
-    { link: '/about', label: () => this.lang.map.about_us },
-    { link: '/laws', label: () => this.lang.map.laws_and_decisions },
-  ];
+  links: Link[] = [];
 
   constructor() {
     registerLocaleData(localeAr, 'ar');
@@ -95,6 +89,14 @@ export class AppComponent implements OnInit {
     }, 500);
     this.authService.loadUserFromLocalStorage();
     this._listenToUserChange();
+
+    this.linkService.getLinks().subscribe((links) => {
+      this.links = links;
+    });
+
+    this.authService.isLoggedIn().subscribe( authenticated =>
+      this.isAuthenticated = authenticated
+    )
     
   }
 
