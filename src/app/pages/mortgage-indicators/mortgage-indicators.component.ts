@@ -314,7 +314,7 @@ export default class MortgageIndicatorsComponent implements OnInit, AfterViewIni
 
   updateCountChartDataYearly() {
     this.dashboardService
-      .loadChartKpiData({ chartDataUrl: this.urlService.URLS.MORT_KPI2 }, this.criteria.criteria)
+      .loadChartKpiData<KpiModel>({ chartDataUrl: this.urlService.URLS.MORT_KPI2 }, this.criteria.criteria)
       .pipe(take(1))
       .subscribe((data) => {
         const _data = this._splitAccordingToActionType(data);
