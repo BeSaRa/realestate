@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnDestroy, OnInit, inject } from '@angular/core';
+import { Component, Input, OnDestroy, OnInit, inject } from '@angular/core';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatIconModule } from '@angular/material/icon';
@@ -11,13 +11,10 @@ import { NewsService } from '@services/news.service';
 import { TranslationService } from '@services/translation.service';
 import { Subject, debounceTime, takeUntil, tap } from 'rxjs';
 import { MatMenuModule, MenuPositionX } from '@angular/material/menu';
-import { DialogService } from '@services/dialog.service';
-import { LoginPopupComponent } from '@components/login-popup/login-popup.component';
 import { CmsAuthenticationService } from '@services/auth.service';
 import { UrlService } from '@services/url.service';
 import { UserInfo } from '@models/user-info';
-import { UserService } from '@services/event-bus.service';
-import { EventData } from '@models/event.class';
+import { UserService } from '@services/user.service';
 
 @Component({
   selector: 'app-top-header',
@@ -40,6 +37,8 @@ export class TopHeaderComponent implements OnInit, OnDestroy {
   authService = inject(CmsAuthenticationService);
   urlService = inject(UrlService);
   userService = inject(UserService);
+
+  @Input() isAuthenticated: boolean = false;
 
   news: News[] = [];
   filteredNews: News[] = [];

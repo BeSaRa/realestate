@@ -64,7 +64,7 @@ h6 {
 }
 
 .login-dialog-container {
-  @apply max-w-full lg:min-w-[400px] md:min-w-[200px];
+  @apply max-w-full lg:min-w-[350px] md:min-w-[200px] rounded-3xl;
 }
 
 .close-btn {

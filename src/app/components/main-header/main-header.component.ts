@@ -1,8 +1,11 @@
 import { CommonModule } from '@angular/common';
-import { Component, inject } from '@angular/core';
+import { Component, inject, Input, OnInit } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { ButtonComponent } from '@components/button/button.component';
 import { IconButtonComponent } from '@components/icon-button/icon-button.component';
+import { Link } from '@models/link.model';
+import { CmsAuthenticationService } from '@services/auth.service';
+import { LinkService } from '@services/link.service';
 import { SideBarService } from '@services/side-bar.service';
 import { StickyService } from '@services/sticky.service';
 import { TranslationService } from '@services/translation.service';
@@ -14,22 +17,23 @@ import { TranslationService } from '@services/translation.service';
   templateUrl: './main-header.component.html',
   styleUrls: ['./main-header.component.scss'],
 })
-export class MainHeaderComponent {
+export class MainHeaderComponent implements OnInit {
+
   lang = inject(TranslationService);
   sticky = inject(StickyService);
+  authService = inject(CmsAuthenticationService)
   sideBarService = inject(SideBarService);
+  linkService = inject(LinkService);
+  links: Link[] = [];
+  @Input() isAuthenticated: boolean = false;
 
-  links: { link: string; label: () => string }[] = [
-    { link: '/home', label: () => this.lang.map.home },
-    { link: '/sell-indicators', label: () => this.lang.map.sell_indicator },
-    { link: '/mortgage-indicators', label: () => this.lang.map.mortgage_indicator },
-    { link: '/rental-indicators', label: () => this.lang.map.rental_indicator },
-    { link: '/ownership-indicators', label: () => this.lang.map.ownership_indicator },
-    { link: '/news', label: () => this.lang.map.news },
-    { link: '/about', label: () => this.lang.map.about_us },
-    { link: '/laws', label: () => this.lang.map.laws_and_decisions },
-  ];
-
+  ngOnInit(): void {
+    this.linkService.getLinks().subscribe((links) => {
+      this.links = links;
+    });
+    
+  }
+  
   changeLang(event: Event) {
     event.preventDefault();
     this.lang.toggleLang();

@@ -15,12 +15,13 @@
     <div class="hidden lg:block">
       <ul id="main-menu" class="flex gap-x-3">
         <li *ngFor="let link of links">
-          <app-button
+          <ng-container *ngIf="!link.authRequired || isAuthenticated">
+            <app-button
             [buttonStyle]="sticky.isSticky() ? 'none-primary' : 'none'"
-            [routerLink]="link.link"
+            [routerLink]="link.url"
             routerLinkActive="active"
-            ><span class="ltr:text-sm">{{ link.label() }}</span></app-button
-          >
+            ><span class="ltr:text-sm">{{ link.label() }}</span></app-button>
+          </ng-container>
         </li>
       </ul>
     </div>
