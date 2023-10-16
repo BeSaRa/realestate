@@ -154,6 +154,7 @@ export const cmsEndpoints = {
   REFRESH_TOKEN: '/auth/refresh',
   USERS: '/users/',
   README: '/users/me',
+  MENU_LINKS: '', // ToDo (Mousa): to get the api for getting links of the menu
 };
 
 export const EndPoints = {
