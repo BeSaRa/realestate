@@ -408,6 +408,7 @@ export default class SellIndicatorsPageComponent implements OnInit, OnDestroy {
   switchTab(tab: 'sell_indicators' | 'statistical_reports_for_sell'): void {
     this.selectedTab = tab;
     if (this.selectedTab === 'sell_indicators') {
+      this.reload$.next();
       this.carousel.setDirty();
     } else {
       this.top10Chart.setDirty();

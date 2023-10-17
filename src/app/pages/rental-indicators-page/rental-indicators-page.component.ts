@@ -569,6 +569,7 @@ export default class RentalIndicatorsPageComponent implements OnInit, OnDestroy 
   switchTab(tab: 'rental_indicators' | 'statistical_reports_for_rent'): void {
     this.selectedTab = tab;
     if (this.selectedTab === 'rental_indicators') {
+      this.reload$.next();
       this.carousel.setDirty();
     } else {
       this.top10Chart.setDirty();
