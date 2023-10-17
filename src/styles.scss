@@ -58,3 +58,7 @@
     @apply font-semibold last-of-type:overflow-hidden last-of-type:rounded-tl-xl last-of-type:rounded-tr-xl [&:last-of-type>th:first-child]:rounded-tl-xl [&:last-of-type>th:last-child]:rounded-tr-xl;
   }
 }
+
+.grecaptcha-badge {
+  display: none;
+}

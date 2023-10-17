@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit, ViewChild, inject } from '@angular/core';
 import { FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
@@ -13,6 +13,7 @@ import { Vote } from '@models/vote';
 import { DirectusClientService } from '@services/directus-client.service';
 import { TranslationService } from '@services/translation.service';
 import { UrlService } from '@services/url.service';
+import { RECAPTCHA_SETTINGS, RecaptchaComponent, RecaptchaModule } from 'ng-recaptcha';
 import { from, switchMap, takeUntil, tap } from 'rxjs';
 
 @Component({
@@ -26,15 +27,19 @@ import { from, switchMap, takeUntil, tap } from 'rxjs';
     MatProgressSpinnerModule,
     ReactiveFormsModule,
     MatIconModule,
+    RecaptchaModule,
   ],
   templateUrl: './voting-form.component.html',
   styleUrls: ['./voting-form.component.scss'],
 })
 export class VotingFormComponent extends OnDestroyMixin(class {}) implements OnInit {
+  @ViewChild('recaptcha') recaptcha!: RecaptchaComponent;
+
   http = inject(HttpClient);
   urlService = inject(UrlService);
   directusClient = inject(DirectusClientService);
   lang = inject(TranslationService);
+  recaptchaSettings = inject(RECAPTCHA_SETTINGS);
 
   voteControl = new FormControl<number | undefined>(undefined, [Validators.required]);
   vote!: Vote;
@@ -58,6 +63,12 @@ export class VotingFormComponent extends OnDestroyMixin(class {}) implements OnI
         tap(() => (this.isLoading = false))
       )
       .subscribe();
+  }
+
+  onRecaptchaResolved(token: string) {
+    if (!token) return;
+    this.recaptcha.reset();
+    this.onVote();
   }
 
   onVote() {
