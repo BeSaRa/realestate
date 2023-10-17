@@ -3,5 +3,10 @@
     "CMS": "http://192.168.52.5:8055/"
   },
   "BASE_ENVIRONMENT": "CMS",
-  "BE": "http://192.168.52.4:9080/mme-services"
+  "BE": "http://192.168.52.4:9080/mme-services",
+  "RECAPTCHA": {
+    "RECAPTCHA_TOKEN_VALIDATION_URL": "https://www.google.com/recaptcha/api/siteverify",
+    "SITE_KEY": "6LdCzaYoAAAAAM5TiiaGOBBWZSaApQvQwnUgO87x",
+    "SECRET_KEY": "6LdCzaYoAAAAAGoZrAynPhj1o93D9cXnKzrBn7Ve"
+  }
 }

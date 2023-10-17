@@ -43,7 +43,7 @@
     <app-button
       *ngIf="!vote?.voted"
       [disabled]="isLoading || !this.voteControl.valid"
-      (click)="onVote()"
+      (click)="recaptcha.execute()"
       class="self-center"
       buttonStyle="secondary"
       ><span *ngIf="!isLoading">{{ lang.map.send }}</span>
@@ -54,4 +54,9 @@
       {{ lang.map.you_have_successfully_voted_on_this_poll }}</span
     >
   </div>
+  <re-captcha
+    #recaptcha
+    size="invisible"
+    [siteKey]="recaptchaSettings.siteKey!"
+    (resolved)="onRecaptchaResolved($event)"></re-captcha>
 </div>

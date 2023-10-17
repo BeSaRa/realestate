@@ -9,6 +9,11 @@ export const Config = {
   TOKEN_HEADER_KEY: 'Authorization',
   TOKEN_STORE_KEY: '$$_T_$$',
   BE: '',
+  RECAPTCHA: {
+    SITE_KEY: '',
+    SECRET_KEY: '',
+    RECAPTCHA_TOKEN_VALIDATION_URL: '',
+  },
 };
 
 export type ConfigType = typeof Config;
