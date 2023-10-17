@@ -1,0 +1,13 @@
+<div class="logout-dialog-container">
+    <div class="dialog-header bg-primary">
+      <h1>{{lang.map.log_out}}</h1>
+      <app-icon-button tabindex="-1" mat-dialog-close class="close-btn" icon="CLOSE"></app-icon-button>
+    </div>
+    <div class="dialog-content">
+        {{lang.map.are_you_sure}}
+    </div>
+    <div class="dialog-footer justify-end">
+      <app-button (click)="confirm(true)" buttonStyle="primary">{{ lang.map.confirm }}</app-button>
+      <app-button (click)="confirm(false)" buttonStyle="primary-outline">{{ lang.map.cancel }}</app-button>
+    </div>
+  </div>

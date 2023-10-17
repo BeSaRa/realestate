@@ -11,14 +11,11 @@ import { NewsService } from '@services/news.service';
 import { TranslationService } from '@services/translation.service';
 import { Subject, debounceTime, takeUntil, tap } from 'rxjs';
 import { MatMenuModule, MenuPositionX } from '@angular/material/menu';
-import { DialogService } from '@services/dialog.service';
-import { LoginPopupComponent } from '@components/login-popup/login-popup.component';
 import { CmsAuthenticationService } from '@services/auth.service';
 import { UrlService } from '@services/url.service';
 import { UserInfo } from '@models/user-info';
 import { UserService } from '@services/event-bus.service';
-import { EventData } from '@models/event.class';
-
+import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 @Component({
   selector: 'app-top-header',
   standalone: true,
@@ -31,6 +28,7 @@ import { EventData } from '@models/event.class';
     ButtonComponent,
     IconButtonComponent,
     MatMenuModule,
+    MatSnackBarModule,
   ],
   templateUrl: './top-header.component.html',
   styleUrls: ['./top-header.component.scss'],
@@ -40,6 +38,7 @@ export class TopHeaderComponent implements OnInit, OnDestroy {
   authService = inject(CmsAuthenticationService);
   urlService = inject(UrlService);
   userService = inject(UserService);
+  snackbar = inject(MatSnackBar);
 
   news: News[] = [];
   filteredNews: News[] = [];
@@ -120,8 +119,11 @@ export class TopHeaderComponent implements OnInit, OnDestroy {
   OnStaffLogin() {
     this.userService.OnStaffLogin();
   }
+
+  
+
   onLogOut() {
-    this.authService.logout();
+    this.userService.openLogoutDialog();
   }
 
   ngOnDestroy(): void {

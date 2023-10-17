@@ -1,5 +1,5 @@
 import { Injectable, inject } from '@angular/core';
-import { Observable, OperatorFunction, tap, map, from, BehaviorSubject } from 'rxjs';
+import { Observable, OperatorFunction, tap, map, from, BehaviorSubject, switchMap } from 'rxjs';
 import { DirectusClientService } from './directus-client.service';
 import { HttpClient } from '@angular/common/http';
 import { UrlService } from './url.service';
@@ -62,18 +62,17 @@ export class CmsAuthenticationService {
         return from(this.directusService.client.request(logout(refreshToken)));
     }
 
-    logout() {
-        this.tokenService.getRefreshToken().then(
-            refreshToken => {
-                return this._logOut(refreshToken).pipe(
-                    tap(_ => this.tokenService.resetToken()),
-                    tap(() => this.setClientAccesToken(null)),
-                    tap(() => (this.authenticated = false)),
-                    tap(() => this.removeCurrentUSer()),
-                    // tap(() => window.location.reload())
-                ).subscribe();
-            });
-    }
+    logout(): Observable<void> {
+        return from(this.tokenService.getRefreshToken()).pipe(
+          switchMap(refreshToken => this._logOut(refreshToken).pipe(
+            tap(_ => this.tokenService.resetToken()),
+            tap(() => this.setClientAccesToken(null)),
+            tap(() => (this.authenticated = false)),
+            tap(() => this.removeCurrentUser()),
+            // tap(() => window.location.reload())
+          ))
+        );
+      }
 
     loadUserFromLocalStorage(): Observable<UserInfo> {
         if (this.currentUserSubject$.value.id == '') {
@@ -110,7 +109,7 @@ export class CmsAuthenticationService {
         });
     }
 
-    removeCurrentUSer() {
+    removeCurrentUser() {
         this.currentUserSubject$.next({
             first_name: '',
             avatar: '',

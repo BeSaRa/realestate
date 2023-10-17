@@ -21,6 +21,7 @@ import { debounceTime, map, startWith, tap } from 'rxjs';
 import { ScrollToTopComponent } from '@components/scroll-to-top/scroll-to-top.component';
 import {MatMenuModule} from '@angular/material/menu';
 import { LoginPopupComponent } from '@components/login-popup/login-popup.component';
+import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { CmsAuthenticationService } from '@services/auth.service';
 import { UrlService } from '@services/url.service';
 import { UserInfo } from '@models/user-info';
@@ -42,6 +43,7 @@ import { UserService } from '@services/event-bus.service';
     BidiModule,
     ScrollToTopComponent,
     MatMenuModule,
+    MatSnackBarModule,
   ],
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss'],
@@ -54,6 +56,7 @@ export class AppComponent implements OnInit {
   authService = inject(CmsAuthenticationService)
   urlService = inject(UrlService);
   userService = inject(UserService);
+  snackbar = inject(MatSnackBar);
   userInfo?: UserInfo;
 
   direction$ = this.lang.change$.pipe(
@@ -71,7 +74,7 @@ export class AppComponent implements OnInit {
       this.userInfo = userInfo
     });
   }
-
+  
   showBackToTopScroll: boolean = false;
 
   links: { link: string; label: () => string }[] = [
@@ -120,8 +123,7 @@ export class AppComponent implements OnInit {
     window.scrollTo({top: 0, behavior: 'smooth'});
   }
 
-  logOut() {
-    this.authService.logout();
-    
+  onLogOut() {
+    this.userService.openLogoutDialog();
   }
 }

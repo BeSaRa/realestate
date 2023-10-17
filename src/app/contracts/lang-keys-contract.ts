@@ -262,9 +262,6 @@ export interface LangKeysContract {
   you_have_successfully_voted_on_this_poll: string;
   sell_average_price_per_square_foot: string;
   sell_average_price_per_square_meter: string;
-  you_have_successfully_subscribed_to_the_newsletter: string;
-  entered_email_already_subscribed: string;
-  email_is_invalid_please_try_again: string;
 
   email: string;
   identifier: string;
@@ -273,6 +270,7 @@ export interface LangKeysContract {
   cancel: string;
 
   logged_in_successfully: string;
+  logged_out_successfully: string;
   logged_in_failed: string;
   welcome: string;
 
@@ -283,4 +281,7 @@ export interface LangKeysContract {
   you_have_successfully_subscribed_to_the_newsletter: string;
   entered_email_already_subscribed: string;
   email_is_invalid_please_try_again: string;
+
+  are_you_sure: string;
+  confirm: string;
 }

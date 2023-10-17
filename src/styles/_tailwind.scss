@@ -64,9 +64,12 @@ h6 {
 }
 
 .login-dialog-container {
-  @apply max-w-full lg:min-w-[400px] md:min-w-[200px];
+  @apply max-w-full lg:min-w-[400px] md:min-w-[300px] ;
 }
 
+.logout-dialog-container {
+  @apply max-w-full lg:min-w-[300px] md:min-w-[300px] sm:min-w-[300px];
+}
 .close-btn {
   @apply absolute rtl:left-0 ltr:right-0 mx-2;
 }
