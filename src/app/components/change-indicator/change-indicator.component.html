@@ -1,16 +1,16 @@
-<div class="relative pt-3 px-2">
+<div class="pt-3 px-2 flex ltr:flex-row-reverse gap-1 items-center">
+  <span
+    dir="ltr"
+    class="text-lg font-bold transition rtl:mt-1"
+    [ngClass]="{ 'text-secondary': !isHovered, 'text-white': isHovered }">
+    {{ (value || 0).toFixed(2) }} % YoY
+  </span>
   <mat-icon
-    class="absolute top-0 left-0 scale-150 transition"
+    class="transition"
     [ngClass]="{
       'text-[#D6D6D6]': !isHovered,
       'text-green-500': isHovered && value > 0,
       'text-red-500': isHovered && (value <= 0 || !value)
     }"
     [svgIcon]="value > 0 ? icons.TRIANGLE_UP : icons.TRIANGLE_DOWN"></mat-icon>
-  <span
-    dir="ltr"
-    class="relative text-lg font-bold transition"
-    [ngClass]="{ 'text-secondary': !isHovered, 'text-white': isHovered }">
-    {{ (value || 0).toFixed(2) }} % YoY
-  </span>
 </div>
