@@ -1,19 +1,18 @@
 import { inject, Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { UrlService } from '@services/url.service';
-import { Observable, from, tap, of, map, lastValueFrom } from 'rxjs';
+import { from, lastValueFrom, Observable } from 'rxjs';
 import jwt_decode from 'jwt-decode';
 import { Storage } from '@models/storage';
 import { AuthenticationDataModel } from '@models/authentication-data';
 import { DirectusClientService } from './directus-client.service';
 import { refresh } from '@directus/sdk';
 import { CastResponse } from 'cast-response';
+
 @Injectable({
   providedIn: 'root',
 })
-
 export class TokenService {
-
   private readonly urlService = inject(UrlService);
   http = inject(HttpClient);
   private refreshInProgress?: Promise<Storage>;
@@ -28,7 +27,6 @@ export class TokenService {
       this.userId = this.decodeUserId(storage.accessToken);
     }
   }
-
 
   private async getToken(): Promise<Storage | undefined> {
     const storage = Storage.load();
@@ -61,7 +59,7 @@ export class TokenService {
 
   private async waitForRefresh(): Promise<Storage> {
     if (!this.refreshInProgress) {
-      throw new Error("no refresh in progress");
+      throw new Error('no refresh in progress');
     }
     try {
       return await this.refreshInProgress;
@@ -73,14 +71,14 @@ export class TokenService {
   private refresh(storage: Storage): void {
     const refreshPromise = async () => {
       const refreshToken = storage.refreshToken;
-      const loginResult = await lastValueFrom(  this._refresh(refreshToken));
+      const loginResult = await lastValueFrom(this._refresh(refreshToken));
 
       if (loginResult) {
         storage = new Storage(loginResult);
         storage.save();
         return storage;
       } else {
-        throw new Error("refresh failure");
+        throw new Error('refresh failure');
       }
     };
 
@@ -88,7 +86,7 @@ export class TokenService {
   }
   @CastResponse(() => AuthenticationDataModel, { unwrap: 'data', fallback: '$default' })
   private _refresh(refreshToken: string): Observable<AuthenticationDataModel> {
-     return from(this.directusService.client.request<AuthenticationDataModel>(refresh('json', refreshToken)));
+    return from(this.directusService.client.request<AuthenticationDataModel>(refresh('json', refreshToken)));
   }
 
   saveToken(loginInfo: AuthenticationDataModel) {
@@ -103,8 +101,7 @@ export class TokenService {
   }
 
   private decodeUserId(token: string) {
-    const decoded = jwt_decode<{ id: string; }>(token);
+    const decoded = jwt_decode<{ id: string }>(token);
     return decoded.id;
   }
-
 }
