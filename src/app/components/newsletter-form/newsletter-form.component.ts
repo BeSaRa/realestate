@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, inject } from '@angular/core';
+import { Component, ViewChild, inject } from '@angular/core';
 import { FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
@@ -10,9 +10,11 @@ import { InputSuffixDirective } from '@directives/input-suffix.directive';
 import { createItem } from '@directus/sdk';
 import { CmsErrorStatus } from '@enums/cms-error-status';
 import { OnDestroyMixin } from '@mixins/on-destroy-mixin';
+import { ConfigService } from '@services/config.service';
 import { DirectusClientService } from '@services/directus-client.service';
 import { TranslationService } from '@services/translation.service';
-import { catchError, from, of, takeUntil, tap, throwError } from 'rxjs';
+import { RECAPTCHA_SETTINGS, RecaptchaComponent, RecaptchaModule } from 'ng-recaptcha';
+import { catchError, from, of, takeUntil, tap } from 'rxjs';
 
 @Component({
   selector: 'app-newsletter-form',
@@ -25,18 +27,29 @@ import { catchError, from, of, takeUntil, tap, throwError } from 'rxjs';
     ReactiveFormsModule,
     MatSnackBarModule,
     MatProgressSpinnerModule,
+    RecaptchaModule,
   ],
   templateUrl: './newsletter-form.component.html',
   styleUrls: ['./newsletter-form.component.scss'],
 })
 export class NewsletterFormComponent extends OnDestroyMixin(class {}) {
+  @ViewChild('recaptcha') recaptcha!: RecaptchaComponent;
+
   lang = inject(TranslationService);
   directusClient = inject(DirectusClientService);
   snackBar = inject(MatSnackBar);
+  config = inject(ConfigService);
+  recaptchaSettings = inject(RECAPTCHA_SETTINGS);
 
   newsletterControl = new FormControl<string | undefined>(undefined, [Validators.required, Validators.email]);
 
   isLoading = false;
+
+  onRecaptchaResolved(token: string) {
+    if (!token) return;
+    this.recaptcha.reset();
+    this.onSubscribe();
+  }
 
   onSubscribe() {
     if (!this.newsletterControl.valid) return;

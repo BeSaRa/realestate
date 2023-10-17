@@ -21,11 +21,16 @@
     borderColor="border-secondary"
     ><app-icon-button
       *ngIf="!isLoading"
-      (click)="onSubscribe()"
+      (click)="recaptcha.execute()"
       [disabled]="!newsletterControl.valid"
       appInputSuffix
       class="!text-primary"
       icon="SEND"></app-icon-button
     ><mat-spinner class="ms-2" appInputSuffix *ngIf="isLoading" diameter="20" strokeWidth="2"></mat-spinner>
   </app-input>
+  <re-captcha
+    #recaptcha
+    size="invisible"
+    [siteKey]="recaptchaSettings.siteKey!"
+    (resolved)="onRecaptchaResolved($event)"></re-captcha>
 </div>
