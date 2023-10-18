@@ -20,7 +20,7 @@
       <app-button buttonStyle="secondary" (click)="OnStaffLogin()">{{ lang.map.login_as_editor_content_manager }}</app-button>
     </div>
     <div *ngIf="isAuthenticated" class="flex flex-col gap-2 mt-3">
-      <app-button buttonStyle="secondary" (click)="logOut()">{{lang.map.log_out}}</app-button>
+      <app-button buttonStyle="secondary" (click)="onLogOut()">{{lang.map.log_out}}</app-button>
     </div>
   </app-side-bar>
   <app-scroll-to-top [floating]="(backtoTopFloat$ | async)!" *ngIf="showBackToTopScroll"
