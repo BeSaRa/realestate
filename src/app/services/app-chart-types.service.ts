@@ -36,25 +36,26 @@ export class AppChartTypesService extends RegisterServiceMixin(class {}) impleme
       colors: [
         AppColors.PRIMARY,
         AppColors.SECONDARY,
-        AppColors.BLACK,
         AppColors.LEAD,
         AppColors.LEAD_80,
         AppColors.LEAD_60,
         AppColors.LEAD_40,
         AppColors.GRAY,
         AppColors.GRAY_TOO,
+        AppColors.BLACK,
       ],
       tooltip: {
         marker: {
           fillColors: [
             AppColors.PRIMARY,
             AppColors.SECONDARY,
+            AppColors.LEAD,
+            AppColors.LEAD_80,
+            AppColors.LEAD_60,
+            AppColors.LEAD_40,
             AppColors.GRAY,
-            AppColors.INDIGO_RAINBOW,
-            AppColors.GREEN_LIGHT,
-            AppColors.PRIMARY_LIGHT,
-            AppColors.AZURE,
             AppColors.GRAY_TOO,
+            AppColors.BLACK,
           ],
         },
       },
@@ -211,7 +212,7 @@ export class AppChartTypesService extends RegisterServiceMixin(class {}) impleme
     isMultiSeries: boolean
   ) {
     const _series = isMultiSeries ? data[opts.seriesIndex] : data[0];
-    const _dataPoint = _series.data[opts.dataPointIndex];
+    const _dataPoint = _series?.data[opts.dataPointIndex];
     if (durationType === DurationEndpoints.MONTHLY || isMultiSeries) {
       return this._getDurationDefaultTooltipTemplate(_dataPoint.x, _dataPoint.y, _series.name ?? '', hasPrice);
     } else {
@@ -559,7 +560,6 @@ const pieChartOptions: PieChartOptions = {
   colors: [
     AppColors.PRIMARY,
     AppColors.SECONDARY,
-    AppColors.BLACK,
     AppColors.LEAD,
     AppColors.LEAD_80,
     AppColors.LEAD_60,
@@ -568,6 +568,7 @@ const pieChartOptions: PieChartOptions = {
     AppColors.GRAY,
     AppColors.GRAY_TOO,
     AppColors.GRAY_LIGHT,
+    AppColors.BLACK,
     AppColors.SAND,
     AppColors.INDIGO_RAINBOW,
     AppColors.JUNGLE,
