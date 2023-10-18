@@ -283,5 +283,5 @@ export interface LangKeysContract {
 
   logged_out_successfully: string;
   are_you_sure: string;
-  confirm: string;
+  yes : string;
 }
