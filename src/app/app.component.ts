@@ -122,7 +122,7 @@ export class AppComponent implements OnInit {
 
   onLogOut() {
     this.dialog
-      .confirm(this.lang.map.are_you_sure, this.lang.map.log_out)
+      .confirm(this.lang.map.are_you_sure, this.lang.map.log_out, {no:this.lang.map.cancel,yes:this.lang.map.yes})
       .afterClosed()
       .pipe(filter(value => value === UserClick.YES))
       .subscribe(() => {
