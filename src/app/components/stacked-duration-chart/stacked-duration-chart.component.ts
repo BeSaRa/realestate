@@ -269,6 +269,7 @@ export class StackedDurationChartComponent
       this.selectedDurationType === DurationEndpoints.QUARTERLY
     ) {
       _staticOptions = {
+        ...this.appChartTypesService.halflyAndQuarterlyStaticChartOptions,
         tooltip: {
           marker: { show: false },
         },
