@@ -32,7 +32,6 @@ export class MainMenuComponent extends OnDestroyMixin(class { }) implements OnIn
   @Input() isAuthenticated: boolean = false;
 
   ngOnInit(): void {
-    console.log("fired")
     this.load().subscribe( x => 
       this.mainMenu = x);
   }

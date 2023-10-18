@@ -27,7 +27,6 @@ export class LogoutConfirmationPopupComponent {
   confirm(result: boolean): void {
     if (result) {
       this.authService.logout().subscribe(() => {
-        console.log("this.lang.isLtr", this.lang.isLtr)
         this.snackbar.open(this.lang.map.logged_out_successfully, '', { verticalPosition: 'top', horizontalPosition:this.lang.isLtr ? 'left' : 'right'  });
       });
     }
