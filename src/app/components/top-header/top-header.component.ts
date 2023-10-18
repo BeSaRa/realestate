@@ -9,13 +9,15 @@ import { NewsItemComponent } from '@components/news-item/news-item.component';
 import { News } from '@models/news';
 import { NewsService } from '@services/news.service';
 import { TranslationService } from '@services/translation.service';
-import { Subject, debounceTime, takeUntil, tap } from 'rxjs';
+import { Subject, debounceTime, takeUntil, tap, filter } from 'rxjs';
 import { MatMenuModule, MenuPositionX } from '@angular/material/menu';
 import { CmsAuthenticationService } from '@services/auth.service';
 import { UrlService } from '@services/url.service';
 import { UserInfo } from '@models/user-info';
 import { UserService } from '@services/user.service';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
+import { DialogService } from '@services/dialog.service';
+import { UserClick } from '@enums/user-click';
 @Component({
   selector: 'app-top-header',
   standalone: true,
@@ -39,6 +41,7 @@ export class TopHeaderComponent implements OnInit, OnDestroy {
   urlService = inject(UrlService);
   userService = inject(UserService);
   snackbar = inject(MatSnackBar);
+  dialog = inject(DialogService)
 
   @Input() isAuthenticated: boolean = false;
 
@@ -122,7 +125,15 @@ export class TopHeaderComponent implements OnInit, OnDestroy {
     this.userService.OnStaffLogin();
   }
   onLogOut() {
-    this.userService.openLogoutDialog();
+    this.dialog
+      .confirm(this.lang.map.are_you_sure, this.lang.map.log_out)
+      .afterClosed()
+      .pipe(filter(value => value === UserClick.YES))
+      .subscribe(() => {
+        this.authService.logout().subscribe(() => {
+          this.snackbar.open(this.lang.map.logged_out_successfully, '', { verticalPosition: 'top', horizontalPosition:this.lang.isLtr ? 'left' : 'right'  });
+        });
+      });
   }
 
   ngOnDestroy(): void {

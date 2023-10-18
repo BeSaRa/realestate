@@ -17,7 +17,7 @@ import { SplashService } from '@services/splash.service';
 import { StickyService } from '@services/sticky.service';
 import { TranslationService } from '@services/translation.service';
 import '@utils/prototypes/custom-prototypes';
-import { map, startWith } from 'rxjs';
+import { map, startWith, filter } from 'rxjs';
 import { ScrollToTopComponent } from '@components/scroll-to-top/scroll-to-top.component';
 import {MatMenuModule} from '@angular/material/menu';
 import { CmsAuthenticationService } from '@services/auth.service';
@@ -26,6 +26,7 @@ import { UserInfo } from '@models/user-info';
 import { UserService } from '@services/user.service';
 import { SliderMenuComponent } from '@components/slider-menu/slider-menu.component';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
+import { UserClick } from '@enums/user-click';
 @Component({
   selector: 'app-root',
   standalone: true,
@@ -120,6 +121,14 @@ export class AppComponent implements OnInit {
   }
 
   onLogOut() {
-    this.userService.openLogoutDialog();
+    this.dialog
+      .confirm(this.lang.map.are_you_sure, this.lang.map.log_out)
+      .afterClosed()
+      .pipe(filter(value => value === UserClick.YES))
+      .subscribe(() => {
+        this.authService.logout().subscribe(() => {
+          this.snackbar.open(this.lang.map.logged_out_successfully, '', { verticalPosition: 'top', horizontalPosition:this.lang.isLtr ? 'left' : 'right'  });
+        });
+      });
   }
 }
