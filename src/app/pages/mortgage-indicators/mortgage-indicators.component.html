@@ -35,80 +35,14 @@
         </div>
       </div>
     </div>
-    <div class="flex flex-col p-3 lg:px-16">
-      <h3
-        class="heading text-xl sm:text-2xl md:text-3xl self-center md:self-start text-center text-primary border-secondary font-semibold">
-        {{ lang.map.total_mortgage_transactions }}
-      </h3>
-      <div class="mt-4 flex justify-center md:justify-end">
-        <div class="grid grid-cols-4 gap-2">
-          <app-button
-            size="sm"
-            (click)="updateCountChartData(DurationTypes.YEARLY)"
-            [buttonStyle]="selectedCountChartDurationType === DurationTypes.YEARLY ? 'secondary' : 'secondary-outline'"
-            [isRounded]="true"
-            >{{ lang.map.yearly }}</app-button
-          >
-          <app-button
-            size="sm"
-            (click)="updateCountChartData(DurationTypes.HALFY)"
-            [buttonStyle]="selectedCountChartDurationType === DurationTypes.HALFY ? 'secondary' : 'secondary-outline'"
-            [isRounded]="true"
-            >{{ lang.map.half_yearly }}</app-button
-          >
-          <app-button
-            size="sm"
-            (click)="updateCountChartData(DurationTypes.QUARTERLY)"
-            [buttonStyle]="
-              selectedCountChartDurationType === DurationTypes.QUARTERLY ? 'secondary' : 'secondary-outline'
-            "
-            [isRounded]="true"
-            >{{ lang.map.quarter_yearly }}</app-button
-          >
-          <app-button
-            size="sm"
-            (click)="updateCountChartData(DurationTypes.MONTHLY)"
-            [buttonStyle]="selectedCountChartDurationType === DurationTypes.MONTHLY ? 'secondary' : 'secondary-outline'"
-            [isRounded]="true"
-            >{{ lang.map.monthly }}</app-button
-          >
-        </div>
-      </div>
-      <div class="flex flex-col mt-2 md:flex-row">
-        <div class="flex-auto overflow-hidden pt-1" dir="ltr">
-          <apx-chart
-            #countChart
-            class="custom-toolbar [&>div]:ml-[-22px]"
-            [series]="countChartOptions.series!"
-            [chart]="countChartOptions.chart!"
-            [xaxis]="countChartOptions.xaxis!"
-            [stroke]="countChartOptions.stroke!"
-            [colors]="countChartOptions.colors!"
-            [dataLabels]="countChartOptions.dataLabels!"
-            [legend]="countChartOptions.legend!"
-            [markers]="countChartOptions.markers!"
-            [grid]="countChartOptions.grid!"
-            [yaxis]="countChartOptions.yaxis!"
-            [tooltip]="countChartOptions.tooltip!"
-            [plotOptions]="countChartOptions.plotOptions!"
-            [title]="countChartOptions.title!" />
-        </div>
-        <div class="h-full flex flex-row justify-center md:flex-col -mt-6 md:mt-4">
-          <app-icon-button
-            [ngClass]="{ 'text-primary': selectedCountChartType === ChartType.LINE }"
-            (click)="updateCountChartType(ChartType.LINE)"
-            class="text-primary"
-            icon="LINE_CHART" />
-          <app-icon-button
-            [ngClass]="{ 'text-primary': selectedCountChartType === ChartType.BAR }"
-            (click)="updateCountChartType(ChartType.BAR)"
-            icon="BAR_CHART" />
-          <app-icon-button
-            [ngClass]="{ 'text-primary': selectedCountChartType === ChartType.AREA }"
-            (click)="updateCountChartType(ChartType.AREA)"
-            icon="AREA_CHART" />
-        </div>
-      </div>
+    <div class="flex flex-col mt-4 px-3 lg:px-16">
+      <app-stacked-duration-chart
+        [title]="lang.map.total_mortgage_transactions"
+        [charts]="countNames"
+        [filterCriteria$]="criteria$"
+        [rootData$]="countRootData$"
+        [showSelectChartType]="true">
+      </app-stacked-duration-chart>
     </div>
     <div class="flex flex-col mt-4 px-3 lg:px-16">
       <app-duration-chart
@@ -160,7 +94,7 @@
         <ng-container appTableColumnTemplate columnName="area_in_square_feet">
           <span *appTableColumnHeaderTemplate>{{ lang.map.area_in_square_foot }}</span>
           <span *appTableColumnCellTemplate="let item; typeOf: transactions$" class="font-bold">
-            {{item.realEstateArea}}
+            {{ item.realEstateArea }}
           </span>
         </ng-container>
         <!-- <ng-container appTableColumnTemplate columnName="square_feet_price">
