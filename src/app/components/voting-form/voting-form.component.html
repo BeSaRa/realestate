@@ -40,6 +40,12 @@
       </div>
     </div>
 
+    <re-captcha
+      #recaptcha
+      size="normal"
+      [siteKey]="recaptchaSettings.siteKey!"
+      (resolved)="onRecaptchaResolved($event)"></re-captcha>
+
     <app-button
       *ngIf="!vote?.voted"
       [disabled]="isLoading || !this.voteControl.valid"
@@ -54,9 +60,4 @@
       {{ lang.map.you_have_successfully_voted_on_this_poll }}</span
     >
   </div>
-  <re-captcha
-    #recaptcha
-    size="invisible"
-    [siteKey]="recaptchaSettings.siteKey!"
-    (resolved)="onRecaptchaResolved($event)"></re-captcha>
 </div>
