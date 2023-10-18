@@ -9,7 +9,7 @@ import { NewsItemComponent } from '@components/news-item/news-item.component';
 import { News } from '@models/news';
 import { NewsService } from '@services/news.service';
 import { TranslationService } from '@services/translation.service';
-import { Subject, debounceTime, takeUntil, tap, filter } from 'rxjs';
+import { Subject, debounceTime, takeUntil, tap, filter, switchMap } from 'rxjs';
 import { MatMenuModule, MenuPositionX } from '@angular/material/menu';
 import { CmsAuthenticationService } from '@services/auth.service';
 import { UrlService } from '@services/url.service';
@@ -124,14 +124,19 @@ export class TopHeaderComponent implements OnInit, OnDestroy {
   OnStaffLogin() {
     this.userService.OnStaffLogin();
   }
+  
   onLogOut() {
     this.dialog
-      .confirm(this.lang.map.are_you_sure, this.lang.map.log_out, {no:this.lang.map.cancel ,yes:this.lang.map.yes})
+      .confirm(this.lang.map.are_you_sure, this.lang.map.log_out, { no: this.lang.map.cancel, yes: this.lang.map.yes })
       .afterClosed()
-      .pipe(filter(value => value === UserClick.YES))
+      .pipe(
+        filter(value => value === UserClick.YES),
+        switchMap(() => this.authService.logout())
+      )
       .subscribe(() => {
-        this.authService.logout().subscribe(() => {
-          this.snackbar.open(this.lang.map.logged_out_successfully, '', { verticalPosition: 'top', horizontalPosition:this.lang.isLtr ? 'left' : 'right'  });
+        this.snackbar.open(this.lang.map.logged_out_successfully, '', {
+          verticalPosition: 'top',
+          horizontalPosition: this.lang.isLtr ? 'left' : 'right'
         });
       });
   }
