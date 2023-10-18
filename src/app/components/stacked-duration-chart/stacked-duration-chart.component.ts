@@ -1,30 +1,30 @@
-import { AfterViewInit, Component, Input, OnDestroy, OnInit, QueryList, ViewChildren, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Observable, catchError, combineLatest, map, take, takeUntil, throwError } from 'rxjs';
-import { CriteriaContract } from '@contracts/criteria-contract';
-import { ChartComponent, NgApexchartsModule } from 'ng-apexcharts';
-import { TranslationService } from '@services/translation.service';
-import { DashboardService } from '@services/dashboard.service';
-import { UrlService } from '@services/url.service';
-import { LookupService } from '@services/lookup.service';
-import { AppChartTypesService } from '@services/app-chart-types.service';
+import { AfterViewInit, Component, Input, OnDestroy, OnInit, QueryList, ViewChildren, inject } from '@angular/core';
 import { DateAdapter } from '@angular/material/core';
-import { ScreenBreakpointsService } from '@services/screen-breakpoints.service';
-import { Breakpoints } from '@enums/breakpoints';
-import { OnDestroyMixin } from '@mixins/on-destroy-mixin';
-import { ChartType } from '@enums/chart-type';
-import { DurationEndpoints } from '@enums/durations';
-import { BarChartTypes } from '@enums/bar-chart-type';
-import { ChartOptionsModel } from '@models/chart-options-model';
-import { TransactionType } from '@enums/transaction-type';
-import { KpiModel } from '@models/kpi-model';
-import { AppColors } from '@constants/app-colors';
-import { KpiDurationModel } from '@models/kpi-duration-model';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { ButtonComponent } from '@components/button/button.component';
 import { IconButtonComponent } from '@components/icon-button/icon-button.component';
-import { DurationSeriesDataContract } from '@contracts/duration-series-data-contract';
+import { AppColors } from '@constants/app-colors';
+import { CriteriaContract } from '@contracts/criteria-contract';
 import { DurationDataContract } from '@contracts/duration-data-contract';
-import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { DurationSeriesDataContract } from '@contracts/duration-series-data-contract';
+import { BarChartTypes } from '@enums/bar-chart-type';
+import { Breakpoints } from '@enums/breakpoints';
+import { ChartType } from '@enums/chart-type';
+import { DurationEndpoints } from '@enums/durations';
+import { TransactionType } from '@enums/transaction-type';
+import { OnDestroyMixin } from '@mixins/on-destroy-mixin';
+import { ChartOptionsModel } from '@models/chart-options-model';
+import { KpiDurationModel } from '@models/kpi-duration-model';
+import { KpiModel } from '@models/kpi-model';
+import { AppChartTypesService } from '@services/app-chart-types.service';
+import { DashboardService } from '@services/dashboard.service';
+import { LookupService } from '@services/lookup.service';
+import { ScreenBreakpointsService } from '@services/screen-breakpoints.service';
+import { TranslationService } from '@services/translation.service';
+import { UrlService } from '@services/url.service';
+import { ChartComponent, NgApexchartsModule } from 'ng-apexcharts';
+import { Observable, catchError, combineLatest, map, take, takeUntil, throwError } from 'rxjs';
 
 @Component({
   selector: 'app-stacked-duration-chart',
@@ -120,19 +120,15 @@ export class StackedDurationChartComponent
     if (this.selectedDurationType === DurationEndpoints.YEARLY) {
       this.updateChartDataYearly();
       this.selectedBarChartType = BarChartTypes.SINGLE_BAR;
-      this.chartOptions = this.yearlyOrMonthlyChartOptions;
     } else if (this.selectedDurationType === DurationEndpoints.MONTHLY) {
       this.updateChartDataMonthly();
       this.selectedBarChartType = BarChartTypes.SINGLE_BAR;
-      this.chartOptions = this.yearlyOrMonthlyChartOptions;
     } else if (this.selectedDurationType === DurationEndpoints.HALFY) {
       this.updateChartDataHalfyOrQuarterly();
       this.selectedBarChartType = BarChartTypes.DOUBLE_BAR;
-      this.chartOptions = this.halfyChartOptions;
     } else {
       this.updateChartDataHalfyOrQuarterly();
       this.selectedBarChartType = BarChartTypes.QUAD_BAR;
-      this.chartOptions = this.quarterlyChartOptions;
     }
   }
 
@@ -157,6 +153,7 @@ export class StackedDurationChartComponent
         }));
         this.chartDataLength = this.chartSeriesData[0].data.length;
 
+        this.chartOptions = this.yearlyOrMonthlyChartOptions;
         this._updateChart();
       });
   }
@@ -192,6 +189,7 @@ export class StackedDurationChartComponent
         }));
         this.chartDataLength = this.chartSeriesData[0].data.length;
 
+        this.chartOptions = this.yearlyOrMonthlyChartOptions;
         this._updateChart();
       });
   }
@@ -255,6 +253,8 @@ export class StackedDurationChartComponent
         });
         this.chartDataLength = this.chartSeriesData[0].data.length;
 
+        this.chartOptions =
+          this.selectedDurationType === DurationEndpoints.HALFY ? this.halfyChartOptions : this.quarterlyChartOptions;
         this._updateChart();
       });
   }
@@ -371,15 +371,16 @@ export class StackedDurationChartComponent
   }
 
   private _initializeFormatters() {
-    [this.chartOptions, this.halfyChartOptions, this.quarterlyChartOptions].forEach((chart, index) =>
-      chart
-        .addDataLabelsFormatter((val, opts) =>
-          this.appChartTypesService.dataLabelsFormatter({ val, opts }, { hasPrice: index === 5 ? true : false })
-        )
-        .addAxisYFormatter((val, opts) =>
-          this.appChartTypesService.axisYFormatter({ val, opts }, { hasPrice: index === 5 ? true : false })
-        )
-        .addCustomToolbarOptions()
+    [this.chartOptions, this.yearlyOrMonthlyChartOptions, this.halfyChartOptions, this.quarterlyChartOptions].forEach(
+      (chart, index) =>
+        chart
+          .addDataLabelsFormatter((val, opts) =>
+            this.appChartTypesService.dataLabelsFormatter({ val, opts }, { hasPrice: index === 5 ? true : false })
+          )
+          .addAxisYFormatter((val, opts) =>
+            this.appChartTypesService.axisYFormatter({ val, opts }, { hasPrice: index === 5 ? true : false })
+          )
+          .addCustomToolbarOptions()
     );
   }
 
