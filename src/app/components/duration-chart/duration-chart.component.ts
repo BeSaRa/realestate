@@ -6,12 +6,14 @@ import { ButtonComponent } from '@components/button/button.component';
 import { IconButtonComponent } from '@components/icon-button/icon-button.component';
 import { AppColors } from '@constants/app-colors';
 import { CriteriaContract } from '@contracts/criteria-contract';
+import { DurationDataContract } from '@contracts/duration-data-contract';
 import { DurationSeriesDataContract } from '@contracts/duration-series-data-contract';
 import { MinMaxAvgContract } from '@contracts/min-max-avg-contract';
 import { BarChartTypes } from '@enums/bar-chart-type';
 import { Breakpoints } from '@enums/breakpoints';
 import { ChartType } from '@enums/chart-type';
 import { DurationEndpoints } from '@enums/durations';
+import { OnDestroyMixin } from '@mixins/on-destroy-mixin';
 import { ChartOptionsModel } from '@models/chart-options-model';
 import { KpiModel } from '@models/kpi-model';
 import { FormatNumbersPipe } from '@pipes/format-numbers.pipe';
@@ -41,7 +43,7 @@ import { Observable, Subject, catchError, combineLatest, map, take, takeUntil, t
   templateUrl: './duration-chart.component.html',
   styleUrls: ['./duration-chart.component.scss'],
 })
-export class DurationChartComponent implements OnInit, AfterViewInit, OnDestroy {
+export class DurationChartComponent extends OnDestroyMixin(class {}) implements AfterViewInit, OnDestroy {
   @Input({ required: true }) title!: string;
   @Input({ required: true }) name!: string;
   @Input({ required: true }) filterCriteria$!: Observable<CriteriaContract | undefined>;
@@ -62,8 +64,6 @@ export class DurationChartComponent implements OnInit, AfterViewInit, OnDestroy 
 
   screenSize = Breakpoints.LG;
   isLoading = false;
-
-  destroy$ = new Subject<void>();
 
   criteria!: CriteriaContract;
   rootData!: { chartDataUrl: string; hasPrice: boolean };
@@ -91,7 +91,7 @@ export class DurationChartComponent implements OnInit, AfterViewInit, OnDestroy 
 
   chartOptions: ChartOptionsModel = this.nonMinMaxAvgBarChartOptions;
 
-  ngOnInit(): void {}
+  multiBarColors: Record<number, string>[] = [];
 
   ngAfterViewInit(): void {
     // this.chart.setDirty();
@@ -103,12 +103,6 @@ export class DurationChartComponent implements OnInit, AfterViewInit, OnDestroy 
     setTimeout(() => {
       this._listenToScreenSizeChange();
     }, 0);
-  }
-
-  ngOnDestroy(): void {
-    this.destroy$.next();
-    this.destroy$.complete();
-    this.destroy$.unsubscribe();
   }
 
   updateChartType(type: ChartType) {
@@ -226,6 +220,7 @@ export class DurationChartComponent implements OnInit, AfterViewInit, OnDestroy 
         })
       )
       .subscribe((data) => {
+        this._initializeMultiBarColors(data);
         this.durationDataLength = data[1].kpiValues.length;
         this.chartSeriesData = Object.keys(data).map((key) => ({
           name: data[key as unknown as number].period.getNames(),
@@ -263,15 +258,32 @@ export class DurationChartComponent implements OnInit, AfterViewInit, OnDestroy 
 
   private _updateOptions(staticOptions: any) {
     this.isLoading = false;
+
+    const _useMultiBarColors =
+      this.selectedChartType === ChartType.BAR &&
+      (this.selectedDurationType === DurationEndpoints.HALFY ||
+        this.selectedDurationType === DurationEndpoints.QUARTERLY);
+
     const _seriesData = this.isMinMaxAvgBar
       ? this.appChartTypesService.getSplittedSeriesChartOptions(this.chartSeriesData ?? [], [this.minMaxAvgChartData])
       : { series: this.chartSeriesData ?? [] };
+
     setTimeout(() => {
       this.chart.first
         ?.updateOptions({
           chart: { type: this.selectedChartType },
+          stroke: { width: this.selectedChartType === ChartType.BAR ? 0 : 4 },
+          legend: { show: this.selectedChartType !== ChartType.BAR },
           ..._seriesData,
           ...staticOptions,
+          ...(_useMultiBarColors
+            ? {
+                colors: [
+                  (opts: { value: number; dataPointIndex: number }) =>
+                    this.multiBarColors[opts.dataPointIndex][opts.value],
+                ],
+              }
+            : {}),
           ...this.appChartTypesService.getRangeOptions(
             this.screenSize,
             this.selectedBarChartType,
@@ -331,5 +343,22 @@ export class DurationChartComponent implements OnInit, AfterViewInit, OnDestroy 
         )
       );
     });
+  }
+
+  private _initializeMultiBarColors(data: DurationDataContract) {
+    const _sortedColors = [AppColors.PRIMARY, AppColors.SECONDARY, AppColors.LEAD_80, AppColors.LEAD_60];
+    this.multiBarColors = [];
+    let kpiValues: number[] = [];
+    for (let i = 0; i < data[1].kpiValues.length; i++) {
+      kpiValues = Object.keys(data).map((duration) => {
+        return data[duration as unknown as number].kpiValues[i].kpiVal;
+      });
+      kpiValues = kpiValues.sort((a, b) => b - a);
+      this.multiBarColors.push(
+        kpiValues.reduce((acc, cur, index) => {
+          return { ...acc, [cur]: _sortedColors[index] };
+        }, {})
+      );
+    }
   }
 }
