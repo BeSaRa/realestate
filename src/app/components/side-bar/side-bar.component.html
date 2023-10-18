@@ -4,7 +4,7 @@
 
 <div
   class="side-bar"
-  [ngClass]="{ 'side-bar-collapsed': !sideBarService.isOpened(), 'side-bar-opened': sideBarService.isOpened() }">
+  [ngClass]="{ 'side-bar-collapsed': !sideBarService.isOpened(), 'side-bar-opened': sideBarService.isOpened() }" >
   <div
     class="side-bar-overlay"
     [ngStyle]="{ transition: 'background-color ' + duration + 's, visibility ' + duration + 's' }"

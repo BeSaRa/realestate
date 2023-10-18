@@ -15,6 +15,7 @@ export class SideBarComponent {
   @Input() direction = SideBarDirection.LEFT;
   @Input() duration = 0.25;
   @Input() width = 300;
+  @Input() isAuthenticated: boolean = false;
 
   lang = inject(TranslationService);
   sideBarService = inject(SideBarService);

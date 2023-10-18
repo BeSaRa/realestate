@@ -1,28 +1,14 @@
 <div id="bottom-header" class="h-auto justify-between w-full px-5 lg:px-10 flex py-3">
   <a href="#" class="flex flex-none gap-x-2">
-    <img
-      class="h-[40px] lg:h-auto w-[125px] lg:w-[175px] group-[.fixed]:hidden"
-      priority
-      src="assets/images/mm-logo-white.png"
-      alt="authority-logo" />
-    <img
-      class="h-[40px] lg:h-auto w-[125px] lg:w-[175px] hidden group-[.fixed]:block"
-      priority
-      src="assets/images/mm-logo-colored.png"
-      alt="authority-logo" />
+    <img class="h-[40px] lg:h-auto w-[125px] lg:w-[175px] group-[.fixed]:hidden" priority
+      src="assets/images/mm-logo-white.png" alt="authority-logo" />
+    <img class="h-[40px] lg:h-auto w-[125px] lg:w-[175px] hidden group-[.fixed]:block" priority
+      src="assets/images/mm-logo-colored.png" alt="authority-logo" />
   </a>
   <div class="flex justify-center items-start flex-col">
     <div class="hidden lg:block">
       <ul id="main-menu" class="flex gap-x-3">
-        <li *ngFor="let link of links">
-          <ng-container *ngIf="!link.authRequired || isAuthenticated">
-            <app-button
-            [buttonStyle]="sticky.isSticky() ? 'none-primary' : 'none'"
-            [routerLink]="link.url"
-            routerLinkActive="active"
-            ><span class="ltr:text-sm">{{ link.label() }}</span></app-button>
-          </ng-container>
-        </li>
+        <app-main-menu [isAuthenticated]="isAuthenticated"></app-main-menu>
       </ul>
     </div>
     <div class="block lg:hidden">
@@ -30,12 +16,10 @@
         <li>
           <app-button (click)="changeLang($event)" [buttonStyle]="sticky.isSticky() ? 'none-primary' : 'none'">{{
             lang.getCurrent().toggleTo.substring(0, 2).toUpperCase()
-          }}</app-button>
+            }}</app-button>
         </li>
         <li>
-          <app-icon-button
-            icon="MENU"
-            (click)="sideBarService.open()"
+          <app-icon-button icon="MENU" (click)="sideBarService.open()"
             [ngClass]="{ 'text-primary': sticky.isSticky(), 'text-white': !sticky.isSticky() }"
             class="block lg:hidden !text-3xl"></app-icon-button>
         </li>
