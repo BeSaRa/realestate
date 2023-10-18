@@ -24,7 +24,8 @@ import { CmsAuthenticationService } from '@services/auth.service';
 import { UrlService } from '@services/url.service';
 import { UserInfo } from '@models/user-info';
 import { UserService } from '@services/user.service';
-import { SliderMenuComponent } from '@components/slider-menu/slider-menu.component'
+import { SliderMenuComponent } from '@components/slider-menu/slider-menu.component';
+import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 @Component({
   selector: 'app-root',
   standalone: true,
@@ -43,6 +44,7 @@ import { SliderMenuComponent } from '@components/slider-menu/slider-menu.compone
     ScrollToTopComponent,
     MatMenuModule,
     SliderMenuComponent,
+    MatSnackBarModule,
   ],
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss'],
@@ -55,6 +57,8 @@ export class AppComponent implements OnInit {
   authService = inject(CmsAuthenticationService)
   urlService = inject(UrlService);
   userService = inject(UserService);
+  snackbar = inject(MatSnackBar);
+
   userInfo?: UserInfo;
   isAuthenticated: boolean = false;
 
@@ -115,8 +119,7 @@ export class AppComponent implements OnInit {
     window.scrollTo({top: 0, behavior: 'smooth'});
   }
 
-  logOut() {
-    this.authService.logout();
-    
+  onLogOut() {
+    this.userService.openLogoutDialog();
   }
 }

@@ -15,7 +15,7 @@ import { CmsAuthenticationService } from '@services/auth.service';
 import { UrlService } from '@services/url.service';
 import { UserInfo } from '@models/user-info';
 import { UserService } from '@services/user.service';
-
+import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 @Component({
   selector: 'app-top-header',
   standalone: true,
@@ -28,6 +28,7 @@ import { UserService } from '@services/user.service';
     ButtonComponent,
     IconButtonComponent,
     MatMenuModule,
+    MatSnackBarModule,
   ],
   templateUrl: './top-header.component.html',
   styleUrls: ['./top-header.component.scss'],
@@ -37,6 +38,7 @@ export class TopHeaderComponent implements OnInit, OnDestroy {
   authService = inject(CmsAuthenticationService);
   urlService = inject(UrlService);
   userService = inject(UserService);
+  snackbar = inject(MatSnackBar);
 
   @Input() isAuthenticated: boolean = false;
 
@@ -120,7 +122,7 @@ export class TopHeaderComponent implements OnInit, OnDestroy {
     this.userService.OnStaffLogin();
   }
   onLogOut() {
-    this.authService.logout();
+    this.userService.openLogoutDialog();
   }
 
   ngOnDestroy(): void {

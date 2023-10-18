@@ -66,7 +66,7 @@ export class LoginPopupComponent implements OnInit {
       tap(() => {
         this.isLoggedInfailed = false;
         this.dialogRef.close();
-        this.snackbar.open(this.lang.map.logged_in_successfully, '', {verticalPosition: 'top' });
+        this.snackbar.open(this.lang.map.logged_in_successfully, '', {verticalPosition: 'top', horizontalPosition:this.lang.isLtr ? 'left' : 'right' });
         this.LoginForm.reset();
       }),
       catchError((err) => {
