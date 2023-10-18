@@ -24,8 +24,7 @@ import { CmsAuthenticationService } from '@services/auth.service';
 import { UrlService } from '@services/url.service';
 import { UserInfo } from '@models/user-info';
 import { UserService } from '@services/user.service';
-import { Link } from '@models/link.model';
-import { LinkService } from '@services/link.service';
+import { SliderMenuComponent } from '@components/slider-menu/slider-menu.component'
 @Component({
   selector: 'app-root',
   standalone: true,
@@ -43,6 +42,7 @@ import { LinkService } from '@services/link.service';
     BidiModule,
     ScrollToTopComponent,
     MatMenuModule,
+    SliderMenuComponent,
   ],
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss'],
@@ -55,7 +55,6 @@ export class AppComponent implements OnInit {
   authService = inject(CmsAuthenticationService)
   urlService = inject(UrlService);
   userService = inject(UserService);
-  linkService = inject(LinkService);
   userInfo?: UserInfo;
   isAuthenticated: boolean = false;
 
@@ -77,8 +76,6 @@ export class AppComponent implements OnInit {
 
   showBackToTopScroll: boolean = false;
 
-  links: Link[] = [];
-
   constructor() {
     registerLocaleData(localeAr, 'ar');
   }
@@ -89,10 +86,6 @@ export class AppComponent implements OnInit {
     }, 500);
     this.authService.loadUserFromLocalStorage();
     this._listenToUserChange();
-
-    this.linkService.getLinks().subscribe((links) => {
-      this.links = links;
-    });
 
     this.authService.isLoggedIn().subscribe( authenticated =>
       this.isAuthenticated = authenticated
