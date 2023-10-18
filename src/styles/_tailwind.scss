@@ -67,6 +67,10 @@ h6 {
   @apply max-w-full lg:min-w-[350px] md:min-w-[200px] rounded-3xl;
 }
 
+.logout-dialog-container {
+  @apply max-w-full lg:min-w-[300px] md:min-w-[300px] sm:min-w-[300px];
+}
+
 .close-btn {
   @apply absolute rtl:left-0 ltr:right-0 mx-2;
 }

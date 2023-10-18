@@ -280,4 +280,8 @@ export interface LangKeysContract {
   you_have_successfully_subscribed_to_the_newsletter: string;
   entered_email_already_subscribed: string;
   email_is_invalid_please_try_again: string;
+
+  logged_out_successfully: string;
+  are_you_sure: string;
+  confirm: string;
 }
