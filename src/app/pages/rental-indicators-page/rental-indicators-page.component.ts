@@ -13,7 +13,6 @@ import { RentCriteriaContract } from '@contracts/rent-criteria-contract';
 import { CriteriaType } from '@enums/criteria-type';
 import { KpiRoot } from '@models/kpiRoot';
 import { RentDefaultValues } from '@models/rent-default-values';
-import { RentTop10Model } from '@models/rent-top-10-model';
 
 import { MatNativeDateModule } from '@angular/material/core';
 import { PageEvent } from '@angular/material/paginator';
@@ -25,15 +24,14 @@ import { DurationChartComponent } from '@components/duration-chart/duration-char
 import { IconButtonComponent } from '@components/icon-button/icon-button.component';
 import { PieChartComponent } from '@components/pie-chart/pie-chart.component';
 import { TableComponent } from '@components/table/table.component';
+import { TopTenChartComponent } from '@components/top-ten-chart/top-ten-chart.component';
 import { YoyIndicatorComponent } from '@components/yoy-indicator/yoy-indicator.component';
 import { maskSeparator } from '@constants/mask-separator';
 import { TableColumnCellTemplateDirective } from '@directives/table-column-cell-template.directive';
 import { TableColumnHeaderTemplateDirective } from '@directives/table-column-header-template.directive';
 import { TableColumnTemplateDirective } from '@directives/table-column-template.directive';
-import { ChartType } from '@enums/chart-type';
 import { indicatorsTypes } from '@enums/Indicators-type';
 import { AppTableDataSource } from '@models/app-table-data-source';
-import { ChartOptionsModel } from '@models/chart-options-model';
 import { RentCompositeTransaction } from '@models/composite-transaction';
 import { KpiModel } from '@models/kpi-model';
 import { Lookup } from '@models/lookup';
@@ -42,14 +40,12 @@ import { RentTransactionPropertyType } from '@models/rent-transaction-property-t
 import { RentTransactionPurpose } from '@models/rent-transaction-purpose';
 import { TableSortOption } from '@models/table-sort-option';
 import { FormatNumbersPipe } from '@pipes/format-numbers.pipe';
-import { AppChartTypesService } from '@services/app-chart-types.service';
 import { DashboardService } from '@services/dashboard.service';
 import { LookupService } from '@services/lookup.service';
 import { TranslationService } from '@services/translation.service';
 import { UnitsService } from '@services/units.service';
 import { UrlService } from '@services/url.service';
 import { CarouselComponent, IvyCarouselModule } from 'angular-responsive-carousel2';
-import { ChartComponent, NgApexchartsModule } from 'ng-apexcharts';
 import { NgxMaskPipe } from 'ngx-mask';
 import {
   BehaviorSubject,
@@ -78,7 +74,6 @@ import {
     PurposeComponent,
     IvyCarouselModule,
     PropertyBlockComponent,
-    NgApexchartsModule,
     TableComponent,
     TableColumnTemplateDirective,
     TableColumnHeaderTemplateDirective,
@@ -93,12 +88,12 @@ import {
     MatNativeDateModule,
     DurationChartComponent,
     PieChartComponent,
+    TopTenChartComponent,
   ],
   templateUrl: './rental-indicators-page.component.html',
   styleUrls: ['./rental-indicators-page.component.scss'],
 })
 export default class RentalIndicatorsPageComponent implements OnInit, OnDestroy {
-  protected readonly ChartType = ChartType;
   protected readonly IndicatorsType = indicatorsTypes;
 
   lang = inject(TranslationService);
@@ -106,7 +101,6 @@ export default class RentalIndicatorsPageComponent implements OnInit, OnDestroy 
   urlService = inject(UrlService);
   lookupService = inject(LookupService);
   unitsService = inject(UnitsService);
-  appChartTypesService = inject(AppChartTypesService);
 
   destroy$ = new Subject<void>();
   reload$ = new ReplaySubject<void>(1);
@@ -170,9 +164,6 @@ export default class RentalIndicatorsPageComponent implements OnInit, OnDestroy 
     criteria: CriteriaContract;
     type: CriteriaType;
   };
-
-  @ViewChildren('top10Chart')
-  top10Chart!: QueryList<ChartComponent>;
 
   selectedIndicators = this.IndicatorsType.PURPOSE;
 
@@ -256,25 +247,28 @@ export default class RentalIndicatorsPageComponent implements OnInit, OnDestroy 
 
   accordingToList: Lookup[] = [
     new Lookup().clone<Lookup>({
+      lookupKey: 0,
       arName: this.lang.getArabicTranslation('number_of_lease_contracts'),
       enName: this.lang.getEnglishTranslation('number_of_lease_contracts'),
-      selected: true,
       url: this.urlService.URLS.RENT_KPI30,
       hasPrice: false,
     }),
     new Lookup().clone<Lookup>({
+      lookupKey: 1,
       arName: this.lang.getArabicTranslation('number_of_units'),
       enName: this.lang.getEnglishTranslation('number_of_units'),
       url: this.urlService.URLS.RENT_KPI30_1,
       hasPrice: false,
     }),
     new Lookup().clone<Lookup>({
+      lookupKey: 2,
       arName: this.lang.getArabicTranslation('average_price_per_month'),
       enName: this.lang.getEnglishTranslation('average_price_per_month'),
       url: this.urlService.URLS.RENT_KPI31,
       hasPrice: true,
     }),
     new Lookup().clone<Lookup>({
+      lookupKey: 3,
       arName: this.lang.getArabicTranslation('average_price_per_meter'),
       enName: this.lang.getEnglishTranslation('average_price_per_meter'),
       url: this.urlService.URLS.RENT_KPI31_1,
@@ -282,12 +276,14 @@ export default class RentalIndicatorsPageComponent implements OnInit, OnDestroy 
       isActive: false,
     }),
     new Lookup().clone<Lookup>({
+      lookupKey: 4,
       arName: this.lang.getArabicTranslation('contracts_values'),
       enName: this.lang.getEnglishTranslation('contracts_values'),
       url: this.urlService.URLS.RENT_KPI32,
       hasPrice: true,
     }),
     new Lookup().clone<Lookup>({
+      lookupKey: 5,
       arName: this.lang.getArabicTranslation('rented_spaces'),
       enName: this.lang.getEnglishTranslation('rented_spaces'),
       url: this.urlService.URLS.RENT_KPI33,
@@ -295,14 +291,8 @@ export default class RentalIndicatorsPageComponent implements OnInit, OnDestroy 
       isActive: false,
     }),
   ];
-  top10ChartData: RentTop10Model[] = [];
-  selectedTop10: Lookup = this.accordingToList[0];
-  selectedTop10ChartType: 'bar' | 'line' = ChartType.BAR;
 
-  top10ChartOptions = {
-    bar: new ChartOptionsModel().clone<ChartOptionsModel>(this.appChartTypesService.top10ChartOptions.bar),
-    line: new ChartOptionsModel().clone<ChartOptionsModel>(this.appChartTypesService.top10ChartOptions.line),
-  };
+  top10Label = (item: { kpiVal: number; zoneId: number }) => this.lookupService.rentZonesMap[item.zoneId].getNames();
 
   purposeKPIS = this.lookupService.rentLookups.rentPurposeList;
 
@@ -314,7 +304,6 @@ export default class RentalIndicatorsPageComponent implements OnInit, OnDestroy 
 
   selectedPurpose?: Lookup = this.lookupService.rentLookups.rentPurposeList[0];
   selectedTab: 'rental_indicators' | 'statistical_reports_for_rent' = 'rental_indicators';
-  // selectedTab = 'statistical_reports_for_rent';
 
   protected readonly maskSeparator = maskSeparator;
 
@@ -370,7 +359,6 @@ export default class RentalIndicatorsPageComponent implements OnInit, OnDestroy 
     this.lookupService.rentFurnitureMap[item.furnitureStatus || 0]?.getNames();
 
   ngOnInit(): void {
-    this._initializeChartsFormatters();
     this.reload$.next();
   }
 
@@ -431,7 +419,6 @@ export default class RentalIndicatorsPageComponent implements OnInit, OnDestroy 
         .subscribe((result) => {
           this.setDefaultRoots(result[0]);
           this.rootItemSelected(this.rootKPIS[0]);
-          this.selectTop10Chart(this.selectedTop10);
         });
     } else {
       this.rootKPIS.map((item) => {
@@ -450,7 +437,6 @@ export default class RentalIndicatorsPageComponent implements OnInit, OnDestroy 
       });
 
       this.rootItemSelected(this.selectedRoot);
-      this.selectTop10Chart(this.selectedTop10);
     }
     // this.loadTransactions();
     this.reload$.next();
@@ -486,10 +472,6 @@ export default class RentalIndicatorsPageComponent implements OnInit, OnDestroy 
         this.selectedRoot && this.updateAllPurpose(this.selectedRoot.value, this.selectedRoot.yoy);
         this.selectedPurpose && this.purposeSelected(this.selectedPurpose);
         this.rootDataSubject.next(this.selectedRoot);
-
-        if (this.selectedTab === 'statistical_reports_for_rent') {
-          this.updateTop10Chart();
-        }
       });
   }
 
@@ -571,14 +553,7 @@ export default class RentalIndicatorsPageComponent implements OnInit, OnDestroy 
     if (this.selectedTab === 'rental_indicators') {
       this.reload$.next();
       this.carousel.setDirty();
-    } else {
-      this.top10Chart.setDirty();
     }
-    setTimeout(() => {
-      if (this.selectedTab === 'statistical_reports_for_rent') {
-        this.updateTop10Chart();
-      }
-    });
   }
 
   paginate($event: PageEvent) {
@@ -592,47 +567,6 @@ export default class RentalIndicatorsPageComponent implements OnInit, OnDestroy 
     return this.selectedTab === tab;
   }
 
-  selectTop10Chart(item: Lookup): void {
-    this.accordingToList.forEach((i) => {
-      i === item ? (i.selected = true) : (i.selected = false);
-    });
-    this.selectedTop10 = item;
-    this.dashboardService
-      .loadRentTop10BasedOnCriteria(item, this.criteria.criteria)
-      .pipe(take(1))
-      .subscribe((top10ChartData) => {
-        this.top10ChartData = top10ChartData;
-        this.updateTop10Chart();
-      });
-  }
-
-  updateTop10Chart(): void {
-    if (!this.top10Chart.length) return;
-    this.top10Chart.first
-      .updateOptions({
-        series: [
-          {
-            name: this.selectedTop10.getNames(),
-            data: this.top10ChartData.map((item) => {
-              return { x: (item.zoneInfo && item.zoneInfo.getNames()) || `NA/${item.zoneId}`, y: item.kpiVal };
-            }),
-          },
-        ],
-      })
-      .then();
-  }
-
-  isSelectedTop10ChartType(type: ChartType) {
-    return this.selectedTop10ChartType === type;
-  }
-
-  updateTop10ChartType(type: ChartType) {
-    this.selectedTop10ChartType = type as 'line' | 'bar';
-    this.top10Chart.first
-      .updateOptions(this.top10ChartOptions[this.selectedTop10ChartType], true)
-      .then(() => this.updateTop10Chart());
-  }
-
   loadCompositeTransactions(): void {
     this.dashboardService
       .loadRentCompositeTransactions(this.criteria.criteria)
@@ -642,18 +576,6 @@ export default class RentalIndicatorsPageComponent implements OnInit, OnDestroy 
         this.compositeYears = value.years;
       });
   }
-
-  // loadTransactionsBasedOnPurpose(): Observable< {
-  //   .subscribe((values) => {
-  //     this.transactionsPurpose = values;
-  //   });
-  // }
-
-  // loadTransactionsBasedOnPropertyType(): void {
-  //   .subscribe((values) => {
-  //     this.transactionsPropertyType = values;
-  //   });
-  // }
 
   openChart(item: RentTransactionPurpose | RentTransactionPropertyType): void {
     item.openChart(this.criteria.criteria).pipe(take(1)).subscribe();
@@ -706,21 +628,5 @@ export default class RentalIndicatorsPageComponent implements OnInit, OnDestroy 
       this.criteria.criteria.purposeList[0] !== -1
       ? this.lookupService.rentPurposeMap[this.criteria.criteria.purposeList[0]].getNames()
       : '';
-  }
-
-  private _initializeChartsFormatters() {
-    this.top10ChartOptions.line
-      .addDataLabelsFormatter((val, opts) =>
-        this.appChartTypesService.dataLabelsFormatter({ val, opts }, this.selectedTop10)
-      )
-      .addAxisYFormatter((val, opts) => this.appChartTypesService.axisYFormatter({ val, opts }, this.selectedTop10))
-      .addAxisXFormatter((val, opts) => this.appChartTypesService.axisXFormatter({ val, opts }, this.selectedTop10));
-
-    this.top10ChartOptions.bar
-      .addDataLabelsFormatter((val, opts) =>
-        this.appChartTypesService.dataLabelsFormatter({ val, opts }, this.selectedTop10)
-      )
-      .addAxisYFormatter((val, opts) => this.appChartTypesService.axisYFormatter({ val, opts }, this.selectedTop10))
-      .addAxisXFormatter((val, opts) => this.appChartTypesService.axisXFormatter({ val, opts }, this.selectedTop10));
   }
 }
