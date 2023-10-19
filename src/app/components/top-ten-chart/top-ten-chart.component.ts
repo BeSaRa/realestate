@@ -1,23 +1,27 @@
-import { Component, Input, OnInit, QueryList, ViewChildren, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Lookup } from '@models/lookup';
+import { Component, Input, OnInit, QueryList, ViewChildren, inject } from '@angular/core';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { ButtonComponent } from '@components/button/button.component';
+import { IconButtonComponent } from '@components/icon-button/icon-button.component';
 import { CriteriaContract } from '@contracts/criteria-contract';
-import { Observable } from 'rxjs';
-import { ChartComponent } from 'ng-apexcharts';
+import { ChartType } from '@enums/chart-type';
+import { OnDestroyMixin } from '@mixins/on-destroy-mixin';
+import { ChartOptionsModel } from '@models/chart-options-model';
+import { Lookup } from '@models/lookup';
 import { AppChartTypesService } from '@services/app-chart-types.service';
 import { DashboardService } from '@services/dashboard.service';
 import { objectHasOwnProperty } from '@utils/utils';
-import { ChartType } from '@enums/chart-type';
-import { ChartOptionsModel } from '@models/chart-options-model';
+import { ChartComponent, NgApexchartsModule } from 'ng-apexcharts';
+import { Observable, catchError, take, takeUntil, throwError } from 'rxjs';
 
 @Component({
   selector: 'app-top-ten-chart',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, ButtonComponent, IconButtonComponent, NgApexchartsModule, MatProgressSpinnerModule],
   templateUrl: './top-ten-chart.component.html',
   styleUrls: ['./top-ten-chart.component.scss'],
 })
-export class TopTenChartComponent implements OnInit {
+export class TopTenChartComponent extends OnDestroyMixin(class {}) implements OnInit {
   @Input({ required: true }) title!: string;
   @Input({ required: true }) filterCriteria$!: Observable<CriteriaContract | undefined>;
   @Input({ required: true }) selectedAccordingTo!: Lookup;
@@ -31,9 +35,15 @@ export class TopTenChartComponent implements OnInit {
   appChartTypesService = inject(AppChartTypesService);
   dashboardService = inject(DashboardService);
 
+  criteria!: CriteriaContract;
+
   isLoading = false;
 
   protected readonly ChartType = ChartType;
+
+  selectedChartType: 'line' | 'bar' = ChartType.BAR;
+  chartData: { kpiVal: number }[] = [];
+  prevAccordingTo!: Lookup;
 
   chartOptions = {
     bar: new ChartOptionsModel().clone<ChartOptionsModel>(this.appChartTypesService.top10ChartOptions.bar),
@@ -41,14 +51,61 @@ export class TopTenChartComponent implements OnInit {
   };
 
   ngOnInit(): void {
-    this._initializeChartFormatters();
+    setTimeout(() => {
+      this._listenToCriteriaChange();
+      this._initializeChartFormatters();
+    }, 0);
   }
 
-  onAccordingToChange(_new: Lookup) {
+  selecteAccordingTo(_new: Lookup) {
     this.selectedAccordingTo = _new;
+
+    this.updateChartData();
   }
 
-  updateChart() {}
+  updateChartType(type: ChartType) {
+    this.selectedChartType = type as 'line' | 'bar';
+    this.chart.first.updateOptions(this.chartOptions[this.selectedChartType], true);
+    this._updateOptions();
+  }
+
+  updateChartData() {
+    this.isLoading = true;
+    this.prevAccordingTo = this.selectedAccordingTo;
+
+    this.dashboardService
+      .loadChartKpiData({ chartDataUrl: this.selectedAccordingTo.url }, this.criteria)
+      .pipe(
+        take(1),
+        catchError((err) => {
+          this.isLoading = false;
+          this.selectedAccordingTo = this.prevAccordingTo;
+          return throwError(() => err);
+        })
+      )
+      .subscribe((data) => {
+        this.chartData = data;
+        this._updateOptions();
+      });
+  }
+
+  private _updateOptions(): void {
+    this.isLoading = false;
+    setTimeout(() => {
+      this.chart.first
+        .updateOptions({
+          series: [
+            {
+              name: this.selectedAccordingTo.getNames(),
+              data: this.chartData.map((item) => {
+                return { x: this._getLabel(item), y: this._getValue(item) };
+              }),
+            },
+          ],
+        })
+        .then();
+    }, 0);
+  }
 
   private _getValue(item: unknown): number {
     return this.bindValue && typeof this.bindValue === 'string'
@@ -72,6 +129,14 @@ export class TopTenChartComponent implements OnInit {
       : this.bindLabel && typeof this.bindLabel === 'function'
       ? (this.bindLabel(item) as string)
       : (item as unknown as string);
+  }
+
+  private _listenToCriteriaChange() {
+    this.filterCriteria$.pipe(takeUntil(this.destroy$)).subscribe((criteria) => {
+      if (!criteria) return;
+      this.criteria = criteria;
+      this.updateChartData();
+    });
   }
 
   private _initializeChartFormatters() {
