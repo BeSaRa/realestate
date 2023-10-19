@@ -71,6 +71,8 @@ export class PieChartComponent extends OnDestroyMixin(class {}) implements After
       .loadChartKpiData(this.rootData, this.criteria)
       .pipe(take(1))
       .subscribe((data) => {
+        data.sort((a, b) => b.kpiVal - a.kpiVal);
+
         this.isLoading = false;
         this.pieChart.first
           ?.updateOptions({
