@@ -1,1 +1,58 @@
-<p>top-ten-chart works!</p>
+<div class="py-5 flex flex-col">
+  <h3
+    class="heading text-xl sm:text-2xl md:text-3xl self-center md:self-start text-center text-primary border-secondary font-semibold">
+    {{ title }}
+  </h3>
+  <div *ngIf="accordingToList.length" class="bg-sand shadow rounded-xl p-2 self-center mt-5">
+    <ul class="flex flex-wrap gap-2">
+      <li class="flex-1" *ngFor="let item of accordingToList">
+        <app-button
+          class="relative min-w-max w-max whitespace-nowrap"
+          (click)="selecteAccordingTo(item)"
+          [disabled]="item.isActive === false"
+          [buttonStyle]="item.lookupKey === selectedAccordingTo.lookupKey ? 'secondary' : 'none-primary'">
+          <span [ngClass]="{ 'text-transparent': isLoading && selectedAccordingTo.lookupKey === item.lookupKey }">{{
+            item.getNames()
+          }}</span>
+          <div class="absolute left-0 top-0 w-full h-full flex items-center justify-center">
+            <mat-spinner
+              diameter="20"
+              strokeWidth="2"
+              *ngIf="isLoading && selectedAccordingTo.lookupKey === item.lookupKey"></mat-spinner></div
+        ></app-button>
+      </li>
+    </ul>
+  </div>
+  <div dir="ltr">
+    <div class="flex flex-col md:flex-row">
+      <div class="flex-auto pt-1" dir="ltr">
+        <apx-chart
+          #chart
+          [series]="chartOptions[selectedChartType].series!"
+          [chart]="chartOptions[selectedChartType].chart!"
+          [xaxis]="chartOptions[selectedChartType].xaxis!"
+          [stroke]="chartOptions[selectedChartType].stroke!"
+          [colors]="chartOptions[selectedChartType].colors!"
+          [dataLabels]="chartOptions[selectedChartType].dataLabels!"
+          [legend]="chartOptions[selectedChartType].legend!"
+          [markers]="chartOptions[selectedChartType].markers!"
+          [grid]="chartOptions[selectedChartType].grid!"
+          [yaxis]="chartOptions[selectedChartType].yaxis!"
+          [tooltip]="chartOptions[selectedChartType].tooltip!"
+          [plotOptions]="chartOptions[selectedChartType].plotOptions!"
+          [title]="chartOptions[selectedChartType].title!" />
+      </div>
+      <div class="h-full flex flex-row justify-center md:flex-col -mt-6 md:mt-6">
+        <app-icon-button
+          [ngClass]="{ 'text-primary': selectedChartType === ChartType.LINE }"
+          (click)="updateChartType(ChartType.LINE)"
+          class="text-primary"
+          icon="LINE_CHART" />
+        <app-icon-button
+          [ngClass]="{ 'text-primary': selectedChartType === ChartType.BAR }"
+          (click)="updateChartType(ChartType.BAR)"
+          icon="BAR_CHART" />
+      </div>
+    </div>
+  </div>
+</div>
