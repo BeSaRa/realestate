@@ -28,12 +28,13 @@
       <div *ngIf="vote?.voted" class="flex flex-col gap-4">
         <div
           *ngFor="let item of vote?.vote_items"
-          class="relative w-full px-2 py-1 flex justify-end items-center border border-secondary rounded-full overflow-hidden">
+          class="relative w-full px-2 py-1 flex justify-between items-center border border-secondary rounded-full overflow-hidden">
           <div
             [ngStyle]="{ width: ((item.counts / getTotalVotes()) * 100).toString() + '%' }"
-            class="absolute overflow-visible top-0 right-0 ps-2 bg-secondary h-full flex items-center gap-2">
+            class="absolute top-0 ltr:left-0 rtl:right-0 bg-secondary h-full"></div>
+          <div class="relative flex items-center gap-2">
             <mat-icon *ngIf="item.voted" class="text-white" [svgIcon]="appIcons.CHECK"></mat-icon>
-            <span class="flex-1 text-primary">{{ item.title }}</span>
+            <span class="flex-1 text-primary whitespace-nowrap">{{ item.title }}</span>
           </div>
           <span class="relative text-primary">{{ item.counts / getTotalVotes() | percent }}</span>
         </div>
