@@ -28,12 +28,10 @@ import { MortgageTransaction } from '@models/mortgage-transaction';
 import { OwnershipCountNationality } from '@models/ownership-count-nationality';
 import { Pagination } from '@models/pagination';
 import { RentDefaultValues } from '@models/rent-default-values';
-import { RentTop10Model } from '@models/rent-top-10-model';
 import { RentTransaction } from '@models/rent-transaction';
 import { RentTransactionPropertyType } from '@models/rent-transaction-property-type';
 import { RentTransactionPurpose } from '@models/rent-transaction-purpose';
 import { SellDefaultValues } from '@models/sell-default-values';
-import { SellTop10Model } from '@models/sell-top-10-model';
 import { SellTransaction } from '@models/sell-transaction';
 import { SellTransactionPropertyType } from '@models/sell-transaction-property-type';
 import { SellTransactionPurpose } from '@models/sell-transaction-purpose';
@@ -179,16 +177,6 @@ export class DashboardService extends RegisterServiceMixin(class {}) implements 
   @CastResponse(() => Pagination<MortgageTransaction>, { shape: { 'transactionList.*': () => MortgageTransaction } })
   loadMortgageKpiTransactions(criteria: Partial<CriteriaContract>): Observable<Pagination<MortgageTransaction[]>> {
     return this.http.post<Pagination<MortgageTransaction[]>>(this.urlService.URLS.MORT_KPI7, criteria);
-  }
-
-  @CastResponse(() => RentTop10Model)
-  loadRentTop10BasedOnCriteria(item: Lookup, criteria: Partial<RentCriteriaContract>): Observable<RentTop10Model[]> {
-    return this.http.post<RentTop10Model[]>(item.url, criteria);
-  }
-
-  @CastResponse(() => SellTop10Model)
-  loadSellTop10BasedOnCriteria(item: Lookup, criteria: Partial<RentCriteriaContract>): Observable<SellTop10Model[]> {
-    return this.http.post<SellTop10Model[]>(item.url, criteria);
   }
 
   @CastResponse(() => CompositeTransaction)
