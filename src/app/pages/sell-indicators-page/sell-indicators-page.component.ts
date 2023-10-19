@@ -5,46 +5,45 @@ import { PageEvent } from '@angular/material/paginator';
 import { MatSortModule } from '@angular/material/sort';
 import { MatTableModule } from '@angular/material/table';
 import { SellTransactionIndicator } from '@app-types/sell-indicators-type';
+import { BaseFilterComponent } from '@components/base-filter/base-filter.component';
 import { ButtonComponent } from '@components/button/button.component';
 import { DurationChartComponent } from '@components/duration-chart/duration-chart.component';
 import { ExtraHeaderComponent } from '@components/extra-header/extra-header.component';
 import { IconButtonComponent } from '@components/icon-button/icon-button.component';
 import { KpiRootComponent } from '@components/kpi-root/kpi-root.component';
 import { PropertyBlockComponent } from '@components/property-block/property-block.component';
+import { PropertyPriceBlockComponent } from '@components/property-price-block/property-price-block.component';
 import { PurposeComponent } from '@components/purpose/purpose.component';
 import { TableComponent } from '@components/table/table.component';
+import { TopTenChartComponent } from '@components/top-ten-chart/top-ten-chart.component';
 import { TransactionsFilterComponent } from '@components/transactions-filter/transactions-filter.component';
 import { YoyIndicatorComponent } from '@components/yoy-indicator/yoy-indicator.component';
-import { maskSeparator } from '@constants/mask-separator';
 import { CriteriaContract } from '@contracts/criteria-contract';
+import { PriceCriteriaContract } from '@contracts/price-criteria-contract';
 import { SellCriteriaContract } from '@contracts/sell-criteria-contract';
 import { TableColumnCellTemplateDirective } from '@directives/table-column-cell-template.directive';
 import { TableColumnHeaderTemplateDirective } from '@directives/table-column-header-template.directive';
 import { TableColumnTemplateDirective } from '@directives/table-column-template.directive';
 import { indicatorsTypes } from '@enums/Indicators-type';
-import { ChartType } from '@enums/chart-type';
 import { CriteriaType } from '@enums/criteria-type';
 import { AppTableDataSource } from '@models/app-table-data-source';
-import { ChartOptionsModel } from '@models/chart-options-model';
 import { CompositeTransaction } from '@models/composite-transaction';
 import { KpiModel } from '@models/kpi-model';
 import { KpiRoot } from '@models/kpiRoot';
 import { Lookup } from '@models/lookup';
+import { MLPriceItem } from '@models/ml-price-item';
 import { SellDefaultValues } from '@models/sell-default-values';
-import { SellTop10Model } from '@models/sell-top-10-model';
 import { SellTransaction } from '@models/sell-transaction';
 import { SellTransactionPropertyType } from '@models/sell-transaction-property-type';
 import { SellTransactionPurpose } from '@models/sell-transaction-purpose';
 import { TableSortOption } from '@models/table-sort-option';
 import { FormatNumbersPipe } from '@pipes/format-numbers.pipe';
-import { AppChartTypesService } from '@services/app-chart-types.service';
 import { DashboardService } from '@services/dashboard.service';
 import { LookupService } from '@services/lookup.service';
 import { TranslationService } from '@services/translation.service';
 import { UnitsService } from '@services/units.service';
 import { UrlService } from '@services/url.service';
 import { CarouselComponent, IvyCarouselModule } from 'angular-responsive-carousel2';
-import { ChartComponent, NgApexchartsModule } from 'ng-apexcharts';
 import { NgxMaskPipe } from 'ngx-mask';
 import {
   BehaviorSubject,
@@ -59,10 +58,6 @@ import {
   take,
   takeUntil,
 } from 'rxjs';
-import { BaseFilterComponent } from '@components/base-filter/base-filter.component';
-import { PropertyPriceBlockComponent } from '@components/property-price-block/property-price-block.component';
-import { MLPriceItem } from '@models/ml-price-item';
-import { PriceCriteriaContract } from '@contracts/price-criteria-contract';
 
 @Component({
   selector: 'app-sell-indicators-page',
@@ -77,7 +72,6 @@ import { PriceCriteriaContract } from '@contracts/price-criteria-contract';
     PropertyBlockComponent,
     ButtonComponent,
     IconButtonComponent,
-    NgApexchartsModule,
     TableComponent,
     TableColumnTemplateDirective,
     TableColumnHeaderTemplateDirective,
@@ -91,6 +85,7 @@ import { PriceCriteriaContract } from '@contracts/price-criteria-contract';
     DurationChartComponent,
     BaseFilterComponent,
     PropertyPriceBlockComponent,
+    TopTenChartComponent,
   ],
   templateUrl: './sell-indicators-page.component.html',
   styleUrls: ['./sell-indicators-page.component.scss'],
@@ -98,7 +93,6 @@ import { PriceCriteriaContract } from '@contracts/price-criteria-contract';
 export default class SellIndicatorsPageComponent implements OnInit, OnDestroy {
   protected readonly IndicatorsType = indicatorsTypes;
   @ViewChildren('carousel') carousel!: QueryList<CarouselComponent>;
-  @ViewChildren('top10Chart') top10Chart!: QueryList<ChartComponent>;
 
   private paginate$ = new BehaviorSubject({
     offset: 0,
@@ -110,7 +104,6 @@ export default class SellIndicatorsPageComponent implements OnInit, OnDestroy {
   urlService = inject(UrlService);
   lookupService = inject(LookupService);
   unitsService = inject(UnitsService);
-  appChartTypesService = inject(AppChartTypesService);
 
   destroy$ = new Subject<void>();
   reload$ = new ReplaySubject<void>(1);
@@ -230,41 +223,48 @@ export default class SellIndicatorsPageComponent implements OnInit, OnDestroy {
 
   accordingToList: Lookup[] = [
     new Lookup().clone<Lookup>({
+      lookupKey: 0,
       arName: this.lang.getArabicTranslation('number_of_sell_contracts'),
       enName: this.lang.getEnglishTranslation('number_of_sell_contracts'),
-      selected: true,
       hasPrice: false,
       url: this.urlService.URLS.SELL_KPI30,
     }),
     new Lookup().clone<Lookup>({
+      lookupKey: 1,
       arName: this.lang.getArabicTranslation('average_price_per_unit'),
       enName: this.lang.getEnglishTranslation('average_price_per_unit'),
       hasPrice: true,
       url: this.urlService.URLS.SELL_KPI31,
     }),
     new Lookup().clone<Lookup>({
+      lookupKey: 2,
       arName: this.lang.getArabicTranslation('transactions_value'),
       enName: this.lang.getEnglishTranslation('transactions_value'),
       hasPrice: true,
       url: this.urlService.URLS.SELL_KPI32,
     }),
     new Lookup().clone<Lookup>({
+      lookupKey: 3,
       arName: this.lang.getArabicTranslation('sold_areas'),
       enName: this.lang.getEnglishTranslation('sold_areas'),
       url: this.urlService.URLS.SELL_KPI33,
     }),
     new Lookup().clone<Lookup>({
+      lookupKey: 4,
       arName: this.lang.getArabicTranslation('number_of_units'),
       enName: this.lang.getEnglishTranslation('number_of_units'),
       url: this.urlService.URLS.SELL_KPI33_1,
     }),
     new Lookup().clone<Lookup>({
+      lookupKey: 5,
       arName: this.lang.getArabicTranslation('average_price_per_square_foot'),
       enName: this.lang.getEnglishTranslation('average_price_per_square_foot'),
       url: this.urlService.URLS.SELL_KPI33_2,
       hasPrice: true,
     }),
   ];
+
+  top10Label = (item: { kpiVal: number; zoneId: number }) => this.lookupService.sellDistrictMap[item.zoneId].getNames();
 
   // transactions = new ReplaySubject<SellTransaction[]>(1);
   transactions$: Observable<SellTransaction[]> = this.loadTransactions();
@@ -329,15 +329,7 @@ export default class SellIndicatorsPageComponent implements OnInit, OnDestroy {
 
   transactionsStatisticsColumns = ['average', 'certificates-count', 'area', 'units-count', 'average-square', 'chart'];
 
-  protected readonly ChartType = ChartType;
-  top10ChartData: SellTop10Model[] = [];
-  selectedTop10: Lookup = this.accordingToList[0];
-  selectedTop10ChartType: 'bar' | 'line' = ChartType.BAR;
   selectedIndicators = this.IndicatorsType.PURPOSE;
-  top10ChartOptions = {
-    bar: new ChartOptionsModel().clone<ChartOptionsModel>(this.appChartTypesService.top10ChartOptions.bar),
-    line: new ChartOptionsModel().clone<ChartOptionsModel>(this.appChartTypesService.top10ChartOptions.line),
-  };
 
   compositeTransactions: CompositeTransaction[][] = [];
   compositeYears!: { selectedYear: number; previousYear: number };
@@ -358,7 +350,6 @@ export default class SellIndicatorsPageComponent implements OnInit, OnDestroy {
   selectedTab: 'sell_indicators' | 'statistical_reports_for_sell' = 'sell_indicators';
 
   ngOnInit(): void {
-    this._initializeChartsFormatters();
     this.reload$.next();
   }
 
@@ -410,14 +401,7 @@ export default class SellIndicatorsPageComponent implements OnInit, OnDestroy {
     if (this.selectedTab === 'sell_indicators') {
       this.reload$.next();
       this.carousel.setDirty();
-    } else {
-      this.top10Chart.setDirty();
     }
-    setTimeout(() => {
-      if (this.selectedTab === 'statistical_reports_for_sell') {
-        this.updateTop10Chart();
-      }
-    });
   }
 
   updateSellIndicatorsTable(basedOn: indicatorsTypes) {
@@ -446,7 +430,6 @@ export default class SellIndicatorsPageComponent implements OnInit, OnDestroy {
         .subscribe((result) => {
           this.setDefaultRoots(result[0]);
           this.rootItemSelected(this.rootKPIS[0]);
-          this.selectTop10Chart(this.selectedTop10);
         });
     } else {
       this.rootKPIS.map((item) => {
@@ -465,7 +448,6 @@ export default class SellIndicatorsPageComponent implements OnInit, OnDestroy {
       });
 
       this.rootItemSelected(this.selectedRoot);
-      this.selectTop10Chart(this.selectedTop10);
     }
     // this.loadTransactions();
     this.reload$.next();
@@ -534,9 +516,6 @@ export default class SellIndicatorsPageComponent implements OnInit, OnDestroy {
         this.selectedRoot && this.updateAllPurpose(this.selectedRoot.value, this.selectedRoot.yoy);
         this.selectedPurpose && this.purposeSelected(this.selectedPurpose);
         this.rootDataSubject.next(this.selectedRoot);
-        if (this.selectedTab === 'statistical_reports_for_sell') {
-          this.updateTop10Chart();
-        }
       });
   }
 
@@ -602,49 +581,6 @@ export default class SellIndicatorsPageComponent implements OnInit, OnDestroy {
   openChart(item: SellTransactionPurpose | SellTransactionPropertyType): void {
     item.openChart(this.criteria.criteria).pipe(take(1)).subscribe();
   }
-  selectTop10Chart(item: Lookup): void {
-    this.accordingToList.forEach((i) => {
-      i === item ? (i.selected = true) : (i.selected = false);
-    });
-    this.selectedTop10 = item;
-    this.dashboardService
-      .loadSellTop10BasedOnCriteria(item, this.criteria.criteria)
-      .pipe(take(1))
-      .subscribe((top10ChartData) => {
-        this.top10ChartData = top10ChartData;
-        this.updateTop10Chart();
-      });
-  }
-
-  updateTop10Chart(): void {
-    if (!this.top10Chart.length) return;
-    this.top10Chart.first
-      .updateOptions(
-        {
-          series: [
-            {
-              name: this.selectedTop10.getNames(),
-              data: this.top10ChartData.map((item) => {
-                return { x: item.zoneInfo.getNames(), y: item.kpiVal };
-              }),
-            },
-          ],
-        },
-        true
-      )
-      .then();
-  }
-
-  isSelectedTop10ChartType(type: ChartType) {
-    return this.selectedTop10ChartType === type;
-  }
-
-  updateTop10ChartType(type: ChartType) {
-    this.selectedTop10ChartType = type as 'line' | 'bar';
-    this.top10Chart.first
-      .updateOptions(this.top10ChartOptions[this.selectedTop10ChartType], true)
-      .then(() => this.updateTop10Chart());
-  }
 
   loadCompositeTransactions(): void {
     this.dashboardService
@@ -655,8 +591,6 @@ export default class SellIndicatorsPageComponent implements OnInit, OnDestroy {
         this.compositeYears = value.years;
       });
   }
-
-  protected readonly maskSeparator = maskSeparator;
 
   get basedOnCriteria(): string {
     const generatedTitle: string[] = [];
@@ -705,16 +639,5 @@ export default class SellIndicatorsPageComponent implements OnInit, OnDestroy {
       this.criteria.criteria.purposeList[0] !== -1
       ? this.lookupService.sellPurposeMap[this.criteria.criteria.purposeList[0]].getNames()
       : '';
-  }
-
-  private _initializeChartsFormatters() {
-    [this.top10ChartOptions.line, this.top10ChartOptions.bar].forEach((chart) => {
-      chart
-        .addDataLabelsFormatter((val, opts) =>
-          this.appChartTypesService.dataLabelsFormatter({ val, opts }, this.selectedTop10)
-        )
-        .addAxisYFormatter((val, opts) => this.appChartTypesService.axisYFormatter({ val, opts }, this.selectedTop10))
-        .addAxisXFormatter((val, opts) => this.appChartTypesService.axisXFormatter({ val, opts }, this.selectedTop10));
-    });
   }
 }
