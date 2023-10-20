@@ -51,6 +51,7 @@ export class DurationChartComponent extends OnDestroyMixin(class {}) implements 
     { chartDataUrl: string; hasPrice: boolean; makeUpdate?: boolean } | undefined
   >;
   @Input() showSelectChartType = true;
+  @Input() changeBarColorsAccordingToValue = false;
 
   @ViewChildren('chart') chart!: QueryList<ChartComponent>;
 
@@ -91,7 +92,7 @@ export class DurationChartComponent extends OnDestroyMixin(class {}) implements 
 
   chartOptions: ChartOptionsModel = this.nonMinMaxAvgBarChartOptions;
 
-  multiBarColors: Record<number, string>[] = [];
+  barColorsAccordingToValue: Record<number, string>[] = [];
 
   ngAfterViewInit(): void {
     // this.chart.setDirty();
@@ -107,7 +108,7 @@ export class DurationChartComponent extends OnDestroyMixin(class {}) implements 
 
   updateChartType(type: ChartType) {
     this.selectedChartType = type;
-    this._updateChart();
+    this._updateChartOptions();
   }
 
   updateChartDataForDuration(durationType: DurationEndpoints, isLoadingNewData = false) {
@@ -158,7 +159,7 @@ export class DurationChartComponent extends OnDestroyMixin(class {}) implements 
             })),
           },
         ];
-        this._updateChart();
+        this._updateChartOptions();
       });
   }
 
@@ -190,7 +191,7 @@ export class DurationChartComponent extends OnDestroyMixin(class {}) implements 
             }),
           },
         ];
-        this._updateChart();
+        this._updateChartOptions();
       });
   }
 
@@ -220,49 +221,38 @@ export class DurationChartComponent extends OnDestroyMixin(class {}) implements 
         })
       )
       .subscribe((data) => {
-        this._initializeMultiBarColors(data);
+        if (this.changeBarColorsAccordingToValue) this._initializeBarColorsAccordingToValue(data);
+
         this.durationDataLength = data[1].kpiValues.length;
         this.chartSeriesData = Object.keys(data).map((key) => ({
           name: data[key as unknown as number].period.getNames(),
           data: data[key as unknown as number].kpiValues.map((item) => ({ y: item.kpiVal, x: item.issueYear })),
         }));
-        this._updateChart();
+        this._updateChartOptions();
       });
   }
 
-  private _updateChart() {
+  private _updateChartOptions() {
+    this.isLoading = false;
     if (!this.chartSeriesData.length) {
       return;
     }
-    let _staticOptions = {};
+
     if (
       this.selectedDurationType === DurationEndpoints.HALFY ||
       this.selectedDurationType === DurationEndpoints.QUARTERLY
     ) {
       this.isMinMaxAvgBar = false;
       this.chartOptions = this.nonMinMaxAvgBarChartOptions;
-      _staticOptions = this.appChartTypesService.halflyAndQuarterlyStaticChartOptions;
     } else {
       if (this.selectedChartType === ChartType.BAR) {
         this.isMinMaxAvgBar = true;
         this.chartOptions = this.minMaxAvgBarChartOptions;
-        _staticOptions = {};
       } else {
         this.isMinMaxAvgBar = false;
         this.chartOptions = this.nonMinMaxAvgBarChartOptions;
-        _staticOptions = { colors: [AppColors.PRIMARY], ...this.appChartTypesService.yearlyStaticChartOptions };
       }
     }
-    this._updateOptions(_staticOptions);
-  }
-
-  private _updateOptions(staticOptions: any) {
-    this.isLoading = false;
-
-    const _useMultiBarColors =
-      this.selectedChartType === ChartType.BAR &&
-      (this.selectedDurationType === DurationEndpoints.HALFY ||
-        this.selectedDurationType === DurationEndpoints.QUARTERLY);
 
     const _seriesData = this.isMinMaxAvgBar
       ? this.appChartTypesService.getSplittedSeriesChartOptions(this.chartSeriesData ?? [], [this.minMaxAvgChartData])
@@ -273,17 +263,9 @@ export class DurationChartComponent extends OnDestroyMixin(class {}) implements 
         ?.updateOptions({
           chart: { type: this.selectedChartType },
           stroke: { width: this.selectedChartType === ChartType.BAR ? 0 : 4 },
-          legend: { show: this.selectedChartType !== ChartType.BAR },
           ..._seriesData,
-          ...staticOptions,
-          ...(_useMultiBarColors
-            ? {
-                colors: [
-                  (opts: { value: number; dataPointIndex: number }) =>
-                    this.multiBarColors[opts.dataPointIndex][opts.value],
-                ],
-              }
-            : {}),
+          ...this._getLegendOptions(),
+          ...this._getColorsOptions(),
           ...this.appChartTypesService.getRangeOptions(
             this.screenSize,
             this.selectedBarChartType,
@@ -318,16 +300,7 @@ export class DurationChartComponent extends OnDestroyMixin(class {}) implements 
         )
         .addAxisYFormatter((val, opts) => this.appChartTypesService.axisYFormatter({ val, opts }, this.rootData))
         .addCustomToolbarOptions()
-        .addDurationCustomTooltip((opts: { seriesIndex: number; dataPointIndex: number }) => {
-          return this.appChartTypesService.durationCustomTooltip(
-            opts,
-            this.chartSeriesData,
-            this.selectedDurationType,
-            this.rootData.hasPrice,
-            this.selectedDurationType === DurationEndpoints.HALFY ||
-              this.selectedDurationType === DurationEndpoints.QUARTERLY
-          );
-        }, this.isMinMaxAvgBar);
+        .addDurationCustomTooltip(this._durationCustomTooltip, this.isMinMaxAvgBar);
     });
   }
 
@@ -345,20 +318,158 @@ export class DurationChartComponent extends OnDestroyMixin(class {}) implements 
     });
   }
 
-  private _initializeMultiBarColors(data: DurationDataContract) {
+  private _initializeBarColorsAccordingToValue(data: DurationDataContract) {
     const _sortedColors = [AppColors.PRIMARY, AppColors.SECONDARY, AppColors.LEAD_80, AppColors.LEAD_60];
-    this.multiBarColors = [];
+    this.barColorsAccordingToValue = [];
     let kpiValues: number[] = [];
     for (let i = 0; i < data[1].kpiValues.length; i++) {
       kpiValues = Object.keys(data).map((duration) => {
         return data[duration as unknown as number].kpiValues[i].kpiVal;
       });
       kpiValues = kpiValues.sort((a, b) => b - a);
-      this.multiBarColors.push(
+      this.barColorsAccordingToValue.push(
         kpiValues.reduce((acc, cur, index) => {
           return { ...acc, [cur]: _sortedColors[index] };
         }, {})
       );
     }
+  }
+
+  private _getColorsOptions = () => {
+    if (
+      this.selectedDurationType === DurationEndpoints.HALFY ||
+      this.selectedDurationType === DurationEndpoints.QUARTERLY
+    ) {
+      if (this.changeBarColorsAccordingToValue && this.selectedChartType === ChartType.BAR) {
+        return {
+          colors: [
+            (opts: { value: number; dataPointIndex: number }) =>
+              this.barColorsAccordingToValue[opts.dataPointIndex][opts.value],
+          ],
+        };
+      } else {
+        return {
+          colors: [
+            AppColors.PRIMARY,
+            AppColors.SECONDARY,
+            AppColors.LEAD,
+            AppColors.LEAD_80,
+            AppColors.LEAD_60,
+            AppColors.LEAD_40,
+            AppColors.GRAY,
+            AppColors.GRAY_TOO,
+            AppColors.BLACK,
+          ],
+        };
+      }
+    } else if (this.selectedChartType !== ChartType.BAR) {
+      return { colors: [AppColors.PRIMARY] };
+    }
+    return {};
+  };
+
+  private _getLegendOptions = () => {
+    return {
+      legend: {
+        show:
+          this.selectedChartType !== ChartType.BAR ||
+          (!this.changeBarColorsAccordingToValue &&
+            (this.selectedDurationType === DurationEndpoints.HALFY ||
+              this.selectedDurationType === DurationEndpoints.QUARTERLY)),
+      },
+    };
+  };
+
+  private _durationCustomTooltip = (opts: { seriesIndex: number; dataPointIndex: number }) => {
+    const _series =
+      this.selectedDurationType === DurationEndpoints.HALFY || this.selectedDurationType === DurationEndpoints.QUARTERLY
+        ? this.chartSeriesData[opts.seriesIndex]
+        : this.chartSeriesData[0];
+    const _dataPoint = _series?.data[opts.dataPointIndex];
+    if (
+      this.selectedDurationType === DurationEndpoints.MONTHLY ||
+      this.selectedDurationType === DurationEndpoints.HALFY ||
+      this.selectedDurationType === DurationEndpoints.QUARTERLY
+    ) {
+      return this._getDurationDefaultTooltipTemplate(_dataPoint.x, _dataPoint.y, _series.name ?? '');
+    } else {
+      return this._getDurationCustomTooltipTemplate(
+        _dataPoint.x,
+        _dataPoint.y,
+        _dataPoint.yoy ?? 0,
+        _dataPoint.baseYear ?? 2019,
+        _dataPoint.yoyBase ?? 0,
+        _series.name ?? ''
+      );
+    }
+  };
+
+  private _getDurationDefaultTooltipTemplate(x: string | number, y: number, name: string) {
+    return `
+      <div dir="${
+        this.lang.isLtr ? 'ltr' : 'rtl'
+      }" class="apexcharts-tooltip-title" style="font-family: Helvetica, Arial, sans-serif; font-size: 12px">${x}</div>
+      <div dir="${
+        this.lang.isLtr ? 'ltr' : 'rtl'
+      }" class="apexcharts-tooltip-series-group apexcharts-active" style="order: 1; display: flex">
+        <div class="apexcharts-tooltip-text" style="font-family: Helvetica, Arial, sans-serif; font-size: 12px">
+          <div class="apexcharts-tooltip-y-group flex justify-between gap-2">
+            <span class="apexcharts-tooltip-text-y-label">${name}: </span>
+            <span class="apexcharts-tooltip-text-y-value">${this.appChartTypesService.axisYFormatter(
+              {
+                val: y,
+              },
+              this.rootData
+            )}</span>
+          </div>
+        </div>
+      </div>
+    `;
+  }
+
+  private _getDurationCustomTooltipTemplate(
+    x: string | number,
+    y: number,
+    yoy: number,
+    baseYear: number,
+    yoyBase: number,
+    name: string
+  ) {
+    return `
+      <div dir="${
+        this.lang.isLtr ? 'ltr' : 'rtl'
+      }" class="apexcharts-tooltip-title" style="font-family: Helvetica, Arial, sans-serif; font-size: 12px">${x}</div>
+      <div dir="${
+        this.lang.isLtr ? 'ltr' : 'rtl'
+      }" class="apexcharts-tooltip-series-group apexcharts-active" style="order: 1; display: flex">
+        <div class="apexcharts-tooltip-text" style="font-family: Helvetica, Arial, sans-serif; font-size: 12px">
+          <div class="apexcharts-tooltip-y-group flex justify-between gap-2">
+            <span class="apexcharts-tooltip-text-y-label">${name}: </span>
+            <span class="apexcharts-tooltip-text-y-value">${this.appChartTypesService.axisYFormatter(
+              {
+                val: y,
+              },
+              this.rootData
+            )}</span>
+          </div>
+          <div class="apexcharts-tooltip-y-group flex justify-between gap-2">
+            <span class="apexcharts-tooltip-text-y-label">${this.lang.map.annually}: </span>
+            <span class="apexcharts-tooltip-text-y-value">${yoy.toFixed(1)}%</span>
+          </div>
+          <div class="apexcharts-tooltip-y-group flex justify-between gap-2">
+            <span class="apexcharts-tooltip-text-y-label">${this.lang.map.vs} ${baseYear}: </span>
+            <span class="apexcharts-tooltip-text-y-value">${yoyBase.toFixed(1)}%</span>
+          </div>
+        </div>
+      </div>
+    `;
+  }
+
+  getMinMaxAvgLegendData() {
+    return {
+      min: this.appChartTypesService.dataLabelsFormatter({ val: this.minMaxAvgChartData?.min ?? 0 }, this.rootData),
+      max: this.appChartTypesService.dataLabelsFormatter({ val: this.minMaxAvgChartData?.max ?? 0 }, this.rootData),
+      avg: this.appChartTypesService.dataLabelsFormatter({ val: this.minMaxAvgChartData?.avg ?? 0 }, this.rootData),
+    };
   }
 }

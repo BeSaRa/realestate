@@ -4,8 +4,10 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { PieChartOptions } from '@app-types/pie-chart-options';
 import { CriteriaContract } from '@contracts/criteria-contract';
 import { OnDestroyMixin } from '@mixins/on-destroy-mixin';
+import { ChartConfig } from '@models/chart-options-model';
 import { AppChartTypesService } from '@services/app-chart-types.service';
 import { DashboardService } from '@services/dashboard.service';
+import { TranslationService } from '@services/translation.service';
 import { objectHasOwnProperty } from '@utils/utils';
 import { ChartComponent, NgApexchartsModule } from 'ng-apexcharts';
 import { Observable, combineLatest, take, takeUntil } from 'rxjs';
@@ -29,6 +31,7 @@ export class PieChartComponent extends OnDestroyMixin(class {}) implements After
 
   @ViewChildren('pieChart') pieChart!: QueryList<ChartComponent>;
 
+  lang = inject(TranslationService);
   appChartTypesService = inject(AppChartTypesService);
   dashboardService = inject(DashboardService);
 
@@ -40,7 +43,7 @@ export class PieChartComponent extends OnDestroyMixin(class {}) implements After
   pieChartOptions: PieChartOptions = {
     ...this.appChartTypesService.pieChartOptions,
     tooltip: {
-      custom: (opts) => this.appChartTypesService.getPieCustomTooltip(opts, this.rootData.hasPrice, this.valueUnit),
+      custom: (opts) => this._getPieCustomTooltip(opts),
     },
   };
 
@@ -106,4 +109,28 @@ export class PieChartComponent extends OnDestroyMixin(class {}) implements After
       ? (this.bindLabel(item) as string)
       : (item as unknown as string);
   }
+
+  private _getPieCustomTooltip = (opts: { seriesIndex: number; series: number[]; w: ChartConfig }) => {
+    const _bgColor = opts.w.config.colors[opts.seriesIndex];
+    const _label = opts.w.config.labels[opts.seriesIndex];
+    const _total = opts.series.reduce((acc, cur) => (acc += cur), 0);
+    const _value = opts.series[opts.seriesIndex];
+    const _percent = ((_value / _total) * 100).toFixed(2) + '%';
+    return `
+      <div dir="${this.lang.isLtr ? 'ltr' : 'rtl'}"
+        class="apexcharts-tooltip-series-group apexcharts-active"
+        style="order: 1; display: flex; background-color: ${_bgColor}">
+        <span class="apexcharts-tooltip-marker" style="background-color: ${_bgColor}; display: none"></span>
+        <div class="apexcharts-tooltip-text" style="font-family: Helvetica, Arial, sans-serif; font-size: 12px">
+          <div class="apexcharts-tooltip-y-group">
+            <span class="apexcharts-tooltip-text-y-label">${_label}: </span
+            ><span class="apexcharts-tooltip-text-y-value">${this.appChartTypesService.dataLabelsFormatter(
+              { val: _value },
+              this.rootData
+            )} ${this.valueUnit ? this.valueUnit + ' ' : ''}<span class="font-normal">(${_percent})</span></span>
+          </div>
+        </div>
+      </div>
+    `;
+  };
 }

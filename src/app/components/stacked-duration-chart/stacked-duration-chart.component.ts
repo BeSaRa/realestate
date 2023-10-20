@@ -44,6 +44,7 @@ export class StackedDurationChartComponent
     { chartDataUrl: string; hasPrice: boolean; makeUpdate?: boolean } | undefined
   >;
   @Input() showSelectChartType = true;
+  @Input() changeBarColorsAccordingToValue = false;
 
   @ViewChildren('chart') chart!: QueryList<ChartComponent>;
 
@@ -89,7 +90,7 @@ export class StackedDurationChartComponent
     series: [],
   });
 
-  multiBarColors: Record<number, Record<number, string>>[] = [];
+  barColorsAccordingToValue: Record<number, Record<number, string>>[] = [];
 
   ngOnInit(): void {
     this._initializeStackedSeriesOptions();
@@ -108,7 +109,7 @@ export class StackedDurationChartComponent
 
   updateChartType(type: ChartType) {
     this.selectedChartType = type;
-    this._updateChart();
+    this._updateChartOptions();
   }
 
   updateChartDataForDuration(durationType: DurationEndpoints, isLoadingNewData = false) {
@@ -154,7 +155,7 @@ export class StackedDurationChartComponent
         this.chartDataLength = this.chartSeriesData[0].data.length;
 
         this.chartOptions = this.yearlyOrMonthlyChartOptions;
-        this._updateChart();
+        this._updateChartOptions();
       });
   }
 
@@ -190,7 +191,7 @@ export class StackedDurationChartComponent
         this.chartDataLength = this.chartSeriesData[0].data.length;
 
         this.chartOptions = this.yearlyOrMonthlyChartOptions;
-        this._updateChart();
+        this._updateChartOptions();
       });
   }
 
@@ -233,7 +234,7 @@ export class StackedDurationChartComponent
         })
       )
       .subscribe((data) => {
-        this._initializeMultiBarStackedColors(data);
+        if (this.changeBarColorsAccordingToValue) this._initializeBarColorsAccordingToValue(data);
 
         this.chartSeriesData = [];
         Object.keys(this.charts).forEach((type) => {
@@ -255,48 +256,15 @@ export class StackedDurationChartComponent
 
         this.chartOptions =
           this.selectedDurationType === DurationEndpoints.HALFY ? this.halfyChartOptions : this.quarterlyChartOptions;
-        this._updateChart();
+        this._updateChartOptions();
       });
   }
 
-  private _updateChart() {
+  private _updateChartOptions() {
+    this.isLoading = false;
     if (!this.chartSeriesData.length) {
       return;
     }
-    let _staticOptions = {};
-    if (
-      this.selectedDurationType === DurationEndpoints.HALFY ||
-      this.selectedDurationType === DurationEndpoints.QUARTERLY
-    ) {
-      _staticOptions = {
-        ...this.appChartTypesService.halflyAndQuarterlyStaticChartOptions,
-        tooltip: {
-          marker: { show: false },
-        },
-      };
-    } else {
-      if (this.selectedChartType === ChartType.BAR) {
-        _staticOptions = {
-          colors: [AppColors.PRIMARY, AppColors.SECONDARY],
-          ...this.appChartTypesService.yearlyStaticChartOptions,
-        };
-      } else {
-        _staticOptions = {
-          colors: [AppColors.PRIMARY, AppColors.SECONDARY],
-          ...this.appChartTypesService.yearlyStaticChartOptions,
-        };
-      }
-    }
-    this._updateOptions(_staticOptions);
-  }
-
-  private _updateOptions(staticOptions: any) {
-    this.isLoading = false;
-
-    const _useMultiBarColors =
-      this.selectedChartType === ChartType.BAR &&
-      (this.selectedDurationType === DurationEndpoints.HALFY ||
-        this.selectedDurationType === DurationEndpoints.QUARTERLY);
 
     setTimeout(() => {
       this.chart.first
@@ -307,17 +275,11 @@ export class StackedDurationChartComponent
           },
           stroke: { width: this.selectedChartType === ChartType.BAR ? 0 : 4 },
           dataLabels: { enabled: this.selectedDurationType !== DurationEndpoints.QUARTERLY },
-          legend: { show: this.selectedChartType !== ChartType.BAR },
+
           series: this.chartSeriesData,
-          ...staticOptions,
-          ...(_useMultiBarColors
-            ? {
-                colors: [
-                  (opts: { value: number; seriesIndex: number; dataPointIndex: number }) =>
-                    this._getMultiBarColors(opts),
-                ],
-              }
-            : {}),
+          ...this._getColorsOptions(),
+          ...this._getTooltipOptions(),
+          ...this._getLegendOptions(),
           ...this.appChartTypesService.getRangeOptions(
             this.screenSize,
             this.selectedBarChartType,
@@ -397,12 +359,12 @@ export class StackedDurationChartComponent
       });
   }
 
-  private _initializeMultiBarStackedColors(data: Record<TransactionType, DurationDataContract>) {
+  private _initializeBarColorsAccordingToValue(data: Record<TransactionType, DurationDataContract>) {
     const _sortedColors = [
       [AppColors.PRIMARY, AppColors.PRIMARY_80, AppColors.PRIMARY_60, AppColors.PRIMARY_40],
       [AppColors.SECONDARY, AppColors.SECONDARY_80, AppColors.SECONDARY_60, AppColors.SECONDARY_40],
     ];
-    this.multiBarColors = [];
+    this.barColorsAccordingToValue = [];
     let kpiValues: number[] = [];
 
     for (let i = 0; i < data[Object.keys(data)[0] as unknown as TransactionType][1].kpiValues.length; i++) {
@@ -416,12 +378,90 @@ export class StackedDurationChartComponent
           return { ...acc, [cur]: _sortedColors[_index % 2][index] };
         }, {});
       });
-      this.multiBarColors.push(_pointColors);
+      this.barColorsAccordingToValue.push(_pointColors);
     }
   }
 
-  private _getMultiBarColors = (opts: { value: number; seriesIndex: number; dataPointIndex: number }) => {
-    const _barsCount = this.selectedDurationType === DurationEndpoints.HALFY ? 2 : 4;
-    return this.multiBarColors[opts.dataPointIndex][Math.floor(opts.seriesIndex / _barsCount) % 2][opts.value];
+  private _getColorsOptions = () => {
+    if (
+      this.selectedDurationType === DurationEndpoints.HALFY ||
+      this.selectedDurationType === DurationEndpoints.QUARTERLY
+    ) {
+      if (this.changeBarColorsAccordingToValue && this.selectedChartType === ChartType.BAR) {
+        return {
+          colors: [
+            (opts: { value: number; seriesIndex: number; dataPointIndex: number }) => {
+              const _barsCount = this.selectedDurationType === DurationEndpoints.HALFY ? 2 : 4;
+              return this.barColorsAccordingToValue[opts.dataPointIndex][Math.floor(opts.seriesIndex / _barsCount) % 2][
+                opts.value
+              ];
+            },
+          ],
+        };
+      } else if (this.selectedDurationType === DurationEndpoints.HALFY) {
+        return {
+          colors: [AppColors.PRIMARY, AppColors.PRIMARY_80, AppColors.SECONDARY, AppColors.SECONDARY_80],
+        };
+      } else {
+        return {
+          colors: [
+            AppColors.PRIMARY,
+            AppColors.PRIMARY_80,
+            AppColors.PRIMARY_60,
+            AppColors.PRIMARY_40,
+            AppColors.SECONDARY,
+            AppColors.SECONDARY_80,
+            AppColors.SECONDARY_60,
+            AppColors.SECONDARY_40,
+          ],
+        };
+      }
+    } else {
+      return { colors: [AppColors.PRIMARY, AppColors.SECONDARY] };
+    }
   };
+
+  private _getTooltipOptions() {
+    return {
+      tooltip: {
+        marker: {
+          show: !(
+            this.changeBarColorsAccordingToValue &&
+            (this.selectedDurationType === DurationEndpoints.HALFY ||
+              this.selectedDurationType === DurationEndpoints.QUARTERLY) &&
+            this.selectedChartType === ChartType.BAR
+          ),
+          fillColors:
+            this.selectedDurationType === DurationEndpoints.YEARLY ||
+            this.selectedDurationType === DurationEndpoints.MONTHLY
+              ? [AppColors.PRIMARY, AppColors.SECONDARY]
+              : this.selectedDurationType === DurationEndpoints.HALFY
+              ? [AppColors.PRIMARY, AppColors.PRIMARY_80, AppColors.SECONDARY, AppColors.SECONDARY_80]
+              : [
+                  AppColors.PRIMARY,
+                  AppColors.PRIMARY_80,
+                  AppColors.PRIMARY_60,
+                  AppColors.PRIMARY_40,
+                  AppColors.SECONDARY,
+                  AppColors.SECONDARY_80,
+                  AppColors.SECONDARY_60,
+                  AppColors.SECONDARY_40,
+                ],
+        },
+      },
+    };
+  }
+
+  private _getLegendOptions() {
+    return {
+      legend: {
+        show: !(
+          this.changeBarColorsAccordingToValue &&
+          (this.selectedDurationType === DurationEndpoints.HALFY ||
+            this.selectedDurationType === DurationEndpoints.QUARTERLY) &&
+          this.selectedChartType === ChartType.BAR
+        ),
+      },
+    };
+  }
 }
