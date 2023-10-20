@@ -166,7 +166,7 @@ export class TransactionsFilterComponent implements OnInit, OnDestroy {
         [
           (control: AbstractControl) => CustomValidators.minValue(this.rentValueRange?.minVal)(control),
           (control: AbstractControl) => CustomValidators.maxValue(this.rentValueRange?.maxVal)(control),
-        ]
+        ],
       ],
       realEstateValueFrom: [
         '',
@@ -187,14 +187,14 @@ export class TransactionsFilterComponent implements OnInit, OnDestroy {
         [
           (control: AbstractControl) => CustomValidators.minValue(this.areaRange?.minVal)(control),
           (control: AbstractControl) => CustomValidators.maxValue(this.areaRange?.maxVal)(control),
-        ]
+        ],
       ],
       areaTo: [
         '',
         [
           (control: AbstractControl) => CustomValidators.minValue(this.areaRange?.minVal)(control),
           (control: AbstractControl) => CustomValidators.maxValue(this.areaRange?.maxVal)(control),
-        ]
+        ],
       ],
       baseYear: [],
       zoneId: [],
@@ -284,6 +284,7 @@ export class TransactionsFilterComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
+    this.unit.disable();
     this.years = range(this.isSell() ? 2006 : 2019, new Date().getFullYear());
     this.listenToMunicipalityChange();
     this.listenToPropertyTypeListChange();
@@ -319,7 +320,7 @@ export class TransactionsFilterComponent implements OnInit, OnDestroy {
       issueDateStartMonth: 1,
       issueDateEndMonth: 12,
       areaCode: -1,
-      unit: this.unitsService.selectedUnit(),
+      unit: this.isRent() ? 1 : 2,
       bedRoomsCount: undefined,
       furnitureStatus: this.furnitureStatus.length ? -1 : undefined,
       nationalityCode: -1,
@@ -431,14 +432,14 @@ export class TransactionsFilterComponent implements OnInit, OnDestroy {
       value === Durations.YEARLY
         ? this.onlyDisplayYear()
         : value === Durations.HALF_YEARLY
-          ? this.onlyDisplayHalfYear()
-          : value === Durations.QUARTER_YEARLY
-            ? this.onlyDisplayQuarterYear()
-            : value === Durations.MONTHLY
-              ? this.onlyDisplayMonth()
-              : value === Durations.DURATION
-                ? this.onlyDisplayRangeYear()
-                : null;
+        ? this.onlyDisplayHalfYear()
+        : value === Durations.QUARTER_YEARLY
+        ? this.onlyDisplayQuarterYear()
+        : value === Durations.MONTHLY
+        ? this.onlyDisplayMonth()
+        : value === Durations.DURATION
+        ? this.onlyDisplayRangeYear()
+        : null;
     });
   }
 
@@ -545,8 +546,8 @@ export class TransactionsFilterComponent implements OnInit, OnDestroy {
   rangeChange() {
     this.rangeDate.patchValue(
       (this.issueDateFrom.value ? this.datePipe.transform(this.issueDateFrom.value, 'YYY-MM-dd') : '') +
-      ' --- ' +
-      (this.issueDateTo.value ? this.datePipe.transform(this.issueDateTo.value, 'YYY-MM-dd') : '')
+        ' --- ' +
+        (this.issueDateTo.value ? this.datePipe.transform(this.issueDateTo.value, 'YYY-MM-dd') : '')
     );
     this.form.patchValue(
       {
@@ -579,8 +580,7 @@ export class TransactionsFilterComponent implements OnInit, OnDestroy {
       if (!this.issueDateQuarterList.value || !this.issueDateQuarterList.value.length) {
         return;
       }
-    }
-    else if (this.displayMonth) {
+    } else if (this.displayMonth) {
       value.issueDateStartMonth = this.form.value.issueDateMonth;
       value.issueDateEndMonth = this.form.value.issueDateMonth + 1;
       value.issueDateQuarterList = [1, 2, 3, 4];
@@ -644,7 +644,7 @@ export class TransactionsFilterComponent implements OnInit, OnDestroy {
       // delete value.ownerCategoryCode;
     }
     Object.keys(value).forEach((key) => {
-      if (typeof value[key] === 'string' && (value[key] === '') || value[key] === null) delete value[key];
+      if ((typeof value[key] === 'string' && value[key] === '') || value[key] === null) delete value[key];
       if (Array.isArray(value[key]) && value[key].length === 0) delete value[key];
       typeof value[key] === 'undefined' ? delete value[key] : null;
     });
@@ -676,28 +676,31 @@ export class TransactionsFilterComponent implements OnInit, OnDestroy {
       (paramRange) => paramRange.fieldName === ParamRangeField.RENT_VALUE
     );
     this.rentValueRange = _rentValueRange.length ? _rentValueRange[0] : undefined;
-    (this.rentValueRange) && (this.rentPaymentMaxLength =
-      this.rentValueRange.maxVal.toString().length
-      + Math.ceil(this.rentValueRange.maxVal.toString().length / 3))
-
+    this.rentValueRange &&
+      (this.rentPaymentMaxLength =
+        this.rentValueRange.maxVal.toString().length + Math.ceil(this.rentValueRange.maxVal.toString().length / 3));
 
     const _sellValueRange = this.paramsRange.filter(
       (paramRange) => paramRange.fieldName === ParamRangeField.SELL_VALUE
     );
     this.sellValueRange = _sellValueRange.length ? _sellValueRange[0] : undefined;
-    (this.sellValueRange) && (this.realEstateMaxLength = this.sellValueRange.maxVal.toString().length
-      + Math.ceil(this.sellValueRange.maxVal.toString().length / 3))
+    this.sellValueRange &&
+      (this.realEstateMaxLength =
+        this.sellValueRange.maxVal.toString().length + Math.ceil(this.sellValueRange.maxVal.toString().length / 3));
 
     const _mortgageValueRange = this.paramsRange.filter(
       (paramRange) => paramRange.fieldName === ParamRangeField.MORTGAGE_VALUE
     );
     this.mortgageValueRange = _mortgageValueRange.length ? _mortgageValueRange[0] : undefined;
-    (this.mortgageValueRange) && (this.mortgageMaxLength = this.mortgageValueRange.maxVal.toString().length
-      + Math.ceil(this.mortgageValueRange.maxVal.toString().length / 3))
+    this.mortgageValueRange &&
+      (this.mortgageMaxLength =
+        this.mortgageValueRange.maxVal.toString().length +
+        Math.ceil(this.mortgageValueRange.maxVal.toString().length / 3));
 
     const _areaRange = this.paramsRange.filter((paramRange) => paramRange.fieldName === ParamRangeField.AREA);
     this.areaRange = _areaRange.length ? _areaRange[0] : undefined;
-    (this.areaRange) && (this.areaMaxLength = this.areaRange.maxVal.toString().length
-      + Math.ceil(this.areaRange.maxVal.toString().length / 3))
+    this.areaRange &&
+      (this.areaMaxLength =
+        this.areaRange.maxVal.toString().length + Math.ceil(this.areaRange.maxVal.toString().length / 3));
   }
 }
