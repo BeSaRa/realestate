@@ -164,10 +164,9 @@ export default class OwnershipIndicatorsPageComponent implements OnInit, AfterVi
   nationalitiesDataLength = 0;
   specialNationality = new Lookup().clone<Lookup>({ lookupKey: 82804, arName: 'أملاك دولة', enName: 'State property' });
 
-  nationalitiesChartOptions: ChartOptionsModel = new ChartOptionsModel().clone<ChartOptionsModel>({
-    ...this.appChartTypesService.mainChartOptions,
-    ...this.appChartTypesService.yearlyStaticChartOptions,
-  });
+  nationalitiesChartOptions: ChartOptionsModel = new ChartOptionsModel().clone<ChartOptionsModel>(
+    this.appChartTypesService.mainChartOptions
+  );
 
   isOnInitMunicipaliteisChart = true;
   isLoadingUpdatedMunicipalitiesData = false;
@@ -175,23 +174,18 @@ export default class OwnershipIndicatorsPageComponent implements OnInit, AfterVi
   municipalitiesData: (KpiModel & { municipalityId: number })[] = [];
   municipalitiesDataLength = 0;
 
-  municipalitiesChartOptions = new ChartOptionsModel().clone<ChartOptionsModel>({
-    ...this.appChartTypesService.mainChartOptions,
-    ...this.appChartTypesService.yearlyStaticChartOptions,
-  });
+  municipalitiesChartOptions = new ChartOptionsModel().clone<ChartOptionsModel>(
+    this.appChartTypesService.mainChartOptions
+  );
 
   areasDataLength = 0;
 
-  areasChartOptions = new ChartOptionsModel().clone<ChartOptionsModel>({
-    ...this.appChartTypesService.mainChartOptions,
-    ...this.appChartTypesService.yearlyStaticChartOptions,
-  });
+  areasChartOptions = new ChartOptionsModel().clone<ChartOptionsModel>(this.appChartTypesService.mainChartOptions);
 
   ownerTypeSummaryDataLength = 0;
-  ownerTypeSummaryChartOptions = new ChartOptionsModel().clone<ChartOptionsModel>({
-    ...this.appChartTypesService.mainChartOptions,
-    ...this.appChartTypesService.yearlyStaticChartOptions,
-  });
+  ownerTypeSummaryChartOptions = new ChartOptionsModel().clone<ChartOptionsModel>(
+    this.appChartTypesService.mainChartOptions
+  );
 
   durationRootDataSubject = new BehaviorSubject({
     chartDataUrl: this.urlService.URLS[this._getChartDataUrl('OWNER_KPI12')],
@@ -430,7 +424,6 @@ export default class OwnershipIndicatorsPageComponent implements OnInit, AfterVi
               },
             ],
             colors: [this.appChartTypesService.chartColorsFormatter(_minMaxAvg)],
-            ...this.appChartTypesService.yearlyStaticChartOptions,
             ...this.appChartTypesService.getRangeOptions(
               this.screenSize,
               BarChartTypes.SINGLE_BAR,
@@ -486,7 +479,6 @@ export default class OwnershipIndicatorsPageComponent implements OnInit, AfterVi
           },
         ],
         colors: [this.appChartTypesService.chartColorsFormatter(_minMaxAvg)],
-        ...this.appChartTypesService.yearlyStaticChartOptions,
         ...this.appChartTypesService.getRangeOptions(
           this.screenSize,
           BarChartTypes.SINGLE_BAR,
@@ -544,7 +536,6 @@ export default class OwnershipIndicatorsPageComponent implements OnInit, AfterVi
               },
             ],
             colors: [this.appChartTypesService.chartColorsFormatter(_minMaxAvg)],
-            ...this.appChartTypesService.yearlyStaticChartOptions,
             ...this.appChartTypesService.getRangeOptions(
               this.screenSize,
               BarChartTypes.SINGLE_BAR,
@@ -581,7 +572,7 @@ export default class OwnershipIndicatorsPageComponent implements OnInit, AfterVi
               },
             ],
             colors: [this.appChartTypesService.chartColorsFormatter(_minMaxAvg)],
-            ...this.appChartTypesService.yearlyStaticChartOptions,
+
             ...this.appChartTypesService.getRangeOptions(
               this.screenSize,
               BarChartTypes.SINGLE_BAR,

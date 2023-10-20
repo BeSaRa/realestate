@@ -3,14 +3,11 @@ import { PartialChartOptions } from '@app-types/partialChartOptions';
 import { PieChartOptions } from '@app-types/pie-chart-options';
 import { AppColors } from '@constants/app-colors';
 import { maskSeparator } from '@constants/mask-separator';
-import { DurationSeriesDataContract } from '@contracts/duration-series-data-contract';
 import { MinMaxAvgContract } from '@contracts/min-max-avg-contract';
 import { ServiceContract } from '@contracts/service-contract';
 import { BarChartTypes } from '@enums/bar-chart-type';
 import { Breakpoints } from '@enums/breakpoints';
-import { DurationEndpoints } from '@enums/durations';
 import { RegisterServiceMixin } from '@mixins/register-service-mixin';
-import { ChartConfig } from '@models/chart-options-model';
 import { formatNumber } from '@utils/utils';
 import { NgxMaskPipe } from 'ngx-mask';
 import { TranslationService } from './translation.service';
@@ -27,42 +24,6 @@ export class AppChartTypesService extends RegisterServiceMixin(class {}) impleme
   private _mainChartOptions: PartialChartOptions = mainChartOptions;
   get mainChartOptions() {
     return { ...this._mainChartOptions };
-  }
-  get yearlyStaticChartOptions() {
-    return { tooltip: { marker: { fillColors: [AppColors.JUNGLE] } } };
-  }
-  get halflyAndQuarterlyStaticChartOptions() {
-    return {
-      colors: [
-        AppColors.PRIMARY,
-        AppColors.SECONDARY,
-        AppColors.LEAD,
-        AppColors.LEAD_80,
-        AppColors.LEAD_60,
-        AppColors.LEAD_40,
-        AppColors.GRAY,
-        AppColors.GRAY_TOO,
-        AppColors.BLACK,
-      ],
-      tooltip: {
-        marker: {
-          fillColors: [
-            AppColors.PRIMARY,
-            AppColors.SECONDARY,
-            AppColors.LEAD,
-            AppColors.LEAD_80,
-            AppColors.LEAD_60,
-            AppColors.LEAD_40,
-            AppColors.GRAY,
-            AppColors.GRAY_TOO,
-            AppColors.BLACK,
-          ],
-        },
-      },
-    };
-  }
-  get monthlyStaticChartOptions() {
-    return { tooltip: { marker: { fillColors: [AppColors.JUNGLE] } } };
   }
 
   private _minMaxAvgBarChartOptions = minMaxAvgBarChartOptions;
@@ -204,57 +165,6 @@ export class AppChartTypesService extends RegisterServiceMixin(class {}) impleme
     };
   }
 
-  durationCustomTooltip(
-    opts: { seriesIndex: number; dataPointIndex: number },
-    data: DurationSeriesDataContract[],
-    durationType: DurationEndpoints,
-    hasPrice: boolean,
-    isMultiSeries: boolean
-  ) {
-    const _series = isMultiSeries ? data[opts.seriesIndex] : data[0];
-    const _dataPoint = _series?.data[opts.dataPointIndex];
-    if (durationType === DurationEndpoints.MONTHLY || isMultiSeries) {
-      return this._getDurationDefaultTooltipTemplate(_dataPoint.x, _dataPoint.y, _series.name ?? '', hasPrice);
-    } else {
-      return this._getDurationCustomTooltipTemplate(
-        _dataPoint.x,
-        _dataPoint.y,
-        _dataPoint.yoy ?? 0,
-        _dataPoint.baseYear ?? 2019,
-        _dataPoint.yoyBase ?? 0,
-        _series.name ?? '',
-        hasPrice
-      );
-    }
-  }
-
-  getPieCustomTooltip(
-    opts: { seriesIndex: number; series: number[]; w: ChartConfig },
-    hasPrice: boolean,
-    unit?: string
-  ) {
-    const _bgColor = opts.w.config.colors[opts.seriesIndex];
-    const _label = opts.w.config.labels[opts.seriesIndex];
-    const _total = opts.series.reduce((acc, cur) => (acc += cur), 0);
-    const _value = opts.series[opts.seriesIndex];
-    const _percent = ((_value / _total) * 100).toFixed(2) + '%';
-    return `
-      <div dir="${this.lang.isLtr ? 'ltr' : 'rtl'}"
-        class="apexcharts-tooltip-series-group apexcharts-active"
-        style="order: 1; display: flex; background-color: ${_bgColor}">
-        <span class="apexcharts-tooltip-marker" style="background-color: ${_bgColor}; display: none"></span>
-        <div class="apexcharts-tooltip-text" style="font-family: Helvetica, Arial, sans-serif; font-size: 12px">
-          <div class="apexcharts-tooltip-y-group">
-            <span class="apexcharts-tooltip-text-y-label">${_label}: </span
-            ><span class="apexcharts-tooltip-text-y-value">${this._labelFormatter(_value, {
-              hasPrice,
-            })} ${unit ? unit + ' ' : ''}<span class="font-normal">(${_percent})</span></span>
-          </div>
-        </div>
-      </div>
-    `;
-  }
-
   private _labelFormatter(val: string | number | number[], root?: { hasPrice: boolean }) {
     if (typeof val === 'undefined') return val;
     if (typeof val === 'string' && (val as unknown as number) !== undefined && (val as unknown as number) !== null)
@@ -265,68 +175,6 @@ export class AppChartTypesService extends RegisterServiceMixin(class {}) impleme
       : (this.maskPipe.transform(value.toFixed(0), maskSeparator.SEPARATOR, {
           thousandSeparator: ',',
         }) as unknown as string);
-  }
-
-  private _getDurationDefaultTooltipTemplate(x: string | number, y: number, name: string, hasPrice: boolean) {
-    return `
-      <div dir="${
-        this.lang.isLtr ? 'ltr' : 'rtl'
-      }" class="apexcharts-tooltip-title" style="font-family: Helvetica, Arial, sans-serif; font-size: 12px">${x}</div>
-      <div dir="${
-        this.lang.isLtr ? 'ltr' : 'rtl'
-      }" class="apexcharts-tooltip-series-group apexcharts-active" style="order: 1; display: flex">
-        <div class="apexcharts-tooltip-text" style="font-family: Helvetica, Arial, sans-serif; font-size: 12px">
-          <div class="apexcharts-tooltip-y-group flex justify-between gap-2">
-            <span class="apexcharts-tooltip-text-y-label">${name}: </span>
-            <span class="apexcharts-tooltip-text-y-value">${this.axisYFormatter(
-              {
-                val: y,
-              },
-              { hasPrice }
-            )}</span>
-          </div>
-        </div>
-      </div>
-    `;
-  }
-
-  private _getDurationCustomTooltipTemplate(
-    x: string | number,
-    y: number,
-    yoy: number,
-    baseYear: number,
-    yoyBase: number,
-    name: string,
-    hasPrice: boolean
-  ) {
-    return `
-      <div dir="${
-        this.lang.isLtr ? 'ltr' : 'rtl'
-      }" class="apexcharts-tooltip-title" style="font-family: Helvetica, Arial, sans-serif; font-size: 12px">${x}</div>
-      <div dir="${
-        this.lang.isLtr ? 'ltr' : 'rtl'
-      }" class="apexcharts-tooltip-series-group apexcharts-active" style="order: 1; display: flex">
-        <div class="apexcharts-tooltip-text" style="font-family: Helvetica, Arial, sans-serif; font-size: 12px">
-          <div class="apexcharts-tooltip-y-group flex justify-between gap-2">
-            <span class="apexcharts-tooltip-text-y-label">${name}: </span>
-            <span class="apexcharts-tooltip-text-y-value">${this.axisYFormatter(
-              {
-                val: y,
-              },
-              { hasPrice }
-            )}</span>
-          </div>
-          <div class="apexcharts-tooltip-y-group flex justify-between gap-2">
-            <span class="apexcharts-tooltip-text-y-label">${this.lang.map.annually}: </span>
-            <span class="apexcharts-tooltip-text-y-value">${yoy.toFixed(1)}%</span>
-          </div>
-          <div class="apexcharts-tooltip-y-group flex justify-between gap-2">
-            <span class="apexcharts-tooltip-text-y-label">${this.lang.map.vs} ${baseYear}: </span>
-            <span class="apexcharts-tooltip-text-y-value">${yoyBase.toFixed(1)}%</span>
-          </div>
-        </div>
-      </div>
-    `;
   }
 }
 
