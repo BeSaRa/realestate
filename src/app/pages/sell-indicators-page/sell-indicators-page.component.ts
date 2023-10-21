@@ -11,7 +11,7 @@ import { DurationChartComponent } from '@components/duration-chart/duration-char
 import { ExtraHeaderComponent } from '@components/extra-header/extra-header.component';
 import { IconButtonComponent } from '@components/icon-button/icon-button.component';
 import { KpiRootComponent } from '@components/kpi-root/kpi-root.component';
-import { PropertyBlockComponent } from '@components/property-block/property-block.component';
+import { PropertyCarouselComponent } from '@components/property-carousel/property-carousel.component';
 import { PropertyPriceBlockComponent } from '@components/property-price-block/property-price-block.component';
 import { PurposeComponent } from '@components/purpose/purpose.component';
 import { TableComponent } from '@components/table/table.component';
@@ -43,7 +43,7 @@ import { LookupService } from '@services/lookup.service';
 import { TranslationService } from '@services/translation.service';
 import { UnitsService } from '@services/units.service';
 import { UrlService } from '@services/url.service';
-import { CarouselComponent, IvyCarouselModule } from 'angular-responsive-carousel2';
+import { CarouselComponent } from 'angular-responsive-carousel2';
 import { NgxMaskPipe } from 'ngx-mask';
 import {
   BehaviorSubject,
@@ -68,8 +68,7 @@ import {
     TransactionsFilterComponent,
     KpiRootComponent,
     PurposeComponent,
-    IvyCarouselModule,
-    PropertyBlockComponent,
+    PropertyCarouselComponent,
     ButtonComponent,
     IconButtonComponent,
     TableComponent,
@@ -400,7 +399,6 @@ export default class SellIndicatorsPageComponent implements OnInit, OnDestroy {
     this.selectedTab = tab;
     if (this.selectedTab === 'sell_indicators') {
       this.reload$.next();
-      this.carousel.setDirty();
     }
   }
 
@@ -547,15 +545,7 @@ export default class SellIndicatorsPageComponent implements OnInit, OnDestroy {
               return item;
             })
             .sort((a, b) => a.value - b.value);
-          this.goToFirstCell();
         });
-  }
-
-  private goToFirstCell(): void {
-    if (!this.carousel.length) return;
-    this.carousel.first.cellsToScroll = this.carousel.first.cellLength;
-    this.carousel.first.next();
-    this.carousel.first.cellsToScroll = 1;
   }
 
   protected loadTransactions(): Observable<SellTransaction[]> {

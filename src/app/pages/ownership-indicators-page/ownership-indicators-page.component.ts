@@ -1,14 +1,13 @@
 import { CommonModule } from '@angular/common';
 import { AfterViewInit, Component, OnDestroy, OnInit, QueryList, ViewChildren, inject } from '@angular/core';
 import { MatNativeDateModule } from '@angular/material/core';
-import { PieChartOptions } from '@app-types/pie-chart-options';
 import { ButtonComponent } from '@components/button/button.component';
 import { DurationChartComponent } from '@components/duration-chart/duration-chart.component';
 import { ExtraHeaderComponent } from '@components/extra-header/extra-header.component';
 import { IconButtonComponent } from '@components/icon-button/icon-button.component';
 import { KpiRootComponent } from '@components/kpi-root/kpi-root.component';
 import { PieChartComponent } from '@components/pie-chart/pie-chart.component';
-import { PropertyBlockComponent } from '@components/property-block/property-block.component';
+import { PropertyCarouselComponent } from '@components/property-carousel/property-carousel.component';
 import { PurposeComponent } from '@components/purpose/purpose.component';
 import { TransactionsFilterComponent } from '@components/transactions-filter/transactions-filter.component';
 import { YoyIndicatorComponent } from '@components/yoy-indicator/yoy-indicator.component';
@@ -31,7 +30,6 @@ import { TranslationService } from '@services/translation.service';
 import { UnitsService } from '@services/units.service';
 import { UrlService } from '@services/url.service';
 import { minMaxAvg } from '@utils/utils';
-import { CarouselComponent, IvyCarouselModule } from 'angular-responsive-carousel2';
 import { ChartComponent, NgApexchartsModule } from 'ng-apexcharts';
 import { NgxMaskPipe } from 'ngx-mask';
 import { BehaviorSubject, Subject, map, take, takeUntil } from 'rxjs';
@@ -46,8 +44,7 @@ import { QatarInteractiveMapComponent } from 'src/app/qatar-interactive-map/qata
     TransactionsFilterComponent,
     KpiRootComponent,
     PurposeComponent,
-    IvyCarouselModule,
-    PropertyBlockComponent,
+    PropertyCarouselComponent,
     ButtonComponent,
     IconButtonComponent,
     NgApexchartsModule,
@@ -63,7 +60,6 @@ import { QatarInteractiveMapComponent } from 'src/app/qatar-interactive-map/qata
   styleUrls: ['./ownership-indicators-page.component.scss'],
 })
 export default class OwnershipIndicatorsPageComponent implements OnInit, AfterViewInit, OnDestroy {
-  @ViewChildren('carousel') carousel!: QueryList<CarouselComponent>;
   @ViewChildren('nationalitiesChart') nationalitiesChart!: QueryList<ChartComponent>;
   @ViewChildren('municipalitiesChart') municipalitiesChart!: QueryList<ChartComponent>;
   @ViewChildren('areasChart') areasChart!: QueryList<ChartComponent>;
@@ -243,7 +239,6 @@ export default class OwnershipIndicatorsPageComponent implements OnInit, AfterVi
   switchTab(tab: 'ownership_indicators' | 'statistical_reports_for_ownership'): void {
     this.selectedTab = tab;
     if (this.selectedTab === 'ownership_indicators') {
-      this.carousel.setDirty();
       this.nationalitiesChart.setDirty();
       this.municipalitiesChart.setDirty();
       this.areasChart.setDirty();
@@ -385,15 +380,7 @@ export default class OwnershipIndicatorsPageComponent implements OnInit, AfterVi
               return item;
             })
             .sort((a, b) => a.value - b.value);
-          this.goToFirstCell();
         });
-  }
-
-  private goToFirstCell(): void {
-    if (!this.carousel.length) return;
-    this.carousel.first.cellsToScroll = this.carousel.first.cellLength;
-    this.carousel.first.next();
-    this.carousel.first.cellsToScroll = 1;
   }
 
   updateNationalitiesChartData(nationalityCategory: NationalityCategories) {

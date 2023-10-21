@@ -1,9 +1,8 @@
 import { CommonModule } from '@angular/common';
-import { Component, inject, OnDestroy, OnInit, QueryList, ViewChildren } from '@angular/core';
+import { Component, inject, OnDestroy, OnInit } from '@angular/core';
 
 import { ExtraHeaderComponent } from '@components/extra-header/extra-header.component';
 import { KpiRootComponent } from '@components/kpi-root/kpi-root.component';
-import { PropertyBlockComponent } from '@components/property-block/property-block.component';
 import { PurposeComponent } from '@components/purpose/purpose.component';
 import { RentalContractsComponent } from '@components/rental-contracts/rental-contracts.component';
 import { RentalTransactionsMeasuringComponent } from '@components/rental-transactions-measuring/rental-transactions-measuring.component';
@@ -23,6 +22,7 @@ import { ButtonComponent } from '@components/button/button.component';
 import { DurationChartComponent } from '@components/duration-chart/duration-chart.component';
 import { IconButtonComponent } from '@components/icon-button/icon-button.component';
 import { PieChartComponent } from '@components/pie-chart/pie-chart.component';
+import { PropertyCarouselComponent } from '@components/property-carousel/property-carousel.component';
 import { TableComponent } from '@components/table/table.component';
 import { TopTenChartComponent } from '@components/top-ten-chart/top-ten-chart.component';
 import { YoyIndicatorComponent } from '@components/yoy-indicator/yoy-indicator.component';
@@ -45,7 +45,6 @@ import { LookupService } from '@services/lookup.service';
 import { TranslationService } from '@services/translation.service';
 import { UnitsService } from '@services/units.service';
 import { UrlService } from '@services/url.service';
-import { CarouselComponent, IvyCarouselModule } from 'angular-responsive-carousel2';
 import { NgxMaskPipe } from 'ngx-mask';
 import {
   BehaviorSubject,
@@ -72,8 +71,7 @@ import {
     RentalContractsComponent,
     KpiRootComponent,
     PurposeComponent,
-    IvyCarouselModule,
-    PropertyBlockComponent,
+    PropertyCarouselComponent,
     TableComponent,
     TableColumnTemplateDirective,
     TableColumnHeaderTemplateDirective,
@@ -167,8 +165,6 @@ export default class RentalIndicatorsPageComponent implements OnInit, OnDestroy 
 
   selectedIndicators = this.IndicatorsType.PURPOSE;
 
-  @ViewChildren('carousel')
-  carousel!: QueryList<CarouselComponent>;
   private paginate$ = new BehaviorSubject({
     offset: 0,
     limit: 5,
@@ -515,7 +511,6 @@ export default class RentalIndicatorsPageComponent implements OnInit, OnDestroy 
               return item;
             })
             .sort((a, b) => a.value - b.value);
-          this.goToFirstCell();
         });
   }
 
@@ -541,18 +536,11 @@ export default class RentalIndicatorsPageComponent implements OnInit, OnDestroy 
         })
       );
   }
-  private goToFirstCell(): void {
-    if (!this.carousel.length) return;
-    this.carousel.first.cellsToScroll = this.carousel.first.cellLength;
-    this.carousel.first.next();
-    this.carousel.first.cellsToScroll = 1;
-  }
 
   switchTab(tab: 'rental_indicators' | 'statistical_reports_for_rent'): void {
     this.selectedTab = tab;
     if (this.selectedTab === 'rental_indicators') {
       this.reload$.next();
-      this.carousel.setDirty();
     }
   }
 

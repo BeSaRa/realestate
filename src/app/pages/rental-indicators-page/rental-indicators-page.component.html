@@ -94,16 +94,10 @@
           {{ selectedRoot.getNames() }} ({{ lang.map.depending_on_type }}) {{ getSelectedArea(true, true) }}
         </h3>
         <div class="mt-4 w-4/6 sm:w-5/6 lg:w-11/12" dir="ltr">
-          <div>
-            <carousel #carousel [arrowsOutside]="true" [margin]="20" [cellWidth]="350">
-              <app-property-block
-                useAssetsFrom="rent"
-                [ignoreLocalImages]="true"
-                class="carousel-cell m-0"
-                *ngFor="let item of propertiesKPIS"
-                [item]="item" />
-            </carousel>
-          </div>
+          <app-property-carousel
+            [properties]="propertiesKPIS"
+            useAssetsFrom="rent"
+            [ignoreLocalImages]="true"></app-property-carousel>
         </div>
       </div>
     </div>
