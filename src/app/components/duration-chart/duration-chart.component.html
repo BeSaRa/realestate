@@ -81,7 +81,8 @@
       <div
         *ngIf="
           (selectedDurationType === DurationTypes.YEARLY || selectedDurationType === DurationTypes.MONTHLY) &&
-          selectedChartType === ChartType.BAR
+          selectedChartType === ChartType.BAR &&
+          !isLoading
         "
         class="flex justify-center items-center gap-4 -mt-4 mb-4">
         <ng-container *ngIf="getMinMaxAvgLegendData() as legend">
