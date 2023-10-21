@@ -1,5 +1,5 @@
 <div>
-  <carousel #carousel [arrowsOutside]="true" [margin]="20" [cellWidth]="350">
+  <carousel #carousel [arrowsOutside]="isArrowOutside" [margin]="20" [cellWidth]="350">
     <div
       *ngFor="let item of properties"
       [dir]="lang.isLtr ? 'ltr' : 'rtl'"
