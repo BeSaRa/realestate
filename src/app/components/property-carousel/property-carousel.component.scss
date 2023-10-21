@@ -7,3 +7,22 @@
   background: linear-gradient(270deg, #a29475 23.96%, #a3a3a3 72.67%),
     linear-gradient(180deg, #a29475, #a29475);
 }
+
+:host ::ng-deep .carousel-arrow {
+  width: 24px !important;
+  height: 24px !important;
+  transform: scale(1.3);
+  transition: all 0.2s;
+}
+
+:host ::ng-deep .carousel-arrow:hover {
+  opacity: 0.9;
+}
+
+:host ::ng-deep .carousel-arrow.carousel-arrow-prev {
+  background-image: url("../../../assets/icons/chart/chevron-left-circle.svg") !important;
+}
+
+:host ::ng-deep .carousel-arrow.carousel-arrow-next {
+  background-image: url("../../../assets/icons/chart/chevron-right-circle.svg") !important;
+}
