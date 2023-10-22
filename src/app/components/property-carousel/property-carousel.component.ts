@@ -50,7 +50,7 @@ export class PropertyCarouselComponent extends OnDestroyMixin(class {}) implemen
       ? Object.prototype.hasOwnProperty.call(this.images, item.lookupKey)
         ? this.images[item.lookupKey as keyof typeof this.images]
         : this.images[41]
-      : `assets/icons/${this.useAssetsFrom}/${item.lookupKey !== -1 ? item.lookupKey : 43}.png`;
+      : `assets/icons/${this.useAssetsFrom}/${item.lookupKey}.png`;
   }
 
   private _goToFirstCell(): void {
