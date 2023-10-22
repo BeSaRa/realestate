@@ -41,16 +41,10 @@
       </div>
     </div>
 
-    <re-captcha
-      #recaptcha
-      size="normal"
-      [siteKey]="recaptchaSettings.siteKey!"
-      (resolved)="onRecaptchaResolved($event)"></re-captcha>
-
     <app-button
       *ngIf="!vote?.voted"
       [disabled]="isLoading || !this.voteControl.valid"
-      (click)="recaptcha.execute()"
+      (click)="isRecaptchaVisible = true"
       class="self-center"
       buttonStyle="secondary"
       ><span *ngIf="!isLoading">{{ lang.map.send }}</span>
@@ -60,5 +54,13 @@
       <mat-icon class="text-secondary" [svgIcon]="appIcons.CHECK_OUTLINE"></mat-icon>
       {{ lang.map.you_have_successfully_voted_on_this_poll }}</span
     >
+    <div class="flex justify-center">
+      <re-captcha
+        #recaptcha
+        [ngClass]="{ hidden: !isRecaptchaVisible }"
+        size="normal"
+        [siteKey]="recaptchaSettings.siteKey!"
+        (resolved)="onRecaptchaResolved($event)"></re-captcha>
+    </div>
   </div>
 </div>

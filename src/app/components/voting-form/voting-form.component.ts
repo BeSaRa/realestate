@@ -45,6 +45,7 @@ export class VotingFormComponent extends OnDestroyMixin(class {}) implements OnI
   vote!: Vote;
 
   isLoading = false;
+  isRecaptchaVisible = false;
 
   appIcons = AppIcons;
 
@@ -69,6 +70,7 @@ export class VotingFormComponent extends OnDestroyMixin(class {}) implements OnI
     if (!token) return;
     this.recaptcha.reset();
     this.onVote();
+    this.isRecaptchaVisible = false;
   }
 
   onVote() {
