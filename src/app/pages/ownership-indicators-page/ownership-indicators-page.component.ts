@@ -26,6 +26,7 @@ import { AppChartTypesService } from '@services/app-chart-types.service';
 import { DashboardService } from '@services/dashboard.service';
 import { LookupService } from '@services/lookup.service';
 import { ScreenBreakpointsService } from '@services/screen-breakpoints.service';
+import { SectionTitleService } from '@services/section-title.service';
 import { TranslationService } from '@services/translation.service';
 import { UnitsService } from '@services/units.service';
 import { UrlService } from '@services/url.service';
@@ -72,6 +73,7 @@ export default class OwnershipIndicatorsPageComponent implements OnInit, AfterVi
   unitsService = inject(UnitsService);
   appChartTypesService = inject(AppChartTypesService);
   screenService = inject(ScreenBreakpointsService);
+  sectionTitle = inject(SectionTitleService);
 
   screenSize = Breakpoints.LG;
 
@@ -83,6 +85,7 @@ export default class OwnershipIndicatorsPageComponent implements OnInit, AfterVi
   areas = this.lookupService.ownerLookups.districtList.slice().sort((a, b) => a.lookupKey - b.lookupKey);
   nationalities = this.lookupService.ownerLookups.nationalityList;
   ownerTypes = this.lookupService.ownerLookups.ownerCategoryList;
+
 
   purposeKPIS = this.lookupService.ownerLookups.rentPurposeList;
   propertiesKPIS = this.lookupService.ownerLookups.propertyTypeList;
@@ -577,46 +580,6 @@ export default class OwnershipIndicatorsPageComponent implements OnInit, AfterVi
     return baseUrl;
   }
 
-  get basedOnCriteria(): string {
-    const generatedTitle: string[] = [];
-    const municipality = this.getSelectedMunicipality();
-    const district = this.getSelectedDistrict();
-    const purpose = this.getSelectedPurpose();
-    const propertyType = this.getSelectedPropertyType();
-    municipality.length && generatedTitle.push(municipality);
-    district.length && generatedTitle.push(district);
-    propertyType.length && generatedTitle.push(propertyType);
-    purpose.length && generatedTitle.push(purpose);
-    return generatedTitle.length ? `(${generatedTitle.join(' , ')})` : '';
-  }
-
-  private getSelectedMunicipality(): string {
-    if (this.criteria.criteria.municipalityId === -1) return '';
-    return this.lookupService.ownerMunicipalitiesMap[this.criteria.criteria.municipalityId].getNames() || '';
-  }
-
-  private getSelectedDistrict(): string {
-    const areaCode = (this.criteria.criteria as OwnerCriteriaContract).areaCode;
-    if (areaCode === -1) return '';
-    return this.lookupService.ownerDistrictMap[areaCode].getNames() || '';
-  }
-
-  private getSelectedPropertyType(): string {
-    return this.criteria.criteria.propertyTypeList &&
-      this.criteria.criteria.propertyTypeList.length == 1 &&
-      this.criteria.criteria.propertyTypeList[0] !== -1
-      ? this.lookupService.ownerPropertyTypeMap[this.criteria.criteria.propertyTypeList[0]].getNames()
-      : '';
-  }
-
-  private getSelectedPurpose(): string {
-    return this.criteria.criteria.purposeList &&
-      this.criteria.criteria.purposeList.length == 1 &&
-      this.criteria.criteria.purposeList[0] !== -1
-      ? this.lookupService.ownerPurposeMap[this.criteria.criteria.purposeList[0]].getNames()
-      : '';
-  }
-
   private _initializeChartsFormatters() {
     this.nationalitiesChartOptions
       .addDataLabelsFormatter((val, opts) =>
@@ -806,4 +769,5 @@ export default class OwnershipIndicatorsPageComponent implements OnInit, AfterVi
       ? this.specialNationality.getNames()
       : this.lookupService.ownerNationalityMap[nationalityId]?.getNames() || '';
   }
+  
 }

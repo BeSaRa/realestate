@@ -82,12 +82,12 @@ export const groupBy = <T>(array: Array<T>, property: (x: T) => number): { [key:
   }, {});
 
 export function minMaxAvg(values: number[]): MinMaxAvgContract {
-  values = values.filter((v) => isValidValue(v));
-  let max = values[0];
-  let min = values[0];
-  let sum = values[0];
-  let avg = values[0]; //changed from original post
-  for (let i = 1; i < values.length; i++) {
+  values = values?.filter((v) => isValidValue(v));
+  let max = values?.length ? values[0] : 0;
+  let min = values?.length ? values[0] : 0;
+  let sum = values?.length ? values[0] : 0;
+  let avg = values?.length ? values[0] : 0; //changed from original post
+  for (let i = 1; i < values?.length; i++) {
     if (values[i] > max) {
       max = values[i];
     }
@@ -96,7 +96,7 @@ export function minMaxAvg(values: number[]): MinMaxAvgContract {
     }
     sum = sum + values[i];
   }
-  avg = sum / values.length;
+  avg = sum / values?.length;
   avg = avg + (max - avg) * 0.4;
   // return { min: 0.5 * max, avg: 0.8 * max, max: max }; // this makes app to crash when trying to change to another duration type
   return { min, max, avg }; // because of customer requirements
