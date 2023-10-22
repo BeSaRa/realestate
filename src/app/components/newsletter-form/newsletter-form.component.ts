@@ -14,7 +14,7 @@ import { ConfigService } from '@services/config.service';
 import { DirectusClientService } from '@services/directus-client.service';
 import { TranslationService } from '@services/translation.service';
 import { RECAPTCHA_SETTINGS, RecaptchaComponent, RecaptchaModule } from 'ng-recaptcha';
-import { catchError, from, of, takeUntil, tap } from 'rxjs';
+import { catchError, finalize, from, of, takeUntil, tap } from 'rxjs';
 
 @Component({
   selector: 'app-newsletter-form',
@@ -45,15 +45,25 @@ export class NewsletterFormComponent extends OnDestroyMixin(class {}) {
 
   isLoading = false;
   isRecaptchaVisible = false;
+  isRecaptchaResolved = false;
+  isWaitingForRecaptchaResolve = false;
+
+  onSubmit() {
+    if (!this.isRecaptchaResolved) {
+      this.isRecaptchaVisible = true;
+      this.isWaitingForRecaptchaResolve = true;
+    } else {
+      this._subscribe();
+    }
+  }
 
   onRecaptchaResolved(token: string) {
     if (!token) return;
-    this.recaptcha.reset();
-    this.onSubscribe();
-    this.isRecaptchaVisible = false;
+    this.isRecaptchaResolved = true;
+    this.isWaitingForRecaptchaResolve = false;
   }
 
-  onSubscribe() {
+  private _subscribe() {
     if (!this.newsletterControl.valid) return;
 
     this.isLoading = true;
@@ -80,6 +90,11 @@ export class NewsletterFormComponent extends OnDestroyMixin(class {}) {
             });
           }
           return of();
+        }),
+        finalize(() => {
+          this.isRecaptchaResolved = false;
+          this.isRecaptchaVisible = false;
+          this.recaptcha.reset();
         })
       )
       .subscribe();

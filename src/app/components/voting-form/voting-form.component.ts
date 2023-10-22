@@ -14,7 +14,7 @@ import { DirectusClientService } from '@services/directus-client.service';
 import { TranslationService } from '@services/translation.service';
 import { UrlService } from '@services/url.service';
 import { RECAPTCHA_SETTINGS, RecaptchaComponent, RecaptchaModule } from 'ng-recaptcha';
-import { from, switchMap, takeUntil, tap } from 'rxjs';
+import { finalize, from, switchMap, takeUntil, tap } from 'rxjs';
 
 @Component({
   selector: 'app-voting-form',
@@ -46,6 +46,8 @@ export class VotingFormComponent extends OnDestroyMixin(class {}) implements OnI
 
   isLoading = false;
   isRecaptchaVisible = false;
+  isRecaptchaResolved = false;
+  isWaitingForRecaptchaResolve = false;
 
   appIcons = AppIcons;
 
@@ -66,14 +68,22 @@ export class VotingFormComponent extends OnDestroyMixin(class {}) implements OnI
       .subscribe();
   }
 
-  onRecaptchaResolved(token: string) {
-    if (!token) return;
-    this.recaptcha.reset();
-    this.onVote();
-    this.isRecaptchaVisible = false;
+  onSubmit() {
+    if (!this.isRecaptchaResolved) {
+      this.isRecaptchaVisible = true;
+      this.isWaitingForRecaptchaResolve = true;
+    } else {
+      this._vote();
+    }
   }
 
-  onVote() {
+  onRecaptchaResolved(token: string) {
+    if (!token) return;
+    this.isRecaptchaResolved = true;
+    this.isWaitingForRecaptchaResolve = false;
+  }
+
+  private _vote() {
     if (!this.voteControl.valid) return;
     this.isLoading = true;
     from(
@@ -85,7 +95,12 @@ export class VotingFormComponent extends OnDestroyMixin(class {}) implements OnI
         takeUntil(this.destroy$),
         switchMap(() => this.http.get<Vote>(this.urlService.URLS.MAIN_VOTE)),
         tap((_vote) => (this.vote = _vote)),
-        tap(() => (this.isLoading = false))
+        tap(() => (this.isLoading = false)),
+        finalize(() => {
+          this.isRecaptchaResolved = false;
+          this.isRecaptchaVisible = false;
+          this.recaptcha.reset();
+        })
       )
       .subscribe();
   }
