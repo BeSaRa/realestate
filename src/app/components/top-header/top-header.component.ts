@@ -18,6 +18,7 @@ import { UserService } from '@services/user.service';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { DialogService } from '@services/dialog.service';
 import { UserClick } from '@enums/user-click';
+import { Router } from '@angular/router';
 @Component({
   selector: 'app-top-header',
   standalone: true,
@@ -42,6 +43,7 @@ export class TopHeaderComponent implements OnInit, OnDestroy {
   userService = inject(UserService);
   snackbar = inject(MatSnackBar);
   dialog = inject(DialogService)
+  router = inject(Router);
 
   @Input() isAuthenticated: boolean = false;
 
@@ -138,6 +140,7 @@ export class TopHeaderComponent implements OnInit, OnDestroy {
           verticalPosition: 'top',
           horizontalPosition: this.lang.isLtr ? 'left' : 'right'
         });
+        this.router.navigate(['home']);
       });
   }
 
