@@ -21,8 +21,8 @@
     borderColor="border-secondary"
     ><app-icon-button
       *ngIf="!isLoading"
-      (click)="isRecaptchaVisible = true"
-      [disabled]="!newsletterControl.valid"
+      (click)="onSubmit()"
+      [disabled]="!newsletterControl.valid || isWaitingForRecaptchaResolve"
       appInputSuffix
       class="!text-primary"
       icon="SEND"></app-icon-button

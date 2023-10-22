@@ -43,8 +43,8 @@
 
     <app-button
       *ngIf="!vote?.voted"
-      [disabled]="isLoading || !this.voteControl.valid"
-      (click)="isRecaptchaVisible = true"
+      [disabled]="isLoading || !this.voteControl.valid || isWaitingForRecaptchaResolve"
+      (click)="onSubmit()"
       class="self-center"
       buttonStyle="secondary"
       ><span *ngIf="!isLoading">{{ lang.map.send }}</span>
