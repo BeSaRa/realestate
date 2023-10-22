@@ -44,11 +44,13 @@ export class NewsletterFormComponent extends OnDestroyMixin(class {}) {
   newsletterControl = new FormControl<string | undefined>(undefined, [Validators.required, Validators.email]);
 
   isLoading = false;
+  isRecaptchaVisible = false;
 
   onRecaptchaResolved(token: string) {
     if (!token) return;
     this.recaptcha.reset();
     this.onSubscribe();
+    this.isRecaptchaVisible = false;
   }
 
   onSubscribe() {
