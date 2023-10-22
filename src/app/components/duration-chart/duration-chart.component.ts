@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { AfterViewInit, Component, Input, OnDestroy, OnInit, QueryList, ViewChildren, inject } from '@angular/core';
+import { AfterViewInit, Component, Input, OnDestroy, EventEmitter, Output, QueryList, ViewChildren, inject } from '@angular/core';
 import { DateAdapter } from '@angular/material/core';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { ButtonComponent } from '@components/button/button.component';
@@ -52,6 +52,8 @@ export class DurationChartComponent extends OnDestroyMixin(class {}) implements 
   >;
   @Input() showSelectChartType = true;
   @Input() changeBarColorsAccordingToValue = false;
+
+  @Output() selectedDurationTypeEvent = new EventEmitter<boolean>();
 
   @ViewChildren('chart') chart!: QueryList<ChartComponent>;
 
@@ -111,6 +113,10 @@ export class DurationChartComponent extends OnDestroyMixin(class {}) implements 
     this._updateChartOptions();
   }
 
+  sendSelectedDurationTypeToParent() {
+    this.selectedDurationTypeEvent.emit(this.selectedDurationType == this.DurationTypes.MONTHLY);
+  }
+
   updateChartDataForDuration(durationType: DurationEndpoints, isLoadingNewData = false) {
     if (this.selectedDurationType === durationType && !isLoadingNewData) return;
     this.isLoading = true;
@@ -129,6 +135,8 @@ export class DurationChartComponent extends OnDestroyMixin(class {}) implements 
       this._updateForHalfyOrQuarterly();
       this.selectedBarChartType = BarChartTypes.QUAD_BAR;
     }
+
+    this.sendSelectedDurationTypeToParent();
   }
 
   private _updateForYearly(): void {

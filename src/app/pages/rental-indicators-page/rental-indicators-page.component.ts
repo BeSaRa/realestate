@@ -59,6 +59,7 @@ import {
   take,
   takeUntil,
 } from 'rxjs';
+import { SectionTitleService } from '@services/section-title.service';
 
 @Component({
   selector: 'app-rental-indicators-page',
@@ -99,6 +100,7 @@ export default class RentalIndicatorsPageComponent implements OnInit, OnDestroy 
   urlService = inject(UrlService);
   lookupService = inject(LookupService);
   unitsService = inject(UnitsService);
+  sectionTitle = inject(SectionTitleService);
 
   destroy$ = new Subject<void>();
   reload$ = new ReplaySubject<void>(1);
@@ -115,6 +117,7 @@ export default class RentalIndicatorsPageComponent implements OnInit, OnDestroy 
 
   criteriaSubject = new BehaviorSubject<CriteriaContract | undefined>(undefined);
   criteria$ = this.criteriaSubject.asObservable();
+  showYearInChartTitle: boolean = true;
 
   // transactions = new ReplaySubject<RentTransaction[]>(1);
   transactions$: Observable<RentTransaction[]> = this.loadTransactions();
@@ -569,52 +572,7 @@ export default class RentalIndicatorsPageComponent implements OnInit, OnDestroy 
     item.openChart(this.criteria.criteria).pipe(take(1)).subscribe();
   }
 
-  get basedOnCriteria(): string {
-    const generatedTitle: string[] = [];
-    const municipality = this.getSelectedMunicipality();
-    const zone = this.getSelectedZone();
-    const purpose = this.getSelectedPurpose();
-    const propertyType = this.getSelectedPropertyType();
-    municipality.length && generatedTitle.push(municipality);
-    zone.length && generatedTitle.push(zone);
-    propertyType.length && generatedTitle.push(propertyType);
-    purpose.length && generatedTitle.push(purpose);
-    return generatedTitle.length ? `(${generatedTitle.join(' , ')})` : '';
-  }
-
-  protected getSelectedArea(isMuniciRequired: boolean, isZoneRequired: boolean): string {
-    const generatedTitle: string[] = [];
-    const municipality = isMuniciRequired ? this.getSelectedMunicipality() : '';
-    const district = isZoneRequired ? this.getSelectedZone() : '';
-    municipality.length && generatedTitle.push(municipality);
-    district.length && generatedTitle.push(district);
-    return generatedTitle.length ? `(${generatedTitle.join(' , ')})` : '';
-  }
-
-  private getSelectedMunicipality(): string {
-    if (this.criteria.criteria.municipalityId === -1) return '';
-    return this.lookupService.rentMunicipalitiesMap[this.criteria.criteria.municipalityId].getNames() || '';
-  }
-
-  private getSelectedZone(): string {
-    if (this.criteria.criteria.zoneId === -1) return '';
-
-    return this.lookupService.rentZonesMap[this.criteria.criteria.zoneId].getNames() || '';
-  }
-
-  private getSelectedPropertyType(): string {
-    return this.criteria.criteria.propertyTypeList &&
-      this.criteria.criteria.propertyTypeList.length == 1 &&
-      this.criteria.criteria.propertyTypeList[0] !== -1
-      ? this.lookupService.rentPropertyTypeMap[this.criteria.criteria.propertyTypeList[0]].getNames()
-      : '';
-  }
-
-  private getSelectedPurpose(): string {
-    return this.criteria.criteria.purposeList &&
-      this.criteria.criteria.purposeList.length == 1 &&
-      this.criteria.criteria.purposeList[0] !== -1
-      ? this.lookupService.rentPurposeMap[this.criteria.criteria.purposeList[0]].getNames()
-      : '';
+  setSelectedDurationType(value: boolean) {
+    this.showYearInChartTitle = value;
   }
 }
