@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { AfterViewInit, Component, Input, OnDestroy, OnInit, QueryList, ViewChildren, inject } from '@angular/core';
+import { AfterViewInit, Component, Input, OnDestroy, OnInit, QueryList, ViewChildren, inject, Output, EventEmitter } from '@angular/core';
 import { DateAdapter } from '@angular/material/core';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { ButtonComponent } from '@components/button/button.component';
@@ -45,6 +45,8 @@ export class StackedDurationChartComponent
   >;
   @Input() showSelectChartType = true;
   @Input() changeBarColorsAccordingToValue = false;
+
+  @Output() selectedDurationTypeEvent = new EventEmitter<boolean>();
 
   @ViewChildren('chart') chart!: QueryList<ChartComponent>;
 
@@ -112,6 +114,10 @@ export class StackedDurationChartComponent
     this._updateChartOptions();
   }
 
+  sendSelectedDurationTypeToParent() {
+    this.selectedDurationTypeEvent.emit(this.selectedDurationType == this.DurationTypes.MONTHLY);
+  }
+
   updateChartDataForDuration(durationType: DurationEndpoints, isLoadingNewData = false) {
     if (this.selectedDurationType === durationType && !isLoadingNewData) return;
     this.isLoading = true;
@@ -131,6 +137,8 @@ export class StackedDurationChartComponent
       this.updateChartDataHalfyOrQuarterly();
       this.selectedBarChartType = BarChartTypes.QUAD_BAR;
     }
+
+    this.sendSelectedDurationTypeToParent();
   }
 
   updateChartDataYearly() {
@@ -150,9 +158,9 @@ export class StackedDurationChartComponent
         this.chartSeriesData = Object.keys(this.charts).map((type) => ({
           name: this.charts[type as unknown as TransactionType],
           group: '0',
-          data: _data[type as unknown as TransactionType].map((i) => ({ y: i.kpiVal, x: i.issueYear })),
+          data: _data[type as unknown as TransactionType]?.map((i) => ({ y: i.kpiVal, x: i.issueYear })),
         }));
-        this.chartDataLength = this.chartSeriesData[0].data.length;
+        this.chartDataLength = this.chartSeriesData[0].data?.length;
 
         this.chartOptions = this.yearlyOrMonthlyChartOptions;
         this._updateChartOptions();

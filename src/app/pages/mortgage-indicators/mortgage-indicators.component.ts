@@ -24,6 +24,7 @@ import { MortgageTransaction } from '@models/mortgage-transaction';
 import { TableSortOption } from '@models/table-sort-option';
 import { DashboardService } from '@services/dashboard.service';
 import { LookupService } from '@services/lookup.service';
+import { SectionTitleService } from '@services/section-title.service';
 import { TranslationService } from '@services/translation.service';
 import { UnitsService } from '@services/units.service';
 import { UrlService } from '@services/url.service';
@@ -58,6 +59,7 @@ export default class MortgageIndicatorsComponent implements OnInit {
   urlService = inject(UrlService);
   dashboardService = inject(DashboardService);
   unitsService = inject(UnitsService);
+  sectionTitle = inject(SectionTitleService);
 
   reload$ = new ReplaySubject<void>(1);
   private paginate$ = new BehaviorSubject({
@@ -75,6 +77,10 @@ export default class MortgageIndicatorsComponent implements OnInit {
     criteria: CriteriaContract;
     type: CriteriaType;
   };
+
+  showYearInChartTitle: boolean = true;
+  showYearInStackedChartTitle: boolean = true;
+  showYearInChartTitleUnits: boolean = true;
 
   criteriaSubject = new BehaviorSubject<CriteriaContract | undefined>(undefined);
   criteria$ = this.criteriaSubject.asObservable();
@@ -234,5 +240,16 @@ export default class MortgageIndicatorsComponent implements OnInit {
           );
         })
       );
+  }
+
+  setSelectedDurationType(value: boolean) {
+    this.showYearInChartTitle = value;
+  }
+
+  setStackedSelectedDurationType(value: boolean) {
+    this.showYearInStackedChartTitle = value;
+  }
+  setSelectedDurationTypeForUnits(value: boolean) {
+    this.showYearInChartTitleUnits = value;
   }
 }

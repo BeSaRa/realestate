@@ -40,6 +40,7 @@ import { TableSortOption } from '@models/table-sort-option';
 import { FormatNumbersPipe } from '@pipes/format-numbers.pipe';
 import { DashboardService } from '@services/dashboard.service';
 import { LookupService } from '@services/lookup.service';
+import { SectionTitleService } from '@services/section-title.service';
 import { TranslationService } from '@services/translation.service';
 import { UnitsService } from '@services/units.service';
 import { UrlService } from '@services/url.service';
@@ -103,6 +104,7 @@ export default class SellIndicatorsPageComponent implements OnInit, OnDestroy {
   urlService = inject(UrlService);
   lookupService = inject(LookupService);
   unitsService = inject(UnitsService);
+  sectionTitle = inject(SectionTitleService);
 
   destroy$ = new Subject<void>();
   reload$ = new ReplaySubject<void>(1);
@@ -132,6 +134,7 @@ export default class SellIndicatorsPageComponent implements OnInit, OnDestroy {
     criteria: PriceCriteriaContract;
   };
 
+  showYearInChartTitle: boolean = true;
   criteriaSubject = new BehaviorSubject<CriteriaContract | undefined>(undefined);
   priceCriteriaSubject = new BehaviorSubject<PriceCriteriaContract | undefined>(undefined);
   criteria$ = this.criteriaSubject.asObservable();
@@ -582,52 +585,7 @@ export default class SellIndicatorsPageComponent implements OnInit, OnDestroy {
       });
   }
 
-  get basedOnCriteria(): string {
-    const generatedTitle: string[] = [];
-    const municipality = this.getSelectedMunicipality();
-    const district = this.getSelectedDistrict();
-    const purpose = this.getSelectedPurpose();
-    const propertyType = this.getSelectedPropertyType();
-    municipality.length && generatedTitle.push(municipality);
-    district.length && generatedTitle.push(district);
-    propertyType.length && generatedTitle.push(propertyType);
-    purpose.length && generatedTitle.push(purpose);
-    return generatedTitle.length ? `(${generatedTitle.join(' , ')})` : '';
-  }
-
-  protected getSelectedArea(isMuniciRequired: boolean, isDistrictRequired: boolean): string {
-    const generatedTitle: string[] = [];
-    const municipality = isMuniciRequired ? this.getSelectedMunicipality() : '';
-    const district = isDistrictRequired ? this.getSelectedDistrict() : '';
-    municipality.length && generatedTitle.push(municipality);
-    district.length && generatedTitle.push(district);
-    return generatedTitle.length ? `(${generatedTitle.join(' , ')})` : '';
-  }
-
-  private getSelectedMunicipality(): string {
-    if (this.criteria.criteria.municipalityId === -1) return '';
-    return this.lookupService.sellMunicipalitiesMap[this.criteria.criteria.municipalityId].getNames() || '';
-  }
-
-  private getSelectedDistrict(): string {
-    const areaCode = (this.criteria.criteria as SellCriteriaContract).areaCode;
-    if (areaCode === -1) return '';
-    return this.lookupService.sellDistrictMap[areaCode].getNames() || '';
-  }
-
-  private getSelectedPropertyType(): string {
-    return this.criteria.criteria.propertyTypeList &&
-      this.criteria.criteria.propertyTypeList.length == 1 &&
-      this.criteria.criteria.propertyTypeList[0] !== -1
-      ? this.lookupService.sellPropertyTypeMap[this.criteria.criteria.propertyTypeList[0]].getNames()
-      : '';
-  }
-
-  private getSelectedPurpose(): string {
-    return this.criteria.criteria.purposeList &&
-      this.criteria.criteria.purposeList.length == 1 &&
-      this.criteria.criteria.purposeList[0] !== -1
-      ? this.lookupService.sellPurposeMap[this.criteria.criteria.purposeList[0]].getNames()
-      : '';
+  setSelectedDurationType(value: boolean) {
+    this.showYearInChartTitle = value;
   }
 }

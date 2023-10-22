@@ -47,7 +47,7 @@
       <div class="flex flex-col">
         <h3
           class="heading text-xl sm:text-2xl md:text-3xl self-center md:self-start text-center text-primary border-secondary font-semibold">
-          {{ lang.map.rental_transactions_measuring_dashboard }} {{ basedOnCriteria }}
+          {{ lang.map.rental_transactions_measuring_dashboard }} {{ sectionTitle.getSelectedCriteria('rent', criteria.criteria,true,false) }}
         </h3>
         <div class="flex flex-col gap-4 xl:flex-row">
           <div
@@ -66,7 +66,7 @@
         <h3
           *ngIf="selectedRoot"
           class="heading text-xl sm:text-2xl md:text-3xl self-center text-center text-primary border-secondary font-semibold">
-          {{ selectedRoot.getNames() }} ({{ lang.map.depending_on_use }}) {{ getSelectedArea(true, true) }}
+          {{ selectedRoot.getNames() }} ({{ lang.map.depending_on_use }}) {{ sectionTitle.getSelectedCriteria('rent', criteria.criteria,true,false) }}
         </h3>
 
         <div class="mt-4 sm:hidden w-full grid grid-cols-2 gap-2 overflow-hidden">
@@ -91,7 +91,7 @@
         <h3
           *ngIf="selectedRoot"
           class="heading mt-20 text-xl sm:text-2xl md:text-3xl self-center text-center text-primary border-secondary font-semibold">
-          {{ selectedRoot.getNames() }} ({{ lang.map.depending_on_type }}) {{ getSelectedArea(true, true) }}
+          {{ selectedRoot.getNames() }} ({{ lang.map.depending_on_type }}) {{ sectionTitle.getSelectedCriteria('rent', criteria.criteria,true,false) }}
         </h3>
         <div class="mt-4 w-full sm:w-5/6 lg:w-11/12" dir="ltr">
           <app-property-carousel
@@ -103,7 +103,8 @@
     </div>
     <div class="py-16 px-3 lg:px-16">
       <app-duration-chart
-        [title]="(selectedRoot?.getNames() ?? '') + ' ' + basedOnCriteria"
+      (selectedDurationTypeEvent)="setSelectedDurationType($event)"
+        [title]="(selectedRoot?.getNames() ?? '') + ' ' + sectionTitle.getSelectedCriteria('rent', criteria.criteria,true,false,showYearInChartTitle)"
         [name]="selectedRoot?.getNames() ?? ''"
         [filterCriteria$]="criteria$"
         [rootData$]="rootData$"></app-duration-chart>
@@ -111,7 +112,7 @@
     <div class="px-3 lg:px-16 flex flex-col gap-4">
       <h3
         class="heading text-xl sm:text-2xl md:text-3xl self-center md:self-start text-center text-primary border-secondary font-semibold">
-        {{ lang.map.rent_transactions_list }} {{ getSelectedArea(true, true) }}
+        {{ lang.map.rent_transactions_list }} {{ sectionTitle.getSelectedCriteria('rent', criteria.criteria,true,false) }}
       </h3>
 
       <app-table
@@ -169,7 +170,7 @@
     <div class="px-3 lg:px-16 py-8 flex bg-sand mt-8 flex-col">
       <h3
         class="heading text-xl sm:text-2xl md:text-3xl self-center md:self-start text-center text-primary border-secondary font-semibold">
-        {{ lang.map.rental_indicators }} {{ getSelectedArea(true, true) }}
+        {{ lang.map.rental_indicators }} {{ sectionTitle.getSelectedCriteria('rent', criteria.criteria,true,false) }}
       </h3>
       <div class="mt-4 flex justify-center md:justify-end">
         <div class="grid grid-cols-2 gap-2">
@@ -280,7 +281,7 @@
 
     <div class="px-3 lg:px-16">
       <app-top-ten-chart
-        [title]="lang.map.top_10_areas + ' ' + getSelectedArea(true, false)"
+        [title]="lang.map.top_10_areas + ' ' + sectionTitle.getSelectedCriteria('rent', criteria.criteria,false,false)"
         [filterCriteria$]="criteria$"
         [accordingToList]="accordingToList"
         [selectedAccordingTo]="accordingToList[0]"
@@ -432,14 +433,14 @@
     </div>
     <div class="px-3 lg:px-16 grid grid-cols-1 lg:grid-cols-2 gap-2">
       <app-pie-chart
-        [title]="lang.map.rent_contracts_count_according_to_bedrooms + ' ' + getSelectedArea(true, true)"
+        [title]="lang.map.rent_contracts_count_according_to_bedrooms + ' ' + sectionTitle.getSelectedCriteria('rent', criteria.criteria,true,false)"
         [filterCriteria$]="criteria$"
         [rootData$]="roomsRootData$"
         [bindLabel]="roomLabel"
         [valueUnit]="lang.map.contract" />
 
       <app-pie-chart
-        [title]="lang.map.rent_contracts_count_according_to_furniture + ' ' + getSelectedArea(true, true)"
+        [title]="lang.map.rent_contracts_count_according_to_furniture + ' ' + sectionTitle.getSelectedCriteria('rent', criteria.criteria,true,false)"
         [filterCriteria$]="criteria$"
         [rootData$]="furnitureRootData$"
         [bindLabel]="furnitureLabel"

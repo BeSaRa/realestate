@@ -359,14 +359,14 @@ export class DashboardService extends RegisterServiceMixin(class {}) implements 
   mapDurationData(data: KpiDurationModel[], durations: Lookup[]): DurationDataContract {
     const durationData: DurationDataContract = {};
 
-    const { min: minYear, max: maxYear } = minMaxAvg(data.map((item) => item.issueYear));
+    const { min: minYear, max: maxYear } = minMaxAvg(data?.map((item) => item.issueYear));
     const yearRange = range(minYear, maxYear);
 
     durations.forEach((item) => {
       durationData[item.lookupKey] = { period: item, kpiValues: [] };
     });
 
-    data.forEach((item) => {
+    data?.forEach((item) => {
       durationData[item.issuePeriod].kpiValues.push(item);
     });
 
