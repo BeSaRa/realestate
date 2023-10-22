@@ -4,7 +4,7 @@ import localeAr from '@angular/common/locales/ar';
 import { Component, HostListener, OnInit, inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
-import { RouterModule, RouterOutlet } from '@angular/router';
+import { Router, RouterModule, RouterOutlet } from '@angular/router';
 import { ButtonComponent } from '@components/button/button.component';
 import { ChatGptComponent } from '@components/chat-gpt/chat-gpt.component';
 import { FooterComponent } from '@components/footer/footer.component';
@@ -59,6 +59,7 @@ export class AppComponent implements OnInit {
   urlService = inject(UrlService);
   userService = inject(UserService);
   snackbar = inject(MatSnackBar);
+  router = inject(Router);
 
   userInfo?: UserInfo;
   isAuthenticated: boolean = false;
@@ -133,6 +134,7 @@ export class AppComponent implements OnInit {
           verticalPosition: 'top',
           horizontalPosition: this.lang.isLtr ? 'left' : 'right'
         });
+        this.router.navigate(['home']);
       });
   }
 }
