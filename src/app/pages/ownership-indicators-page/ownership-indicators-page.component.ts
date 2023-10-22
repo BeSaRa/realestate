@@ -277,7 +277,7 @@ export default class OwnershipIndicatorsPageComponent implements OnInit, AfterVi
   filterChange({ criteria, type }: { criteria: CriteriaContract; type: CriteriaType }) {
     this.criteria = { criteria, type };
     this.criteriaSubject.next(this.criteria.criteria);
-    this.nationalityCriteriaSubject.next({ ...this.criteria.criteria, nationalityCode: this.selectedNationality.id });
+    // this.nationalityCriteriaSubject.next({ ...this.criteria.criteria, nationalityCode: this.selectedNationality.id });
 
     if (type === CriteriaType.DEFAULT) this.rootItemSelected(this.rootKPIS[0]);
     this.rootKPIS.map((item) => {
@@ -724,7 +724,6 @@ export default class OwnershipIndicatorsPageComponent implements OnInit, AfterVi
       makeUpdate: false,
     });
     this.updateMunicipalitiesChartData();
-    this.updateAreasChartData();
   };
 
   private _onMunicipalitiesChartUpdated = (chartContext: ChartContext, config: ChartConfig) => {
