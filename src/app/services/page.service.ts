@@ -13,8 +13,10 @@ export class PageService {
   http = inject(HttpClient);
   urlService = inject(UrlService);
 
+  private readonly _fetchTranslationsParam = '?fields=*,translations.*';
+
   @CastResponse(() => Page, { unwrap: 'data', fallback: '$default' })
   loadPage(pageName: Pages): Observable<Page> {
-    return this.http.get<Page>(this.urlService.URLS.BASE_URL + '/items/' + pageName);
+    return this.http.get<Page>(this.urlService.URLS.BASE_URL + '/items/' + pageName + this._fetchTranslationsParam);
   }
 }
