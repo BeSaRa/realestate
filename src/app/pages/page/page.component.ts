@@ -16,4 +16,8 @@ export default class PageComponent {
   @Input() pageData!: Page;
 
   lang = inject(TranslationService);
+
+  getPageContent() {
+    return this.pageData.translations[this.lang.getCurrent().code.includes('ar') ? 0 : 1];
+  }
 }
