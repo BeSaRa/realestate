@@ -769,5 +769,8 @@ export default class OwnershipIndicatorsPageComponent implements OnInit, AfterVi
       ? this.specialNationality.getNames()
       : this.lookupService.ownerNationalityMap[nationalityId]?.getNames() || '';
   }
+  getStringSelectedCriteria(): string {
+    return this.sectionTitle.getSelectedCriteria('owner', this.criteria.criteria, false, true, false);
+  }
   
 }

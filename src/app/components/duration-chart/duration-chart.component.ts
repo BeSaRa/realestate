@@ -53,7 +53,7 @@ export class DurationChartComponent extends OnDestroyMixin(class {}) implements 
   @Input() showSelectChartType = true;
   @Input() changeBarColorsAccordingToValue = false;
 
-  @Output() selectedDurationTypeEvent = new EventEmitter<boolean>();
+  @Output() isMonthltyDurationTypeEvent = new EventEmitter<boolean>();
 
   @ViewChildren('chart') chart!: QueryList<ChartComponent>;
 
@@ -113,8 +113,8 @@ export class DurationChartComponent extends OnDestroyMixin(class {}) implements 
     this._updateChartOptions();
   }
 
-  sendSelectedDurationTypeToParent() {
-    this.selectedDurationTypeEvent.emit(this.selectedDurationType == this.DurationTypes.MONTHLY);
+  isMonthlyDuration() {
+    this.isMonthltyDurationTypeEvent.emit(this.selectedDurationType == this.DurationTypes.MONTHLY);
   }
 
   updateChartDataForDuration(durationType: DurationEndpoints, isLoadingNewData = false) {
@@ -136,7 +136,7 @@ export class DurationChartComponent extends OnDestroyMixin(class {}) implements 
       this.selectedBarChartType = BarChartTypes.QUAD_BAR;
     }
 
-    this.sendSelectedDurationTypeToParent();
+    this.isMonthlyDuration();
   }
 
   private _updateForYearly(): void {

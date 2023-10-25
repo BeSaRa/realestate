@@ -52,7 +52,7 @@
       <div class="flex flex-col">
         <h3
           class="heading text-xl sm:text-2xl md:text-3xl self-center md:self-start text-center text-primary border-secondary font-semibold">
-          {{ lang.map.sell_transactions_measuring_dashboard }} {{ sectionTitle.getSelectedCriteria("sell", criteria.criteria,false) }}
+          {{ lang.map.sell_transactions_measuring_dashboard }} {{ getStringSelectedCriteria() }}
         </h3>
         <div class="flex flex-col gap-4 xl:flex-row">
           <div
@@ -71,7 +71,7 @@
         <h3
           *ngIf="selectedRoot"
           class="heading text-xl sm:text-2xl md:text-3xl self-center text-center text-primary border-secondary font-semibold">
-          {{ selectedRoot.getNames() }} ({{ lang.map.depending_on_use }}) {{ sectionTitle.getSelectedCriteria("sell", criteria.criteria,false,true) }}
+          {{ selectedRoot.getNames() }} ({{ lang.map.depending_on_use }}) {{ getStringSelectedCriteria() }}
         </h3>
 
         <div class="mt-4 sm:hidden w-full grid grid-cols-2 gap-2 overflow-hidden">
@@ -96,7 +96,7 @@
         <h3
           *ngIf="selectedRoot"
           class="heading mt-20 text-xl sm:text-2xl md:text-3xl self-center text-center text-primary border-secondary font-semibold">
-          {{ selectedRoot.getNames() }} ({{ lang.map.depending_on_type }}) {{ sectionTitle.getSelectedCriteria("sell", criteria.criteria,false,true) }}
+          {{ selectedRoot.getNames() }} ({{ lang.map.depending_on_type }}) {{ getStringSelectedCriteria() }}
         </h3>
         <div class="mt-4 w-full sm:w-5/6 lg:w-11/12" dir="ltr">
           <app-property-carousel
@@ -109,8 +109,8 @@
 
     <div class="py-16 px-3 lg:px-16">
       <app-duration-chart
-        (selectedDurationTypeEvent)="setSelectedDurationType($event)"
-        [title]="(selectedRoot?.getNames() ?? '') + ' ' + sectionTitle.getSelectedCriteria('sell', criteria.criteria,false,true,showYearInChartTitle)"
+        (isMonthltyDurationTypeEvent)="isMonthlyDurationType($event)"
+        [title]="(selectedRoot?.getNames() ?? '') + ' ' + getStringSelectedCriteria(true, isMonthlyDuration)"
         [name]="selectedRoot?.getNames() ?? ''"
         [filterCriteria$]="criteria$"
         [rootData$]="rootData$"></app-duration-chart>
@@ -118,7 +118,7 @@
     <div class="px-3 lg:px-16 flex flex-col gap-4">
       <h3
         class="heading text-xl sm:text-2xl md:text-3xl self-center md:self-start text-center text-primary border-secondary font-semibold">
-        {{ lang.map.sell_transactions_list }} {{ sectionTitle.getSelectedCriteria("sell", criteria.criteria,false) }}
+        {{ lang.map.sell_transactions_list }} {{ getStringSelectedCriteria() }}
       </h3>
 
       <app-table
@@ -218,7 +218,7 @@
     <div class="px-3 lg:px-16 py-8 flex bg-sand mt-8 flex-col">
       <h3
         class="heading text-xl sm:text-2xl md:text-3xl self-center md:self-start text-center text-primary border-secondary font-semibold">
-        {{ lang.map.sell_indicators }} {{ sectionTitle.getSelectedCriteria("sell", criteria.criteria,false,true) }}
+        {{ lang.map.sell_indicators }} {{ getStringSelectedCriteria() }}
       </h3>
       <div class="mt-4 flex justify-center md:justify-end">
         <div class="grid grid-cols-2 gap-2">
@@ -342,7 +342,7 @@
 
     <div class="px-3 lg:px-16">
       <app-top-ten-chart
-        [title]="lang.map.top_10_areas + ' ' + sectionTitle.getSelectedCriteria('sell', criteria.criteria,false,false)"
+        [title]="lang.map.top_10_areas + ' ' + getStringSelectedCriteria(false)"
         [filterCriteria$]="criteria$"
         [accordingToList]="accordingToList"
         [selectedAccordingTo]="accordingToList[0]"
