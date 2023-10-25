@@ -104,7 +104,7 @@
     <div class="py-16 px-3 lg:px-16">
       <app-duration-chart
         (isMonthltyDurationTypeEvent)="isMonthlyDurationType($event)"
-        [title]="(selectedRoot?.getNames() ?? '') + ' ' + getStringSelectedCriteria(isMonthlyDuration)"
+        [title]="(selectedRoot?.getNames() ?? '') + ' ' + getStringSelectedCriteria(true, isMonthlyDuration)"
         [name]="selectedRoot?.getNames() ?? ''"
         [filterCriteria$]="criteria$"
         [rootData$]="rootData$"></app-duration-chart>
