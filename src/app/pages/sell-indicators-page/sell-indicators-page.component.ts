@@ -134,7 +134,7 @@ export default class SellIndicatorsPageComponent implements OnInit, OnDestroy {
     criteria: PriceCriteriaContract;
   };
 
-  showYearInChartTitle: boolean = true;
+  isMonthlyDuration: boolean = true;
   criteriaSubject = new BehaviorSubject<CriteriaContract | undefined>(undefined);
   priceCriteriaSubject = new BehaviorSubject<PriceCriteriaContract | undefined>(undefined);
   criteria$ = this.criteriaSubject.asObservable();
@@ -585,7 +585,11 @@ export default class SellIndicatorsPageComponent implements OnInit, OnDestroy {
       });
   }
 
-  setSelectedDurationType(value: boolean) {
-    this.showYearInChartTitle = value;
+  isMonthlyDurationType(value: boolean) {
+    this.isMonthlyDuration = value;
+  }
+
+  getStringSelectedCriteria(isDistrictRequired: boolean = true, showYearInTitle: boolean = true): string {
+    return this.sectionTitle.getSelectedCriteria('sell', this.criteria.criteria, false, isDistrictRequired, showYearInTitle);
   }
 }

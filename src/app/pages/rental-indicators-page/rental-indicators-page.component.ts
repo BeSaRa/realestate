@@ -117,7 +117,7 @@ export default class RentalIndicatorsPageComponent implements OnInit, OnDestroy 
 
   criteriaSubject = new BehaviorSubject<CriteriaContract | undefined>(undefined);
   criteria$ = this.criteriaSubject.asObservable();
-  showYearInChartTitle: boolean = true;
+  isMonthlyDuration: boolean = true;
 
   // transactions = new ReplaySubject<RentTransaction[]>(1);
   transactions$: Observable<RentTransaction[]> = this.loadTransactions();
@@ -572,7 +572,11 @@ export default class RentalIndicatorsPageComponent implements OnInit, OnDestroy 
     item.openChart(this.criteria.criteria).pipe(take(1)).subscribe();
   }
 
-  setSelectedDurationType(value: boolean) {
-    this.showYearInChartTitle = value;
+  isMonthlyDurationType(value: boolean) {
+    this.isMonthlyDuration = value;
+  }
+
+  getStringSelectedCriteria(isZoneRequired: boolean = true, showYearInTitle: boolean = true): string {
+    return this.sectionTitle.getSelectedCriteria('rent', this.criteria.criteria, isZoneRequired, false, showYearInTitle);
   }
 }

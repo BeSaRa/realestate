@@ -46,7 +46,7 @@ export class StackedDurationChartComponent
   @Input() showSelectChartType = true;
   @Input() changeBarColorsAccordingToValue = false;
 
-  @Output() selectedDurationTypeEvent = new EventEmitter<boolean>();
+  @Output() isMonthltyDurationTypeEvent = new EventEmitter<boolean>();
 
   @ViewChildren('chart') chart!: QueryList<ChartComponent>;
 
@@ -114,8 +114,8 @@ export class StackedDurationChartComponent
     this._updateChartOptions();
   }
 
-  sendSelectedDurationTypeToParent() {
-    this.selectedDurationTypeEvent.emit(this.selectedDurationType == this.DurationTypes.MONTHLY);
+  isMonthlyDuration() {
+    this.isMonthltyDurationTypeEvent.emit(this.selectedDurationType == this.DurationTypes.MONTHLY);
   }
 
   updateChartDataForDuration(durationType: DurationEndpoints, isLoadingNewData = false) {
@@ -138,7 +138,7 @@ export class StackedDurationChartComponent
       this.selectedBarChartType = BarChartTypes.QUAD_BAR;
     }
 
-    this.sendSelectedDurationTypeToParent();
+    this.isMonthlyDuration();
   }
 
   updateChartDataYearly() {

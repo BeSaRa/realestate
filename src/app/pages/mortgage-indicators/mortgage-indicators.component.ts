@@ -78,9 +78,9 @@ export default class MortgageIndicatorsComponent implements OnInit {
     type: CriteriaType;
   };
 
-  showYearInChartTitle: boolean = true;
-  showYearInStackedChartTitle: boolean = true;
-  showYearInChartTitleUnits: boolean = true;
+  isMonthlyDuration: boolean = true;
+  isMonthlyDurationForStacked: boolean = true;
+  isMonthlyDurationForUnits: boolean = true;
 
   criteriaSubject = new BehaviorSubject<CriteriaContract | undefined>(undefined);
   criteria$ = this.criteriaSubject.asObservable();
@@ -242,14 +242,18 @@ export default class MortgageIndicatorsComponent implements OnInit {
       );
   }
 
-  setSelectedDurationType(value: boolean) {
-    this.showYearInChartTitle = value;
+  isMonthlyDurationType(value: boolean) {
+    this.isMonthlyDuration = value;
   }
 
-  setStackedSelectedDurationType(value: boolean) {
-    this.showYearInStackedChartTitle = value;
+  isMonthlyDurationTypeForStacked(value: boolean) {
+    this.isMonthlyDurationForStacked = value;
   }
-  setSelectedDurationTypeForUnits(value: boolean) {
-    this.showYearInChartTitleUnits = value;
+  isMonthlyDurationTypeForUnits(value: boolean) {
+    this.isMonthlyDurationForUnits = value;
+  }
+
+  getStringSelectedCriteria(showYearInTitle: boolean = true): string {
+    return this.sectionTitle.getSelectedCriteria('mort', this.criteria.criteria, false, true, showYearInTitle)
   }
 }
