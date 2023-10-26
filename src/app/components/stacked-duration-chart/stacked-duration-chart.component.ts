@@ -1,5 +1,16 @@
 import { CommonModule } from '@angular/common';
-import { AfterViewInit, Component, Input, OnDestroy, OnInit, QueryList, ViewChildren, inject, Output, EventEmitter } from '@angular/core';
+import {
+  AfterViewInit,
+  Component,
+  Input,
+  OnDestroy,
+  OnInit,
+  QueryList,
+  ViewChildren,
+  inject,
+  Output,
+  EventEmitter,
+} from '@angular/core';
 import { DateAdapter } from '@angular/material/core';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { ButtonComponent } from '@components/button/button.component';
@@ -12,11 +23,10 @@ import { BarChartTypes } from '@enums/bar-chart-type';
 import { Breakpoints } from '@enums/breakpoints';
 import { ChartType } from '@enums/chart-type';
 import { DurationEndpoints } from '@enums/durations';
-import { TransactionType } from '@enums/transaction-type';
 import { OnDestroyMixin } from '@mixins/on-destroy-mixin';
 import { ChartOptionsModel } from '@models/chart-options-model';
+import { KpiBaseModel } from '@models/kpi-base-model';
 import { KpiDurationModel } from '@models/kpi-duration-model';
-import { KpiModel } from '@models/kpi-model';
 import { AppChartTypesService } from '@services/app-chart-types.service';
 import { DashboardService } from '@services/dashboard.service';
 import { LookupService } from '@services/lookup.service';
@@ -38,11 +48,12 @@ export class StackedDurationChartComponent
   implements OnInit, AfterViewInit, OnDestroy
 {
   @Input({ required: true }) title!: string;
-  @Input({ required: true }) charts!: Record<TransactionType, string>;
+  @Input({ required: true }) charts!: Record<number, string>;
   @Input({ required: true }) filterCriteria$!: Observable<CriteriaContract | undefined>;
   @Input({ required: true }) rootData$!: Observable<
     { chartDataUrl: string; hasPrice: boolean; makeUpdate?: boolean } | undefined
   >;
+  @Input({ required: true }) bindDataSplitProp!: string;
   @Input() showSelectChartType = true;
   @Input() changeBarColorsAccordingToValue = false;
 
@@ -143,7 +154,7 @@ export class StackedDurationChartComponent
 
   updateChartDataYearly() {
     this.dashboardService
-      .loadChartKpiData<KpiModel>(this.rootData, this.criteria)
+      .loadChartKpiData<KpiBaseModel>(this.rootData, this.criteria)
       .pipe(
         take(1),
         catchError((err) => {
@@ -153,12 +164,12 @@ export class StackedDurationChartComponent
         })
       )
       .subscribe((data) => {
-        const _data = this._splitAccordingToActionType(data);
+        const _data = this._splitAccordingToDataSplitProp(data);
 
         this.chartSeriesData = Object.keys(this.charts).map((type) => ({
-          name: this.charts[type as unknown as TransactionType],
+          name: this.charts[type as unknown as number],
           group: '0',
-          data: _data[type as unknown as TransactionType]?.map((i) => ({ y: i.kpiVal, x: i.issueYear })),
+          data: _data[type as unknown as number].map((i) => ({ y: i.kpiVal, x: i.issueYear })),
         }));
         this.chartDataLength = this.chartSeriesData[0].data?.length;
 
@@ -183,15 +194,15 @@ export class StackedDurationChartComponent
       .subscribe((data) => {
         data.sort((a, b) => a.issuePeriod - b.issuePeriod);
 
-        const _data = this._splitAccordingToActionType(data as unknown as KpiModel[]) as unknown as Record<
+        const _data = this._splitAccordingToDataSplitProp(data as unknown as KpiBaseModel[]) as unknown as Record<
           number,
           KpiDurationModel[]
         >;
 
         this.chartSeriesData = Object.keys(this.charts).map((type) => ({
-          name: this.charts[type as unknown as TransactionType],
+          name: this.charts[type as unknown as number],
           group: '0',
-          data: _data[type as unknown as TransactionType].map((i) => ({
+          data: _data[type as unknown as number].map((i) => ({
             y: i.kpiVal,
             x: months[i.issuePeriod - 1],
           })),
@@ -221,7 +232,7 @@ export class StackedDurationChartComponent
       .pipe(
         map(
           (data) =>
-            this._splitAccordingToActionType(data as unknown as KpiModel[]) as unknown as Record<
+            this._splitAccordingToDataSplitProp(data as unknown as KpiBaseModel[]) as unknown as Record<
               number,
               KpiDurationModel[]
             >
@@ -231,13 +242,13 @@ export class StackedDurationChartComponent
             (acc, cur) => ({
               ...acc,
               [cur]: this.dashboardService.mapDurationData(
-                data[cur as unknown as TransactionType],
+                data[cur as unknown as number],
                 this.selectedDurationType === DurationEndpoints.HALFY
                   ? this.lookupService.ownerLookups.halfYearDurations
                   : this.lookupService.ownerLookups.quarterYearDurations
               ),
             }),
-            {} as Record<TransactionType, DurationDataContract>
+            {} as Record<number, DurationDataContract>
           );
         })
       )
@@ -247,13 +258,13 @@ export class StackedDurationChartComponent
         this.chartSeriesData = [];
         Object.keys(this.charts).forEach((type) => {
           this.chartSeriesData.push(
-            ...Object.keys(data[type as unknown as TransactionType]).map((key, index) => ({
+            ...Object.keys(data[type as unknown as number]).map((key, index) => ({
               name:
-                this.charts[type as unknown as TransactionType] +
+                this.charts[type as unknown as number] +
                 ': ' +
-                data[type as unknown as TransactionType][key as unknown as number].period.getNames(),
+                data[type as unknown as number][key as unknown as number].period.getNames(),
               group: index.toString(),
-              data: data[type as unknown as TransactionType][key as unknown as number].kpiValues.map((item) => ({
+              data: data[type as unknown as number][key as unknown as number].kpiValues.map((item) => ({
                 y: item.kpiVal,
                 x: item.issueYear,
               })),
@@ -299,12 +310,13 @@ export class StackedDurationChartComponent
     }, 0);
   }
 
-  private _splitAccordingToActionType(data: KpiModel[]) {
+  private _splitAccordingToDataSplitProp(data: KpiBaseModel[]) {
     return data.reduce((acc, cur) => {
-      if (!acc[cur.actionType]) acc[cur.actionType] = [];
-      acc[cur.actionType].push(cur);
+      if (!acc[cur[this.bindDataSplitProp as keyof KpiBaseModel]])
+        acc[cur[this.bindDataSplitProp as keyof KpiBaseModel]] = [];
+      acc[cur[this.bindDataSplitProp as keyof KpiBaseModel]].push(cur);
       return acc;
-    }, {} as Record<TransactionType, KpiModel[]>);
+    }, {} as Record<number, KpiBaseModel[]>);
   }
 
   private _listenToCriteriaAndRootChange() {
@@ -367,7 +379,7 @@ export class StackedDurationChartComponent
       });
   }
 
-  private _initializeBarColorsAccordingToValue(data: Record<TransactionType, DurationDataContract>) {
+  private _initializeBarColorsAccordingToValue(data: Record<number, DurationDataContract>) {
     const _sortedColors = [
       [AppColors.PRIMARY, AppColors.PRIMARY_80, AppColors.PRIMARY_60, AppColors.PRIMARY_40],
       [AppColors.SECONDARY, AppColors.SECONDARY_80, AppColors.SECONDARY_60, AppColors.SECONDARY_40],
@@ -375,11 +387,11 @@ export class StackedDurationChartComponent
     this.barColorsAccordingToValue = [];
     let kpiValues: number[] = [];
 
-    for (let i = 0; i < data[Object.keys(data)[0] as unknown as TransactionType][1].kpiValues.length; i++) {
+    for (let i = 0; i < data[Object.keys(data)[0] as unknown as number][1].kpiValues.length; i++) {
       const _pointColors = {} as Record<number, Record<number, string>>;
       Object.keys(this.charts).forEach((type, _index) => {
-        kpiValues = Object.keys(data[type as unknown as TransactionType]).map((duration) => {
-          return data[type as unknown as TransactionType][duration as unknown as number].kpiValues[i].kpiVal;
+        kpiValues = Object.keys(data[type as unknown as number]).map((duration) => {
+          return data[type as unknown as number][duration as unknown as number].kpiValues[i].kpiVal;
         });
         kpiValues = kpiValues.sort((a, b) => b - a);
         _pointColors[_index % 2] = kpiValues.reduce((acc, cur, index) => {

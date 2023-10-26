@@ -54,6 +54,12 @@ export const routes: Routes = [
     loadComponent: () => import('@pages/ownership-indicators-page/ownership-indicators-page.component'),
   },
   {
+    path: 'occupied-and-vacant-indicators',
+    canActivate: [authGuard('home')],
+    loadComponent: () =>
+      import('@pages/occupied-and-vacant-indicators-page/occupied-and-vacant-indicators-page.component'),
+  },
+  {
     path: 'inputs',
     loadComponent: () => import('@pages/inputs-page/inputs-page.component'),
   },

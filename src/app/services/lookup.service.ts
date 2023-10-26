@@ -22,16 +22,19 @@ export class LookupService extends RegisterServiceMixin(class {}) implements Ser
   sellLookups!: LookupsContract;
   mortLookups!: LookupsContract;
   ownerLookups!: LookupsContract;
+  ovLookups!: LookupsContract;
 
   rentMunicipalitiesMap: Record<number, Lookup> = {};
   sellMunicipalitiesMap: Record<number, Lookup> = {};
   mortMunicipalitiesMap: Record<number, Lookup> = {};
   ownerMunicipalitiesMap: Record<number, Lookup> = {};
+  ovMunicipalitiesMap: Record<number, Lookup> = {};
 
   rentZonesMap: Record<number, Lookup> = {};
   sellZonesMap: Record<number, Lookup> = {};
   mortZonesMap: Record<number, Lookup> = {};
   ownerZonesMap: Record<number, Lookup> = {};
+  ovZonesMap: Record<number, Lookup> = {};
 
   rentRoomsMap: Record<number, Lookup> = {};
 
@@ -51,6 +54,7 @@ export class LookupService extends RegisterServiceMixin(class {}) implements Ser
   rentDistrictMap: Record<number, Lookup> = {};
   mortDistrictMap: Record<number, Lookup> = {};
   ownerDistrictMap: Record<number, Lookup> = {};
+  ovDistrictMap: Record<number, Lookup> = {};
 
   ownerNationalityMap: Record<number, Lookup> = {};
 
@@ -59,6 +63,12 @@ export class LookupService extends RegisterServiceMixin(class {}) implements Ser
   ownerAgeCategoryMap: Record<number, Lookup> = {};
 
   ownerGenderMap: Record<number, Lookup> = {};
+
+  ovOccupancyStatusMap: Record<number, Lookup> = {};
+
+  ovPremiseCategoryMap: Record<number, Lookup> = {};
+
+  ovPremiseTypeMap: Record<number, Lookup> = {};
 
   @CastResponse(() => LookupsMap, {
     shape: {
@@ -122,7 +132,21 @@ export class LookupService extends RegisterServiceMixin(class {}) implements Ser
     },
   })
   _loadOwnerLookups(): Observable<LookupsMap> {
-    return this.http.get<LookupsMap>(this.urlService.URLS.OWNER_LOOKUPS).pipe(tap(console.log));
+    return this.http.get<LookupsMap>(this.urlService.URLS.OWNER_LOOKUPS);
+  }
+
+  @CastResponse(() => LookupsMap, {
+    shape: {
+      'districtList.*': () => Lookup,
+      'zoneList.*': () => Lookup,
+      'municipalityList.*': () => Lookup,
+      'occupancyStatusList.*': () => Lookup,
+      'premiseCategoryList.*': () => Lookup,
+      'premiseTypeList.*': () => Lookup,
+    },
+  })
+  _loadOVLookups(): Observable<LookupsMap> {
+    return this.http.get<LookupsMap>(this.urlService.URLS.OV_LOOKUPS).pipe(tap(console.log));
   }
 
   private _load(): Observable<LookupsMap[]> {
@@ -131,22 +155,22 @@ export class LookupService extends RegisterServiceMixin(class {}) implements Ser
       this._loadSellLookups(),
       this._loadMortLookups(),
       this._loadOwnerLookups(),
+      this._loadOVLookups(),
     ]).pipe(tap(console.log));
   }
 
   load(): Observable<LookupsMap[]> {
     return this._load()
       .pipe(
-        map(([rent, sell, mort, owner]) => {
+        tap(([rent, sell, mort]) => {
           // rent.zoneList = rent.zoneList.filter((i) => i.lookupKey !== -1); // remove the all from zones
           sell.zoneList = sell.zoneList.filter((i) => i.lookupKey !== -1); // remove the all from zones
           mort.zoneList = mort.zoneList.filter((i) => i.lookupKey !== -1); // remove the all from zones
           sell.districtList = sell.districtList.filter((i) => i.lookupKey !== -1 && i.lookupKey !== 0); // remove the all from zones
           rent.districtList = rent.districtList.filter((i) => i.lookupKey !== -1 && i.lookupKey !== 0); // remove the all from zones
           mort.districtList = mort.districtList.filter((i) => i.lookupKey !== -1 && i.lookupKey !== 0); // remove the all from zones
-          return [rent, sell, mort, owner];
         }),
-        tap(([rent, sell, mort, owner]) => {
+        tap(([rent, sell, mort, owner, ov]) => {
           this.rentLookups = rent;
           this.sellLookups = this._addAllToDistrict(this._addAllToPropertyType(sell));
           this.mortLookups = this._addAllToDistrict(this._addAllToPropertyType(mort));
@@ -157,6 +181,7 @@ export class LookupService extends RegisterServiceMixin(class {}) implements Ser
               )
             )
           );
+          this.ovLookups = this._addAllToPremiseCategories(this._addAllToPremiseTypes(ov));
           // remove unknown district from owner lookups until it removed from be
           this.ownerLookups.districtList = this.ownerLookups.districtList.filter((item) => item.lookupKey !== 0);
         })
@@ -167,12 +192,14 @@ export class LookupService extends RegisterServiceMixin(class {}) implements Ser
           this.sellMunicipalitiesMap = this._initializeMunicipalitiesMap(res[1]);
           this.mortMunicipalitiesMap = this._initializeMunicipalitiesMap(res[2]);
           this.ownerMunicipalitiesMap = this._initializeMunicipalitiesMap(res[3]);
+          this.ovMunicipalitiesMap = this._initializeMunicipalitiesMap(res[4]);
         }),
         tap((res) => {
           this.rentZonesMap = this._initializeZonesMap(res[0]);
           this.sellZonesMap = this._initializeZonesMap(res[1]);
           this.mortZonesMap = this._initializeZonesMap(res[2]);
           this.ownerZonesMap = this._initializeZonesMap(res[3]);
+          this.ovZonesMap = this._initializeZonesMap(res[4]);
         }),
         tap((res) => {
           this.rentPurposeMap = this._initializePurposeMap(res[0]);
@@ -191,6 +218,7 @@ export class LookupService extends RegisterServiceMixin(class {}) implements Ser
           this.sellDistrictMap = this._initializeDistrictMap(res[1]);
           this.mortDistrictMap = this._initializeDistrictMap(res[2]);
           this.ownerDistrictMap = this._initializeDistrictMap(res[3]);
+          this.ovDistrictMap = this._initializeDistrictMap(res[4]);
         }),
         tap((res) => {
           this.rentFurnitureMap = this._initializeFurnitureStatusMap(res[0]);
@@ -200,10 +228,13 @@ export class LookupService extends RegisterServiceMixin(class {}) implements Ser
         }),
         tap((res) => {
           this.ownerOwnerCategoryMap = this._initializeOwnerCategoryMap(res[3]);
-        }),
-        tap((res) => {
           this.ownerAgeCategoryMap = this._initializeAgeCategoryMap(res[3]);
           this.ownerGenderMap = this._initializeGenderMap(res[3]);
+        }),
+        tap((res) => {
+          this.ovOccupancyStatusMap = this._initializeOccupancyStatusMap(res[4]);
+          this.ovPremiseCategoryMap = this._initializePremiseCategoryMap(res[4]);
+          this.ovPremiseTypeMap = this._initializePremiseTypeMap(res[4]);
         })
       );
   }
@@ -264,6 +295,21 @@ export class LookupService extends RegisterServiceMixin(class {}) implements Ser
 
   private _initializeGenderMap(lookups: LookupsMap) {
     return lookups.genderList.reduce((acc, i) => {
+      return { ...acc, [i.lookupKey]: i };
+    }, {});
+  }
+  private _initializeOccupancyStatusMap(lookups: LookupsMap) {
+    return lookups.occupancyStatusList.reduce((acc, i) => {
+      return { ...acc, [i.lookupKey]: i };
+    }, {});
+  }
+  private _initializePremiseCategoryMap(lookups: LookupsMap) {
+    return lookups.premiseCategoryList.reduce((acc, i) => {
+      return { ...acc, [i.lookupKey]: i };
+    }, {});
+  }
+  private _initializePremiseTypeMap(lookups: LookupsMap) {
+    return lookups.premiseTypeList.reduce((acc, i) => {
       return { ...acc, [i.lookupKey]: i };
     }, {});
   }
@@ -343,6 +389,32 @@ export class LookupService extends RegisterServiceMixin(class {}) implements Ser
         lookupKey: 82804,
       }),
       ...lookups.ownerCategoryList,
+    ];
+    return lookups;
+  }
+
+  private _addAllToPremiseCategories(lookups: LookupsContract) {
+    if (lookups.premiseCategoryList.find((p) => p.lookupKey === -1)) return lookups;
+    lookups.premiseCategoryList = [
+      new Lookup().clone<Lookup>({
+        arName: 'الكل',
+        enName: 'All',
+        lookupKey: -1,
+      }),
+      ...lookups.premiseCategoryList,
+    ];
+    return lookups;
+  }
+
+  private _addAllToPremiseTypes(lookups: LookupsContract) {
+    if (lookups.premiseTypeList.find((p) => p.lookupKey === -1)) return lookups;
+    lookups.premiseTypeList = [
+      new Lookup().clone<Lookup>({
+        arName: 'الكل',
+        enName: 'All',
+        lookupKey: -1,
+      }),
+      ...lookups.premiseTypeList,
     ];
     return lookups;
   }

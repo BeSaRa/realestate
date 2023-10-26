@@ -283,5 +283,21 @@ export interface LangKeysContract {
 
   logged_out_successfully: string;
   are_you_sure: string;
-  yes : string;
+  yes: string;
+
+  occupied_and_vacant_units_indicators: string;
+  occupancy_status: string;
+  premise_category: string;
+  premise_type: string;
+  occupied_and_vacant_units_indicators_dashboard: string;
+  total_number_of_units: string;
+  total_number_of_occupied_units: string;
+  total_number_of_vacant_units: string;
+  depending_on_category: string;
+  hide: string;
+  show_more: string;
+  show_all: string;
+  occupied: string;
+  vacant: string;
+  total_number_of_occupied_and_vacant: string;
 }

@@ -45,7 +45,7 @@ h6 {
 }
 
 .dialog-footer {
-  @apply border border-t p-4 space-x-4 rtl:space-x-reverse flex;
+  @apply border border-t p-4 space-x-4 rtl:space-x-reverse flex justify-end;
 }
 
 .dialog-header {
