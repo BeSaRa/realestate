@@ -75,7 +75,7 @@ import { Subject, debounceTime, filter, map, takeUntil, tap } from 'rxjs';
   ],
 })
 export class TransactionsFilterComponent implements OnInit, OnDestroy {
-  @Input() indicatorType: 'sell' | 'rent' | 'mortgage' | 'owner' = 'rent';
+  @Input() indicatorType: 'sell' | 'rent' | 'mortgage' | 'owner' | 'ov' = 'rent';
   @Input() municipalities: Lookup[] = [];
   @Input() propertyTypes: Lookup[] = [];
   @Input() propertyUsages: Lookup[] = [];
@@ -85,6 +85,9 @@ export class TransactionsFilterComponent implements OnInit, OnDestroy {
   @Input() areas: Lookup[] = [];
   @Input() nationalities: Lookup[] = [];
   @Input() ownerTypes: Lookup[] = [];
+  @Input() occupancyStatuses: Lookup[] = [];
+  @Input() premiseCategories: Lookup[] = [];
+  @Input() premiseTypes: Lookup[] = [];
   @Input() paramsRange: ParamRange[] = [];
 
   @Output() fromChanged = new EventEmitter<{ criteria: CriteriaContract; type: CriteriaType }>();
@@ -201,6 +204,9 @@ export class TransactionsFilterComponent implements OnInit, OnDestroy {
       streetNo: [],
       nationalityCode: [],
       ownerCategoryCode: [],
+      occupancyStatus: [],
+      premiseCategoryList: [],
+      premiseTypeList: [],
 
       // not related to the criteria
       durationType: [],
@@ -283,6 +289,18 @@ export class TransactionsFilterComponent implements OnInit, OnDestroy {
     return this.form.get('ownerCategoryCode') as AbstractControl;
   }
 
+  get occupancyStatus(): AbstractControl {
+    return this.form.get('occupancyStatus') as AbstractControl;
+  }
+
+  get premiseCategoryList(): AbstractControl {
+    return this.form.get('premiseCategoryList') as AbstractControl;
+  }
+
+  get premiseTypeList(): AbstractControl {
+    return this.form.get('premiseTypeList') as AbstractControl;
+  }
+
   ngOnInit(): void {
     this.unit.disable();
     this.years = range(this.isSell() ? 2006 : 2019, new Date().getFullYear());
@@ -295,6 +313,8 @@ export class TransactionsFilterComponent implements OnInit, OnDestroy {
     this.listenToUnitChange();
     // this.listenToNationalityChange(); // it needs edit from be
     // this.listenToOwnerCategoryChange(); // it needs edit from be
+    this.listenToPremiseCategoryListChange();
+    this.listenToPremiseTypeListChange();
     this.setDefaultValues();
     this.setParamsRange();
   }
@@ -311,7 +331,7 @@ export class TransactionsFilterComponent implements OnInit, OnDestroy {
 
   private setDefaultValues() {
     this.form.patchValue({
-      municipalityId: this.isSell() || this.isMort() ? 4 : this.isOwner() ? -1 : 1,
+      municipalityId: this.isSell() || this.isMort() || this.isOV() ? 4 : this.isOwner() ? -1 : 1,
       propertyTypeList: [-1],
       purposeList: [-1],
       zoneId: -1,
@@ -325,6 +345,9 @@ export class TransactionsFilterComponent implements OnInit, OnDestroy {
       furnitureStatus: this.furnitureStatus.length ? -1 : undefined,
       nationalityCode: -1,
       ownerCategoryCode: -1,
+      occupancyStatus: 0,
+      premiseCategoryList: [-1],
+      premiseTypeList: [-1],
     });
     this.sendFilter(CriteriaType.DEFAULT);
   }
@@ -424,6 +447,36 @@ export class TransactionsFilterComponent implements OnInit, OnDestroy {
   listenToUnitChange() {
     this.unit.valueChanges.pipe(takeUntil(this.destroy$)).subscribe((value) => {
       this.unitsService.setUnit(value);
+    });
+  }
+
+  listenToPremiseCategoryListChange(): void {
+    this.premiseCategoryList.valueChanges.pipe(takeUntil(this.destroy$)).subscribe((value: number[]) => {
+      this.premiseCategories.forEach((item) => {
+        (value ?? []).includes(-1)
+          ? item.lookupKey !== -1
+            ? (item.disabled = true)
+            : (item.disabled = false)
+          : (item.disabled = false);
+      });
+      this.premiseCategoryList.patchValue(value.includes(-1) ? [-1] : value.filter((item) => item !== -1), {
+        emitEvent: false,
+      });
+    });
+  }
+
+  listenToPremiseTypeListChange(): void {
+    this.premiseTypeList.valueChanges.pipe(takeUntil(this.destroy$)).subscribe((value: number[]) => {
+      this.premiseTypes.forEach((item) => {
+        (value ?? []).includes(-1)
+          ? item.lookupKey !== -1
+            ? (item.disabled = true)
+            : (item.disabled = false)
+          : (item.disabled = false);
+      });
+      this.premiseTypeList.patchValue(value.includes(-1) ? [-1] : value.filter((item) => item !== -1), {
+        emitEvent: false,
+      });
     });
   }
 
@@ -607,7 +660,6 @@ export class TransactionsFilterComponent implements OnInit, OnDestroy {
 
   _removeUnusedProps(value: any) {
     delete value.durationType;
-    delete value.issueDateMonth;
     if (this.isSell()) {
       delete value.rentPaymentMonthlyPerUnitFrom;
       delete value.rentPaymentMonthlyPerUnitTo;
@@ -639,10 +691,36 @@ export class TransactionsFilterComponent implements OnInit, OnDestroy {
       delete value.issueDateTo;
       delete value.unit;
 
-      // // temporarly
-      // delete value.nationalityCode;
-      // delete value.ownerCategoryCode;
+      delete value.realEstateValueFrom;
+      delete value.realEstateValueTo;
+      delete value.rentPaymentMonthlyPerUnitFrom;
+      delete value.rentPaymentMonthlyPerUnitTo;
     }
+
+    if (this.isOV()) {
+      delete value.areaCode;
+      delete value.propertyTypeList;
+      delete value.purposeList;
+
+      delete value.realEstateValueFrom;
+      delete value.realEstateValueTo;
+      delete value.rentPaymentMonthlyPerUnitFrom;
+      delete value.rentPaymentMonthlyPerUnitTo;
+    }
+
+    if (!this.isOwner()) {
+      delete value.nationalityCode;
+      delete value.ownerCategoryCode;
+    }
+
+    if (!this.isOV()) {
+      delete value.issueDateMonth;
+
+      delete value.occupancyStatus;
+      delete value.premiseCategoryList;
+      delete value.premiseTypeList;
+    }
+
     Object.keys(value).forEach((key) => {
       if ((typeof value[key] === 'string' && value[key] === '') || value[key] === null) delete value[key];
       if (Array.isArray(value[key]) && value[key].length === 0) delete value[key];
@@ -651,7 +729,7 @@ export class TransactionsFilterComponent implements OnInit, OnDestroy {
     return value;
   }
 
-  private isIndicator(name: 'sell' | 'rent' | 'mortgage' | 'owner'): boolean {
+  private isIndicator(name: 'sell' | 'rent' | 'mortgage' | 'owner' | 'ov'): boolean {
     return this.indicatorType === name;
   }
 
@@ -669,6 +747,10 @@ export class TransactionsFilterComponent implements OnInit, OnDestroy {
 
   isOwner(): boolean {
     return this.isIndicator('owner');
+  }
+
+  isOV(): boolean {
+    return this.isIndicator('ov');
   }
 
   private setParamsRange() {

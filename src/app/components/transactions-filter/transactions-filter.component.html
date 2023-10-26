@@ -28,7 +28,7 @@
       [options]="filteredAreas" />
 
     <app-select-input
-      *ngIf="isRent()"
+      *ngIf="isRent() || isOV()"
       [enableFilter]="true"
       bindFilter="getNames"
       formControlName="zoneId"
@@ -38,6 +38,7 @@
       [options]="filteredZones" />
 
     <app-select-input
+      *ngIf="!isOV()"
       [enableFilter]="true"
       bindFilter="getNames"
       formControlName="propertyTypeList"
@@ -48,6 +49,7 @@
       [options]="propertyTypes" />
 
     <app-select-input
+      *ngIf="!isOV()"
       [enableFilter]="true"
       bindFilter="getNames"
       formControlName="purposeList"
@@ -57,12 +59,38 @@
       [label]="lang.map.property_usage"
       [options]="propertyUsages" />
 
-      
-    <app-select-input 
-      *ngIf="!displayRange && !isOwner()" 
-      formControlName="issueDateYear" 
-      [label]="lang.map.year" 
-      [options]="years" />
+    <app-select-input
+      *ngIf="isOV()"
+      [enableFilter]="true"
+      bindFilter="getNames"
+      formControlName="occupancyStatus"
+      bindValue="lookupKey"
+      [label]="lang.map.occupancy_status"
+      bindLabel="getNames"
+      [options]="occupancyStatuses"
+      [isSecondary]="isOpened" />
+
+    <app-select-input
+      *ngIf="isOV()"
+      [enableFilter]="true"
+      bindFilter="getNames"
+      formControlName="premiseCategoryList"
+      [isMultiple]="true"
+      bindValue="lookupKey"
+      [label]="lang.map.premise_category"
+      bindLabel="getNames"
+      [options]="premiseCategories" />
+
+    <app-select-input
+      *ngIf="isOV()"
+      [enableFilter]="true"
+      bindFilter="getNames"
+      formControlName="premiseTypeList"
+      [isMultiple]="true"
+      bindValue="lookupKey"
+      [label]="lang.map.premise_type"
+      bindLabel="getNames"
+      [options]="premiseTypes" />
 
     <app-select-input
       *ngIf="!isOwner()"
@@ -71,6 +99,12 @@
       bindValue="lookupKey"
       [label]="lang.map.duration"
       [options]="durations" />
+
+    <app-select-input
+      *ngIf="!displayRange && !isOwner()"
+      formControlName="issueDateYear"
+      [label]="lang.map.year"
+      [options]="years" />
 
     <app-select-input
       *ngIf="displayHalf && !isOwner()"
@@ -136,26 +170,26 @@
 
     <!-- [isMultiple]="true" should be added -->
     <app-select-input
-    *ngIf="isOwner()"
-    [enableFilter]="true"
-    bindFilter="getNames"
-    formControlName="ownerCategoryCode"
-    bindValue="lookupKey"
-    [label]="lang.map.owner_type"
-    bindLabel="getNames"
-    [options]="ownerTypes" />
-
-    <ng-container *ngIf="(isOpened || isOwner())">
-    <app-select-input
-      *ngIf="isOwner() || isRent()"
+      *ngIf="isOwner()"
       [enableFilter]="true"
       bindFilter="getNames"
-      formControlName="nationalityCode"
+      formControlName="ownerCategoryCode"
       bindValue="lookupKey"
-      [label]="lang.map.nationality"
+      [label]="lang.map.owner_type"
       bindLabel="getNames"
-      [options]="nationalities"
-      [isSecondary]="isOpened" />
+      [options]="ownerTypes" />
+
+    <ng-container *ngIf="isOpened || isOwner()">
+      <app-select-input
+        *ngIf="isOwner() || isRent()"
+        [enableFilter]="true"
+        bindFilter="getNames"
+        formControlName="nationalityCode"
+        bindValue="lookupKey"
+        [label]="lang.map.nationality"
+        bindLabel="getNames"
+        [options]="nationalities"
+        [isSecondary]="isOpened" />
     </ng-container>
 
     <ng-container *ngIf="isOpened">
@@ -219,8 +253,8 @@
             formControlName="rentPaymentMonthlyPerUnitTo"
             class="text-gray-500"
             mask="separator"
-            thousandSeparator="," 
-            [maxlength]="rentPaymentMaxLength"/>
+            thousandSeparator=","
+            [maxlength]="rentPaymentMaxLength" />
         </app-input>
       </ng-container>
       <ng-container *ngIf="isSell()">
@@ -230,7 +264,7 @@
             formControlName="realEstateValueFrom"
             class="text-gray-500"
             mask="separator"
-            thousandSeparator="," 
+            thousandSeparator=","
             [maxlength]="realEstateMaxLength" />
         </app-input>
         <app-input formControlName="realEstateValueTo" [label]="lang.map.real_estate_value_to" [isSecondary]="true">
@@ -244,7 +278,7 @@
         </app-input>
       </ng-container>
 
-       <!-- <ng-container *ngIf="isRent()">
+      <!-- <ng-container *ngIf="isRent()">
          <app-input formControlName="rentPaymentMonthlyPerUnitFrom" [label]="lang.map.building_age_in_years_from" [isSecondary]="true">
            <input appControl formControlName="streetNo" mask="separator" thousandSeparator="," />
          </app-input>
@@ -252,18 +286,31 @@
            <input appControl formControlName="streetNo" mask="separator" thousandSeparator="," />
          </app-input>
       </ng-container> -->
-      
+
       <app-input formControlName="areaFrom" [label]="lang.map.area_from" [isSecondary]="true">
-        <input appControl formControlName="areaFrom" class="text-gray-500" mask="separator" thousandSeparator="," [maxlength]="areaMaxLength" />
+        <input
+          appControl
+          formControlName="areaFrom"
+          class="text-gray-500"
+          mask="separator"
+          thousandSeparator=","
+          [maxlength]="areaMaxLength" />
       </app-input>
       <app-input formControlName="areaTo" [label]="lang.map.area_to" [isSecondary]="true">
-        <input appControl formControlName="areaTo" class="text-gray-500" mask="separator" thousandSeparator=","  [maxlength]="areaMaxLength"/>
+        <input
+          appControl
+          formControlName="areaTo"
+          class="text-gray-500"
+          mask="separator"
+          thousandSeparator=","
+          [maxlength]="areaMaxLength" />
       </app-input>
     </ng-container>
   </ng-container>
 </div>
 <div class="flex justify-center xl:justify-end gap-3 mt-5 xl:mt-0">
   <app-button
+    *ngIf="!isOV()"
     size="md"
     (click)="toggleFilters()"
     buttonStyle="secondary"

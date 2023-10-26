@@ -15,10 +15,10 @@ import { NGX_COUNTUP_OPTIONS } from '@constants/injection-tokens';
   styleUrls: ['./purpose.component.scss'],
 })
 export class PurposeComponent {
-  @Input()
-  item!: Lookup;
-  @Input()
-  showYoy = true;
+  @Input() item!: Lookup;
+  @Input() showYoy = true;
+  @Input() enableCountup = true;
+
   isHovered = false;
   lang = inject(TranslationService);
   countUpOptions: CountUpOptionsContract = inject(NGX_COUNTUP_OPTIONS);

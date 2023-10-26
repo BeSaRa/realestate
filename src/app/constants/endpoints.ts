@@ -145,6 +145,18 @@ const ownerEndpoints = {
   OWNER_KPI20: 'OWNER|kpi20/ownership/summary/owner-category',
 };
 
+const ovEndpoints = {
+  OV: 'BE|kpi/ov',
+  OV_LOOKUPS: 'OV|lookup',
+  OV_KPI1: 'OV|indicator/total-occupancy/kpi1',
+  OV_KPI2: 'OV|indicator/total-occupancy/premise-category/kpi2',
+  OV_KPI3: 'OV|indicator/total-occupancy/premise-type/kpi3',
+  OV_KPI4: 'OV|indicator/total-occupancy/chart/kpi4',
+  OV_KPI5: 'OV|indicator/total-occupancy/kpi5',
+  OV_KPI6: 'OV|indicator/total-occupancy/kpi6',
+  OV_KPI7: 'OV|transactions/kpi7',
+};
+
 export const cmsEndpoints = {
   TRANSLATION: 'translations',
   ADMIN: 'admin/login',
@@ -166,6 +178,7 @@ export const EndPoints = {
   ...sellEndPoints,
   ...mortgageEndpoints,
   ...ownerEndpoints,
+  ...ovEndpoints,
 };
 
 export type EndpointsType = typeof EndPoints;
