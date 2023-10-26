@@ -162,13 +162,18 @@ export class DurationChartComponent extends OnDestroyMixin(class {}) implements 
               y: item.kpiVal,
               x: item.issueYear,
               yoy: item.kpiYoYVal,
-              baseYear: item.issueBaseYear ?? 2019,
-              yoyBase: item.kpiYoYBaseVal,
+              baseYear: data[0].issueYear, // when this info isn't provided by the be, it's the first year
+              yoyBase: item.kpiYoYBaseVal ?? this.calculateYoyBase(item.kpiVal,data[0].kpiVal),
             })),
           },
         ];
         this._updateChartOptions();
       });
+  }
+
+  // if this info is not provided from api, we can calculate them
+  private calculateYoyBase (kpiVal: number, baseKpiVal: number) : number {
+    return ((kpiVal - baseKpiVal) / baseKpiVal) * 100 ;
   }
 
   private _updateForMonthly() {
@@ -462,11 +467,11 @@ export class DurationChartComponent extends OnDestroyMixin(class {}) implements 
           </div>
           <div class="apexcharts-tooltip-y-group flex justify-between gap-2">
             <span class="apexcharts-tooltip-text-y-label">${this.lang.map.annually}: </span>
-            <span class="apexcharts-tooltip-text-y-value">${yoy.toFixed(1)}%</span>
+            <span class="apexcharts-tooltip-text-y-value" dir="ltr">${yoy.toFixed(1)}%</span>
           </div>
           <div class="apexcharts-tooltip-y-group flex justify-between gap-2">
             <span class="apexcharts-tooltip-text-y-label">${this.lang.map.vs} ${baseYear}: </span>
-            <span class="apexcharts-tooltip-text-y-value">${yoyBase.toFixed(1)}%</span>
+            <span class="apexcharts-tooltip-text-y-value" dir="ltr">${yoyBase.toFixed(1)}%</span>
           </div>
         </div>
       </div>
