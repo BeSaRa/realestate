@@ -67,14 +67,19 @@
       </h3>
       <div
         class="mt-4 w-full grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-7 gap-2 overflow-hidden">
-        <ng-container *ngFor="let item of filteredTypeKPIs.slice(0, 14); let i = index">
+        <ng-container *ngFor="let item of filteredTypeKPIs.slice(0, shownTypeKpisCount); let i = index">
           <app-purpose [item]="item" class="border-2 rounded-xl overflow-hidden border-secondary" />
         </ng-container>
       </div>
       <div class="mt-4 flex items-center justify-center gap-2">
-        <app-button size="md" (click)="showAllPremiseTypes()" buttonStyle="secondary" [isRounded]="true">{{
-          lang.map.show_all
-        }}</app-button>
+        <app-button
+          *ngIf="filteredTypeKPIs.length > shownTypeKpisCount"
+          size="md"
+          (click)="showAllPremiseTypes()"
+          buttonStyle="secondary"
+          [isRounded]="true"
+          >{{ lang.map.show_all }}</app-button
+        >
       </div>
     </div>
   </div>
