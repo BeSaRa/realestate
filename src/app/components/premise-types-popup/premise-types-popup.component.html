@@ -1,14 +1,19 @@
-<div class="dialog-header">
-  <span>{{ premiseTypesData.title }}</span>
-  <app-icon-button class="close-btn" (click)="ref.close()" icon="CLOSE" />
-</div>
-<div class="dialog-content h-min">
-  <div class="p-4 w-full grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-7 gap-2">
-    <ng-container *ngFor="let item of premiseTypesData.types">
-      <app-purpose [item]="item" [enableCountup]="false" class="border-2 rounded-xl overflow-hidden border-secondary" />
-    </ng-container>
+<div class="flex flex-col">
+  <div class="dialog-header flex-1">
+    <span>{{ premiseTypesData.title }}</span>
+    <app-icon-button class="close-btn" (click)="ref.close()" icon="CLOSE" />
   </div>
-</div>
-<div class="dialog-footer">
-  <app-button (click)="ref.close()" buttonStyle="primary">{{ lang.map.close }}</app-button>
+  <div class="dialog-content overflow-y-scroll">
+    <div class="p-4 w-full grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-7 gap-2">
+      <ng-container *ngFor="let item of premiseTypesData.types">
+        <app-purpose
+          [item]="item"
+          [enableCountup]="false"
+          class="border-2 rounded-xl overflow-hidden border-secondary" />
+      </ng-container>
+    </div>
+  </div>
+  <div class="dialog-footer flex-1">
+    <app-button (click)="ref.close()" buttonStyle="primary">{{ lang.map.close }}</app-button>
+  </div>
 </div>

@@ -102,6 +102,8 @@ export default class OccupiedAndVacantIndicatorsPageComponent {
   typeKPIs = this.lookupService.ovLookups.premiseTypeList;
   filteredTypeKPIs = this.typeKPIs;
 
+  readonly shownTypeKpisCount = 14;
+
   totalCountChartData$ = new BehaviorSubject({
     chartDataUrl: this.urlService.URLS.OV_KPI4,
     hasPrice: false,
@@ -217,7 +219,6 @@ export default class OccupiedAndVacantIndicatorsPageComponent {
       maxWidth: '95vw',
       minWidth: '95vw',
       maxHeight: '95vh',
-      minHeight: '95vh',
     });
   }
 }
