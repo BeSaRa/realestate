@@ -1,5 +1,15 @@
 import { CommonModule } from '@angular/common';
-import { AfterViewInit, Component, Input, OnDestroy, EventEmitter, Output, QueryList, ViewChildren, inject } from '@angular/core';
+import {
+  AfterViewInit,
+  Component,
+  Input,
+  OnDestroy,
+  EventEmitter,
+  Output,
+  QueryList,
+  ViewChildren,
+  inject,
+} from '@angular/core';
 import { DateAdapter } from '@angular/material/core';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { ButtonComponent } from '@components/button/button.component';
@@ -100,7 +110,8 @@ export class DurationChartComponent extends OnDestroyMixin(class {}) implements 
     // this.chart.setDirty();
     setTimeout(() => {
       this.updateChartType(ChartType.BAR);
-      this._listenToCriteriaAndRootChange();
+      this._listenToRootDataChange();
+      this._listenToCriteriaChange();
       this._initializeFormatters();
     }, 0);
     setTimeout(() => {
@@ -290,19 +301,22 @@ export class DurationChartComponent extends OnDestroyMixin(class {}) implements 
     }, 0);
   }
 
-  private _listenToCriteriaAndRootChange() {
-    combineLatest([this.filterCriteria$, this.rootData$])
-      .pipe(takeUntil(this.destroy$))
-      .subscribe(([criteria, root]) => {
-        if (!criteria || !root) return;
-        this.criteria = criteria;
-        if (this.rootData !== root && root.makeUpdate === false) {
-          this.rootData = root;
-          return;
-        }
-        this.rootData = root;
-        this.updateChartDataForDuration(this.selectedDurationType, true);
-      });
+  private _listenToCriteriaChange() {
+    this.filterCriteria$.pipe(takeUntil(this.destroy$)).subscribe((criteria) => {
+      if (!criteria) return;
+      this.criteria = criteria;
+      if (!this.rootData) return;
+      this.updateChartDataForDuration(this.selectedDurationType, true);
+    });
+  }
+
+  private _listenToRootDataChange() {
+    this.rootData$.pipe(takeUntil(this.destroy$)).subscribe((root) => {
+      if (!root) return;
+      this.rootData = root;
+      if (!this.criteria || (this.rootData !== root && root.makeUpdate === false)) return;
+      this.updateChartDataForDuration(this.selectedDurationType, true);
+    });
   }
 
   private _initializeFormatters() {

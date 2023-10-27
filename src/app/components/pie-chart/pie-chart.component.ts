@@ -49,23 +49,27 @@ export class PieChartComponent extends OnDestroyMixin(class {}) implements After
 
   ngAfterViewInit(): void {
     setTimeout(() => {
-      this._listenToCriteriaAndRootChange();
+      this._listenToRootDataChange();
+      this._listenToCriteriaChange();
     }, 0);
   }
 
-  private _listenToCriteriaAndRootChange() {
-    combineLatest([this.filterCriteria$, this.rootData$])
-      .pipe(takeUntil(this.destroy$))
-      .subscribe(([criteria, root]) => {
-        if (!criteria || !root) return;
-        this.criteria = criteria;
-        if (this.rootData !== root && root.makeUpdate === false) {
-          this.rootData = root;
-          return;
-        }
-        this.rootData = root;
-        this._updatePieChartData();
-      });
+  private _listenToCriteriaChange() {
+    this.filterCriteria$.pipe(takeUntil(this.destroy$)).subscribe((criteria) => {
+      if (!criteria) return;
+      this.criteria = criteria;
+      if (!this.rootData) return;
+      this._updatePieChartData();
+    });
+  }
+
+  private _listenToRootDataChange() {
+    this.rootData$.pipe(takeUntil(this.destroy$)).subscribe((root) => {
+      if (!root) return;
+      this.rootData = root;
+      if (!this.criteria || (this.rootData !== root && root.makeUpdate === false)) return;
+      this._updatePieChartData();
+    });
   }
 
   private _updatePieChartData() {
