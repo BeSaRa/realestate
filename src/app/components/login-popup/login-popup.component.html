@@ -6,8 +6,17 @@
   <div class="dialog-content">
     <div class="grid grid-cols-2 gap-4 [&>*]:col-span-2">
       <div #f="ngForm" [formGroup]="LoginForm">
-        <app-input formControlName="identifier" [label]="lang.map.identifier"></app-input>
-        <app-input formControlName="password" type="password" [label]="lang.map.password"></app-input>
+        <app-input 
+          formControlName="identifier" 
+          [label]="lang.map.identifier" 
+          (input)="clearError()" 
+          (keydown.enter)="onLogin()"/>
+        <app-input 
+          formControlName="password" 
+          type="password" 
+          [label]="lang.map.password" 
+          (input)="clearError()" 
+          (keydown.enter)="onLogin()"/>
       </div>
     </div>
     <div *ngIf="isLoggedInfailed" class="alert alert-danger" role="alert">
