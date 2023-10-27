@@ -86,7 +86,6 @@ export default class OwnershipIndicatorsPageComponent implements OnInit, AfterVi
   nationalities = this.lookupService.ownerLookups.nationalityList;
   ownerTypes = this.lookupService.ownerLookups.ownerCategoryList;
 
-
   purposeKPIS = this.lookupService.ownerLookups.rentPurposeList;
   propertiesKPIS = this.lookupService.ownerLookups.propertyTypeList;
 
@@ -675,7 +674,6 @@ export default class OwnershipIndicatorsPageComponent implements OnInit, AfterVi
       true
     );
 
-    this.nationalityCriteriaSubject.next({ ...this.criteria.criteria, nationalityCode: this.selectedNationality.id });
     this.durationRootDataSubject.next({
       chartDataUrl: this.urlService.URLS[this._getChartDataUrl('OWNER_KPI12')],
       hasPrice: false,
@@ -686,6 +684,8 @@ export default class OwnershipIndicatorsPageComponent implements OnInit, AfterVi
       hasPrice: false,
       makeUpdate: false,
     });
+    this.nationalityCriteriaSubject.next({ ...this.criteria.criteria, nationalityCode: this.selectedNationality.id });
+
     this.updateMunicipalitiesChartData();
   };
 
@@ -772,5 +772,4 @@ export default class OwnershipIndicatorsPageComponent implements OnInit, AfterVi
   getStringSelectedCriteria(): string {
     return this.sectionTitle.getSelectedCriteria('owner', this.criteria.criteria, false, true, false);
   }
-  
 }
