@@ -76,6 +76,9 @@ export class LoginPopupComponent implements OnInit {
       })
     )
       .subscribe();
-    
   }
+
+  clearError() {
+    this.isLoggedInfailed = false;
+  } 
 }
