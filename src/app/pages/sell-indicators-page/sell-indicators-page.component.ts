@@ -209,9 +209,7 @@ export default class SellIndicatorsPageComponent implements OnInit, OnDestroy {
     ),
   ];
 
-  selectedRoot?: KpiRoot;
-  rootDataSubject = new BehaviorSubject<KpiRoot | undefined>(undefined);
-  rootData$ = this.rootDataSubject.asObservable();
+  selectedRoot = this.rootKPIS[0];
 
   selectedPurpose?: Lookup = this.lookupService.sellLookups.rentPurposeList[0];
 
@@ -516,7 +514,6 @@ export default class SellIndicatorsPageComponent implements OnInit, OnDestroy {
         });
         this.selectedRoot && this.updateAllPurpose(this.selectedRoot.value, this.selectedRoot.yoy);
         this.selectedPurpose && this.purposeSelected(this.selectedPurpose);
-        this.rootDataSubject.next(this.selectedRoot);
       });
   }
 
@@ -590,6 +587,12 @@ export default class SellIndicatorsPageComponent implements OnInit, OnDestroy {
   }
 
   getStringSelectedCriteria(isDistrictRequired: boolean = true, showYearInTitle: boolean = true): string {
-    return this.sectionTitle.getSelectedCriteria('sell', this.criteria.criteria, false, isDistrictRequired, showYearInTitle);
+    return this.sectionTitle.getSelectedCriteria(
+      'sell',
+      this.criteria.criteria,
+      false,
+      isDistrictRequired,
+      showYearInTitle
+    );
   }
 }

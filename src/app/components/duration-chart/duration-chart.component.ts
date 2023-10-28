@@ -1,12 +1,16 @@
 import { CommonModule } from '@angular/common';
 import {
   AfterViewInit,
+  ChangeDetectorRef,
   Component,
-  Input,
-  OnDestroy,
   EventEmitter,
+  Input,
+  OnChanges,
+  OnDestroy,
+  OnInit,
   Output,
   QueryList,
+  SimpleChanges,
   ViewChildren,
   inject,
 } from '@angular/core';
@@ -36,7 +40,7 @@ import { UrlService } from '@services/url.service';
 import { minMaxAvg } from '@utils/utils';
 import { ChartComponent, NgApexchartsModule } from 'ng-apexcharts';
 import { NgxMaskPipe } from 'ngx-mask';
-import { Observable, Subject, catchError, combineLatest, map, take, takeUntil, throwError } from 'rxjs';
+import { Observable, catchError, map, take, takeUntil, throwError } from 'rxjs';
 
 @Component({
   selector: 'app-duration-chart',
@@ -53,13 +57,12 @@ import { Observable, Subject, catchError, combineLatest, map, take, takeUntil, t
   templateUrl: './duration-chart.component.html',
   styleUrls: ['./duration-chart.component.scss'],
 })
-export class DurationChartComponent extends OnDestroyMixin(class {}) implements AfterViewInit, OnDestroy {
+export class DurationChartComponent extends OnDestroyMixin(class {}) implements OnChanges, AfterViewInit, OnDestroy {
   @Input({ required: true }) title!: string;
   @Input({ required: true }) name!: string;
   @Input({ required: true }) filterCriteria$!: Observable<CriteriaContract | undefined>;
-  @Input({ required: true }) rootData$!: Observable<
-    { chartDataUrl: string; hasPrice: boolean; makeUpdate?: boolean } | undefined
-  >;
+  @Input({ required: true }) rootData!: { chartDataUrl: string; hasPrice: boolean };
+  @Input() updateWhenRootDataChange = false;
   @Input() showSelectChartType = true;
   @Input() changeBarColorsAccordingToValue = false;
 
@@ -74,12 +77,12 @@ export class DurationChartComponent extends OnDestroyMixin(class {}) implements 
   appChartTypesService = inject(AppChartTypesService);
   adapter = inject(DateAdapter);
   screenService = inject(ScreenBreakpointsService);
+  cdr = inject(ChangeDetectorRef);
 
   screenSize = Breakpoints.LG;
   isLoading = false;
 
   criteria!: CriteriaContract;
-  rootData!: { chartDataUrl: string; hasPrice: boolean };
 
   protected readonly ChartType = ChartType;
   protected readonly DurationTypes = DurationEndpoints;
@@ -106,11 +109,16 @@ export class DurationChartComponent extends OnDestroyMixin(class {}) implements 
 
   barColorsAccordingToValue: Record<number, string>[] = [];
 
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['rootData'] && changes['rootData'].currentValue !== changes['rootData'].previousValue) {
+      if (!this.rootData || !this.criteria || !this.updateWhenRootDataChange) return;
+      this.updateChartDataForDuration(this.selectedDurationType, true);
+    }
+  }
+
   ngAfterViewInit(): void {
-    // this.chart.setDirty();
     setTimeout(() => {
       this.updateChartType(ChartType.BAR);
-      this._listenToRootDataChange();
       this._listenToCriteriaChange();
       this._initializeFormatters();
     }, 0);
@@ -297,7 +305,9 @@ export class DurationChartComponent extends OnDestroyMixin(class {}) implements 
             this.isMinMaxAvgBar
           ),
         })
-        .then();
+        .then(() => {
+          this.cdr.detectChanges();
+        });
     }, 0);
   }
 
@@ -306,15 +316,6 @@ export class DurationChartComponent extends OnDestroyMixin(class {}) implements 
       if (!criteria) return;
       this.criteria = criteria;
       if (!this.rootData) return;
-      this.updateChartDataForDuration(this.selectedDurationType, true);
-    });
-  }
-
-  private _listenToRootDataChange() {
-    this.rootData$.pipe(takeUntil(this.destroy$)).subscribe((root) => {
-      if (!root) return;
-      this.rootData = root;
-      if (!this.criteria || (this.rootData !== root && root.makeUpdate === false)) return;
       this.updateChartDataForDuration(this.selectedDurationType, true);
     });
   }
@@ -334,14 +335,18 @@ export class DurationChartComponent extends OnDestroyMixin(class {}) implements 
   private _listenToScreenSizeChange() {
     this.screenService.screenSizeObserver$.pipe(takeUntil(this.destroy$)).subscribe((size) => {
       this.screenSize = size;
-      this.chart.first?.updateOptions(
-        this.appChartTypesService.getRangeOptions(
-          size,
-          this.selectedBarChartType,
-          this.durationDataLength,
-          this.isMinMaxAvgBar
+      this.chart.first
+        ?.updateOptions(
+          this.appChartTypesService.getRangeOptions(
+            size,
+            this.selectedBarChartType,
+            this.durationDataLength,
+            this.isMinMaxAvgBar
+          )
         )
-      );
+        .then(() => {
+          this.cdr.detectChanges();
+        });
     });
   }
 

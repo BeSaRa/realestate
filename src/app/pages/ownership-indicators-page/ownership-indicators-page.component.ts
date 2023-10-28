@@ -185,43 +185,39 @@ export default class OwnershipIndicatorsPageComponent implements OnInit, AfterVi
     this.appChartTypesService.mainChartOptions
   );
 
-  durationRootDataSubject = new BehaviorSubject({
+  durationRootData = {
     chartDataUrl: this.urlService.URLS[this._getChartDataUrl('OWNER_KPI12')],
     hasPrice: false,
-    makeUpdate: true,
-  });
-  durationRootData$ = this.durationRootDataSubject.asObservable();
+  };
 
-  ownerTypeRootDataSubject = new BehaviorSubject({
+  ownerTypeRootData = {
     chartDataUrl: this.urlService.URLS[this._getChartDataUrl('OWNER_KPI15')],
     hasPrice: false,
-    makeUpdate: true,
-  });
-  ownerTypeRootData$ = this.ownerTypeRootDataSubject.asObservable();
+  };
 
   ownerTypeLabel = (item: { kpiVal: number; ownerCategory: number }) =>
     this.lookupService.ownerOwnerCategoryMap[item.ownerCategory].getNames();
 
-  ageCategoryRootData$ = new BehaviorSubject({
+  ageCategoryRootData = {
     chartDataUrl: this.urlService.URLS.OWNER_KPI16,
     hasPrice: false,
-  }).asObservable();
+  };
 
   ageCategoryLabel = (item: { kpiVal: number; ageCategory: number }) =>
     this.lookupService.ownerAgeCategoryMap[item.ageCategory].getNames();
 
-  genderRootData$ = new BehaviorSubject({
+  genderRootData = {
     chartDataUrl: this.urlService.URLS.OWNER_KPI18,
     hasPrice: false,
-  }).asObservable();
+  };
 
   genderLabel = (item: { kpiVal: number; gender: number }) =>
     this.lookupService.ownerGenderMap[item.gender]?.getNames() ?? '-';
 
-  ageCategorySummaryRootData$ = new BehaviorSubject({
+  ageCategorySummaryRootData = {
     chartDataUrl: this.urlService.URLS.OWNER_KPI19,
     hasPrice: false,
-  }).asObservable();
+  };
 
   ngOnInit(): void {}
 
@@ -229,6 +225,7 @@ export default class OwnershipIndicatorsPageComponent implements OnInit, AfterVi
     this._initializeChartsFormatters();
     setTimeout(() => {
       this._listenToScreenSize();
+      this.nationalityCriteriaSubject.next({ ...this.criteria.criteria, nationalityCode: this.selectedNationality.id });
     }, 0);
   }
 
@@ -674,16 +671,14 @@ export default class OwnershipIndicatorsPageComponent implements OnInit, AfterVi
       true
     );
 
-    this.durationRootDataSubject.next({
+    this.durationRootData = {
       chartDataUrl: this.urlService.URLS[this._getChartDataUrl('OWNER_KPI12')],
       hasPrice: false,
-      makeUpdate: false,
-    });
-    this.ownerTypeRootDataSubject.next({
+    };
+    this.ownerTypeRootData = {
       chartDataUrl: this.urlService.URLS[this._getChartDataUrl('OWNER_KPI15')],
       hasPrice: false,
-      makeUpdate: false,
-    });
+    };
     this.nationalityCriteriaSubject.next({ ...this.criteria.criteria, nationalityCode: this.selectedNationality.id });
 
     this.updateMunicipalitiesChartData();
