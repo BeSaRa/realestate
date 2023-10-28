@@ -121,25 +121,25 @@ export default class MortgageIndicatorsComponent implements OnInit {
     ),
   ];
 
-  countRootData$ = new BehaviorSubject({
+  countRootData = {
     chartDataUrl: this.urlService.URLS.MORT_KPI2,
     hasPrice: false,
-  }).asObservable();
+  };
 
   countNames: Record<number, string> = {
     [TransactionType.MORTGAGE]: this.lang.map.mortgage,
     [TransactionType.SELL]: this.lang.map.sell,
   };
 
-  unitsRootData$ = new BehaviorSubject({
+  unitsRootData = {
     chartDataUrl: this.urlService.URLS.MORT_KPI4,
     hasPrice: false,
-  }).asObservable();
+  };
 
-  valueRootData$ = new BehaviorSubject({
+  valueRootData = {
     chartDataUrl: this.urlService.URLS.MORT_KPI6,
     hasPrice: true,
-  }).asObservable();
+  };
 
   transactions$: Observable<MortgageTransaction[]> = this.loadTransactions();
   dataSource: AppTableDataSource<MortgageTransaction> = new AppTableDataSource(this.transactions$);
@@ -254,6 +254,6 @@ export default class MortgageIndicatorsComponent implements OnInit {
   }
 
   getStringSelectedCriteria(showYearInTitle: boolean = true): string {
-    return this.sectionTitle.getSelectedCriteria('mort', this.criteria.criteria, false, true, showYearInTitle)
+    return this.sectionTitle.getSelectedCriteria('mort', this.criteria.criteria, false, true, showYearInTitle);
   }
 }

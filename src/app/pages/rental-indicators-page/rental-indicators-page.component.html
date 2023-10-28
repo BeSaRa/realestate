@@ -104,10 +104,11 @@
     <div class="py-16 px-3 lg:px-16">
       <app-duration-chart
         (isMonthltyDurationTypeEvent)="isMonthlyDurationType($event)"
-        [title]="(selectedRoot?.getNames() ?? '') + ' ' + getStringSelectedCriteria(true, isMonthlyDuration)"
-        [name]="selectedRoot?.getNames() ?? ''"
+        [title]="selectedRoot.getNames() + ' ' + getStringSelectedCriteria(true, isMonthlyDuration)"
+        [name]="selectedRoot.getNames()"
         [filterCriteria$]="criteria$"
-        [rootData$]="rootData$"></app-duration-chart>
+        [rootData]="selectedRoot"
+        [updateWhenRootDataChange]="true"></app-duration-chart>
     </div>
     <div class="px-3 lg:px-16 flex flex-col gap-4">
       <h3
@@ -435,14 +436,14 @@
       <app-pie-chart
         [title]="lang.map.rent_contracts_count_according_to_bedrooms + ' ' + getStringSelectedCriteria()"
         [filterCriteria$]="criteria$"
-        [rootData$]="roomsRootData$"
+        [rootData]="roomsRootData"
         [bindLabel]="roomLabel"
         [valueUnit]="lang.map.contract" />
 
       <app-pie-chart
         [title]="lang.map.rent_contracts_count_according_to_furniture + ' ' + getStringSelectedCriteria()"
         [filterCriteria$]="criteria$"
-        [rootData$]="furnitureRootData$"
+        [rootData]="furnitureRootData"
         [bindLabel]="furnitureLabel"
         [valueUnit]="lang.map.contract" />
     </div>

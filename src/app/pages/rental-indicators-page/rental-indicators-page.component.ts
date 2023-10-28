@@ -42,6 +42,7 @@ import { TableSortOption } from '@models/table-sort-option';
 import { FormatNumbersPipe } from '@pipes/format-numbers.pipe';
 import { DashboardService } from '@services/dashboard.service';
 import { LookupService } from '@services/lookup.service';
+import { SectionTitleService } from '@services/section-title.service';
 import { TranslationService } from '@services/translation.service';
 import { UnitsService } from '@services/units.service';
 import { UrlService } from '@services/url.service';
@@ -59,7 +60,6 @@ import {
   take,
   takeUntil,
 } from 'rxjs';
-import { SectionTitleService } from '@services/section-title.service';
 
 @Component({
   selector: 'app-rental-indicators-page',
@@ -297,9 +297,7 @@ export default class RentalIndicatorsPageComponent implements OnInit, OnDestroy 
 
   propertiesKPIS = this.lookupService.rentLookups.propertyTypeList;
 
-  selectedRoot?: KpiRoot;
-  rootDataSubject = new BehaviorSubject<KpiRoot | undefined>(undefined);
-  rootData$ = this.rootDataSubject.asObservable();
+  selectedRoot = this.rootKPIS[0];
 
   selectedPurpose?: Lookup = this.lookupService.rentLookups.rentPurposeList[0];
   selectedTab: 'rental_indicators' | 'statistical_reports_for_rent' = 'rental_indicators';
@@ -332,10 +330,10 @@ export default class RentalIndicatorsPageComponent implements OnInit, OnDestroy 
     return this.rootKPIS.filter((item) => !item.hasPrice);
   }
 
-  roomsRootData$ = new BehaviorSubject({
+  roomsRootData = {
     chartDataUrl: this.urlService.URLS.RENT_KPI34,
     hasPrice: false,
-  }).asObservable();
+  };
 
   roomLabel = (item: { kpiVal: number; bedRoomsCount: number }) => {
     return (
@@ -349,10 +347,10 @@ export default class RentalIndicatorsPageComponent implements OnInit, OnDestroy 
     );
   };
 
-  furnitureRootData$ = new BehaviorSubject({
+  furnitureRootData = {
     chartDataUrl: this.urlService.URLS.RENT_KPI34_1,
     hasPrice: false,
-  }).asObservable();
+  };
 
   furnitureLabel = (item: { kpiVal: number; furnitureStatus: number }) =>
     this.lookupService.rentFurnitureMap[item.furnitureStatus || 0]?.getNames();
@@ -470,7 +468,6 @@ export default class RentalIndicatorsPageComponent implements OnInit, OnDestroy 
         });
         this.selectedRoot && this.updateAllPurpose(this.selectedRoot.value, this.selectedRoot.yoy);
         this.selectedPurpose && this.purposeSelected(this.selectedPurpose);
-        this.rootDataSubject.next(this.selectedRoot);
       });
   }
 
@@ -577,6 +574,12 @@ export default class RentalIndicatorsPageComponent implements OnInit, OnDestroy 
   }
 
   getStringSelectedCriteria(isZoneRequired: boolean = true, showYearInTitle: boolean = true): string {
-    return this.sectionTitle.getSelectedCriteria('rent', this.criteria.criteria, isZoneRequired, false, showYearInTitle);
+    return this.sectionTitle.getSelectedCriteria(
+      'rent',
+      this.criteria.criteria,
+      isZoneRequired,
+      false,
+      showYearInTitle
+    );
   }
 }

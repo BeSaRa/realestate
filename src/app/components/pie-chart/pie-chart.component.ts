@@ -1,5 +1,15 @@
 import { CommonModule } from '@angular/common';
-import { AfterViewInit, Component, Input, QueryList, ViewChildren, inject } from '@angular/core';
+import {
+  AfterViewInit,
+  ChangeDetectorRef,
+  Component,
+  Input,
+  OnChanges,
+  QueryList,
+  SimpleChanges,
+  ViewChildren,
+  inject,
+} from '@angular/core';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { PieChartOptions } from '@app-types/pie-chart-options';
 import { CriteriaContract } from '@contracts/criteria-contract';
@@ -10,7 +20,7 @@ import { DashboardService } from '@services/dashboard.service';
 import { TranslationService } from '@services/translation.service';
 import { objectHasOwnProperty } from '@utils/utils';
 import { ChartComponent, NgApexchartsModule } from 'ng-apexcharts';
-import { Observable, combineLatest, take, takeUntil } from 'rxjs';
+import { Observable, take, takeUntil } from 'rxjs';
 
 @Component({
   selector: 'app-pie-chart',
@@ -19,12 +29,11 @@ import { Observable, combineLatest, take, takeUntil } from 'rxjs';
   templateUrl: './pie-chart.component.html',
   styleUrls: ['./pie-chart.component.scss'],
 })
-export class PieChartComponent extends OnDestroyMixin(class {}) implements AfterViewInit {
+export class PieChartComponent extends OnDestroyMixin(class {}) implements OnChanges, AfterViewInit {
   @Input({ required: true }) title!: string;
   @Input({ required: true }) filterCriteria$!: Observable<CriteriaContract | undefined>;
-  @Input({ required: true }) rootData$!: Observable<
-    { chartDataUrl: string; hasPrice: boolean; makeUpdate?: boolean } | undefined
-  >;
+  @Input({ required: true }) rootData!: { chartDataUrl: string; hasPrice: boolean };
+  @Input() updateWhenRootDataChange = false;
   @Input({ required: true }) bindLabel!: string | ((item: any) => string);
   @Input() bindValue: string | ((item: any) => number) = 'kpiVal';
   @Input() valueUnit?: string;
@@ -34,9 +43,9 @@ export class PieChartComponent extends OnDestroyMixin(class {}) implements After
   lang = inject(TranslationService);
   appChartTypesService = inject(AppChartTypesService);
   dashboardService = inject(DashboardService);
+  cdr = inject(ChangeDetectorRef);
 
   criteria!: CriteriaContract;
-  rootData!: { chartDataUrl: string; hasPrice: boolean };
 
   isLoading = false;
 
@@ -47,9 +56,15 @@ export class PieChartComponent extends OnDestroyMixin(class {}) implements After
     },
   };
 
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['rootData'] && changes['rootData'].currentValue !== changes['rootData'].previousValue) {
+      if (!this.rootData || !this.criteria || !this.updateWhenRootDataChange) return;
+      this._updatePieChartData();
+    }
+  }
+
   ngAfterViewInit(): void {
     setTimeout(() => {
-      this._listenToRootDataChange();
       this._listenToCriteriaChange();
     }, 0);
   }
@@ -59,15 +74,6 @@ export class PieChartComponent extends OnDestroyMixin(class {}) implements After
       if (!criteria) return;
       this.criteria = criteria;
       if (!this.rootData) return;
-      this._updatePieChartData();
-    });
-  }
-
-  private _listenToRootDataChange() {
-    this.rootData$.pipe(takeUntil(this.destroy$)).subscribe((root) => {
-      if (!root) return;
-      this.rootData = root;
-      if (!this.criteria || (this.rootData !== root && root.makeUpdate === false)) return;
       this._updatePieChartData();
     });
   }
@@ -86,7 +92,9 @@ export class PieChartComponent extends OnDestroyMixin(class {}) implements After
             series: data.map((item) => this._getValue(item)),
             labels: data.map((item) => this._getLabel(item)),
           })
-          .then();
+          .then(() => {
+            this.cdr.detectChanges();
+          });
       });
   }
 

@@ -104,10 +104,10 @@ export default class OccupiedAndVacantIndicatorsPageComponent {
 
   readonly shownTypeKpisCount = 14;
 
-  totalCountChartData$ = new BehaviorSubject({
+  totalCountChartData = {
     chartDataUrl: this.urlService.URLS.OV_KPI4,
     hasPrice: false,
-  }).asObservable();
+  };
 
   totalCountChartNames: Record<number, string> = {
     [OccupationStatus.VACANT]: this.lang.map.vacant,
