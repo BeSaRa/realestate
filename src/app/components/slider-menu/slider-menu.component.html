@@ -1,8 +1,10 @@
-<li class="pb-1 border-b border-secondary/20 last-of-type:border-0" *ngFor="let menuItem of mainMenu?.items ?? []">
-    <ng-container *ngIf="!menuItem.is_authenticated || isAuthenticated">
-        <a class="block w-full text-xl px-3 py-2 text-white rounded-md transition hover:bg-white/20 [&.active]:bg-white/20"
-            [routerLink]="menuItem.url" routerLinkActive="active">
-            {{ menuItem.getNames() }}
-        </a>
-    </ng-container>
+<li class="pb-1 border-b border-secondary/20 last-of-type:border-0" *ngFor="let menuItem of mainMenu?.links ?? []">
+  <ng-container *ngIf="!menuItem.is_authenticated || isAuthenticated">
+    <a
+      class="block w-full text-xl px-3 py-2 text-white rounded-md transition hover:bg-white/20 [&.active]:bg-white/20"
+      [routerLink]="menuItem.url"
+      routerLinkActive="active">
+      {{ menuItem.getNames() }}
+    </a>
+  </ng-container>
 </li>

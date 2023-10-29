@@ -1,55 +1,33 @@
 import { CommonModule } from '@angular/common';
-import { HttpClient, HttpClientModule } from '@angular/common/http';
-import { Component, Input, OnInit, inject } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { Component, inject, Input, OnInit } from '@angular/core';
 import { OnDestroyMixin } from '@mixins/on-destroy-mixin';
-import { MainMenu } from '@models/main-menu';
+import { Menu } from '@models/menu';
 import { RouterModule } from '@angular/router';
-import { DirectusClientService } from '@services/directus-client.service';
 import { StickyService } from '@services/sticky.service';
 import { TranslationService } from '@services/translation.service';
 import { UrlService } from '@services/url.service';
-import { Observable, from, switchMap, takeUntil, tap } from 'rxjs';
-import { CastResponse } from 'cast-response';
-import { MenuItem } from '@models/menu-item';
+import { MenuService } from '@services/menu.service';
 
 @Component({
   selector: 'app-slider-menu',
   standalone: true,
   imports: [CommonModule, RouterModule],
   templateUrl: './slider-menu.component.html',
-  styleUrls: ['./slider-menu.component.scss']
+  styleUrls: ['./slider-menu.component.scss'],
 })
-export class SliderMenuComponent extends OnDestroyMixin(class { }) implements OnInit {
+export class SliderMenuComponent extends OnDestroyMixin(class {}) implements OnInit {
   http = inject(HttpClient);
   urlService = inject(UrlService);
-  directusClient = inject(DirectusClientService);
   lang = inject(TranslationService);
   sticky = inject(StickyService);
+  menuService = inject(MenuService);
 
-  mainMenu!: MainMenu;
+  mainMenu!: Menu;
 
-  @Input() isAuthenticated: boolean = false;
+  @Input() isAuthenticated = false;
 
   ngOnInit(): void {
-    this.load().subscribe( x => 
-      this.mainMenu = x);
-  }
-  
-  @CastResponse(() => MainMenu, { unwrap:'main_menu', shape: { 'items.*': () => MenuItem } })
-  load(): Observable<MainMenu> {
-    return this.http
-      .get<MainMenu>(this.urlService.URLS.MAIN_MENU)
-      .pipe(
-        takeUntil(this.destroy$),
-        tap((_mainMenu) => {
-          return new MainMenu().clone<MainMenu>({
-            id: _mainMenu.id,
-            items: _mainMenu.items,
-            key: _mainMenu.key,
-            status: _mainMenu.status,
-            title: _mainMenu.title
-          })
-        })
-      )
+    this.menuService.loadMenus().subscribe((menus) => (this.mainMenu = menus.main_menu));
   }
 }
