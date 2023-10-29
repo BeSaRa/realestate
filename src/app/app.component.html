@@ -11,18 +11,23 @@
   <app-side-bar [isAuthenticated]="isAuthenticated" [direction]="(direction$ | async)!">
     <ul class="flex flex-col gap-y-1">
       <li *ngIf="isAuthenticated">
-        <a class="text-white">{{lang.map.welcome}}</a><a class="text-xl text-secondary"> {{ userInfo?.first_name }}</a>
+        <a class="text-white">{{ lang.map.welcome }}</a
+        ><a class="text-xl text-secondary"> {{ userInfo?.first_name }}</a>
       </li>
-      <app-slider-menu  [isAuthenticated]="isAuthenticated"/>
+      <app-slider-menu [isAuthenticated]="isAuthenticated" />
     </ul>
     <div *ngIf="!isAuthenticated" class="flex flex-col gap-y-1">
-      <app-button buttonStyle="secondary" (click)="openLoginPopup()">{{lang.map.login_as_employee}}</app-button>
-      <app-button buttonStyle="secondary" (click)="OnStaffLogin()">{{ lang.map.login_as_editor_content_manager }}</app-button>
+      <app-button buttonStyle="secondary" (click)="openLoginPopup()">{{ lang.map.login_as_employee }}</app-button>
+      <app-button buttonStyle="secondary" (click)="OnStaffLogin()">{{
+        lang.map.login_as_editor_content_manager
+      }}</app-button>
     </div>
     <div *ngIf="isAuthenticated" class="flex flex-col gap-2 mt-3">
-      <app-button buttonStyle="secondary" (click)="onLogOut()">{{lang.map.log_out}}</app-button>
+      <app-button buttonStyle="secondary" (click)="onLogOut()">{{ lang.map.log_out }}</app-button>
     </div>
   </app-side-bar>
-  <app-scroll-to-top [floating]="(backtoTopFloat$ | async)!" *ngIf="showBackToTopScroll"
+  <app-scroll-to-top
+    [floating]="(backtoTopFloat$ | async)!"
+    *ngIf="showBackToTopScroll"
     (scrollToTop)="onScrollToTop()"></app-scroll-to-top>
 </div>

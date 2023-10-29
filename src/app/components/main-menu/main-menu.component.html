@@ -1,15 +1,15 @@
 <div class="hidden lg:block">
   <ul id="main-menu" class="flex gap-x-3">
-    <li *ngFor="let menuItem of mainMenu?.links ?? []">
-      <ng-container *ngIf="!menuItem.is_authenticated || isAuthenticated">
+    <ng-container *ngFor="let menuItem of mainMenu?.links ?? []">
+      <li *ngIf="!menuItem.is_authenticated || isAuthenticated">
         <app-button
           [buttonStyle]="sticky.isSticky() ? 'none-primary' : 'none'"
           [routerLink]="menuItem.url"
-          (click)="log(menuItem)"
-          routerLinkActive="active"
-          ><span class="ltr:text-sm">{{ menuItem.getNames() }}</span></app-button
-        >
-      </ng-container>
-    </li>
+          (click)="addClick(menuItem)"
+          routerLinkActive="active">
+          <span class="ltr:text-sm">{{ menuItem.getNames() }}</span>
+        </app-button>
+      </li>
+    </ng-container>
   </ul>
 </div>

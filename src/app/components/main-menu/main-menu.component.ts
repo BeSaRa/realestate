@@ -10,6 +10,7 @@ import { TranslationService } from '@services/translation.service';
 import { UrlService } from '@services/url.service';
 import { MenuService } from '@services/menu.service';
 import { MenuItem } from '@models/menu-item';
+import { takeUntil } from 'rxjs';
 
 @Component({
   selector: 'app-main-menu',
@@ -33,7 +34,7 @@ export class MainMenuComponent extends OnDestroyMixin(class {}) implements OnIni
     this.menuService.loadMenus().subscribe((menus) => (this.mainMenu = menus.main_menu));
   }
 
-  log(item: MenuItem): void {
-    console.log(item);
+  addClick(item: MenuItem): void {
+    item.recent ? item.clicked().pipe(takeUntil(this.destroy$)).subscribe() : null;
   }
 }

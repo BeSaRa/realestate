@@ -1,5 +1,5 @@
 import { BidiModule } from '@angular/cdk/bidi';
-import { CommonModule, registerLocaleData} from '@angular/common';
+import { CommonModule, registerLocaleData } from '@angular/common';
 import localeAr from '@angular/common/locales/ar';
 import { Component, HostListener, OnInit, inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
@@ -19,7 +19,7 @@ import { TranslationService } from '@services/translation.service';
 import '@utils/prototypes/custom-prototypes';
 import { map, startWith, filter, switchMap } from 'rxjs';
 import { ScrollToTopComponent } from '@components/scroll-to-top/scroll-to-top.component';
-import {MatMenuModule} from '@angular/material/menu';
+import { MatMenuModule } from '@angular/material/menu';
 import { CmsAuthenticationService } from '@services/auth.service';
 import { UrlService } from '@services/url.service';
 import { UserInfo } from '@models/user-info';
@@ -27,6 +27,7 @@ import { UserService } from '@services/user.service';
 import { SliderMenuComponent } from '@components/slider-menu/slider-menu.component';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { UserClick } from '@enums/user-click';
+
 @Component({
   selector: 'app-root',
   standalone: true,
@@ -55,32 +56,32 @@ export class AppComponent implements OnInit {
   stickyService = inject(StickyService);
   dialog = inject(DialogService);
   splashService = inject(SplashService);
-  authService = inject(CmsAuthenticationService)
+  authService = inject(CmsAuthenticationService);
   urlService = inject(UrlService);
   userService = inject(UserService);
   snackbar = inject(MatSnackBar);
   router = inject(Router);
 
   userInfo?: UserInfo;
-  isAuthenticated: boolean = false;
+  isAuthenticated = false;
 
   direction$ = this.lang.change$.pipe(
     startWith(this.lang.isLtr ? SideBarDirection.RIGHT : SideBarDirection.LEFT),
     map(() => (this.lang.isLtr ? SideBarDirection.RIGHT : SideBarDirection.LEFT))
   );
-  
+
   backtoTopFloat$ = this.lang.change$.pipe(
     startWith(this.lang.isLtr ? SideBarDirection.LEFT : SideBarDirection.RIGHT),
     map(() => (this.lang.isLtr ? SideBarDirection.LEFT : SideBarDirection.RIGHT))
   );
 
   private _listenToUserChange() {
-    this.authService.currentUser.subscribe(userInfo =>{
+    this.authService.currentUser.subscribe((userInfo) => {
       this.userInfo = userInfo;
     });
   }
 
-  showBackToTopScroll: boolean = false;
+  showBackToTopScroll = false;
 
   constructor() {
     registerLocaleData(localeAr, 'ar');
@@ -93,10 +94,7 @@ export class AppComponent implements OnInit {
     this.authService.loadUserFromLocalStorage();
     this._listenToUserChange();
 
-    this.authService.isLoggedIn().subscribe( authenticated =>
-      this.isAuthenticated = authenticated
-    )
-    
+    this.authService.isLoggedIn().subscribe((authenticated) => (this.isAuthenticated = authenticated));
   }
 
   @HostListener('window:scroll')
@@ -104,6 +102,7 @@ export class AppComponent implements OnInit {
     this.stickyService.isSticky.set(window.scrollY > 120);
     this.showBackToTopScroll = window.scrollY > 120;
   }
+
   @HostListener('window:keydown.control.alt.ش')
   @HostListener('window:keydown.control.alt.a')
   openTranslationPopup() {
@@ -117,8 +116,9 @@ export class AppComponent implements OnInit {
   OnStaffLogin() {
     this.userService.OnStaffLogin();
   }
+
   onScrollToTop(): void {
-    window.scrollTo({top: 0, behavior: 'smooth'});
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
   onLogOut() {
@@ -126,13 +126,13 @@ export class AppComponent implements OnInit {
       .confirm(this.lang.map.are_you_sure, this.lang.map.log_out, { no: this.lang.map.cancel, yes: this.lang.map.yes })
       .afterClosed()
       .pipe(
-        filter(value => value === UserClick.YES),
+        filter((value) => value === UserClick.YES),
         switchMap(() => this.authService.logout())
       )
       .subscribe(() => {
         this.snackbar.open(this.lang.map.logged_out_successfully, '', {
           verticalPosition: 'top',
-          horizontalPosition: this.lang.isLtr ? 'left' : 'right'
+          horizontalPosition: this.lang.isLtr ? 'left' : 'right',
         });
         this.router.navigate(['home']);
       });

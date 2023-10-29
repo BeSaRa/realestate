@@ -11,28 +11,13 @@
       <div
         class="flex flex-col gap-y-2 [&>*]:w-full sm:flex-row sm:w-full xl:flex-auto [&>*]:flex-1 items-center pb-4 xl:pb-0 justify-center sm:gap-x-5 xl:ps-12 xl:pe-8">
         <app-button
-          routerLink="/sell-indicators"
+          *ngFor="let item of recentMenuItems"
+          [routerLink]="item.url"
           routerLinkActive="active"
           buttonStyle="primary"
           size="xl"
           [icon]="lang.isLtr ? 'ARROW_RIGHT' : 'ARROW_LEFT'">
-          {{ lang.map.sell_indicator }}
-        </app-button>
-        <app-button
-          routerLink="/sell-indicators"
-          routerLinkActive="active"
-          buttonStyle="primary"
-          size="xl"
-          [icon]="lang.isLtr ? 'ARROW_RIGHT' : 'ARROW_LEFT'">
-          {{ lang.map.mortgage_indicator }}
-        </app-button>
-        <app-button
-          routerLink="/sell-indicators"
-          routerLinkActive="active"
-          buttonStyle="primary"
-          size="xl"
-          [icon]="lang.isLtr ? 'ARROW_RIGHT' : 'ARROW_LEFT'">
-          {{ lang.map.news }}
+          {{ item.getNames() }}
         </app-button>
       </div>
     </div>
