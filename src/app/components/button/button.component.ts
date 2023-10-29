@@ -42,8 +42,11 @@ export class ButtonComponent implements OnChanges, DoCheck {
     this.isActive = this.host.nativeElement.classList.contains('active');
   }
 
-  clickEvent($event: MouseEvent) {
-    this.disabled && $event.stopPropagation();
+  clickEvent($event: MouseEvent | TouchEvent) {
+    if (this.disabled) {
+      $event.preventDefault();
+      $event.stopImmediatePropagation();
+    }
   }
 
   get selectedIcon() {
