@@ -1,6 +1,8 @@
 <button
   [disabled]="disabled"
   (click)="clickEvent($event)"
+  (touchstart)="clickEvent($event)"
+  (touchend)="clickEvent($event)"
   [ngClass]="{ active: isActive, 'cursor-not-allowed': disabled, 'rounded-full': isRounded, rounded: !isRounded }"
   class="group/btn relative overflow-hidden flex items-center justify-center h-full w-full btn {{ size }} {{
     buttonStyle
