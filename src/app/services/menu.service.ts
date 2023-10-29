@@ -21,6 +21,7 @@ export class MenuService {
     shape: {
       main_menu: () => Menu,
       'main_menu.links.*': () => MenuItem,
+      'recent.*': () => MenuItem,
     },
   })
   private _loadMenus(): Observable<Menus> {

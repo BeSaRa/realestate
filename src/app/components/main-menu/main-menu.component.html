@@ -5,6 +5,7 @@
         <app-button
           [buttonStyle]="sticky.isSticky() ? 'none-primary' : 'none'"
           [routerLink]="menuItem.url"
+          (click)="log(menuItem)"
           routerLinkActive="active"
           ><span class="ltr:text-sm">{{ menuItem.getNames() }}</span></app-button
         >

@@ -9,6 +9,7 @@ import { StickyService } from '@services/sticky.service';
 import { TranslationService } from '@services/translation.service';
 import { UrlService } from '@services/url.service';
 import { MenuService } from '@services/menu.service';
+import { MenuItem } from '@models/menu-item';
 
 @Component({
   selector: 'app-main-menu',
@@ -30,5 +31,9 @@ export class MainMenuComponent extends OnDestroyMixin(class {}) implements OnIni
 
   ngOnInit(): void {
     this.menuService.loadMenus().subscribe((menus) => (this.mainMenu = menus.main_menu));
+  }
+
+  log(item: MenuItem): void {
+    console.log(item);
   }
 }
