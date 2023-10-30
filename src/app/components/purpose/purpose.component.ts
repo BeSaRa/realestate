@@ -18,6 +18,7 @@ export class PurposeComponent {
   @Input() item!: Lookup;
   @Input() showYoy = true;
   @Input() enableCountup = true;
+  @Input() alignHorizontal = true;
 
   isHovered = false;
   lang = inject(TranslationService);

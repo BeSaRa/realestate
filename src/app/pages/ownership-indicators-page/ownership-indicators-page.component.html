@@ -78,6 +78,7 @@
           <ng-container *ngFor="let item of purposeKPIS; let i = index">
             <app-purpose
               [item]="item"
+              [showYoy]="false"
               (click)="purposeSelected(item)"
               class="border-2 rounded-xl overflow-hidden xl:border-0 xl:rounded-none xl:border-e-2 border-secondary xl:last-of-type:border-e-0" />
           </ng-container>
@@ -87,6 +88,7 @@
           <app-purpose
             *ngFor="let item of purposeKPIS; let i = index"
             [item]="item"
+            [showYoy]="false"
             (click)="purposeSelected(item)"
             class="xl:border-e-2 border-secondary last-of-type:border-e-0 {{
               i > 2 ? 'border-t-2 xl:border-t-0' : ''

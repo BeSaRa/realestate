@@ -8,6 +8,7 @@
       <ng-container *ngFor="let item of premiseTypesData.types">
         <app-purpose
           [item]="item"
+          [alignHorizontal]="false"
           [enableCountup]="false"
           class="border-2 rounded-xl overflow-hidden border-secondary" />
       </ng-container>
