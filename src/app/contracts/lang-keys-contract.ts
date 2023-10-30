@@ -306,4 +306,8 @@ export interface LangKeysContract {
   to_display_forecast_chart_filter_values_must_be_as_follows: string;
   value_other_than_all: string;
   single_value_other_than_all: string;
+  occupied_and_vacant_units_count_per_municipality: string;
+  occupied_and_vacant_units_count_per_zone: string;
+  number_of_occupied_units: string;
+  number_of_vacant_units: string;
 }

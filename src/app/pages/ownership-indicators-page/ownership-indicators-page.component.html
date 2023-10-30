@@ -202,6 +202,8 @@
         <div class="w-full lg:w-1/3 mt-4">
           <app-qatar-interactive-map
             [municipalitiesData]="municipalitiesData"
+            [label]="lang.map.number_of_ownerships"
+            [unit]="lang.map.ownership"
             [selectedMunicipalityId]="selectedMunicipality.id"
             (selectedMunicipalityChanged)="onMapSelectedMunicipalityChanged($event)" />
         </div>

@@ -19,6 +19,8 @@ export class QatarInteractiveMapComponent implements OnChanges {
   @Input() municipalitiesData: (KpiModel & { municipalityId: number })[] = [];
   @Input() selectedMunicipalityId = 4;
   @Input() hasPrice = false;
+  @Input({ required: true }) label!: string;
+  @Input({ required: true }) unit!: string;
 
   @Output() selectedMunicipalityChanged = new EventEmitter<KpiModel & { municipalityId: number }>();
 
