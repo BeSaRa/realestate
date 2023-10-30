@@ -1,0 +1,55 @@
+<svg class="w-full fill-transparent" viewBox="0 0 100 70">
+  <line
+    class="dashed-lines stroke-secondary stroke-[0.2]"
+    stroke-dasharray="1"
+    *ngFor="let point of viewPoints"
+    [attr.x1]="point.x"
+    [attr.x2]="point.x"
+    [attr.y1]="point.y"
+    [attr.y2]="60"></line>
+  <path
+    *ngFor="let path of paths; let i = index"
+    class="chart-line stroke-[0.5]"
+    [ngClass]="{ 'stroke-secondary': i !== paths.length - 1, 'stroke-secondary/50': i === paths.length - 1 }"
+    [attr.stroke-dasharray]="i === paths.length - 1 ? 2 : 0"
+    [attr.d]="path"></path>
+  <circle
+    *ngFor="let point of viewPoints; let i = index"
+    class="markers"
+    [ngClass]="{
+      'fill-primary stroke-primary stroke-[0.5]': i !== viewPoints.length - 1,
+      'fill-secondary stroke-primary stroke-[0.5]': i === viewPoints.length - 1
+    }"
+    [attr.cx]="point.x"
+    [attr.cy]="point.y"
+    r="1"></circle>
+
+  <g class="x-axis stroke-1 stroke-secondary">
+    <circle class="fill-secondary" r="1.5" cx="2" cy="60"></circle>
+    <line x1="2" x2="99" y1="60" y2="60"></line>
+    <line stroke-linecap="round" x1="95" x2="99" y1="57" y2="60"></line>
+    <line stroke-linecap="round" x1="95" x2="99" y1="63" y2="60"></line>
+  </g>
+
+  <g class="x-labels">
+    <text
+      *ngFor="let point of viewPoints; let i = index"
+      class="fill-primary text-[3px]"
+      [attr.x]="point.x"
+      y="64"
+      dx="3">
+      {{ realPoints[i].x }}
+    </text>
+  </g>
+
+  <g class="y-labels">
+    <text
+      *ngFor="let point of viewPoints; let i = index"
+      class="fill-secondary text-[4px]"
+      [attr.x]="point.x"
+      [attr.y]="point.y - 3"
+      dx="3">
+      {{ realPoints[i].y }}
+    </text>
+  </g>
+</svg>
