@@ -5,21 +5,19 @@ import { PageEvent } from '@angular/material/paginator';
 import { MatSortModule } from '@angular/material/sort';
 import { MatTableModule } from '@angular/material/table';
 import { SellTransactionIndicator } from '@app-types/sell-indicators-type';
-import { BaseFilterComponent } from '@components/base-filter/base-filter.component';
 import { ButtonComponent } from '@components/button/button.component';
 import { DurationChartComponent } from '@components/duration-chart/duration-chart.component';
 import { ExtraHeaderComponent } from '@components/extra-header/extra-header.component';
 import { IconButtonComponent } from '@components/icon-button/icon-button.component';
 import { KpiRootComponent } from '@components/kpi-root/kpi-root.component';
 import { PropertyCarouselComponent } from '@components/property-carousel/property-carousel.component';
-import { PropertyPriceBlockComponent } from '@components/property-price-block/property-price-block.component';
 import { PurposeComponent } from '@components/purpose/purpose.component';
+import { SellForecastingChartComponent } from '@components/sell-forecasting-chart/sell-forecasting-chart.component';
 import { TableComponent } from '@components/table/table.component';
 import { TopTenChartComponent } from '@components/top-ten-chart/top-ten-chart.component';
 import { TransactionsFilterComponent } from '@components/transactions-filter/transactions-filter.component';
 import { YoyIndicatorComponent } from '@components/yoy-indicator/yoy-indicator.component';
 import { CriteriaContract } from '@contracts/criteria-contract';
-import { PriceCriteriaContract } from '@contracts/price-criteria-contract';
 import { SellCriteriaContract } from '@contracts/sell-criteria-contract';
 import { TableColumnCellTemplateDirective } from '@directives/table-column-cell-template.directive';
 import { TableColumnHeaderTemplateDirective } from '@directives/table-column-header-template.directive';
@@ -31,7 +29,6 @@ import { CompositeTransaction } from '@models/composite-transaction';
 import { KpiModel } from '@models/kpi-model';
 import { KpiRoot } from '@models/kpiRoot';
 import { Lookup } from '@models/lookup';
-import { MLPriceItem } from '@models/ml-price-item';
 import { SellDefaultValues } from '@models/sell-default-values';
 import { SellTransaction } from '@models/sell-transaction';
 import { SellTransactionPropertyType } from '@models/sell-transaction-property-type';
@@ -83,9 +80,8 @@ import {
     MatSortModule,
     MatNativeDateModule,
     DurationChartComponent,
-    BaseFilterComponent,
-    PropertyPriceBlockComponent,
     TopTenChartComponent,
+    SellForecastingChartComponent,
   ],
   templateUrl: './sell-indicators-page.component.html',
   styleUrls: ['./sell-indicators-page.component.scss'],
@@ -113,9 +109,6 @@ export default class SellIndicatorsPageComponent implements OnInit, OnDestroy {
 
   municipalities = this.lookupService.sellLookups.municipalityList;
   propertyTypes = this.lookupService.sellLookups.propertyTypeList;
-  pricePropertyTypes = this.lookupService.sellLookups.propertyTypeList
-    .filter((x) => x.lookupKey !== -1)
-    .map((e) => new Lookup().clone<Lookup>(e));
   propertyUsages = this.lookupService.sellLookups.rentPurposeList.slice().sort((a, b) => a.lookupKey - b.lookupKey);
   areas = this.lookupService.sellLookups.districtList.slice().sort((a, b) => a.lookupKey - b.lookupKey);
   // zones = this.lookupService.sellLookups.zoneList;
@@ -130,13 +123,8 @@ export default class SellIndicatorsPageComponent implements OnInit, OnDestroy {
     type: CriteriaType;
   };
 
-  priceCriteria!: {
-    criteria: PriceCriteriaContract;
-  };
-
-  isMonthlyDuration: boolean = true;
+  isMonthlyDuration = true;
   criteriaSubject = new BehaviorSubject<CriteriaContract | undefined>(undefined);
-  priceCriteriaSubject = new BehaviorSubject<PriceCriteriaContract | undefined>(undefined);
   criteria$ = this.criteriaSubject.asObservable();
 
   rootKPIS = [
@@ -270,9 +258,6 @@ export default class SellIndicatorsPageComponent implements OnInit, OnDestroy {
   transactions$: Observable<SellTransaction[]> = this.loadTransactions();
   dataSource: AppTableDataSource<SellTransaction> = new AppTableDataSource(this.transactions$);
   transactionsCount = 0;
-
-  //MLPriceItemSubject :BehaviorSubject<MLPriceItem>;//= new BehaviorSubject<MLPriceItem>();
-  priceItem!: MLPriceItem; // = this.MLPriceItemSubject.asObservable();
 
   transactionsStatistics$: Observable<SellTransactionIndicator[]> = this.setIndicatorsTableDataSource();
   transactionsStatisticsDatasource = new AppTableDataSource<SellTransactionIndicator>(this.transactionsStatistics$);
@@ -453,22 +438,6 @@ export default class SellIndicatorsPageComponent implements OnInit, OnDestroy {
     this.loadCompositeTransactions();
     this.setIndicatorsTableDataSource();
     // this.loadRoomCounts();
-  }
-  priceFilterChange(criteria: PriceCriteriaContract) {
-    this.priceCriteria = { criteria };
-    this.priceCriteriaSubject.next(criteria);
-    this.dashboardService
-      .loadPropertyTypePrice(criteria)
-      .pipe(take(1))
-      .subscribe((result) => {
-        this.priceItem = new MLPriceItem().clone<MLPriceItem>({
-          kpiCurrent: result[0].kpiCurrent,
-          kpiPast: result[0].kpiPast,
-          kpiPredicated: result[0].kpiPredicated,
-          propertyTypeId: criteria.propertyTypeList[0],
-          propertyTypeInfo: this.lookupService.sellPropertyTypeMap[criteria.propertyTypeList[0]],
-        });
-      });
   }
 
   private setDefaultRoots(sellDefaultValue?: SellDefaultValues) {

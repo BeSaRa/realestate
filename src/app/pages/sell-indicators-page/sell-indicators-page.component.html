@@ -196,26 +196,23 @@
   </div>
   <div></div>
   <div *ngIf="isSelectedTab('statistical_reports_for_sell')" class="flex flex-col">
-    <!-- <div class="px-3 lg:px-16 py-8 flex bg-sand mt-8 flex-col">
-      <h3
-        class="heading text-xl sm:text-2xl md:text-3xl self-center md:self-start text-center text-primary border-secondary font-semibold">
-        {{ lang.map.temporal_change_in_average_price_according_to_property_type }}
-      </h3>
-      <div class="py-4">
-        <div class="md:px-20 lg:px-32 xl:px-60">
-          <app-base-filter
-            [priceMunicipalities]="municipalities"
-            [pricePropertyTypes]="pricePropertyTypes"
-            [priceAreas]="areas"
-            (fromChanged)="priceFilterChange($event)"/>
-        </div>
-        <app-property-price-block
-                  useAssetsFrom="sell"
-                  [ignoreLocalImages]="true"
-                  class="carousel-cell m-0"
-                  [item]="priceItem" />
-      </div>
-  </div> -->
+    <div class="relative px-3 lg:px-16 flex flex-col justify-center items-center">
+      <img
+        class="absolute hidden sm:inline left-0 -bottom-16"
+        src="assets/images/forecast-images/all-properties.svg"
+        alt="" />
+      <img class="absolute hidden sm:inline right-16 -bottom-14" src="assets/images/forecast-images/north.svg" alt="" />
+      <img
+        class="absolute hidden sm:inline right-0 -bottom-16"
+        src="assets/images/forecast-images/north-big.svg"
+        alt="" />
+      <app-sell-forecasting-chart
+        [title]="lang.map.predicted_sell_price + ' ' + getStringSelectedCriteria(true, false)"
+        [rootData]="{ chartDataUrl: urlService.URLS.SELL_KPI_ML, hasPrice: true }"
+        [filterCriteria]="criteria.criteria"
+        class="relative w-full md:w-5/6 lg:w-4/6 xl:w-7/12"></app-sell-forecasting-chart>
+    </div>
+
     <div class="px-3 lg:px-16 py-8 flex bg-sand mt-8 flex-col">
       <h3
         class="heading text-xl sm:text-2xl md:text-3xl self-center md:self-start text-center text-primary border-secondary font-semibold">
@@ -349,6 +346,7 @@
         [selectedAccordingTo]="accordingToList[0]"
         [bindLabel]="top10Label"></app-top-ten-chart>
     </div>
+
     <div class="px-3 lg:px-16 bg-sand py-5">
       <div class="overflow-x-auto">
         <table
