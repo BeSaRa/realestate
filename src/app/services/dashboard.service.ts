@@ -7,7 +7,6 @@ import { CriteriaContract } from '@contracts/criteria-contract';
 import { DurationDataContract } from '@contracts/duration-data-contract';
 import { MortgageCriteriaContract } from '@contracts/mortgage-criteria-contract';
 import { OwnerCriteriaContract } from '@contracts/owner-criteria-contract';
-import { PriceCriteriaContract } from '@contracts/price-criteria-contract';
 import { RentCriteriaContract } from '@contracts/rent-criteria-contract';
 import { SellCriteriaContract } from '@contracts/sell-criteria-contract';
 import { ServiceContract } from '@contracts/service-contract';
@@ -23,7 +22,6 @@ import { KpiDurationModel } from '@models/kpi-duration-model';
 import { KpiModel } from '@models/kpi-model';
 import { KpiRoot } from '@models/kpiRoot';
 import { Lookup } from '@models/lookup';
-import { MLPriceItem } from '@models/ml-price-item';
 import { MortgageTransaction } from '@models/mortgage-transaction';
 import { OwnershipCountNationality } from '@models/ownership-count-nationality';
 import { Pagination } from '@models/pagination';
@@ -41,6 +39,8 @@ import { CastResponse } from 'cast-response';
 import { forkJoin, map, Observable } from 'rxjs';
 import { DialogService } from './dialog.service';
 import { TranslationService } from './translation.service';
+import { ForecastData } from '@models/forecast-data';
+import { ForecastCriteriaContract } from '@contracts/forecast-criteria-contract';
 
 @Injectable({
   providedIn: 'root',
@@ -76,10 +76,6 @@ export class DashboardService extends RegisterServiceMixin(class {}) implements 
 
   loadKpiRoot(kpi: KpiRoot, criteria: CriteriaContract): Observable<KpiModel[]> {
     return this.http.post<KpiModel[]>(kpi.url, criteria);
-  }
-
-  loadPropertyTypePrice(criteria: Partial<PriceCriteriaContract>): Observable<MLPriceItem[]> {
-    return this.http.post<MLPriceItem[]>(this.urlService.URLS.SELL_KPI_ML, criteria);
   }
 
   loadPurposeKpi(kpi: KpiRoot, criteria: Partial<CriteriaContract>): Observable<KpiModel[]> {
@@ -177,6 +173,10 @@ export class DashboardService extends RegisterServiceMixin(class {}) implements 
   @CastResponse(() => Pagination<MortgageTransaction>, { shape: { 'transactionList.*': () => MortgageTransaction } })
   loadMortgageKpiTransactions(criteria: Partial<CriteriaContract>): Observable<Pagination<MortgageTransaction[]>> {
     return this.http.post<Pagination<MortgageTransaction[]>>(this.urlService.URLS.MORT_KPI7, criteria);
+  }
+
+  loadForecastData(url: string, criteria: Partial<ForecastCriteriaContract>) {
+    return this.http.post<ForecastData[]>(url, criteria).pipe(map((data) => data[0]));
   }
 
   @CastResponse(() => CompositeTransaction)

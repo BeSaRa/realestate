@@ -20,7 +20,7 @@ import { DashboardService } from '@services/dashboard.service';
 import { TranslationService } from '@services/translation.service';
 import { objectHasOwnProperty } from '@utils/utils';
 import { ChartComponent, NgApexchartsModule } from 'ng-apexcharts';
-import { Observable, take, takeUntil } from 'rxjs';
+import { Observable, catchError, take, takeUntil, throwError } from 'rxjs';
 
 @Component({
   selector: 'app-pie-chart',
@@ -82,7 +82,13 @@ export class PieChartComponent extends OnDestroyMixin(class {}) implements OnCha
     this.isLoading = true;
     this.dashboardService
       .loadChartKpiData(this.rootData, this.criteria)
-      .pipe(take(1))
+      .pipe(
+        take(1),
+        catchError((err) => {
+          this.isLoading = false;
+          return throwError(() => err);
+        })
+      )
       .subscribe((data) => {
         data.sort((a, b) => b.kpiVal - a.kpiVal);
 
