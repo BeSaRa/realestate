@@ -310,4 +310,12 @@ export interface LangKeysContract {
   occupied_and_vacant_units_count_per_zone: string;
   number_of_occupied_units: string;
   number_of_vacant_units: string;
+
+  occupied_and_vacant_records_list: string;
+  premise_category_and_type: string;
+  electricity_number: string;
+  water_number: string;
+  tenant_id: string;
+  owner_id: string;
+  record_date: string;
 }
