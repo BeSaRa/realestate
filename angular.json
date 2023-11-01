@@ -26,7 +26,8 @@
           "options": {
             "allowedCommonJsDependencies": [
               "apexcharts",
-              "as-table"
+              "as-table",
+              "rulyotano.math.interpolation.bezier"
             ],
             "outputPath": "dist/real-estate/browser",
             "index": "src/index.html",
