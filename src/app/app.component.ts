@@ -1,7 +1,7 @@
 import { BidiModule } from '@angular/cdk/bidi';
 import { CommonModule, registerLocaleData } from '@angular/common';
 import localeAr from '@angular/common/locales/ar';
-import { Component, HostListener, OnInit, inject } from '@angular/core';
+import { AfterViewInit, Component, HostListener, OnInit, inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { Router, RouterModule, RouterOutlet } from '@angular/router';
@@ -51,7 +51,7 @@ import { UserClick } from '@enums/user-click';
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss'],
 })
-export class AppComponent implements OnInit {
+export class AppComponent implements OnInit, AfterViewInit {
   lang = inject(TranslationService);
   stickyService = inject(StickyService);
   dialog = inject(DialogService);
@@ -88,13 +88,16 @@ export class AppComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    setTimeout(() => {
-      this.splashService.removeSplash();
-    }, 500);
     this.authService.loadUserFromLocalStorage();
     this._listenToUserChange();
 
     this.authService.isLoggedIn().subscribe((authenticated) => (this.isAuthenticated = authenticated));
+  }
+
+  ngAfterViewInit(): void {
+    setTimeout(() => {
+      this.splashService.removeSplash();
+    }, 500);
   }
 
   @HostListener('window:scroll')

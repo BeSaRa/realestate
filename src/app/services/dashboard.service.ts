@@ -41,6 +41,7 @@ import { DialogService } from './dialog.service';
 import { TranslationService } from './translation.service';
 import { ForecastData } from '@models/forecast-data';
 import { ForecastCriteriaContract } from '@contracts/forecast-criteria-contract';
+import { OccupancyTransaction } from '@models/occupancy-transaction';
 
 @Injectable({
   providedIn: 'root',
@@ -173,6 +174,11 @@ export class DashboardService extends RegisterServiceMixin(class {}) implements 
   @CastResponse(() => Pagination<MortgageTransaction>, { shape: { 'transactionList.*': () => MortgageTransaction } })
   loadMortgageKpiTransactions(criteria: Partial<CriteriaContract>): Observable<Pagination<MortgageTransaction[]>> {
     return this.http.post<Pagination<MortgageTransaction[]>>(this.urlService.URLS.MORT_KPI7, criteria);
+  }
+
+  @CastResponse(() => Pagination<OccupancyTransaction>, { shape: { 'transactionList.*': () => OccupancyTransaction } })
+  loadOccupancyTransactions(criteria: Partial<CriteriaContract>): Observable<Pagination<OccupancyTransaction[]>> {
+    return this.http.post<Pagination<OccupancyTransaction[]>>(this.urlService.URLS.OV_KPI7, criteria);
   }
 
   loadForecastData(url: string, criteria: Partial<ForecastCriteriaContract>) {

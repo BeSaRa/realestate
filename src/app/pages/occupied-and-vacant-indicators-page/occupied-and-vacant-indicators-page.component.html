@@ -165,4 +165,83 @@
         [title]="areasChartOptions.title!" />
     </div>
   </div>
+  <div class="px-3 lg:px-16 flex flex-col gap-4">
+    <h3
+      class="heading text-xl sm:text-2xl md:text-3xl self-center md:self-start text-center text-primary border-secondary font-semibold">
+      {{ lang.map.occupied_and_vacant_records_list }}
+    </h3>
+
+    <app-table
+      minWidth="1200px"
+      headerBgColor="!bg-secondary"
+      (paginate)="paginate($event)"
+      [length]="transactionsCount"
+      [dataSource]="dataSource"
+      [sortOptions]="[]">
+      <ng-container appTableColumnTemplate columnName="location">
+        <div *appTableColumnHeaderTemplate class="flex justify-center">
+          <div class="text-start">
+            <p>{{ lang.map.location }}</p>
+          </div>
+        </div>
+        <div *appTableColumnCellTemplate="let item; typeOf: transactions$" class="flex justify-center">
+          <div class="text-start">
+            <p class="font-bold">{{ item.municipalityInfo.getNames() }}</p>
+            <p>{{ item.zoneInfo && item.zoneInfo.getNames() && "---" }}</p>
+          </div>
+        </div>
+      </ng-container>
+      <ng-container appTableColumnTemplate columnName="category_and_type">
+        <div *appTableColumnHeaderTemplate class="flex justify-center">
+          <div class="text-start">
+            <p>{{ lang.map.premise_category_and_type }}</p>
+          </div>
+        </div>
+        <div *appTableColumnCellTemplate="let item; typeOf: transactions$" class="flex justify-center">
+          <div class="text-start">
+            <p class="font-bold">{{ item.premiseCategoryInfo.getNames() }}</p>
+            <p>{{ item.permiseTypeInfo.getNames() }}</p>
+          </div>
+        </div>
+      </ng-container>
+
+      <ng-container appTableColumnTemplate columnName="occupancy_status">
+        <span *appTableColumnHeaderTemplate>{{ lang.map.occupancy_status }}</span>
+        <span *appTableColumnCellTemplate="let item; typeOf: transactions$" class="font-bold">{{
+          item.occupancyStatusInfo.getNames()
+        }}</span>
+      </ng-container>
+      <ng-container appTableColumnTemplate columnName="owner_id">
+        <span *appTableColumnHeaderTemplate>{{ lang.map.owner_id }}</span>
+        <span *appTableColumnCellTemplate="let item; typeOf: transactions$" class="font-bold">{{
+          item.ownerId | number : "1.0-0"
+        }}</span>
+      </ng-container>
+      <ng-container appTableColumnTemplate columnName="tenant_id">
+        <span *appTableColumnHeaderTemplate>{{ lang.map.tenant_id }}</span>
+        <span *appTableColumnCellTemplate="let item; typeOf: transactions$" class="font-bold">{{
+          item.tenantNumber | number : "1.0-0"
+        }}</span>
+      </ng-container>
+
+      <ng-container appTableColumnTemplate columnName="record_date">
+        <span *appTableColumnHeaderTemplate>{{ lang.map.record_date }}</span>
+        <span *appTableColumnCellTemplate="let item; typeOf: transactions$">
+          {{ item.rowDate | date : "YYYY-MM-dd" }}</span
+        >
+      </ng-container>
+      <ng-container appTableColumnTemplate columnName="electricity_number">
+        <span *appTableColumnHeaderTemplate>{{ lang.map.electricity_number }}</span>
+        <span *appTableColumnCellTemplate="let item; typeOf: transactions$" class="font-bold">{{
+          item.electricityNo | number : "1.0-0"
+        }}</span>
+      </ng-container>
+      <ng-container appTableColumnTemplate columnName="water_number">
+        <span *appTableColumnHeaderTemplate>{{ lang.map.water_number }}</span>
+        <span *appTableColumnCellTemplate="let item; typeOf: transactions$" class="font-bold">{{
+          item.waterNumber | number : "1.0-0"
+        }}</span>
+      </ng-container>
+    </app-table>
+  </div>
 </div>

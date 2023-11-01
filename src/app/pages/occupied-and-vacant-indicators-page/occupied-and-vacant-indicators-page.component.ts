@@ -1,23 +1,30 @@
 import { CommonModule } from '@angular/common';
-import { AfterViewInit, Component, QueryList, ViewChildren, inject } from '@angular/core';
+import { AfterViewInit, Component, OnInit, QueryList, ViewChildren, inject } from '@angular/core';
+import { PageEvent } from '@angular/material/paginator';
 import { ButtonComponent } from '@components/button/button.component';
 import { ExtraHeaderComponent } from '@components/extra-header/extra-header.component';
 import { KpiRootComponent } from '@components/kpi-root/kpi-root.component';
 import { PremiseTypesPopupComponent } from '@components/premise-types-popup/premise-types-popup.component';
 import { PurposeComponent } from '@components/purpose/purpose.component';
 import { StackedDurationChartComponent } from '@components/stacked-duration-chart/stacked-duration-chart.component';
+import { TableComponent } from '@components/table/table.component';
 import { TransactionsFilterComponent } from '@components/transactions-filter/transactions-filter.component';
 import { AppColors } from '@constants/app-colors';
 import { CriteriaContract } from '@contracts/criteria-contract';
+import { TableColumnCellTemplateDirective } from '@directives/table-column-cell-template.directive';
+import { TableColumnHeaderTemplateDirective } from '@directives/table-column-header-template.directive';
+import { TableColumnTemplateDirective } from '@directives/table-column-template.directive';
 import { BarChartTypes } from '@enums/bar-chart-type';
 import { Breakpoints } from '@enums/breakpoints';
 import { CriteriaType } from '@enums/criteria-type';
 import { OccupationStatus } from '@enums/occupation-status';
 import { OnDestroyMixin } from '@mixins/on-destroy-mixin';
+import { AppTableDataSource } from '@models/app-table-data-source';
 import { ChartConfig, ChartContext, ChartOptionsModel, DataPointSelectionConfig } from '@models/chart-options-model';
 import { KpiModel } from '@models/kpi-model';
 import { KpiRoot } from '@models/kpiRoot';
 import { Lookup } from '@models/lookup';
+import { OccupancyTransaction } from '@models/occupancy-transaction';
 import { AppChartTypesService } from '@services/app-chart-types.service';
 import { DashboardService } from '@services/dashboard.service';
 import { DialogService } from '@services/dialog.service';
@@ -26,7 +33,7 @@ import { ScreenBreakpointsService } from '@services/screen-breakpoints.service';
 import { TranslationService } from '@services/translation.service';
 import { UrlService } from '@services/url.service';
 import { ChartComponent, NgApexchartsModule } from 'ng-apexcharts';
-import { BehaviorSubject, map, take, takeUntil } from 'rxjs';
+import { BehaviorSubject, Observable, Subject, combineLatest, delay, map, of, switchMap, take, takeUntil } from 'rxjs';
 import { QatarInteractiveMapComponent } from 'src/app/qatar-interactive-map/qatar-interactive-map.component';
 
 @Component({
@@ -42,13 +49,17 @@ import { QatarInteractiveMapComponent } from 'src/app/qatar-interactive-map/qata
     StackedDurationChartComponent,
     NgApexchartsModule,
     QatarInteractiveMapComponent,
+    TableComponent,
+    TableColumnTemplateDirective,
+    TableColumnHeaderTemplateDirective,
+    TableColumnCellTemplateDirective,
   ],
   templateUrl: './occupied-and-vacant-indicators-page.component.html',
   styleUrls: ['./occupied-and-vacant-indicators-page.component.scss'],
 })
 export default class OccupiedAndVacantIndicatorsPageComponent
   extends OnDestroyMixin(class {})
-  implements AfterViewInit
+  implements OnInit, AfterViewInit
 {
   @ViewChildren('municipalitiesChart') municipalitiesChart!: QueryList<ChartComponent>;
   @ViewChildren('areasChart') areasChart!: QueryList<ChartComponent>;
@@ -149,6 +160,27 @@ export default class OccupiedAndVacantIndicatorsPageComponent
 
   areasChartOptions = new ChartOptionsModel().clone<ChartOptionsModel>(this.appChartTypesService.mainChartOptions);
 
+  transactionsSubject = new BehaviorSubject<OccupancyTransaction[]>([]);
+  transactions$ = this.transactionsSubject.asObservable();
+  dataSource: AppTableDataSource<OccupancyTransaction> = new AppTableDataSource(this.transactions$);
+  transactionsCount = 0;
+
+  paginateSubject = new BehaviorSubject({
+    offset: 0,
+    limit: 5,
+  });
+  paginate$ = this.paginateSubject.asObservable();
+
+  reloadSubject = new Subject<void>();
+  reload$ = this.reloadSubject.asObservable();
+
+  ngOnInit(): void {
+    this._listenToTransactionsReloadAndPaginate();
+    setTimeout(() => {
+      this.reloadSubject.next();
+    }, 0);
+  }
+
   ngAfterViewInit(): void {
     this._initializeChartsFormatters();
     setTimeout(() => {
@@ -182,6 +214,7 @@ export default class OccupiedAndVacantIndicatorsPageComponent
     });
 
     this.rootItemSelected(this.selectedRoot);
+    this.reloadSubject.next();
     setTimeout(() => {
       this.updateMunicipalitiesChartData();
     }, 0);
@@ -398,6 +431,32 @@ export default class OccupiedAndVacantIndicatorsPageComponent
             ),
           })
           .then();
+      });
+  }
+
+  paginate($event: PageEvent) {
+    this.paginateSubject.next({
+      offset: $event.pageSize * $event.pageIndex,
+      limit: $event.pageSize,
+    });
+  }
+
+  private _listenToTransactionsReloadAndPaginate() {
+    combineLatest([this.reload$, this.paginate$])
+      .pipe(
+        takeUntil(this.destroy$),
+        switchMap(([, paginationOptions]) => {
+          const _criteria = {
+            ...this.criteria.criteria,
+            limit: paginationOptions.limit,
+            offset: paginationOptions.offset,
+          } as CriteriaContract;
+          return this.dashboardService.loadOccupancyTransactions(_criteria);
+        })
+      )
+      .subscribe(({ count, transactionList }) => {
+        this.transactionsSubject.next(transactionList);
+        this.transactionsCount = count;
       });
   }
 
