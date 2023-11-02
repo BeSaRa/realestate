@@ -10,7 +10,7 @@ import { ButtonComponent } from '@components/button/button.component';
 import { InputComponent } from '@components/input/input.component';
 import { SelectInputComponent } from '@components/select-input/select-input.component';
 import { UserService } from '@services/user.service';
-import { tap } from 'rxjs'
+import { tap, catchError } from 'rxjs'
 import { MatDialogRef, MatDialogModule } from '@angular/material/dialog';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatCheckboxModule } from '@angular/material/checkbox';
@@ -65,6 +65,10 @@ export class UserPreferencePopupComponent implements OnInit {
         this.authService.setCurrentUser(user);
         this.dialogRef.close();
         this.snackbar.open(this.lang.map.user_info_has_been_updated_successfully, '', { verticalPosition: 'top', horizontalPosition: this.lang.isLtr ? 'left' : 'right' });
+      }),
+      catchError((err) => {
+        this.snackbar.open(this.lang.map.updating_user_info_failed, '', { verticalPosition: 'top' });
+        throw err;
       })).subscribe();
   }
 }

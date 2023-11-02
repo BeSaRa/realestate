@@ -325,5 +325,6 @@ export interface LangKeysContract {
   last_name: string;
   language: string;
   user_info_has_been_updated_successfully: string;
+  updating_user_info_failed: string;
   email_notifications: string;
 }
