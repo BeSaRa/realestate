@@ -14,7 +14,6 @@ import { tap } from 'rxjs'
 import { MatDialogRef, MatDialogModule } from '@angular/material/dialog';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatCheckboxModule } from '@angular/material/checkbox';
-import { SwitchComponent } from '@components/switch/switch.component';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 
 @Component({
@@ -30,7 +29,6 @@ import { MatSlideToggleModule } from '@angular/material/slide-toggle';
     SelectInputComponent,
     MatSnackBarModule,
     MatCheckboxModule,
-    SwitchComponent,
     MatSlideToggleModule
   ],
   templateUrl: './user-preference-popup.component.html',
