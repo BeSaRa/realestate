@@ -165,7 +165,7 @@ export const cmsEndpoints = {
   MAIN_MENU: 'flows/trigger/F0D286AC-588E-4863-B6A1-6230EB88F710',
   LOGOUT: '/auth/logout',
   REFRESH_TOKEN: '/auth/refresh',
-  USERS: '/users/',
+  USERS: '/users',
   README: '/users/me',
   MENU_ITEMS: '/items/menu_items',
 };
