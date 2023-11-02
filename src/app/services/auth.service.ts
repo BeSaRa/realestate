@@ -1,5 +1,5 @@
 import { Injectable, inject } from '@angular/core';
-import { Observable, OperatorFunction, tap, map, from, BehaviorSubject, switchMap } from 'rxjs';
+import { Observable, OperatorFunction, tap, map, from, BehaviorSubject, switchMap, mergeMap } from 'rxjs';
 import { DirectusClientService } from './directus-client.service';
 import { HttpClient } from '@angular/common/http';
 import { UrlService } from './url.service';
@@ -9,6 +9,8 @@ import { AuthenticationDataModel } from '@models/authentication-data';
 import { TokenService } from './token.service';
 import { logout, readMe } from '@directus/sdk';
 import { UserInfo } from '@models/user-info';
+import { userInfo } from 'os';
+import { TranslationService } from './translation.service';
 
 export type KeysEnum<T> = { [P in keyof Required<T>]: true };
 @Injectable({
@@ -17,6 +19,7 @@ export type KeysEnum<T> = { [P in keyof Required<T>]: true };
 
 export class CmsAuthenticationService {
 
+    lang = inject(TranslationService);
     directusService = inject(DirectusClientService);
     config = this.directusService.config;
     urlService = inject(UrlService)
@@ -25,13 +28,16 @@ export class CmsAuthenticationService {
     private isAuthenticatedSubject = new BehaviorSubject<boolean>(false);
     private isAuthenticated$ = this.isAuthenticatedSubject.asObservable();
 
-    private currentUserSubject$: BehaviorSubject<UserInfo> = new BehaviorSubject<UserInfo>({
-        first_name: '',
-        avatar: '',
+    currentUserSubject$: BehaviorSubject<UserInfo> = new BehaviorSubject<UserInfo>(new UserInfo().clone<UserInfo>({
         id: '',
+        title: '',
+        first_name: '',
         last_name: '',
-    });
-    public currentUser= this.currentUserSubject$.asObservable();
+        email: '',
+        language: '',
+        email_notifications: false,
+    }));
+    public currentUser = this.currentUserSubject$.asObservable();
 
 
     @CastResponse(() => AuthenticationDataModel, { unwrap: 'data', fallback: '$default' })
@@ -43,17 +49,35 @@ export class CmsAuthenticationService {
         return this._login(credentials).pipe(this.afterAuthenticate());
     }
 
+    // private afterAuthenticate(): OperatorFunction<AuthenticationDataModel, AuthenticationDataModel> {
+    //     return source => {
+    //         return source.pipe(
+    //             tap(data => this.tokenService.saveToken(data)),
+    //             tap((data) => this.setClientAccesToken(data.access_token)),
+    //             tap(() => this._getCurrentUser())
+    //             // tap(() => window.location.reload()),
+    //             tap(userInfo => this.setCurrentUser(userInfo)),
+    //             tap(() => (this.isAuthenticatedSubject.next(true)))
+    //         );
+    //     };
+    // }
+
     private afterAuthenticate(): OperatorFunction<AuthenticationDataModel, AuthenticationDataModel> {
         return source => {
             return source.pipe(
                 tap(data => this.tokenService.saveToken(data)),
-                tap((data) => this.setClientAccesToken(data.access_token)),
-                // tap(() => window.location.reload()),
-                tap(_ => this.setCurrentUser()),
-                tap(() => (this.isAuthenticatedSubject.next(true)))
+                tap(data => this.setClientAccesToken(data.access_token)),
+                switchMap((data) => this._getCurrentUser().pipe(
+                    map(userInfo => {
+                        this.setCurrentUser(userInfo);
+                        this.isAuthenticatedSubject.next(true);
+                        return data;
+                    })
+                ))
             );
         };
     }
+
 
     private setClientAccesToken(token: string | null) {
         this.directusService.client.setToken(token);
@@ -65,23 +89,23 @@ export class CmsAuthenticationService {
 
     logout(): Observable<void> {
         return from(this.tokenService.getRefreshToken()).pipe(
-          switchMap(refreshToken => this._logOut(refreshToken).pipe(
-            tap(_ => this.tokenService.resetToken()),
-            tap(() => this.setClientAccesToken(null)),
-            tap(() => (this.isAuthenticatedSubject.next(false))),
-            tap(() => this.removeCurrentUser()),
-            // tap(() => window.location.reload())
-          ))
+            switchMap(refreshToken => this._logOut(refreshToken).pipe(
+                tap(_ => this.tokenService.resetToken()),
+                tap(() => this.setClientAccesToken(null)),
+                tap(() => (this.isAuthenticatedSubject.next(false))),
+                tap(() => this.removeCurrentUser()),
+                // tap(() => window.location.reload())
+            ))
         );
-      }
+    }
 
     loadUserFromLocalStorage(): Observable<UserInfo> {
         if (this.currentUserSubject$.value.id == '') {
             let fromLocalStorage = localStorage.getItem('user-profile');
             if (fromLocalStorage) {
                 let userInfo = JSON.parse(fromLocalStorage);
-                this.isAuthenticatedSubject.next(true)
-                this.currentUserSubject$.next(userInfo);
+                this.isAuthenticatedSubject.next(true);
+                this.setCurrentUser(new UserInfo().clone<UserInfo>(userInfo));
             }
         }
         return this.currentUser;
@@ -92,31 +116,25 @@ export class CmsAuthenticationService {
     }
     @CastResponse(() => UserInfo, { unwrap: 'data', fallback: '$default' })
     private _getCurrentUser(): Observable<UserInfo> {
-        const keys: KeysEnum<UserInfo> = {
-            id: true,
-            first_name: true,
-            last_name: true,
-            avatar: true,
-
-        };
-        const fields = Object.keys(keys).join(",");
-        return from(this.directusService.client.request<UserInfo>(readMe({ fields: [fields] })));
+        return from(this.directusService.client.request<UserInfo>(readMe()));
     }
 
-    setCurrentUser() {
-        this._getCurrentUser().subscribe(user => {
-            this.currentUserSubject$.next(user);
-            localStorage.setItem('user-profile', JSON.stringify(user));
-        });
+    setCurrentUser(userInfo: UserInfo) {
+        this.currentUserSubject$.next(userInfo);
+        this.lang.setCurrent(this.lang.languages.find(x => x.code === userInfo.language) ?? this.lang.getCurrent());
+        localStorage.setItem('user-profile', JSON.stringify(userInfo));
     }
 
     removeCurrentUser() {
-        this.currentUserSubject$.next({
-            first_name: '',
-            avatar: '',
+        this.currentUserSubject$.next(new UserInfo().clone<UserInfo>({
             id: '',
+            title: '',
+            first_name: '',
             last_name: '',
-        });
+            email: '',
+            language: '',
+            email_notifications: false,
+        }));
         localStorage.removeItem('user-profile');
     }
 

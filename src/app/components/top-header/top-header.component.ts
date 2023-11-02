@@ -126,6 +126,10 @@ export class TopHeaderComponent implements OnInit, OnDestroy {
   OnStaffLogin() {
     this.userService.OnStaffLogin();
   }
+
+  showUserPreference(){
+    this.userService.openUserPreferncePopup();
+  }
   
   onLogOut() {
     this.dialog

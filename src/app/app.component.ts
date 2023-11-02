@@ -120,6 +120,10 @@ export class AppComponent implements OnInit, AfterViewInit {
     this.userService.OnStaffLogin();
   }
 
+  showUserPreference() {
+    this.userService.openUserPreferncePopup();
+  }
+
   onScrollToTop(): void {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }

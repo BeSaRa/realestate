@@ -318,4 +318,12 @@ export interface LangKeysContract {
   tenant_id: string;
   owner_id: string;
   record_date: string;
+
+  user_profile: string;
+  title: string;
+  first_name: string;
+  last_name: string;
+  language: string;
+  user_info_has_been_updated_successfully: string;
+  email_notifications: string;
 }

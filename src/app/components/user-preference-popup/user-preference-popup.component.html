@@ -1,0 +1,31 @@
+<div class="dialog-container">
+  <div class="dialog-header bg-primary">
+    <h1>{{ lang.map.user_profile }}</h1>
+    <app-icon-button tabindex="-1" mat-dialog-close class="close-btn" icon="CLOSE"></app-icon-button>
+  </div>
+  <div class="dialog-content">
+    <div #f="ngForm" [formGroup]="form">
+      <div class="grid grid-cols-6 gap-4">
+
+        <app-input class="col-span-3" formControlName="first_name" [label]="lang.map.first_name" />
+        <app-input class="col-span-3" formControlName="last_name" [label]="lang.map.last_name" />
+        <div class="border-t border-gray-300 col-span-6"></div>
+        <app-input class="col-span-3" formControlName="title" [label]="lang.map.title" />
+        <app-input class="col-span-3" formControlName="email" [label]="lang.map.email" />
+        <div class="border-t border-gray-300 col-span-6"></div>
+        <div class="checkbox-container col-span-3">
+          <mat-checkbox formControlName="email_notifications"></mat-checkbox>
+          <span
+            class=" md:text-lg  lg:text-base xl:text-lg md:text-sm font-bold">{{lang.map.email_notifications}}</span>
+        </div>
+        <app-select-input class="col-span-3" formControlName="language" [label]="lang.map.language"
+          [options]="lang.languages" bindLabel="name" bindValue="code" />
+      </div>
+    </div>
+  </div>
+  <div class="dialog-footer justify-end">
+    <app-button (click)="save()" [disabled]="!form.dirty" mat-dialog-save buttonStyle="primary">{{ lang.map.save
+      }}</app-button>
+    <app-button mat-dialog-close buttonStyle="primary-outline">{{ lang.map.close }}</app-button>
+  </div>
+</div>

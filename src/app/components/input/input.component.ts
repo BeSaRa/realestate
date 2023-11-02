@@ -44,7 +44,7 @@ import { MatDatepickerModule } from '@angular/material/datepicker';
 })
 export class InputComponent implements ControlValueAccessor, OnInit, OnDestroy, AfterContentInit, OnChanges {
   @Input() isSecondary = false;
-  @Input() disabled = false;
+  @Input() disabled = true;
   @Input() displayErrors = true;
   @Input() size: 'sm' | 'md' | 'lg' | 'xl' = 'md';
   @Input() placeholder = '';
