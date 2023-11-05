@@ -138,7 +138,7 @@ export default class OccupiedAndVacantIndicatorsPageComponent
     hasPrice: false,
   };
 
-  totalCountChartNames: Record<number, string> = {
+  totalCountSeriesNames: Record<number, string> = {
     [OccupationStatus.VACANT]: this.lang.map.vacant,
     [OccupationStatus.OCCUPIED]: this.lang.map.occupied,
   };
