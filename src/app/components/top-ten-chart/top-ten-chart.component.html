@@ -8,7 +8,7 @@
       <li class="flex-1" *ngFor="let item of accordingToList">
         <app-button
           class="relative min-w-max w-max whitespace-nowrap"
-          (click)="selecteAccordingTo(item)"
+          (click)="selectAccordingTo(item)"
           [disabled]="item.isActive === false"
           [buttonStyle]="item.lookupKey === selectedAccordingTo.lookupKey ? 'secondary' : 'none-primary'">
           <span [ngClass]="{ 'text-transparent': isLoading && selectedAccordingTo.lookupKey === item.lookupKey }">{{

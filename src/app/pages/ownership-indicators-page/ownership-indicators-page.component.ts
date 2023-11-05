@@ -33,7 +33,7 @@ import { UrlService } from '@services/url.service';
 import { minMaxAvg } from '@utils/utils';
 import { ChartComponent, NgApexchartsModule } from 'ng-apexcharts';
 import { NgxMaskPipe } from 'ngx-mask';
-import { BehaviorSubject, Subject, map, take, takeUntil } from 'rxjs';
+import { Subject, map, take, takeUntil } from 'rxjs';
 import { QatarInteractiveMapComponent } from 'src/app/qatar-interactive-map/qatar-interactive-map.component';
 
 @Component({
@@ -89,16 +89,12 @@ export default class OwnershipIndicatorsPageComponent implements OnInit, AfterVi
   purposeKPIS = this.lookupService.ownerLookups.rentPurposeList;
   propertiesKPIS = this.lookupService.ownerLookups.propertyTypeList;
 
-  criteria!: {
+  criteria = {} as {
     criteria: CriteriaContract;
     type: CriteriaType;
   };
 
-  criteriaSubject = new BehaviorSubject<CriteriaContract | undefined>(undefined);
-  criteria$ = this.criteriaSubject.asObservable();
-
-  nationalityCriteriaSubject = new BehaviorSubject<CriteriaContract | undefined>(undefined);
-  nationalityCriteria$ = this.nationalityCriteriaSubject.asObservable();
+  nationalityCriteria!: CriteriaContract;
 
   rootKPIS = [
     new KpiRoot(
@@ -225,7 +221,7 @@ export default class OwnershipIndicatorsPageComponent implements OnInit, AfterVi
     this._initializeChartsFormatters();
     setTimeout(() => {
       this._listenToScreenSize();
-      this.nationalityCriteriaSubject.next({ ...this.criteria.criteria, nationalityCode: this.selectedNationality.id });
+      this.nationalityCriteria = { ...this.criteria.criteria, nationalityCode: this.selectedNationality.id };
     }, 0);
   }
 
@@ -275,8 +271,6 @@ export default class OwnershipIndicatorsPageComponent implements OnInit, AfterVi
 
   filterChange({ criteria, type }: { criteria: CriteriaContract; type: CriteriaType }) {
     this.criteria = { criteria, type };
-    this.criteriaSubject.next(this.criteria.criteria);
-    // this.nationalityCriteriaSubject.next({ ...this.criteria.criteria, nationalityCode: this.selectedNationality.id });
 
     if (type === CriteriaType.DEFAULT) this.rootItemSelected(this.rootKPIS[0]);
     this.rootKPIS.map((item) => {
@@ -311,11 +305,6 @@ export default class OwnershipIndicatorsPageComponent implements OnInit, AfterVi
     setTimeout(() => {
       if (this.selectedTab === 'ownership_indicators') {
         this.updateNationalitiesChartData(this.selectedNationalityCategory);
-        // this.updateDurationsChartData(this.selectedDurationType);
-        // this.updateMunicipalitiesChartData();
-        // this.updateAreasChartData();
-        // this.updateOwnerTypeChartData();
-        // this.updateAgeCategoryChartData();
       } else {
         this.updateOwnerTypeSummaryChartData();
       }
@@ -671,15 +660,9 @@ export default class OwnershipIndicatorsPageComponent implements OnInit, AfterVi
       true
     );
 
-    this.durationRootData = {
-      chartDataUrl: this.urlService.URLS[this._getChartDataUrl('OWNER_KPI12')],
-      hasPrice: false,
-    };
-    this.ownerTypeRootData = {
-      chartDataUrl: this.urlService.URLS[this._getChartDataUrl('OWNER_KPI15')],
-      hasPrice: false,
-    };
-    this.nationalityCriteriaSubject.next({ ...this.criteria.criteria, nationalityCode: this.selectedNationality.id });
+    this.durationRootData.chartDataUrl = this.urlService.URLS[this._getChartDataUrl('OWNER_KPI12')];
+    this.ownerTypeRootData.chartDataUrl = this.urlService.URLS[this._getChartDataUrl('OWNER_KPI15')];
+    this.nationalityCriteria = { ...this.criteria.criteria, nationalityCode: this.selectedNationality.id };
 
     this.updateMunicipalitiesChartData();
   };

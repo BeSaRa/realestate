@@ -115,8 +115,6 @@ export default class RentalIndicatorsPageComponent implements OnInit, OnDestroy 
   paramsRange = this.lookupService.rentLookups.maxParams;
   nationalities = this.lookupService.ownerLookups.nationalityList;
 
-  criteriaSubject = new BehaviorSubject<CriteriaContract | undefined>(undefined);
-  criteria$ = this.criteriaSubject.asObservable();
   isMonthlyDuration: boolean = true;
 
   // transactions = new ReplaySubject<RentTransaction[]>(1);
@@ -161,7 +159,7 @@ export default class RentalIndicatorsPageComponent implements OnInit, OnDestroy 
     }),
   ];
 
-  criteria!: {
+  criteria = {} as {
     criteria: CriteriaContract;
     type: CriteriaType;
   };
@@ -406,7 +404,6 @@ export default class RentalIndicatorsPageComponent implements OnInit, OnDestroy 
 
   filterChange({ criteria, type }: { criteria: CriteriaContract; type: CriteriaType }) {
     this.criteria = { criteria: { ...criteria, limit: 5 }, type };
-    this.criteriaSubject.next(criteria);
 
     if (type === CriteriaType.DEFAULT) {
       // load default

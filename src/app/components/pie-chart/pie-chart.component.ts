@@ -1,6 +1,5 @@
 import { CommonModule } from '@angular/common';
 import {
-  AfterViewInit,
   ChangeDetectorRef,
   Component,
   Input,
@@ -20,7 +19,7 @@ import { DashboardService } from '@services/dashboard.service';
 import { TranslationService } from '@services/translation.service';
 import { objectHasOwnProperty } from '@utils/utils';
 import { ChartComponent, NgApexchartsModule } from 'ng-apexcharts';
-import { Observable, catchError, take, takeUntil, throwError } from 'rxjs';
+import { catchError, take, throwError } from 'rxjs';
 
 @Component({
   selector: 'app-pie-chart',
@@ -29,11 +28,10 @@ import { Observable, catchError, take, takeUntil, throwError } from 'rxjs';
   templateUrl: './pie-chart.component.html',
   styleUrls: ['./pie-chart.component.scss'],
 })
-export class PieChartComponent extends OnDestroyMixin(class {}) implements OnChanges, AfterViewInit {
+export class PieChartComponent extends OnDestroyMixin(class {}) implements OnChanges {
   @Input({ required: true }) title!: string;
-  @Input({ required: true }) filterCriteria$!: Observable<CriteriaContract | undefined>;
+  @Input({ required: true }) criteria!: CriteriaContract;
   @Input({ required: true }) rootData!: { chartDataUrl: string; hasPrice: boolean };
-  @Input() updateWhenRootDataChange = false;
   @Input({ required: true }) bindLabel!: string | ((item: any) => string);
   @Input() bindValue: string | ((item: any) => number) = 'kpiVal';
   @Input() valueUnit?: string;
@@ -45,8 +43,6 @@ export class PieChartComponent extends OnDestroyMixin(class {}) implements OnCha
   dashboardService = inject(DashboardService);
   cdr = inject(ChangeDetectorRef);
 
-  criteria!: CriteriaContract;
-
   isLoading = false;
 
   pieChartOptions: PieChartOptions = {
@@ -57,25 +53,15 @@ export class PieChartComponent extends OnDestroyMixin(class {}) implements OnCha
   };
 
   ngOnChanges(changes: SimpleChanges): void {
-    if (changes['rootData'] && changes['rootData'].currentValue !== changes['rootData'].previousValue) {
-      if (!this.rootData || !this.criteria || !this.updateWhenRootDataChange) return;
-      this._updatePieChartData();
+    if (
+      (changes['rootData'] && changes['rootData'].currentValue !== changes['rootData'].previousValue) ||
+      (changes['criteria'] && changes['criteria'].currentValue !== changes['criteria'].previousValue)
+    ) {
+      if (!this.rootData || !this.criteria) return;
+      setTimeout(() => {
+        this._updatePieChartData();
+      }, 0);
     }
-  }
-
-  ngAfterViewInit(): void {
-    setTimeout(() => {
-      this._listenToCriteriaChange();
-    }, 0);
-  }
-
-  private _listenToCriteriaChange() {
-    this.filterCriteria$.pipe(takeUntil(this.destroy$)).subscribe((criteria) => {
-      if (!criteria) return;
-      this.criteria = criteria;
-      if (!this.rootData) return;
-      this._updatePieChartData();
-    });
   }
 
   private _updatePieChartData() {

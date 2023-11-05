@@ -37,7 +37,7 @@ import { ScreenBreakpointsService } from '@services/screen-breakpoints.service';
 import { TranslationService } from '@services/translation.service';
 import { UrlService } from '@services/url.service';
 import { ChartComponent, NgApexchartsModule } from 'ng-apexcharts';
-import { Observable, catchError, map, take, takeUntil, throwError } from 'rxjs';
+import { catchError, map, take, takeUntil, throwError } from 'rxjs';
 
 @Component({
   selector: 'app-stacked-duration-chart',
@@ -52,9 +52,8 @@ export class StackedDurationChartComponent
 {
   @Input({ required: true }) title!: string;
   @Input({ required: true }) charts!: Record<number, string>;
-  @Input({ required: true }) filterCriteria$!: Observable<CriteriaContract | undefined>;
+  @Input({ required: true }) criteria!: CriteriaContract;
   @Input({ required: true }) rootData!: { chartDataUrl: string; hasPrice: boolean };
-  @Input() updateWhenRootDataChange = false;
   @Input({ required: true }) bindDataSplitProp!: string;
   @Input() showSelectChartType = true;
   @Input() changeBarColorsAccordingToValue = false;
@@ -74,8 +73,6 @@ export class StackedDurationChartComponent
 
   screenSize = Breakpoints.LG;
   isLoading = false;
-
-  criteria!: CriteriaContract;
 
   protected readonly ChartType = ChartType;
   protected readonly DurationTypes = DurationEndpoints;
@@ -108,9 +105,14 @@ export class StackedDurationChartComponent
   barColorsAccordingToValue: Record<number, Record<number, string>>[] = [];
 
   ngOnChanges(changes: SimpleChanges): void {
-    if (changes['rootData'] && changes['rootData'].currentValue !== changes['rootData'].previousValue) {
-      if (!this.rootData || !this.criteria || !this.updateWhenRootDataChange) return;
-      this.updateChartDataForDuration(this.selectedDurationType, true);
+    if (
+      (changes['rootData'] && changes['rootData'].currentValue !== changes['rootData'].previousValue) ||
+      (changes['criteria'] && changes['criteria'].currentValue !== changes['criteria'].previousValue)
+    ) {
+      if (!this.rootData || !this.criteria) return;
+      setTimeout(() => {
+        this.updateChartDataForDuration(this.selectedDurationType, true);
+      }, 0);
     }
   }
 
@@ -121,10 +123,7 @@ export class StackedDurationChartComponent
   ngAfterViewInit(): void {
     setTimeout(() => {
       this.updateChartType(ChartType.BAR);
-      this._listenToCriteriaChange();
       this._initializeFormatters();
-    }, 0);
-    setTimeout(() => {
       this._listenToScreenSize();
     }, 0);
   }
@@ -328,15 +327,6 @@ export class StackedDurationChartComponent
       acc[cur[this.bindDataSplitProp as keyof KpiBaseModel]].push(cur);
       return acc;
     }, {} as Record<number, KpiBaseModel[]>);
-  }
-
-  private _listenToCriteriaChange() {
-    this.filterCriteria$.pipe(takeUntil(this.destroy$)).subscribe((criteria) => {
-      if (!criteria) return;
-      this.criteria = criteria;
-      if (!this.rootData) return;
-      this.updateChartDataForDuration(this.selectedDurationType, true);
-    });
   }
 
   private _initializeStackedSeriesOptions() {

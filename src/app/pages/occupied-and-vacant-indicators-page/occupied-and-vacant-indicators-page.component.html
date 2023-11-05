@@ -91,7 +91,7 @@
     <app-stacked-duration-chart
       [title]="lang.map.total_number_of_occupied_and_vacant"
       [charts]="totalCountChartNames"
-      [filterCriteria$]="criteria$"
+      [criteria]="criteria.criteria"
       [rootData]="totalCountChartData"
       [bindDataSplitProp]="'occupancyStatus'"
       [showSelectChartType]="true">

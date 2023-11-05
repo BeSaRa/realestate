@@ -170,7 +170,7 @@
           lang.map.ownerships_count_change_for_nationality + ' (' + getNationalityNames(selectedNationality.id) + ')'
         "
         [name]="lang.map.ownerships_count"
-        [filterCriteria$]="nationalityCriteria$"
+        [criteria]="nationalityCriteria"
         [rootData]="durationRootData"
         [showSelectChartType]="false" />
     </div>
@@ -243,14 +243,14 @@
         [title]="
           lang.map.ownerships_count_per_owner_category + ' (' + getNationalityNames(selectedNationality.id) + ')'
         "
-        [filterCriteria$]="nationalityCriteria$"
+        [criteria]="nationalityCriteria"
         [rootData]="ownerTypeRootData"
         [bindLabel]="ownerTypeLabel"
         [valueUnit]="lang.map.ownership" />
       <app-pie-chart
         [ngClass]="{ hidden: selectedNationality.id === specialNationality.lookupKey }"
         [title]="lang.map.ownerships_count_per_owner_age + ' (' + getNationalityNames(selectedNationality.id) + ')'"
-        [filterCriteria$]="nationalityCriteria$"
+        [criteria]="nationalityCriteria"
         [rootData]="ageCategoryRootData"
         [bindLabel]="ageCategoryLabel"
         [valueUnit]="lang.map.ownership" />
@@ -260,13 +260,13 @@
     <div class="mt-8 py-8 px-3 lg:px-16 bg-sand grid grid-cols-1 lg:grid-cols-2 gap-2">
       <app-pie-chart
         [title]="lang.map.ownerships_count_per_owner_sex"
-        [filterCriteria$]="criteria$"
+        [criteria]="criteria.criteria"
         [rootData]="genderRootData"
         [bindLabel]="genderLabel"
         [valueUnit]="lang.map.ownership" />
       <app-pie-chart
         [title]="lang.map.ownerships_count_per_owner_age_summary"
-        [filterCriteria$]="criteria$"
+        [criteria]="criteria.criteria"
         [rootData]="ageCategorySummaryRootData"
         [bindLabel]="ageCategoryLabel"
         [valueUnit]="lang.map.ownership" />
