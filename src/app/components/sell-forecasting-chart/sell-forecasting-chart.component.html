@@ -13,24 +13,18 @@
           <mat-spinner diameter="30" strokeWidth="3"></mat-spinner>
         </div>
         <div *ngIf="!isDataAvailable" class="h-full w-full flex justify-center items-center">
-          <p class="text-2xl md:text-3xl text-primary">
+          <p class="text-2xl md:text-3xl text-primary text-center">
             "{{ lang.map.no_data_is_currently_available_for_the_selected_parameters }}"
           </p>
         </div>
         <div
           *ngIf="!isCriteriaValid"
-          class="h-full w-full flex flex-col justify-center items-center gap-2 text-primary">
-          <p class="text-lg md:text-2xl font-bold">
-            {{ lang.map.to_display_forecast_chart_filter_values_must_be_as_follows }}:
-          </p>
-          <p class="text-lg md:text-2xl">- {{ lang.map.municipal + ": " + lang.map.value_other_than_all }}</p>
-          <p class="text-lg md:text-2xl">- {{ lang.map.district + ": " + lang.map.value_other_than_all }}</p>
-          <p class="text-lg md:text-2xl">
-            - {{ lang.map.property_type + ": " + lang.map.single_value_other_than_all }}
-          </p>
-          <p class="text-lg md:text-2xl">
-            - {{ lang.map.property_usage + ": " + lang.map.single_value_other_than_all }}
-          </p>
+          class="h-full w-full flex flex-col justify-center items-center text-center gap-2 text-primary [&>p]:text-base sm:[&>p]:text-lg md:[&>p]:text-2xl">
+          <p class="font-bold">{{ lang.map.to_display_forecast_chart_filter_values_must_be_as_follows }}:</p>
+          <p>- {{ lang.map.municipal + ": " + lang.map.value_other_than_all }}</p>
+          <p>- {{ lang.map.district + ": " + lang.map.value_other_than_all }}</p>
+          <p>- {{ lang.map.property_type + ": " + lang.map.single_value_other_than_all }}</p>
+          <p>- {{ lang.map.property_usage + ": " + lang.map.single_value_other_than_all }}</p>
         </div>
       </div>
       <svg class="w-full fill-transparent transition-all" viewBox="0 0 100 50">
