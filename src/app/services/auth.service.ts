@@ -1,5 +1,5 @@
 import { Injectable, inject } from '@angular/core';
-import { Observable, OperatorFunction, tap, map, from, BehaviorSubject, switchMap, mergeMap } from 'rxjs';
+import { Observable, OperatorFunction, tap, map, from, BehaviorSubject, switchMap, ReplaySubject } from 'rxjs';
 import { DirectusClientService } from './directus-client.service';
 import { HttpClient } from '@angular/common/http';
 import { UrlService } from './url.service';
@@ -9,10 +9,7 @@ import { AuthenticationDataModel } from '@models/authentication-data';
 import { TokenService } from './token.service';
 import { logout, readMe } from '@directus/sdk';
 import { UserInfo } from '@models/user-info';
-import { userInfo } from 'os';
 import { TranslationService } from './translation.service';
-
-export type KeysEnum<T> = { [P in keyof Required<T>]: true };
 @Injectable({
     providedIn: 'root'
 })
@@ -28,15 +25,7 @@ export class CmsAuthenticationService {
     private isAuthenticatedSubject = new BehaviorSubject<boolean>(false);
     private isAuthenticated$ = this.isAuthenticatedSubject.asObservable();
 
-    currentUserSubject$: BehaviorSubject<UserInfo> = new BehaviorSubject<UserInfo>(new UserInfo().clone<UserInfo>({
-        id: '',
-        title: '',
-        first_name: '',
-        last_name: '',
-        email: '',
-        language: '',
-        email_notifications: false,
-    }));
+    private currentUserSubject$ = new ReplaySubject<UserInfo | undefined>(1);
     public currentUser = this.currentUserSubject$.asObservable();
 
 
@@ -48,19 +37,6 @@ export class CmsAuthenticationService {
     login(credentials: Partial<CredentialsContract>): Observable<AuthenticationDataModel> {
         return this._login(credentials).pipe(this.afterAuthenticate());
     }
-
-    // private afterAuthenticate(): OperatorFunction<AuthenticationDataModel, AuthenticationDataModel> {
-    //     return source => {
-    //         return source.pipe(
-    //             tap(data => this.tokenService.saveToken(data)),
-    //             tap((data) => this.setClientAccesToken(data.access_token)),
-    //             tap(() => this._getCurrentUser())
-    //             // tap(() => window.location.reload()),
-    //             tap(userInfo => this.setCurrentUser(userInfo)),
-    //             tap(() => (this.isAuthenticatedSubject.next(true)))
-    //         );
-    //     };
-    // }
 
     private afterAuthenticate(): OperatorFunction<AuthenticationDataModel, AuthenticationDataModel> {
         return source => {
@@ -77,7 +53,6 @@ export class CmsAuthenticationService {
             );
         };
     }
-
 
     private setClientAccesToken(token: string | null) {
         this.directusService.client.setToken(token);
@@ -99,17 +74,25 @@ export class CmsAuthenticationService {
         );
     }
 
-    loadUserFromLocalStorage(): Observable<UserInfo> {
-        if (this.currentUserSubject$.value.id == '') {
-            let fromLocalStorage = localStorage.getItem('user-profile');
-            if (fromLocalStorage) {
-                let userInfo = JSON.parse(fromLocalStorage);
-                this.isAuthenticatedSubject.next(true);
-                this.setCurrentUser(new UserInfo().clone<UserInfo>(userInfo));
-            }
+    loadUserFromLocalStorage(): Observable<UserInfo | undefined> {
+        let latestUserInfo: UserInfo | undefined = undefined;
+      
+        this.currentUserSubject$.subscribe({
+          next: (userInfo) => {
+            latestUserInfo = userInfo;
+          },
+        });
+      
+        if (!latestUserInfo) {
+          const fromLocalStorage = localStorage.getItem('user-profile');
+          if (fromLocalStorage) {
+            const userInfo = JSON.parse(fromLocalStorage);
+            this.isAuthenticatedSubject.next(true);
+            this.setCurrentUser(new UserInfo().clone<UserInfo>(userInfo));
+          }
         }
         return this.currentUser;
-    }
+      }     
 
     isLoggedIn() {
         return this.isAuthenticated$;
@@ -126,15 +109,7 @@ export class CmsAuthenticationService {
     }
 
     removeCurrentUser() {
-        this.currentUserSubject$.next(new UserInfo().clone<UserInfo>({
-            id: '',
-            title: '',
-            first_name: '',
-            last_name: '',
-            email: '',
-            language: '',
-            email_notifications: false,
-        }));
+        this.currentUserSubject$.next(undefined);
         localStorage.removeItem('user-profile');
     }
 

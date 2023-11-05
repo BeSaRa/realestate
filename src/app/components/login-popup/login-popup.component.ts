@@ -2,7 +2,6 @@ import { CommonModule } from '@angular/common';
 import { Component, inject, OnInit } from '@angular/core';
 import { ReactiveFormsModule, UntypedFormBuilder } from '@angular/forms';
 import { MatDialogModule, MatDialogRef } from '@angular/material/dialog';
-import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { ButtonComponent } from '@components/button/button.component';
 import { IconButtonComponent } from '@components/icon-button/icon-button.component';
 import { InputComponent } from '@components/input/input.component';
@@ -12,6 +11,7 @@ import { CmsAuthenticationService } from '@services/auth.service';
 import { CustomValidators } from '@validators/custom-validators';
 import { catchError, tap } from 'rxjs';
 import { CredentialsContract } from '@contracts/credentials-contract';
+import { ToastService } from '@services/toast.service';
 
 @Component({
   selector: 'app-translation-popup',
@@ -24,7 +24,6 @@ import { CredentialsContract } from '@contracts/credentials-contract';
     TextareaComponent,
     ButtonComponent,
     IconButtonComponent,
-    MatSnackBarModule,
   ],
   templateUrl: './login-popup.component.html',
   styleUrls: ['./login-popup.component.scss'],
@@ -32,7 +31,7 @@ import { CredentialsContract } from '@contracts/credentials-contract';
 export class LoginPopupComponent implements OnInit {
   lang = inject(TranslationService);
   fb = inject(UntypedFormBuilder);
-  snackbar = inject(MatSnackBar);
+  toast = inject(ToastService);
   authService = inject(CmsAuthenticationService)
 
   dialogRef = inject(MatDialogRef);
@@ -66,12 +65,12 @@ export class LoginPopupComponent implements OnInit {
       tap(() => {
         this.isLoggedInfailed = false;
         this.dialogRef.close();
-        this.snackbar.open(this.lang.map.logged_in_successfully, '', {verticalPosition: 'top', horizontalPosition:this.lang.isLtr ? 'left' : 'right' });
+        this.toast.success(this.lang.map.logged_in_successfully, {verticalPosition: 'top', horizontalPosition:this.lang.isLtr ? 'left' : 'right' });
         this.LoginForm.reset();
       }),
       catchError((err) => {
         this.isLoggedInfailed = true;
-        this.snackbar.open(this.lang.map.logged_in_failed, '', { verticalPosition: 'top' });
+        this.toast.error(this.lang.map.logged_in_failed, { verticalPosition: 'top' });
         throw err;
       })
     )

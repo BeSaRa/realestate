@@ -5,7 +5,7 @@ import { HTTP_INTERCEPTORS, provideHttpClient, withInterceptorsFromDi } from '@a
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatIconRegistry } from '@angular/material/icon';
 import { MatPaginatorIntl } from '@angular/material/paginator';
-import { MAT_SNACK_BAR_DEFAULT_OPTIONS } from '@angular/material/snack-bar';
+import { MAT_SNACK_BAR_DEFAULT_OPTIONS, MatSnackBarModule } from '@angular/material/snack-bar';
 import { DomSanitizer } from '@angular/platform-browser';
 import { provideAnimations } from '@angular/platform-browser/animations';
 import { NGX_COUNTUP_OPTIONS } from '@constants/injection-tokens';
@@ -19,6 +19,7 @@ import { NgxMaskPipe, provideNgxMask } from 'ngx-mask';
 import { forkJoin, switchMap, tap } from 'rxjs';
 import { routes } from './app.routes';
 import { TokenInterceptor } from './interceptors/token.interceptor';
+import { ToastService } from '@services/toast.service';
 export const appConfig: ApplicationConfig = {
   providers: [
     provideRouter(routes, withComponentInputBinding(), withInMemoryScrolling({ scrollPositionRestoration: 'top' })),
@@ -26,6 +27,7 @@ export const appConfig: ApplicationConfig = {
     provideHttpClient(withInterceptorsFromDi()),
     provideNgxMask(),
     importProvidersFrom(MatDialogModule),
+    importProvidersFrom(MatSnackBarModule),
     {
       provide: HTTP_INTERCEPTORS,
       useClass: TokenInterceptor,

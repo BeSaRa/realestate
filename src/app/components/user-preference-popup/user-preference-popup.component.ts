@@ -12,9 +12,9 @@ import { SelectInputComponent } from '@components/select-input/select-input.comp
 import { UserService } from '@services/user.service';
 import { tap, catchError } from 'rxjs'
 import { MatDialogRef, MatDialogModule } from '@angular/material/dialog';
-import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
+import { ToastService } from '@services/toast.service';
 
 @Component({
   selector: 'app-user-preference-popup',
@@ -27,7 +27,6 @@ import { MatSlideToggleModule } from '@angular/material/slide-toggle';
     ButtonComponent,
     InputComponent,
     SelectInputComponent,
-    MatSnackBarModule,
     MatCheckboxModule,
     MatSlideToggleModule
   ],
@@ -38,7 +37,7 @@ export class UserPreferencePopupComponent implements OnInit {
   lang = inject(TranslationService);
   authService = inject(CmsAuthenticationService);
   userService = inject(UserService);
-  snackbar = inject(MatSnackBar);
+  toast = inject(ToastService);
 
   dialogRef = inject(MatDialogRef);
 
@@ -51,23 +50,20 @@ export class UserPreferencePopupComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.authService.currentUser.subscribe(user => this.userInfo = user);
+    this.authService.currentUser.subscribe(user => user && (this.userInfo = user));
     this._buildForm();
   }
 
   save() {
     let value = { ...this.form.value };
-    Object.keys(value).forEach((key) => {
-      if ((typeof value[key] === 'string' && value[key] === '') || value[key] === null) delete value[key];
-    });
     this.userService.updateUser(value).pipe(
       tap((user) => {
         this.authService.setCurrentUser(user);
         this.dialogRef.close();
-        this.snackbar.open(this.lang.map.user_info_has_been_updated_successfully, '', { verticalPosition: 'top', horizontalPosition: this.lang.isLtr ? 'left' : 'right' });
+        this.toast.success(this.lang.map.user_info_has_been_updated_successfully, { verticalPosition: 'top', horizontalPosition: this.lang.isLtr ? 'left' : 'right' });
       }),
       catchError((err) => {
-        this.snackbar.open(this.lang.map.updating_user_info_failed, '', { verticalPosition: 'top' });
+        this.toast.success(this.lang.map.updating_user_info_failed, { verticalPosition: 'top' });
         throw err;
       })).subscribe();
   }

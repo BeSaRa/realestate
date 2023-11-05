@@ -2,13 +2,13 @@ import { CommonModule } from '@angular/common';
 import { Component, inject, OnInit } from '@angular/core';
 import { ReactiveFormsModule, UntypedFormBuilder } from '@angular/forms';
 import { MatDialogModule } from '@angular/material/dialog';
-import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { ButtonComponent } from '@components/button/button.component';
 import { IconButtonComponent } from '@components/icon-button/icon-button.component';
 import { InputComponent } from '@components/input/input.component';
 import { TextareaComponent } from '@components/textarea/textarea.component';
 import { TranslationAddContract } from '@contracts/translation-contract';
 import { LangCodes } from '@enums/lang-codes';
+import { ToastService } from '@services/toast.service';
 import { TranslationService } from '@services/translation.service';
 import { CustomValidators } from '@validators/custom-validators';
 import { catchError, tap } from 'rxjs';
@@ -24,7 +24,6 @@ import { catchError, tap } from 'rxjs';
     TextareaComponent,
     ButtonComponent,
     IconButtonComponent,
-    MatSnackBarModule,
   ],
   templateUrl: './translation-popup.component.html',
   styleUrls: ['./translation-popup.component.scss'],
@@ -32,7 +31,7 @@ import { catchError, tap } from 'rxjs';
 export class TranslationPopupComponent implements OnInit {
   lang = inject(TranslationService);
   fb = inject(UntypedFormBuilder);
-  snackbar = inject(MatSnackBar);
+  toast = inject(ToastService);
 
   form = this.fb.nonNullable.group({
     localizationKey: ['', [CustomValidators.required]],
@@ -87,10 +86,10 @@ export class TranslationPopupComponent implements OnInit {
       .add(translations)
       .pipe(
         tap(() => {
-          this.snackbar.open(this.lang.map.translation_added_successfully);
+          this.toast.success(this.lang.map.translation_added_successfully);
         }),
         catchError((err) => {
-          this.snackbar.open(this.lang.map.translation_adding_failed);
+          this.toast.error(this.lang.map.translation_adding_failed);
           throw err;
         })
       )
