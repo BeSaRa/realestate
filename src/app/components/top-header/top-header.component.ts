@@ -15,10 +15,10 @@ import { CmsAuthenticationService } from '@services/auth.service';
 import { UrlService } from '@services/url.service';
 import { UserInfo } from '@models/user-info';
 import { UserService } from '@services/user.service';
-import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { DialogService } from '@services/dialog.service';
 import { UserClick } from '@enums/user-click';
 import { Router } from '@angular/router';
+import { ToastService } from '@services/toast.service';
 @Component({
   selector: 'app-top-header',
   standalone: true,
@@ -31,7 +31,6 @@ import { Router } from '@angular/router';
     ButtonComponent,
     IconButtonComponent,
     MatMenuModule,
-    MatSnackBarModule,
   ],
   templateUrl: './top-header.component.html',
   styleUrls: ['./top-header.component.scss'],
@@ -41,7 +40,7 @@ export class TopHeaderComponent implements OnInit, OnDestroy {
   authService = inject(CmsAuthenticationService);
   urlService = inject(UrlService);
   userService = inject(UserService);
-  snackbar = inject(MatSnackBar);
+  toast = inject(ToastService);
   dialog = inject(DialogService)
   router = inject(Router);
 
@@ -140,7 +139,7 @@ export class TopHeaderComponent implements OnInit, OnDestroy {
         switchMap(() => this.authService.logout())
       )
       .subscribe(() => {
-        this.snackbar.open(this.lang.map.logged_out_successfully, '', {
+        this.toast.success(this.lang.map.logged_out_successfully, {
           verticalPosition: 'top',
           horizontalPosition: this.lang.isLtr ? 'left' : 'right'
         });

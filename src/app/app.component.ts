@@ -25,8 +25,8 @@ import { UrlService } from '@services/url.service';
 import { UserInfo } from '@models/user-info';
 import { UserService } from '@services/user.service';
 import { SliderMenuComponent } from '@components/slider-menu/slider-menu.component';
-import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { UserClick } from '@enums/user-click';
+import { ToastService } from '@services/toast.service';
 
 @Component({
   selector: 'app-root',
@@ -46,7 +46,6 @@ import { UserClick } from '@enums/user-click';
     ScrollToTopComponent,
     MatMenuModule,
     SliderMenuComponent,
-    MatSnackBarModule,
   ],
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss'],
@@ -59,7 +58,7 @@ export class AppComponent implements OnInit, AfterViewInit {
   authService = inject(CmsAuthenticationService);
   urlService = inject(UrlService);
   userService = inject(UserService);
-  snackbar = inject(MatSnackBar);
+  toast = inject(ToastService);
   router = inject(Router);
 
   userInfo?: UserInfo;
@@ -137,7 +136,7 @@ export class AppComponent implements OnInit, AfterViewInit {
         switchMap(() => this.authService.logout())
       )
       .subscribe(() => {
-        this.snackbar.open(this.lang.map.logged_out_successfully, '', {
+        this.toast.success(this.lang.map.logged_out_successfully, {
           verticalPosition: 'top',
           horizontalPosition: this.lang.isLtr ? 'left' : 'right',
         });
