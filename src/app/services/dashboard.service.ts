@@ -285,6 +285,7 @@ export class DashboardService extends RegisterServiceMixin(class {}) implements 
               mainChart: { title: this.lang.map.average_price_per_month, bindValue: 'rentPaymentMonthly' },
               oppositeChart: { title: this.lang.map.rent_contracts_count, bindValue: 'certificateCount' },
             },
+            maxWidth: '95vw',
           }
         )
       )
@@ -305,6 +306,7 @@ export class DashboardService extends RegisterServiceMixin(class {}) implements 
               mainChart: { title: this.lang.map.average_price_per_month, bindValue: 'rentPaymentMonthly' },
               oppositeChart: { title: this.lang.map.rent_contracts_count, bindValue: 'certificateCount' },
             },
+            maxWidth: '95vw',
           }
         )
       )
@@ -325,6 +327,7 @@ export class DashboardService extends RegisterServiceMixin(class {}) implements 
               mainChart: { title: this.lang.map.average_sell_price_per_unit_property, bindValue: 'medianPrice' },
               oppositeChart: { title: this.lang.map.number_of_sell_contracts, bindValue: 'countCertificateCode' },
             },
+            maxWidth: '95vw',
           }
         )
       )
@@ -345,6 +348,7 @@ export class DashboardService extends RegisterServiceMixin(class {}) implements 
               mainChart: { title: this.lang.map.average_sell_price_per_unit_property, bindValue: 'medianPrice' },
               oppositeChart: { title: this.lang.map.number_of_sell_contracts, bindValue: 'countCertificateCode' },
             },
+            maxWidth: '95vw',
           }
         )
       )
