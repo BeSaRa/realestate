@@ -123,7 +123,7 @@ export default class MortgageIndicatorsComponent implements OnInit {
     hasPrice: false,
   };
 
-  countNames: Record<number, string> = {
+  countSeriesNames: Record<number, string> = {
     [TransactionType.MORTGAGE]: this.lang.map.mortgage,
     [TransactionType.SELL]: this.lang.map.sell,
   };

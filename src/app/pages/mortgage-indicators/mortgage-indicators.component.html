@@ -39,7 +39,7 @@
       <app-stacked-duration-chart
         (isMonthltyDurationTypeEvent)="isMonthlyDurationTypeForStacked($event)"
         [title]="lang.map.total_mortgage_transactions + ' ' + getStringSelectedCriteria(isMonthlyDurationForStacked)"
-        [charts]="countNames"
+        [seriesNames]="countSeriesNames"
         [criteria]="criteria.criteria"
         [rootData]="countRootData"
         [bindDataSplitProp]="'actionType'"
