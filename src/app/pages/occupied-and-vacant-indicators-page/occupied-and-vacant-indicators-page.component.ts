@@ -33,7 +33,7 @@ import { ScreenBreakpointsService } from '@services/screen-breakpoints.service';
 import { TranslationService } from '@services/translation.service';
 import { UrlService } from '@services/url.service';
 import { ChartComponent, NgApexchartsModule } from 'ng-apexcharts';
-import { BehaviorSubject, Observable, Subject, combineLatest, delay, map, of, switchMap, take, takeUntil } from 'rxjs';
+import { BehaviorSubject, Subject, combineLatest, map, switchMap, take, takeUntil } from 'rxjs';
 import { QatarInteractiveMapComponent } from 'src/app/qatar-interactive-map/qatar-interactive-map.component';
 
 @Component({
@@ -81,13 +81,10 @@ export default class OccupiedAndVacantIndicatorsPageComponent
   premiseCategories = this.lookupService.ovLookups.premiseCategoryList;
   premiseTypes = this.lookupService.ovLookups.premiseTypeList;
 
-  criteria!: {
+  criteria = {} as {
     criteria: CriteriaContract & { occupancyStatus: number | null };
     type: CriteriaType;
   };
-
-  criteriaSubject = new BehaviorSubject<CriteriaContract | undefined>(undefined);
-  criteria$ = this.criteriaSubject.asObservable();
 
   rootKPIS = [
     new KpiRoot(
@@ -192,7 +189,6 @@ export default class OccupiedAndVacantIndicatorsPageComponent
 
   filterChange({ criteria, type }: { criteria: CriteriaContract; type: CriteriaType }) {
     this.criteria = { criteria: criteria as CriteriaContract & { occupancyStatus: number | null }, type };
-    this.criteriaSubject.next(criteria);
 
     if (type === CriteriaType.DEFAULT) return;
 

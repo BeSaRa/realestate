@@ -7,7 +7,6 @@ import {
   Input,
   OnChanges,
   OnDestroy,
-  OnInit,
   Output,
   QueryList,
   SimpleChanges,
@@ -40,7 +39,7 @@ import { UrlService } from '@services/url.service';
 import { minMaxAvg } from '@utils/utils';
 import { ChartComponent, NgApexchartsModule } from 'ng-apexcharts';
 import { NgxMaskPipe } from 'ngx-mask';
-import { Observable, catchError, map, take, takeUntil, throwError } from 'rxjs';
+import { catchError, map, take, takeUntil, throwError } from 'rxjs';
 
 @Component({
   selector: 'app-duration-chart',
@@ -60,9 +59,8 @@ import { Observable, catchError, map, take, takeUntil, throwError } from 'rxjs';
 export class DurationChartComponent extends OnDestroyMixin(class {}) implements OnChanges, AfterViewInit, OnDestroy {
   @Input({ required: true }) title!: string;
   @Input({ required: true }) name!: string;
-  @Input({ required: true }) filterCriteria$!: Observable<CriteriaContract | undefined>;
+  @Input({ required: true }) criteria!: CriteriaContract;
   @Input({ required: true }) rootData!: { chartDataUrl: string; hasPrice: boolean };
-  @Input() updateWhenRootDataChange = false;
   @Input() showSelectChartType = true;
   @Input() changeBarColorsAccordingToValue = false;
 
@@ -81,8 +79,6 @@ export class DurationChartComponent extends OnDestroyMixin(class {}) implements 
 
   screenSize = Breakpoints.LG;
   isLoading = false;
-
-  criteria!: CriteriaContract;
 
   protected readonly ChartType = ChartType;
   protected readonly DurationTypes = DurationEndpoints;
@@ -110,19 +106,21 @@ export class DurationChartComponent extends OnDestroyMixin(class {}) implements 
   barColorsAccordingToValue: Record<number, string>[] = [];
 
   ngOnChanges(changes: SimpleChanges): void {
-    if (changes['rootData'] && changes['rootData'].currentValue !== changes['rootData'].previousValue) {
-      if (!this.rootData || !this.criteria || !this.updateWhenRootDataChange) return;
-      this.updateChartDataForDuration(this.selectedDurationType, true);
+    if (
+      (changes['rootData'] && changes['rootData'].currentValue !== changes['rootData'].previousValue) ||
+      (changes['criteria'] && changes['criteria'].currentValue !== changes['criteria'].previousValue)
+    ) {
+      if (!this.rootData || !this.criteria) return;
+      setTimeout(() => {
+        this.updateChartDataForDuration(this.selectedDurationType, true);
+      }, 0);
     }
   }
 
   ngAfterViewInit(): void {
     setTimeout(() => {
       this.updateChartType(ChartType.BAR);
-      this._listenToCriteriaChange();
       this._initializeFormatters();
-    }, 0);
-    setTimeout(() => {
       this._listenToScreenSizeChange();
     }, 0);
   }
@@ -182,7 +180,7 @@ export class DurationChartComponent extends OnDestroyMixin(class {}) implements 
               x: item.issueYear,
               yoy: item.kpiYoYVal,
               baseYear: data[0].issueYear, // when this info isn't provided by the be, it's the first year
-              yoyBase: item.kpiYoYBaseVal ?? this.calculateYoyBase(item.kpiVal,data[0].kpiVal),
+              yoyBase: item.kpiYoYBaseVal ?? this.calculateYoyBase(item.kpiVal, data[0].kpiVal),
             })),
           },
         ];
@@ -191,8 +189,8 @@ export class DurationChartComponent extends OnDestroyMixin(class {}) implements 
   }
 
   // if this info is not provided from api, we can calculate them
-  private calculateYoyBase (kpiVal: number, baseKpiVal: number) : number {
-    return ((kpiVal - baseKpiVal) / baseKpiVal) * 100 ;
+  private calculateYoyBase(kpiVal: number, baseKpiVal: number): number {
+    return ((kpiVal - baseKpiVal) / baseKpiVal) * 100;
   }
 
   private _updateForMonthly() {
@@ -309,15 +307,6 @@ export class DurationChartComponent extends OnDestroyMixin(class {}) implements 
           this.cdr.detectChanges();
         });
     }, 0);
-  }
-
-  private _listenToCriteriaChange() {
-    this.filterCriteria$.pipe(takeUntil(this.destroy$)).subscribe((criteria) => {
-      if (!criteria) return;
-      this.criteria = criteria;
-      if (!this.rootData) return;
-      this.updateChartDataForDuration(this.selectedDurationType, true);
-    });
   }
 
   private _initializeFormatters() {

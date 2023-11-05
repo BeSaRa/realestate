@@ -73,7 +73,7 @@ export default class MortgageIndicatorsComponent implements OnInit {
   propertyTypes = this.lookupService.mortLookups.propertyTypeList;
   paramsRange = this.lookupService.mortLookups.maxParams;
 
-  criteria: { criteria: CriteriaContract; type: CriteriaType } = {} as {
+  criteria = {} as {
     criteria: CriteriaContract;
     type: CriteriaType;
   };
@@ -81,9 +81,6 @@ export default class MortgageIndicatorsComponent implements OnInit {
   isMonthlyDuration: boolean = true;
   isMonthlyDurationForStacked: boolean = true;
   isMonthlyDurationForUnits: boolean = true;
-
-  criteriaSubject = new BehaviorSubject<CriteriaContract | undefined>(undefined);
-  criteria$ = this.criteriaSubject.asObservable();
 
   rootKpis = [
     new KpiRoot(
@@ -201,7 +198,6 @@ export default class MortgageIndicatorsComponent implements OnInit {
 
   filterChange($event: { criteria: CriteriaContract; type: CriteriaType }): void {
     this.criteria = $event;
-    this.criteriaSubject.next($event.criteria);
     this.dashboardService
       .loadMortgageRoots(this.criteria.criteria)
       .pipe(take(1))

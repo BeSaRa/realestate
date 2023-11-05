@@ -106,9 +106,8 @@
         (isMonthltyDurationTypeEvent)="isMonthlyDurationType($event)"
         [title]="selectedRoot.getNames() + ' ' + getStringSelectedCriteria(true, isMonthlyDuration)"
         [name]="selectedRoot.getNames()"
-        [filterCriteria$]="criteria$"
-        [rootData]="selectedRoot"
-        [updateWhenRootDataChange]="true"></app-duration-chart>
+        [criteria]="criteria.criteria"
+        [rootData]="selectedRoot"></app-duration-chart>
     </div>
     <div class="px-3 lg:px-16 flex flex-col gap-4">
       <h3
@@ -283,7 +282,7 @@
     <div class="px-3 lg:px-16">
       <app-top-ten-chart
         [title]="lang.map.top_10_areas + ' ' + getStringSelectedCriteria(false)"
-        [filterCriteria$]="criteria$"
+        [criteria]="criteria.criteria"
         [accordingToList]="accordingToList"
         [selectedAccordingTo]="accordingToList[0]"
         [bindLabel]="top10Label"></app-top-ten-chart>
@@ -435,14 +434,14 @@
     <div class="px-3 lg:px-16 grid grid-cols-1 lg:grid-cols-2 gap-2">
       <app-pie-chart
         [title]="lang.map.rent_contracts_count_according_to_bedrooms + ' ' + getStringSelectedCriteria()"
-        [filterCriteria$]="criteria$"
+        [criteria]="criteria.criteria"
         [rootData]="roomsRootData"
         [bindLabel]="roomLabel"
         [valueUnit]="lang.map.contract" />
 
       <app-pie-chart
         [title]="lang.map.rent_contracts_count_according_to_furniture + ' ' + getStringSelectedCriteria()"
-        [filterCriteria$]="criteria$"
+        [criteria]="criteria.criteria"
         [rootData]="furnitureRootData"
         [bindLabel]="furnitureLabel"
         [valueUnit]="lang.map.contract" />

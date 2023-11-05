@@ -118,14 +118,12 @@ export default class SellIndicatorsPageComponent implements OnInit, OnDestroy {
   purposeKPIS = this.lookupService.sellLookups.rentPurposeList;
   propertiesKPIS = this.lookupService.sellLookups.propertyTypeList;
 
-  criteria!: {
+  criteria = {} as {
     criteria: CriteriaContract;
     type: CriteriaType;
   };
 
   isMonthlyDuration = true;
-  criteriaSubject = new BehaviorSubject<CriteriaContract | undefined>(undefined);
-  criteria$ = this.criteriaSubject.asObservable();
 
   rootKPIS = [
     new KpiRoot(
@@ -405,7 +403,6 @@ export default class SellIndicatorsPageComponent implements OnInit, OnDestroy {
 
   filterChange({ criteria, type }: { criteria: CriteriaContract; type: CriteriaType }) {
     this.criteria = { criteria, type };
-    this.criteriaSubject.next(criteria);
     if (type === CriteriaType.DEFAULT) {
       // load default
       this.dashboardService

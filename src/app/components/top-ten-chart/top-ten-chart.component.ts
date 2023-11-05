@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, Input, OnInit, QueryList, ViewChildren, inject } from '@angular/core';
+import { Component, Input, OnChanges, OnInit, QueryList, SimpleChanges, ViewChildren, inject } from '@angular/core';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { ButtonComponent } from '@components/button/button.component';
 import { IconButtonComponent } from '@components/icon-button/icon-button.component';
@@ -12,7 +12,7 @@ import { AppChartTypesService } from '@services/app-chart-types.service';
 import { DashboardService } from '@services/dashboard.service';
 import { objectHasOwnProperty } from '@utils/utils';
 import { ChartComponent, NgApexchartsModule } from 'ng-apexcharts';
-import { Observable, catchError, take, takeUntil, throwError } from 'rxjs';
+import { catchError, take, throwError } from 'rxjs';
 
 @Component({
   selector: 'app-top-ten-chart',
@@ -21,9 +21,9 @@ import { Observable, catchError, take, takeUntil, throwError } from 'rxjs';
   templateUrl: './top-ten-chart.component.html',
   styleUrls: ['./top-ten-chart.component.scss'],
 })
-export class TopTenChartComponent extends OnDestroyMixin(class {}) implements OnInit {
+export class TopTenChartComponent extends OnDestroyMixin(class {}) implements OnInit, OnChanges {
   @Input({ required: true }) title!: string;
-  @Input({ required: true }) filterCriteria$!: Observable<CriteriaContract | undefined>;
+  @Input({ required: true }) criteria!: CriteriaContract;
   @Input({ required: true }) selectedAccordingTo!: Lookup;
   @Input() accordingToList: Lookup[] = [];
   @Input() showSelectChartType = true;
@@ -34,8 +34,6 @@ export class TopTenChartComponent extends OnDestroyMixin(class {}) implements On
 
   appChartTypesService = inject(AppChartTypesService);
   dashboardService = inject(DashboardService);
-
-  criteria!: CriteriaContract;
 
   isLoading = false;
 
@@ -50,14 +48,21 @@ export class TopTenChartComponent extends OnDestroyMixin(class {}) implements On
     line: new ChartOptionsModel().clone<ChartOptionsModel>(this.appChartTypesService.top10ChartOptions.line),
   };
 
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['criteria'] && changes['criteria'].currentValue !== changes['criteria'].previousValue) {
+      setTimeout(() => {
+        this.updateChartData();
+      }, 0);
+    }
+  }
+
   ngOnInit(): void {
     setTimeout(() => {
-      this._listenToCriteriaChange();
       this._initializeChartFormatters();
     }, 0);
   }
 
-  selecteAccordingTo(_new: Lookup) {
+  selectAccordingTo(_new: Lookup) {
     this.selectedAccordingTo = _new;
 
     this.updateChartData();
@@ -129,14 +134,6 @@ export class TopTenChartComponent extends OnDestroyMixin(class {}) implements On
       : this.bindLabel && typeof this.bindLabel === 'function'
       ? (this.bindLabel(item) as string)
       : (item as unknown as string);
-  }
-
-  private _listenToCriteriaChange() {
-    this.filterCriteria$.pipe(takeUntil(this.destroy$)).subscribe((criteria) => {
-      if (!criteria) return;
-      this.criteria = criteria;
-      this.updateChartData();
-    });
   }
 
   private _initializeChartFormatters() {

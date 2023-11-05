@@ -40,7 +40,7 @@
         (isMonthltyDurationTypeEvent)="isMonthlyDurationTypeForStacked($event)"
         [title]="lang.map.total_mortgage_transactions + ' ' + getStringSelectedCriteria(isMonthlyDurationForStacked)"
         [charts]="countNames"
-        [filterCriteria$]="criteria$"
+        [criteria]="criteria.criteria"
         [rootData]="countRootData"
         [bindDataSplitProp]="'actionType'"
         [showSelectChartType]="true">
@@ -53,7 +53,7 @@
           lang.map.the_total_number_of_mortgaged_units + ' ' + getStringSelectedCriteria(isMonthlyDurationForUnits)
         "
         [name]="lang.map.number_of_units"
-        [filterCriteria$]="criteria$"
+        [criteria]="criteria.criteria"
         [rootData]="unitsRootData"></app-duration-chart>
     </div>
     <div class="flex flex-col mt-4 px-3 lg:px-16">
@@ -61,7 +61,7 @@
         (isMonthltyDurationTypeEvent)="isMonthlyDurationType($event)"
         [title]="lang.map.total_value_of_mortgage_transactions + ' ' + getStringSelectedCriteria(isMonthlyDuration)"
         [name]="lang.map.transactions_value"
-        [filterCriteria$]="criteria$"
+        [criteria]="criteria.criteria"
         [rootData]="valueRootData"></app-duration-chart>
     </div>
     <div class="px-3 lg:px-16 flex flex-col gap-4">
