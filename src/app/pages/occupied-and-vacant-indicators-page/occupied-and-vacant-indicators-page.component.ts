@@ -4,6 +4,7 @@ import { PageEvent } from '@angular/material/paginator';
 import { ButtonComponent } from '@components/button/button.component';
 import { ExtraHeaderComponent } from '@components/extra-header/extra-header.component';
 import { KpiRootComponent } from '@components/kpi-root/kpi-root.component';
+import { MunicipalitiesChartComponent } from '@components/municipalities-chart/municipalities-chart.component';
 import { PremiseTypesPopupComponent } from '@components/premise-types-popup/premise-types-popup.component';
 import { PurposeComponent } from '@components/purpose/purpose.component';
 import { StackedDurationChartComponent } from '@components/stacked-duration-chart/stacked-duration-chart.component';
@@ -20,7 +21,7 @@ import { CriteriaType } from '@enums/criteria-type';
 import { OccupationStatus } from '@enums/occupation-status';
 import { OnDestroyMixin } from '@mixins/on-destroy-mixin';
 import { AppTableDataSource } from '@models/app-table-data-source';
-import { ChartConfig, ChartContext, ChartOptionsModel, DataPointSelectionConfig } from '@models/chart-options-model';
+import { ChartOptionsModel } from '@models/chart-options-model';
 import { KpiModel } from '@models/kpi-model';
 import { KpiRoot } from '@models/kpiRoot';
 import { Lookup } from '@models/lookup';
@@ -47,6 +48,7 @@ import { QatarInteractiveMapComponent } from 'src/app/qatar-interactive-map/qata
     PurposeComponent,
     ButtonComponent,
     StackedDurationChartComponent,
+    MunicipalitiesChartComponent,
     NgApexchartsModule,
     QatarInteractiveMapComponent,
     TableComponent,
@@ -61,7 +63,6 @@ export default class OccupiedAndVacantIndicatorsPageComponent
   extends OnDestroyMixin(class {})
   implements OnInit, AfterViewInit
 {
-  @ViewChildren('municipalitiesChart') municipalitiesChart!: QueryList<ChartComponent>;
   @ViewChildren('areasChart') areasChart!: QueryList<ChartComponent>;
 
   lang = inject(TranslationService);
@@ -143,15 +144,15 @@ export default class OccupiedAndVacantIndicatorsPageComponent
     [OccupationStatus.OCCUPIED]: this.lang.map.occupied,
   };
 
-  isOnInitMunicipaliteisChart = true;
-  isLoadingUpdatedMunicipalitiesData = false;
-  selectedMunicipality = { id: 4, seriesIndex: 0, dataPointIndex: 0 };
-  municipalitiesData: Record<number, (KpiModel & { municipalityId: number; occupancyStatus: number })[]> = {};
-  municipalitiesDataLength = 0;
+  municipalitySeriesNames: Record<number, string> = {
+    [OccupationStatus.VACANT]: this.lang.map.vacant,
+    [OccupationStatus.OCCUPIED]: this.lang.map.occupied,
+  };
 
-  municipalitiesChartOptions = new ChartOptionsModel().clone<ChartOptionsModel>(
-    this.appChartTypesService.mainChartOptions
-  );
+  municipalityLabel = (item: { kpiVal: number; municipalityId: number }) =>
+    this.lookupService.ovMunicipalitiesMap[item.municipalityId].getNames();
+
+  selectedMunicipalityId = 4;
 
   areasDataLength = 0;
 
@@ -182,7 +183,6 @@ export default class OccupiedAndVacantIndicatorsPageComponent
     this._initializeChartsFormatters();
     setTimeout(() => {
       this._listenToScreenSize();
-      this.municipalitiesChart.first?.updateOptions({ chart: { type: 'bar' } }).then();
       this.areasChart.first?.updateOptions({ chart: { type: 'bar' } }).then();
     }, 0);
   }
@@ -211,9 +211,6 @@ export default class OccupiedAndVacantIndicatorsPageComponent
 
     this.rootItemSelected(this.selectedRoot);
     this.reloadSubject.next();
-    setTimeout(() => {
-      this.updateMunicipalitiesChartData();
-    }, 0);
   }
 
   rootItemSelected(item?: KpiRoot) {
@@ -298,87 +295,11 @@ export default class OccupiedAndVacantIndicatorsPageComponent
     });
   }
 
-  updateMunicipalitiesChartData() {
-    this.isLoadingUpdatedMunicipalitiesData = true;
+  updateAreasChartData(municipalityId: number) {
+    this.selectedMunicipalityId = municipalityId;
     const _criteria = {
       ...this.criteria.criteria,
-      occupancyStatus: null,
-    };
-    // delete (_criteria as any).municipalityId;
-    this.dashboardService
-      .loadChartKpiData(
-        {
-          chartDataUrl: this.urlService.URLS.OV_KPI5,
-        },
-        _criteria
-      )
-      .pipe(take(1))
-      .pipe(map((data) => data as unknown as (KpiModel & { municipalityId: number; occupancyStatus: number })[]))
-      .pipe(
-        map((data) =>
-          data.reduce((acc, cur) => {
-            if (!acc[OccupationStatus.OCCUPIED]) acc[OccupationStatus.OCCUPIED] = [];
-            if (!acc[OccupationStatus.VACANT]) acc[OccupationStatus.VACANT] = [];
-            acc[cur.occupancyStatus].push(cur);
-            return acc;
-          }, {} as Record<number, typeof data>)
-        )
-      )
-      .subscribe((data) => {
-        this.municipalitiesData = data;
-        this.municipalitiesDataLength = data[OccupationStatus.OCCUPIED].length;
-
-        this.updateMunicipalitiesBarChartData();
-      });
-  }
-
-  updateMunicipalitiesBarChartData() {
-    this.municipalitiesChart.first
-      ?.updateOptions({
-        series: Object.keys(this.municipalitiesData).map((status) => ({
-          name: this.lookupService.ovOccupancyStatusMap[status as unknown as number].getNames(),
-          data: this.municipalitiesData[status as unknown as number].map((item, index) => ({
-            x: this.lookupService.ovMunicipalitiesMap[item.municipalityId]?.getNames() ?? '',
-            y: item.kpiVal,
-            id: item.municipalityId,
-            index,
-          })),
-        })),
-        chart: { stacked: true },
-        stroke: { width: 0 },
-        colors: [AppColors.PRIMARY, AppColors.SECONDARY],
-        states: {
-          active: {
-            filter: {
-              type: 'none',
-              value: 0,
-            },
-          },
-        },
-        ...this.appChartTypesService.getRangeOptions(
-          this.screenSize,
-          BarChartTypes.SINGLE_BAR,
-          this.municipalitiesDataLength,
-          true
-        ),
-      })
-      .then();
-  }
-
-  onMapSelectedMunicipalityChanged(event: KpiModel & { municipalityId: number }) {
-    this.selectedMunicipality.id = event.municipalityId;
-    this.selectedMunicipality.dataPointIndex = this.municipalitiesData[OccupationStatus.OCCUPIED].findIndex(
-      (m) => m.municipalityId === event.municipalityId
-    );
-
-    this.isLoadingUpdatedMunicipalitiesData = true;
-    this.municipalitiesChart.first?.toggleDataPointSelection(0, this.selectedMunicipality.dataPointIndex);
-  }
-
-  updateAreasChartData() {
-    const _criteria = {
-      ...this.criteria.criteria,
-      municipalityId: this.selectedMunicipality.id,
+      municipalityId,
       occupancyStatus: null,
     };
     delete (_criteria as any).zoneId;
@@ -457,15 +378,6 @@ export default class OccupiedAndVacantIndicatorsPageComponent
   }
 
   private _initializeChartsFormatters() {
-    this.municipalitiesChartOptions
-      .addDataLabelsFormatter((val, opts) =>
-        this.appChartTypesService.dataLabelsFormatter({ val, opts }, { hasPrice: false })
-      )
-      .addAxisYFormatter((val, opts) => this.appChartTypesService.axisYFormatter({ val, opts }, { hasPrice: false }))
-      .addUpdatedCallback(this._onMunicipalitiesChartUpdated)
-      .addDataPointSelectionCallback(this._onMunicipalitiesChartDataPointSelection)
-      .addCustomToolbarOptions();
-
     this.areasChartOptions
       .addDataLabelsFormatter((val, opts) =>
         this.appChartTypesService.dataLabelsFormatter({ val, opts }, { hasPrice: false })
@@ -474,65 +386,9 @@ export default class OccupiedAndVacantIndicatorsPageComponent
       .addCustomToolbarOptions();
   }
 
-  private _onMunicipalitiesChartUpdated = (chartContext: ChartContext, config: ChartConfig) => {
-    const hasData = (config.config.series?.[0]?.data as { x: number; y: number; id: number }[] | undefined)?.filter(
-      (item) => item.id
-    ).length;
-    if (!hasData) {
-      return;
-    }
-    if (this.isOnInitMunicipaliteisChart) {
-      this.municipalitiesChart.first?.toggleDataPointSelection(
-        0,
-        (chartContext.w.config.series[0].data as unknown as { index: number; id: number }[]).filter(
-          (item) => item.id === this.selectedMunicipality.id
-        )[0].index
-      );
-    } else {
-      if (!this.isLoadingUpdatedMunicipalitiesData) return;
-      if (this.selectedMunicipality.dataPointIndex < (chartContext.w.config.series[0].data as unknown[]).length) {
-        this.municipalitiesChart.first?.toggleDataPointSelection(
-          this.selectedMunicipality.seriesIndex,
-          this.selectedMunicipality.dataPointIndex
-        );
-      }
-      this.municipalitiesChart.first?.toggleDataPointSelection(
-        0,
-        (chartContext.w.config.series[0].data as unknown as { index: number; id: number }[]).length - 1
-      );
-    }
-  };
-
-  private _onMunicipalitiesChartDataPointSelection = (
-    event: MouseEvent,
-    chartContext: ChartContext,
-    config: DataPointSelectionConfig
-  ) => {
-    if (config.selectedDataPoints[config.seriesIndex].length === 0) return;
-    if (!event && !this.isOnInitMunicipaliteisChart && !this.isLoadingUpdatedMunicipalitiesData) return;
-    this.isOnInitMunicipaliteisChart = false;
-    this.isLoadingUpdatedMunicipalitiesData = false;
-    this.selectedMunicipality = {
-      id: (chartContext.w.config.series[config.seriesIndex].data[config.dataPointIndex] as unknown as { id: number })
-        .id,
-      seriesIndex: config.seriesIndex,
-      dataPointIndex: config.dataPointIndex,
-    };
-    const _municipalityName = this.lookupService.ovMunicipalitiesMap[this.selectedMunicipality.id].getNames();
-    this.municipalitiesChart.first?.clearAnnotations();
-    this.municipalitiesChart.first?.addXaxisAnnotation(
-      this.appChartTypesService.getXAnnotaionForSelectedBar(_municipalityName),
-      true
-    );
-    this.updateAreasChartData();
-  };
-
   _listenToScreenSize() {
     this.screenService.screenSizeObserver$.pipe(takeUntil(this.destroy$)).subscribe((size) => {
       this.screenSize = size;
-      this.municipalitiesChart.first?.updateOptions(
-        this.appChartTypesService.getRangeOptions(size, BarChartTypes.SINGLE_BAR, this.municipalitiesDataLength, true)
-      );
       this.areasChart.first?.updateOptions(
         this.appChartTypesService.getRangeOptions(size, BarChartTypes.SINGLE_BAR, this.areasDataLength, true)
       );
