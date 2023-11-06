@@ -89,6 +89,7 @@ export class QatarInteractiveMapComponent implements OnChanges {
   }
 
   onMunicipalityClick(municipality: KpiModel & { municipalityId: number }) {
+    if (this.municipalitiesData.findIndex((item) => item.municipalityId === municipality.municipalityId) === -1) return;
     this.selectedMunicipalityId = municipality.municipalityId;
     this.selectedMunicipalityChanged.emit(municipality);
   }
