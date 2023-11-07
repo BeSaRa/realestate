@@ -1,3 +1,5 @@
+import { KpiBaseDurationModel } from '@abstracts/kpi-base-duration-model';
+import { KpiBaseModel } from '@abstracts/kpi-base-model';
 import { CommonModule } from '@angular/common';
 import {
   AfterViewInit,
@@ -28,8 +30,6 @@ import { ChartType } from '@enums/chart-type';
 import { DurationEndpoints } from '@enums/durations';
 import { OnDestroyMixin } from '@mixins/on-destroy-mixin';
 import { ChartOptionsModel } from '@models/chart-options-model';
-import { KpiBaseModel } from '@models/kpi-base-model';
-import { KpiDurationModel } from '@models/kpi-duration-model';
 import { AppChartTypesService } from '@services/app-chart-types.service';
 import { DashboardService } from '@services/dashboard.service';
 import { LookupService } from '@services/lookup.service';
@@ -162,7 +162,7 @@ export class StackedDurationChartComponent
 
   updateChartDataYearly() {
     this.dashboardService
-      .loadChartKpiData<KpiBaseModel>(this.rootData, this.criteria)
+      .loadChartKpiData(this.rootData, this.criteria)
       .pipe(
         take(1),
         catchError((err) => {
@@ -177,7 +177,7 @@ export class StackedDurationChartComponent
         this.chartSeriesData = Object.keys(this.seriesNames).map((type) => ({
           name: this.seriesNames[type as unknown as number],
           group: '0',
-          data: _data[type as unknown as number].map((i) => ({ y: i.kpiVal, x: i.issueYear })),
+          data: _data[type as unknown as number].map((i) => ({ y: i.getKpiVal(), x: i.issueYear })),
         }));
         this.chartDataLength = this.chartSeriesData[0].data?.length;
 
@@ -204,14 +204,14 @@ export class StackedDurationChartComponent
 
         const _data = this._splitAccordingToDataSplitProp(data as unknown as KpiBaseModel[]) as unknown as Record<
           number,
-          KpiDurationModel[]
+          KpiBaseDurationModel[]
         >;
 
         this.chartSeriesData = Object.keys(this.seriesNames).map((type) => ({
           name: this.seriesNames[type as unknown as number],
           group: '0',
           data: _data[type as unknown as number].map((i) => ({
-            y: i.kpiVal,
+            y: i.getKpiVal(),
             x: months[i.issuePeriod - 1],
           })),
         }));
@@ -242,7 +242,7 @@ export class StackedDurationChartComponent
           (data) =>
             this._splitAccordingToDataSplitProp(data as unknown as KpiBaseModel[]) as unknown as Record<
               number,
-              KpiDurationModel[]
+              KpiBaseDurationModel[]
             >
         ),
         map((data) => {
@@ -273,7 +273,7 @@ export class StackedDurationChartComponent
                 data[type as unknown as number][key as unknown as number].period.getNames(),
               group: index.toString(),
               data: data[type as unknown as number][key as unknown as number].kpiValues.map((item) => ({
-                y: item.kpiVal,
+                y: item.getKpiVal(),
                 x: item.issueYear,
               })),
             }))
@@ -322,9 +322,9 @@ export class StackedDurationChartComponent
 
   private _splitAccordingToDataSplitProp(data: KpiBaseModel[]) {
     return data.reduce((acc, cur) => {
-      if (!acc[cur[this.bindDataSplitProp as keyof KpiBaseModel]])
-        acc[cur[this.bindDataSplitProp as keyof KpiBaseModel]] = [];
-      acc[cur[this.bindDataSplitProp as keyof KpiBaseModel]].push(cur);
+      if (!acc[cur[this.bindDataSplitProp as keyof KpiBaseModel] as number])
+        acc[cur[this.bindDataSplitProp as keyof KpiBaseModel] as number] = [];
+      acc[cur[this.bindDataSplitProp as keyof KpiBaseModel] as number].push(cur);
       return acc;
     }, {} as Record<number, KpiBaseModel[]>);
   }
@@ -390,7 +390,7 @@ export class StackedDurationChartComponent
       const _pointColors = {} as Record<number, Record<number, string>>;
       Object.keys(this.seriesNames).forEach((type, _index) => {
         kpiValues = Object.keys(data[type as unknown as number]).map((duration) => {
-          return data[type as unknown as number][duration as unknown as number].kpiValues[i].kpiVal;
+          return data[type as unknown as number][duration as unknown as number].kpiValues[i].getKpiVal();
         });
         kpiValues = kpiValues.sort((a, b) => b - a);
         _pointColors[_index % 2] = kpiValues.reduce((acc, cur, index) => {

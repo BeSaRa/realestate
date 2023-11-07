@@ -15,11 +15,12 @@ export class KpiRoot extends ClonerMixin(GetNamesMixin(class {})) implements Kpi
     public override enName: string,
     public hasPrice = false,
     public url: string,
-    public subUrl?: string,
-    public secondSubUrl?: string,
+    public subUrl: string,
+    public secondSubUrl: string,
     public chartDataUrl = '',
     public iconUrl: string = 'assets/icons/kpi/svg/1.svg',
-    public isDataAvailable = true
+    public isDataAvailable = true,
+    public hasSqUnit = false
   ) {
     super();
   }

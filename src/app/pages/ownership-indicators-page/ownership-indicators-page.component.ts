@@ -1,3 +1,4 @@
+import { KpiBaseModel } from '@abstracts/kpi-base-model';
 import { CommonModule } from '@angular/common';
 import { AfterViewInit, Component, OnDestroy, OnInit, QueryList, ViewChildren, inject } from '@angular/core';
 import { MatNativeDateModule } from '@angular/material/core';
@@ -18,7 +19,6 @@ import { Breakpoints } from '@enums/breakpoints';
 import { CriteriaType } from '@enums/criteria-type';
 import { NationalityCategories } from '@enums/nationality-categories';
 import { ChartConfig, ChartContext, ChartOptionsModel, DataPointSelectionConfig } from '@models/chart-options-model';
-import { KpiModel } from '@models/kpi-model';
 import { KpiRoot } from '@models/kpiRoot';
 import { Lookup } from '@models/lookup';
 import { FormatNumbersPipe } from '@pipes/format-numbers.pipe';
@@ -165,7 +165,7 @@ export default class OwnershipIndicatorsPageComponent implements OnInit, AfterVi
   isOnInitMunicipaliteisChart = true;
   isLoadingUpdatedMunicipalitiesData = false;
   selectedMunicipality = { id: 4, seriesIndex: 0, dataPointIndex: 0 };
-  municipalitiesData: (KpiModel & { municipalityId: number })[] = [];
+  municipalitiesData: (KpiBaseModel & { municipalityId: number })[] = [];
   municipalitiesDataLength = 0;
 
   municipalitiesChartOptions = new ChartOptionsModel().clone<ChartOptionsModel>(
@@ -191,7 +191,7 @@ export default class OwnershipIndicatorsPageComponent implements OnInit, AfterVi
     hasPrice: false,
   };
 
-  ownerTypeLabel = (item: { kpiVal: number; ownerCategory: number }) =>
+  ownerTypeLabel = (item: { ownerCategory: number }) =>
     this.lookupService.ownerOwnerCategoryMap[item.ownerCategory].getNames();
 
   ageCategoryRootData = {
@@ -199,7 +199,7 @@ export default class OwnershipIndicatorsPageComponent implements OnInit, AfterVi
     hasPrice: false,
   };
 
-  ageCategoryLabel = (item: { kpiVal: number; ageCategory: number }) =>
+  ageCategoryLabel = (item: { ageCategory: number }) =>
     this.lookupService.ownerAgeCategoryMap[item.ageCategory].getNames();
 
   genderRootData = {
@@ -207,8 +207,7 @@ export default class OwnershipIndicatorsPageComponent implements OnInit, AfterVi
     hasPrice: false,
   };
 
-  genderLabel = (item: { kpiVal: number; gender: number }) =>
-    this.lookupService.ownerGenderMap[item.gender]?.getNames() ?? '-';
+  genderLabel = (item: { gender: number }) => this.lookupService.ownerGenderMap[item.gender]?.getNames() ?? '-';
 
   ageCategorySummaryRootData = {
     chartDataUrl: this.urlService.URLS.OWNER_KPI19,
@@ -282,8 +281,8 @@ export default class OwnershipIndicatorsPageComponent implements OnInit, AfterVi
             item.setValue(0);
             item.setYoy(0);
           } else {
-            item.setValue(value[value.length - 1].kpiVal);
-            item.setYoy(value[value.length - 1].kpiYoYVal);
+            item.setValue(value[value.length - 1].getKpiVal());
+            item.setYoy(value[value.length - 1].getKpiYoYVal());
           }
         });
     });
@@ -296,8 +295,8 @@ export default class OwnershipIndicatorsPageComponent implements OnInit, AfterVi
           this.totalOwnershipsRootKpi.setValue(0);
           this.totalOwnershipsRootKpi.setYoy(0);
         } else {
-          this.totalOwnershipsRootKpi.setValue(value[value.length - 1].kpiVal);
-          this.totalOwnershipsRootKpi.setYoy(value[value.length - 1].kpiYoYVal);
+          this.totalOwnershipsRootKpi.setValue(value[value.length - 1].getKpiVal());
+          this.totalOwnershipsRootKpi.setYoy(value[value.length - 1].getKpiYoYVal());
         }
       });
 
@@ -324,14 +323,14 @@ export default class OwnershipIndicatorsPageComponent implements OnInit, AfterVi
       .subscribe((subKPI) => {
         const purpose = subKPI.reduce((acc, item) => {
           return { ...acc, [item.purposeId]: item };
-        }, {} as Record<number, KpiModel>);
+        }, {} as Record<number, KpiBaseModel>);
 
         this.purposeKPIS = this.purposeKPIS.map((item) => {
           Object.prototype.hasOwnProperty.call(purpose, item.lookupKey)
-            ? (item.value = purpose[item.lookupKey].kpiVal)
+            ? (item.value = purpose[item.lookupKey].getKpiVal())
             : (item.value = 0);
           Object.prototype.hasOwnProperty.call(purpose, item.lookupKey)
-            ? (item.yoy = purpose[item.lookupKey].kpiYoYVal)
+            ? (item.yoy = purpose[item.lookupKey].getKpiYoYVal())
             : (item.yoy = 0);
           return item;
         });
@@ -363,8 +362,8 @@ export default class OwnershipIndicatorsPageComponent implements OnInit, AfterVi
           this.propertiesKPIS = this.propertiesKPIS
             .map((item) => {
               const subItem = result.find((i) => i.propertyTypeId === item.lookupKey);
-              subItem ? (item.value = subItem.kpiVal) : (item.value = 0);
-              subItem ? (item.yoy = subItem.kpiYoYVal) : (item.yoy = 0);
+              subItem ? (item.value = subItem.getKpiVal()) : (item.value = 0);
+              subItem ? (item.yoy = subItem.getKpiYoYVal()) : (item.yoy = 0);
               return item;
             })
             .sort((a, b) => a.value - b.value);
@@ -427,9 +426,9 @@ export default class OwnershipIndicatorsPageComponent implements OnInit, AfterVi
         _criteria
       )
       .pipe(take(1))
-      .pipe(map((data) => data as unknown as (KpiModel & { municipalityId: number })[]))
+      .pipe(map((data) => data as unknown as (KpiBaseModel & { municipalityId: number })[]))
       .subscribe((data) => {
-        data.sort((a, b) => a.kpiVal - b.kpiVal);
+        data.sort((a, b) => a.getKpiVal() - b.getKpiVal());
         this.municipalitiesData = data;
         this.municipalitiesDataLength = data.length;
 
@@ -438,7 +437,7 @@ export default class OwnershipIndicatorsPageComponent implements OnInit, AfterVi
   }
 
   updateMunicipalitiesBarChartData() {
-    const _minMaxAvg = minMaxAvg(this.municipalitiesData.map((item) => item.kpiVal));
+    const _minMaxAvg = minMaxAvg(this.municipalitiesData.map((item) => item.getKpiVal()));
 
     this.municipalitiesChart.first
       ?.updateOptions({
@@ -447,7 +446,7 @@ export default class OwnershipIndicatorsPageComponent implements OnInit, AfterVi
             name: this.lang.map.ownerships_count,
             data: this.municipalitiesData.map((item, index) => ({
               x: this.lookupService.ownerMunicipalitiesMap[item.municipalityId]?.getNames() ?? '',
-              y: item.kpiVal,
+              y: item.getKpiVal(),
               id: item.municipalityId,
               index,
             })),
@@ -463,7 +462,7 @@ export default class OwnershipIndicatorsPageComponent implements OnInit, AfterVi
       .then();
   }
 
-  onMapSelectedMunicipalityChanged(event: KpiModel & { municipalityId: number }) {
+  onMapSelectedMunicipalityChanged(event: KpiBaseModel & { municipalityId: number }) {
     this.selectedMunicipality.id = event.municipalityId;
     this.selectedMunicipality.dataPointIndex = this.municipalitiesData.findIndex(
       (m) => m.municipalityId === event.municipalityId
@@ -491,10 +490,10 @@ export default class OwnershipIndicatorsPageComponent implements OnInit, AfterVi
         _criteria
       )
       .pipe(take(1))
-      .pipe(map((data) => data as unknown as (KpiModel & { areaCode: number })[]))
+      .pipe(map((data) => data as unknown as (KpiBaseModel & { areaCode: number })[]))
       .subscribe((data) => {
-        data.sort((a, b) => a.kpiVal - b.kpiVal);
-        const _minMaxAvg = minMaxAvg(data.map((item) => item.kpiVal));
+        data.sort((a, b) => a.getKpiVal() - b.getKpiVal());
+        const _minMaxAvg = minMaxAvg(data.map((item) => item.getKpiVal()));
         this.areasDataLength = data.length;
 
         this.areasChart.first
@@ -504,7 +503,7 @@ export default class OwnershipIndicatorsPageComponent implements OnInit, AfterVi
                 name: this.lang.map.ownerships_count,
                 data: data.map((item, index) => ({
                   x: this.lookupService.ownerDistrictMap[item.areaCode]?.getNames() ?? '',
-                  y: item.kpiVal,
+                  y: item.getKpiVal(),
                   id: item.areaCode,
                   index,
                 })),

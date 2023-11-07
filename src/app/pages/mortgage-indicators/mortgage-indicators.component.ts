@@ -203,8 +203,8 @@ export default class MortgageIndicatorsComponent implements OnInit {
       .pipe(take(1))
       .subscribe((values) => {
         this.rootKpis.map((item, index) => {
-          item.value = (values[index] && values[index].kpiVal) || 0;
-          item.yoy = (values[index] && values[index].kpiYoYVal) || 0;
+          item.value = (values[index] && values[index].getKpiVal()) || 0;
+          item.yoy = (values[index] && values[index].getKpiYoYVal()) || 0;
         });
         // this.loadTransactions();
         this.reload$.next();

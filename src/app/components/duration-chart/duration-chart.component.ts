@@ -28,7 +28,6 @@ import { ChartType } from '@enums/chart-type';
 import { DurationEndpoints } from '@enums/durations';
 import { OnDestroyMixin } from '@mixins/on-destroy-mixin';
 import { ChartOptionsModel } from '@models/chart-options-model';
-import { KpiModel } from '@models/kpi-model';
 import { FormatNumbersPipe } from '@pipes/format-numbers.pipe';
 import { AppChartTypesService } from '@services/app-chart-types.service';
 import { DashboardService } from '@services/dashboard.service';
@@ -160,7 +159,7 @@ export class DurationChartComponent extends OnDestroyMixin(class {}) implements 
     if (!this.chart.length) return;
 
     this.dashboardService
-      .loadChartKpiData<KpiModel>(this.rootData, this.criteria)
+      .loadChartKpiData(this.rootData, this.criteria)
       .pipe(
         take(1),
         catchError((err) => {
@@ -171,26 +170,21 @@ export class DurationChartComponent extends OnDestroyMixin(class {}) implements 
       )
       .subscribe((data) => {
         this.durationDataLength = data.length;
-        this.minMaxAvgChartData = minMaxAvg(data.map((item) => item.kpiVal));
+        this.minMaxAvgChartData = minMaxAvg(data.map((item) => item.getKpiVal()));
         this.chartSeriesData = [
           {
             name: this.name,
             data: data.map((item) => ({
-              y: item.kpiVal,
+              y: item.getKpiVal(),
               x: item.issueYear,
-              yoy: item.kpiYoYVal,
-              baseYear: data[0].issueYear, // when this info isn't provided by the be, it's the first year
-              yoyBase: item.kpiYoYBaseVal ?? this.calculateYoyBase(item.kpiVal, data[0].kpiVal),
+              yoy: item.getKpiYoYVal(),
+              baseYear: data[0].issueYear,
+              yoyBase: ((item.getKpiVal() - data[0].getKpiVal()) / data[0].getKpiVal()) * 100,
             })),
           },
         ];
         this._updateChartOptions();
       });
-  }
-
-  // if this info is not provided from api, we can calculate them
-  private calculateYoyBase(kpiVal: number, baseKpiVal: number): number {
-    return ((kpiVal - baseKpiVal) / baseKpiVal) * 100;
   }
 
   private _updateForMonthly() {
@@ -208,14 +202,14 @@ export class DurationChartComponent extends OnDestroyMixin(class {}) implements 
       )
       .subscribe((data) => {
         this.durationDataLength = data.length;
-        this.minMaxAvgChartData = minMaxAvg(data.map((d) => d.kpiVal));
+        this.minMaxAvgChartData = minMaxAvg(data.map((d) => d.getKpiVal()));
         data.sort((a, b) => a.issuePeriod - b.issuePeriod);
         this.chartSeriesData = [
           {
             name: this.name,
             data: data.map((item) => {
               return {
-                y: item.kpiVal,
+                y: item.getKpiVal(),
                 x: months[item.issuePeriod - 1],
               };
             }),
@@ -256,7 +250,7 @@ export class DurationChartComponent extends OnDestroyMixin(class {}) implements 
         this.durationDataLength = data[1].kpiValues.length;
         this.chartSeriesData = Object.keys(data).map((key) => ({
           name: data[key as unknown as number].period.getNames(),
-          data: data[key as unknown as number].kpiValues.map((item) => ({ y: item.kpiVal, x: item.issueYear })),
+          data: data[key as unknown as number].kpiValues.map((item) => ({ y: item.getKpiVal(), x: item.issueYear })),
         }));
         this._updateChartOptions();
       });
@@ -345,7 +339,7 @@ export class DurationChartComponent extends OnDestroyMixin(class {}) implements 
     let kpiValues: number[] = [];
     for (let i = 0; i < data[1].kpiValues.length; i++) {
       kpiValues = Object.keys(data).map((duration) => {
-        return data[duration as unknown as number].kpiValues[i].kpiVal;
+        return data[duration as unknown as number].kpiValues[i].getKpiVal();
       });
       kpiValues = kpiValues.sort((a, b) => b - a);
       this.barColorsAccordingToValue.push(
