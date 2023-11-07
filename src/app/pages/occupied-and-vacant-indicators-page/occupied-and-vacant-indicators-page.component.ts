@@ -1,3 +1,4 @@
+import { KpiBaseModel } from '@abstracts/kpi-base-model';
 import { CommonModule } from '@angular/common';
 import { AfterViewInit, Component, OnInit, QueryList, ViewChildren, inject } from '@angular/core';
 import { PageEvent } from '@angular/material/paginator';
@@ -203,8 +204,8 @@ export default class OccupiedAndVacantIndicatorsPageComponent
             item.setValue(0);
             item.setYoy(0);
           } else {
-            item.setValue(value[value.length - 1].kpiVal);
-            item.setYoy(value[value.length - 1].kpiYoYVal);
+            item.setValue(value[value.length - 1].getKpiVal());
+            item.setYoy(value[value.length - 1].getKpiYoYVal());
           }
         });
     });
@@ -228,15 +229,15 @@ export default class OccupiedAndVacantIndicatorsPageComponent
       .pipe(take(1))
       .subscribe((subKPI) => {
         const _category = subKPI.reduce((acc, item) => {
-          return { ...acc, [item['premiseCategoryId' as keyof KpiModel]]: item };
-        }, {} as Record<number, KpiModel>);
+          return { ...acc, [item['premiseCategoryId' as keyof KpiBaseModel] as number]: item };
+        }, {} as Record<number, KpiBaseModel>);
 
         this.categoryKPIs = this.categoryKPIs.map((item) => {
           Object.prototype.hasOwnProperty.call(_category, item.lookupKey)
-            ? (item.value = _category[item.lookupKey].kpiVal)
+            ? (item.value = _category[item.lookupKey].getKpiVal())
             : (item.value = 0);
           Object.prototype.hasOwnProperty.call(_category, item.lookupKey)
-            ? (item.yoy = _category[item.lookupKey].kpiYoYVal)
+            ? (item.yoy = _category[item.lookupKey].getKpiYoYVal())
             : (item.yoy = 0);
           return item;
         });
@@ -270,12 +271,12 @@ export default class OccupiedAndVacantIndicatorsPageComponent
         .pipe(take(1))
         .subscribe((result) => {
           const _types = result.reduce((acc, cur) => {
-            return { ...acc, [cur['premiseTypeId' as keyof KpiModel]]: cur };
-          }, {} as Record<number, KpiModel>);
+            return { ...acc, [cur['premiseTypeId' as keyof KpiBaseModel] as number]: cur };
+          }, {} as Record<number, KpiBaseModel>);
           this.filteredTypeKPIs = this.typeKPIs
             .map((item) => {
-              _types[item.lookupKey] ? (item.value = _types[item.lookupKey].kpiVal) : (item.value = 0);
-              _types[item.lookupKey] ? (item.yoy = _types[item.lookupKey].kpiYoYVal) : (item.yoy = 0);
+              _types[item.lookupKey] ? (item.value = _types[item.lookupKey].getKpiVal()) : (item.value = 0);
+              _types[item.lookupKey] ? (item.yoy = _types[item.lookupKey].getKpiYoYVal()) : (item.yoy = 0);
               return item;
             })
             .sort((a, b) => b.value - a.value)

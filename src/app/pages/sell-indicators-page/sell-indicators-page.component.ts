@@ -1,3 +1,4 @@
+import { KpiBaseModel } from '@abstracts/kpi-base-model';
 import { CommonModule } from '@angular/common';
 import { Component, OnDestroy, OnInit, QueryList, ViewChildren, inject } from '@angular/core';
 import { MatNativeDateModule } from '@angular/material/core';
@@ -26,7 +27,6 @@ import { indicatorsTypes } from '@enums/Indicators-type';
 import { CriteriaType } from '@enums/criteria-type';
 import { AppTableDataSource } from '@models/app-table-data-source';
 import { CompositeTransaction } from '@models/composite-transaction';
-import { KpiModel } from '@models/kpi-model';
 import { KpiRoot } from '@models/kpiRoot';
 import { Lookup } from '@models/lookup';
 import { SellDefaultValues } from '@models/sell-default-values';
@@ -158,7 +158,9 @@ export default class SellIndicatorsPageComponent implements OnInit, OnDestroy {
       this.urlService.URLS.SELL_KPI11,
       this.urlService.URLS.SELL_KPI12,
       this.urlService.URLS.SELL_KPI22,
-      'assets/icons/kpi/svg/3.svg'
+      'assets/icons/kpi/svg/3.svg',
+      true,
+      true
     ),
     new KpiRoot(
       7,
@@ -180,7 +182,9 @@ export default class SellIndicatorsPageComponent implements OnInit, OnDestroy {
       this.urlService.URLS.SELL_KPI17,
       this.urlService.URLS.SELL_KPI18,
       this.urlService.URLS.SELL_KPI24,
-      'assets/icons/kpi/svg/5.svg'
+      'assets/icons/kpi/svg/5.svg',
+      true,
+      true
     ),
     new KpiRoot(
       13,
@@ -422,8 +426,8 @@ export default class SellIndicatorsPageComponent implements OnInit, OnDestroy {
               item.setValue(0);
               item.setYoy(0);
             } else {
-              item.setValue(value[value.length - 1].kpiVal);
-              item.setYoy(value[value.length - 1].kpiYoYVal);
+              item.setValue(value[value.length - 1].getKpiVal());
+              item.setYoy(value[value.length - 1].getKpiYoYVal());
             }
           });
       });
@@ -467,14 +471,14 @@ export default class SellIndicatorsPageComponent implements OnInit, OnDestroy {
       .subscribe((subKPI) => {
         const purpose = subKPI.reduce((acc, item) => {
           return { ...acc, [item.purposeId]: item };
-        }, {} as Record<number, KpiModel>);
+        }, {} as Record<number, KpiBaseModel>);
 
         this.purposeKPIS = this.purposeKPIS.map((item) => {
           Object.prototype.hasOwnProperty.call(purpose, item.lookupKey)
-            ? (item.value = purpose[item.lookupKey].kpiVal)
+            ? (item.value = purpose[item.lookupKey].getKpiVal())
             : (item.value = 0);
           Object.prototype.hasOwnProperty.call(purpose, item.lookupKey)
-            ? (item.yoy = purpose[item.lookupKey].kpiYoYVal)
+            ? (item.yoy = purpose[item.lookupKey].getKpiYoYVal())
             : (item.yoy = 0);
           return item;
         });
@@ -506,8 +510,8 @@ export default class SellIndicatorsPageComponent implements OnInit, OnDestroy {
           this.propertiesKPIS = this.propertiesKPIS
             .map((item) => {
               const subItem = result.find((i) => i.propertyTypeId === item.lookupKey);
-              subItem ? (item.value = subItem.kpiVal) : (item.value = 0);
-              subItem ? (item.yoy = subItem.kpiYoYVal) : (item.yoy = 0);
+              subItem ? (item.value = subItem.getKpiVal()) : (item.value = 0);
+              subItem ? (item.yoy = subItem.getKpiYoYVal()) : (item.yoy = 0);
               return item;
             })
             .sort((a, b) => a.value - b.value);

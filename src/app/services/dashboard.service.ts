@@ -1,3 +1,5 @@
+import { KpiBaseDurationModel } from '@abstracts/kpi-base-duration-model';
+import { KpiBaseModel } from '@abstracts/kpi-base-model';
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { MatDialogRef } from '@angular/material/dialog';
@@ -5,6 +7,7 @@ import { ChartWithOppositePopupComponent } from '@components/chart-with-opposite
 import { ChartWithOppositePopupData } from '@contracts/chart-with-opposite-popup-data';
 import { CriteriaContract } from '@contracts/criteria-contract';
 import { DurationDataContract } from '@contracts/duration-data-contract';
+import { ForecastCriteriaContract } from '@contracts/forecast-criteria-contract';
 import { MortgageCriteriaContract } from '@contracts/mortgage-criteria-contract';
 import { OwnerCriteriaContract } from '@contracts/owner-criteria-contract';
 import { RentCriteriaContract } from '@contracts/rent-criteria-contract';
@@ -18,11 +21,15 @@ import {
   RentCompositeTransaction,
   SellCompositeTransaction,
 } from '@models/composite-transaction';
+import { ForecastData } from '@models/forecast-data';
+import { KpiDurationForSqUnitModel } from '@models/kpi-duration-for-sq-unti-model';
 import { KpiDurationModel } from '@models/kpi-duration-model';
+import { KpiForSqUnitModel } from '@models/kpi-for-sq-unit-model';
 import { KpiModel } from '@models/kpi-model';
 import { KpiRoot } from '@models/kpiRoot';
 import { Lookup } from '@models/lookup';
 import { MortgageTransaction } from '@models/mortgage-transaction';
+import { OccupancyTransaction } from '@models/occupancy-transaction';
 import { OwnershipCountNationality } from '@models/ownership-count-nationality';
 import { Pagination } from '@models/pagination';
 import { RentDefaultValues } from '@models/rent-default-values';
@@ -39,9 +46,6 @@ import { CastResponse } from 'cast-response';
 import { forkJoin, map, Observable } from 'rxjs';
 import { DialogService } from './dialog.service';
 import { TranslationService } from './translation.service';
-import { ForecastData } from '@models/forecast-data';
-import { ForecastCriteriaContract } from '@contracts/forecast-criteria-contract';
-import { OccupancyTransaction } from '@models/occupancy-transaction';
 
 @Injectable({
   providedIn: 'root',
@@ -63,48 +67,76 @@ export class DashboardService extends RegisterServiceMixin(class {}) implements 
     return this.http.post<SellDefaultValues[]>(this.urlService.URLS.DEFAULT_SELL, criteria);
   }
 
-  loadMortgageRoots(criteria: Partial<MortgageCriteriaContract>): Observable<KpiModel[]> {
+  loadMortgageRoots(criteria: Partial<MortgageCriteriaContract>, hasSqUnit = false): Observable<KpiBaseModel[]> {
     return forkJoin([
-      this.http.post<KpiModel[]>(this.urlService.URLS.MORT_KPI1, criteria),
-      this.http.post<KpiModel[]>(this.urlService.URLS.MORT_KPI3, criteria),
-      this.http.post<KpiModel[]>(this.urlService.URLS.MORT_KPI5, criteria),
+      this.http.post<KpiBaseModel[]>(this.urlService.URLS.MORT_KPI1, criteria),
+      this.http.post<KpiBaseModel[]>(this.urlService.URLS.MORT_KPI3, criteria),
+      this.http.post<KpiBaseModel[]>(this.urlService.URLS.MORT_KPI5, criteria),
     ]).pipe(
       map(([first, second, third]) => {
         return [first[0], second[0], third[0]];
-      })
+      }),
+      map((data) => data.map((item) => (hasSqUnit ? new KpiForSqUnitModel().clone(item) : new KpiModel().clone(item))))
     );
   }
 
-  loadKpiRoot(kpi: KpiRoot, criteria: CriteriaContract): Observable<KpiModel[]> {
-    return this.http.post<KpiModel[]>(kpi.url, criteria);
+  loadKpiRoot(kpi: KpiRoot, criteria: CriteriaContract): Observable<KpiBaseModel[]> {
+    return this.http
+      .post<KpiBaseModel[]>(kpi.url, criteria)
+      .pipe(
+        map((data) =>
+          data.map((item) => (kpi.hasSqUnit ? new KpiForSqUnitModel().clone(item) : new KpiModel().clone(item)))
+        )
+      );
   }
 
-  loadPurposeKpi(kpi: KpiRoot, criteria: Partial<CriteriaContract>): Observable<KpiModel[]> {
-    return this.http.post<KpiModel[]>(kpi.subUrl!, criteria);
+  loadPurposeKpi(kpi: KpiRoot, criteria: Partial<CriteriaContract>) {
+    return this.http
+      .post<(KpiBaseModel & { purposeId: number })[]>(kpi.subUrl, criteria)
+      .pipe(
+        map((data) =>
+          data.map((item) => (kpi.hasSqUnit ? new KpiForSqUnitModel().clone(item) : new KpiModel().clone(item)))
+        )
+      );
   }
 
-  loadPropertyTypeKpi(kpi: KpiRoot, criteria: Partial<CriteriaContract>): Observable<KpiModel[]> {
-    return this.http.post<KpiModel[]>(kpi.secondSubUrl!, criteria);
+  loadPropertyTypeKpi(kpi: KpiRoot, criteria: Partial<CriteriaContract>) {
+    return this.http
+      .post<(KpiBaseModel & { propertyTypeId: number })[]>(kpi.secondSubUrl, criteria)
+      .pipe(
+        map((data) =>
+          data.map((item) => (kpi.hasSqUnit ? new KpiForSqUnitModel().clone(item) : new KpiModel().clone(item)))
+        )
+      );
   }
 
-  loadChartKpiData<T extends { kpiVal: number } = { kpiVal: number }>(
-    chartData: { chartDataUrl?: string },
+  loadChartKpiData(
+    chartData: { chartDataUrl: string; hasSqUnit?: boolean },
     criteria: Partial<CriteriaContract>
-  ): Observable<T[]> {
-    // forkJoin([
-    //   this.loadLineChartKpiForDuration(DurationEndpoints.HALFY, kpi, criteria),
-    //   this.loadLineChartKpiForDuration(DurationEndpoints.RENT_QUARTERLY, kpi, criteria),
-    //   this.loadLineChartKpiForDuration(DurationEndpoints.MONTHLY, kpi, criteria),
-    // ]).subscribe(console.log);
-    return this.http.post<T[]>(chartData.chartDataUrl!, criteria);
+  ): Observable<KpiBaseModel[]> {
+    return this.http
+      .post<KpiBaseModel[]>(chartData.chartDataUrl, criteria)
+      .pipe(
+        map((data) =>
+          data.map((item) => (chartData.hasSqUnit ? new KpiForSqUnitModel().clone(item) : new KpiModel().clone(item)))
+        )
+      );
   }
 
   loadChartKpiDataForDuration(
     endPoint: DurationEndpoints,
-    chartData: { chartDataUrl?: string },
+    chartData: { chartDataUrl: string; hasSqUnit?: boolean },
     criteria: Partial<CriteriaContract>
-  ): Observable<KpiDurationModel[]> {
-    return this.http.post<KpiDurationModel[]>(chartData.chartDataUrl! + '/' + endPoint, criteria);
+  ): Observable<KpiBaseDurationModel[]> {
+    return this.http
+      .post<KpiBaseDurationModel[]>(chartData.chartDataUrl + '/' + endPoint, criteria)
+      .pipe(
+        map((data) =>
+          data.map((item) =>
+            chartData.hasSqUnit ? new KpiDurationForSqUnitModel().clone(item) : new KpiDurationModel().clone(item)
+          )
+        )
+      );
   }
 
   @CastResponse(() => RentTransactionPurpose)
@@ -183,14 +215,6 @@ export class DashboardService extends RegisterServiceMixin(class {}) implements 
 
   loadForecastData(url: string, criteria: Partial<ForecastCriteriaContract>) {
     return this.http.post<ForecastData[]>(url, criteria).pipe(map((data) => data[0]));
-  }
-
-  @CastResponse(() => CompositeTransaction)
-  private _loadCompositeTransactions(
-    url: string,
-    criteria: Partial<CriteriaContract>
-  ): Observable<CompositeTransaction[]> {
-    return this.http.post<CompositeTransaction[]>(url, criteria);
   }
 
   @CastResponse(() => SellCompositeTransaction)
@@ -366,7 +390,7 @@ export class DashboardService extends RegisterServiceMixin(class {}) implements 
     );
   }
 
-  mapDurationData(data: KpiDurationModel[], durations: Lookup[]): DurationDataContract {
+  mapDurationData(data: KpiBaseDurationModel[], durations: Lookup[]): DurationDataContract {
     const durationData: DurationDataContract = {};
 
     const { min: minYear, max: maxYear } = minMaxAvg(data?.map((item) => item.issueYear));
@@ -383,7 +407,7 @@ export class DashboardService extends RegisterServiceMixin(class {}) implements 
     yearRange.forEach((year) => {
       durations.forEach((item) => {
         durationData[item.lookupKey].kpiValues.find((d) => d.issueYear === year) ??
-          durationData[item.lookupKey].kpiValues.push({ issueYear: year, kpiVal: 0 } as KpiDurationModel);
+          durationData[item.lookupKey].kpiValues.push({ issueYear: year, getKpiVal: () => 0 } as KpiBaseDurationModel);
       });
     });
 

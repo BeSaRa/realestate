@@ -1,3 +1,4 @@
+import { KpiBaseModel } from '@abstracts/kpi-base-model';
 import { CommonModule } from '@angular/common';
 import {
   AfterViewInit,
@@ -18,7 +19,6 @@ import { BarChartTypes } from '@enums/bar-chart-type';
 import { Breakpoints } from '@enums/breakpoints';
 import { OnDestroyMixin } from '@mixins/on-destroy-mixin';
 import { ChartConfig, ChartContext, ChartOptionsModel, DataPointSelectionConfig } from '@models/chart-options-model';
-import { KpiModel } from '@models/kpi-model';
 import { AppChartTypesService } from '@services/app-chart-types.service';
 import { DashboardService } from '@services/dashboard.service';
 import { ScreenBreakpointsService } from '@services/screen-breakpoints.service';
@@ -59,7 +59,7 @@ export class MunicipalitiesChartComponent extends OnDestroyMixin(class {}) imple
 
   isChartFirstUpdate = true;
   isUpdatingChartData = false;
-  seriesData: Record<number, (KpiModel & { municipalityId: number })[]> = {};
+  seriesData: Record<number, (KpiBaseModel & { municipalityId: number })[]> = {};
   seriesDataLength = 0;
   selectedMunicipality = { id: 4, seriesIndex: 0, dataPointIndex: 0 };
 
@@ -94,11 +94,11 @@ export class MunicipalitiesChartComponent extends OnDestroyMixin(class {}) imple
     this.dashboardService
       .loadChartKpiData(this.rootData, _criteria)
       .pipe(take(1))
-      .pipe(map((data) => data as unknown as (KpiModel & { municipalityId: number; occupancyStatus: number })[]))
+      .pipe(map((data) => data as unknown as (KpiBaseModel & { municipalityId: number; occupancyStatus: number })[]))
       .pipe(
         map((data) => {
           if (Object.keys(this.seriesNames).length === 1) {
-            data.sort((a, b) => a.kpiVal - b.kpiVal);
+            data.sort((a, b) => a.getKpiVal() - b.getKpiVal());
             return { 0: data };
           }
           const _data = {} as Record<number, typeof data>;
@@ -106,7 +106,7 @@ export class MunicipalitiesChartComponent extends OnDestroyMixin(class {}) imple
             _data[key as unknown as number] = [];
           });
           return data.reduce((acc, cur) => {
-            acc[cur[this.bindDataSplitProp as keyof KpiModel]].push(cur);
+            acc[cur[this.bindDataSplitProp as keyof KpiBaseModel] as number].push(cur);
             return acc;
           }, _data);
         })
@@ -119,14 +119,14 @@ export class MunicipalitiesChartComponent extends OnDestroyMixin(class {}) imple
   }
 
   updateChartOptions() {
-    const _minMaxAvg = minMaxAvg(this.seriesData[0].map((item) => item.kpiVal));
+    const _minMaxAvg = minMaxAvg(this.seriesData[0].map((item) => item.getKpiVal()));
     this.chart.first
       ?.updateOptions({
         series: Object.keys(this.seriesData).map((key) => ({
           name: this.seriesNames[key as unknown as number],
           data: this.seriesData[key as unknown as number].map((item, index) => ({
             x: this._getLabel(item),
-            y: item.kpiVal,
+            y: item.getKpiVal(),
             id: item.municipalityId,
             index,
           })),
@@ -155,7 +155,7 @@ export class MunicipalitiesChartComponent extends OnDestroyMixin(class {}) imple
       .then();
   }
 
-  onMapSelectedMunicipalityChanged(event: KpiModel & { municipalityId: number }) {
+  onMapSelectedMunicipalityChanged(event: KpiBaseModel & { municipalityId: number }) {
     const _pointIndex = (this.selectedMunicipality.dataPointIndex = this.seriesData[
       Object.keys(this.seriesNames)[0] as unknown as number
     ].findIndex((m) => m.municipalityId === event.municipalityId));

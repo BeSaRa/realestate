@@ -1,3 +1,4 @@
+import { KpiBaseModel } from '@abstracts/kpi-base-model';
 import { CommonModule } from '@angular/common';
 import { Component, Input, OnChanges, OnInit, QueryList, SimpleChanges, ViewChildren, inject } from '@angular/core';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
@@ -28,7 +29,7 @@ export class TopTenChartComponent extends OnDestroyMixin(class {}) implements On
   @Input() accordingToList: Lookup[] = [];
   @Input() showSelectChartType = true;
   @Input({ required: true }) bindLabel!: string | ((item: any) => string);
-  @Input() bindValue: string | ((item: any) => number) = 'kpiVal';
+  @Input() bindValue: string | ((item: any) => number) = 'getKpiVal';
 
   @ViewChildren('chart') chart!: QueryList<ChartComponent>;
 
@@ -40,7 +41,7 @@ export class TopTenChartComponent extends OnDestroyMixin(class {}) implements On
   protected readonly ChartType = ChartType;
 
   selectedChartType: 'line' | 'bar' = ChartType.BAR;
-  chartData: { kpiVal: number }[] = [];
+  chartData: KpiBaseModel[] = [];
   prevAccordingTo!: Lookup;
 
   chartOptions = {

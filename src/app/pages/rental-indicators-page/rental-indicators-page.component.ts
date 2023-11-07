@@ -13,6 +13,7 @@ import { CriteriaType } from '@enums/criteria-type';
 import { KpiRoot } from '@models/kpiRoot';
 import { RentDefaultValues } from '@models/rent-default-values';
 
+import { KpiBaseModel } from '@abstracts/kpi-base-model';
 import { MatNativeDateModule } from '@angular/material/core';
 import { PageEvent } from '@angular/material/paginator';
 import { MatSortModule } from '@angular/material/sort';
@@ -33,7 +34,6 @@ import { TableColumnTemplateDirective } from '@directives/table-column-template.
 import { indicatorsTypes } from '@enums/Indicators-type';
 import { AppTableDataSource } from '@models/app-table-data-source';
 import { RentCompositeTransaction } from '@models/composite-transaction';
-import { KpiModel } from '@models/kpi-model';
 import { Lookup } from '@models/lookup';
 import { RentTransaction } from '@models/rent-transaction';
 import { RentTransactionPropertyType } from '@models/rent-transaction-property-type';
@@ -204,7 +204,8 @@ export default class RentalIndicatorsPageComponent implements OnInit, OnDestroy 
       this.urlService.URLS.RENT_KPI12,
       this.urlService.URLS.RENT_KPI21,
       'assets/icons/kpi/svg/5.svg',
-      false
+      false,
+      true
     ),
     new KpiRoot(
       7,
@@ -227,7 +228,8 @@ export default class RentalIndicatorsPageComponent implements OnInit, OnDestroy 
       this.urlService.URLS.RENT_KPI18,
       this.urlService.URLS.RENT_KPI24,
       'assets/icons/kpi/svg/3.svg',
-      false
+      false,
+      true
     ),
     new KpiRoot(
       13,
@@ -424,8 +426,8 @@ export default class RentalIndicatorsPageComponent implements OnInit, OnDestroy 
               item.setValue(0);
               item.setYoy(0);
             } else {
-              item.setValue(value[value.length - 1].kpiVal);
-              item.setYoy(value[value.length - 1].kpiYoYVal);
+              item.setValue(value[value.length - 1].getKpiVal());
+              item.setYoy(value[value.length - 1].getKpiYoYVal());
             }
           });
       });
@@ -452,14 +454,14 @@ export default class RentalIndicatorsPageComponent implements OnInit, OnDestroy 
       .subscribe((subKPI) => {
         const purpose = subKPI.reduce((acc, item) => {
           return { ...acc, [item.purposeId]: item };
-        }, {} as Record<number, KpiModel>);
+        }, {} as Record<number, KpiBaseModel>);
 
         this.purposeKPIS = this.purposeKPIS.map((item) => {
           Object.prototype.hasOwnProperty.call(purpose, item.lookupKey)
-            ? (item.value = purpose[item.lookupKey].kpiVal)
+            ? (item.value = purpose[item.lookupKey].getKpiVal())
             : (item.value = 0);
           Object.prototype.hasOwnProperty.call(purpose, item.lookupKey)
-            ? (item.yoy = purpose[item.lookupKey].kpiYoYVal)
+            ? (item.yoy = purpose[item.lookupKey].getKpiYoYVal())
             : (item.yoy = 0);
           return item;
         });
@@ -503,8 +505,8 @@ export default class RentalIndicatorsPageComponent implements OnInit, OnDestroy 
           this.propertiesKPIS = this.propertiesKPIS
             .map((item) => {
               const subItem = result.find((i) => i.propertyTypeId === item.lookupKey);
-              subItem ? (item.value = subItem.kpiVal) : (item.value = 0);
-              subItem ? (item.yoy = subItem.kpiYoYVal) : (item.yoy = 0);
+              subItem ? (item.value = subItem.getKpiVal()) : (item.value = 0);
+              subItem ? (item.yoy = subItem.getKpiYoYVal()) : (item.yoy = 0);
               return item;
             })
             .sort((a, b) => a.value - b.value);

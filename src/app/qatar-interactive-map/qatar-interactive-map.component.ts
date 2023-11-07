@@ -1,8 +1,8 @@
+import { KpiBaseModel } from '@abstracts/kpi-base-model';
 import { CommonModule } from '@angular/common';
-import { Component, EventEmitter, Input, OnChanges, OnInit, Output, inject } from '@angular/core';
+import { Component, EventEmitter, Input, OnChanges, Output, inject } from '@angular/core';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { CustomTooltipDirective } from '@directives/custom-tooltip.directive';
-import { KpiModel } from '@models/kpi-model';
 import { AppChartTypesService } from '@services/app-chart-types.service';
 import { LookupService } from '@services/lookup.service';
 import { TranslationService } from '@services/translation.service';
@@ -16,13 +16,13 @@ import { minMaxAvg } from '@utils/utils';
   styleUrls: ['./qatar-interactive-map.component.scss'],
 })
 export class QatarInteractiveMapComponent implements OnChanges {
-  @Input() municipalitiesData: (KpiModel & { municipalityId: number })[] = [];
+  @Input() municipalitiesData: (KpiBaseModel & { municipalityId: number })[] = [];
   @Input() selectedMunicipalityId = 4;
   @Input() hasPrice = false;
   @Input({ required: true }) label!: string;
   @Input({ required: true }) unit!: string;
 
-  @Output() selectedMunicipalityChanged = new EventEmitter<KpiModel & { municipalityId: number }>();
+  @Output() selectedMunicipalityChanged = new EventEmitter<KpiBaseModel & { municipalityId: number }>();
 
   lookups = inject(LookupService);
   appChartTypesService = inject(AppChartTypesService);
@@ -65,11 +65,11 @@ export class QatarInteractiveMapComponent implements OnChanges {
 
   municipalitiesDataMap = this._updateMunicipalitiesDataMap();
 
-  minMaxKpis = minMaxAvg(Object.values(this.municipalitiesDataMap).map((m) => m.kpiVal));
+  minMaxKpis = minMaxAvg(Object.values(this.municipalitiesDataMap).map((m) => m.getKpiVal()));
 
   ngOnChanges(): void {
     this.municipalitiesDataMap = this._updateMunicipalitiesDataMap();
-    this.minMaxKpis = minMaxAvg(Object.values(this.municipalitiesDataMap).map((m) => m.kpiVal));
+    this.minMaxKpis = minMaxAvg(Object.values(this.municipalitiesDataMap).map((m) => m.getKpiVal()));
   }
 
   getOpacity(kpi: number) {
@@ -88,7 +88,7 @@ export class QatarInteractiveMapComponent implements OnChanges {
     return this.appChartTypesService.dataLabelsFormatter({ val: value }, { hasPrice: this.hasPrice });
   }
 
-  onMunicipalityClick(municipality: KpiModel & { municipalityId: number }) {
+  onMunicipalityClick(municipality: KpiBaseModel & { municipalityId: number }) {
     if (this.municipalitiesData.findIndex((item) => item.municipalityId === municipality.municipalityId) === -1) return;
     this.selectedMunicipalityId = municipality.municipalityId;
     this.selectedMunicipalityChanged.emit(municipality);
@@ -102,9 +102,9 @@ export class QatarInteractiveMapComponent implements OnChanges {
           this.municipalitiesData.find((m) => m.municipalityId === cur.id) ??
           ({
             municipalityId: cur.id,
-            kpiVal: 0,
-          } as KpiModel & { municipalityId: number }),
+            getKpiVal: () => 0,
+          } as KpiBaseModel & { municipalityId: number }),
       };
-    }, {} as Record<number, KpiModel & { municipalityId: number }>);
+    }, {} as Record<number, KpiBaseModel & { municipalityId: number }>);
   }
 }

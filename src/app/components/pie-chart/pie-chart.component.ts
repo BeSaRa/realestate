@@ -33,7 +33,7 @@ export class PieChartComponent extends OnDestroyMixin(class {}) implements OnCha
   @Input({ required: true }) criteria!: CriteriaContract;
   @Input({ required: true }) rootData!: { chartDataUrl: string; hasPrice: boolean };
   @Input({ required: true }) bindLabel!: string | ((item: any) => string);
-  @Input() bindValue: string | ((item: any) => number) = 'kpiVal';
+  @Input() bindValue: string | ((item: any) => number) = 'getKpiVal';
   @Input() valueUnit?: string;
 
   @ViewChildren('pieChart') pieChart!: QueryList<ChartComponent>;
@@ -76,7 +76,7 @@ export class PieChartComponent extends OnDestroyMixin(class {}) implements OnCha
         })
       )
       .subscribe((data) => {
-        data.sort((a, b) => b.kpiVal - a.kpiVal);
+        data.sort((a, b) => b.getKpiVal() - a.getKpiVal());
 
         this.isLoading = false;
         this.pieChart.first
