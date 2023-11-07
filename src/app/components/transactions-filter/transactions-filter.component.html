@@ -215,7 +215,7 @@
 
       <app-select-input
         *ngIf="!isOwner()"
-        formControlName="unit"
+        [formControl]="unitsControl"
         bindLabel="getNames"
         bindValue="lookupKey"
         [label]="lang.map.measuring_unit"
