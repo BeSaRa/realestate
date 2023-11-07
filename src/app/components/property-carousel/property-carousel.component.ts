@@ -5,7 +5,7 @@ import { NGX_COUNTUP_OPTIONS } from '@constants/injection-tokens';
 import { CountUpOptionsContract } from '@contracts/countup-options-contract';
 import { Breakpoints } from '@enums/breakpoints';
 import { OnDestroyMixin } from '@mixins/on-destroy-mixin';
-import { Lookup } from '@models/lookup';
+import { KpiPropertyType } from '@models/kpi-property-type';
 import { ScreenBreakpointsService } from '@services/screen-breakpoints.service';
 import { TranslationService } from '@services/translation.service';
 import { CarouselComponent, IvyCarouselModule } from 'angular-responsive-carousel2';
@@ -20,7 +20,7 @@ import { takeUntil } from 'rxjs';
   styleUrls: ['./property-carousel.component.scss'],
 })
 export class PropertyCarouselComponent extends OnDestroyMixin(class {}) implements OnChanges {
-  @Input({ required: true }) properties!: Lookup[];
+  @Input({ required: true }) properties!: KpiPropertyType[];
   @Input() useAssetsFrom = 'rent';
   @Input() ignoreLocalImages = false;
   @Input() showYoy = true;
@@ -45,12 +45,12 @@ export class PropertyCarouselComponent extends OnDestroyMixin(class {}) implemen
     this._listenToScreenSizeChange();
   }
 
-  getItemImage(item: Lookup) {
+  getItemImage(item: KpiPropertyType) {
     return !this.ignoreLocalImages
-      ? Object.prototype.hasOwnProperty.call(this.images, item.lookupKey)
-        ? this.images[item.lookupKey as keyof typeof this.images]
+      ? Object.prototype.hasOwnProperty.call(this.images, item.id)
+        ? this.images[item.id as keyof typeof this.images]
         : this.images[41]
-      : `assets/icons/${this.useAssetsFrom}/${item.lookupKey}.png`;
+      : `assets/icons/${this.useAssetsFrom}/${item.id}.png`;
   }
 
   private _goToFirstCell(): void {

@@ -95,7 +95,11 @@ export class DashboardService extends RegisterServiceMixin(class {}) implements 
       .post<(KpiBaseModel & { purposeId: number })[]>(kpi.purposeUrl, criteria)
       .pipe(
         map((data) =>
-          data.map((item) => (kpi.hasSqUnit ? new KpiForSqUnitModel().clone(item) : new KpiModel().clone(item)))
+          data.map((item) =>
+            kpi.hasSqUnit
+              ? new KpiForSqUnitModel().clone(item)
+              : (new KpiModel().clone(item) as KpiBaseModel & { purposeId: number })
+          )
         )
       );
   }
@@ -105,7 +109,11 @@ export class DashboardService extends RegisterServiceMixin(class {}) implements 
       .post<(KpiBaseModel & { propertyTypeId: number })[]>(kpi.propertyTypeUrl, criteria)
       .pipe(
         map((data) =>
-          data.map((item) => (kpi.hasSqUnit ? new KpiForSqUnitModel().clone(item) : new KpiModel().clone(item)))
+          data.map((item) =>
+            kpi.hasSqUnit
+              ? new KpiForSqUnitModel().clone(item)
+              : (new KpiModel().clone(item) as KpiBaseModel & { propertyTypeId: number })
+          )
         )
       );
   }

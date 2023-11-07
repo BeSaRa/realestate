@@ -9,6 +9,7 @@ import { ChartType } from '@enums/chart-type';
 import { OnDestroyMixin } from '@mixins/on-destroy-mixin';
 import { ChartOptionsModel } from '@models/chart-options-model';
 import { Lookup } from '@models/lookup';
+import { Top10AccordingTo } from '@models/top-10-according-to';
 import { AppChartTypesService } from '@services/app-chart-types.service';
 import { DashboardService } from '@services/dashboard.service';
 import { objectHasOwnProperty } from '@utils/utils';
@@ -25,8 +26,8 @@ import { catchError, take, throwError } from 'rxjs';
 export class TopTenChartComponent extends OnDestroyMixin(class {}) implements OnInit, OnChanges {
   @Input({ required: true }) title!: string;
   @Input({ required: true }) criteria!: CriteriaContract;
-  @Input({ required: true }) selectedAccordingTo!: Lookup;
-  @Input() accordingToList: Lookup[] = [];
+  @Input({ required: true }) selectedAccordingTo!: Top10AccordingTo;
+  @Input() accordingToList: Top10AccordingTo[] = [];
   @Input() showSelectChartType = true;
   @Input({ required: true }) bindLabel!: string | ((item: any) => string);
   @Input() bindValue: string | ((item: any) => number) = 'getKpiVal';
@@ -42,7 +43,7 @@ export class TopTenChartComponent extends OnDestroyMixin(class {}) implements On
 
   selectedChartType: 'line' | 'bar' = ChartType.BAR;
   chartData: KpiBaseModel[] = [];
-  prevAccordingTo!: Lookup;
+  prevAccordingTo!: Top10AccordingTo;
 
   chartOptions = {
     bar: new ChartOptionsModel().clone<ChartOptionsModel>(this.appChartTypesService.top10ChartOptions.bar),
@@ -63,7 +64,7 @@ export class TopTenChartComponent extends OnDestroyMixin(class {}) implements On
     }, 0);
   }
 
-  selectAccordingTo(_new: Lookup) {
+  selectAccordingTo(_new: Top10AccordingTo) {
     this.selectedAccordingTo = _new;
 
     this.updateChartData();

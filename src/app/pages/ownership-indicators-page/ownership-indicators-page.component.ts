@@ -19,6 +19,8 @@ import { Breakpoints } from '@enums/breakpoints';
 import { CriteriaType } from '@enums/criteria-type';
 import { NationalityCategories } from '@enums/nationality-categories';
 import { ChartConfig, ChartContext, ChartOptionsModel, DataPointSelectionConfig } from '@models/chart-options-model';
+import { KpiPropertyType } from '@models/kpi-property-type';
+import { KpiPurpose } from '@models/kpi-purpose';
 import { KpiRoot } from '@models/kpi-root';
 import { Lookup } from '@models/lookup';
 import { FormatNumbersPipe } from '@pipes/format-numbers.pipe';
@@ -86,8 +88,12 @@ export default class OwnershipIndicatorsPageComponent implements OnInit, AfterVi
   nationalities = this.lookupService.ownerLookups.nationalityList;
   ownerTypes = this.lookupService.ownerLookups.ownerCategoryList;
 
-  purposeKPIS = this.lookupService.ownerLookups.rentPurposeList;
-  propertiesKPIS = this.lookupService.ownerLookups.propertyTypeList;
+  purposeKPIS = this.lookupService.ownerLookups.rentPurposeList.map((item) =>
+    new KpiPurpose().clone<KpiPurpose>({ id: item.lookupKey, arName: item.arName, enName: item.enName })
+  );
+  propertiesKPIS = this.lookupService.ownerLookups.propertyTypeList.map((item) =>
+    new KpiPropertyType().clone<KpiPropertyType>({ id: item.lookupKey, arName: item.arName, enName: item.enName })
+  );
 
   criteria = {} as {
     criteria: CriteriaContract;
@@ -135,7 +141,7 @@ export default class OwnershipIndicatorsPageComponent implements OnInit, AfterVi
   });
 
   selectedRoot = this.rootKPIS[0];
-  selectedPurpose?: Lookup = this.lookupService.ownerLookups.rentPurposeList[0];
+  selectedPurpose = this.purposeKPIS[0];
 
   selectedTab: 'ownership_indicators' | 'statistical_reports_for_ownership' = 'ownership_indicators';
 
@@ -232,11 +238,6 @@ export default class OwnershipIndicatorsPageComponent implements OnInit, AfterVi
     setTimeout(() => {
       if (this.selectedTab === 'ownership_indicators') {
         this.updateNationalitiesChartData(this.selectedNationalityCategory);
-        // this.updateDurationsChartData(this.selectedDurationType);
-        // this.updateMunicipalitiesChartData();
-        // this.updateAreasChartData();
-        // this.updateOwnerTypeChartData();
-        // this.updateAgeCategoryChartData();
       } else {
         this.updateOwnerTypeSummaryChartData();
       }
@@ -296,19 +297,13 @@ export default class OwnershipIndicatorsPageComponent implements OnInit, AfterVi
     this.dashboardService
       .loadPurposeKpi(item, this.criteria.criteria)
       .pipe(take(1))
-      .subscribe((subKPI) => {
-        const purpose = subKPI.reduce((acc, item) => {
+      .subscribe((data) => {
+        const _purposeKpiData = data.reduce((acc, item) => {
           return { ...acc, [item.purposeId]: item };
         }, {} as Record<number, KpiBaseModel>);
 
-        this.purposeKPIS = this.purposeKPIS.map((item) => {
-          Object.prototype.hasOwnProperty.call(purpose, item.lookupKey)
-            ? (item.value = purpose[item.lookupKey].getKpiVal())
-            : (item.value = 0);
-          Object.prototype.hasOwnProperty.call(purpose, item.lookupKey)
-            ? (item.yoy = purpose[item.lookupKey].getKpiYoYVal())
-            : (item.yoy = 0);
-          return item;
+        this.purposeKPIS.forEach((item) => {
+          Object.prototype.hasOwnProperty.call(_purposeKpiData, item.id) && (item.kpiData = _purposeKpiData[item.id]);
         });
         this.selectedRoot && this.updateAllPurpose();
         this.selectedPurpose && this.purposeSelected(this.selectedPurpose);
@@ -316,13 +311,11 @@ export default class OwnershipIndicatorsPageComponent implements OnInit, AfterVi
   }
 
   updateAllPurpose(): void {
-    const lookup = this.purposeKPIS.find((i) => i.lookupKey === -1);
-    lookup &&
-      (lookup.value = this.selectedRoot.kpiData.getKpiVal()) &&
-      (lookup.yoy = this.selectedRoot.kpiData.getKpiYoYVal());
+    const _purpose = this.purposeKPIS.find((i) => i.id === -1);
+    _purpose && (_purpose.kpiData = this.selectedRoot.kpiData);
   }
 
-  purposeSelected(item: Lookup) {
+  purposeSelected(item: KpiPurpose) {
     this.purposeKPIS.forEach((i) => {
       item !== i ? (i.selected = false) : (item.selected = true);
     });
@@ -333,18 +326,17 @@ export default class OwnershipIndicatorsPageComponent implements OnInit, AfterVi
       this.dashboardService
         .loadPropertyTypeKpi(this.selectedRoot, {
           ...this.criteria.criteria,
-          purposeList: [item.lookupKey],
+          purposeList: [item.id],
         })
         .pipe(takeUntil(this.destroy$))
         .subscribe((result) => {
           this.propertiesKPIS = this.propertiesKPIS
             .map((item) => {
-              const subItem = result.find((i) => i.propertyTypeId === item.lookupKey);
-              subItem ? (item.value = subItem.getKpiVal()) : (item.value = 0);
-              subItem ? (item.yoy = subItem.getKpiYoYVal()) : (item.yoy = 0);
+              const _propertyTypeKpiData = result.find((i) => i.propertyTypeId === item.id);
+              _propertyTypeKpiData && (item.kpiData = _propertyTypeKpiData);
               return item;
             })
-            .sort((a, b) => a.value - b.value);
+            .sort((a, b) => a.kpiData.getKpiVal() - b.kpiData.getKpiVal());
         });
   }
 

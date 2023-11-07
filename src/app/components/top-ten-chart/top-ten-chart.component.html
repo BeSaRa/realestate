@@ -9,16 +9,16 @@
         <app-button
           class="relative min-w-max w-max whitespace-nowrap"
           (click)="selectAccordingTo(item)"
-          [disabled]="item.isActive === false"
-          [buttonStyle]="item.lookupKey === selectedAccordingTo.lookupKey ? 'secondary' : 'none-primary'">
-          <span [ngClass]="{ 'text-transparent': isLoading && selectedAccordingTo.lookupKey === item.lookupKey }">{{
+          [disabled]="item.disabled"
+          [buttonStyle]="item.id === selectedAccordingTo.id ? 'secondary' : 'none-primary'">
+          <span [ngClass]="{ 'text-transparent': isLoading && selectedAccordingTo.id === item.id }">{{
             item.getNames()
           }}</span>
           <div class="absolute left-0 top-0 w-full h-full flex items-center justify-center">
             <mat-spinner
               diameter="20"
               strokeWidth="2"
-              *ngIf="isLoading && selectedAccordingTo.lookupKey === item.lookupKey"></mat-spinner></div
+              *ngIf="isLoading && selectedAccordingTo.id === item.id"></mat-spinner></div
         ></app-button>
       </li>
     </ul>

@@ -12,12 +12,12 @@
     <span
       *ngIf="enableCountup"
       class="text-2xl me-2 text-primary font-bold group-hover:text-white group-[.selected]:text-white transition"
-      [countUp]="item.value"
+      [countUp]="item.kpiData.getKpiVal()"
       [options]="countUpOptions"></span>
     <span
       *ngIf="!enableCountup"
       class="text-2xl me-2 text-primary font-bold group-hover:text-white group-[.selected]:text-white transition"
-      >{{ item.value }}</span
+      >{{ item.kpiData.getKpiVal() }}</span
     >
     <span class="text-lg lg:text-xl text-black font-bold group-[.selected]:text-white transition">{{
       item.getNames()
@@ -26,6 +26,6 @@
   <app-change-indicator
     class="hidden sm:block"
     *ngIf="showYoy"
-    [value]="item.yoy"
+    [value]="item.kpiData.getKpiYoYVal()"
     [isHovered]="isHovered || item.selected"></app-change-indicator>
 </div>

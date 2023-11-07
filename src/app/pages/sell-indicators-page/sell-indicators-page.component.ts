@@ -19,7 +19,6 @@ import { TopTenChartComponent } from '@components/top-ten-chart/top-ten-chart.co
 import { TransactionsFilterComponent } from '@components/transactions-filter/transactions-filter.component';
 import { YoyIndicatorComponent } from '@components/yoy-indicator/yoy-indicator.component';
 import { CriteriaContract } from '@contracts/criteria-contract';
-import { SellCriteriaContract } from '@contracts/sell-criteria-contract';
 import { TableColumnCellTemplateDirective } from '@directives/table-column-cell-template.directive';
 import { TableColumnHeaderTemplateDirective } from '@directives/table-column-header-template.directive';
 import { TableColumnTemplateDirective } from '@directives/table-column-template.directive';
@@ -27,13 +26,14 @@ import { indicatorsTypes } from '@enums/Indicators-type';
 import { CriteriaType } from '@enums/criteria-type';
 import { AppTableDataSource } from '@models/app-table-data-source';
 import { CompositeTransaction } from '@models/composite-transaction';
+import { KpiPropertyType } from '@models/kpi-property-type';
+import { KpiPurpose } from '@models/kpi-purpose';
 import { KpiRoot } from '@models/kpi-root';
-import { Lookup } from '@models/lookup';
-import { SellDefaultValues } from '@models/sell-default-values';
 import { SellTransaction } from '@models/sell-transaction';
 import { SellTransactionPropertyType } from '@models/sell-transaction-property-type';
 import { SellTransactionPurpose } from '@models/sell-transaction-purpose';
 import { TableSortOption } from '@models/table-sort-option';
+import { Top10AccordingTo } from '@models/top-10-according-to';
 import { FormatNumbersPipe } from '@pipes/format-numbers.pipe';
 import { DashboardService } from '@services/dashboard.service';
 import { LookupService } from '@services/lookup.service';
@@ -115,8 +115,12 @@ export default class SellIndicatorsPageComponent implements OnInit, OnDestroy {
   rooms = [] /*this.lookupService.sellLookups.rooms*/;
   paramsRange = this.lookupService.sellLookups.maxParams;
 
-  purposeKPIS = this.lookupService.sellLookups.rentPurposeList;
-  propertiesKPIS = this.lookupService.sellLookups.propertyTypeList;
+  purposeKPIS = this.lookupService.sellLookups.rentPurposeList.map((item) =>
+    new KpiPurpose().clone<KpiPurpose>({ id: item.lookupKey, arName: item.arName, enName: item.enName })
+  );
+  propertiesKPIS = this.lookupService.sellLookups.propertyTypeList.map((item) =>
+    new KpiPropertyType().clone<KpiPropertyType>({ id: item.lookupKey, arName: item.arName, enName: item.enName })
+  );
 
   criteria = {} as {
     criteria: CriteriaContract;
@@ -195,7 +199,7 @@ export default class SellIndicatorsPageComponent implements OnInit, OnDestroy {
 
   selectedRoot = this.rootKPIS[0];
 
-  selectedPurpose?: Lookup = this.lookupService.sellLookups.rentPurposeList[0];
+  selectedPurpose = this.purposeKPIS[0];
 
   get priceList() {
     return this.rootKPIS.filter((item) => item.hasPrice);
@@ -205,42 +209,42 @@ export default class SellIndicatorsPageComponent implements OnInit, OnDestroy {
     return this.rootKPIS.filter((item) => !item.hasPrice);
   }
 
-  accordingToList: Lookup[] = [
-    new Lookup().clone<Lookup>({
-      lookupKey: 0,
+  accordingToList: Top10AccordingTo[] = [
+    new Top10AccordingTo().clone<Top10AccordingTo>({
+      id: 0,
       arName: this.lang.getArabicTranslation('number_of_sell_contracts'),
       enName: this.lang.getEnglishTranslation('number_of_sell_contracts'),
       hasPrice: false,
       url: this.urlService.URLS.SELL_KPI30,
     }),
-    new Lookup().clone<Lookup>({
-      lookupKey: 1,
+    new Top10AccordingTo().clone<Top10AccordingTo>({
+      id: 1,
       arName: this.lang.getArabicTranslation('average_price_per_unit'),
       enName: this.lang.getEnglishTranslation('average_price_per_unit'),
       hasPrice: true,
       url: this.urlService.URLS.SELL_KPI31,
     }),
-    new Lookup().clone<Lookup>({
-      lookupKey: 2,
+    new Top10AccordingTo().clone<Top10AccordingTo>({
+      id: 2,
       arName: this.lang.getArabicTranslation('transactions_value'),
       enName: this.lang.getEnglishTranslation('transactions_value'),
       hasPrice: true,
       url: this.urlService.URLS.SELL_KPI32,
     }),
-    new Lookup().clone<Lookup>({
-      lookupKey: 3,
+    new Top10AccordingTo().clone<Top10AccordingTo>({
+      id: 3,
       arName: this.lang.getArabicTranslation('sold_areas'),
       enName: this.lang.getEnglishTranslation('sold_areas'),
       url: this.urlService.URLS.SELL_KPI33,
     }),
-    new Lookup().clone<Lookup>({
-      lookupKey: 4,
+    new Top10AccordingTo().clone<Top10AccordingTo>({
+      id: 4,
       arName: this.lang.getArabicTranslation('number_of_units'),
       enName: this.lang.getEnglishTranslation('number_of_units'),
       url: this.urlService.URLS.SELL_KPI33_1,
     }),
-    new Lookup().clone<Lookup>({
-      lookupKey: 5,
+    new Top10AccordingTo().clone<Top10AccordingTo>({
+      id: 5,
       arName: this.lang.getArabicTranslation('average_price_per_square_foot'),
       enName: this.lang.getEnglishTranslation('average_price_per_square_foot'),
       url: this.urlService.URLS.SELL_KPI33_2,
@@ -340,9 +344,6 @@ export default class SellIndicatorsPageComponent implements OnInit, OnDestroy {
     this.destroy$.unsubscribe();
   }
 
-  // toggleFilters(): void {
-  //   this.isOpened = !this.isOpened;
-  // }
   protected setIndicatorsTableDataSource(): Observable<SellTransactionIndicator[]> {
     return of(undefined)
       .pipe(delay(0))
@@ -428,19 +429,13 @@ export default class SellIndicatorsPageComponent implements OnInit, OnDestroy {
     this.dashboardService
       .loadPurposeKpi(item, this.criteria.criteria)
       .pipe(take(1))
-      .subscribe((subKPI) => {
-        const purpose = subKPI.reduce((acc, item) => {
+      .subscribe((data) => {
+        const _purposeKpiData = data.reduce((acc, item) => {
           return { ...acc, [item.purposeId]: item };
         }, {} as Record<number, KpiBaseModel>);
 
-        this.purposeKPIS = this.purposeKPIS.map((item) => {
-          Object.prototype.hasOwnProperty.call(purpose, item.lookupKey)
-            ? (item.value = purpose[item.lookupKey].getKpiVal())
-            : (item.value = 0);
-          Object.prototype.hasOwnProperty.call(purpose, item.lookupKey)
-            ? (item.yoy = purpose[item.lookupKey].getKpiYoYVal())
-            : (item.yoy = 0);
-          return item;
+        this.purposeKPIS.forEach((item) => {
+          Object.prototype.hasOwnProperty.call(_purposeKpiData, item.id) && (item.kpiData = _purposeKpiData[item.id]);
         });
         this.selectedRoot && this.updateAllPurpose();
         this.selectedPurpose && this.purposeSelected(this.selectedPurpose);
@@ -448,13 +443,11 @@ export default class SellIndicatorsPageComponent implements OnInit, OnDestroy {
   }
 
   updateAllPurpose(): void {
-    const lookup = this.purposeKPIS.find((i) => i.lookupKey === -1);
-    lookup &&
-      (lookup.value = this.selectedRoot.kpiData.getKpiVal()) &&
-      (lookup.yoy = this.selectedRoot.kpiData.getKpiYoYVal());
+    const _purpose = this.purposeKPIS.find((i) => i.id === -1);
+    _purpose && (_purpose.kpiData = this.selectedRoot.kpiData);
   }
 
-  purposeSelected(item: Lookup) {
+  purposeSelected(item: KpiPurpose) {
     this.purposeKPIS.forEach((i) => {
       item !== i ? (i.selected = false) : (item.selected = true);
     });
@@ -465,18 +458,17 @@ export default class SellIndicatorsPageComponent implements OnInit, OnDestroy {
       this.dashboardService
         .loadPropertyTypeKpi(this.selectedRoot, {
           ...this.criteria.criteria,
-          purposeList: [item.lookupKey],
+          purposeList: [item.id],
         })
         .pipe(takeUntil(this.destroy$))
         .subscribe((result) => {
           this.propertiesKPIS = this.propertiesKPIS
             .map((item) => {
-              const subItem = result.find((i) => i.propertyTypeId === item.lookupKey);
-              subItem ? (item.value = subItem.getKpiVal()) : (item.value = 0);
-              subItem ? (item.yoy = subItem.getKpiYoYVal()) : (item.yoy = 0);
+              const _propertyTypeKpiData = result.find((i) => i.propertyTypeId === item.id);
+              _propertyTypeKpiData && (item.kpiData = _propertyTypeKpiData);
               return item;
             })
-            .sort((a, b) => a.value - b.value);
+            .sort((a, b) => a.kpiData.getKpiVal() - b.kpiData.getKpiVal());
         });
   }
 
