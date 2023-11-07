@@ -1,7 +1,7 @@
 import { animate, state, style, transition, trigger } from '@angular/animations';
 import { CommonModule, DatePipe } from '@angular/common';
 import { Component, EventEmitter, HostListener, Input, OnDestroy, OnInit, Output, inject } from '@angular/core';
-import { AbstractControl, ReactiveFormsModule, UntypedFormBuilder } from '@angular/forms';
+import { AbstractControl, FormControl, ReactiveFormsModule, UntypedFormBuilder } from '@angular/forms';
 import { DateAdapter, MatNativeDateModule, MatRippleModule } from '@angular/material/core';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -20,6 +20,7 @@ import { CriteriaType } from '@enums/criteria-type';
 import { Durations } from '@enums/durations';
 import { HalfYearDurations } from '@enums/half-year-durations';
 import { ParamRangeField } from '@enums/param-range-field';
+import { SqUnit } from '@enums/sq-unit';
 import { Lookup } from '@models/lookup';
 import { ParamRange } from '@models/param-range';
 import { LookupService } from '@services/lookup.service';
@@ -150,7 +151,7 @@ export class TransactionsFilterComponent implements OnInit, OnDestroy {
       issueDateQuarterList: [],
       bedRoomsCount: [],
       furnitureStatus: [],
-      unit: [],
+
       issueDateYear: [],
       issueDateMonth: [],
       issueDateStartMonth: [],
@@ -223,6 +224,8 @@ export class TransactionsFilterComponent implements OnInit, OnDestroy {
     }
   );
 
+  unitsControl = new FormControl(this.unitsService.selectedUnit());
+
   protected readonly AppIcons = AppIcons;
   displayYear = true;
   displayHalf = false;
@@ -277,10 +280,6 @@ export class TransactionsFilterComponent implements OnInit, OnDestroy {
     return this.form.get('issueDateQuarterList') as AbstractControl;
   }
 
-  get unit(): AbstractControl {
-    return this.form.get('unit') as AbstractControl;
-  }
-
   get nationalityCode(): AbstractControl {
     return this.form.get('nationalityCode') as AbstractControl;
   }
@@ -302,7 +301,6 @@ export class TransactionsFilterComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.unit.disable();
     this.years = range(this.isSell() ? 2006 : 2019, new Date().getFullYear());
     this.listenToMunicipalityChange();
     this.listenToPropertyTypeListChange();
@@ -445,8 +443,8 @@ export class TransactionsFilterComponent implements OnInit, OnDestroy {
   }
 
   listenToUnitChange() {
-    this.unit.valueChanges.pipe(takeUntil(this.destroy$)).subscribe((value) => {
-      this.unitsService.setUnit(value);
+    this.unitsControl.valueChanges.pipe(takeUntil(this.destroy$)).subscribe((value) => {
+      this.unitsService.setUnit(value as SqUnit);
     });
   }
 
@@ -689,7 +687,6 @@ export class TransactionsFilterComponent implements OnInit, OnDestroy {
       delete value.issueDateEndMonth;
       delete value.issueDateFrom;
       delete value.issueDateTo;
-      delete value.unit;
 
       delete value.realEstateValueFrom;
       delete value.realEstateValueTo;
