@@ -212,8 +212,8 @@ export default class RentalIndicatorsPageComponent implements OnInit, OnDestroy 
     }),
     new KpiRoot().clone<KpiRoot>({
       id: 16,
-      arName: this.lang.getArabicTranslation('the_average_price_per_square_meter_square_foot'),
-      enName: this.lang.getEnglishTranslation('the_average_price_per_square_meter_square_foot'),
+      arName: this.lang.getArabicTranslation('rent_average_price_per'),
+      enName: this.lang.getEnglishTranslation('rent_average_price_per'),
       url: this.urlService.URLS.RENT_KPI16,
       purposeUrl: this.urlService.URLS.RENT_KPI17,
       propertyTypeUrl: this.urlService.URLS.RENT_KPI18,

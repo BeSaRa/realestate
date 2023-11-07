@@ -20,6 +20,7 @@ import { forkJoin, switchMap, tap } from 'rxjs';
 import { routes } from './app.routes';
 import { TokenInterceptor } from './interceptors/token.interceptor';
 import { ToastService } from '@services/toast.service';
+import { UnitsService } from '@services/units.service';
 export const appConfig: ApplicationConfig = {
   providers: [
     provideRouter(routes, withComponentInputBinding(), withInMemoryScrolling({ scrollPositionRestoration: 'top' })),
@@ -51,7 +52,8 @@ export const appConfig: ApplicationConfig = {
             .pipe(switchMap(() => lookups.load()))
             .pipe(switchMap(() => translation.load()));
       },
-      deps: [ConfigService, UrlService, TranslationService, LookupService],
+      // UnitsService add to deps to initialize service at app start and be able to regiser it using ServiceRegistery
+      deps: [ConfigService, UrlService, TranslationService, LookupService, UnitsService],
       multi: true,
     },
     {

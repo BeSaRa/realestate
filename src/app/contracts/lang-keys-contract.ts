@@ -327,4 +327,7 @@ export interface LangKeysContract {
   user_info_has_been_updated_successfully: string;
   updating_user_info_failed: string;
   email_notifications: string;
+
+  sell_average_price_per: string;
+  rent_average_price_per: string;
 }
