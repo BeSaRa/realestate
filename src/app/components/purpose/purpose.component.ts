@@ -1,11 +1,11 @@
-import { Component, inject, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { Component, inject, Input } from '@angular/core';
+import { ChangeIndicatorComponent } from '@components/change-indicator/change-indicator.component';
+import { NGX_COUNTUP_OPTIONS } from '@constants/injection-tokens';
+import { CountUpOptionsContract } from '@contracts/countup-options-contract';
+import { KpiPurpose } from '@models/kpi-purpose';
 import { TranslationService } from '@services/translation.service';
 import { CountUpModule } from 'ngx-countup';
-import { ChangeIndicatorComponent } from '@components/change-indicator/change-indicator.component';
-import { Lookup } from '@models/lookup';
-import { CountUpOptionsContract } from '@contracts/countup-options-contract';
-import { NGX_COUNTUP_OPTIONS } from '@constants/injection-tokens';
 
 @Component({
   selector: 'app-purpose',
@@ -15,7 +15,7 @@ import { NGX_COUNTUP_OPTIONS } from '@constants/injection-tokens';
   styleUrls: ['./purpose.component.scss'],
 })
 export class PurposeComponent {
-  @Input() item!: Lookup;
+  @Input() item!: KpiPurpose;
   @Input() showYoy = true;
   @Input() enableCountup = true;
   @Input() alignHorizontal = true;

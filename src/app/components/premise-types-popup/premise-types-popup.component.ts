@@ -1,11 +1,11 @@
-import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ButtonComponent } from '@components/button/button.component';
-import { PurposeComponent } from '@components/purpose/purpose.component';
-import { Lookup } from '@models/lookup';
+import { Component, inject } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
-import { TranslationService } from '@services/translation.service';
+import { ButtonComponent } from '@components/button/button.component';
 import { IconButtonComponent } from '@components/icon-button/icon-button.component';
+import { PurposeComponent } from '@components/purpose/purpose.component';
+import { KpiPurpose } from '@models/kpi-purpose';
+import { TranslationService } from '@services/translation.service';
 
 @Component({
   selector: 'app-premise-types-popup',
@@ -18,5 +18,5 @@ export class PremiseTypesPopupComponent {
   lang = inject(TranslationService);
   ref = inject(MatDialogRef);
 
-  premiseTypesData: { title: string; types: Lookup[] } = inject(MAT_DIALOG_DATA);
+  premiseTypesData: { title: string; types: KpiPurpose[] } = inject(MAT_DIALOG_DATA);
 }

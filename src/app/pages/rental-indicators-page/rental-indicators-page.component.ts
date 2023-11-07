@@ -35,6 +35,7 @@ import { RentTransaction } from '@models/rent-transaction';
 import { RentTransactionPropertyType } from '@models/rent-transaction-property-type';
 import { RentTransactionPurpose } from '@models/rent-transaction-purpose';
 import { TableSortOption } from '@models/table-sort-option';
+import { Top10AccordingTo } from '@models/top-10-according-to';
 import { FormatNumbersPipe } from '@pipes/format-numbers.pipe';
 import { DashboardService } from '@services/dashboard.service';
 import { LookupService } from '@services/lookup.service';
@@ -56,6 +57,8 @@ import {
   take,
   takeUntil,
 } from 'rxjs';
+import { KpiPurpose } from '@models/kpi-purpose';
+import { KpiPropertyType } from '@models/kpi-property-type';
 
 @Component({
   selector: 'app-rental-indicators-page',
@@ -233,62 +236,65 @@ export default class RentalIndicatorsPageComponent implements OnInit, OnDestroy 
     }),
   ];
 
-  accordingToList: Lookup[] = [
-    new Lookup().clone<Lookup>({
-      lookupKey: 0,
+  accordingToList: Top10AccordingTo[] = [
+    new Top10AccordingTo().clone<Top10AccordingTo>({
+      id: 0,
       arName: this.lang.getArabicTranslation('number_of_lease_contracts'),
       enName: this.lang.getEnglishTranslation('number_of_lease_contracts'),
       url: this.urlService.URLS.RENT_KPI30,
       hasPrice: false,
     }),
-    new Lookup().clone<Lookup>({
-      lookupKey: 1,
+    new Top10AccordingTo().clone<Top10AccordingTo>({
+      id: 1,
       arName: this.lang.getArabicTranslation('number_of_units'),
       enName: this.lang.getEnglishTranslation('number_of_units'),
       url: this.urlService.URLS.RENT_KPI30_1,
       hasPrice: false,
     }),
-    new Lookup().clone<Lookup>({
-      lookupKey: 2,
+    new Top10AccordingTo().clone<Top10AccordingTo>({
+      id: 2,
       arName: this.lang.getArabicTranslation('average_price_per_month'),
       enName: this.lang.getEnglishTranslation('average_price_per_month'),
       url: this.urlService.URLS.RENT_KPI31,
       hasPrice: true,
     }),
-    new Lookup().clone<Lookup>({
-      lookupKey: 3,
+    new Top10AccordingTo().clone<Top10AccordingTo>({
+      id: 3,
       arName: this.lang.getArabicTranslation('average_price_per_meter'),
       enName: this.lang.getEnglishTranslation('average_price_per_meter'),
       url: this.urlService.URLS.RENT_KPI31_1,
       hasPrice: true,
-      isActive: false,
+      disabled: true,
     }),
-    new Lookup().clone<Lookup>({
-      lookupKey: 4,
+    new Top10AccordingTo().clone<Top10AccordingTo>({
+      id: 4,
       arName: this.lang.getArabicTranslation('contracts_values'),
       enName: this.lang.getEnglishTranslation('contracts_values'),
       url: this.urlService.URLS.RENT_KPI32,
       hasPrice: true,
     }),
-    new Lookup().clone<Lookup>({
-      lookupKey: 5,
+    new Top10AccordingTo().clone<Top10AccordingTo>({
+      id: 5,
       arName: this.lang.getArabicTranslation('rented_spaces'),
       enName: this.lang.getEnglishTranslation('rented_spaces'),
       url: this.urlService.URLS.RENT_KPI33,
       hasPrice: false,
-      isActive: false,
+      disabled: true,
     }),
   ];
 
   top10Label = (item: { kpiVal: number; zoneId: number }) => this.lookupService.rentZonesMap[item.zoneId].getNames();
 
-  purposeKPIS = this.lookupService.rentLookups.rentPurposeList;
-
-  propertiesKPIS = this.lookupService.rentLookups.propertyTypeList;
+  purposeKPIS = this.lookupService.rentLookups.rentPurposeList.map((item) =>
+    new KpiPurpose().clone<KpiPurpose>({ id: item.lookupKey, arName: item.arName, enName: item.enName })
+  );
+  propertiesKPIS = this.lookupService.rentLookups.propertyTypeList.map((item) =>
+    new KpiPropertyType().clone<KpiPropertyType>({ id: item.lookupKey, arName: item.arName, enName: item.enName })
+  );
 
   selectedRoot = this.rootKPIS[0];
 
-  selectedPurpose?: Lookup = this.lookupService.rentLookups.rentPurposeList[0];
+  selectedPurpose = this.purposeKPIS[0];
   selectedTab: 'rental_indicators' | 'statistical_reports_for_rent' = 'rental_indicators';
 
   protected readonly maskSeparator = maskSeparator;
@@ -417,19 +423,13 @@ export default class RentalIndicatorsPageComponent implements OnInit, OnDestroy 
     this.dashboardService
       .loadPurposeKpi(item, this.criteria.criteria)
       .pipe(take(1))
-      .subscribe((subKPI) => {
-        const purpose = subKPI.reduce((acc, item) => {
+      .subscribe((data) => {
+        const _purposeKpiData = data.reduce((acc, item) => {
           return { ...acc, [item.purposeId]: item };
         }, {} as Record<number, KpiBaseModel>);
 
-        this.purposeKPIS = this.purposeKPIS.map((item) => {
-          Object.prototype.hasOwnProperty.call(purpose, item.lookupKey)
-            ? (item.value = purpose[item.lookupKey].getKpiVal())
-            : (item.value = 0);
-          Object.prototype.hasOwnProperty.call(purpose, item.lookupKey)
-            ? (item.yoy = purpose[item.lookupKey].getKpiYoYVal())
-            : (item.yoy = 0);
-          return item;
+        this.purposeKPIS.forEach((item) => {
+          Object.prototype.hasOwnProperty.call(_purposeKpiData, item.id) && (item.kpiData = _purposeKpiData[item.id]);
         });
         this.selectedRoot && this.updateAllPurpose();
         this.selectedPurpose && this.purposeSelected(this.selectedPurpose);
@@ -437,13 +437,11 @@ export default class RentalIndicatorsPageComponent implements OnInit, OnDestroy 
   }
 
   updateAllPurpose(): void {
-    const lookup = this.purposeKPIS.find((i) => i.lookupKey === -1);
-    lookup &&
-      (lookup.value = this.selectedRoot.kpiData.getKpiVal()) &&
-      (lookup.yoy = this.selectedRoot.kpiData.getKpiYoYVal());
+    const _purpose = this.purposeKPIS.find((i) => i.id === -1);
+    _purpose && (_purpose.kpiData = this.selectedRoot.kpiData);
   }
 
-  purposeSelected(item: Lookup) {
+  purposeSelected(item: KpiPurpose) {
     this.purposeKPIS.forEach((i) => {
       item !== i ? (i.selected = false) : (item.selected = true);
     });
@@ -454,18 +452,17 @@ export default class RentalIndicatorsPageComponent implements OnInit, OnDestroy 
       this.dashboardService
         .loadPropertyTypeKpi(this.selectedRoot, {
           ...this.criteria.criteria,
-          purposeList: [item.lookupKey],
+          purposeList: [item.id],
         })
         .pipe(takeUntil(this.destroy$))
         .subscribe((result) => {
           this.propertiesKPIS = this.propertiesKPIS
             .map((item) => {
-              const subItem = result.find((i) => i.propertyTypeId === item.lookupKey);
-              subItem ? (item.value = subItem.getKpiVal()) : (item.value = 0);
-              subItem ? (item.yoy = subItem.getKpiYoYVal()) : (item.yoy = 0);
+              const _propertyTypeKpiData = result.find((i) => i.propertyTypeId === item.id);
+              _propertyTypeKpiData && (item.kpiData = _propertyTypeKpiData);
               return item;
             })
-            .sort((a, b) => a.value - b.value);
+            .sort((a, b) => a.kpiData.getKpiVal() - b.kpiData.getKpiVal());
         });
   }
 

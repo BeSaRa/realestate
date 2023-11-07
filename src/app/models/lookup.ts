@@ -5,11 +5,7 @@ export class Lookup extends ClonerMixin(GetNamesMixin(class {})) {
   lookupKey!: number;
   isActive!: boolean;
   municipalityId!: number;
-  disabled!: boolean;
-  // not related to the model
-  value = 0;
-  yoy = 0;
-  selected = false;
-  url = '';
-  hasPrice = false;
+
+  // not related to model
+  disabled = false;
 }

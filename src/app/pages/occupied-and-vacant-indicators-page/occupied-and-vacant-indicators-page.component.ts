@@ -24,8 +24,8 @@ import { OnDestroyMixin } from '@mixins/on-destroy-mixin';
 import { AppTableDataSource } from '@models/app-table-data-source';
 import { ChartOptionsModel } from '@models/chart-options-model';
 import { KpiModel } from '@models/kpi-model';
+import { KpiPurpose } from '@models/kpi-purpose';
 import { KpiRoot } from '@models/kpi-root';
-import { Lookup } from '@models/lookup';
 import { OccupancyTransaction } from '@models/occupancy-transaction';
 import { AppChartTypesService } from '@services/app-chart-types.service';
 import { DashboardService } from '@services/dashboard.service';
@@ -120,10 +120,14 @@ export default class OccupiedAndVacantIndicatorsPageComponent
 
   selectedRoot = this.rootKPIS[0];
 
-  categoryKPIs = this.lookupService.ovLookups.premiseCategoryList;
-  selectedCategory = this.lookupService.ovLookups.premiseCategoryList[0];
+  categoryKPIs = this.lookupService.ovLookups.premiseCategoryList.map((item) =>
+    new KpiPurpose().clone<KpiPurpose>({ id: item.lookupKey, arName: item.arName, enName: item.enName })
+  );
+  selectedCategory = this.categoryKPIs[0];
 
-  typeKPIs = this.lookupService.ovLookups.premiseTypeList;
+  typeKPIs = this.lookupService.ovLookups.premiseTypeList.map((item) =>
+    new KpiPurpose().clone<KpiPurpose>({ id: item.lookupKey, arName: item.arName, enName: item.enName })
+  );
   filteredTypeKPIs = this.typeKPIs;
 
   readonly shownTypeKpisCount = 14;
@@ -214,19 +218,14 @@ export default class OccupiedAndVacantIndicatorsPageComponent
     this.dashboardService
       .loadPurposeKpi(item, _criteria)
       .pipe(take(1))
-      .subscribe((subKPI) => {
-        const _category = subKPI.reduce((acc, item) => {
+      .subscribe((data) => {
+        const _categoriesKpiData = data.reduce((acc, item) => {
           return { ...acc, [item['premiseCategoryId' as keyof KpiBaseModel] as number]: item };
         }, {} as Record<number, KpiBaseModel>);
 
-        this.categoryKPIs = this.categoryKPIs.map((item) => {
-          Object.prototype.hasOwnProperty.call(_category, item.lookupKey)
-            ? (item.value = _category[item.lookupKey].getKpiVal())
-            : (item.value = 0);
-          Object.prototype.hasOwnProperty.call(_category, item.lookupKey)
-            ? (item.yoy = _category[item.lookupKey].getKpiYoYVal())
-            : (item.yoy = 0);
-          return item;
+        this.categoryKPIs.forEach((item) => {
+          Object.prototype.hasOwnProperty.call(_categoriesKpiData, item.id) &&
+            (item.kpiData = _categoriesKpiData[item.id]);
         });
         this.selectedRoot && this.updateAllCategory();
         this.selectedCategory && this.categorySelected(this.selectedCategory);
@@ -235,13 +234,11 @@ export default class OccupiedAndVacantIndicatorsPageComponent
   }
 
   updateAllCategory(): void {
-    const lookup = this.categoryKPIs.find((i) => i.lookupKey === -1);
-    lookup &&
-      (lookup.value = this.selectedRoot.kpiData.getKpiVal()) &&
-      (lookup.yoy = this.selectedRoot.kpiData.getKpiYoYVal());
+    const _category = this.categoryKPIs.find((i) => i.id === -1);
+    _category && (_category.kpiData = this.selectedRoot.kpiData);
   }
 
-  categorySelected(item: Lookup) {
+  categorySelected(item: KpiPurpose) {
     this.categoryKPIs.forEach((i) => {
       item !== i ? (i.selected = false) : (item.selected = true);
     });
@@ -251,7 +248,7 @@ export default class OccupiedAndVacantIndicatorsPageComponent
     const _criteria = {
       ...this.criteria.criteria,
       occupancyStatus: this.selectedRoot.id === -1 ? null : this.selectedRoot.id,
-      ['premiseCategoryList' as keyof CriteriaContract]: [item.lookupKey],
+      ['premiseCategoryList' as keyof CriteriaContract]: [item.id],
     };
 
     this.selectedRoot &&
@@ -264,12 +261,11 @@ export default class OccupiedAndVacantIndicatorsPageComponent
           }, {} as Record<number, KpiBaseModel>);
           this.filteredTypeKPIs = this.typeKPIs
             .map((item) => {
-              _types[item.lookupKey] ? (item.value = _types[item.lookupKey].getKpiVal()) : (item.value = 0);
-              _types[item.lookupKey] ? (item.yoy = _types[item.lookupKey].getKpiYoYVal()) : (item.yoy = 0);
+              _types[item.id] && (item.kpiData = _types[item.id]);
               return item;
             })
-            .sort((a, b) => b.value - a.value)
-            .filter((item) => item.value != 0);
+            .sort((a, b) => b.kpiData.getKpiVal() - a.kpiData.getKpiVal())
+            .filter((item) => item.kpiData.getKpiVal() != 0);
         });
   }
 
