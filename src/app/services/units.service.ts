@@ -36,4 +36,8 @@ export class UnitsService extends RegisterServiceMixin(class {}) implements Serv
   setUnit(lookupKey: SqUnit) {
     this._selectedUnitSignal.set(lookupKey);
   }
+
+  isMeterSelected() {
+    return this.selectedUnit() === SqUnit.SQUARE_METER;
+  }
 }

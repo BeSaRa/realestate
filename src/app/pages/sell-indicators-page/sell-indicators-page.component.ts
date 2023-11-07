@@ -24,6 +24,7 @@ import { TableColumnHeaderTemplateDirective } from '@directives/table-column-hea
 import { TableColumnTemplateDirective } from '@directives/table-column-template.directive';
 import { indicatorsTypes } from '@enums/Indicators-type';
 import { CriteriaType } from '@enums/criteria-type';
+import { SqUnit } from '@enums/sq-unit';
 import { AppTableDataSource } from '@models/app-table-data-source';
 import { CompositeTransaction } from '@models/composite-transaction';
 import { KpiPropertyType } from '@models/kpi-property-type';

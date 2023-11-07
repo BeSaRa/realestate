@@ -150,15 +150,19 @@
           }}</span>
         </ng-container>
         <ng-container appTableColumnTemplate columnName="area_in_square_feet">
-          <span *appTableColumnHeaderTemplate>{{ lang.map.area_in_square_foot }}</span>
+          <span *appTableColumnHeaderTemplate>{{
+            unitsService.isMeterSelected() ? lang.map.area_in_square_meter : lang.map.area_in_square_foot
+          }}</span>
           <span *appTableColumnCellTemplate="let item; typeOf: transactions$" class="font-bold">{{
-            item.realEstateSQT
+            unitsService.isMeterSelected() ? item.realEstateMT : item.realEstateSQT
           }}</span>
         </ng-container>
         <ng-container appTableColumnTemplate columnName="square_feet_price">
-          <span *appTableColumnHeaderTemplate>{{ lang.map.the_square_foot_price }}</span>
+          <span *appTableColumnHeaderTemplate>{{
+            unitsService.isMeterSelected() ? lang.map.the_square_meter_price : lang.map.the_square_foot_price
+          }}</span>
           <span *appTableColumnCellTemplate="let item; typeOf: transactions$" class="font-bold">{{
-            item.priceMT | number : "1.0-0"
+            (unitsService.isMeterSelected() ? item.priceMT : item.priceFT) | number : "1.0-0"
           }}</span>
         </ng-container>
         <ng-container appTableColumnTemplate columnName="issue_date">
@@ -268,7 +272,11 @@
 
           <ng-container matColumnDef="area">
             <th mat-header-cell class="!text-white" mat-sort-header="area" *matHeaderCellDef>
-              {{ lang.map.total_area }}
+              {{
+                unitsService.isMeterSelected()
+                  ? lang.map.total_area_in_square_meter
+                  : lang.map.total_area_in_square_feet
+              }}
             </th>
             <td mat-cell *matCellDef="let element">{{ element.sumArea | formatNumbers : 0 }}</td>
           </ng-container>
@@ -283,7 +291,7 @@
           <ng-container matColumnDef="average-square">
             <th mat-header-cell class="!text-white" mat-sort-header="average-square" *matHeaderCellDef>
               {{
-                unitsService.selectedUnit() === 1
+                unitsService.isMeterSelected()
                   ? lang.map.average_price_per_square_meter
                   : lang.map.average_price_per_square_foot
               }}

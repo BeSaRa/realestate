@@ -330,4 +330,7 @@ export interface LangKeysContract {
 
   sell_average_price_per: string;
   rent_average_price_per: string;
+  area_in_square_meter: string;
+  total_area_in_square_feet: string;
+  total_area_in_square_meter: string;
 }
