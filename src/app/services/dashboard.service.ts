@@ -26,7 +26,7 @@ import { KpiDurationForSqUnitModel } from '@models/kpi-duration-for-sq-unti-mode
 import { KpiDurationModel } from '@models/kpi-duration-model';
 import { KpiForSqUnitModel } from '@models/kpi-for-sq-unit-model';
 import { KpiModel } from '@models/kpi-model';
-import { KpiRoot } from '@models/kpiRoot';
+import { KpiRoot } from '@models/kpi-root';
 import { Lookup } from '@models/lookup';
 import { MortgageTransaction } from '@models/mortgage-transaction';
 import { OccupancyTransaction } from '@models/occupancy-transaction';
@@ -92,7 +92,7 @@ export class DashboardService extends RegisterServiceMixin(class {}) implements 
 
   loadPurposeKpi(kpi: KpiRoot, criteria: Partial<CriteriaContract>) {
     return this.http
-      .post<(KpiBaseModel & { purposeId: number })[]>(kpi.subUrl, criteria)
+      .post<(KpiBaseModel & { purposeId: number })[]>(kpi.purposeUrl, criteria)
       .pipe(
         map((data) =>
           data.map((item) => (kpi.hasSqUnit ? new KpiForSqUnitModel().clone(item) : new KpiModel().clone(item)))
@@ -102,7 +102,7 @@ export class DashboardService extends RegisterServiceMixin(class {}) implements 
 
   loadPropertyTypeKpi(kpi: KpiRoot, criteria: Partial<CriteriaContract>) {
     return this.http
-      .post<(KpiBaseModel & { propertyTypeId: number })[]>(kpi.secondSubUrl, criteria)
+      .post<(KpiBaseModel & { propertyTypeId: number })[]>(kpi.propertyTypeUrl, criteria)
       .pipe(
         map((data) =>
           data.map((item) => (kpi.hasSqUnit ? new KpiForSqUnitModel().clone(item) : new KpiModel().clone(item)))

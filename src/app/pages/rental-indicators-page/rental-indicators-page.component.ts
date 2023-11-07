@@ -4,14 +4,10 @@ import { Component, inject, OnDestroy, OnInit } from '@angular/core';
 import { ExtraHeaderComponent } from '@components/extra-header/extra-header.component';
 import { KpiRootComponent } from '@components/kpi-root/kpi-root.component';
 import { PurposeComponent } from '@components/purpose/purpose.component';
-import { RentalContractsComponent } from '@components/rental-contracts/rental-contracts.component';
-import { RentalTransactionsMeasuringComponent } from '@components/rental-transactions-measuring/rental-transactions-measuring.component';
 import { TransactionsFilterComponent } from '@components/transactions-filter/transactions-filter.component';
 import { CriteriaContract } from '@contracts/criteria-contract';
-import { RentCriteriaContract } from '@contracts/rent-criteria-contract';
 import { CriteriaType } from '@enums/criteria-type';
-import { KpiRoot } from '@models/kpiRoot';
-import { RentDefaultValues } from '@models/rent-default-values';
+import { KpiRoot } from '@models/kpi-root';
 
 import { KpiBaseModel } from '@abstracts/kpi-base-model';
 import { MatNativeDateModule } from '@angular/material/core';
@@ -68,8 +64,6 @@ import {
     CommonModule,
     ExtraHeaderComponent,
     TransactionsFilterComponent,
-    RentalTransactionsMeasuringComponent,
-    RentalContractsComponent,
     KpiRootComponent,
     PurposeComponent,
     PropertyCarouselComponent,
@@ -117,7 +111,6 @@ export default class RentalIndicatorsPageComponent implements OnInit, OnDestroy 
 
   isMonthlyDuration: boolean = true;
 
-  // transactions = new ReplaySubject<RentTransaction[]>(1);
   transactions$: Observable<RentTransaction[]> = this.loadTransactions();
   transactionsCount = 0;
   dataSource: AppTableDataSource<RentTransaction> = new AppTableDataSource(this.transactions$);
@@ -171,77 +164,73 @@ export default class RentalIndicatorsPageComponent implements OnInit, OnDestroy 
     limit: 5,
   });
   rootKPIS = [
-    new KpiRoot(
-      1,
-      this.lang.getArabicTranslation('the_total_number_of_lease_contracts'),
-      this.lang.getEnglishTranslation('the_total_number_of_lease_contracts'),
-      false,
-      this.urlService.URLS.RENT_KPI1,
-      this.urlService.URLS.RENT_KPI2,
-      this.urlService.URLS.RENT_KPI3,
-      this.urlService.URLS.RENT_KPI19,
-      'assets/icons/kpi/svg/8.svg'
-    ),
-    new KpiRoot(
-      4,
-      this.lang.getArabicTranslation('the_total_number_of_properties_units_rented'),
-      this.lang.getEnglishTranslation('the_total_number_of_properties_units_rented'),
-      false,
-      this.urlService.URLS.RENT_KPI4,
-      this.urlService.URLS.RENT_KPI5,
-      this.urlService.URLS.RENT_KPI6,
-      this.urlService.URLS.RENT_KPI20,
-      'assets/icons/kpi/svg/1.svg'
-    ),
-
-    new KpiRoot(
-      10,
-      this.lang.getArabicTranslation('total_rented_space'),
-      this.lang.getEnglishTranslation('total_rented_space'),
-      false,
-      this.urlService.URLS.RENT_KPI10,
-      this.urlService.URLS.RENT_KPI11,
-      this.urlService.URLS.RENT_KPI12,
-      this.urlService.URLS.RENT_KPI21,
-      'assets/icons/kpi/svg/5.svg',
-      false,
-      true
-    ),
-    new KpiRoot(
-      7,
-      this.lang.getArabicTranslation('the_total_value_of_lease_contracts'),
-      this.lang.getEnglishTranslation('the_total_value_of_lease_contracts'),
-      true,
-      this.urlService.URLS.RENT_KPI7,
-      this.urlService.URLS.RENT_KPI8,
-      this.urlService.URLS.RENT_KPI9,
-      this.urlService.URLS.RENT_KPI22,
-      'assets/icons/kpi/svg/4.svg'
-    ),
-    new KpiRoot(
-      16,
-      this.lang.getArabicTranslation('the_average_price_per_square_meter_square_foot'),
-      this.lang.getEnglishTranslation('the_average_price_per_square_meter_square_foot'),
-      true,
-      this.urlService.URLS.RENT_KPI16,
-      this.urlService.URLS.RENT_KPI17,
-      this.urlService.URLS.RENT_KPI18,
-      this.urlService.URLS.RENT_KPI24,
-      'assets/icons/kpi/svg/3.svg',
-      false,
-      true
-    ),
-    new KpiRoot(
-      13,
-      this.lang.getArabicTranslation('average_rental_price_per_unit_property'),
-      this.lang.getEnglishTranslation('average_rental_price_per_unit_property'),
-      true,
-      this.urlService.URLS.RENT_KPI13,
-      this.urlService.URLS.RENT_KPI14,
-      this.urlService.URLS.RENT_KPI15,
-      this.urlService.URLS.RENT_KPI23,
-      'assets/icons/kpi/svg/2.svg'
-    ),
+    new KpiRoot().clone<KpiRoot>({
+      id: 1,
+      arName: this.lang.getArabicTranslation('the_total_number_of_lease_contracts'),
+      enName: this.lang.getEnglishTranslation('the_total_number_of_lease_contracts'),
+      url: this.urlService.URLS.RENT_KPI1,
+      purposeUrl: this.urlService.URLS.RENT_KPI2,
+      propertyTypeUrl: this.urlService.URLS.RENT_KPI3,
+      chartDataUrl: this.urlService.URLS.RENT_KPI19,
+      iconUrl: 'assets/icons/kpi/svg/8.svg',
+    }),
+    new KpiRoot().clone<KpiRoot>({
+      id: 4,
+      arName: this.lang.getArabicTranslation('the_total_number_of_properties_units_rented'),
+      enName: this.lang.getEnglishTranslation('the_total_number_of_properties_units_rented'),
+      url: this.urlService.URLS.RENT_KPI4,
+      purposeUrl: this.urlService.URLS.RENT_KPI5,
+      propertyTypeUrl: this.urlService.URLS.RENT_KPI6,
+      chartDataUrl: this.urlService.URLS.RENT_KPI20,
+      iconUrl: 'assets/icons/kpi/svg/1.svg',
+    }),
+    new KpiRoot().clone<KpiRoot>({
+      id: 10,
+      arName: this.lang.getArabicTranslation('total_rented_space'),
+      enName: this.lang.getEnglishTranslation('total_rented_space'),
+      url: this.urlService.URLS.RENT_KPI10,
+      purposeUrl: this.urlService.URLS.RENT_KPI11,
+      propertyTypeUrl: this.urlService.URLS.RENT_KPI12,
+      chartDataUrl: this.urlService.URLS.RENT_KPI21,
+      iconUrl: 'assets/icons/kpi/svg/5.svg',
+      isDataAvailable: false,
+      hasSqUnit: true,
+    }),
+    new KpiRoot().clone<KpiRoot>({
+      id: 7,
+      arName: this.lang.getArabicTranslation('the_total_value_of_lease_contracts'),
+      enName: this.lang.getEnglishTranslation('the_total_value_of_lease_contracts'),
+      url: this.urlService.URLS.RENT_KPI7,
+      purposeUrl: this.urlService.URLS.RENT_KPI8,
+      propertyTypeUrl: this.urlService.URLS.RENT_KPI9,
+      chartDataUrl: this.urlService.URLS.RENT_KPI22,
+      iconUrl: 'assets/icons/kpi/svg/4.svg',
+      hasPrice: true,
+    }),
+    new KpiRoot().clone<KpiRoot>({
+      id: 16,
+      arName: this.lang.getArabicTranslation('the_average_price_per_square_meter_square_foot'),
+      enName: this.lang.getEnglishTranslation('the_average_price_per_square_meter_square_foot'),
+      url: this.urlService.URLS.RENT_KPI16,
+      purposeUrl: this.urlService.URLS.RENT_KPI17,
+      propertyTypeUrl: this.urlService.URLS.RENT_KPI18,
+      chartDataUrl: this.urlService.URLS.RENT_KPI24,
+      iconUrl: 'assets/icons/kpi/svg/3.svg',
+      hasPrice: true,
+      isDataAvailable: false,
+      hasSqUnit: true,
+    }),
+    new KpiRoot().clone<KpiRoot>({
+      id: 13,
+      arName: this.lang.getArabicTranslation('average_rental_price_per_unit_property'),
+      enName: this.lang.getEnglishTranslation('average_rental_price_per_unit_property'),
+      url: this.urlService.URLS.RENT_KPI13,
+      purposeUrl: this.urlService.URLS.RENT_KPI14,
+      propertyTypeUrl: this.urlService.URLS.RENT_KPI15,
+      chartDataUrl: this.urlService.URLS.RENT_KPI23,
+      iconUrl: 'assets/icons/kpi/svg/2.svg',
+      hasPrice: true,
+    }),
   ];
 
   accordingToList: Lookup[] = [
@@ -399,45 +388,22 @@ export default class RentalIndicatorsPageComponent implements OnInit, OnDestroy 
       );
   }
 
-  updateAllPurpose(value: number, yoy: number): void {
-    const lookup = this.purposeKPIS.find((i) => i.lookupKey === -1);
-    lookup && (lookup.value = value) && (lookup.yoy = yoy);
-  }
-
   filterChange({ criteria, type }: { criteria: CriteriaContract; type: CriteriaType }) {
     this.criteria = { criteria: { ...criteria, limit: 5 }, type };
 
-    if (type === CriteriaType.DEFAULT) {
-      // load default
+    this.rootKPIS.map((item) => {
       this.dashboardService
-        .loadRentDefaults(criteria as Partial<RentCriteriaContract>)
+        .loadKpiRoot(item, this.criteria.criteria)
         .pipe(take(1))
-        .subscribe((result) => {
-          this.setDefaultRoots(result[0]);
-          this.rootItemSelected(this.rootKPIS[0]);
+        .subscribe((value) => {
+          item.kpiData = value[0];
         });
-    } else {
-      this.rootKPIS.map((item) => {
-        this.dashboardService
-          .loadKpiRoot(item, this.criteria.criteria)
-          .pipe(take(1))
-          .subscribe((value) => {
-            if (!value.length) {
-              item.setValue(0);
-              item.setYoy(0);
-            } else {
-              item.setValue(value[value.length - 1].getKpiVal());
-              item.setYoy(value[value.length - 1].getKpiYoYVal());
-            }
-          });
-      });
+    });
 
-      this.rootItemSelected(this.selectedRoot);
-    }
-    // this.loadTransactions();
+    this.rootItemSelected(this.selectedRoot);
+
     this.reload$.next();
     this.loadCompositeTransactions();
-    // this.basedOn$.next("purpose");
     this.setIndicatorsTableDataSource();
   }
 
@@ -465,26 +431,16 @@ export default class RentalIndicatorsPageComponent implements OnInit, OnDestroy 
             : (item.yoy = 0);
           return item;
         });
-        this.selectedRoot && this.updateAllPurpose(this.selectedRoot.value, this.selectedRoot.yoy);
+        this.selectedRoot && this.updateAllPurpose();
         this.selectedPurpose && this.purposeSelected(this.selectedPurpose);
       });
   }
 
-  private setDefaultRoots(rentDefaultValue?: RentDefaultValues) {
-    if (!rentDefaultValue) {
-      this.rootKPIS.forEach((item) => {
-        item.setValue(0);
-        item.setYoy(0);
-      });
-    } else {
-      this.rootKPIS.forEach((item) => {
-        const value = `kpi${item.id}Val`;
-        const yoy = `kpiYoY${item.id}`;
-        item.setValue(rentDefaultValue[value as keyof RentDefaultValues]);
-        item.setYear(rentDefaultValue.issueYear);
-        item.setYoy(rentDefaultValue[yoy as keyof RentDefaultValues]);
-      });
-    }
+  updateAllPurpose(): void {
+    const lookup = this.purposeKPIS.find((i) => i.lookupKey === -1);
+    lookup &&
+      (lookup.value = this.selectedRoot.kpiData.getKpiVal()) &&
+      (lookup.yoy = this.selectedRoot.kpiData.getKpiYoYVal());
   }
 
   purposeSelected(item: Lookup) {

@@ -24,7 +24,7 @@ import { OnDestroyMixin } from '@mixins/on-destroy-mixin';
 import { AppTableDataSource } from '@models/app-table-data-source';
 import { ChartOptionsModel } from '@models/chart-options-model';
 import { KpiModel } from '@models/kpi-model';
-import { KpiRoot } from '@models/kpiRoot';
+import { KpiRoot } from '@models/kpi-root';
 import { Lookup } from '@models/lookup';
 import { OccupancyTransaction } from '@models/occupancy-transaction';
 import { AppChartTypesService } from '@services/app-chart-types.service';
@@ -89,40 +89,33 @@ export default class OccupiedAndVacantIndicatorsPageComponent
   };
 
   rootKPIS = [
-    new KpiRoot(
-      -1,
-      this.lang.getArabicTranslation('total_number_of_units'),
-      this.lang.getEnglishTranslation('total_number_of_units'),
-      false,
-      this.urlService.URLS.OV_KPI1,
-      this.urlService.URLS.OV_KPI2,
-      this.urlService.URLS.OV_KPI3,
-      '',
-      'assets/icons/kpi/svg/1.svg'
-    ),
-    new KpiRoot(
-      0,
-      this.lang.getArabicTranslation('total_number_of_vacant_units'),
-      this.lang.getEnglishTranslation('total_number_of_vacant_units'),
-      false,
-      this.urlService.URLS.OV_KPI1,
-      this.urlService.URLS.OV_KPI2,
-      this.urlService.URLS.OV_KPI3,
-      '',
-      'assets/icons/kpi/svg/3.svg'
-    ),
-
-    new KpiRoot(
-      1,
-      this.lang.getArabicTranslation('total_number_of_occupied_units'),
-      this.lang.getEnglishTranslation('total_number_of_occupied_units'),
-      false,
-      this.urlService.URLS.OV_KPI1,
-      this.urlService.URLS.OV_KPI2,
-      this.urlService.URLS.OV_KPI3,
-      '',
-      'assets/icons/kpi/svg/8.svg'
-    ),
+    new KpiRoot().clone<KpiRoot>({
+      id: -1,
+      arName: this.lang.getArabicTranslation('total_number_of_units'),
+      enName: this.lang.getEnglishTranslation('total_number_of_units'),
+      url: this.urlService.URLS.OV_KPI1,
+      purposeUrl: this.urlService.URLS.OV_KPI2,
+      propertyTypeUrl: this.urlService.URLS.OV_KPI3,
+      iconUrl: 'assets/icons/kpi/svg/1.svg',
+    }),
+    new KpiRoot().clone<KpiRoot>({
+      id: 0,
+      arName: this.lang.getArabicTranslation('total_number_of_vacant_units'),
+      enName: this.lang.getEnglishTranslation('total_number_of_vacant_units'),
+      url: this.urlService.URLS.OV_KPI1,
+      purposeUrl: this.urlService.URLS.OV_KPI2,
+      propertyTypeUrl: this.urlService.URLS.OV_KPI3,
+      iconUrl: 'assets/icons/kpi/svg/3.svg',
+    }),
+    new KpiRoot().clone<KpiRoot>({
+      id: 1,
+      arName: this.lang.getArabicTranslation('total_number_of_occupied_units'),
+      enName: this.lang.getEnglishTranslation('total_number_of_occupied_units'),
+      url: this.urlService.URLS.OV_KPI1,
+      purposeUrl: this.urlService.URLS.OV_KPI2,
+      propertyTypeUrl: this.urlService.URLS.OV_KPI3,
+      iconUrl: 'assets/icons/kpi/svg/8.svg',
+    }),
   ];
 
   selectedRoot = this.rootKPIS[0];
@@ -200,13 +193,7 @@ export default class OccupiedAndVacantIndicatorsPageComponent
         .loadKpiRoot(item, _criteria)
         .pipe(take(1))
         .subscribe((value) => {
-          if (!value.length) {
-            item.setValue(0);
-            item.setYoy(0);
-          } else {
-            item.setValue(value[value.length - 1].getKpiVal());
-            item.setYoy(value[value.length - 1].getKpiYoYVal());
-          }
+          item.kpiData = value[0];
         });
     });
 
@@ -241,15 +228,17 @@ export default class OccupiedAndVacantIndicatorsPageComponent
             : (item.yoy = 0);
           return item;
         });
-        this.selectedRoot && this.updateAllCategories(this.selectedRoot.value, this.selectedRoot.yoy);
+        this.selectedRoot && this.updateAllCategory();
         this.selectedCategory && this.categorySelected(this.selectedCategory);
         //   this.rootDataSubject.next(this.selectedRoot);
       });
   }
 
-  updateAllCategories(value: number, yoy: number): void {
+  updateAllCategory(): void {
     const lookup = this.categoryKPIs.find((i) => i.lookupKey === -1);
-    lookup && (lookup.value = value) && (lookup.yoy = yoy);
+    lookup &&
+      (lookup.value = this.selectedRoot.kpiData.getKpiVal()) &&
+      (lookup.yoy = this.selectedRoot.kpiData.getKpiYoYVal());
   }
 
   categorySelected(item: Lookup) {

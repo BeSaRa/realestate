@@ -19,7 +19,7 @@ import { Breakpoints } from '@enums/breakpoints';
 import { CriteriaType } from '@enums/criteria-type';
 import { NationalityCategories } from '@enums/nationality-categories';
 import { ChartConfig, ChartContext, ChartOptionsModel, DataPointSelectionConfig } from '@models/chart-options-model';
-import { KpiRoot } from '@models/kpiRoot';
+import { KpiRoot } from '@models/kpi-root';
 import { Lookup } from '@models/lookup';
 import { FormatNumbersPipe } from '@pipes/format-numbers.pipe';
 import { AppChartTypesService } from '@services/app-chart-types.service';
@@ -97,55 +97,44 @@ export default class OwnershipIndicatorsPageComponent implements OnInit, AfterVi
   nationalityCriteria!: CriteriaContract;
 
   rootKPIS = [
-    new KpiRoot(
-      1,
-      this.lang.getArabicTranslation('total_number_of_properties_units'),
-      this.lang.getEnglishTranslation('total_number_of_properties_units'),
-      false,
-      this.urlService.URLS.OWNER_KPI1,
-      this.urlService.URLS.OWNER_KPI2,
-      this.urlService.URLS.OWNER_KPI3,
-      '',
-      'assets/icons/kpi/svg/owner/1.svg'
-    ),
-    new KpiRoot(
-      4,
-      this.lang.getArabicTranslation('total_number_of_qatari_owners'),
-      this.lang.getEnglishTranslation('total_number_of_qatari_owners'),
-      false,
-      this.urlService.URLS.OWNER_KPI4,
-      this.urlService.URLS.OWNER_KPI5,
-      this.urlService.URLS.OWNER_KPI6,
-      '',
-      'assets/icons/kpi/svg/owner/2.svg'
-    ),
-
-    new KpiRoot(
-      7,
-      this.lang.getArabicTranslation('total_number_of_non_qatari_owners'),
-      this.lang.getEnglishTranslation('total_number_of_non_qatari_owners'),
-      false,
-      this.urlService.URLS.OWNER_KPI7,
-      this.urlService.URLS.OWNER_KPI8,
-      this.urlService.URLS.OWNER_KPI9,
-      '',
-      'assets/icons/kpi/svg/owner/3.svg'
-    ),
+    new KpiRoot().clone<KpiRoot>({
+      id: 1,
+      arName: this.lang.getArabicTranslation('total_number_of_properties_units'),
+      enName: this.lang.getEnglishTranslation('total_number_of_properties_units'),
+      url: this.urlService.URLS.OWNER_KPI1,
+      purposeUrl: this.urlService.URLS.OWNER_KPI2,
+      propertyTypeUrl: this.urlService.URLS.OWNER_KPI3,
+      iconUrl: 'assets/icons/kpi/svg/owner/1.svg',
+    }),
+    new KpiRoot().clone<KpiRoot>({
+      id: 4,
+      arName: this.lang.getArabicTranslation('total_number_of_qatari_owners'),
+      enName: this.lang.getEnglishTranslation('total_number_of_qatari_owners'),
+      url: this.urlService.URLS.OWNER_KPI4,
+      purposeUrl: this.urlService.URLS.OWNER_KPI5,
+      propertyTypeUrl: this.urlService.URLS.OWNER_KPI6,
+      iconUrl: 'assets/icons/kpi/svg/owner/2.svg',
+    }),
+    new KpiRoot().clone<KpiRoot>({
+      id: 7,
+      arName: this.lang.getArabicTranslation('total_number_of_non_qatari_owners'),
+      enName: this.lang.getEnglishTranslation('total_number_of_non_qatari_owners'),
+      url: this.urlService.URLS.OWNER_KPI7,
+      purposeUrl: this.urlService.URLS.OWNER_KPI8,
+      propertyTypeUrl: this.urlService.URLS.OWNER_KPI9,
+      iconUrl: 'assets/icons/kpi/svg/owner/3.svg',
+    }),
   ];
 
-  totalOwnershipsRootKpi = new KpiRoot(
-    10,
-    this.lang.getArabicTranslation('total_number_of_ownerships'),
-    this.lang.getEnglishTranslation('total_number_of_ownerships'),
-    false,
-    this.urlService.URLS.OWNER_KPI10,
-    '',
-    '',
-    '',
-    'assets/icons/kpi/svg/owner/4.svg'
-  );
+  totalOwnershipsRootKpi = new KpiRoot().clone<KpiRoot>({
+    id: 10,
+    arName: this.lang.getArabicTranslation('total_number_of_ownerships'),
+    enName: this.lang.getEnglishTranslation('total_number_of_ownerships'),
+    url: this.urlService.URLS.OWNER_KPI10,
+    iconUrl: 'assets/icons/kpi/svg/owner/4.svg',
+  });
 
-  selectedRoot?: KpiRoot;
+  selectedRoot = this.rootKPIS[0];
   selectedPurpose?: Lookup = this.lookupService.ownerLookups.rentPurposeList[0];
 
   selectedTab: 'ownership_indicators' | 'statistical_reports_for_ownership' = 'ownership_indicators';
@@ -271,19 +260,12 @@ export default class OwnershipIndicatorsPageComponent implements OnInit, AfterVi
   filterChange({ criteria, type }: { criteria: CriteriaContract; type: CriteriaType }) {
     this.criteria = { criteria, type };
 
-    if (type === CriteriaType.DEFAULT) this.rootItemSelected(this.rootKPIS[0]);
     this.rootKPIS.map((item) => {
       this.dashboardService
         .loadKpiRoot(item, this.criteria.criteria)
         .pipe(take(1))
         .subscribe((value) => {
-          if (!value.length) {
-            item.setValue(0);
-            item.setYoy(0);
-          } else {
-            item.setValue(value[value.length - 1].getKpiVal());
-            item.setYoy(value[value.length - 1].getKpiYoYVal());
-          }
+          item.kpiData = value[0];
         });
     });
 
@@ -291,13 +273,7 @@ export default class OwnershipIndicatorsPageComponent implements OnInit, AfterVi
       .loadKpiRoot(this.totalOwnershipsRootKpi, this.criteria.criteria)
       .pipe(take(1))
       .subscribe((value) => {
-        if (!value.length) {
-          this.totalOwnershipsRootKpi.setValue(0);
-          this.totalOwnershipsRootKpi.setYoy(0);
-        } else {
-          this.totalOwnershipsRootKpi.setValue(value[value.length - 1].getKpiVal());
-          this.totalOwnershipsRootKpi.setYoy(value[value.length - 1].getKpiYoYVal());
-        }
+        this.totalOwnershipsRootKpi.kpiData = value[0];
       });
 
     this.rootItemSelected(this.selectedRoot);
@@ -334,14 +310,16 @@ export default class OwnershipIndicatorsPageComponent implements OnInit, AfterVi
             : (item.yoy = 0);
           return item;
         });
-        this.selectedRoot && this.updateAllPurpose(this.selectedRoot.value, this.selectedRoot.yoy);
+        this.selectedRoot && this.updateAllPurpose();
         this.selectedPurpose && this.purposeSelected(this.selectedPurpose);
       });
   }
 
-  updateAllPurpose(value: number, yoy: number): void {
+  updateAllPurpose(): void {
     const lookup = this.purposeKPIS.find((i) => i.lookupKey === -1);
-    lookup && (lookup.value = value) && (lookup.yoy = yoy);
+    lookup &&
+      (lookup.value = this.selectedRoot.kpiData.getKpiVal()) &&
+      (lookup.yoy = this.selectedRoot.kpiData.getKpiYoYVal());
   }
 
   purposeSelected(item: Lookup) {

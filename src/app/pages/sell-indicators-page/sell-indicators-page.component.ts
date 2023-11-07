@@ -27,7 +27,7 @@ import { indicatorsTypes } from '@enums/Indicators-type';
 import { CriteriaType } from '@enums/criteria-type';
 import { AppTableDataSource } from '@models/app-table-data-source';
 import { CompositeTransaction } from '@models/composite-transaction';
-import { KpiRoot } from '@models/kpiRoot';
+import { KpiRoot } from '@models/kpi-root';
 import { Lookup } from '@models/lookup';
 import { SellDefaultValues } from '@models/sell-default-values';
 import { SellTransaction } from '@models/sell-transaction';
@@ -126,77 +126,71 @@ export default class SellIndicatorsPageComponent implements OnInit, OnDestroy {
   isMonthlyDuration = true;
 
   rootKPIS = [
-    new KpiRoot(
-      1,
-      this.lang.getArabicTranslation('the_total_number_of_sell_contracts'),
-      this.lang.getEnglishTranslation('the_total_number_of_sell_contracts'),
-      false,
-      this.urlService.URLS.SELL_KPI1,
-      this.urlService.URLS.SELL_KPI2,
-      this.urlService.URLS.SELL_KPI3,
-      this.urlService.URLS.SELL_KPI19,
-      'assets/icons/kpi/svg/7.svg'
-    ),
-    new KpiRoot(
-      4,
-      this.lang.getArabicTranslation('the_total_number_of_properties_units_sold'),
-      this.lang.getEnglishTranslation('the_total_number_of_properties_units_sold'),
-      false,
-      this.urlService.URLS.SELL_KPI4,
-      this.urlService.URLS.SELL_KPI5,
-      this.urlService.URLS.SELL_KPI6,
-      this.urlService.URLS.SELL_KPI20,
-      'assets/icons/kpi/svg/1.svg'
-    ),
-
-    new KpiRoot(
-      10,
-      this.lang.getArabicTranslation('total_sold_areas'),
-      this.lang.getEnglishTranslation('total_sold_areas'),
-      false,
-      this.urlService.URLS.SELL_KPI10,
-      this.urlService.URLS.SELL_KPI11,
-      this.urlService.URLS.SELL_KPI12,
-      this.urlService.URLS.SELL_KPI22,
-      'assets/icons/kpi/svg/3.svg',
-      true,
-      true
-    ),
-    new KpiRoot(
-      7,
-      this.lang.getArabicTranslation('the_total_value_of_sell_contracts'),
-      this.lang.getEnglishTranslation('the_total_value_of_sell_contracts'),
-      true,
-      this.urlService.URLS.SELL_KPI7,
-      this.urlService.URLS.SELL_KPI8,
-      this.urlService.URLS.SELL_KPI9,
-      this.urlService.URLS.SELL_KPI21,
-      'assets/icons/kpi/svg/6.svg'
-    ),
-    new KpiRoot(
-      16,
-      this.lang.getArabicTranslation('sell_average_price_per_square_foot'),
-      this.lang.getEnglishTranslation('sell_average_price_per_square_foot'),
-      true,
-      this.urlService.URLS.SELL_KPI16,
-      this.urlService.URLS.SELL_KPI17,
-      this.urlService.URLS.SELL_KPI18,
-      this.urlService.URLS.SELL_KPI24,
-      'assets/icons/kpi/svg/5.svg',
-      true,
-      true
-    ),
-    new KpiRoot(
-      13,
-      this.lang.getArabicTranslation('average_sell_price_per_unit_property'),
-      this.lang.getEnglishTranslation('average_sell_price_per_unit_property'),
-      true,
-      this.urlService.URLS.SELL_KPI13,
-      this.urlService.URLS.SELL_KPI14,
-      this.urlService.URLS.SELL_KPI15,
-      this.urlService.URLS.SELL_KPI23,
-      'assets/icons/kpi/svg/2.svg'
-    ),
+    new KpiRoot().clone<KpiRoot>({
+      id: 1,
+      arName: this.lang.getArabicTranslation('the_total_number_of_sell_contracts'),
+      enName: this.lang.getEnglishTranslation('the_total_number_of_sell_contracts'),
+      url: this.urlService.URLS.SELL_KPI1,
+      purposeUrl: this.urlService.URLS.SELL_KPI2,
+      propertyTypeUrl: this.urlService.URLS.SELL_KPI3,
+      chartDataUrl: this.urlService.URLS.SELL_KPI19,
+      iconUrl: 'assets/icons/kpi/svg/7.svg',
+    }),
+    new KpiRoot().clone<KpiRoot>({
+      id: 4,
+      arName: this.lang.getArabicTranslation('the_total_number_of_properties_units_sold'),
+      enName: this.lang.getEnglishTranslation('the_total_number_of_properties_units_sold'),
+      url: this.urlService.URLS.SELL_KPI4,
+      purposeUrl: this.urlService.URLS.SELL_KPI5,
+      propertyTypeUrl: this.urlService.URLS.SELL_KPI6,
+      chartDataUrl: this.urlService.URLS.SELL_KPI20,
+      iconUrl: 'assets/icons/kpi/svg/1.svg',
+    }),
+    new KpiRoot().clone<KpiRoot>({
+      id: 10,
+      arName: this.lang.getArabicTranslation('total_sold_areas'),
+      enName: this.lang.getEnglishTranslation('total_sold_areas'),
+      url: this.urlService.URLS.SELL_KPI10,
+      purposeUrl: this.urlService.URLS.SELL_KPI11,
+      propertyTypeUrl: this.urlService.URLS.SELL_KPI12,
+      chartDataUrl: this.urlService.URLS.SELL_KPI22,
+      iconUrl: 'assets/icons/kpi/svg/3.svg',
+      hasSqUnit: true,
+    }),
+    new KpiRoot().clone<KpiRoot>({
+      id: 7,
+      arName: this.lang.getArabicTranslation('the_total_value_of_sell_contracts'),
+      enName: this.lang.getEnglishTranslation('the_total_value_of_sell_contracts'),
+      url: this.urlService.URLS.SELL_KPI7,
+      purposeUrl: this.urlService.URLS.SELL_KPI8,
+      propertyTypeUrl: this.urlService.URLS.SELL_KPI9,
+      chartDataUrl: this.urlService.URLS.SELL_KPI21,
+      iconUrl: 'assets/icons/kpi/svg/6.svg',
+      hasPrice: true,
+    }),
+    new KpiRoot().clone<KpiRoot>({
+      id: 16,
+      arName: this.lang.getArabicTranslation('sell_average_price_per_square_foot'),
+      enName: this.lang.getEnglishTranslation('sell_average_price_per_square_foot'),
+      url: this.urlService.URLS.SELL_KPI16,
+      purposeUrl: this.urlService.URLS.SELL_KPI17,
+      propertyTypeUrl: this.urlService.URLS.SELL_KPI18,
+      chartDataUrl: this.urlService.URLS.SELL_KPI24,
+      iconUrl: 'assets/icons/kpi/svg/5.svg',
+      hasPrice: true,
+      hasSqUnit: true,
+    }),
+    new KpiRoot().clone<KpiRoot>({
+      id: 13,
+      arName: this.lang.getArabicTranslation('average_sell_price_per_unit_property'),
+      enName: this.lang.getEnglishTranslation('average_sell_price_per_unit_property'),
+      url: this.urlService.URLS.SELL_KPI13,
+      purposeUrl: this.urlService.URLS.SELL_KPI14,
+      propertyTypeUrl: this.urlService.URLS.SELL_KPI15,
+      chartDataUrl: this.urlService.URLS.SELL_KPI23,
+      iconUrl: 'assets/icons/kpi/svg/2.svg',
+      hasPrice: true,
+    }),
   ];
 
   selectedRoot = this.rootKPIS[0];
@@ -407,55 +401,21 @@ export default class SellIndicatorsPageComponent implements OnInit, OnDestroy {
 
   filterChange({ criteria, type }: { criteria: CriteriaContract; type: CriteriaType }) {
     this.criteria = { criteria, type };
-    if (type === CriteriaType.DEFAULT) {
-      // load default
-      this.dashboardService
-        .loadSellDefaults(criteria as Partial<SellCriteriaContract>)
-        .pipe(take(1))
-        .subscribe((result) => {
-          this.setDefaultRoots(result[0]);
-          this.rootItemSelected(this.rootKPIS[0]);
-        });
-    } else {
-      this.rootKPIS.map((item) => {
-        this.dashboardService
-          .loadKpiRoot(item, this.criteria.criteria)
-          .pipe(take(1))
-          .subscribe((value) => {
-            if (!value.length) {
-              item.setValue(0);
-              item.setYoy(0);
-            } else {
-              item.setValue(value[value.length - 1].getKpiVal());
-              item.setYoy(value[value.length - 1].getKpiYoYVal());
-            }
-          });
-      });
 
-      this.rootItemSelected(this.selectedRoot);
-    }
-    // this.loadTransactions();
+    this.rootKPIS.map((item) => {
+      this.dashboardService
+        .loadKpiRoot(item, this.criteria.criteria)
+        .pipe(take(1))
+        .subscribe((value) => {
+          item.kpiData = value[0];
+        });
+    });
+
+    this.rootItemSelected(this.selectedRoot);
+
     this.reload$.next();
     this.loadCompositeTransactions();
     this.setIndicatorsTableDataSource();
-    // this.loadRoomCounts();
-  }
-
-  private setDefaultRoots(sellDefaultValue?: SellDefaultValues) {
-    if (!sellDefaultValue) {
-      this.rootKPIS.forEach((item) => {
-        item.setValue(0);
-        item.setYoy(0);
-      });
-    } else {
-      this.rootKPIS.forEach((item) => {
-        const value = `kpi${item.id}Val`;
-        const yoy = `kpiYoY${item.id}`;
-        item.setValue(sellDefaultValue[value as keyof SellDefaultValues]);
-        item.setYear(sellDefaultValue.issueYear);
-        item.setYoy(sellDefaultValue[yoy as keyof SellDefaultValues]);
-      });
-    }
   }
 
   rootItemSelected(item?: KpiRoot) {
@@ -482,14 +442,16 @@ export default class SellIndicatorsPageComponent implements OnInit, OnDestroy {
             : (item.yoy = 0);
           return item;
         });
-        this.selectedRoot && this.updateAllPurpose(this.selectedRoot.value, this.selectedRoot.yoy);
+        this.selectedRoot && this.updateAllPurpose();
         this.selectedPurpose && this.purposeSelected(this.selectedPurpose);
       });
   }
 
-  updateAllPurpose(value: number, yoy: number): void {
+  updateAllPurpose(): void {
     const lookup = this.purposeKPIS.find((i) => i.lookupKey === -1);
-    lookup && (lookup.value = value) && (lookup.yoy = yoy);
+    lookup &&
+      (lookup.value = this.selectedRoot.kpiData.getKpiVal()) &&
+      (lookup.yoy = this.selectedRoot.kpiData.getKpiYoYVal());
   }
 
   purposeSelected(item: Lookup) {

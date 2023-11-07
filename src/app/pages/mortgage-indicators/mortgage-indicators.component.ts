@@ -19,7 +19,7 @@ import { TableColumnTemplateDirective } from '@directives/table-column-template.
 import { CriteriaType } from '@enums/criteria-type';
 import { TransactionType } from '@enums/transaction-type';
 import { AppTableDataSource } from '@models/app-table-data-source';
-import { KpiRoot } from '@models/kpiRoot';
+import { KpiRoot } from '@models/kpi-root';
 import { MortgageTransaction } from '@models/mortgage-transaction';
 import { TableSortOption } from '@models/table-sort-option';
 import { DashboardService } from '@services/dashboard.service';
@@ -83,39 +83,28 @@ export default class MortgageIndicatorsComponent implements OnInit {
   isMonthlyDurationForUnits: boolean = true;
 
   rootKpis = [
-    new KpiRoot(
-      1,
-      this.lang.getArabicTranslation('total_mortgage_transactions'),
-      this.lang.getEnglishTranslation('total_mortgage_transactions'),
-      false,
-      this.urlService.URLS.MORT_KPI1,
-      '',
-      '',
-      '',
-      'assets/icons/kpi/svg/mort/1.svg'
-    ),
-    new KpiRoot(
-      3,
-      this.lang.getArabicTranslation('the_total_number_of_mortgaged_units'),
-      this.lang.getEnglishTranslation('the_total_number_of_mortgaged_units'),
-      false,
-      this.urlService.URLS.MORT_KPI3,
-      '',
-      '',
-      '',
-      'assets/icons/kpi/svg/mort/2.svg'
-    ),
-    new KpiRoot(
-      5,
-      this.lang.getArabicTranslation('total_value_of_mortgage_transactions'),
-      this.lang.getEnglishTranslation('total_value_of_mortgage_transactions'),
-      true,
-      this.urlService.URLS.MORT_KPI5,
-      '',
-      '',
-      '',
-      'assets/icons/kpi/svg/mort/3.svg'
-    ),
+    new KpiRoot().clone<KpiRoot>({
+      id: 1,
+      arName: this.lang.getArabicTranslation('total_mortgage_transactions'),
+      enName: this.lang.getEnglishTranslation('total_mortgage_transactions'),
+      url: this.urlService.URLS.MORT_KPI1,
+      iconUrl: 'assets/icons/kpi/svg/mort/1.svg',
+    }),
+    new KpiRoot().clone<KpiRoot>({
+      id: 3,
+      arName: this.lang.getArabicTranslation('the_total_number_of_mortgaged_units'),
+      enName: this.lang.getEnglishTranslation('the_total_number_of_mortgaged_units'),
+      url: this.urlService.URLS.MORT_KPI3,
+      iconUrl: 'assets/icons/kpi/svg/mort/2.svg',
+    }),
+    new KpiRoot().clone<KpiRoot>({
+      id: 5,
+      arName: this.lang.getArabicTranslation('total_value_of_mortgage_transactions'),
+      enName: this.lang.getEnglishTranslation('total_value_of_mortgage_transactions'),
+      url: this.urlService.URLS.MORT_KPI5,
+      iconUrl: 'assets/icons/kpi/svg/mort/3.svg',
+      hasPrice: true,
+    }),
   ];
 
   countRootData = {
@@ -203,10 +192,8 @@ export default class MortgageIndicatorsComponent implements OnInit {
       .pipe(take(1))
       .subscribe((values) => {
         this.rootKpis.map((item, index) => {
-          item.value = (values[index] && values[index].getKpiVal()) || 0;
-          item.yoy = (values[index] && values[index].getKpiYoYVal()) || 0;
+          item.kpiData = values[index];
         });
-        // this.loadTransactions();
         this.reload$.next();
       });
   }

@@ -3,7 +3,7 @@ import { Component, inject, Input, OnInit } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 import { TransactionsMeasuringListComponent } from '@components/transactions-measuring-list/transactions-measuring-list.component';
 import { TranslationService } from '@services/translation.service';
-import { KpiRoot } from '@models/kpiRoot';
+import { KpiRoot } from '@models/kpi-root';
 import { KpiRootComponent } from '@components/kpi-root/kpi-root.component';
 
 @Component({
