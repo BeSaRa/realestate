@@ -10,12 +10,14 @@ export class SellTransaction {
   issueDate!: string;
   municipalityId!: number;
   priceMT!: number;
+  priceFT = 0;
   realEstateValue!: number;
   roi!: number;
   soldTo!: string;
   unitNo!: number;
   unitStatus!: number;
   realEstateSQT!: number;
+  realEstateMT!: number;
   // not related to model
   municipalityInfo!: Lookup;
   areaInfo!: Lookup;
