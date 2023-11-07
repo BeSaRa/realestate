@@ -29,7 +29,7 @@
     <span
       *ngIf="item.isDataAvailable"
       class="mt-2 text-2xl md:text-3xl text-primary font-bold group-hover:text-white group-[.selected]:text-white transition"
-      ><span *ngIf="item.isDataAvailable" [countUp]="item.value" [options]="countUpOptions"></span>
+      ><span *ngIf="item.isDataAvailable" [countUp]="item.kpiData.getKpiVal()" [options]="countUpOptions"></span>
       {{ item.hasPrice ? lang.map.qr : "" }}</span
     >
     <span *ngIf="!item.isDataAvailable" class="flex-1 mt-2 text-lg md:text-xl text-gray-300 font-bold transition">
@@ -38,7 +38,7 @@
     <app-change-indicator
       *ngIf="showYoy && item.isDataAvailable"
       class="mt-2"
-      [value]="item.yoy"
+      [value]="item.kpiData.getKpiYoYVal()"
       [isHovered]="isHovered || item.selected"></app-change-indicator>
   </div>
 </div>

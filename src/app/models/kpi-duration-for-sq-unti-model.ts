@@ -1,5 +1,5 @@
 import { KpiBaseDurationModel } from '@abstracts/kpi-base-duration-model';
-import { Unit } from '@enums/unit';
+import { SqUnit } from '@enums/sq-unit';
 import { ClonerMixin } from '@mixins/cloner-mixin';
 import { ServiceRegistry } from '@services/service-registry';
 import { UnitsService } from '@services/units.service';
@@ -22,19 +22,19 @@ export class KpiDurationForSqUnitModel extends ClonerMixin(KpiBaseDurationModel)
   }
 
   override getKpiVal(): number {
-    return this._unitsService.selectedUnit() === Unit.SQUARE_METER ? this.kpiSqmt : this.kpiSqft;
+    return this._unitsService.selectedUnit() === SqUnit.SQUARE_METER ? this.kpiSqmt : this.kpiSqft;
   }
   override getKpiPreviousPeriod(): number {
-    return this._unitsService.selectedUnit() === Unit.SQUARE_METER
+    return this._unitsService.selectedUnit() === SqUnit.SQUARE_METER
       ? this.kpiSqmtPreviousYear
       : this.kpiSqftPreviousYear;
   }
   override getKpiP2PDifference(): number {
-    return this._unitsService.selectedUnit() === Unit.SQUARE_METER
+    return this._unitsService.selectedUnit() === SqUnit.SQUARE_METER
       ? this.kpiSqmtYoYDifference
       : this.kpiSqftYoYDifference;
   }
   override getKpiP2PYoY(): number {
-    return this._unitsService.selectedUnit() === Unit.SQUARE_METER ? this.kpiSqmtYoYVal : this.kpiSqftYoYVal;
+    return this._unitsService.selectedUnit() === SqUnit.SQUARE_METER ? this.kpiSqmtYoYVal : this.kpiSqftYoYVal;
   }
 }

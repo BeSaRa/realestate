@@ -2,7 +2,7 @@ import { Component, EventEmitter, inject, Input, Output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { CountUpModule } from 'ngx-countup';
 import { ChangeIndicatorComponent } from '@components/change-indicator/change-indicator.component';
-import { KpiRoot } from '@models/kpiRoot';
+import { KpiRoot } from '@models/kpi-root';
 import { CountUpOptionsContract } from '@contracts/countup-options-contract';
 import { NGX_COUNTUP_OPTIONS } from '@constants/injection-tokens';
 import { TranslationService } from '@services/translation.service';
@@ -22,6 +22,7 @@ export class KpiRootComponent {
   isHovered = false;
   @Output()
   itemSelected = new EventEmitter<KpiRoot>();
+
   countUpOptions: CountUpOptionsContract = inject(NGX_COUNTUP_OPTIONS);
   lang = inject(TranslationService);
 
