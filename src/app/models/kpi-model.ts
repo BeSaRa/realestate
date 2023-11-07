@@ -1,21 +1,22 @@
-import { TransactionType } from '@enums/transaction-type';
-import { KpiBaseModel } from './kpi-base-model';
+import { KpiBaseModel } from '@abstracts/kpi-base-model';
+import { ClonerMixin } from '@mixins/cloner-mixin';
 
-export class KpiModel extends KpiBaseModel {
-  actionType!: TransactionType;
+export class KpiModel extends ClonerMixin(KpiBaseModel) {
+  kpiVal = 0;
+  kpiPreviousYear = 0;
+  kpiYoYDifference = 0;
+  kpiYoYVal = 0;
 
-  issueBaseYear!: number;
-  kpi2BaseYear!: number;
-  kpi2PreviousYear!: number;
-  kpi2Val!: number;
-  kpi2YoYBaseDifference!: number;
-  kpi2YoYBaseVal!: number;
-  kpi2YoYDifference!: number;
-  kpi2YoYVal!: number;
-  kpiBaseYear!: number;
-  kpiYoYBaseDifference!: number;
-  kpiYoYBaseVal!: number;
-
-  purposeId!: number;
-  propertyTypeId!: number;
+  override getKpiVal(): number {
+    return this.kpiVal;
+  }
+  override getKpiPreviousYear(): number {
+    return this.kpiPreviousYear;
+  }
+  override getKpiYoYDifference(): number {
+    return this.kpiYoYDifference;
+  }
+  override getKpiYoYVal(): number {
+    return this.kpiYoYVal;
+  }
 }

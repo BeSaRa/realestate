@@ -1,15 +1,22 @@
-export class KpiDurationModel {
-  actionType!: number;
-  issuePeriod!: number;
-  issueYear!: number;
-  kpiP2PDifference!: number;
-  kpiP2PYoY!: number;
-  kpiPreviousPeriod!: number;
-  kpiVal!: number;
+import { KpiBaseDurationModel } from '@abstracts/kpi-base-duration-model';
+import { ClonerMixin } from '@mixins/cloner-mixin';
 
-  kpi2P2PYoY!: number;
-  kpi2PeriodDifference!: number;
-  kpi2PreviousPeriod!: number;
-  kpi2Val!: number;
-  kpiPeriodDifference!: number;
+export class KpiDurationModel extends ClonerMixin(KpiBaseDurationModel) {
+  kpiP2PDifference = 0;
+  kpiP2PYoY = 0;
+  kpiPreviousPeriod = 0;
+  kpiVal = 0;
+
+  override getKpiVal(): number {
+    return this.kpiVal;
+  }
+  override getKpiPreviousPeriod(): number {
+    return this.kpiPreviousPeriod;
+  }
+  override getKpiP2PDifference(): number {
+    return this.kpiP2PDifference;
+  }
+  override getKpiP2PYoY(): number {
+    return this.kpiP2PYoY;
+  }
 }
