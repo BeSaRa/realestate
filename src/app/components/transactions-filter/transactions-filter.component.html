@@ -214,7 +214,7 @@
         [isSecondary]="true" />
 
       <app-select-input
-        *ngIf="!isOwner()"
+        *ngIf="!isOwner() || !isOV()"
         [formControl]="unitsControl"
         bindLabel="getNames"
         bindValue="lookupKey"

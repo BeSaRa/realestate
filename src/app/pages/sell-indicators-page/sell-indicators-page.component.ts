@@ -174,8 +174,8 @@ export default class SellIndicatorsPageComponent implements OnInit, OnDestroy {
     }),
     new KpiRoot().clone<KpiRoot>({
       id: 16,
-      arName: this.lang.getArabicTranslation('sell_average_price_per_square_foot'),
-      enName: this.lang.getEnglishTranslation('sell_average_price_per_square_foot'),
+      arName: this.lang.getArabicTranslation('sell_average_price_per'),
+      enName: this.lang.getEnglishTranslation('sell_average_price_per'),
       url: this.urlService.URLS.SELL_KPI16,
       purposeUrl: this.urlService.URLS.SELL_KPI17,
       propertyTypeUrl: this.urlService.URLS.SELL_KPI18,
