@@ -27,6 +27,7 @@ import { CriteriaType } from '@enums/criteria-type';
 import { SqUnit } from '@enums/sq-unit';
 import { AppTableDataSource } from '@models/app-table-data-source';
 import { CompositeTransaction } from '@models/composite-transaction';
+import { KpiBase } from '@models/kpi-base';
 import { KpiPropertyType } from '@models/kpi-property-type';
 import { KpiPurpose } from '@models/kpi-purpose';
 import { KpiRoot } from '@models/kpi-root';
@@ -437,19 +438,18 @@ export default class SellIndicatorsPageComponent implements OnInit, OnDestroy {
           return { ...acc, [item.purposeId]: item };
         }, {} as Record<number, KpiBaseModel>);
 
-        this.purposeKPIS.forEach((item) => {
-          Object.prototype.hasOwnProperty.call(_purposeKpiData, item.id)
-            ? (item.kpiData = _purposeKpiData[item.id])
-            : item.kpiData.resetAllValues();
-        });
+        this.purposeKPIS.forEach((item) => item.kpiData.resetAllValues());
         this.selectedRoot && this.updateAllPurpose();
+        this.purposeKPIS.forEach((item) => {
+          Object.prototype.hasOwnProperty.call(_purposeKpiData, item.id) && (item.kpiData = _purposeKpiData[item.id]);
+        });
         this.selectedPurpose && this.purposeSelected(this.selectedPurpose);
       });
   }
 
   updateAllPurpose(): void {
     const _purpose = this.purposeKPIS.find((i) => i.id === -1);
-    _purpose && (_purpose.kpiData = this.selectedRoot.kpiData);
+    _purpose && (_purpose.kpiData = KpiBase.kpiFactory(this.selectedRoot.hasSqUnit).clone(this.selectedRoot.kpiData));
   }
 
   purposeSelected(item: KpiPurpose) {
@@ -467,11 +467,12 @@ export default class SellIndicatorsPageComponent implements OnInit, OnDestroy {
         })
         .pipe(takeUntil(this.destroy$))
         .subscribe((result) => {
+          this.propertiesKPIS.forEach((item) => item.kpiData.resetAllValues());
           this.updateAllPropertyType();
           this.propertiesKPIS = this.propertiesKPIS
             .map((item) => {
               const _propertyTypeKpiData = result.find((i) => i.propertyTypeId === item.id);
-              _propertyTypeKpiData ? (item.kpiData = _propertyTypeKpiData) : item.kpiData.resetAllValues();
+              _propertyTypeKpiData && (item.kpiData = _propertyTypeKpiData);
               return item;
             })
             .sort((a, b) => a.kpiData.getKpiVal() - b.kpiData.getKpiVal());
@@ -480,7 +481,8 @@ export default class SellIndicatorsPageComponent implements OnInit, OnDestroy {
 
   updateAllPropertyType(): void {
     const _propertyType = this.propertiesKPIS.find((i) => i.id === -1);
-    _propertyType && (_propertyType.kpiData = this.selectedPurpose.kpiData);
+    _propertyType &&
+      (_propertyType.kpiData = KpiBase.kpiFactory(this.selectedRoot.hasSqUnit).clone(this.selectedPurpose.kpiData));
   }
 
   protected loadTransactions(): Observable<SellTransaction[]> {
