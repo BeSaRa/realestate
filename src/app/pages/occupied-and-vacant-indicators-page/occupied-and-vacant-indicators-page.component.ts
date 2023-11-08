@@ -23,7 +23,6 @@ import { OccupationStatus } from '@enums/occupation-status';
 import { OnDestroyMixin } from '@mixins/on-destroy-mixin';
 import { AppTableDataSource } from '@models/app-table-data-source';
 import { ChartOptionsModel } from '@models/chart-options-model';
-import { KpiModel } from '@models/kpi-model';
 import { KpiPurpose } from '@models/kpi-purpose';
 import { KpiRoot } from '@models/kpi-root';
 import { OccupancyTransaction } from '@models/occupancy-transaction';
@@ -224,8 +223,9 @@ export default class OccupiedAndVacantIndicatorsPageComponent
         }, {} as Record<number, KpiBaseModel>);
 
         this.categoryKPIs.forEach((item) => {
-          Object.prototype.hasOwnProperty.call(_categoriesKpiData, item.id) &&
-            (item.kpiData = _categoriesKpiData[item.id]);
+          Object.prototype.hasOwnProperty.call(_categoriesKpiData, item.id)
+            ? (item.kpiData = _categoriesKpiData[item.id])
+            : item.kpiData.resetAllValues();
         });
         this.selectedRoot && this.updateAllCategory();
         this.selectedCategory && this.categorySelected(this.selectedCategory);
@@ -256,17 +256,23 @@ export default class OccupiedAndVacantIndicatorsPageComponent
         .loadPropertyTypeKpi(this.selectedRoot, _criteria)
         .pipe(take(1))
         .subscribe((result) => {
+          this.updateAllPremiseType();
           const _types = result.reduce((acc, cur) => {
             return { ...acc, [cur['premiseTypeId' as keyof KpiBaseModel] as number]: cur };
           }, {} as Record<number, KpiBaseModel>);
           this.filteredTypeKPIs = this.typeKPIs
             .map((item) => {
-              _types[item.id] && (item.kpiData = _types[item.id]);
+              _types[item.id] ? (item.kpiData = _types[item.id]) : item.kpiData.resetAllValues();
               return item;
             })
             .sort((a, b) => b.kpiData.getKpiVal() - a.kpiData.getKpiVal())
             .filter((item) => item.kpiData.getKpiVal() != 0);
         });
+  }
+
+  updateAllPremiseType(): void {
+    const _premise = this.typeKPIs.find((i) => i.id === -1);
+    _premise && (_premise.kpiData = this.selectedCategory.kpiData);
   }
 
   showAllPremiseTypes() {
@@ -297,7 +303,7 @@ export default class OccupiedAndVacantIndicatorsPageComponent
         _criteria
       )
       .pipe(take(1))
-      .pipe(map((data) => data as unknown as (KpiModel & { zoneNo: number; occupancyStatus: number })[]))
+      .pipe(map((data) => data as unknown as (KpiBaseModel & { zoneNo: number; occupancyStatus: number })[]))
       .pipe(
         map((data) =>
           data.reduce((acc, cur) => {
@@ -317,7 +323,7 @@ export default class OccupiedAndVacantIndicatorsPageComponent
               name: this.lookupService.ovOccupancyStatusMap[status as unknown as number].getNames(),
               data: data[status as unknown as number].map((item, index) => ({
                 x: this.lookupService.ovZonesMap[item.zoneNo]?.getNames() ?? '',
-                y: item.kpiVal,
+                y: item.getKpiVal(),
                 id: item.zoneNo,
                 index,
               })),

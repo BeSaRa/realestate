@@ -1,7 +1,6 @@
 import { KpiBaseModel } from '@abstracts/kpi-base-model';
-import { ClonerMixin } from '@mixins/cloner-mixin';
 
-export class KpiModel extends ClonerMixin(KpiBaseModel) {
+export class KpiModel extends KpiBaseModel {
   kpiVal = 0;
   kpiPreviousYear = 0;
   kpiYoYDifference = 0;
@@ -18,5 +17,9 @@ export class KpiModel extends ClonerMixin(KpiBaseModel) {
   }
   override getKpiYoYVal(): number {
     return this.kpiYoYVal;
+  }
+
+  override resetAllValues(): void {
+    this.kpiVal = this.kpiPreviousYear = this.kpiYoYVal = this.kpiYoYDifference = 0;
   }
 }

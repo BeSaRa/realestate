@@ -1,10 +1,9 @@
 import { KpiBaseModel } from '@abstracts/kpi-base-model';
 import { ClonerMixin } from '@mixins/cloner-mixin';
 import { GetNamesMixin } from '@mixins/get-names-mixin';
-import { KpiModel } from './kpi-model';
-import { KpiForSqUnitModel } from './kpi-for-sq-unit-model';
-import { UnitsService } from '@services/units.service';
 import { ServiceRegistry } from '@services/service-registry';
+import { UnitsService } from '@services/units.service';
+import { KpiBase } from './kpi-base';
 
 export class KpiRoot extends ClonerMixin(GetNamesMixin(class {})) {
   id!: number;
@@ -29,7 +28,7 @@ export class KpiRoot extends ClonerMixin(GetNamesMixin(class {})) {
 
   get kpiData() {
     if (!this._kpiData) {
-      this._kpiData = this.hasSqUnit ? new KpiForSqUnitModel() : new KpiModel();
+      this._kpiData = KpiBase.kpiFactory(this.hasSqUnit);
     }
     return this._kpiData;
   }

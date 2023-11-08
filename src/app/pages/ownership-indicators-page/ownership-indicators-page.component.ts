@@ -303,7 +303,9 @@ export default class OwnershipIndicatorsPageComponent implements OnInit, AfterVi
         }, {} as Record<number, KpiBaseModel>);
 
         this.purposeKPIS.forEach((item) => {
-          Object.prototype.hasOwnProperty.call(_purposeKpiData, item.id) && (item.kpiData = _purposeKpiData[item.id]);
+          Object.prototype.hasOwnProperty.call(_purposeKpiData, item.id)
+            ? (item.kpiData = _purposeKpiData[item.id])
+            : item.kpiData.resetAllValues();
         });
         this.selectedRoot && this.updateAllPurpose();
         this.selectedPurpose && this.purposeSelected(this.selectedPurpose);
@@ -330,14 +332,20 @@ export default class OwnershipIndicatorsPageComponent implements OnInit, AfterVi
         })
         .pipe(takeUntil(this.destroy$))
         .subscribe((result) => {
+          this.updateAllPropertyType();
           this.propertiesKPIS = this.propertiesKPIS
             .map((item) => {
               const _propertyTypeKpiData = result.find((i) => i.propertyTypeId === item.id);
-              _propertyTypeKpiData && (item.kpiData = _propertyTypeKpiData);
+              _propertyTypeKpiData ? (item.kpiData = _propertyTypeKpiData) : item.kpiData.resetAllValues();
               return item;
             })
             .sort((a, b) => a.kpiData.getKpiVal() - b.kpiData.getKpiVal());
         });
+  }
+
+  updateAllPropertyType(): void {
+    const _propertyType = this.propertiesKPIS.find((i) => i.id === -1);
+    _propertyType && (_propertyType.kpiData = this.selectedPurpose.kpiData);
   }
 
   updateNationalitiesChartData(nationalityCategory: NationalityCategories) {

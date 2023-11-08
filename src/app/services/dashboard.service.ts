@@ -22,10 +22,7 @@ import {
   SellCompositeTransaction,
 } from '@models/composite-transaction';
 import { ForecastData } from '@models/forecast-data';
-import { KpiDurationForSqUnitModel } from '@models/kpi-duration-for-sq-unti-model';
-import { KpiDurationModel } from '@models/kpi-duration-model';
-import { KpiForSqUnitModel } from '@models/kpi-for-sq-unit-model';
-import { KpiModel } from '@models/kpi-model';
+import { KpiBase } from '@models/kpi-base';
 import { KpiRoot } from '@models/kpi-root';
 import { Lookup } from '@models/lookup';
 import { MortgageTransaction } from '@models/mortgage-transaction';
@@ -43,7 +40,7 @@ import { SellTransactionPurpose } from '@models/sell-transaction-purpose';
 import { UrlService } from '@services/url.service';
 import { groupBy, minMaxAvg, range } from '@utils/utils';
 import { CastResponse } from 'cast-response';
-import { forkJoin, map, Observable } from 'rxjs';
+import { forkJoin, map, Observable, tap } from 'rxjs';
 import { DialogService } from './dialog.service';
 import { TranslationService } from './translation.service';
 
@@ -76,46 +73,27 @@ export class DashboardService extends RegisterServiceMixin(class {}) implements 
       map(([first, second, third]) => {
         return [first[0], second[0], third[0]];
       }),
-      map((data) => data.map((item) => (hasSqUnit ? new KpiForSqUnitModel().clone(item) : new KpiModel().clone(item))))
+      map((data) => data.map((item) => KpiBase.kpiFactory(hasSqUnit).clone(item)))
     );
   }
 
   loadKpiRoot(kpi: KpiRoot, criteria: CriteriaContract): Observable<KpiBaseModel[]> {
     return this.http
       .post<KpiBaseModel[]>(kpi.url, criteria)
-      .pipe(
-        map((data) =>
-          data.map((item) => (kpi.hasSqUnit ? new KpiForSqUnitModel().clone(item) : new KpiModel().clone(item)))
-        )
-      );
+      .pipe(map((data) => data.map((item) => KpiBase.kpiFactory(kpi.hasSqUnit).clone(item))));
   }
 
   loadPurposeKpi(kpi: KpiRoot, criteria: Partial<CriteriaContract>) {
     return this.http
       .post<(KpiBaseModel & { purposeId: number })[]>(kpi.purposeUrl, criteria)
-      .pipe(
-        map((data) =>
-          data.map((item) =>
-            kpi.hasSqUnit
-              ? new KpiForSqUnitModel().clone(item)
-              : (new KpiModel().clone(item) as KpiBaseModel & { purposeId: number })
-          )
-        )
-      );
+      .pipe(map((data) => data.map((item) => KpiBase.kpiFactory(kpi.hasSqUnit).clone(item))))
+      .pipe(tap((data) => console.log(data)));
   }
 
   loadPropertyTypeKpi(kpi: KpiRoot, criteria: Partial<CriteriaContract>) {
     return this.http
       .post<(KpiBaseModel & { propertyTypeId: number })[]>(kpi.propertyTypeUrl, criteria)
-      .pipe(
-        map((data) =>
-          data.map((item) =>
-            kpi.hasSqUnit
-              ? new KpiForSqUnitModel().clone(item)
-              : (new KpiModel().clone(item) as KpiBaseModel & { propertyTypeId: number })
-          )
-        )
-      );
+      .pipe(map((data) => data.map((item) => KpiBase.kpiFactory(kpi.hasSqUnit).clone(item))));
   }
 
   loadChartKpiData(
@@ -124,11 +102,7 @@ export class DashboardService extends RegisterServiceMixin(class {}) implements 
   ): Observable<KpiBaseModel[]> {
     return this.http
       .post<KpiBaseModel[]>(chartData.chartDataUrl, criteria)
-      .pipe(
-        map((data) =>
-          data.map((item) => (chartData.hasSqUnit ? new KpiForSqUnitModel().clone(item) : new KpiModel().clone(item)))
-        )
-      );
+      .pipe(map((data) => data.map((item) => KpiBase.kpiFactory(chartData.hasSqUnit as boolean).clone(item))));
   }
 
   loadChartKpiDataForDuration(
@@ -138,13 +112,7 @@ export class DashboardService extends RegisterServiceMixin(class {}) implements 
   ): Observable<KpiBaseDurationModel[]> {
     return this.http
       .post<KpiBaseDurationModel[]>(chartData.chartDataUrl + '/' + endPoint, criteria)
-      .pipe(
-        map((data) =>
-          data.map((item) =>
-            chartData.hasSqUnit ? new KpiDurationForSqUnitModel().clone(item) : new KpiDurationModel().clone(item)
-          )
-        )
-      );
+      .pipe(map((data) => data.map((item) => KpiBase.kpiDurationFactory(chartData.hasSqUnit as boolean).clone(item))));
   }
 
   @CastResponse(() => RentTransactionPurpose)
