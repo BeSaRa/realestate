@@ -86,8 +86,7 @@ export class DashboardService extends RegisterServiceMixin(class {}) implements 
   loadPurposeKpi(kpi: KpiRoot, criteria: Partial<CriteriaContract>) {
     return this.http
       .post<(KpiBaseModel & { purposeId: number })[]>(kpi.purposeUrl, criteria)
-      .pipe(map((data) => data.map((item) => KpiBase.kpiFactory(kpi.hasSqUnit).clone(item))))
-      .pipe(tap((data) => console.log(data)));
+      .pipe(map((data) => data.map((item) => KpiBase.kpiFactory(kpi.hasSqUnit).clone(item))));
   }
 
   loadPropertyTypeKpi(kpi: KpiRoot, criteria: Partial<CriteriaContract>) {
