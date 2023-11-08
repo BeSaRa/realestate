@@ -1,7 +1,6 @@
 import { KpiBaseDurationModel } from '@abstracts/kpi-base-duration-model';
-import { ClonerMixin } from '@mixins/cloner-mixin';
 
-export class KpiDurationModel extends ClonerMixin(KpiBaseDurationModel) {
+export class KpiDurationModel extends KpiBaseDurationModel {
   kpiP2PDifference = 0;
   kpiP2PYoY = 0;
   kpiPreviousPeriod = 0;
@@ -18,5 +17,9 @@ export class KpiDurationModel extends ClonerMixin(KpiBaseDurationModel) {
   }
   override getKpiP2PYoY(): number {
     return this.kpiP2PYoY;
+  }
+
+  override resetAllValues(): void {
+    this.kpiVal = this.kpiPreviousPeriod = this.kpiP2PYoY = this.kpiP2PDifference = 0;
   }
 }
