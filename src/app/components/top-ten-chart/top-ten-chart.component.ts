@@ -1,5 +1,17 @@
 import { CommonModule } from '@angular/common';
-import { Component, Input, OnChanges, OnInit, QueryList, SimpleChanges, ViewChildren, inject } from '@angular/core';
+import {
+  Component,
+  Injector,
+  Input,
+  OnChanges,
+  OnInit,
+  QueryList,
+  SimpleChanges,
+  ViewChildren,
+  effect,
+  inject,
+  runInInjectionContext,
+} from '@angular/core';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { ButtonComponent } from '@components/button/button.component';
 import { IconButtonComponent } from '@components/icon-button/icon-button.component';
@@ -11,6 +23,7 @@ import { Top10AccordingTo } from '@models/top-10-according-to';
 import { Top10KpiModel } from '@models/top-10-kpi-model';
 import { AppChartTypesService } from '@services/app-chart-types.service';
 import { DashboardService } from '@services/dashboard.service';
+import { UnitsService } from '@services/units.service';
 import { objectHasOwnProperty } from '@utils/utils';
 import { ChartComponent, NgApexchartsModule } from 'ng-apexcharts';
 import { catchError, take, throwError } from 'rxjs';
@@ -35,6 +48,8 @@ export class TopTenChartComponent extends OnDestroyMixin(class {}) implements On
 
   appChartTypesService = inject(AppChartTypesService);
   dashboardService = inject(DashboardService);
+  unitsService = inject(UnitsService);
+  injector = inject(Injector);
 
   isLoading = false;
 
@@ -60,6 +75,7 @@ export class TopTenChartComponent extends OnDestroyMixin(class {}) implements On
   ngOnInit(): void {
     setTimeout(() => {
       this._initializeChartFormatters();
+      this._listenToUnitChange();
     }, 0);
   }
 
@@ -150,5 +166,14 @@ export class TopTenChartComponent extends OnDestroyMixin(class {}) implements On
           this.appChartTypesService.axisXFormatter({ val, opts }, this.selectedAccordingTo)
         );
     });
+  }
+
+  private _listenToUnitChange() {
+    runInInjectionContext(this.injector, () =>
+      effect(() => {
+        this.unitsService.selectedUnit();
+        if (this.selectedAccordingTo.hasSqUnit) this._updateOptions();
+      })
+    );
   }
 }
