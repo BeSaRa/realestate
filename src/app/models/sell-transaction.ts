@@ -10,7 +10,7 @@ export class SellTransaction {
   issueDate!: string;
   municipalityId!: number;
   priceMT!: number;
-  priceFT = 0;
+  priceSQ!: number;
   realEstateValue!: number;
   roi!: number;
   soldTo!: string;

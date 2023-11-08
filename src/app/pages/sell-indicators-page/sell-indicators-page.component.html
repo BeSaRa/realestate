@@ -162,7 +162,7 @@
             unitsService.isMeterSelected() ? lang.map.the_square_meter_price : lang.map.the_square_foot_price
           }}</span>
           <span *appTableColumnCellTemplate="let item; typeOf: transactions$" class="font-bold">{{
-            (unitsService.isMeterSelected() ? item.priceMT : item.priceFT) | number : "1.0-0"
+            (unitsService.isMeterSelected() ? item.priceMT : item.priceSQ) | number : "1.0-0"
           }}</span>
         </ng-container>
         <ng-container appTableColumnTemplate columnName="issue_date">
