@@ -1,5 +1,4 @@
 import { KpiBaseModel } from '@abstracts/kpi-base-model';
-import { SqUnit } from '@enums/sq-unit';
 import { ServiceRegistry } from '@services/service-registry';
 import { UnitsService } from '@services/units.service';
 
@@ -21,20 +20,16 @@ export class KpiForSqUnitModel extends KpiBaseModel {
   }
 
   override getKpiVal(): number {
-    return this._unitsService.selectedUnit() === SqUnit.SQUARE_METER ? this.kpiSqmt : this.kpiSqft;
+    return this._unitsService.isMeterSelected() ? this.kpiSqmt : this.kpiSqft;
   }
   override getKpiPreviousYear(): number {
-    return this._unitsService.selectedUnit() === SqUnit.SQUARE_METER
-      ? this.kpiSqmtPreviousYear
-      : this.kpiSqftPreviousYear;
+    return this._unitsService.isMeterSelected() ? this.kpiSqmtPreviousYear : this.kpiSqftPreviousYear;
   }
   override getKpiYoYDifference(): number {
-    return this._unitsService.selectedUnit() === SqUnit.SQUARE_METER
-      ? this.kpiSqmtYoYDifference
-      : this.kpiSqftYoYDifference;
+    return this._unitsService.isMeterSelected() ? this.kpiSqmtYoYDifference : this.kpiSqftYoYDifference;
   }
   override getKpiYoYVal(): number {
-    return this._unitsService.selectedUnit() === SqUnit.SQUARE_METER ? this.kpiSqmtYoYVal : this.kpiSqftYoYVal;
+    return this._unitsService.isMeterSelected() ? this.kpiSqmtYoYVal : this.kpiSqftYoYVal;
   }
 
   override resetAllValues(): void {

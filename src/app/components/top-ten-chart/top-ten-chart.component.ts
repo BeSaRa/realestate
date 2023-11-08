@@ -1,4 +1,3 @@
-import { KpiBaseModel } from '@abstracts/kpi-base-model';
 import { CommonModule } from '@angular/common';
 import { Component, Input, OnChanges, OnInit, QueryList, SimpleChanges, ViewChildren, inject } from '@angular/core';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
@@ -8,8 +7,8 @@ import { CriteriaContract } from '@contracts/criteria-contract';
 import { ChartType } from '@enums/chart-type';
 import { OnDestroyMixin } from '@mixins/on-destroy-mixin';
 import { ChartOptionsModel } from '@models/chart-options-model';
-import { Lookup } from '@models/lookup';
 import { Top10AccordingTo } from '@models/top-10-according-to';
+import { Top10KpiModel } from '@models/top-10-kpi-model';
 import { AppChartTypesService } from '@services/app-chart-types.service';
 import { DashboardService } from '@services/dashboard.service';
 import { objectHasOwnProperty } from '@utils/utils';
@@ -42,7 +41,7 @@ export class TopTenChartComponent extends OnDestroyMixin(class {}) implements On
   protected readonly ChartType = ChartType;
 
   selectedChartType: 'line' | 'bar' = ChartType.BAR;
-  chartData: KpiBaseModel[] = [];
+  chartData: Top10KpiModel[] = [];
   prevAccordingTo!: Top10AccordingTo;
 
   chartOptions = {
@@ -81,7 +80,7 @@ export class TopTenChartComponent extends OnDestroyMixin(class {}) implements On
     this.prevAccordingTo = this.selectedAccordingTo;
 
     this.dashboardService
-      .loadChartKpiData({ chartDataUrl: this.selectedAccordingTo.url }, this.criteria)
+      .loadTop10ChartData({ chartDataUrl: this.selectedAccordingTo.url }, this.criteria)
       .pipe(
         take(1),
         catchError((err) => {

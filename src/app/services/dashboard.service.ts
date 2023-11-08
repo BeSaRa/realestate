@@ -43,6 +43,7 @@ import { CastResponse } from 'cast-response';
 import { forkJoin, map, Observable, tap } from 'rxjs';
 import { DialogService } from './dialog.service';
 import { TranslationService } from './translation.service';
+import { Top10KpiModel } from '@models/top-10-kpi-model';
 
 @Injectable({
   providedIn: 'root',
@@ -112,6 +113,11 @@ export class DashboardService extends RegisterServiceMixin(class {}) implements 
     return this.http
       .post<KpiBaseDurationModel[]>(chartData.chartDataUrl + '/' + endPoint, criteria)
       .pipe(map((data) => data.map((item) => KpiBase.kpiDurationFactory(chartData.hasSqUnit as boolean).clone(item))));
+  }
+
+  @CastResponse(() => Top10KpiModel)
+  loadTop10ChartData(chartData: { chartDataUrl: string; hasSqUnit?: boolean }, criteria: Partial<CriteriaContract>) {
+    return this.http.post<Top10KpiModel[]>(chartData.chartDataUrl, criteria);
   }
 
   @CastResponse(() => RentTransactionPurpose)

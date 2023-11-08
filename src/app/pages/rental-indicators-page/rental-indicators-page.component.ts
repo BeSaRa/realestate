@@ -260,10 +260,11 @@ export default class RentalIndicatorsPageComponent implements OnInit, OnDestroy 
     }),
     new Top10AccordingTo().clone<Top10AccordingTo>({
       id: 3,
-      arName: this.lang.getArabicTranslation('average_price_per_meter'),
-      enName: this.lang.getEnglishTranslation('average_price_per_meter'),
+      arName: this.lang.getArabicTranslation('rent_average_price_per'),
+      enName: this.lang.getEnglishTranslation('rent_average_price_per'),
       url: this.urlService.URLS.RENT_KPI31_1,
       hasPrice: true,
+      hasSqUnit: true,
       disabled: true,
     }),
     new Top10AccordingTo().clone<Top10AccordingTo>({
@@ -279,6 +280,7 @@ export default class RentalIndicatorsPageComponent implements OnInit, OnDestroy 
       enName: this.lang.getEnglishTranslation('rented_spaces'),
       url: this.urlService.URLS.RENT_KPI33,
       hasPrice: false,
+      hasSqUnit: true,
       disabled: true,
     }),
   ];

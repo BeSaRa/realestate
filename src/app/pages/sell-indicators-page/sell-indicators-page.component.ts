@@ -237,6 +237,7 @@ export default class SellIndicatorsPageComponent implements OnInit, OnDestroy {
       arName: this.lang.getArabicTranslation('sold_areas'),
       enName: this.lang.getEnglishTranslation('sold_areas'),
       url: this.urlService.URLS.SELL_KPI33,
+      hasSqUnit: true,
     }),
     new Top10AccordingTo().clone<Top10AccordingTo>({
       id: 4,
@@ -246,10 +247,11 @@ export default class SellIndicatorsPageComponent implements OnInit, OnDestroy {
     }),
     new Top10AccordingTo().clone<Top10AccordingTo>({
       id: 5,
-      arName: this.lang.getArabicTranslation('average_price_per_square_foot'),
-      enName: this.lang.getEnglishTranslation('average_price_per_square_foot'),
+      arName: this.lang.getArabicTranslation('sell_average_price_per'),
+      enName: this.lang.getEnglishTranslation('sell_average_price_per'),
       url: this.urlService.URLS.SELL_KPI33_2,
       hasPrice: true,
+      hasSqUnit: true,
     }),
   ];
 
