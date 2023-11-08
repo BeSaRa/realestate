@@ -2,12 +2,16 @@ import { CommonModule } from '@angular/common';
 import {
   ChangeDetectorRef,
   Component,
+  Injector,
   Input,
   OnChanges,
+  OnInit,
   QueryList,
   SimpleChanges,
   ViewChildren,
+  effect,
   inject,
+  runInInjectionContext,
 } from '@angular/core';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { PieChartOptions } from '@app-types/pie-chart-options';
@@ -17,6 +21,7 @@ import { ChartConfig } from '@models/chart-options-model';
 import { AppChartTypesService } from '@services/app-chart-types.service';
 import { DashboardService } from '@services/dashboard.service';
 import { TranslationService } from '@services/translation.service';
+import { UnitsService } from '@services/units.service';
 import { objectHasOwnProperty } from '@utils/utils';
 import { ChartComponent, NgApexchartsModule } from 'ng-apexcharts';
 import { catchError, take, throwError } from 'rxjs';
@@ -28,10 +33,10 @@ import { catchError, take, throwError } from 'rxjs';
   templateUrl: './pie-chart.component.html',
   styleUrls: ['./pie-chart.component.scss'],
 })
-export class PieChartComponent extends OnDestroyMixin(class {}) implements OnChanges {
+export class PieChartComponent extends OnDestroyMixin(class {}) implements OnInit, OnChanges {
   @Input({ required: true }) title!: string;
   @Input({ required: true }) criteria!: CriteriaContract;
-  @Input({ required: true }) rootData!: { chartDataUrl: string; hasPrice: boolean };
+  @Input({ required: true }) rootData!: { chartDataUrl: string; hasPrice: boolean; hasSqUnit?: boolean };
   @Input({ required: true }) bindLabel!: string | ((item: any) => string);
   @Input() bindValue: string | ((item: any) => number) = 'getKpiVal';
   @Input() valueUnit?: string;
@@ -42,6 +47,8 @@ export class PieChartComponent extends OnDestroyMixin(class {}) implements OnCha
   appChartTypesService = inject(AppChartTypesService);
   dashboardService = inject(DashboardService);
   cdr = inject(ChangeDetectorRef);
+  unitsService = inject(UnitsService);
+  injector = inject(Injector);
 
   isLoading = false;
 
@@ -51,6 +58,12 @@ export class PieChartComponent extends OnDestroyMixin(class {}) implements OnCha
       custom: (opts) => this._getPieCustomTooltip(opts),
     },
   };
+
+  ngOnInit(): void {
+    setTimeout(() => {
+      this._listenToUnitChange();
+    }, 0);
+  }
 
   ngOnChanges(changes: SimpleChanges): void {
     if (
@@ -88,6 +101,15 @@ export class PieChartComponent extends OnDestroyMixin(class {}) implements OnCha
             this.cdr.detectChanges();
           });
       });
+  }
+
+  private _listenToUnitChange() {
+    runInInjectionContext(this.injector, () =>
+      effect(() => {
+        this.unitsService.selectedUnit();
+        if (this.rootData.hasSqUnit) this._updatePieChartData();
+      })
+    );
   }
 
   private _getValue(item: unknown): number {

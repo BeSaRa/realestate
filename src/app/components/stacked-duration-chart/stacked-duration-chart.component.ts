@@ -6,6 +6,7 @@ import {
   ChangeDetectorRef,
   Component,
   EventEmitter,
+  Injector,
   Input,
   OnChanges,
   OnDestroy,
@@ -14,7 +15,9 @@ import {
   QueryList,
   SimpleChanges,
   ViewChildren,
+  effect,
   inject,
+  runInInjectionContext,
 } from '@angular/core';
 import { DateAdapter } from '@angular/material/core';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
@@ -35,6 +38,7 @@ import { DashboardService } from '@services/dashboard.service';
 import { LookupService } from '@services/lookup.service';
 import { ScreenBreakpointsService } from '@services/screen-breakpoints.service';
 import { TranslationService } from '@services/translation.service';
+import { UnitsService } from '@services/units.service';
 import { UrlService } from '@services/url.service';
 import { ChartComponent, NgApexchartsModule } from 'ng-apexcharts';
 import { catchError, map, take, takeUntil, throwError } from 'rxjs';
@@ -53,7 +57,7 @@ export class StackedDurationChartComponent
   @Input({ required: true }) title!: string;
   @Input({ required: true }) seriesNames!: Record<number, string>;
   @Input({ required: true }) criteria!: CriteriaContract;
-  @Input({ required: true }) rootData!: { chartDataUrl: string; hasPrice: boolean };
+  @Input({ required: true }) rootData!: { chartDataUrl: string; hasPrice: boolean; hasSqUnit?: boolean };
   @Input({ required: true }) bindDataSplitProp!: string;
   @Input() showSelectChartType = true;
   @Input() changeBarColorsAccordingToValue = false;
@@ -70,6 +74,8 @@ export class StackedDurationChartComponent
   adapter = inject(DateAdapter);
   screenService = inject(ScreenBreakpointsService);
   cdr = inject(ChangeDetectorRef);
+  unitsService = inject(UnitsService);
+  injector = inject(Injector);
 
   screenSize = Breakpoints.LG;
   isLoading = false;
@@ -125,6 +131,7 @@ export class StackedDurationChartComponent
       this.updateChartType(ChartType.BAR);
       this._initializeFormatters();
       this._listenToScreenSize();
+      this._listenToUnitChange();
     }, 0);
   }
 
@@ -376,6 +383,15 @@ export class StackedDurationChartComponent
             this.cdr.detectChanges();
           });
       });
+  }
+
+  private _listenToUnitChange() {
+    runInInjectionContext(this.injector, () =>
+      effect(() => {
+        this.unitsService.selectedUnit();
+        if (this.rootData.hasSqUnit) this.updateChartDataForDuration(this.selectedDurationType, true);
+      })
+    );
   }
 
   private _initializeBarColorsAccordingToValue(data: Record<number, DurationDataContract>) {
