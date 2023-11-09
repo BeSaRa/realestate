@@ -260,6 +260,10 @@ export class TransactionsFilterComponent implements OnInit, OnDestroy {
     return this.form.get('purposeList') as AbstractControl;
   }
 
+  get streetNo(): AbstractControl {
+    return this.form.get('streetNo') as AbstractControl;
+  }
+
   get issueDateYear(): AbstractControl {
     return this.form.get('issueDateYear') as AbstractControl;
   }
@@ -301,6 +305,10 @@ export class TransactionsFilterComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
+    if (!this.isSell()) this.unitsControl.disable();
+    if (this.isRent()) this.nationalityCode.disable();
+    this.streetNo.disable();
+
     this.years = range(this.isSell() ? 2006 : 2019, new Date().getFullYear());
     this.listenToMunicipalityChange();
     this.listenToPropertyTypeListChange();
@@ -315,6 +323,7 @@ export class TransactionsFilterComponent implements OnInit, OnDestroy {
     this.listenToPremiseTypeListChange();
     this.setDefaultValues();
     this.setParamsRange();
+    this.initializeUnitAccordingToPage();
   }
 
   ngOnDestroy(): void {
@@ -446,6 +455,10 @@ export class TransactionsFilterComponent implements OnInit, OnDestroy {
     this.unitsControl.valueChanges.pipe(takeUntil(this.destroy$)).subscribe((value) => {
       this.unitsService.setUnit(value as SqUnit);
     });
+  }
+
+  initializeUnitAccordingToPage() {
+    this.unitsControl.setValue(this.isMort() || this.isSell() ? SqUnit.SQUARE_FEET : SqUnit.SQUARE_METER);
   }
 
   listenToPremiseCategoryListChange(): void {
