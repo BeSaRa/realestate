@@ -333,4 +333,9 @@ export interface LangKeysContract {
   area_in_square_meter: string;
   total_area_in_square_feet: string;
   total_area_in_square_meter: string;
+
+  data_sources_for_sale_indicators_include_data_from_the_inistry_of_justice_real_estate_registration_database: string;
+  data_sources_for_mortgage_indicators_include_data_from_the_ministry_of_justice_real_estate_registry_database: string;
+  data_source_for_rental_indicators_includes_data_from_the_ministry_of_municipality_rental_contracts_database: string;
+  note: string;
 }
