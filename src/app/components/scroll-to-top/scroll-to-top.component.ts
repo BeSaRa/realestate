@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { SideBarDirection } from '@enums/side-bar-direction';
+import { AppIcons } from '@constants/app-icons';
 
 const MATERIAL_MODULES = [MatButtonModule, MatIconModule];
 
@@ -12,10 +13,9 @@ const MATERIAL_MODULES = [MatButtonModule, MatIconModule];
   selector: 'app-scroll-to-top',
   templateUrl: './scroll-to-top.component.html',
   styleUrls: ['./scroll-to-top.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ScrollToTopComponent {
-
   @Input() floating = SideBarDirection.RIGHT;
   @Output() scrollToTop = new EventEmitter<void>();
 
@@ -24,7 +24,9 @@ export class ScrollToTopComponent {
   }
   getBackToTopStyles() {
     return {
-      float: [this.floating]
+      float: [this.floating],
     };
   }
+
+  protected readonly AppIcons = AppIcons;
 }
