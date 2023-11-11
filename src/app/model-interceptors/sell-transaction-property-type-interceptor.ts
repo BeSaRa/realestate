@@ -11,12 +11,13 @@ export class SellTransactionPurposeInterceptor implements ModelInterceptorContra
 
   receive(model: SellTransactionPropertyType): SellTransactionPropertyType {
     const lookupService = ServiceRegistry.get<LookupService>('LookupService');
-    model.propertyTypeInfo = lookupService.sellPropertyTypeMap[model.propertyTypeId]  ||
-    new Lookup().clone<Lookup>({
-      arName: `غير معروف ${model.propertyTypeId} `,
-      enName: `Unknown ${model.propertyTypeId}`,
-      lookupKey: model.propertyTypeId,
-    }); // not all lookups provided by be
+    model.propertyTypeInfo =
+      lookupService.sellPropertyTypeMap[model.propertyTypeId] ||
+      new Lookup().clone<Lookup>({
+        arName: `غير معروف ${model.propertyTypeId} `,
+        enName: `Unknown ${model.propertyTypeId}`,
+        lookupKey: model.propertyTypeId,
+      }); // not all lookups provided by be
     return model;
   }
 }

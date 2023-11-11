@@ -113,7 +113,7 @@ export default class RentalIndicatorsPageComponent implements OnInit, OnDestroy 
   paramsRange = this.lookupService.rentLookups.maxParams;
   nationalities = this.lookupService.ownerLookups.nationalityList;
 
-  isMonthlyDuration: boolean = true;
+  isMonthlyDuration = true;
 
   transactions$: Observable<RentTransaction[]> = this.loadTransactions();
   transactionsCount = 0;
@@ -536,7 +536,7 @@ export default class RentalIndicatorsPageComponent implements OnInit, OnDestroy 
     this.isMonthlyDuration = value;
   }
 
-  getStringSelectedCriteria(isZoneRequired: boolean = true, showYearInTitle: boolean = true): string {
+  getStringSelectedCriteria(isZoneRequired = true, showYearInTitle = true): string {
     return this.sectionTitle.getSelectedCriteria(
       'rent',
       this.criteria.criteria,

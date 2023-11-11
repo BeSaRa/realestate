@@ -9,11 +9,13 @@ import { RentTransactionStatistics } from './rent-transaction-statistics';
 const { send, receive } = new RentTransactionPropertyTypeInterceptor();
 
 @InterceptModel({ send, receive })
-export class RentTransactionPropertyType extends RentTransactionStatistics{
-  
+export class RentTransactionPropertyType extends RentTransactionStatistics {
   propertyTypeId!: number;
   propertyTypeInfo!: Lookup;
   openChart(criteria: Partial<RentCriteriaContract>): Observable<MatDialogRef<unknown>> {
-    return this.dashboardService.openRentChartDialogBasedOnPrpoertyType({ ...criteria, propertyTypeList: [this.propertyTypeId] });
+    return this.dashboardService.openRentChartDialogBasedOnPrpoertyType({
+      ...criteria,
+      propertyTypeList: [this.propertyTypeId],
+    });
   }
 }

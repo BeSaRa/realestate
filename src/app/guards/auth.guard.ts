@@ -11,7 +11,7 @@ export const authGuard: (redirectTo?: string) => CanActivateFn = (redirectTo) =>
       if (isLoggedIn) {
         return true;
       } else {
-        return !redirectTo ? false : router.navigate([redirectTo])
+        return !redirectTo ? false : router.navigate([redirectTo]);
       }
     })
   );

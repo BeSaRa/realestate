@@ -3,7 +3,7 @@ import { Component, Input, inject } from '@angular/core';
 import { SideBarDirection } from '@enums/side-bar-direction';
 import { SideBarService } from '@services/side-bar.service';
 import { TranslationService } from '@services/translation.service';
-import {MatMenuModule} from '@angular/material/menu';
+import { MatMenuModule } from '@angular/material/menu';
 @Component({
   selector: 'app-side-bar',
   standalone: true,
@@ -15,7 +15,7 @@ export class SideBarComponent {
   @Input() direction = SideBarDirection.LEFT;
   @Input() duration = 0.25;
   @Input() width = 300;
-  @Input() isAuthenticated: boolean = false;
+  @Input() isAuthenticated = false;
 
   lang = inject(TranslationService);
   sideBarService = inject(SideBarService);

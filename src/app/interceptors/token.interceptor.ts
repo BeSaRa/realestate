@@ -11,39 +11,32 @@ export class TokenInterceptor implements HttpInterceptor {
   token!: string;
   private isRefreshing = false;
   public tokenService = inject(TokenService);
-  public authService = inject(CmsAuthenticationService)
+  public authService = inject(CmsAuthenticationService);
   intercept(request: HttpRequest<unknown>, next: HttpHandler): Observable<HttpEvent<unknown>> {
     if (!request.url.includes('http') || request.url.includes('refresh')) return next.handle(request);
-    return from(this.tokenService.getAccessToken())
-      .pipe(
-        map(token => {
-          if (token == undefined || token == '')
-            this.token = 'lyHWSTHj1SBm9IRECnLAHviNHnXGaS27';
-          else this.token = token
-          request = request.clone({
-            setHeaders: {
-              Authorization: `Bearer ${this.token}`,
+    return from(this.tokenService.getAccessToken()).pipe(
+      map((token) => {
+        if (token == undefined || token == '') this.token = 'lyHWSTHj1SBm9IRECnLAHviNHnXGaS27';
+        else this.token = token;
+        request = request.clone({
+          setHeaders: {
+            Authorization: `Bearer ${this.token}`,
+          },
+        });
+        return request;
+      }),
+      switchMap((req) => {
+        return next.handle(req).pipe(
+          catchError((error) => {
+            if (error instanceof HttpErrorResponse && !req.url.includes('auth/login') && error.status === 401) {
+              return this.handle401Error(req, next);
+            }
 
-            },
-          });
-          return request;
-        }),
-        switchMap((req) => {
-          return next.handle(req).pipe(
-            catchError((error) => {
-              if (
-                error instanceof HttpErrorResponse &&
-                !req.url.includes('auth/login') &&
-                error.status === 401
-              ) {
-                return this.handle401Error(req, next);
-              }
-
-              return throwError(() => error);
-            })
-          );
-        }));
-
+            return throwError(() => error);
+          })
+        );
+      })
+    );
   }
   private handle401Error(request: HttpRequest<any>, next: HttpHandler) {
     if (!this.isRefreshing) {

@@ -8,7 +8,7 @@ describe('MunicipalitiesChartComponent', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [MunicipalitiesChartComponent]
+      imports: [MunicipalitiesChartComponent],
     });
     fixture = TestBed.createComponent(MunicipalitiesChartComponent);
     component = fixture.componentInstance;

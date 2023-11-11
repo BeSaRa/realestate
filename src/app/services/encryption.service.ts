@@ -15,6 +15,8 @@ export class EncryptionService extends RegisterServiceMixin(class {}) {
     if (!encryptedText) {
       return null as unknown as T;
     }
-    return JSON.parse(AES.decrypt(encryptedText.split(':').shift() + '', encryptedText.split(':').pop() + '').toString(enc.Utf8));
+    return JSON.parse(
+      AES.decrypt(encryptedText.split(':').shift() + '', encryptedText.split(':').pop() + '').toString(enc.Utf8)
+    );
   }
 }

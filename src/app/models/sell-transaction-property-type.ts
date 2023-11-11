@@ -10,11 +10,13 @@ const { send, receive } = new SellTransactionPurposeInterceptor();
 
 @InterceptModel({ send, receive })
 export class SellTransactionPropertyType extends SellTransactionStatistic {
-  
   propertyTypeId!: number;
   propertyTypeInfo!: Lookup;
 
   openChart(criteria: Partial<SellCriteriaContract>): Observable<MatDialogRef<unknown>> {
-    return this.dashboardService.openSellChartDialogBasedOnPropertype({ ...criteria, propertyTypeList: [this.propertyTypeId] });
+    return this.dashboardService.openSellChartDialogBasedOnPropertype({
+      ...criteria,
+      propertyTypeList: [this.propertyTypeId],
+    });
   }
 }

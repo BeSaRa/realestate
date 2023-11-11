@@ -10,7 +10,6 @@ const { send, receive } = new SellTransactionPurposeInterceptor();
 
 @InterceptModel({ send, receive })
 export class SellTransactionPurpose extends SellTransactionStatistic {
-  
   purposeId!: number;
   purposeInfo!: Lookup;
 

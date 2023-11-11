@@ -7,7 +7,7 @@ import { CmsAuthenticationService } from '@services/auth.service';
 import { SideBarService } from '@services/side-bar.service';
 import { StickyService } from '@services/sticky.service';
 import { TranslationService } from '@services/translation.service';
-import {MainMenuComponent} from '@components/main-menu/main-menu.component'
+import { MainMenuComponent } from '@components/main-menu/main-menu.component';
 
 @Component({
   selector: 'app-main-header',
@@ -16,13 +16,12 @@ import {MainMenuComponent} from '@components/main-menu/main-menu.component'
   templateUrl: './main-header.component.html',
   styleUrls: ['./main-header.component.scss'],
 })
-export class MainHeaderComponent{
-
+export class MainHeaderComponent {
   lang = inject(TranslationService);
   sticky = inject(StickyService);
-  authService = inject(CmsAuthenticationService)
+  authService = inject(CmsAuthenticationService);
   sideBarService = inject(SideBarService);
-  @Input() isAuthenticated: boolean = false;
+  @Input() isAuthenticated = false;
 
   changeLang(event: Event) {
     event.preventDefault();

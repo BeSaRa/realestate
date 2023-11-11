@@ -58,8 +58,8 @@ export class ValidationErrorsComponent {
     }
     // this.currentError = validation.replace ? validation.replace(validation.key) : identity(validation.key);
     const languageKey = validation.key as keyof LangKeysContract;
-    this.lang.change$.subscribe( ()=> {
+    this.lang.change$.subscribe(() => {
       this.currentErrorSubject.next(this.lang.map[languageKey]);
-    })
+    });
   }
 }

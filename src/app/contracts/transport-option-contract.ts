@@ -1,19 +1,19 @@
-import { HttpParams } from "@angular/common/http";
+import { HttpParams } from '@angular/common/http';
 
 export type ResponseTransformer = (json: unknown) => unknown;
 export interface TransportResult {
-    ok: boolean;
-    msg: string;
-  }
+  ok: boolean;
+  msg: string;
+}
 export interface TransportOptions {
-    noAuthorizationHeader?: boolean;
+  noAuthorizationHeader?: boolean;
 
-    // To skip refreshing the access token if it is null.
-    accessToken?: string | null;
+  // To skip refreshing the access token if it is null.
+  accessToken?: string | null;
 
-    // Global query parameters
-    params?: HttpParams;
+  // Global query parameters
+  params?: HttpParams;
 
-    // JSON response transformer
-    mapResponse?: ResponseTransformer;
-  }
+  // JSON response transformer
+  mapResponse?: ResponseTransformer;
+}

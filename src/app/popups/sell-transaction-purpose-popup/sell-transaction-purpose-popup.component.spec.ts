@@ -8,7 +8,7 @@ describe('SellTransactionPurposePopupComponent', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [SellTransactionPurposePopupComponent]
+      imports: [SellTransactionPurposePopupComponent],
     });
     fixture = TestBed.createComponent(SellTransactionPurposePopupComponent);
     component = fixture.componentInstance;

@@ -1,9 +1,7 @@
-
 import { DashboardService } from '@services/dashboard.service';
 import { ServiceRegistry } from '@services/service-registry';
 import { UnitsService } from '@services/units.service';
 import { computed } from '@angular/core';
-
 
 export class SellTransactionStatistic {
   countCertificateCode!: number;
@@ -12,12 +10,12 @@ export class SellTransactionStatistic {
   medianPrice!: number;
   medianPriceMt!: number;
   medianPriceSqf!: number;
-  
+
   sumArea!: number;
 
   // not related to model
   // totalArea: number | null = null;
-  
+
   dashboardService: DashboardService;
   unitsService: UnitsService;
 

@@ -8,7 +8,7 @@ describe('OccupiedAndVacantIndicatorsPageComponent', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [OccupiedAndVacantIndicatorsPageComponent]
+      imports: [OccupiedAndVacantIndicatorsPageComponent],
     });
     fixture = TestBed.createComponent(OccupiedAndVacantIndicatorsPageComponent);
     component = fixture.componentInstance;

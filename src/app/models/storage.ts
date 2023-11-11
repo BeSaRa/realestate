@@ -1,12 +1,11 @@
-import { AuthenticationDataModel } from "./authentication-data";
+import { AuthenticationDataModel } from './authentication-data';
 import { Injectable, inject } from '@angular/core';
-import { ConfigService } from "@services/config.service";
+import { ConfigService } from '@services/config.service';
 import { Observable, from, tap, of } from 'rxjs';
 
 // @Injectable({providedIn: 'root'})
 
 export class Storage {
-
   private static readonly LOCAL_STORAGE_KEY = '$$_T_$$';
 
   private _accessToken = '';

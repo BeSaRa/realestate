@@ -8,7 +8,7 @@ describe('YoyIndicatorComponent', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [YoyIndicatorComponent]
+      imports: [YoyIndicatorComponent],
     });
     fixture = TestBed.createComponent(YoyIndicatorComponent);
     component = fixture.componentInstance;

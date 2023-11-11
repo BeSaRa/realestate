@@ -1,4 +1,4 @@
-import { APP_INITIALIZER, ApplicationConfig, LOCALE_ID, importProvidersFrom } from '@angular/core';
+import { APP_INITIALIZER, ApplicationConfig, importProvidersFrom, LOCALE_ID } from '@angular/core';
 import { provideRouter, withComponentInputBinding, withInMemoryScrolling } from '@angular/router';
 
 import { HTTP_INTERCEPTORS, provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
@@ -19,8 +19,8 @@ import { NgxMaskPipe, provideNgxMask } from 'ngx-mask';
 import { forkJoin, switchMap, tap } from 'rxjs';
 import { routes } from './app.routes';
 import { TokenInterceptor } from './interceptors/token.interceptor';
-import { ToastService } from '@services/toast.service';
 import { UnitsService } from '@services/units.service';
+
 export const appConfig: ApplicationConfig = {
   providers: [
     provideRouter(routes, withComponentInputBinding(), withInMemoryScrolling({ scrollPositionRestoration: 'top' })),

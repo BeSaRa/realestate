@@ -8,7 +8,7 @@ describe('SliderMenuComponent', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [SliderMenuComponent]
+      imports: [SliderMenuComponent],
     });
     fixture = TestBed.createComponent(SliderMenuComponent);
     component = fixture.componentInstance;

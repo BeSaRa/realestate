@@ -8,7 +8,7 @@ describe('PremiseTypesPopupComponent', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [PremiseTypesPopupComponent]
+      imports: [PremiseTypesPopupComponent],
     });
     fixture = TestBed.createComponent(PremiseTypesPopupComponent);
     component = fixture.componentInstance;

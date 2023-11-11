@@ -9,8 +9,7 @@ import { RentTransactionStatistics } from './rent-transaction-statistics';
 const { send, receive } = new RentTransactionPurposeInterceptor();
 
 @InterceptModel({ send, receive })
-export class RentTransactionPurpose extends RentTransactionStatistics{
-  
+export class RentTransactionPurpose extends RentTransactionStatistics {
   purposeId!: number;
   purposeInfo!: Lookup;
 

@@ -1,13 +1,31 @@
 import { inject, Injectable } from '@angular/core';
-import { createDirectus, rest, authentication, AuthenticationConfig } from '@directus/sdk';
-import { ConfigService } from '@services/config.service';
+import { authentication, createDirectus, DirectusClient, rest, RestClient } from '@directus/sdk';
 import { DirectusSchemaContract } from '@contracts/directus-schema-contract';
-import { UrlService } from './url.service';
+import { d as AuthenticationClient } from '@directus/sdk/dist/login-93da9005';
+import { ConfigService } from '@services/config.service';
+import { delay, of, switchMap } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
 })
 export class DirectusClientService {
+  client!: DirectusClient<DirectusSchemaContract> &
+    RestClient<DirectusSchemaContract> &
+    AuthenticationClient<DirectusSchemaContract>;
   config = inject(ConfigService);
-  client = createDirectus<DirectusSchemaContract>(this.config.BASE_URL, {}).with(rest()).with(authentication('json', {credentials:'include'}));
+
+  constructor() {
+    of(true)
+      .pipe(delay(0))
+      .pipe(switchMap(() => this.config.baseUrlReady$))
+      .subscribe((url) => {
+        this.createDirectusClient(url);
+      });
+  }
+
+  createDirectusClient(url: string): void {
+    this.client = createDirectus<DirectusSchemaContract>(url, {})
+      .with(rest())
+      .with(authentication('json', { credentials: 'include' }));
+  }
 }

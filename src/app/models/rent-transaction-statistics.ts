@@ -3,7 +3,6 @@ import { DashboardService } from '@services/dashboard.service';
 import { UnitsService } from '@services/units.service';
 import { computed } from '@angular/core';
 
-
 export class RentTransactionStatistics {
   certificateCount!: number;
   rentPaymentMeter!: number;
@@ -11,7 +10,6 @@ export class RentTransactionStatistics {
   rentPaymentSqFeet!: number;
   sumArea!: number;
 
- 
   issueMonth!: number;
   issueYear!: number;
   dashboardService: DashboardService;
@@ -26,7 +24,7 @@ export class RentTransactionStatistics {
     return computed(() => (this.unitsService.selectedUnit() === 1 ? this.rentPaymentMeter : this.rentPaymentSqFeet));
   }
 
-//   openChart(criteria: Partial<RentCriteriaContract>): Observable<MatDialogRef<unknown>> {
-//     return this.dashboardService.openRentChartDialogBasedOnPurpose({ ...criteria, purposeList: [this.purposeId] });
-//   }
+  //   openChart(criteria: Partial<RentCriteriaContract>): Observable<MatDialogRef<unknown>> {
+  //     return this.dashboardService.openRentChartDialogBasedOnPurpose({ ...criteria, purposeList: [this.purposeId] });
+  //   }
 }

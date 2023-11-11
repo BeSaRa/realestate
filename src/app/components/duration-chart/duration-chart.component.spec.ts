@@ -8,7 +8,7 @@ describe('DurationChartComponent', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [DurationChartComponent]
+      imports: [DurationChartComponent],
     });
     fixture = TestBed.createComponent(DurationChartComponent);
     component = fixture.componentInstance;

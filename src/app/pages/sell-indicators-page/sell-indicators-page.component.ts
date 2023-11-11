@@ -523,7 +523,7 @@ export default class SellIndicatorsPageComponent implements OnInit, OnDestroy {
     this.isMonthlyDuration = value;
   }
 
-  getStringSelectedCriteria(isDistrictRequired: boolean = true, showYearInTitle: boolean = true): string {
+  getStringSelectedCriteria(isDistrictRequired = true, showYearInTitle = true): string {
     return this.sectionTitle.getSelectedCriteria(
       'sell',
       this.criteria.criteria,

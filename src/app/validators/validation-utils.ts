@@ -90,11 +90,9 @@ export function decimalValidator(numberOfPlaces = 2): ValidatorFn {
   };
 }
 
-function getValueLength(control: AbstractControl ): number {
+function getValueLength(control: AbstractControl): number {
   return typeof control.value !== 'undefined' || control.value !== null ? control.value.toString().length : 0;
 }
-
-
 
 export function maxLengthValidator(maxLength?: number): ValidatorFn {
   if (maxLength === 0 || !isValidValue(maxLength)) {
@@ -104,7 +102,7 @@ export function maxLengthValidator(maxLength?: number): ValidatorFn {
     if (!isValidValue(control.value) || !hasValidLength(control.value)) {
       return null;
     }
-    
+
     const valueLength = getValueLength(control);
     const _maxLength = maxLength as number;
     return valueLength > _maxLength ? { maxLength: { maxLength: maxLength, actualLength: valueLength } } : null;

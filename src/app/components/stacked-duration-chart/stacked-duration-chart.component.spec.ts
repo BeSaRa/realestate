@@ -8,7 +8,7 @@ describe('StackedDurationChartComponent', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [StackedDurationChartComponent]
+      imports: [StackedDurationChartComponent],
     });
     fixture = TestBed.createComponent(StackedDurationChartComponent);
     component = fixture.componentInstance;

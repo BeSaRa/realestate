@@ -8,7 +8,7 @@ describe('QatarInteractiveMapComponent', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [QatarInteractiveMapComponent]
+      imports: [QatarInteractiveMapComponent],
     });
     fixture = TestBed.createComponent(QatarInteractiveMapComponent);
     component = fixture.componentInstance;

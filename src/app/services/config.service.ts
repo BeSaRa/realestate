@@ -1,6 +1,6 @@
 import { inject, Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable, tap } from 'rxjs';
+import { Observable, ReplaySubject, tap } from 'rxjs';
 import { Config, ConfigType } from '@constants/config';
 
 @Injectable({
@@ -10,12 +10,18 @@ export class ConfigService {
   private http = inject(HttpClient);
   CONFIG: ConfigType = Config;
   BASE_URL = 'http://192.168.52.5:8055/';
+  baseUrlReady$ = new ReplaySubject<string>(1);
 
   load(): Observable<ConfigType> {
     return this.http
       .get<ConfigType>('config/CONFIGURATIONS.json')
       .pipe(tap((res) => (this.CONFIG = { ...this.CONFIG, ...res })))
-      .pipe(tap(() => this.prepareBaseUrl()));
+      .pipe(tap(() => this.prepareBaseUrl()))
+      .pipe(
+        tap(() => {
+          this.baseUrlReady$.next(this.BASE_URL);
+        })
+      );
   }
 
   private prepareBaseUrl(): string {

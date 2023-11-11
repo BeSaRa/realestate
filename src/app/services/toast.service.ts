@@ -14,13 +14,19 @@ export class ToastService implements ToastContract {
     return this.snack.open(msg, action, config);
   }
 
-  openFromComponent<Component, Data = unknown>(component: ComponentType<Component>, config: MatSnackBarConfig<Data>): MatSnackBarRef<Component> {
+  openFromComponent<Component, Data = unknown>(
+    component: ComponentType<Component>,
+    config: MatSnackBarConfig<Data>
+  ): MatSnackBarRef<Component> {
     return this.snack.openFromComponent<Component, Data>(component, {
       ...config,
     });
   }
 
-  openFromTemplate(template: TemplateRef<unknown>, config?: MatSnackBarConfig): MatSnackBarRef<EmbeddedViewRef<unknown>> {
+  openFromTemplate(
+    template: TemplateRef<unknown>,
+    config?: MatSnackBarConfig
+  ): MatSnackBarRef<EmbeddedViewRef<unknown>> {
     return this.snack.openFromTemplate(template, config);
   }
 

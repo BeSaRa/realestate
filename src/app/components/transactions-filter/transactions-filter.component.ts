@@ -137,10 +137,10 @@ export class TransactionsFilterComponent implements OnInit, OnDestroy {
   mortgageValueRange: ParamRange | undefined;
   areaRange: ParamRange | undefined;
 
-  areaMaxLength: number = 10;
-  rentPaymentMaxLength: number = 10;
-  realEstateMaxLength: number = 10;
-  mortgageMaxLength: number = 10;
+  areaMaxLength = 10;
+  rentPaymentMaxLength = 10;
+  realEstateMaxLength = 10;
+  mortgageMaxLength = 10;
 
   form = this.fb.group(
     {

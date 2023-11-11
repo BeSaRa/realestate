@@ -78,9 +78,9 @@ export default class MortgageIndicatorsComponent implements OnInit {
     type: CriteriaType;
   };
 
-  isMonthlyDuration: boolean = true;
-  isMonthlyDurationForStacked: boolean = true;
-  isMonthlyDurationForUnits: boolean = true;
+  isMonthlyDuration = true;
+  isMonthlyDurationForStacked = true;
+  isMonthlyDurationForUnits = true;
 
   rootKpis = [
     new KpiRoot().clone<KpiRoot>({
@@ -236,7 +236,7 @@ export default class MortgageIndicatorsComponent implements OnInit {
     this.isMonthlyDurationForUnits = value;
   }
 
-  getStringSelectedCriteria(showYearInTitle: boolean = true): string {
+  getStringSelectedCriteria(showYearInTitle = true): string {
     return this.sectionTitle.getSelectedCriteria('mort', this.criteria.criteria, false, true, showYearInTitle);
   }
 }

@@ -8,7 +8,7 @@ describe('SellIndicatorsPageComponent', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [SellIndicatorsPageComponent]
+      imports: [SellIndicatorsPageComponent],
     });
     fixture = TestBed.createComponent(SellIndicatorsPageComponent);
     component = fixture.componentInstance;

@@ -1,4 +1,4 @@
 export enum indicatorsTypes {
-  PURPOSE = "purpose",
-  TYPE = "type",
+  PURPOSE = 'purpose',
+  TYPE = 'type',
 }

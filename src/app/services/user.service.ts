@@ -28,14 +28,12 @@ export class UserService {
     window.location.href = this.urlService.URLS.ADMIN;
   }
 
-  openUserPreferncePopup(){
-    this.dialog.open(UserPreferencePopupComponent)
+  openUserPreferncePopup() {
+    this.dialog.open(UserPreferencePopupComponent);
   }
 
   @CastResponse(() => UserInfo, { unwrap: 'data', fallback: '$default' })
-  updateUser(userInfo: UserInfo) : Observable<UserInfo>
-  {
-   return this.http.patch<UserInfo>(this.urlService.URLS.USERS + '/' + userInfo.id, userInfo);
-    
+  updateUser(userInfo: UserInfo): Observable<UserInfo> {
+    return this.http.patch<UserInfo>(this.urlService.URLS.USERS + '/' + userInfo.id, userInfo);
   }
 }
