@@ -133,7 +133,7 @@ export class AppComponent implements OnInit, AfterViewInit {
 
   onLogOut() {
     this.dialog
-      .confirm(this.lang.map.are_you_sure, this.lang.map.log_out, { no: this.lang.map.cancel, yes: this.lang.map.yes })
+      .confirm(this.lang.map.logout_confirmation, undefined, { no: this.lang.map.cancel, yes: this.lang.map.yes })
       .afterClosed()
       .pipe(
         filter((value) => value === UserClick.YES),
@@ -144,7 +144,7 @@ export class AppComponent implements OnInit, AfterViewInit {
           verticalPosition: 'top',
           horizontalPosition: this.lang.isLtr ? 'left' : 'right',
         });
-        this.router.navigate(['home']);
+        this.router.navigate(['home']).then();
       });
   }
 }

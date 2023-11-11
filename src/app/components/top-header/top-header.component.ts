@@ -41,10 +41,10 @@ export class TopHeaderComponent implements OnInit, OnDestroy {
   urlService = inject(UrlService);
   userService = inject(UserService);
   toast = inject(ToastService);
-  dialog = inject(DialogService)
+  dialog = inject(DialogService);
   router = inject(Router);
 
-  @Input() isAuthenticated: boolean = false;
+  @Input() isAuthenticated = false;
 
   news: News[] = [];
   filteredNews: News[] = [];
@@ -53,31 +53,32 @@ export class TopHeaderComponent implements OnInit, OnDestroy {
 
   newsService = inject(NewsService);
   lang = inject(TranslationService);
-  isLtr: boolean = false;
-  xPosition:MenuPositionX = 'before';
+  isLtr = false;
+  xPosition: MenuPositionX = 'before';
   userInfo?: UserInfo;
 
-  recheckIfInMenu: boolean = false;
+  recheckIfInMenu = false;
 
   ngOnInit(): void {
     this._listenToSearchChanges();
     this._listenToUserChange();
     this.onFocus(true);
-    this.lang.change$.subscribe(x => {
-      x.direction === 'ltr' ? this.xPosition = 'before' : 'after'});
-    
+    this.lang.change$.subscribe((x) => {
+      x.direction === 'ltr' ? (this.xPosition = 'before') : 'after';
+    });
   }
 
   private _listenToUserChange() {
-    this.authService.currentUser.pipe(
-      takeUntil(this.destroy$),
-      debounceTime(200),
-      tap((user) => {
-        this.userInfo = user;
-      })
-    ).subscribe();
+    this.authService.currentUser
+      .pipe(
+        takeUntil(this.destroy$),
+        debounceTime(200),
+        tap((user) => {
+          this.userInfo = user;
+        })
+      )
+      .subscribe();
   }
-
 
   private _listenToSearchChanges() {
     this.search.valueChanges
@@ -119,31 +120,30 @@ export class TopHeaderComponent implements OnInit, OnDestroy {
 
   openLoginPopup() {
     this.userService.openLoginPopup();
-
   }
 
   OnStaffLogin() {
     this.userService.OnStaffLogin();
   }
 
-  showUserPreference(){
+  showUserPreference() {
     this.userService.openUserPreferncePopup();
   }
-  
+
   onLogOut() {
     this.dialog
-      .confirm(this.lang.map.are_you_sure, this.lang.map.log_out, { no: this.lang.map.cancel, yes: this.lang.map.yes })
+      .confirm(this.lang.map.logout_confirmation, undefined, { no: this.lang.map.cancel, yes: this.lang.map.yes })
       .afterClosed()
       .pipe(
-        filter(value => value === UserClick.YES),
+        filter((value) => value === UserClick.YES),
         switchMap(() => this.authService.logout())
       )
       .subscribe(() => {
         this.toast.success(this.lang.map.logged_out_successfully, {
           verticalPosition: 'top',
-          horizontalPosition: this.lang.isLtr ? 'left' : 'right'
+          horizontalPosition: this.lang.isLtr ? 'left' : 'right',
         });
-        this.router.navigate(['home']);
+        this.router.navigate(['home']).then();
       });
   }
 

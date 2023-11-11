@@ -1,10 +1,20 @@
-<div id="top-header"
+<div
+  id="top-header"
   class="h-12 flex justify-between items-center border-b border-b-secondary/50 w-full text-white px-10">
   <div class="w-72"></div>
-  <div id="search-header" class="flex relative items-center bg-secondary/20 h-10 w-80 rounded" matAutocompleteOrigin
+  <div
+    id="search-header"
+    class="flex relative items-center bg-secondary/20 h-10 w-80 rounded"
+    matAutocompleteOrigin
     #origin="matAutocompleteOrigin">
-    <input type="text" [placeholder]="lang.map.search + '...'" id="top-search-input" [matAutocomplete]="auto"
-      [matAutocompleteConnectedTo]="origin" [formControl]="search" (focus)="onFocus()"
+    <input
+      type="text"
+      [placeholder]="lang.map.search + '...'"
+      id="top-search-input"
+      [matAutocomplete]="auto"
+      [matAutocompleteConnectedTo]="origin"
+      [formControl]="search"
+      (focus)="onFocus()"
       class="bg-transparent w-full border-b-white/50 outline-none pe-10 px-5 placeholder:text-white/80" />
     <div class="absolute rtl:left-0 ltr:right-0">
       <app-icon-button icon="SEARCH"></app-icon-button>
@@ -36,19 +46,19 @@
         <mat-icon>text_decrease</mat-icon>
       </button>
     </li> -->
-    
-    <button *ngIf="!isAuthenticated" mat-button [matMenuTriggerFor]="beforeMenu" >
-      {{lang.map.login}}
+
+    <button *ngIf="!isAuthenticated" mat-button [matMenuTriggerFor]="beforeMenu">
+      {{ lang.map.login }}
     </button>
     <mat-menu #beforeMenu="matMenu" [xPosition]="xPosition">
       <button mat-menu-item (click)="openLoginPopup()">
-        <mat-icon  class="icon !h-8 !w-12 !text-xs" svgIcon="account" ></mat-icon>
+        <mat-icon class="icon !h-8 !w-12 !text-xs" svgIcon="account"></mat-icon>
         <span class="text-base">
-          {{ lang.map.login_as_employee }}
+          {{ lang.map.login_users }}
         </span>
       </button>
       <button mat-menu-item (click)="OnStaffLogin()">
-        <mat-icon  class="icon !h-8 !w-12 !text-xs"  svgIcon="account-cog"></mat-icon>
+        <mat-icon class="icon !h-8 !w-12 !text-xs" svgIcon="account-cog"></mat-icon>
         <span class="text-base">
           {{ lang.map.login_as_editor_content_manager }}
         </span>
@@ -56,11 +66,12 @@
     </mat-menu>
     <li *ngIf="isAuthenticated">
       <button class="text-white" (click)="showUserPreference()" mat-button>
-        <a class="text-white">{{lang.map.welcome}}</a><a class="text-xl text-secondary underline"> {{ userInfo?.first_name }}</a>
+        <a class="text-white">{{ lang.map.welcome }}</a
+        ><a class="text-xl text-secondary underline"> {{ userInfo?.first_name }}</a>
       </button>
     </li>
     <li *ngIf="isAuthenticated">
-      <button class="text-white" (click)="onLogOut()" mat-button>{{lang.map.log_out}}</button>
+      <button class="text-white" (click)="onLogOut()" mat-button>{{ lang.map.log_out }}</button>
     </li>
     <li>
       <app-icon-button [icon]="'VIEW'" (click)="toggleFilter()"></app-icon-button>
@@ -68,7 +79,7 @@
     <li>
       <app-button (click)="changeLang($event)" buttonStyle="none">{{
         lang.getCurrent().toggleTo.substring(0, 2).toUpperCase()
-        }}</app-button>
+      }}</app-button>
     </li>
   </ul>
   <!-- top-header-menu -->

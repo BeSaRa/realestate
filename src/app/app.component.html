@@ -19,7 +19,7 @@
       <app-slider-menu [isAuthenticated]="isAuthenticated" />
     </ul>
     <div *ngIf="!isAuthenticated" class="flex flex-col gap-y-1">
-      <app-button buttonStyle="secondary" (click)="openLoginPopup()">{{ lang.map.login_as_employee }}</app-button>
+      <app-button buttonStyle="secondary" (click)="openLoginPopup()">{{ lang.map.login_users }}</app-button>
       <app-button buttonStyle="secondary" (click)="OnStaffLogin()">{{
         lang.map.login_as_editor_content_manager
       }}</app-button>

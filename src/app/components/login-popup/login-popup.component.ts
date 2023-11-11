@@ -28,11 +28,11 @@ import { ToastService } from '@services/toast.service';
   templateUrl: './login-popup.component.html',
   styleUrls: ['./login-popup.component.scss'],
 })
-export class LoginPopupComponent implements OnInit {
+export class LoginPopupComponent {
   lang = inject(TranslationService);
   fb = inject(UntypedFormBuilder);
   toast = inject(ToastService);
-  authService = inject(CmsAuthenticationService)
+  authService = inject(CmsAuthenticationService);
 
   dialogRef = inject(MatDialogRef);
 
@@ -41,11 +41,8 @@ export class LoginPopupComponent implements OnInit {
     password: ['', [CustomValidators.required]],
   });
 
-  isLoggedInfailed = false;
+  isLoggedInFailed = false;
   errorMessage = '';
-
-  ngOnInit(): void { }
-
 
   getIdentifier() {
     return this.LoginForm.controls['identifier'].value;
@@ -60,24 +57,33 @@ export class LoginPopupComponent implements OnInit {
     if (this.LoginForm.invalid) {
       return;
     }
-    const credentials: CredentialsContract = { identifier: this.getIdentifier(), password: this.getPassword(), mode: 'json' }
-    this.authService.login(credentials).pipe(
-      tap(() => {
-        this.isLoggedInfailed = false;
-        this.dialogRef.close();
-        this.toast.success(this.lang.map.logged_in_successfully, {verticalPosition: 'top', horizontalPosition:this.lang.isLtr ? 'left' : 'right' });
-        this.LoginForm.reset();
-      }),
-      catchError((err) => {
-        this.isLoggedInfailed = true;
-        this.toast.error(this.lang.map.logged_in_failed, { verticalPosition: 'top' });
-        throw err;
-      })
-    )
+    const credentials: CredentialsContract = {
+      identifier: this.getIdentifier(),
+      password: this.getPassword(),
+      mode: 'json',
+    };
+    this.authService
+      .login(credentials)
+      .pipe(
+        tap(() => {
+          this.isLoggedInFailed = false;
+          this.dialogRef.close();
+          this.toast.success(this.lang.map.logged_in_successfully, {
+            verticalPosition: 'top',
+            horizontalPosition: this.lang.isLtr ? 'left' : 'right',
+          });
+          this.LoginForm.reset();
+        }),
+        catchError((err) => {
+          this.isLoggedInFailed = true;
+          this.toast.error(this.lang.map.logged_in_failed, { verticalPosition: 'top' });
+          throw err;
+        })
+      )
       .subscribe();
   }
 
   clearError() {
-    this.isLoggedInfailed = false;
-  } 
+    this.isLoggedInFailed = false;
+  }
 }

@@ -15,14 +15,12 @@ import { CmsAuthenticationService } from '@services/auth.service';
   styleUrls: ['./header.component.scss'],
 })
 export class HeaderComponent implements OnInit {
-  authService = inject (CmsAuthenticationService)
+  authService = inject(CmsAuthenticationService);
   stickyService = inject(StickyService);
   isSticky = computed(() => this.stickyService.isSticky());
-  isAuthenticated: boolean = false;
+  isAuthenticated = false;
 
   ngOnInit(): void {
-    this.authService.isLoggedIn().subscribe( authenticated =>
-      this.isAuthenticated = authenticated
-    )
+    this.authService.isLoggedIn().subscribe((authenticated) => (this.isAuthenticated = authenticated));
   }
 }

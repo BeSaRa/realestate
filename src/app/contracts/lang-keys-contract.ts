@@ -1,4 +1,5 @@
 export interface LangKeysContract {
+  logout_confirmation: string;
   total: string;
   mortgage_transactions_measuring_dashboard: string;
   mortgaged_for: string;
@@ -274,7 +275,7 @@ export interface LangKeysContract {
   welcome: string;
 
   login_as_editor_content_manager: string;
-  login_as_employee: string;
+  login_users: string;
   invalid_user_credentials: string;
   contract: string;
   you_have_successfully_subscribed_to_the_newsletter: string;
