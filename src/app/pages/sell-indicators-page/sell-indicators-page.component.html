@@ -169,12 +169,14 @@
           <div *appTableColumnHeaderTemplate class="flex justify-center">
             <div class="text-start">
               <p>{{ lang.map.issue_date }}</p>
-              <p class="font-normal">{{ lang.map.sold_by }}</p>
+              <!-- Hide sold_by for now as client request Issue 60399 -->
+              <!-- <p class="font-normal">{{ lang.map.sold_by }}</p> --> 
             </div>
           </div>
           <div *appTableColumnCellTemplate="let item; typeOf: transactions$" class="text-center">
             <p>{{ item.issueDate | date : "YYYY-MM-dd" }}</p>
-            <p class="font-bold">{{ item.soldTo || "أفراد" }}</p>
+            <!-- Hide sold_by for now as client request Issue 60399 -->
+            <!-- <p class="font-bold">{{ item.soldTo || "أفراد" }}</p> -->
           </div>
         </ng-container>
 
