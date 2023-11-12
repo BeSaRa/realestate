@@ -57,7 +57,7 @@ export class MenuService extends RegisterServiceMixin(class { }) implements Serv
     if (!menuItem.roles || menuItem.roles.length === 0) {
       return true;
     }
-    return isAuthenticated && menuItem.roles.some((role) => currentUser?.role?.id === role);
+    return isAuthenticated && menuItem.roles.some((role) => currentUser?.role === role);
   }
 
   private _emitMenus(): Observable<Menus> {

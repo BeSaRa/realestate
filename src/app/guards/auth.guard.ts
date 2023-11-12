@@ -15,7 +15,7 @@ export const authGuard: (url: string, redirectTo?: string) => CanActivateFn = (u
   return menuService.getMainMenuLinksObject().pipe(
     switchMap((linksObject) => {
       const menuItem = linksObject[url];
-      if (!menuItem || !menuItem.is_authenticated) {
+      if (!menuItem) {
         return of(true);
       }
       return authService.isLoggedIn().pipe(
@@ -37,7 +37,7 @@ function handleAuthenticatedUser(user: UserInfo | undefined, menuItem: MenuItem,
   if (!user) {
     return false;
   }
-  if (!menuItem.roles || menuItem.roles.length === 0 || (user.role && menuItem.roles.includes(user.role?.id))) {
+  if (!menuItem.roles || menuItem.roles.length === 0 || (user.role && menuItem.roles.includes(user.role))) {
     return true;
   } else {
     if (redirectTo) {

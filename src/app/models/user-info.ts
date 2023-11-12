@@ -25,7 +25,7 @@ export class UserInfo extends HasServiceMixin(ClonerMixin(class {})) {
   last_page?: string;
   provider?: string;
   external_identifier?: string;
-  role?: UserRole;
+  role?: string;
 
   buildForm(): object {
     const { id, title, first_name, last_name, email, language, email_notifications } = this;
