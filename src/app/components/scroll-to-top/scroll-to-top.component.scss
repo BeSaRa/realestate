@@ -1,23 +1,22 @@
 :host {
-    position: fixed;
-    cursor: pointer;
-    right: 14px;
-    left: 14px;
-    bottom: 14px;
-    z-index: 100;
-    opacity: 0.75;
-  }
-  
-  :host:hover {
-    opacity: 1;
-  }
-  
-  .scroll-icon {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  }
-  
-  .mat-mdc-mini-fab.mat-primary {
-    background-color: rgb(138 21 56/0.7);
-  }
+  position: fixed;
+  cursor: pointer;
+  z-index: 100;
+  opacity: 0.75;
+  bottom: 14px;
+  padding: 5px;
+}
+
+:host:hover {
+  opacity: 1;
+}
+
+.scroll-icon {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.mat-mdc-mini-fab.mat-primary {
+  background-color: rgb(138 21 56/0.7);
+}

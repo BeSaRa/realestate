@@ -1,7 +1,7 @@
 import { BidiModule } from '@angular/cdk/bidi';
 import { CommonModule, registerLocaleData } from '@angular/common';
 import localeAr from '@angular/common/locales/ar';
-import { AfterViewInit, Component, HostListener, OnInit, inject } from '@angular/core';
+import { AfterViewInit, Component, HostListener, inject, OnInit } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { Router, RouterModule, RouterOutlet } from '@angular/router';
@@ -17,7 +17,7 @@ import { SplashService } from '@services/splash.service';
 import { StickyService } from '@services/sticky.service';
 import { TranslationService } from '@services/translation.service';
 import '@utils/prototypes/custom-prototypes';
-import { map, startWith, filter, switchMap } from 'rxjs';
+import { filter, map, startWith, switchMap } from 'rxjs';
 import { ScrollToTopComponent } from '@components/scroll-to-top/scroll-to-top.component';
 import { MatMenuModule } from '@angular/material/menu';
 import { CmsAuthenticationService } from '@services/auth.service';
