@@ -12,13 +12,13 @@ import { ServiceContract } from '@contracts/service-contract';
 @Injectable({
   providedIn: 'root',
 })
-export class MenuService extends RegisterServiceMixin(class { }) implements ServiceContract {
+export class MenuService extends RegisterServiceMixin(class {}) implements ServiceContract {
   serviceName = 'MenuService';
   http = inject(HttpClient);
   urlService = inject(UrlService);
   menus!: Menus;
-  mainMenuLinksObject!: { [key: string]: MenuItem };
-  mainMenuLinksObject$ = new ReplaySubject<{ [key: string]: MenuItem }>(1);
+  mainMenuLinksObject!: Record<string, MenuItem>;
+  mainMenuLinksObject$ = new ReplaySubject<Record<string, MenuItem>>(1);
   loading = false;
   menus$ = new ReplaySubject<Menus>(1);
 
@@ -58,7 +58,7 @@ export class MenuService extends RegisterServiceMixin(class { }) implements Serv
     });
   }
 
-  getMainMenuLinksObject(): Observable<{ [key: string]: MenuItem }> {
+  getMainMenuLinksObject(): Observable<Record<string, MenuItem>> {
     if (!this.mainMenuLinksObject) {
       // menu is not loaded yet, so load it
       this._emitMenus();
@@ -66,7 +66,7 @@ export class MenuService extends RegisterServiceMixin(class { }) implements Serv
     return this.mainMenuLinksObject$.asObservable();
   }
 
-  private createMainMenuLinksObject(menus: Menus): { [key: string]: MenuItem } {
+  private createMainMenuLinksObject(menus: Menus): Record<string, MenuItem> {
     return menus?.main_menu?.links?.reduce((acc, link) => {
       return { ...acc, [link.url]: link };
     }, {});

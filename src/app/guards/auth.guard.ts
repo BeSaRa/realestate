@@ -1,9 +1,9 @@
 import { CanActivateFn, Router } from '@angular/router';
 import { inject } from '@angular/core';
 import { CmsAuthenticationService } from '@services/auth.service';
-import { tap, switchMap, map } from 'rxjs/operators';
+import { switchMap, tap } from 'rxjs/operators';
 import { MenuService } from '@services/menu.service';
-import { Observable, of } from 'rxjs';
+import { of } from 'rxjs';
 
 export const authGuard: (url: string, redirectTo?: string) => CanActivateFn = (url, redirectTo) => () => {
   const authService = inject(CmsAuthenticationService);
@@ -11,7 +11,7 @@ export const authGuard: (url: string, redirectTo?: string) => CanActivateFn = (u
   const menuService = inject(MenuService);
 
   return menuService.getMainMenuLinksObject().pipe(
-    switchMap(linksObject => {
+    switchMap((linksObject) => {
       const menuItem = linksObject[url];
 
       if (!menuItem || !menuItem.is_authenticated) {
