@@ -51,9 +51,6 @@ export class MenuService extends RegisterServiceMixin(class { }) implements Serv
   }
   
   private isMenuItemAccessible(menuItem: MenuItem, isAuthenticated: boolean, currentUser: UserInfo | undefined): boolean {
-    if (!isAuthenticated && menuItem.is_authenticated) {
-      return true;
-    }
     if (!menuItem.roles || menuItem.roles.length === 0) {
       return true;
     }
