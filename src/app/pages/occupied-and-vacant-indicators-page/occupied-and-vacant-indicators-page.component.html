@@ -185,14 +185,12 @@
       </ng-container>
       <ng-container appTableColumnTemplate columnName="owner_id">
         <span *appTableColumnHeaderTemplate>{{ lang.map.owner_id }}</span>
-        <span *appTableColumnCellTemplate="let item; typeOf: transactions$" class="font-bold">{{
-          item.ownerId | number : "1.0-0"
-        }}</span>
+        <span *appTableColumnCellTemplate="let item; typeOf: transactions$" class="font-bold">{{ item.ownerId }}</span>
       </ng-container>
       <ng-container appTableColumnTemplate columnName="tenant_id">
         <span *appTableColumnHeaderTemplate>{{ lang.map.tenant_id }}</span>
         <span *appTableColumnCellTemplate="let item; typeOf: transactions$" class="font-bold">{{
-          item.tenantNumber | number : "1.0-0"
+          item.tenantNumber
         }}</span>
       </ng-container>
 
@@ -205,13 +203,13 @@
       <ng-container appTableColumnTemplate columnName="electricity_number">
         <span *appTableColumnHeaderTemplate>{{ lang.map.electricity_number }}</span>
         <span *appTableColumnCellTemplate="let item; typeOf: transactions$" class="font-bold">{{
-          item.electricityNo | number : "1.0-0"
+          item.electricityNo
         }}</span>
       </ng-container>
       <ng-container appTableColumnTemplate columnName="water_number">
         <span *appTableColumnHeaderTemplate>{{ lang.map.water_number }}</span>
         <span *appTableColumnCellTemplate="let item; typeOf: transactions$" class="font-bold">{{
-          item.waterNumber | number : "1.0-0"
+          item.waterNumber
         }}</span>
       </ng-container>
     </app-table>
