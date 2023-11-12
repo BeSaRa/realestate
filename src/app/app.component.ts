@@ -1,32 +1,32 @@
 import { BidiModule } from '@angular/cdk/bidi';
 import { CommonModule, registerLocaleData } from '@angular/common';
 import localeAr from '@angular/common/locales/ar';
-import { AfterViewInit, Component, HostListener, inject, OnInit } from '@angular/core';
+import { AfterViewInit, Component, HostListener, OnInit, inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
+import { MatMenuModule } from '@angular/material/menu';
 import { Router, RouterModule, RouterOutlet } from '@angular/router';
 import { ButtonComponent } from '@components/button/button.component';
 import { ChatGptComponent } from '@components/chat-gpt/chat-gpt.component';
 import { FooterComponent } from '@components/footer/footer.component';
 import { HeaderComponent } from '@components/header/header.component';
+import { ScrollToTopComponent } from '@components/scroll-to-top/scroll-to-top.component';
 import { SideBarComponent } from '@components/side-bar/side-bar.component';
+import { SliderMenuComponent } from '@components/slider-menu/slider-menu.component';
 import { TranslationPopupComponent } from '@components/translation-popup/translation-popup.component';
 import { SideBarDirection } from '@enums/side-bar-direction';
+import { UserClick } from '@enums/user-click';
+import { UserInfo } from '@models/user-info';
+import { AuthService } from '@services/auth.service';
 import { DialogService } from '@services/dialog.service';
 import { SplashService } from '@services/splash.service';
 import { StickyService } from '@services/sticky.service';
-import { TranslationService } from '@services/translation.service';
-import '@utils/prototypes/custom-prototypes';
-import { filter, map, startWith, switchMap } from 'rxjs';
-import { ScrollToTopComponent } from '@components/scroll-to-top/scroll-to-top.component';
-import { MatMenuModule } from '@angular/material/menu';
-import { AuthService } from '@services/auth.service';
-import { UrlService } from '@services/url.service';
-import { UserInfo } from '@models/user-info';
-import { UserService } from '@services/user.service';
-import { SliderMenuComponent } from '@components/slider-menu/slider-menu.component';
-import { UserClick } from '@enums/user-click';
 import { ToastService } from '@services/toast.service';
+import { TranslationService } from '@services/translation.service';
+import { UrlService } from '@services/url.service';
+import { UserService } from '@services/user.service';
+import '@utils/prototypes/custom-prototypes';
+import { filter, map, startWith } from 'rxjs';
 
 @Component({
   selector: 'app-root',
@@ -68,18 +68,11 @@ export class AppComponent implements OnInit, AfterViewInit {
     map(() => (this.lang.isLtr ? SideBarDirection.RIGHT : SideBarDirection.LEFT))
   );
 
-  backtoTopFloat$ = this.lang.change$.pipe(
-    startWith(this.lang.isLtr ? SideBarDirection.LEFT : SideBarDirection.RIGHT),
-    map(() => (this.lang.isLtr ? SideBarDirection.LEFT : SideBarDirection.RIGHT))
-  );
-
   private _listenToUserChange() {
     // this.authService.currentUser.subscribe((userInfo) => {
     //   this.userInfo = userInfo;
     // });
   }
-
-  showBackToTopScroll = false;
 
   constructor() {
     registerLocaleData(localeAr, 'ar');
@@ -98,7 +91,6 @@ export class AppComponent implements OnInit, AfterViewInit {
   @HostListener('window:scroll')
   windowScroll(): void {
     this.stickyService.isSticky.set(window.scrollY > 120);
-    this.showBackToTopScroll = window.scrollY > 120;
   }
 
   @HostListener('window:keydown.control.alt.ش')
@@ -117,10 +109,6 @@ export class AppComponent implements OnInit, AfterViewInit {
 
   showUserPreference() {
     this.userService.openUserPreferencesPopup();
-  }
-
-  onScrollToTop(): void {
-    window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
   onLogOut() {

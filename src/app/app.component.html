@@ -28,8 +28,5 @@
       <app-button buttonStyle="secondary" (click)="onLogOut()">{{ lang.map.log_out }}</app-button>
     </div>
   </app-side-bar>
-  <app-scroll-to-top
-    [floating]="(backtoTopFloat$ | async)!"
-    *ngIf="showBackToTopScroll"
-    (scrollToTop)="onScrollToTop()"></app-scroll-to-top>
+  <app-scroll-to-top></app-scroll-to-top>
 </div>
