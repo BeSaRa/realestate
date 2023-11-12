@@ -261,7 +261,7 @@ export default class OccupiedAndVacantIndicatorsPageComponent
             return { ...acc, [cur['premiseTypeId' as keyof KpiBaseModel] as number]: cur };
           }, {} as Record<number, KpiBaseModel>);
           this.typeKPIs.forEach((item) => item.kpiData.resetAllValues());
-          this.updateAllPremiseType();
+
           this.filteredTypeKPIs = this.typeKPIs
             .map((item) => {
               _types[item.id] && (item.kpiData = _types[item.id]);
@@ -269,6 +269,7 @@ export default class OccupiedAndVacantIndicatorsPageComponent
             })
             .sort((a, b) => b.kpiData.getKpiVal() - a.kpiData.getKpiVal())
             .filter((item) => item.kpiData.getKpiVal() != 0);
+          this.updateAllPremiseType();
         });
   }
 

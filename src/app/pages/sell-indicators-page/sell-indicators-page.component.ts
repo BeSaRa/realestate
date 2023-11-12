@@ -468,7 +468,7 @@ export default class SellIndicatorsPageComponent implements OnInit, OnDestroy {
         .pipe(takeUntil(this.destroy$))
         .subscribe((result) => {
           this.propertiesKPIS.forEach((item) => item.kpiData.resetAllValues());
-          this.updateAllPropertyType();
+
           this.propertiesKPIS = this.propertiesKPIS
             .map((item) => {
               const _propertyTypeKpiData = result.find((i) => i.propertyTypeId === item.id);
@@ -476,6 +476,7 @@ export default class SellIndicatorsPageComponent implements OnInit, OnDestroy {
               return item;
             })
             .sort((a, b) => a.kpiData.getKpiVal() - b.kpiData.getKpiVal());
+          this.updateAllPropertyType();
         });
   }
 
