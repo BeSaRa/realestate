@@ -12,11 +12,13 @@ import { ServiceContract } from '@contracts/service-contract';
 @Injectable({
   providedIn: 'root',
 })
-export class MenuService extends RegisterServiceMixin(class {}) implements ServiceContract {
+export class MenuService extends RegisterServiceMixin(class { }) implements ServiceContract {
   serviceName = 'MenuService';
   http = inject(HttpClient);
   urlService = inject(UrlService);
   menus!: Menus;
+  mainMenuLinksObject!: { [key: string]: MenuItem };
+  mainMenuLinksObject$ = new ReplaySubject<{ [key: string]: MenuItem }>(1);
   loading = false;
   menus$ = new ReplaySubject<Menus>(1);
 
@@ -33,7 +35,13 @@ export class MenuService extends RegisterServiceMixin(class {}) implements Servi
   }
 
   private _emitMenus(): Observable<Menus> {
-    return this._loadMenus().pipe(tap((menus) => this.menus$.next(menus)));
+    return this._loadMenus().pipe(
+      tap((menus) => {
+        this.menus$.next(menus);
+        this.mainMenuLinksObject = this.createMainMenuLinksObject(menus);
+        this.mainMenuLinksObject$.next(this.mainMenuLinksObject);
+      })
+    );
   }
 
   private _waitIfThereIsLoadingInProgress(): Observable<Menus> {
@@ -48,5 +56,19 @@ export class MenuService extends RegisterServiceMixin(class {}) implements Servi
     return this.http.patch<void>(this.urlService.URLS.MENU_ITEMS + '/' + model.id, {
       clicks: Number(model.clicks) + 1,
     });
+  }
+
+  getMainMenuLinksObject(): Observable<{ [key: string]: MenuItem }> {
+    if (!this.mainMenuLinksObject) {
+      // menu is not loaded yet, so load it
+      this._emitMenus();
+    }
+    return this.mainMenuLinksObject$.asObservable();
+  }
+
+  private createMainMenuLinksObject(menus: Menus): { [key: string]: MenuItem } {
+    return menus?.main_menu?.links?.reduce((acc, link) => {
+      return { ...acc, [link.url]: link };
+    }, {});
   }
 }
