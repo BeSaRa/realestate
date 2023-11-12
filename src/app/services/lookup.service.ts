@@ -396,12 +396,12 @@ export class LookupService extends RegisterServiceMixin(class {}) implements Ser
   private _addAllToPremiseCategories(lookups: LookupsContract) {
     if (lookups.premiseCategoryList.find((p) => p.lookupKey === -1)) return lookups;
     lookups.premiseCategoryList = [
+      ...lookups.premiseCategoryList,
       new Lookup().clone<Lookup>({
         arName: 'الكل',
         enName: 'All',
         lookupKey: -1,
       }),
-      ...lookups.premiseCategoryList,
     ];
     return lookups;
   }
