@@ -1,9 +1,11 @@
 import { CanActivateFn, Router } from '@angular/router';
 import { inject } from '@angular/core';
 import { CmsAuthenticationService } from '@services/auth.service';
-import { switchMap, tap } from 'rxjs/operators';
+import { switchMap, map } from 'rxjs/operators';
 import { MenuService } from '@services/menu.service';
-import { of } from 'rxjs';
+import { of, Observable } from 'rxjs';
+import { UserInfo } from '@models/user-info';
+import { MenuItem } from '@models/menu-item';
 
 export const authGuard: (url: string, redirectTo?: string) => CanActivateFn = (url, redirectTo) => () => {
   const authService = inject(CmsAuthenticationService);
@@ -13,22 +15,42 @@ export const authGuard: (url: string, redirectTo?: string) => CanActivateFn = (u
   return menuService.getMainMenuLinksObject().pipe(
     switchMap((linksObject) => {
       const menuItem = linksObject[url];
-
       if (!menuItem || !menuItem.is_authenticated) {
-        // No menu item found or authentication not required, allow access
         return of(true);
-      } else {
-        // Authentication is required for the current URL
-        return authService.isLoggedIn().pipe(
-          tap((isLoggedIn: boolean) => {
-            if (isLoggedIn) {
-              return true;
-            } else {
-              return !redirectTo ? false : router.navigate([redirectTo]);
-            }
-          })
-        );
       }
+      return authService.isLoggedIn().pipe(
+        switchMap((isLoggedIn: boolean) => {
+          if (isLoggedIn) {
+            return authService.currentUser.pipe(
+              map((user) => handleAuthenticatedUser(user, menuItem, redirectTo, router))
+            );
+          } else {
+            return handleUnauthenticatedUser(redirectTo, router);
+          }
+        })
+      );
     })
   );
 };
+
+function handleAuthenticatedUser(user: UserInfo | undefined, menuItem: MenuItem, redirectTo: string | undefined, router: Router): boolean {
+  if (!user) {
+    return false;
+  }
+  if (!menuItem.roles || menuItem.roles.length === 0 || (user.role && menuItem.roles.includes(user.role?.id))) {
+    return true;
+  } else {
+    if (redirectTo) {
+      router.navigate([redirectTo]);
+    }
+    return false;
+  }
+}
+
+function handleUnauthenticatedUser(redirectTo: string | undefined, router: Router): Observable<boolean> {
+  if (redirectTo) {
+    router.navigate([redirectTo]);
+  }
+  return of(false);
+}
+

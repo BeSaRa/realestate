@@ -13,6 +13,7 @@ export class MenuItem extends HasServiceMixin(ClonerMixin(GetNamesMixin(class {}
   menu_id!: number;
   is_authenticated!: boolean;
   recent = false;
+  roles: string[] = [];
 
   clicked() {
     return this.$$getService$$<MenuService>().updateClicks(this);
