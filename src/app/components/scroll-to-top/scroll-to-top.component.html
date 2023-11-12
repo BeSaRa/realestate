@@ -1,5 +1,1 @@
-<button mat-mini-fab color="primary" (click)="onScrollToTop()" [ngStyle]="getBackToTopStyles">
-  <div class="scroll-icon">
-    <mat-icon [svgIcon]="AppIcons.CHEVRON_UP"></mat-icon>
-  </div>
-</button>
+<app-icon-button *ngIf="!isHidden" [icon]="'CHEVRON_UP'" (click)="onScrollToTop()"></app-icon-button>

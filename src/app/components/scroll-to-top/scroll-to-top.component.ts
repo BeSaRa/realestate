@@ -1,32 +1,33 @@
-import { ChangeDetectionStrategy, Component, EventEmitter, Output, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { MatButtonModule } from '@angular/material/button';
-import { MatIconModule } from '@angular/material/icon';
-import { SideBarDirection } from '@enums/side-bar-direction';
-import { AppIcons } from '@constants/app-icons';
-
-const MATERIAL_MODULES = [MatButtonModule, MatIconModule];
+import { ChangeDetectionStrategy, Component, HostBinding, HostListener, inject } from '@angular/core';
+import { IconButtonComponent } from '@components/icon-button/icon-button.component';
+import { TranslationService } from '@services/translation.service';
 
 @Component({
   standalone: true,
-  imports: [...MATERIAL_MODULES, CommonModule],
+  imports: [CommonModule, IconButtonComponent],
   selector: 'app-scroll-to-top',
   templateUrl: './scroll-to-top.component.html',
   styleUrls: ['./scroll-to-top.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ScrollToTopComponent {
-  @Input() floating = SideBarDirection.RIGHT;
-  @Output() scrollToTop = new EventEmitter<void>();
+  lang = inject(TranslationService);
+
+  @HostBinding('class.left-3') get isAlignedLeft() {
+    return this.lang.isLtr;
+  }
+
+  @HostBinding('class.right-3') get isAlignedRight() {
+    return !this.lang.isLtr;
+  }
+
+  @HostListener('window:scroll')
+  get isHidden() {
+    return window.scrollY < 120;
+  }
 
   onScrollToTop(): void {
-    this.scrollToTop.emit();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   }
-  getBackToTopStyles() {
-    return {
-      float: [this.floating],
-    };
-  }
-
-  protected readonly AppIcons = AppIcons;
 }

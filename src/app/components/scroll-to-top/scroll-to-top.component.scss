@@ -1,22 +1,11 @@
 :host {
-  position: fixed;
-  cursor: pointer;
-  z-index: 100;
-  opacity: 0.75;
-  bottom: 14px;
-  padding: 5px;
+  @apply fixed cursor-pointer bottom-3 z-10 opacity-75;
 }
 
 :host:hover {
-  opacity: 1;
+  @apply opacity-100;
 }
 
-.scroll-icon {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-.mat-mdc-mini-fab.mat-primary {
-  background-color: rgb(138 21 56/0.7);
+:host ::ng-deep .mat-mdc-icon-button {
+  @apply bg-primary text-white;
 }
