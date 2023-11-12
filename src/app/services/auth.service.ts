@@ -27,6 +27,10 @@ export class CmsAuthenticationService {
   private currentUserSubject$ = new ReplaySubject<UserInfo | undefined>(1);
   public currentUser = this.currentUserSubject$.asObservable();
 
+  constructor() {
+    this.currentUserSubject$.next(undefined);
+  }
+
   @CastResponse(() => AuthenticationDataModel, { unwrap: 'data', fallback: '$default' })
   private _login(credentials: Partial<CredentialsContract>): Observable<AuthenticationDataModel> {
     let normalAuth = false;
