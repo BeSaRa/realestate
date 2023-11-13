@@ -211,11 +211,12 @@
         class="absolute hidden sm:inline right-0 -bottom-16"
         src="assets/images/forecast-images/north-big.svg"
         alt="" />
-      <app-sell-forecasting-chart
+      <app-forecasting-chart
         [title]="lang.map.predicted_sell_price + ' ' + getStringSelectedCriteria(true, false)"
         [rootData]="{ chartDataUrl: urlService.URLS.SELL_KPI_ML, hasPrice: true }"
         [filterCriteria]="criteria.criteria"
-        class="relative w-full md:w-5/6 lg:w-4/6 xl:w-7/12"></app-sell-forecasting-chart>
+        [forecastCriteriaItems]="forecastCriteriaItems"
+        class="relative w-full md:w-5/6 lg:w-4/6 xl:w-7/12" />
     </div>
 
     <div class="px-3 lg:px-16 py-8 flex bg-sand mt-8 flex-col">

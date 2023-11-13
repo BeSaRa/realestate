@@ -21,10 +21,14 @@
           *ngIf="!isCriteriaValid"
           class="h-full w-full flex flex-col justify-center items-center text-center gap-2 text-primary [&>p]:text-base sm:[&>p]:text-lg md:[&>p]:text-2xl">
           <p class="font-bold">{{ lang.map.to_display_forecast_chart_filter_values_must_be_as_follows }}:</p>
-          <p>- {{ lang.map.municipal + ": " + lang.map.value_other_than_all }}</p>
-          <p>- {{ lang.map.district + ": " + lang.map.value_other_than_all }}</p>
-          <p>- {{ lang.map.property_type + ": " + lang.map.single_value_other_than_all }}</p>
-          <p>- {{ lang.map.property_usage + ": " + lang.map.single_value_other_than_all }}</p>
+          <p *ngFor="let item of forecastCriteriaItems">
+            -
+            {{
+              lang.getTranslate(item.langKey) +
+                ": " +
+                (item.isArray ? lang.map.single_value_other_than_all : lang.map.value_other_than_all)
+            }}
+          </p>
         </div>
       </div>
       <svg class="w-full fill-transparent transition-all" viewBox="0 0 100 50">
