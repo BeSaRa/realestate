@@ -328,18 +328,19 @@ export default class RentalIndicatorsPageComponent implements OnInit, OnDestroy 
       isArray: true,
       langKey: 'property_usage',
     },
-    {
-      key: 'streetNo',
-      forecastKey: 'streetNo',
-      isArray: false,
-      langKey: 'street',
-    },
-    {
-      key: 'bedRoomsCount' as keyof CriteriaContract,
-      forecastKey: 'bedRoomsCount',
-      isArray: false,
-      langKey: 'number_of_rooms',
-    },
+    // Temporarily until implemented from BE
+    // {
+    //   key: 'streetNo',
+    //   forecastKey: 'streetNo',
+    //   isArray: false,
+    //   langKey: 'street',
+    // },
+    // {
+    //   key: 'bedRoomsCount' as keyof CriteriaContract,
+    //   forecastKey: 'bedRoomsCount',
+    //   isArray: false,
+    //   langKey: 'number_of_rooms',
+    // },
   ];
 
   protected readonly maskSeparator = maskSeparator;
