@@ -343,4 +343,9 @@ export interface LangKeysContract {
   real_estate_brokers_indicators: string;
   real_estate_brokers_dashboard: string;
   broker_name: string;
+  call_broker: string;
+  mail_broker: string;
+
+  total_number_of_licensed_brokers: string;
+  download_brokers_list: string;
 }
