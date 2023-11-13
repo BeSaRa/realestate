@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
-import { Component, ContentChildren, Input, OnInit, Output, QueryList, inject, EventEmitter } from '@angular/core';
+import { Component, ContentChildren, Input, OnInit, Output, QueryList, inject, EventEmitter, SimpleChanges, ViewChild, OnChanges } from '@angular/core';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
-import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
+import { MatPaginator, MatPaginatorModule, PageEvent } from '@angular/material/paginator';
 import { MatSortModule } from '@angular/material/sort';
 import { MatTableModule } from '@angular/material/table';
 import { SelectInputComponent } from '@components/select-input/select-input.component';
@@ -10,7 +10,7 @@ import { OnDestroyMixin } from '@mixins/on-destroy-mixin';
 import { AppTableDataSource } from '@models/app-table-data-source';
 import { TableSortOption } from '@models/table-sort-option';
 import { TranslationService } from '@services/translation.service';
-import { Observable, isObservable, map, takeUntil, tap } from 'rxjs';
+import { Observable, isObservable, map, takeUntil } from 'rxjs';
 
 @Component({
   selector: 'app-table',
@@ -19,8 +19,10 @@ import { Observable, isObservable, map, takeUntil, tap } from 'rxjs';
   templateUrl: './table.component.html',
   styleUrls: ['./table.component.scss'],
 })
-export class TableComponent<T extends object> extends OnDestroyMixin(class {}) implements OnInit {
-  // @Input({ required: true }) data!: T[] | Observable<T[]>;
+export class TableComponent<T extends object> extends OnDestroyMixin(class { }) implements OnInit, OnChanges {
+  @ViewChild('paginator') paginator!: MatPaginator;
+
+
   @Input() pageSize = 5;
   @Input() minWidth = '1000px';
   @Input() headerBgColor = '!bg-primary';
@@ -47,8 +49,6 @@ export class TableComponent<T extends object> extends OnDestroyMixin(class {}) i
 
   ngOnInit(): void {
     this.sortedData = this.data;
-    // this._initializeLength();
-    // this._initializeDataSource();
     this._initializeSort();
     this.sortControl.patchValue(this.defaultSortOption?.value);
   }
@@ -68,17 +68,12 @@ export class TableComponent<T extends object> extends OnDestroyMixin(class {}) i
     // this._initializeDataSource();
   }
 
-  // private _initializeLength() {
-  //   if (isObservable(this.data)) {
-  //     this.data.pipe(
-  //       tap((data) => {
-  //         this.length = data.length;
-  //       })
-  //     );
-  //   } else {
-  //     this.length = this.data.length;
-  //   }
-  // }
+  ngOnChanges(changes: SimpleChanges): void {
+    if ('length' in changes) {
+      this.offset = 0;
+      this.paginator && this.paginator.firstPage();
+    }
+  }
 
   private _initializeDataSource() {
     let paginatedData = this.sortedData;
