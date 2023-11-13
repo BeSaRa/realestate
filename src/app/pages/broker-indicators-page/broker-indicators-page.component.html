@@ -1,0 +1,39 @@
+<app-extra-header class="flex -mt-32 relative text-white text-center">
+  <div class="h-60 flex flex-col justify-center" id="logo-side">
+    <h1 class="text-3xl sm:text-4xl md:text-5xl font-semibold">{{ lang.map.qatar_real_estate_platform }}</h1>
+    <h2 class="text-xl sm:text-2xl md:text-3xl font-semibold">
+      {{ lang.toggleMap.qatar_real_estate_platform }} -
+      <span class="text-gray-400 font-normal">({{ lang.map.trial_run }})</span>
+    </h2>
+    <h2 class="text-xl sm:text-2xl md:text-3xl font-semibold flex flex-col gap-3 items-center">
+      <span class="text-secondary">{{ lang.map.real_estate_brokers_indicators }}</span>
+    </h2>
+    <!-- <div class="flex justify-center mt-5">
+      <app-button size="md" (click)="toggleFilters()" buttonStyle="secondary" [isRounded]="true" [icon]="'FILTER_LIST'">
+        {{ lang.map.search_options }}
+      </app-button>
+    </div> -->
+  </div>
+</app-extra-header>
+
+<div class="content-wrapper">
+  <div class="p-3 lg:px-16">
+    <app-transactions-filter
+      indicatorType="sell"
+      [municipalities]="municipalities"
+      [propertyTypes]="propertyTypes"
+      [propertyUsages]="propertyUsages"
+      [areas]="areas"
+      [rooms]="rooms"
+      [paramsRange]="paramsRange"
+      (fromChanged)="(null)" />
+  </div>
+  <div class="py-16 px-3 lg:px-16">
+    <div class="flex flex-col">
+      <h3
+        class="heading text-xl sm:text-2xl md:text-3xl self-center md:self-start text-center text-primary border-secondary font-semibold">
+        {{ lang.map.real_estate_brokers_dashboard }}
+      </h3>
+    </div>
+  </div>
+</div>
