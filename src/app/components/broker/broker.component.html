@@ -1,0 +1,30 @@
+<div
+  class="group relative w-[300px] h-[160px] bg-sand rounded-lg p-4 transition-all duration-300 cursor-pointer flex flex-col justify-between hover:bg-primary hover:pt-3 hover:pb-5">
+  <div
+    class="absolute bg-secondary top-4 px-4 text-white"
+    [ngClass]="{
+      'left-0 rounded-tr-md rounded-br-md': !lang.isLtr,
+      'right-0 rounded-tl-md rounded-bl-md': lang.isLtr
+    }">
+    {{ getMunicipalityName() }}
+  </div>
+  <img
+    class="absolute bottom-0"
+    [ngClass]="{ 'left-0 ': !lang.isLtr, 'right-0 -scale-x-100': lang.isLtr }"
+    src="assets/icons/broker/card-icon.svg"
+    alt="" />
+  <div class="grid grid-cols-2">
+    <span class="text-primary text-2xl font-bold transition-all group-hover:text-white">{{ broker.getNames() }}</span>
+  </div>
+  <div>
+    <div class="flex gap-2 items-center">
+      <img src="assets/icons/broker/call.svg" alt="" />
+      <p class="transition-all group-hover:text-white">{{ broker.phone }}</p>
+    </div>
+
+    <div class="flex gap-2 items-center">
+      <img src="assets/icons/broker/mail.svg" alt="" />
+      <p class="transition-all group-hover:text-white">{{ broker.email }}</p>
+    </div>
+  </div>
+</div>
