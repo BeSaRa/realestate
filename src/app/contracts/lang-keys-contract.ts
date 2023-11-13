@@ -339,4 +339,8 @@ export interface LangKeysContract {
   data_sources_for_mortgage_indicators_include_data_from_the_ministry_of_justice_real_estate_registry_database: string;
   data_source_for_rental_indicators_includes_data_from_the_ministry_of_municipality_rental_contracts_database: string;
   note: string;
+
+  real_estate_brokers_indicators: string;
+  real_estate_brokers_dashboard: string;
+  broker_name: string;
 }

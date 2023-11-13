@@ -43,12 +43,12 @@ export const routes: Routes = [
   },
   {
     path: 'mortgage-indicators',
-    canActivate: [authGuard('/mortgage-indicators','home')],
+    canActivate: [authGuard('/mortgage-indicators', 'home')],
     loadComponent: () => import('@pages/mortgage-indicators/mortgage-indicators.component'),
   },
   {
     path: 'rental-indicators',
-    canActivate: [authGuard('/rental-indicators','home')],
+    canActivate: [authGuard('/rental-indicators', 'home')],
     loadComponent: () => import('@pages/rental-indicators-page/rental-indicators-page.component'),
   },
   {
@@ -65,5 +65,9 @@ export const routes: Routes = [
   {
     path: 'inputs',
     loadComponent: () => import('@pages/inputs-page/inputs-page.component'),
+  },
+  {
+    path: 'broker-indicators',
+    loadComponent: () => import('@pages/broker-indicators-page/broker-indicators-page.component'),
   },
 ];
