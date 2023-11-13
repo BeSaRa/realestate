@@ -23,7 +23,7 @@ export class ScrollToTopComponent {
   }
 
   @HostListener('window:scroll')
-  get isHidden() {
+  isHidden() {
     return window.scrollY < 120;
   }
 
