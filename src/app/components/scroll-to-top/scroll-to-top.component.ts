@@ -14,16 +14,16 @@ import { TranslationService } from '@services/translation.service';
 export class ScrollToTopComponent {
   lang = inject(TranslationService);
 
-  @HostBinding('class.left-3') isAlignedLeft() {
+  @HostBinding('class.left-3') get isAlignedLeft() {
     return this.lang.isLtr;
   }
 
-  @HostBinding('class.right-3') isAlignedRight() {
+  @HostBinding('class.right-3') get isAlignedRight() {
     return !this.lang.isLtr;
   }
 
   @HostListener('window:scroll')
-  isHidden() {
+  get isHidden() {
     return window.scrollY < 120;
   }
 
