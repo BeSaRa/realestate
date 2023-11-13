@@ -585,12 +585,11 @@ function getRangeOptions(
       ? {
           plotOptions: {
             bar: {
-              columnWidth:
-                dataCount <= 3 ? '10%' : (dataCount * 10) / 2 <= 80 ? ((dataCount * 10) / 2).toString() + '%' : '70%',
+              columnWidth: dataCount <= 3 ? '10%' : (dataCount * 10) / 2 <= 80 ? ((dataCount * 10) / 2).toString() + '%' : '70%',
             },
           },
           xaxis: {
-            range: dataCount <= 3 ? 2 : dataCount - 1,
+            range: dataCount === 1 ? 0 : dataCount <= 3 ? 2 : dataCount - 1,
           },
         }
       : {
