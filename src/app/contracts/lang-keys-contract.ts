@@ -303,6 +303,7 @@ export interface LangKeysContract {
   total_number_of_occupied_and_vacant: string;
 
   predicted_sell_price: string;
+  predicted_rent_price: string;
   no_data_is_currently_available_for_the_selected_parameters: string;
   to_display_forecast_chart_filter_values_must_be_as_follows: string;
   value_other_than_all: string;

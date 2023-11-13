@@ -60,6 +60,8 @@ import {
 import { KpiPurpose } from '@models/kpi-purpose';
 import { KpiPropertyType } from '@models/kpi-property-type';
 import { KpiBase } from '@models/kpi-base';
+import { ForecastingChartComponent } from '@components/forecasting-chart/forecasting-chart.component';
+import { ForecastCriteriaItemContract } from '@contracts/forecast-criteria-contract';
 
 @Component({
   selector: 'app-rental-indicators-page',
@@ -86,6 +88,7 @@ import { KpiBase } from '@models/kpi-base';
     DurationChartComponent,
     PieChartComponent,
     TopTenChartComponent,
+    ForecastingChartComponent,
   ],
   templateUrl: './rental-indicators-page.component.html',
   styleUrls: ['./rental-indicators-page.component.scss'],
@@ -299,6 +302,45 @@ export default class RentalIndicatorsPageComponent implements OnInit, OnDestroy 
 
   selectedPurpose = this.purposeKPIS[0];
   selectedTab: 'rental_indicators' | 'statistical_reports_for_rent' = 'rental_indicators';
+
+  forecastCriteriaItems: ForecastCriteriaItemContract[] = [
+    {
+      key: 'municipalityId',
+      forecastKey: 'municipalityId',
+      isArray: false,
+      langKey: 'municipal',
+    },
+    {
+      key: 'zoneId',
+      forecastKey: 'zoneId',
+      isArray: false,
+      langKey: 'zone',
+    },
+    {
+      key: 'propertyTypeList',
+      forecastKey: 'propertyTypeId',
+      isArray: true,
+      langKey: 'property_type',
+    },
+    {
+      key: 'purposeList',
+      forecastKey: 'purposeId',
+      isArray: true,
+      langKey: 'property_usage',
+    },
+    {
+      key: 'streetNo',
+      forecastKey: 'streetNo',
+      isArray: false,
+      langKey: 'street',
+    },
+    {
+      key: 'bedRoomsCount' as keyof CriteriaContract,
+      forecastKey: 'bedRoomsCount',
+      isArray: false,
+      langKey: 'number_of_rooms',
+    },
+  ];
 
   protected readonly maskSeparator = maskSeparator;
 
