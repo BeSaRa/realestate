@@ -186,8 +186,12 @@ const mainChartOptions: PartialChartOptions = {
   },
   dataLabels: {
     enabled: true,
+    offsetY: -20,
     enabledOnSeries: undefined,
-    style: { colors: [AppColors.JUNGLE] },
+    style: { 
+      colors: [AppColors.JUNGLE],
+      fontSize: '11px',
+     },
   },
   stroke: {
     curve: 'smooth',
