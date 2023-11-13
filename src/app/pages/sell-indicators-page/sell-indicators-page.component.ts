@@ -13,7 +13,7 @@ import { IconButtonComponent } from '@components/icon-button/icon-button.compone
 import { KpiRootComponent } from '@components/kpi-root/kpi-root.component';
 import { PropertyCarouselComponent } from '@components/property-carousel/property-carousel.component';
 import { PurposeComponent } from '@components/purpose/purpose.component';
-import { SellForecastingChartComponent } from '@components/sell-forecasting-chart/sell-forecasting-chart.component';
+import { ForecastingChartComponent } from '@components/forecasting-chart/forecasting-chart.component';
 import { TableComponent } from '@components/table/table.component';
 import { TopTenChartComponent } from '@components/top-ten-chart/top-ten-chart.component';
 import { TransactionsFilterComponent } from '@components/transactions-filter/transactions-filter.component';
@@ -58,6 +58,7 @@ import {
   take,
   takeUntil,
 } from 'rxjs';
+import { ForecastCriteriaItemContract } from '@contracts/forecast-criteria-contract';
 
 @Component({
   selector: 'app-sell-indicators-page',
@@ -83,7 +84,7 @@ import {
     MatNativeDateModule,
     DurationChartComponent,
     TopTenChartComponent,
-    SellForecastingChartComponent,
+    ForecastingChartComponent,
   ],
   templateUrl: './sell-indicators-page.component.html',
   styleUrls: ['./sell-indicators-page.component.scss'],
@@ -210,6 +211,33 @@ export default class SellIndicatorsPageComponent implements OnInit, OnDestroy {
   get nonePriceList() {
     return this.rootKPIS.filter((item) => !item.hasPrice);
   }
+
+  forecastCriteriaItems: ForecastCriteriaItemContract[] = [
+    {
+      key: 'municipalityId',
+      forecastKey: 'municipalityId',
+      isArray: false,
+      langKey: 'municipal',
+    },
+    {
+      key: 'areaCode',
+      forecastKey: 'areaCode',
+      isArray: false,
+      langKey: 'district',
+    },
+    {
+      key: 'propertyTypeList',
+      forecastKey: 'propertyTypeId',
+      isArray: true,
+      langKey: 'property_type',
+    },
+    {
+      key: 'purposeList',
+      forecastKey: 'purposeId',
+      isArray: true,
+      langKey: 'property_usage',
+    },
+  ];
 
   accordingToList: Top10AccordingTo[] = [
     new Top10AccordingTo().clone<Top10AccordingTo>({

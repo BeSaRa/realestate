@@ -1,16 +1,16 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { SellForecastingChartComponent } from './sell-forecasting-chart.component';
+import { ForecastingChartComponent } from './forecasting-chart.component';
 
 describe('SellForecastingChartComponent', () => {
-  let component: SellForecastingChartComponent;
-  let fixture: ComponentFixture<SellForecastingChartComponent>;
+  let component: ForecastingChartComponent;
+  let fixture: ComponentFixture<ForecastingChartComponent>;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [SellForecastingChartComponent],
+      imports: [ForecastingChartComponent],
     });
-    fixture = TestBed.createComponent(SellForecastingChartComponent);
+    fixture = TestBed.createComponent(ForecastingChartComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

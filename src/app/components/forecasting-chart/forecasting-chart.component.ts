@@ -2,7 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component, Input, OnChanges, SimpleChanges, inject } from '@angular/core';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { CriteriaContract } from '@contracts/criteria-contract';
-import { ForecastCriteriaContract } from '@contracts/forecast-criteria-contract';
+import { ForecastCriteriaContract, ForecastCriteriaItemContract } from '@contracts/forecast-criteria-contract';
 import { ForecastData } from '@models/forecast-data';
 import { AppChartTypesService } from '@services/app-chart-types.service';
 import { DashboardService } from '@services/dashboard.service';
@@ -13,16 +13,17 @@ import BezierCurve from 'rulyotano.math.interpolation.bezier/dist/src/BezierCurv
 import { catchError, take, throwError } from 'rxjs';
 
 @Component({
-  selector: 'app-sell-forecasting-chart',
+  selector: 'app-forecasting-chart',
   standalone: true,
   imports: [CommonModule, MatProgressSpinnerModule],
-  templateUrl: './sell-forecasting-chart.component.html',
-  styleUrls: ['./sell-forecasting-chart.component.scss'],
+  templateUrl: './forecasting-chart.component.html',
+  styleUrls: ['./forecasting-chart.component.scss'],
 })
-export class SellForecastingChartComponent implements OnChanges {
+export class ForecastingChartComponent implements OnChanges {
   @Input({ required: true }) title!: string;
   @Input({ required: true }) rootData!: { chartDataUrl: string; hasPrice: boolean };
   @Input({ required: true }) filterCriteria!: CriteriaContract;
+  @Input({ required: true }) forecastCriteriaItems: ForecastCriteriaItemContract[] = [];
 
   lang = inject(TranslationService);
   dashboardService = inject(DashboardService);
@@ -52,37 +53,43 @@ export class SellForecastingChartComponent implements OnChanges {
   }
 
   loadChartData() {
-    const { municipalityId, areaCode, propertyTypeList, purposeList } = this.filterCriteria;
-
     this.isCriteriaValid = true;
     this.isDataAvailable = true;
 
-    if (
-      municipalityId === -1 ||
-      areaCode === -1 ||
-      propertyTypeList?.length !== 1 ||
-      propertyTypeList?.includes(-1) ||
-      purposeList?.length !== 1 ||
-      purposeList?.includes(-1)
-    ) {
-      this.isCriteriaValid = false;
+    this.forecastCriteriaItems.forEach((item) => {
+      if (item.isArray) {
+        const _arr = (this.filterCriteria[item.key as keyof CriteriaContract] as Array<number>) ?? [];
+        if (_arr.length !== 1 || _arr.includes(-1)) {
+          this.isCriteriaValid = false;
+          return;
+        }
+      } else {
+        if (this.filterCriteria[item.key as keyof CriteriaContract] === -1) {
+          this.isCriteriaValid = false;
+          return;
+        }
+      }
+    });
 
+    if (!this.isCriteriaValid) {
       this.realPoints = this._getInitialPoints();
       this.viewPoints = this._getViewPoints();
       this.svgPaths = this._getSvgPaths();
       return;
     }
 
-    const _criteria: ForecastCriteriaContract = {
-      municipalityId,
-      areaCode,
-      propertyTypeId: propertyTypeList[0],
-      purposeId: purposeList[0],
-    };
+    const _forecastCriteria: Partial<ForecastCriteriaContract> = {};
+    this.forecastCriteriaItems.forEach((item) => {
+      if (item.isArray)
+        _forecastCriteria[item.forecastKey] = (
+          this.filterCriteria[item.key as keyof CriteriaContract] as Array<number>
+        )[0];
+      else _forecastCriteria[item.forecastKey] = this.filterCriteria[item.key as keyof CriteriaContract] as number;
+    });
 
     this.isLoading = true;
     this.dashboardService
-      .loadForecastData(this.rootData.chartDataUrl, _criteria)
+      .loadForecastData(this.rootData.chartDataUrl, _forecastCriteria)
       .pipe(
         take(1),
         catchError((err) => {
