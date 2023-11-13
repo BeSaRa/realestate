@@ -2,6 +2,7 @@ const rentEndPoints = {
   RENT: 'BE|kpi/rent',
   RENT_LOOKUPS: 'BE|kpi/rent/lookup',
   DEFAULT_RENT: 'RENT|default',
+  RENT_KPI_ML: 'RENT|kpi_ml',
   RENT_KPI1: 'RENT|kpi1/total-contracts', // root
   RENT_KPI2: 'RENT|kpi2/total-contracts/purpose',
   RENT_KPI3: 'RENT|kpi3/total-contracts/property',
