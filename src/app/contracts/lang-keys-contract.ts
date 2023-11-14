@@ -307,6 +307,8 @@ export interface LangKeysContract {
   no_data_is_currently_available_for_the_selected_parameters: string;
   to_display_forecast_chart_filter_values_must_be_as_follows: string;
   value_other_than_all: string;
+  value_equal_to_all: string;
+  single_value: string;
   single_value_other_than_all: string;
   occupied_and_vacant_units_count_per_municipality: string;
   occupied_and_vacant_units_count_per_zone: string;

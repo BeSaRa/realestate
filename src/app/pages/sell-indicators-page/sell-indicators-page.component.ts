@@ -9,11 +9,11 @@ import { SellTransactionIndicator } from '@app-types/sell-indicators-type';
 import { ButtonComponent } from '@components/button/button.component';
 import { DurationChartComponent } from '@components/duration-chart/duration-chart.component';
 import { ExtraHeaderComponent } from '@components/extra-header/extra-header.component';
+import { ForecastingChartComponent } from '@components/forecasting-chart/forecasting-chart.component';
 import { IconButtonComponent } from '@components/icon-button/icon-button.component';
 import { KpiRootComponent } from '@components/kpi-root/kpi-root.component';
 import { PropertyCarouselComponent } from '@components/property-carousel/property-carousel.component';
 import { PurposeComponent } from '@components/purpose/purpose.component';
-import { ForecastingChartComponent } from '@components/forecasting-chart/forecasting-chart.component';
 import { TableComponent } from '@components/table/table.component';
 import { TopTenChartComponent } from '@components/top-ten-chart/top-ten-chart.component';
 import { TransactionsFilterComponent } from '@components/transactions-filter/transactions-filter.component';
@@ -24,9 +24,9 @@ import { TableColumnHeaderTemplateDirective } from '@directives/table-column-hea
 import { TableColumnTemplateDirective } from '@directives/table-column-template.directive';
 import { indicatorsTypes } from '@enums/Indicators-type';
 import { CriteriaType } from '@enums/criteria-type';
-import { SqUnit } from '@enums/sq-unit';
 import { AppTableDataSource } from '@models/app-table-data-source';
 import { CompositeTransaction } from '@models/composite-transaction';
+import { CriteriaSpecificTerms, CriteriaTerms } from '@models/criteria-specific-terms';
 import { KpiBase } from '@models/kpi-base';
 import { KpiPropertyType } from '@models/kpi-property-type';
 import { KpiPurpose } from '@models/kpi-purpose';
@@ -58,7 +58,6 @@ import {
   take,
   takeUntil,
 } from 'rxjs';
-import { ForecastCriteriaItemContract } from '@contracts/forecast-criteria-contract';
 
 @Component({
   selector: 'app-sell-indicators-page',
@@ -212,32 +211,12 @@ export default class SellIndicatorsPageComponent implements OnInit, OnDestroy {
     return this.rootKPIS.filter((item) => !item.hasPrice);
   }
 
-  forecastCriteriaItems: ForecastCriteriaItemContract[] = [
-    {
-      key: 'municipalityId',
-      forecastKey: 'municipalityId',
-      isArray: false,
-      langKey: 'municipal',
-    },
-    {
-      key: 'areaCode',
-      forecastKey: 'areaCode',
-      isArray: false,
-      langKey: 'district',
-    },
-    {
-      key: 'propertyTypeList',
-      forecastKey: 'propertyTypeId',
-      isArray: true,
-      langKey: 'property_type',
-    },
-    {
-      key: 'purposeList',
-      forecastKey: 'purposeId',
-      isArray: true,
-      langKey: 'property_usage',
-    },
-  ];
+  forecastCriteriaTerms = new CriteriaSpecificTerms([
+    'municipalityId',
+    'areaCode',
+    { criteriaKey: 'propertyTypeList', term: CriteriaTerms.SINGLE_NOT_ALL, mapTo: 'propertyTypeId' },
+    { criteriaKey: 'purposeList', term: CriteriaTerms.SINGLE_NOT_ALL, mapTo: 'property_usage' },
+  ]);
 
   accordingToList: Top10AccordingTo[] = [
     new Top10AccordingTo().clone<Top10AccordingTo>({
