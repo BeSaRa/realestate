@@ -190,7 +190,6 @@ const mainChartOptions: PartialChartOptions = {
     enabledOnSeries: undefined,
     style: { 
       colors: [AppColors.JUNGLE],
-      fontSize: '11px',
      },
   },
   stroke: {
