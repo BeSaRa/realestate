@@ -21,13 +21,9 @@
           *ngIf="!isCriteriaValid"
           class="h-full w-full flex flex-col justify-center items-center text-center gap-2 text-primary [&>p]:text-base sm:[&>p]:text-lg md:[&>p]:text-2xl">
           <p class="font-bold">{{ lang.map.to_display_forecast_chart_filter_values_must_be_as_follows }}:</p>
-          <p *ngFor="let item of forecastCriteriaItems">
+          <p *ngFor="let term of criteriaTerms.getCriteriaTermsText()">
             -
-            {{
-              lang.getTranslate(item.langKey) +
-                ": " +
-                (item.isArray ? lang.map.single_value_other_than_all : lang.map.value_other_than_all)
-            }}
+            {{ term }}
           </p>
         </div>
       </div>

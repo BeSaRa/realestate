@@ -2,7 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component, Input, OnChanges, SimpleChanges, inject } from '@angular/core';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { CriteriaContract } from '@contracts/criteria-contract';
-import { ForecastCriteriaContract, ForecastCriteriaItemContract } from '@contracts/forecast-criteria-contract';
+import { CriteriaSpecificTerms } from '@models/criteria-specific-terms';
 import { ForecastData } from '@models/forecast-data';
 import { AppChartTypesService } from '@services/app-chart-types.service';
 import { DashboardService } from '@services/dashboard.service';
@@ -23,7 +23,7 @@ export class ForecastingChartComponent implements OnChanges {
   @Input({ required: true }) title!: string;
   @Input({ required: true }) rootData!: { chartDataUrl: string; hasPrice: boolean };
   @Input({ required: true }) filterCriteria!: CriteriaContract;
-  @Input({ required: true }) forecastCriteriaItems: ForecastCriteriaItemContract[] = [];
+  @Input({ required: true }) criteriaTerms!: CriteriaSpecificTerms;
 
   lang = inject(TranslationService);
   dashboardService = inject(DashboardService);
@@ -53,23 +53,8 @@ export class ForecastingChartComponent implements OnChanges {
   }
 
   loadChartData() {
-    this.isCriteriaValid = true;
     this.isDataAvailable = true;
-
-    this.forecastCriteriaItems.forEach((item) => {
-      if (item.isArray) {
-        const _arr = (this.filterCriteria[item.key as keyof CriteriaContract] as Array<number>) ?? [];
-        if (_arr.length !== 1 || _arr.includes(-1)) {
-          this.isCriteriaValid = false;
-          return;
-        }
-      } else {
-        if (this.filterCriteria[item.key as keyof CriteriaContract] === -1) {
-          this.isCriteriaValid = false;
-          return;
-        }
-      }
-    });
+    this.isCriteriaValid = this.criteriaTerms.checkIfCriteriaValid(this.filterCriteria);
 
     if (!this.isCriteriaValid) {
       this.realPoints = this._getInitialPoints();
@@ -78,18 +63,9 @@ export class ForecastingChartComponent implements OnChanges {
       return;
     }
 
-    const _forecastCriteria: Partial<ForecastCriteriaContract> = {};
-    this.forecastCriteriaItems.forEach((item) => {
-      if (item.isArray)
-        _forecastCriteria[item.forecastKey] = (
-          this.filterCriteria[item.key as keyof CriteriaContract] as Array<number>
-        )[0];
-      else _forecastCriteria[item.forecastKey] = this.filterCriteria[item.key as keyof CriteriaContract] as number;
-    });
-
     this.isLoading = true;
     this.dashboardService
-      .loadForecastData(this.rootData.chartDataUrl, _forecastCriteria)
+      .loadForecastData(this.rootData.chartDataUrl, this.criteriaTerms.getMappedCriteria(this.filterCriteria))
       .pipe(
         take(1),
         catchError((err) => {

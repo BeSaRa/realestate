@@ -37,13 +37,13 @@ import { SellDefaultValues } from '@models/sell-default-values';
 import { SellTransaction } from '@models/sell-transaction';
 import { SellTransactionPropertyType } from '@models/sell-transaction-property-type';
 import { SellTransactionPurpose } from '@models/sell-transaction-purpose';
+import { Top10KpiModel } from '@models/top-10-kpi-model';
 import { UrlService } from '@services/url.service';
 import { groupBy, minMaxAvg, range } from '@utils/utils';
 import { CastResponse } from 'cast-response';
-import { forkJoin, map, Observable, tap } from 'rxjs';
+import { forkJoin, map, Observable } from 'rxjs';
 import { DialogService } from './dialog.service';
 import { TranslationService } from './translation.service';
-import { Top10KpiModel } from '@models/top-10-kpi-model';
 
 @Injectable({
   providedIn: 'root',

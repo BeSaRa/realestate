@@ -17,6 +17,7 @@ import { MatTableModule } from '@angular/material/table';
 import { RentTransactionIndicator } from '@app-types/rent-indicators-type';
 import { ButtonComponent } from '@components/button/button.component';
 import { DurationChartComponent } from '@components/duration-chart/duration-chart.component';
+import { ForecastingChartComponent } from '@components/forecasting-chart/forecasting-chart.component';
 import { IconButtonComponent } from '@components/icon-button/icon-button.component';
 import { PieChartComponent } from '@components/pie-chart/pie-chart.component';
 import { PropertyCarouselComponent } from '@components/property-carousel/property-carousel.component';
@@ -30,6 +31,10 @@ import { TableColumnTemplateDirective } from '@directives/table-column-template.
 import { indicatorsTypes } from '@enums/Indicators-type';
 import { AppTableDataSource } from '@models/app-table-data-source';
 import { RentCompositeTransaction } from '@models/composite-transaction';
+import { CriteriaSpecificTerms, CriteriaTerms } from '@models/criteria-specific-terms';
+import { KpiBase } from '@models/kpi-base';
+import { KpiPropertyType } from '@models/kpi-property-type';
+import { KpiPurpose } from '@models/kpi-purpose';
 import { Lookup } from '@models/lookup';
 import { RentTransaction } from '@models/rent-transaction';
 import { RentTransactionPropertyType } from '@models/rent-transaction-property-type';
@@ -57,11 +62,6 @@ import {
   take,
   takeUntil,
 } from 'rxjs';
-import { KpiPurpose } from '@models/kpi-purpose';
-import { KpiPropertyType } from '@models/kpi-property-type';
-import { KpiBase } from '@models/kpi-base';
-import { ForecastingChartComponent } from '@components/forecasting-chart/forecasting-chart.component';
-import { ForecastCriteriaItemContract } from '@contracts/forecast-criteria-contract';
 
 @Component({
   selector: 'app-rental-indicators-page',
@@ -303,45 +303,15 @@ export default class RentalIndicatorsPageComponent implements OnInit, OnDestroy 
   selectedPurpose = this.purposeKPIS[0];
   selectedTab: 'rental_indicators' | 'statistical_reports_for_rent' = 'rental_indicators';
 
-  forecastCriteriaItems: ForecastCriteriaItemContract[] = [
-    {
-      key: 'municipalityId',
-      forecastKey: 'municipalityId',
-      isArray: false,
-      langKey: 'municipal',
-    },
-    {
-      key: 'zoneId',
-      forecastKey: 'zoneId',
-      isArray: false,
-      langKey: 'zone',
-    },
-    {
-      key: 'propertyTypeList',
-      forecastKey: 'propertyTypeId',
-      isArray: true,
-      langKey: 'property_type',
-    },
-    {
-      key: 'purposeList',
-      forecastKey: 'purposeId',
-      isArray: true,
-      langKey: 'property_usage',
-    },
-    // Temporarily until implemented from BE
-    // {
-    //   key: 'streetNo',
-    //   forecastKey: 'streetNo',
-    //   isArray: false,
-    //   langKey: 'street',
-    // },
-    // {
-    //   key: 'bedRoomsCount' as keyof CriteriaContract,
-    //   forecastKey: 'bedRoomsCount',
-    //   isArray: false,
-    //   langKey: 'number_of_rooms',
-    // },
-  ];
+  forecastCriteriaTerms = new CriteriaSpecificTerms([
+    'municipalityId',
+    'areaCode',
+    { criteriaKey: 'propertyTypeList', term: CriteriaTerms.SINGLE_NOT_ALL, mapTo: 'propertyTypeId' },
+    { criteriaKey: 'purposeList', term: CriteriaTerms.SINGLE_NOT_ALL, mapTo: 'property_usage' },
+    // temporarily commented until implemented from BE
+    // 'streetNo',
+    // 'bedRoomsCount'
+  ]);
 
   protected readonly maskSeparator = maskSeparator;
 
