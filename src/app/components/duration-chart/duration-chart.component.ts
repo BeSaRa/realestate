@@ -435,29 +435,6 @@ export class DurationChartComponent extends OnDestroyMixin(class {}) implements 
     }
   };
 
-  // private _getDurationDefaultTooltipTemplate(x: string | number, y: number, name: string) {
-  //   return `
-  //     <div dir="${
-  //       this.lang.isLtr ? 'ltr' : 'rtl'
-  //     }" class="apexcharts-tooltip-title" style="font-family: Helvetica, Arial, sans-serif; font-size: 12px">${x}</div>
-  //     <div dir="${
-  //       this.lang.isLtr ? 'ltr' : 'rtl'
-  //     }" class="apexcharts-tooltip-series-group apexcharts-active" style="order: 1; display: flex">
-  //       <div class="apexcharts-tooltip-text" style="font-family: Helvetica, Arial, sans-serif; font-size: 12px">
-  //         <div class="apexcharts-tooltip-y-group flex justify-between gap-2">
-  //           <span class="apexcharts-tooltip-text-y-label">${name}: </span>
-  //           <span class="apexcharts-tooltip-text-y-value">${this.appChartTypesService.axisYFormatter(
-  //             {
-  //               val: y,
-  //             },
-  //             this.rootData
-  //           )}</span>
-  //         </div>
-  //       </div>
-  //     </div>
-  //   `;
-  // }
-
   private _getDurationDefaultTooltipTemplate(dataPointIndex: number) {
     const _colors = [AppColors.PRIMARY, AppColors.SECONDARY, AppColors.LEAD_80, AppColors.LEAD_60];
     return `
