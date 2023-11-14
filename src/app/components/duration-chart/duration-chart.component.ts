@@ -422,7 +422,7 @@ export class DurationChartComponent extends OnDestroyMixin(class {}) implements 
       this.selectedDurationType === DurationEndpoints.HALFY ||
       this.selectedDurationType === DurationEndpoints.QUARTERLY
     ) {
-      return this._getDurationDefaultTooltipTemplate(_dataPoint.x, _dataPoint.y, _series.name ?? '');
+      return this._getDurationDefaultTooltipTemplate(opts.dataPointIndex);
     } else {
       return this._getDurationCustomTooltipTemplate(
         _dataPoint.x,
@@ -435,24 +435,61 @@ export class DurationChartComponent extends OnDestroyMixin(class {}) implements 
     }
   };
 
-  private _getDurationDefaultTooltipTemplate(x: string | number, y: number, name: string) {
+  // private _getDurationDefaultTooltipTemplate(x: string | number, y: number, name: string) {
+  //   return `
+  //     <div dir="${
+  //       this.lang.isLtr ? 'ltr' : 'rtl'
+  //     }" class="apexcharts-tooltip-title" style="font-family: Helvetica, Arial, sans-serif; font-size: 12px">${x}</div>
+  //     <div dir="${
+  //       this.lang.isLtr ? 'ltr' : 'rtl'
+  //     }" class="apexcharts-tooltip-series-group apexcharts-active" style="order: 1; display: flex">
+  //       <div class="apexcharts-tooltip-text" style="font-family: Helvetica, Arial, sans-serif; font-size: 12px">
+  //         <div class="apexcharts-tooltip-y-group flex justify-between gap-2">
+  //           <span class="apexcharts-tooltip-text-y-label">${name}: </span>
+  //           <span class="apexcharts-tooltip-text-y-value">${this.appChartTypesService.axisYFormatter(
+  //             {
+  //               val: y,
+  //             },
+  //             this.rootData
+  //           )}</span>
+  //         </div>
+  //       </div>
+  //     </div>
+  //   `;
+  // }
+
+  private _getDurationDefaultTooltipTemplate(dataPointIndex: number) {
+    const _colors = [AppColors.PRIMARY, AppColors.SECONDARY, AppColors.LEAD_80, AppColors.LEAD_60];
     return `
       <div dir="${
         this.lang.isLtr ? 'ltr' : 'rtl'
-      }" class="apexcharts-tooltip-title" style="font-family: Helvetica, Arial, sans-serif; font-size: 12px">${x}</div>
+      }" class="apexcharts-tooltip-title" style="font-family: Helvetica, Arial, sans-serif; font-size: 12px">${
+      this.chartSeriesData[0].data[dataPointIndex].x
+    }</div>
       <div dir="${
         this.lang.isLtr ? 'ltr' : 'rtl'
       }" class="apexcharts-tooltip-series-group apexcharts-active" style="order: 1; display: flex">
         <div class="apexcharts-tooltip-text" style="font-family: Helvetica, Arial, sans-serif; font-size: 12px">
-          <div class="apexcharts-tooltip-y-group flex justify-between gap-2">
-            <span class="apexcharts-tooltip-text-y-label">${name}: </span>
+          ${this.chartSeriesData
+            .map(
+              (series, index) => `
+          <div class="apexcharts-tooltip-y-group flex justify-between items-center gap-2">
+            ${
+              this.selectedDurationType === DurationEndpoints.MONTHLY
+                ? ``
+                : `<span class="apexcharts-tooltip-marker" style="background-color: ${_colors[index]};"></span>`
+            }
+            <span class="apexcharts-tooltip-text-y-label">${series.name ?? ''}: </span>
             <span class="apexcharts-tooltip-text-y-value">${this.appChartTypesService.axisYFormatter(
               {
-                val: y,
+                val: series.data[dataPointIndex].y,
               },
               this.rootData
             )}</span>
           </div>
+          `
+            )
+            .join('')}
         </div>
       </div>
     `;
