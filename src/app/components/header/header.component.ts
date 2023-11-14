@@ -5,7 +5,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { TopHeaderComponent } from '../top-header/top-header.component';
 import { MainHeaderComponent } from '../main-header/main-header.component';
 import { StickyService } from '@services/sticky.service';
-import { CmsAuthenticationService } from '@services/auth.service';
+import { AuthService } from '@services/auth.service';
 
 @Component({
   selector: 'app-header',
@@ -15,12 +15,12 @@ import { CmsAuthenticationService } from '@services/auth.service';
   styleUrls: ['./header.component.scss'],
 })
 export class HeaderComponent implements OnInit {
-  authService = inject(CmsAuthenticationService);
+  authService = inject(AuthService);
   stickyService = inject(StickyService);
   isSticky = computed(() => this.stickyService.isSticky());
-  isAuthenticated = false;
 
   ngOnInit(): void {
-    this.authService.isLoggedIn().subscribe((authenticated) => (this.isAuthenticated = authenticated));
+    console.log('log');
+    //this.authService.isLoggedIn().subscribe((authenticated) => (this.isAuthenticated = authenticated));
   }
 }

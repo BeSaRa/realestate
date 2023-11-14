@@ -1,7 +1,6 @@
-<app-top-header [isAuthenticated]="isAuthenticated" class="hidden lg:block" />
+<app-top-header class="hidden lg:block" />
 <div *ngIf="isSticky()" class="h-20 w-full"></div>
 <app-main-header
-  [isAuthenticated]="isAuthenticated"
   class="[&.fixed]:left-0 [&.fixed]:right-0 [&.fixed]:top-0 [&.fixed]:bg-white [&.fixed]:shadow text-primary group"
   [class.fixed]="isSticky()"
   [class.animate-sticky]="isSticky()" />

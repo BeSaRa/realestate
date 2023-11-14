@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
-import { Component, inject, Input, OnInit } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { ButtonComponent } from '@components/button/button.component';
 import { OnDestroyMixin } from '@mixins/on-destroy-mixin';
 import { Menu } from '@models/menu';
@@ -28,10 +28,12 @@ export class MainMenuComponent extends OnDestroyMixin(class {}) implements OnIni
 
   mainMenu!: Menu;
 
-  @Input() isAuthenticated = false;
-
   ngOnInit(): void {
-    this.menuService.loadMenus().subscribe((menus) => (this.mainMenu = menus.main_menu));
+    console.log('HERE');
+    this.menuService.loadMenus().subscribe((menus) => {
+      this.mainMenu = menus.main_menu;
+      console.log(this.mainMenu);
+    });
   }
 
   addClick(item: MenuItem): void {

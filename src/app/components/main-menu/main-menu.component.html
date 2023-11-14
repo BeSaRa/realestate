@@ -1,7 +1,7 @@
 <div class="hidden lg:block">
   <ul id="main-menu" class="flex gap-x-3">
     <ng-container *ngFor="let menuItem of mainMenu?.links ?? []">
-      <li *ngIf="!menuItem.is_authenticated || isAuthenticated">
+      <li>
         <app-button
           [buttonStyle]="sticky.isSticky() ? 'none-primary' : 'none'"
           [routerLink]="menuItem.url"

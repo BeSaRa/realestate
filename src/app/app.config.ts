@@ -16,10 +16,13 @@ import { TranslationService } from '@services/translation.service';
 import { UrlService } from '@services/url.service';
 import { RECAPTCHA_LANGUAGE, RECAPTCHA_SETTINGS, RECAPTCHA_V3_SITE_KEY, RecaptchaSettings } from 'ng-recaptcha';
 import { NgxMaskPipe, provideNgxMask } from 'ngx-mask';
-import { forkJoin, switchMap, tap } from 'rxjs';
+import { catchError, delay, forkJoin, map, of, switchMap, tap } from 'rxjs';
 import { routes } from './app.routes';
 import { TokenInterceptor } from './interceptors/token.interceptor';
 import { UnitsService } from '@services/units.service';
+import { TokenService } from '@services/token.service';
+import { AuthService } from '@services/auth.service';
+import { UserService } from '@services/user.service';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -44,16 +47,41 @@ export const appConfig: ApplicationConfig = {
     },
     {
       provide: APP_INITIALIZER,
-      useFactory: (config: ConfigService, url: UrlService, translation: TranslationService, lookups: LookupService) => {
+      useFactory: (
+        config: ConfigService,
+        url: UrlService,
+        translation: TranslationService,
+        lookups: LookupService,
+        tokenService: TokenService,
+        userService: UserService,
+        authService: AuthService
+      ) => {
         return () =>
           forkJoin([config.load()])
             .pipe(tap(() => url.setConfigService(config)))
             .pipe(tap(() => url.prepareUrls()))
             .pipe(switchMap(() => lookups.load()))
-            .pipe(switchMap(() => translation.load()));
+            .pipe(switchMap(() => translation.load()))
+            .pipe(tap(() => tokenService.getTokenFromStorage()))
+            .pipe(tap(() => authService.refresh$.next('json')))
+            .pipe(delay(0))
+            .pipe(
+              switchMap(() => {
+                return tokenService.getToken() ? userService.loadCurrentUserProfile() : of(true);
+              })
+            );
       },
       // UnitsService add to deps to initialize service at app start and be able to regiser it using ServiceRegistery
-      deps: [ConfigService, UrlService, TranslationService, LookupService, UnitsService],
+      deps: [
+        ConfigService,
+        UrlService,
+        TranslationService,
+        LookupService,
+        TokenService,
+        UserService,
+        AuthService,
+        UnitsService,
+      ],
       multi: true,
     },
     {

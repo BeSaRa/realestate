@@ -5,18 +5,18 @@
   </div>
   <div class="dialog-content">
     <div class="grid grid-cols-2 gap-4 [&>*]:col-span-2">
-      <div #f="ngForm" [formGroup]="LoginForm">
+      <div #f="ngForm" [formGroup]="form">
         <app-input
           formControlName="identifier"
           [label]="lang.map.identifier + ' / ' + this.lang.map.email"
           (input)="clearError()"
-          (keydown.enter)="onLogin()" />
+          (keydown.enter)="login()" />
         <app-input
           formControlName="password"
           type="password"
           [label]="lang.map.password"
           (input)="clearError()"
-          (keydown.enter)="onLogin()" />
+          (keydown.enter)="login()" />
       </div>
     </div>
     <div *ngIf="isLoggedInFailed" class="alert alert-danger" role="alert">
@@ -24,7 +24,7 @@
     </div>
   </div>
   <div class="dialog-footer justify-end">
-    <app-button (click)="onLogin()" buttonStyle="primary">{{ lang.map.sign_in }}</app-button>
+    <app-button (click)="login()" buttonStyle="primary">{{ lang.map.sign_in }}</app-button>
     <app-button mat-dialog-close buttonStyle="primary-outline">{{ lang.map.cancel }}</app-button>
   </div>
 </div>

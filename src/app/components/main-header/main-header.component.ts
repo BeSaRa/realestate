@@ -3,7 +3,7 @@ import { Component, inject, Input } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { ButtonComponent } from '@components/button/button.component';
 import { IconButtonComponent } from '@components/icon-button/icon-button.component';
-import { CmsAuthenticationService } from '@services/auth.service';
+import { AuthService } from '@services/auth.service';
 import { SideBarService } from '@services/side-bar.service';
 import { StickyService } from '@services/sticky.service';
 import { TranslationService } from '@services/translation.service';
@@ -19,9 +19,7 @@ import { MainMenuComponent } from '@components/main-menu/main-menu.component';
 export class MainHeaderComponent {
   lang = inject(TranslationService);
   sticky = inject(StickyService);
-  authService = inject(CmsAuthenticationService);
   sideBarService = inject(SideBarService);
-  @Input() isAuthenticated = false;
 
   changeLang(event: Event) {
     event.preventDefault();

@@ -20,7 +20,7 @@ import '@utils/prototypes/custom-prototypes';
 import { filter, map, startWith, switchMap } from 'rxjs';
 import { ScrollToTopComponent } from '@components/scroll-to-top/scroll-to-top.component';
 import { MatMenuModule } from '@angular/material/menu';
-import { CmsAuthenticationService } from '@services/auth.service';
+import { AuthService } from '@services/auth.service';
 import { UrlService } from '@services/url.service';
 import { UserInfo } from '@models/user-info';
 import { UserService } from '@services/user.service';
@@ -55,14 +55,13 @@ export class AppComponent implements OnInit, AfterViewInit {
   stickyService = inject(StickyService);
   dialog = inject(DialogService);
   splashService = inject(SplashService);
-  authService = inject(CmsAuthenticationService);
   urlService = inject(UrlService);
   userService = inject(UserService);
   toast = inject(ToastService);
   router = inject(Router);
+  authService = inject(AuthService);
 
   userInfo?: UserInfo;
-  isAuthenticated = false;
 
   direction$ = this.lang.change$.pipe(
     startWith(this.lang.isLtr ? SideBarDirection.RIGHT : SideBarDirection.LEFT),
@@ -75,9 +74,9 @@ export class AppComponent implements OnInit, AfterViewInit {
   );
 
   private _listenToUserChange() {
-    this.authService.currentUser.subscribe((userInfo) => {
-      this.userInfo = userInfo;
-    });
+    // this.authService.currentUser.subscribe((userInfo) => {
+    //   this.userInfo = userInfo;
+    // });
   }
 
   showBackToTopScroll = false;
@@ -87,10 +86,7 @@ export class AppComponent implements OnInit, AfterViewInit {
   }
 
   ngOnInit(): void {
-    this.authService.loadUserFromLocalStorage();
     this._listenToUserChange();
-
-    this.authService.isLoggedIn().subscribe((authenticated) => (this.isAuthenticated = authenticated));
   }
 
   ngAfterViewInit(): void {
@@ -116,11 +112,11 @@ export class AppComponent implements OnInit, AfterViewInit {
   }
 
   OnStaffLogin() {
-    this.userService.OnStaffLogin();
+    this.userService.onStuffLogin();
   }
 
   showUserPreference() {
-    this.userService.openUserPreferncePopup();
+    this.userService.openUserPreferencesPopup();
   }
 
   onScrollToTop(): void {
@@ -132,8 +128,8 @@ export class AppComponent implements OnInit, AfterViewInit {
       .confirm(this.lang.map.logout_confirmation, undefined, { no: this.lang.map.cancel, yes: this.lang.map.yes })
       .afterClosed()
       .pipe(
-        filter((value) => value === UserClick.YES),
-        switchMap(() => this.authService.logout())
+        filter((value) => value === UserClick.YES)
+        // switchMap(() => this.authService.logout())
       )
       .subscribe(() => {
         this.toast.success(this.lang.map.logged_out_successfully, {

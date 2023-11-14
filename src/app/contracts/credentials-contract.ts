@@ -1,8 +1,9 @@
 import { AuthenticationMode } from '@directus/sdk';
 
 export interface CredentialsContract {
-  identifier: string;
+  identifier?: string;
   password: string;
   email?: string;
-  mode: AuthenticationMode;
+  mode?: AuthenticationMode;
+  otp?: string;
 }

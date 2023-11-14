@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, Input, OnDestroy, OnInit, inject } from '@angular/core';
+import { Component, inject, Input, OnDestroy, OnInit } from '@angular/core';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatIconModule } from '@angular/material/icon';
@@ -9,9 +9,9 @@ import { NewsItemComponent } from '@components/news-item/news-item.component';
 import { News } from '@models/news';
 import { NewsService } from '@services/news.service';
 import { TranslationService } from '@services/translation.service';
-import { Subject, debounceTime, takeUntil, tap, filter, switchMap } from 'rxjs';
+import { debounceTime, filter, Subject, switchMap, takeUntil, tap } from 'rxjs';
 import { MatMenuModule, MenuPositionX } from '@angular/material/menu';
-import { CmsAuthenticationService } from '@services/auth.service';
+import { AuthService } from '@services/auth.service';
 import { UrlService } from '@services/url.service';
 import { UserInfo } from '@models/user-info';
 import { UserService } from '@services/user.service';
@@ -19,6 +19,8 @@ import { DialogService } from '@services/dialog.service';
 import { UserClick } from '@enums/user-click';
 import { Router } from '@angular/router';
 import { ToastService } from '@services/toast.service';
+import { MatButtonModule } from '@angular/material/button';
+
 @Component({
   selector: 'app-top-header',
   standalone: true,
@@ -31,20 +33,19 @@ import { ToastService } from '@services/toast.service';
     ButtonComponent,
     IconButtonComponent,
     MatMenuModule,
+    MatButtonModule,
   ],
   templateUrl: './top-header.component.html',
   styleUrls: ['./top-header.component.scss'],
 })
 export class TopHeaderComponent implements OnInit, OnDestroy {
   search = new FormControl('', { nonNullable: true });
-  authService = inject(CmsAuthenticationService);
+  authService = inject(AuthService);
   urlService = inject(UrlService);
   userService = inject(UserService);
   toast = inject(ToastService);
   dialog = inject(DialogService);
   router = inject(Router);
-
-  @Input() isAuthenticated = false;
 
   news: News[] = [];
   filteredNews: News[] = [];
@@ -55,29 +56,15 @@ export class TopHeaderComponent implements OnInit, OnDestroy {
   lang = inject(TranslationService);
   isLtr = false;
   xPosition: MenuPositionX = 'before';
-  userInfo?: UserInfo;
 
-  recheckIfInMenu = false;
+  userInfo?: UserInfo = this.userService.currentUser;
 
   ngOnInit(): void {
     this._listenToSearchChanges();
-    this._listenToUserChange();
     this.onFocus(true);
     this.lang.change$.subscribe((x) => {
       x.direction === 'ltr' ? (this.xPosition = 'before') : 'after';
     });
-  }
-
-  private _listenToUserChange() {
-    this.authService.currentUser
-      .pipe(
-        takeUntil(this.destroy$),
-        debounceTime(200),
-        tap((user) => {
-          this.userInfo = user;
-        })
-      )
-      .subscribe();
   }
 
   private _listenToSearchChanges() {
@@ -122,12 +109,12 @@ export class TopHeaderComponent implements OnInit, OnDestroy {
     this.userService.openLoginPopup();
   }
 
-  OnStaffLogin() {
-    this.userService.OnStaffLogin();
+  onStaffLogin() {
+    this.userService.onStuffLogin();
   }
 
   showUserPreference() {
-    this.userService.openUserPreferncePopup();
+    this.userService.openUserPreferencesPopup();
   }
 
   onLogOut() {

@@ -160,8 +160,8 @@ const ovEndpoints = {
 export const cmsEndpoints = {
   TRANSLATION: 'translations',
   ADMIN: 'admin/login',
-  AUTH: '/auth/login/ldap',
-  EMAIL_PASSWORD_AUTH: '/auth/login',
+  AUTH: '/auth/login',
+  AUTH_LDAP: '/auth/login/ldap',
   MAIN_VOTE: 'flows/trigger/6FED838F-BD3D-400A-9342-6559B48980CA',
   MAIN_MENU: 'flows/trigger/F0D286AC-588E-4863-B6A1-6230EB88F710',
   LOGOUT: '/auth/logout',

@@ -1,5 +1,5 @@
 import { inject, Injectable } from '@angular/core';
-import { Observable, of, ReplaySubject, tap, switchMap, forkJoin } from 'rxjs';
+import { map, Observable, of, ReplaySubject, switchMap, tap } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { UrlService } from '@services/url.service';
 import { CastResponse } from 'cast-response';
@@ -8,22 +8,46 @@ import { Menu } from '@models/menu';
 import { MenuItem } from '@models/menu-item';
 import { RegisterServiceMixin } from '@mixins/register-service-mixin';
 import { ServiceContract } from '@contracts/service-contract';
-import { CmsAuthenticationService } from './auth.service';
-import { UserInfo } from '@models/user-info';
+import { UserService } from '@services/user.service';
+import { AuthService } from '@services/auth.service';
 
 @Injectable({
   providedIn: 'root',
 })
-export class MenuService extends RegisterServiceMixin(class { }) implements ServiceContract {
+export class MenuService extends RegisterServiceMixin(class {}) implements ServiceContract {
   serviceName = 'MenuService';
   http = inject(HttpClient);
   urlService = inject(UrlService);
-  authService = inject(CmsAuthenticationService);
+  userService = inject(UserService);
+  authService = inject(AuthService);
   menus!: Menus;
-  mainMenuLinksObject!: Record<string, MenuItem>;
-  mainMenuLinksObject$ = new ReplaySubject<Record<string, MenuItem>>(1);
   loading = false;
   menus$ = new ReplaySubject<Menus>(1);
+  filteredMenus$ = new ReplaySubject<Menus>(1);
+
+  private filteredMenuSubscription = this.menus$
+    .pipe(
+      map((menus) => {
+        return {
+          main_menu: {
+            ...menus.main_menu,
+            links: [
+              ...menus.main_menu.links.filter((link) => {
+                return this.userCanAccessLink(link);
+              }),
+            ],
+          },
+          recent: [...menus.recent.filter((link) => this.userCanAccessLink(link))],
+        };
+      }),
+      tap((value) => this.filteredMenus$.next(value))
+    )
+    .subscribe();
+
+  constructor() {
+    super();
+    this.listenToAuthenticationStatus();
+  }
 
   @CastResponse(() => Menus, {
     shape: {
@@ -37,45 +61,17 @@ export class MenuService extends RegisterServiceMixin(class { }) implements Serv
     return this.http.get<Menus>(this.urlService.URLS.MAIN_MENU).pipe(tap(() => (this.loading = false)));
   }
 
-  filterMenuItemsByRole(menus: Menus): Observable<Menus> {
-    return this.authService.currentUser.pipe(
-      switchMap((currentUser) => {
-        const isAuthenticated = !!currentUser;
-        const filteredMenuItems = menus.main_menu.links.filter((menuItem) =>
-          this.isMenuItemAccessible(menuItem, isAuthenticated, currentUser)
-        );
-        const filteredMenus: Menus = { ...menus, main_menu: { ...menus.main_menu, links: filteredMenuItems } };
-        return of(filteredMenus);
-      })
-    );
-  }
-  
-  private isMenuItemAccessible(menuItem: MenuItem, isAuthenticated: boolean, currentUser: UserInfo | undefined): boolean {
-    if (!menuItem.roles || menuItem.roles.length === 0) {
-      return true;
-    }
-    return isAuthenticated && menuItem.roles.some((role) => currentUser?.role === role);
-  }
-
   private _emitMenus(): Observable<Menus> {
-    let originalMenus: Menus;
-  
     return this._loadMenus().pipe(
-      tap((menus) => {
-        originalMenus = menus;
-      }),
-      switchMap((menus) => this.filterMenuItemsByRole(menus)),
       tap((filteredMenus) => {
-        this.menus$.next(filteredMenus); // use filtered menu to show in the nave bar
-        // Use the original menus for the links object (to be used in the route)
-        this.mainMenuLinksObject = this.createMainMenuLinksObject(originalMenus); 
-        this.mainMenuLinksObject$.next(this.mainMenuLinksObject);
+        this.menus$.next(filteredMenus);
       })
     );
   }
 
   private _waitIfThereIsLoadingInProgress(): Observable<Menus> {
-    return this.loading ? this.menus$ : this._emitMenus();
+    Promise.resolve().then(() => (this.loading ? this._emitMenus() : null));
+    return this.filteredMenus$;
   }
 
   loadMenus(): Observable<Menus> {
@@ -88,17 +84,27 @@ export class MenuService extends RegisterServiceMixin(class { }) implements Serv
     });
   }
 
-  getMainMenuLinksObject(): Observable<Record<string, MenuItem>> {
-    if (!this.mainMenuLinksObject) {
-      // menu is not loaded yet, so load it
-      this._emitMenus();
-    }
-    return this.mainMenuLinksObject$.asObservable();
+  private userCanAccessLink(link: MenuItem): boolean {
+    return (
+      // if user is Admin should see all menus later we will do it
+      // (this.authService.isAuthenticated() && this.userService.currentUser && this.userService.currentUser)
+      // if menu related to at least one role then we have to check the current user role
+      !!(
+        link.roles &&
+        link.roles.length &&
+        this.authService.isAuthenticated() &&
+        this.userService.currentUser &&
+        this.userService.currentUser.role &&
+        link.roles.includes(this.userService.currentUser.role)
+      ) ||
+      // if menu related to only authenticated users then we have to check if user is authenticated or not
+      (link.is_authenticated && this.authService.isAuthenticated()) ||
+      // if menu for public (means no authenticated user or role required to check )
+      !link.is_authenticated
+    );
   }
 
-  private createMainMenuLinksObject(menus: Menus): Record<string, MenuItem> {
-    return menus?.main_menu?.links?.reduce((acc, link) => {
-      return { ...acc, [link.url]: link };
-    }, {});
+  private listenToAuthenticationStatus() {
+    this.authService.authenticatedStatusChanged$.pipe(switchMap(() => this._emitMenus())).subscribe();
   }
 }

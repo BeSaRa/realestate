@@ -1,131 +1,152 @@
-import { Injectable, inject } from '@angular/core';
-import { Observable, OperatorFunction, tap, map, from, BehaviorSubject, switchMap, ReplaySubject } from 'rxjs';
-import { DirectusClientService } from './directus-client.service';
-import { HttpClient } from '@angular/common/http';
-import { UrlService } from './url.service';
-import { CastResponse } from 'cast-response';
+import { inject, Injectable } from '@angular/core';
+import { catchError, exhaustMap, filter, Observable, merge, of, Subject, tap, map } from 'rxjs';
 import { CredentialsContract } from '@contracts/credentials-contract';
-import { AuthenticationDataModel } from '@models/authentication-data';
-import { TokenService } from './token.service';
-import { logout, readMe } from '@directus/sdk';
-import { UserInfo } from '@models/user-info';
-import { TranslationService } from './translation.service';
+import { AuthProviders } from '@enums/auth-providers';
+import { HttpClient } from '@angular/common/http';
+import { UrlService } from '@services/url.service';
+import { AuthenticationData, AuthenticationMode } from '@directus/sdk';
+import { CastResponse } from 'cast-response';
+import { TokenService } from '@services/token.service';
 
 @Injectable({
   providedIn: 'root',
 })
-export class CmsAuthenticationService {
-  lang = inject(TranslationService);
-  directusService = inject(DirectusClientService);
-  config = this.directusService.config;
-  urlService = inject(UrlService);
-  http = inject(HttpClient);
-  tokenService = inject(TokenService);
-  private isAuthenticatedSubject = new BehaviorSubject<boolean>(false);
-  private isAuthenticated$ = this.isAuthenticatedSubject.asObservable();
-
-  private currentUserSubject$ = new ReplaySubject<UserInfo | undefined>(1);
-  public currentUser = this.currentUserSubject$.asObservable();
+export class AuthService {
+  private http = inject(HttpClient);
+  private urlService = inject(UrlService);
+  private tokenService = inject(TokenService);
+  refresh$ = new Subject<AuthenticationMode>();
+  private authenticated = false;
+  logout$ = new Subject<void>();
+  login$ = new Subject<void>();
+  authenticatedStatusChanged$ = merge(this.login$, this.logout$).pipe(map(() => this.authenticated));
 
   constructor() {
-    this.currentUserSubject$.next(undefined);
+    this.listenToRefreshToken();
   }
 
-  @CastResponse(() => AuthenticationDataModel, { unwrap: 'data', fallback: '$default' })
-  private _login(credentials: Partial<CredentialsContract>): Observable<AuthenticationDataModel> {
-    let normalAuth = false;
-    if (credentials.identifier?.includes('@')) {
+  isAuthenticated(): boolean {
+    return this.authenticated;
+  }
+
+  /**
+   * @description login method if you did not provide the provider the default one will be the LDAP
+   * @param credentials
+   * @param provider
+   */
+  login(
+    credentials: Partial<CredentialsContract>,
+    provider: AuthProviders = AuthProviders.DEFAULT
+  ): Observable<AuthenticationData> {
+    // override it here may be by mistake someone ask for the cookie, because cookie it will not work if the front-end not on the same domain of backend
+    credentials.mode = 'json';
+    return this._login(credentials, provider).pipe(
+      catchError(() => {
+        this.authenticated = false;
+        throw Error('Cannot Login');
+      }),
+      tap((data) => {
+        this.updateToken(data);
+      })
+    );
+  }
+
+  /**
+   * @description this method to check only which type of login to proceed with
+   * @param credentials
+   * @param provider
+   * @private
+   */
+  @CastResponse(undefined, { unwrap: 'data' })
+  private _login(credentials: Partial<CredentialsContract>, provider: AuthProviders): Observable<AuthenticationData> {
+    return provider === AuthProviders.DEFAULT ? this.defaultLogin(credentials) : this.ldapLogin(credentials);
+  }
+
+  /**
+   * @description login with username/password it is called default/local login
+   * @param credentials
+   * @private
+   */
+  private defaultLogin(credentials: Partial<CredentialsContract>): Observable<AuthenticationData> {
+    if (credentials.identifier) {
       credentials.email = credentials.identifier;
       delete credentials.identifier;
-      normalAuth = true;
     }
-    return this.http.post<AuthenticationDataModel>(
-      normalAuth ? this.urlService.URLS.EMAIL_PASSWORD_AUTH : this.urlService.URLS.AUTH,
-      credentials
-    );
+    return this.http.post<AuthenticationData>(this.urlService.URLS.AUTH, credentials);
   }
 
-  login(credentials: Partial<CredentialsContract>): Observable<AuthenticationDataModel> {
-    return this._login(credentials).pipe(this.afterAuthenticate());
+  /**
+   * @description login with through ldap with identifier/password
+   * @param credentials
+   * @private
+   */
+  private ldapLogin(credentials: Partial<CredentialsContract>): Observable<AuthenticationData> {
+    return this.http.post<AuthenticationData>(this.urlService.URLS.AUTH_LDAP, credentials);
   }
 
-  private afterAuthenticate(): OperatorFunction<AuthenticationDataModel, AuthenticationDataModel> {
-    return (source) => {
-      return source.pipe(
-        tap((data) => this.tokenService.saveToken(data)),
-        tap((data) => this.setClientAccessToken(data.access_token)),
-        switchMap((data) =>
-          this._getCurrentUser().pipe(
-            map((userInfo) => {
-              this.setCurrentUser(userInfo);
-              this.isAuthenticatedSubject.next(true);
-              return data;
-            })
-          )
-        )
-      );
-    };
-  }
-
-  private setClientAccessToken(token: string | null) {
-    this.directusService.client.setToken(token);
-  }
-
-  private _logOut(refreshToken: string | undefined): Observable<void> {
-    return from(this.directusService.client.request(logout(refreshToken)));
-  }
-
+  /**
+   * @description make logout from current session in directus
+   */
   logout(): Observable<void> {
-    return from(this.tokenService.getRefreshToken()).pipe(
-      switchMap((refreshToken) =>
-        this._logOut(refreshToken).pipe(
-          tap((_) => this.tokenService.resetToken()),
-          tap(() => this.setClientAccessToken(null)),
-          tap(() => this.isAuthenticatedSubject.next(false)),
-          tap(() => this.removeCurrentUser())
-          // tap(() => window.location.reload())
+    return this.http
+      .post<void>(this.urlService.URLS.LOGOUT, {
+        refresh_token: this.tokenService.getRefreshToken(),
+      })
+      .pipe(
+        tap(() => {
+          this.authenticated = false;
+          this.tokenService.clear();
+          this.logout$.next();
+        })
+      );
+  }
+
+  /**
+   * @description to listen to the refresh token Trigger that emit from token service to call a refresh method
+   * @private
+   */
+  private listenToRefreshToken() {
+    merge(this.tokenService.refreshTokenTrigger$, this.refresh$)
+      .pipe(
+        exhaustMap((mode) =>
+          this.refresh(mode)
+            .pipe(
+              catchError(() => {
+                this.tokenService.clear();
+                this.authenticated = false;
+                this.logout$.next();
+                return of(false);
+              })
+            )
+            .pipe(filter((value): value is AuthenticationData => !!value))
         )
       )
-    );
+      .subscribe((data) => {
+        this.updateToken(data);
+      });
   }
 
-  loadUserFromLocalStorage(): Observable<UserInfo | undefined> {
-    let latestUserInfo: UserInfo | undefined = undefined;
-
-    this.currentUserSubject$.subscribe({
-      next: (userInfo) => {
-        latestUserInfo = userInfo;
-      },
+  /**
+   * @description method to the API to refresh token and get a new access token
+   * @param mode
+   * @private
+   */
+  @CastResponse(undefined, { unwrap: 'data' })
+  private refresh(mode: AuthenticationMode): Observable<AuthenticationData> {
+    return this.http.post<AuthenticationData>(this.urlService.URLS.REFRESH_TOKEN, {
+      mode,
+      refresh_token: this.tokenService.getRefreshToken(),
     });
-
-    if (!latestUserInfo) {
-      const fromLocalStorage = localStorage.getItem('user-profile');
-      if (fromLocalStorage) {
-        const userInfo = JSON.parse(fromLocalStorage);
-        this.isAuthenticatedSubject.next(true);
-        this.setCurrentUser(new UserInfo().clone<UserInfo>(userInfo));
-      }
-    }
-    return this.currentUser;
   }
 
-  isLoggedIn() {
-    return this.isAuthenticated$;
-  }
-
-  @CastResponse(() => UserInfo, { unwrap: 'data', fallback: '$default' })
-  private _getCurrentUser(): Observable<UserInfo> {
-    return from(this.directusService.client.request<UserInfo>(readMe()));
-  }
-
-  setCurrentUser(userInfo: UserInfo) {
-    this.currentUserSubject$.next(userInfo);
-    this.lang.setCurrent(this.lang.languages.find((x) => x.code === userInfo.language) ?? this.lang.getCurrent());
-    localStorage.setItem('user-profile', JSON.stringify(userInfo));
-  }
-
-  removeCurrentUser() {
-    this.currentUserSubject$.next(undefined);
-    localStorage.removeItem('user-profile');
+  /**
+   * @description set a new token for token service
+   * @param data
+   * @private
+   */
+  private updateToken(data: AuthenticationData): void {
+    this.authenticated = true;
+    this.tokenService.setToken(data.access_token, data.refresh_token, data.expires);
+    this.login$.next();
   }
 }

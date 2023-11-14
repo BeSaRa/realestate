@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
-import { Component, inject, Input, OnInit } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { OnDestroyMixin } from '@mixins/on-destroy-mixin';
 import { Menu } from '@models/menu';
 import { RouterModule } from '@angular/router';
@@ -24,8 +24,6 @@ export class SliderMenuComponent extends OnDestroyMixin(class {}) implements OnI
   menuService = inject(MenuService);
 
   mainMenu!: Menu;
-
-  @Input() isAuthenticated = false;
 
   ngOnInit(): void {
     this.menuService.loadMenus().subscribe((menus) => (this.mainMenu = menus.main_menu));

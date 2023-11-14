@@ -14,6 +14,8 @@ export const Config = {
     SECRET_KEY: '',
     RECAPTCHA_TOKEN_VALIDATION_URL: '',
   },
+  REFRESH_TOKEN_BEFORE_MS: 0, // 870000
+  LOCAL_STORAGE_KEY: '$$_S__$$',
 };
 
 export type ConfigType = typeof Config;

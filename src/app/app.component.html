@@ -8,23 +8,23 @@
     <app-footer />
   </div>
 
-  <app-side-bar [isAuthenticated]="isAuthenticated" [direction]="(direction$ | async)!">
+  <app-side-bar [direction]="(direction$ | async)!">
     <ul class="flex flex-col gap-y-1">
-      <li *ngIf="isAuthenticated">
+      <li *ngIf="authService.isAuthenticated()">
         <button class="text-white" (click)="showUserPreference()" mat-button>
           <a class="text-white">{{ lang.map.welcome }}</a
-          ><a class="text-xl text-secondary underline"> {{ userInfo?.first_name }}</a>
+          ><a class="text-xl text-secondary underline"> {{ userService.currentUser?.first_name }}</a>
         </button>
       </li>
-      <app-slider-menu [isAuthenticated]="isAuthenticated" />
+      <app-slider-menu />
     </ul>
-    <div *ngIf="!isAuthenticated" class="flex flex-col gap-y-1">
+    <div *ngIf="!authService.isAuthenticated()" class="flex flex-col gap-y-1">
       <app-button buttonStyle="secondary" (click)="openLoginPopup()">{{ lang.map.login_users }}</app-button>
       <app-button buttonStyle="secondary" (click)="OnStaffLogin()">{{
         lang.map.login_as_editor_content_manager
       }}</app-button>
     </div>
-    <div *ngIf="isAuthenticated" class="flex flex-col gap-2 mt-3">
+    <div *ngIf="authService.isAuthenticated()" class="flex flex-col gap-2 mt-3">
       <app-button buttonStyle="secondary" (click)="onLogOut()">{{ lang.map.log_out }}</app-button>
     </div>
   </app-side-bar>

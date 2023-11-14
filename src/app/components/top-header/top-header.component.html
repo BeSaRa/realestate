@@ -47,7 +47,7 @@
       </button>
     </li> -->
 
-    <button *ngIf="!isAuthenticated" mat-button [matMenuTriggerFor]="beforeMenu">
+    <button *ngIf="!authService.isAuthenticated()" mat-button [matMenuTriggerFor]="beforeMenu">
       {{ lang.map.login }}
     </button>
     <mat-menu #beforeMenu="matMenu" [xPosition]="xPosition">
@@ -57,20 +57,20 @@
           {{ lang.map.login_users }}
         </span>
       </button>
-      <button mat-menu-item (click)="OnStaffLogin()">
+      <button mat-menu-item (click)="onStaffLogin()">
         <mat-icon class="icon !h-8 !w-12 !text-xs" svgIcon="account-cog"></mat-icon>
         <span class="text-base">
           {{ lang.map.login_as_editor_content_manager }}
         </span>
       </button>
     </mat-menu>
-    <li *ngIf="isAuthenticated">
+    <li *ngIf="authService.isAuthenticated()">
       <button class="text-white" (click)="showUserPreference()" mat-button>
         <a class="text-white">{{ lang.map.welcome }}</a
         ><a class="text-xl text-secondary underline"> {{ userInfo?.first_name }}</a>
       </button>
     </li>
-    <li *ngIf="isAuthenticated">
+    <li *ngIf="authService.isAuthenticated()">
       <button class="text-white" (click)="onLogOut()" mat-button>{{ lang.map.log_out }}</button>
     </li>
     <li>
