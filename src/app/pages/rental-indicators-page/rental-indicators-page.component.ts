@@ -354,6 +354,30 @@ export default class RentalIndicatorsPageComponent implements OnInit, OnDestroy 
 
   transactionsStatisticsColumns = ['average', 'certificates-count', 'area', 'units-count', 'average-square', 'chart'];
 
+  purposeTableCriteriaTerms = new CriteriaSpecificTerms([
+    'areaCode',
+    { criteriaKey: 'propertyTypeList', term: CriteriaTerms.SINGLE_NOT_ALL },
+  ]);
+  propertyTypeTableCriteriaTerms = new CriteriaSpecificTerms([
+    'areaCode',
+    { criteriaKey: 'purposeList', term: CriteriaTerms.SINGLE_NOT_ALL },
+  ]);
+
+  get isPurposeOrTypeTermsValid() {
+    return (
+      (this.selectedIndicators === this.IndicatorsType.PURPOSE &&
+        this.purposeTableCriteriaTerms.validate(this.criteria.criteria)) ||
+      (this.selectedIndicators === this.IndicatorsType.TYPE &&
+        this.propertyTypeTableCriteriaTerms.validate(this.criteria.criteria))
+    );
+  }
+
+  get purposeOrTypeTermsText() {
+    return this.selectedIndicators === this.IndicatorsType.PURPOSE
+      ? this.purposeTableCriteriaTerms.getCriteriaTermsText()
+      : this.propertyTypeTableCriteriaTerms.getCriteriaTermsText();
+  }
+
   get priceList() {
     return this.rootKPIS.filter((item) => item.hasPrice);
   }

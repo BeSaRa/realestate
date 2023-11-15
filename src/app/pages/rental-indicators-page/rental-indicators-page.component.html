@@ -236,8 +236,19 @@
             <th mat-header-cell class="!text-white" mat-sort-header="average" *matHeaderCellDef>
               {{ lang.map.average_rental_price_per_unit_property }}
             </th>
-            <td mat-cell class="text-primary" *matCellDef="let element">
-              {{ element.rentPaymentMonthly | formatNumbers }}
+            <td
+              appCustomTooltip
+              [tooltipContent]="isPurposeOrTypeTermsValid ? null : tooltipTemplate"
+              [tooltipContentContext]="purposeOrTypeTermsText"
+              mat-cell
+              class="text-primary"
+              *matCellDef="let element">
+              <ng-container *ngIf="isPurposeOrTypeTermsValid">{{
+                element.rentPaymentMonthly | formatNumbers
+              }}</ng-container>
+              <ng-container *ngIf="!isPurposeOrTypeTermsValid"
+                >"{{ lang.map.filter_values_must_be_modified_to_display_data }}"</ng-container
+              >
             </td>
           </ng-container>
           <!-- count -->
@@ -283,8 +294,17 @@
 
           <ng-container matColumnDef="chart">
             <th mat-header-cell class="!text-white" *matHeaderCellDef>{{ lang.map.chart }}</th>
-            <td mat-cell *matCellDef="let element">
-              <app-icon-button class="text-primary" (click)="openChart(element)" icon="BAR_CHART"></app-icon-button>
+            <td
+              appCustomTooltip
+              [tooltipContent]="isPurposeOrTypeTermsValid ? null : tooltipTemplate"
+              [tooltipContentContext]="purposeOrTypeTermsText"
+              mat-cell
+              *matCellDef="let element">
+              <app-icon-button
+                [disabled]="!isPurposeOrTypeTermsValid"
+                class="text-primary"
+                (click)="openChart(element)"
+                icon="BAR_CHART"></app-icon-button>
             </td>
           </ng-container>
 
@@ -407,13 +427,7 @@
               }"
               appCustomTooltip
               [tooltipContent]="compositeAvgRentCriteriaTerms.validate(criteria.criteria) ? null : tooltipTemplate"
-              [tooltipContentContext]="compositeAvgRentCriteriaTerms.getCriteriaTermsText()"
-              [tooltipPosition]="{
-                originX: 'center',
-                originY: 'center',
-                overlayX: 'center',
-                overlayY: 'center',
-              }">
+              [tooltipContentContext]="compositeAvgRentCriteriaTerms.getCriteriaTermsText()">
               <ng-container *ngIf="compositeAvgRentCriteriaTerms.validate(criteria.criteria)">{{
                 element[0].kpi3Val | formatNumbers
               }}</ng-container>

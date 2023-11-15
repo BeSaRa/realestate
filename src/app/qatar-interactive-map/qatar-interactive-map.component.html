@@ -15,6 +15,12 @@
           appCustomTooltip
           [tooltipContent]="tooltipTemplate"
           [tooltipContentContext]="municipalitiesDataMap[municipalitySvgPath.id]"
+          [tooltipPosition]="{
+            originX: 'start',
+            originY: 'top',
+            overlayX: 'center',
+            overlayY: 'center',
+          }"
           matTooltipClass="!bg-secondary rounded-md" />
       </g>
     </svg>

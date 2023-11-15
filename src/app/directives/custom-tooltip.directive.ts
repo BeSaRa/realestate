@@ -58,8 +58,8 @@ export class CustomTooltipDirective implements OnInit, OnDestroy {
       this.tooltipPosition
         ? this.tooltipPosition
         : {
-            originX: 'start',
-            originY: 'top',
+            originX: 'center',
+            originY: 'center',
             overlayX: 'center',
             overlayY: 'center',
           },

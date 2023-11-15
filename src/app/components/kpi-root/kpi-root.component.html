@@ -7,12 +7,6 @@
   appCustomTooltip
   [tooltipContent]="isCriteriaValid || !item.isDataAvailable ? null : tooltipTemplate"
   [tooltipContentContext]="item.criteriaTerms.getCriteriaTermsText()"
-  [tooltipPosition]="{
-    originX: 'center',
-    originY: 'center',
-    overlayX: 'center',
-    overlayY: 'center',
-  }"
   [ngClass]="{
     selected: item.selected,
     'bg-slate-50 cursor-not-allowed': !item.isDataAvailable || !isCriteriaValid,

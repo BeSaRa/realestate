@@ -19,13 +19,7 @@
               ? criteriaTooltipTemplate
               : null
           "
-          [tooltipContentContext]="item.criteriaTerms.getCriteriaTermsText()"
-          [tooltipPosition]="{
-            originX: 'center',
-            originY: 'center',
-            overlayX: 'center',
-            overlayY: 'center',
-          }">
+          [tooltipContentContext]="item.criteriaTerms.getCriteriaTermsText()">
           <span [ngClass]="{ 'text-transparent': isLoading && selectedAccordingTo.id === item.id }">{{
             item.getNames()
           }}</span>
