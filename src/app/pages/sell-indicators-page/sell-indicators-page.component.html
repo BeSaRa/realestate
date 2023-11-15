@@ -178,7 +178,7 @@
             <div class="text-start">
               <p>{{ lang.map.issue_date }}</p>
               <!-- Hide sold_by for now as client request Issue 60399 -->
-              <!-- <p class="font-normal">{{ lang.map.sold_by }}</p> --> 
+              <!-- <p class="font-normal">{{ lang.map.sold_by }}</p> -->
             </div>
           </div>
           <div *appTableColumnCellTemplate="let item; typeOf: transactions$" class="text-center">
@@ -441,21 +441,51 @@
             <th mat-header-cell class="!bg-indigo-rainbow !text-white" *matHeaderCellDef>
               {{ compositeYears.previousYear }}
             </th>
-            <td mat-cell *matCellDef="let element">{{ element[0].kpi3Val | formatNumbers }}</td>
+            <td
+              [attr.colspan]="compositeAvgPriceCriteriaTerms.validate(criteria.criteria) ? 1 : 3"
+              [ngClass]="{
+                '!text-center !text-gray-400 !bg-slate-50': !compositeAvgPriceCriteriaTerms.validate(criteria.criteria)
+              }"
+              mat-cell
+              *matCellDef="let element"
+              appCustomTooltip
+              [tooltipContent]="compositeAvgPriceCriteriaTerms.validate(criteria.criteria) ? null : tooltipTemplate"
+              [tooltipContentContext]="compositeAvgPriceCriteriaTerms.getCriteriaTermsText()"
+              [tooltipPosition]="{
+                originX: 'center',
+                originY: 'center',
+                overlayX: 'center',
+                overlayY: 'center',
+              }">
+              <ng-container *ngIf="compositeAvgPriceCriteriaTerms.validate(criteria.criteria)">{{
+                element[0].kpi3Val | formatNumbers
+              }}</ng-container>
+              <ng-container *ngIf="!compositeAvgPriceCriteriaTerms.validate(criteria.criteria)"
+                >"{{ lang.map.filter_values_must_be_modified_to_display_data }}"</ng-container
+              >
+            </td>
           </ng-container>
           <ng-container matColumnDef="thirdYear2">
             <!--          mat-sort-header="thirdYear2" -->
             <th mat-header-cell class="!bg-indigo-rainbow !text-white" *matHeaderCellDef>
               {{ compositeYears.selectedYear }}
             </th>
-            <td mat-cell *matCellDef="let element">{{ element[1].kpi3Val | formatNumbers }}</td>
+            <td
+              [ngClass]="{ hidden: !compositeAvgPriceCriteriaTerms.validate(criteria.criteria) }"
+              mat-cell
+              *matCellDef="let element">
+              {{ element[1].kpi3Val | formatNumbers }}
+            </td>
           </ng-container>
           <ng-container matColumnDef="thirdYoy">
             <!--          mat-sort-header="thirdYoy" -->
             <th mat-header-cell class="!bg-indigo-rainbow !text-white" *matHeaderCellDef>
               {{ lang.map.change }}
             </th>
-            <td mat-cell *matCellDef="let element">
+            <td
+              [ngClass]="{ hidden: !compositeAvgPriceCriteriaTerms.validate(criteria.criteria) }"
+              mat-cell
+              *matCellDef="let element">
               <div class="flex gap-2 items-center">
                 <app-yoy-indicator [value]="element[1].kpi3YoYVal.toFixed(2)" />
                 <div>{{ element[1].kpi3YoYVal.toFixed(2) }} %</div>
@@ -499,6 +529,13 @@
         </table>
       </div>
     </div>
+
+    <ng-template #tooltipTemplate let-terms>
+      <div class="bg-black/80 text-white text-xs p-2 rounded-md">
+        <p class="font-bold">{{ lang.map.filter_values_should_be_as_follows }}:</p>
+        <p *ngFor="let term of terms">- {{ term }}</p>
+      </div>
+    </ng-template>
     <!-- TODO: Mousa To be added when KPI_34 is implemented by be team -->
     <!-- <div class="px-3 lg:px-16">
       <div class="py-5">
