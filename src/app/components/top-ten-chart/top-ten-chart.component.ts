@@ -80,8 +80,9 @@ export class TopTenChartComponent extends OnDestroyMixin(class {}) implements On
   }
 
   selectAccordingTo(_new: Top10AccordingTo) {
-    this.selectedAccordingTo = _new;
+    if (_new.disabled) return;
 
+    this.selectedAccordingTo = _new;
     this.updateChartData();
   }
 

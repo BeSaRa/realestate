@@ -214,7 +214,11 @@ export default class RentalIndicatorsPageComponent implements OnInit, OnDestroy 
       iconUrl: 'assets/icons/kpi/svg/4.svg',
       hasPrice: true,
     }),
-    new KpiRoot().clone<KpiRoot>({
+    new KpiRoot([
+      'areaCode',
+      { criteriaKey: 'propertyTypeList', term: CriteriaTerms.SINGLE_NOT_ALL },
+      { criteriaKey: 'purposeList', term: CriteriaTerms.SINGLE_NOT_ALL },
+    ]).clone<KpiRoot>({
       id: 16,
       arName: this.lang.getArabicTranslation('rent_average_price_per'),
       enName: this.lang.getEnglishTranslation('rent_average_price_per'),
@@ -227,7 +231,11 @@ export default class RentalIndicatorsPageComponent implements OnInit, OnDestroy 
       isDataAvailable: false,
       hasSqUnit: true,
     }),
-    new KpiRoot().clone<KpiRoot>({
+    new KpiRoot([
+      'areaCode',
+      { criteriaKey: 'propertyTypeList', term: CriteriaTerms.SINGLE_NOT_ALL },
+      { criteriaKey: 'purposeList', term: CriteriaTerms.SINGLE_NOT_ALL },
+    ]).clone<KpiRoot>({
       id: 13,
       arName: this.lang.getArabicTranslation('average_rental_price_per_unit_property'),
       enName: this.lang.getEnglishTranslation('average_rental_price_per_unit_property'),

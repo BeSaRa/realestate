@@ -174,7 +174,11 @@ export default class SellIndicatorsPageComponent implements OnInit, OnDestroy {
       iconUrl: 'assets/icons/kpi/svg/6.svg',
       hasPrice: true,
     }),
-    new KpiRoot().clone<KpiRoot>({
+    new KpiRoot([
+      'areaCode',
+      { criteriaKey: 'propertyTypeList', term: CriteriaTerms.SINGLE_NOT_ALL },
+      { criteriaKey: 'purposeList', term: CriteriaTerms.SINGLE_NOT_ALL },
+    ]).clone<KpiRoot>({
       id: 16,
       arName: this.lang.getArabicTranslation('sell_average_price_per'),
       enName: this.lang.getEnglishTranslation('sell_average_price_per'),
@@ -186,7 +190,11 @@ export default class SellIndicatorsPageComponent implements OnInit, OnDestroy {
       hasPrice: true,
       hasSqUnit: true,
     }),
-    new KpiRoot().clone<KpiRoot>({
+    new KpiRoot([
+      'areaCode',
+      { criteriaKey: 'propertyTypeList', term: CriteriaTerms.SINGLE_NOT_ALL },
+      { criteriaKey: 'purposeList', term: CriteriaTerms.SINGLE_NOT_ALL },
+    ]).clone<KpiRoot>({
       id: 13,
       arName: this.lang.getArabicTranslation('average_sell_price_per_unit_property'),
       enName: this.lang.getEnglishTranslation('average_sell_price_per_unit_property'),

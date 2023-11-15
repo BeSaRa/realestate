@@ -31,7 +31,7 @@ export const CUSTOM_TOOLTIP_DATA = new InjectionToken<CustomTooltipDataContract>
   standalone: true,
 })
 export class CustomTooltipDirective implements OnInit, OnDestroy {
-  @Input({ required: true }) tooltipContent!: TemplateRef<any>;
+  @Input({ required: true }) tooltipContent!: TemplateRef<any> | null;
   @Input({ required: true }) tooltipContentContext!: any;
 
   private _elementRef = inject(ElementRef);
@@ -63,7 +63,7 @@ export class CustomTooltipDirective implements OnInit, OnDestroy {
   }
 
   @HostListener('mouseenter') show() {
-    if (this._tooltipRef) return;
+    if (this._tooltipRef || !this.tooltipContent) return;
 
     const _injector = Injector.create({
       parent: this._injector,
