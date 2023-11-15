@@ -74,6 +74,10 @@ export class MenuService extends RegisterServiceMixin(class {}) implements Servi
 
   private userCanAccessLink(link: MenuItem): boolean {
     return (
+      // if menu for public (means no authenticated user or role required to check )
+      !link.is_authenticated ||
+      // if menu related to only authenticated users then we have to check if user is authenticated or not
+      (link.is_authenticated && !link.roles.length && this.authService.isAuthenticated()) ||
       // if user is Admin should see all menus
       !!(
         this.authService.isAuthenticated() &&
@@ -89,11 +93,7 @@ export class MenuService extends RegisterServiceMixin(class {}) implements Servi
         this.userService.currentUser &&
         this.userService.currentUser.role &&
         link.roles.includes(this.userService.currentUser.role.id)
-      ) ||
-      // if menu related to only authenticated users then we have to check if user is authenticated or not
-      (link.is_authenticated && !link.roles.length && this.authService.isAuthenticated()) ||
-      // if menu for public (means no authenticated user or role required to check )
-      !link.is_authenticated
+      )
     );
   }
 
