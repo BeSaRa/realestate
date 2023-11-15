@@ -5,7 +5,7 @@
   (mouseenter)="item.isDataAvailable && isCriteriaValid ? (isHovered = true) : null"
   (mouseleave)="isHovered = false"
   appCustomTooltip
-  [tooltipContent]="isCriteriaValid ? null : tooltipTemplate"
+  [tooltipContent]="isCriteriaValid || !item.isDataAvailable ? null : tooltipTemplate"
   [tooltipContentContext]="item.criteriaTerms.getCriteriaTermsText()"
   [ngClass]="{
     selected: item.selected,
