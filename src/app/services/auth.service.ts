@@ -1,5 +1,5 @@
 import { inject, Injectable } from '@angular/core';
-import { catchError, exhaustMap, filter, Observable, merge, of, Subject, tap, map } from 'rxjs';
+import { catchError, exhaustMap, filter, map, merge, Observable, of, Subject, tap } from 'rxjs';
 import { CredentialsContract } from '@contracts/credentials-contract';
 import { AuthProviders } from '@enums/auth-providers';
 import { HttpClient } from '@angular/common/http';
@@ -34,12 +34,10 @@ export class AuthService {
    * @param credentials
    * @param provider
    */
-  login(
-    credentials: Partial<CredentialsContract>,
-    provider: AuthProviders = AuthProviders.DEFAULT
-  ): Observable<AuthenticationData> {
+  login(credentials: Partial<CredentialsContract>, provider?: AuthProviders): Observable<AuthenticationData> {
     // override it here may be by mistake someone ask for the cookie, because cookie it will not work if the front-end not on the same domain of backend
     credentials.mode = 'json';
+    provider = credentials.identifier?.includes('@') ? AuthProviders.DEFAULT : AuthProviders.LDAP;
     return this._login(credentials, provider).pipe(
       catchError(() => {
         this.authenticated = false;
