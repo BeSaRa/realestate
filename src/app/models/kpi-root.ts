@@ -4,6 +4,7 @@ import { GetNamesMixin } from '@mixins/get-names-mixin';
 import { ServiceRegistry } from '@services/service-registry';
 import { UnitsService } from '@services/units.service';
 import { KpiBase } from './kpi-base';
+import { CriteriaSpecificTerms, CriteriaTerm } from './criteria-specific-terms';
 
 export class KpiRoot extends ClonerMixin(GetNamesMixin(class {})) {
   id!: number;
@@ -17,6 +18,8 @@ export class KpiRoot extends ClonerMixin(GetNamesMixin(class {})) {
   hasSqUnit = false;
   isDataAvailable = true;
   selected = false;
+
+  criteriaTerms: CriteriaSpecificTerms;
 
   private _unitsService: UnitsService;
 
@@ -33,8 +36,9 @@ export class KpiRoot extends ClonerMixin(GetNamesMixin(class {})) {
     return this._kpiData;
   }
 
-  constructor() {
+  constructor(terms: CriteriaTerm[] = []) {
     super();
+    this.criteriaTerms = new CriteriaSpecificTerms(terms);
     this._unitsService = ServiceRegistry.get<UnitsService>('UnitsService');
   }
 

@@ -28,16 +28,17 @@ export class CriteriaSpecificTerms {
   }
 
   checkIfCriteriaValid(criteria: CriteriaContract) {
+    if (!criteria) return true;
     let _valid = true;
     this._terms.forEach((term) => {
       if (typeof term === 'string') {
-        if (!isNotAll(criteria[term] as number)) _valid = false;
+        if (!isNotAll(criteria[term] as number | number[])) _valid = false;
       } else {
         if (term.term === CriteriaTerms.NOT_ALL) {
-          if (!isNotAll(criteria[term.criteriaKey] as number)) _valid = false;
+          if (!isNotAll(criteria[term.criteriaKey] as number | number[])) _valid = false;
         }
         if (term.term === CriteriaTerms.EQUAL_TO_ALL) {
-          if (!isEqualToAll(criteria[term.criteriaKey] as number)) _valid = false;
+          if (!isEqualToAll(criteria[term.criteriaKey] as number | number[])) _valid = false;
         }
         if (term.term === CriteriaTerms.SINGLE) {
           if (!isSingle(criteria[term.criteriaKey] as Array<number>)) _valid = false;
@@ -68,6 +69,7 @@ export class CriteriaSpecificTerms {
   }
 
   getMappedCriteria(criteria: CriteriaContract) {
+    if (!criteria) return {};
     const _criteria: any = {};
     this._terms.forEach((term) => {
       if (typeof term === 'string') {
@@ -88,20 +90,22 @@ export class CriteriaSpecificTerms {
   }
 }
 
-function isNotAll(value: number) {
+function isNotAll(value: number | number[]) {
+  if (isArray(value)) return !value.includes(-1);
   return value !== -1;
 }
 
-function isEqualToAll(value: number) {
+function isEqualToAll(value: number | number[]) {
+  if (isArray(value)) return value.includes(-1);
   return value === -1;
 }
 
 function isSingle(value: Array<number>) {
-  return value.length === 1;
+  return isArray(value) && value.length === 1;
 }
 
 function isSingleAndNotAll(value: Array<number>) {
-  return value.length === 1 && !value.includes(-1);
+  return isArray(value) && value.length === 1 && !value.includes(-1);
 }
 
 const TermToLangKey: Record<CriteriaTerms, keyof LangKeysContract> = {

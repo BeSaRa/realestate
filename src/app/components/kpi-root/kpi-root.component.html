@@ -2,43 +2,63 @@
 <!-- eslint-disable-next-line @angular-eslint/template/interactive-supports-focus -->
 <div
   (click)="selectItem()"
-  (mouseenter)="item.isDataAvailable ? (isHovered = true) : null"
+  (mouseenter)="item.isDataAvailable && isCriteriaValid ? (isHovered = true) : null"
   (mouseleave)="isHovered = false"
+  appCustomTooltip
+  [tooltipContent]="isCriteriaValid ? null : tooltipTemplate"
+  [tooltipContentContext]="item.criteriaTerms.getCriteriaTermsText()"
   [ngClass]="{
     selected: item.selected,
-    'bg-slate-50 cursor-not-allowed': !item.isDataAvailable,
-    'hover-shadow hover:pt-7 hover:pb-5 hover:bg-primary hover:cursor-pointer bg-sand': item.isDataAvailable
+    'bg-slate-50 cursor-not-allowed': !item.isDataAvailable || !isCriteriaValid,
+    'hover-shadow hover:pt-7 hover:pb-5 hover:bg-primary hover:cursor-pointer bg-sand':
+      item.isDataAvailable && isCriteriaValid
   }"
   class="group px-4 py-6 h-full flex flex-row md:flex-col gap-2 md:justify-between items-center text-center rounded-lg transition-all duration-300 shadow-gray-300 [&.selected]:bg-primary">
   <div class="w-2/6 md:w-full flex justify-center">
     <img
       class="w-[90px]"
       [src]="iconUrl"
-      [ngClass]="{ 'white-filter': isHovered || item.selected, 'opacity-40': !item.isDataAvailable }"
+      [ngClass]="{
+        'white-filter': isHovered || item.selected,
+        'opacity-40': !item.isDataAvailable || !isCriteriaValid
+      }"
       alt="" />
   </div>
   <div class="group h-full flex flex-col items-center justify-start w-4/6 md:w-full">
     <span
       [ngClass]="{
-        'text-gray-300': !item.isDataAvailable,
-        'group-hover:text-white': item.isDataAvailable
+        'text-gray-300': !item.isDataAvailable || !isCriteriaValid,
+        'group-hover:text-white': item.isDataAvailable && isCriteriaValid
       }"
       class="mt-2 flex-1 text-lg text-black font-bold group-[.selected]:text-white transition"
       >{{ item.getNames() }}</span
     >
     <span
-      *ngIf="item.isDataAvailable"
+      *ngIf="item.isDataAvailable && isCriteriaValid"
       class="mt-2 text-2xl md:text-3xl text-primary font-bold group-hover:text-white group-[.selected]:text-white transition"
-      ><span *ngIf="item.isDataAvailable" [countUp]="item.kpiData.getKpiVal()" [options]="countUpOptions"></span>
+      ><span [countUp]="item.kpiData.getKpiVal()" [options]="countUpOptions"></span>
       {{ item.hasPrice ? lang.map.qr : "" }}</span
     >
-    <span *ngIf="!item.isDataAvailable" class="flex-1 mt-2 text-lg md:text-xl text-gray-300 font-bold transition">
-      "{{ lang.map.data_is_being_collected_and_audited }}"
+    <span
+      *ngIf="!item.isDataAvailable || !isCriteriaValid"
+      class="flex-1 mt-2 text-lg md:text-xl text-gray-300 font-bold transition">
+      "{{
+        item.isDataAvailable && !isCriteriaValid
+          ? lang.map.filter_values_must_be_modified_to_display_data
+          : lang.map.data_is_being_collected_and_audited
+      }}"
     </span>
     <app-change-indicator
-      *ngIf="showYoy && item.isDataAvailable"
+      *ngIf="showYoy && item.isDataAvailable && isCriteriaValid"
       class="mt-2"
       [value]="item.kpiData.getKpiYoYVal()"
       [isHovered]="isHovered || item.selected"></app-change-indicator>
   </div>
 </div>
+
+<ng-template #tooltipTemplate let-terms>
+  <div class="bg-black/80 text-white p-2 rounded-md">
+    <p class="font-bold">{{ lang.map.filter_values_should_be_as_follows }}:</p>
+    <p *ngFor="let term of terms">- {{ term }}</p>
+  </div>
+</ng-template>

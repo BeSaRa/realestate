@@ -310,6 +310,9 @@ export interface LangKeysContract {
   value_equal_to_all: string;
   single_value: string;
   single_value_other_than_all: string;
+  filter_values_must_be_modified_to_display_data: string;
+  filter_values_should_be_as_follows: string;
+
   occupied_and_vacant_units_count_per_municipality: string;
   occupied_and_vacant_units_count_per_zone: string;
   number_of_occupied_units: string;
