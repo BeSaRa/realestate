@@ -1,5 +1,11 @@
 import { Directionality } from '@angular/cdk/bidi';
-import { Overlay, OverlayPositionBuilder, OverlayRef, RepositionScrollStrategy } from '@angular/cdk/overlay';
+import {
+  ConnectedPosition,
+  Overlay,
+  OverlayPositionBuilder,
+  OverlayRef,
+  RepositionScrollStrategy,
+} from '@angular/cdk/overlay';
 import { ComponentPortal } from '@angular/cdk/portal';
 import {
   ComponentRef,
@@ -33,6 +39,7 @@ export const CUSTOM_TOOLTIP_DATA = new InjectionToken<CustomTooltipDataContract>
 export class CustomTooltipDirective implements OnInit, OnDestroy {
   @Input({ required: true }) tooltipContent!: TemplateRef<any> | null;
   @Input({ required: true }) tooltipContentContext!: any;
+  @Input({}) tooltipPosition?: ConnectedPosition;
 
   private _elementRef = inject(ElementRef);
   private _overlay = inject(Overlay);
@@ -48,12 +55,14 @@ export class CustomTooltipDirective implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     const _postitionStrategy = this._overlayPositionBuilder.flexibleConnectedTo(this._elementRef).withPositions([
-      {
-        originX: 'start',
-        originY: 'top',
-        overlayX: 'center',
-        overlayY: 'center',
-      },
+      this.tooltipPosition
+        ? this.tooltipPosition
+        : {
+            originX: 'start',
+            originY: 'top',
+            overlayX: 'center',
+            overlayY: 'center',
+          },
     ]);
     this._overlayRef = this._overlay.create({
       positionStrategy: _postitionStrategy,

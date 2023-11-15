@@ -7,6 +7,12 @@
   appCustomTooltip
   [tooltipContent]="isCriteriaValid || !item.isDataAvailable ? null : tooltipTemplate"
   [tooltipContentContext]="item.criteriaTerms.getCriteriaTermsText()"
+  [tooltipPosition]="{
+    originX: 'center',
+    originY: 'center',
+    overlayX: 'center',
+    overlayY: 'center',
+  }"
   [ngClass]="{
     selected: item.selected,
     'bg-slate-50 cursor-not-allowed': !item.isDataAvailable || !isCriteriaValid,
@@ -57,7 +63,7 @@
 </div>
 
 <ng-template #tooltipTemplate let-terms>
-  <div class="bg-black/80 text-white p-2 rounded-md">
+  <div class="bg-black/80 text-white text-xs p-2 rounded-md">
     <p class="font-bold">{{ lang.map.filter_values_should_be_as_follows }}:</p>
     <p *ngFor="let term of terms">- {{ term }}</p>
   </div>

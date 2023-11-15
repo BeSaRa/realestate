@@ -27,7 +27,7 @@ export class CriteriaSpecificTerms {
     this._langService = ServiceRegistry.get<TranslationService>('TranslationService');
   }
 
-  checkIfCriteriaValid(criteria: CriteriaContract) {
+  validate(criteria: CriteriaContract) {
     if (!criteria) return true;
     let _valid = true;
     this._terms.forEach((term) => {
