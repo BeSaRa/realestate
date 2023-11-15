@@ -264,7 +264,6 @@ export default class RentalIndicatorsPageComponent implements OnInit, OnDestroy 
       hasPrice: false,
     }),
     new Top10AccordingTo([
-      'areaCode',
       { criteriaKey: 'propertyTypeList', term: CriteriaTerms.SINGLE_NOT_ALL },
       { criteriaKey: 'purposeList', term: CriteriaTerms.SINGLE_NOT_ALL },
     ]).clone<Top10AccordingTo>({
@@ -275,7 +274,6 @@ export default class RentalIndicatorsPageComponent implements OnInit, OnDestroy 
       hasPrice: true,
     }),
     new Top10AccordingTo([
-      'areaCode',
       { criteriaKey: 'propertyTypeList', term: CriteriaTerms.SINGLE_NOT_ALL },
       { criteriaKey: 'purposeList', term: CriteriaTerms.SINGLE_NOT_ALL },
     ]).clone<Top10AccordingTo>({
