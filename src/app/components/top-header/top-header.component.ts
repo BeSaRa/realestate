@@ -9,7 +9,7 @@ import { NewsItemComponent } from '@components/news-item/news-item.component';
 import { News } from '@models/news';
 import { NewsService } from '@services/news.service';
 import { TranslationService } from '@services/translation.service';
-import { debounceTime, filter, Subject, switchMap, takeUntil, tap } from 'rxjs';
+import { debounceTime, filter, Subject, switchMap, takeUntil, tap, Observable } from 'rxjs';
 import { MatMenuModule, MenuPositionX } from '@angular/material/menu';
 import { AuthService } from '@services/auth.service';
 import { UrlService } from '@services/url.service';
@@ -56,8 +56,6 @@ export class TopHeaderComponent implements OnInit, OnDestroy {
   lang = inject(TranslationService);
   isLtr = false;
   xPosition: MenuPositionX = 'before';
-
-  userInfo?: UserInfo = this.userService.currentUser;
 
   ngOnInit(): void {
     this._listenToSearchChanges();

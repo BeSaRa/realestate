@@ -1,5 +1,5 @@
 import { inject, Injectable } from '@angular/core';
-import { exhaustMap, map, Observable, of, ReplaySubject, Subject, switchMap, tap } from 'rxjs';
+import { exhaustMap, map, Observable, of, ReplaySubject, Subject, switchMap, tap, take } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { UrlService } from '@services/url.service';
 import { CastResponse } from 'cast-response';
@@ -72,28 +72,28 @@ export class MenuService extends RegisterServiceMixin(class {}) implements Servi
     });
   }
 
-  private userCanAccessLink(link: MenuItem): boolean {
-    return (
-      // if menu for public (means no authenticated user or role required to check )
-      !link.is_authenticated ||
-      // if menu related to only authenticated users then we have to check if user is authenticated or not
-      (link.is_authenticated && !link.roles.length && this.authService.isAuthenticated()) ||
-      // if user is Admin should see all menus
-      !!(
-        this.authService.isAuthenticated() &&
-        this.userService.currentUser &&
-        this.userService.currentUser &&
-        this.userService.currentUser.role.admin_access
-      ) ||
-      // if menu related to at least one role then we have to check the current user role
-      !!(
-        link.roles &&
-        link.roles.length &&
-        this.authService.isAuthenticated() &&
-        this.userService.currentUser &&
-        this.userService.currentUser.role &&
-        link.roles.includes(this.userService.currentUser.role.id)
-      )
+  private userCanAccessLink(link: MenuItem): Observable<boolean> {
+    return this.userService.currentUser$.pipe(
+      take(1),
+      map(currentUser => {
+        return (
+          // if menu for public (means no authenticated user or role required to check )
+          !link.is_authenticated ||
+          // if menu related to only authenticated users then we have to check if user is authenticated or not
+          (link.is_authenticated && !link.roles.length && this.authService.isAuthenticated()) ||
+          // if user is Admin should see all menus
+          !!(this.authService.isAuthenticated() && currentUser && currentUser.role.admin_access) ||
+          // if menu related to at least one role then we have to check the current user role
+          !!(
+            link.roles &&
+            link.roles.length &&
+            this.authService.isAuthenticated() &&
+            currentUser &&
+            currentUser.role &&
+            link.roles.includes(currentUser.role.id)
+          )
+        );
+      })
     );
   }
 

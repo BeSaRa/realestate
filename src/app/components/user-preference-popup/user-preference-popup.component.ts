@@ -44,7 +44,12 @@ export class UserPreferencePopupComponent implements OnInit {
   form!: UntypedFormGroup;
 
   _buildForm(): void {
-    this.form = this.fb.group(new UserInfo().clone<UserInfo>({ ...this.userService.currentUser }).buildForm());
+    // this.form = this.fb.group(new UserInfo().clone<UserInfo>({ ...this.userService.currentUser }).buildForm());
+    this.userService.currentUser$.subscribe(currentUser => {
+      if (currentUser) {
+        this.form = this.fb.group(new UserInfo().clone<UserInfo>({ ...currentUser }).buildForm());
+      }
+    });
   }
 
   ngOnInit(): void {
@@ -62,7 +67,7 @@ export class UserPreferencePopupComponent implements OnInit {
         })
       )
       .subscribe((updatedUser) => {
-        this.userService.currentUser = updatedUser;
+        this.userService.currentUserSubject$.next(updatedUser);
         this.dialogRef.close();
         this.toast.success(this.lang.map.user_info_has_been_updated_successfully, {
           verticalPosition: 'top',

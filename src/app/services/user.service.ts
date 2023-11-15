@@ -3,7 +3,7 @@ import { DialogService } from './dialog.service';
 import { LoginPopupComponent } from '@components/login-popup/login-popup.component';
 import { UrlService } from './url.service';
 import { TranslationService } from './translation.service';
-import { Observable, tap } from 'rxjs';
+import { Observable, ReplaySubject, tap } from 'rxjs';
 import { UserPreferencePopupComponent } from '@components/user-preference-popup/user-preference-popup.component';
 import { UserInfo } from '@models/user-info';
 import { HttpClient, HttpParams } from '@angular/common/http';
@@ -18,7 +18,8 @@ export class UserService {
   lang = inject(TranslationService);
   http = inject(HttpClient);
 
-  currentUser?: UserInfo;
+  currentUserSubject$ = new ReplaySubject<UserInfo>(1);
+  currentUser$ = this.currentUserSubject$.asObservable();
 
   openLoginPopup() {
     this.dialog.open(LoginPopupComponent);
@@ -47,6 +48,10 @@ export class UserService {
   }
 
   loadCurrentUserProfile(): Observable<UserInfo> {
-    return this._loadCurrentUserProfile().pipe(tap((data) => (this.currentUser = data)));
+    return this._loadCurrentUserProfile().pipe(
+      tap((data) => {
+        this.currentUserSubject$.next(data);
+      }
+      ));
   }
 }
