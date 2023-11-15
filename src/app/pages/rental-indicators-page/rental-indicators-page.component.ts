@@ -62,6 +62,7 @@ import {
   take,
   takeUntil,
 } from 'rxjs';
+import { CustomTooltipDirective } from '@directives/custom-tooltip.directive';
 
 @Component({
   selector: 'app-rental-indicators-page',
@@ -89,6 +90,7 @@ import {
     PieChartComponent,
     TopTenChartComponent,
     ForecastingChartComponent,
+    CustomTooltipDirective,
   ],
   templateUrl: './rental-indicators-page.component.html',
   styleUrls: ['./rental-indicators-page.component.scss'],
@@ -344,6 +346,11 @@ export default class RentalIndicatorsPageComponent implements OnInit, OnDestroy 
     'thirdYoy',
   ];
   compositeTransactionsExtraColumns = ['contractCounts', 'contractValues', 'avgContract'];
+
+  compositeAvgRentCriteriaTerms = new CriteriaSpecificTerms([
+    { criteriaKey: 'propertyTypeList', term: CriteriaTerms.SINGLE_NOT_ALL },
+    { criteriaKey: 'purposeList', term: CriteriaTerms.SINGLE_NOT_ALL },
+  ]);
 
   transactionsStatisticsColumns = ['average', 'certificates-count', 'area', 'units-count', 'average-square', 'chart'];
 

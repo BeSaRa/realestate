@@ -19,6 +19,7 @@ import { TopTenChartComponent } from '@components/top-ten-chart/top-ten-chart.co
 import { TransactionsFilterComponent } from '@components/transactions-filter/transactions-filter.component';
 import { YoyIndicatorComponent } from '@components/yoy-indicator/yoy-indicator.component';
 import { CriteriaContract } from '@contracts/criteria-contract';
+import { CustomTooltipDirective } from '@directives/custom-tooltip.directive';
 import { TableColumnCellTemplateDirective } from '@directives/table-column-cell-template.directive';
 import { TableColumnHeaderTemplateDirective } from '@directives/table-column-header-template.directive';
 import { TableColumnTemplateDirective } from '@directives/table-column-template.directive';
@@ -84,6 +85,7 @@ import {
     DurationChartComponent,
     TopTenChartComponent,
     ForecastingChartComponent,
+    CustomTooltipDirective,
   ],
   templateUrl: './sell-indicators-page.component.html',
   styleUrls: ['./sell-indicators-page.component.scss'],
@@ -356,6 +358,11 @@ export default class SellIndicatorsPageComponent implements OnInit, OnDestroy {
     'thirdYoy',
   ];
   compositeTransactionsExtraColumns = ['contractCounts', 'contractValues', 'avgContract'];
+
+  compositeAvgPriceCriteriaTerms = new CriteriaSpecificTerms([
+    { criteriaKey: 'propertyTypeList', term: CriteriaTerms.SINGLE_NOT_ALL },
+    { criteriaKey: 'purposeList', term: CriteriaTerms.SINGLE_NOT_ALL },
+  ]);
 
   selectedTab: 'sell_indicators' | 'statistical_reports_for_sell' = 'sell_indicators';
 
