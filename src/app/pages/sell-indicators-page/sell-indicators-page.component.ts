@@ -235,7 +235,6 @@ export default class SellIndicatorsPageComponent implements OnInit, OnDestroy {
       url: this.urlService.URLS.SELL_KPI30,
     }),
     new Top10AccordingTo([
-      'areaCode',
       { criteriaKey: 'propertyTypeList', term: CriteriaTerms.SINGLE_NOT_ALL },
       { criteriaKey: 'purposeList', term: CriteriaTerms.SINGLE_NOT_ALL },
     ]).clone<Top10AccordingTo>({
@@ -266,7 +265,6 @@ export default class SellIndicatorsPageComponent implements OnInit, OnDestroy {
       url: this.urlService.URLS.SELL_KPI33_1,
     }),
     new Top10AccordingTo([
-      'areaCode',
       { criteriaKey: 'propertyTypeList', term: CriteriaTerms.SINGLE_NOT_ALL },
       { criteriaKey: 'purposeList', term: CriteriaTerms.SINGLE_NOT_ALL },
     ]).clone<Top10AccordingTo>({
