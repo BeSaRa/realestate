@@ -9,6 +9,7 @@ import { UserInfo } from '@models/user-info';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { CastResponse } from 'cast-response';
 import * as qs from 'qs';
+import { AuthService } from '@services/auth.service';
 @Injectable({
   providedIn: 'root',
 })
@@ -17,8 +18,13 @@ export class UserService {
   urlService = inject(UrlService);
   lang = inject(TranslationService);
   http = inject(HttpClient);
+  authService = inject(AuthService);
 
   currentUser?: UserInfo;
+
+  constructor() {
+    this.listenToLogoutStatus();
+  }
 
   openLoginPopup() {
     this.dialog.open(LoginPopupComponent);
@@ -48,5 +54,11 @@ export class UserService {
 
   loadCurrentUserProfile(): Observable<UserInfo> {
     return this._loadCurrentUserProfile().pipe(tap((data) => (this.currentUser = data)));
+  }
+
+  private listenToLogoutStatus() {
+    this.authService.logout$.subscribe(() => {
+      this.currentUser = undefined;
+    });
   }
 }

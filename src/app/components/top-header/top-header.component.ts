@@ -57,8 +57,6 @@ export class TopHeaderComponent implements OnInit, OnDestroy {
   isLtr = false;
   xPosition: MenuPositionX = 'before';
 
-  userInfo?: UserInfo = this.userService.currentUser;
-
   ngOnInit(): void {
     this._listenToSearchChanges();
     this.onFocus(true);

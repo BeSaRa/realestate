@@ -29,10 +29,8 @@ export class MainMenuComponent extends OnDestroyMixin(class {}) implements OnIni
   mainMenu!: Menu;
 
   ngOnInit(): void {
-    console.log('HERE');
     this.menuService.loadMenus().subscribe((menus) => {
       this.mainMenu = menus.main_menu;
-      console.log(this.mainMenu);
     });
   }
 

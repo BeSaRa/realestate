@@ -1,5 +1,5 @@
 import { inject, Injectable } from '@angular/core';
-import { exhaustMap, map, Observable, of, ReplaySubject, Subject, switchMap, tap } from 'rxjs';
+import { delay, exhaustMap, map, Observable, ReplaySubject, Subject, tap } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { UrlService } from '@services/url.service';
 import { CastResponse } from 'cast-response';
@@ -98,7 +98,12 @@ export class MenuService extends RegisterServiceMixin(class {}) implements Servi
   }
 
   private listenToAuthenticationStatus() {
-    this.authService.authenticatedStatusChanged$.pipe(tap(() => this.reload$.next())).subscribe();
+    this.authService.authenticatedStatusChanged$
+      .pipe(
+        delay(100),
+        tap(() => this.reload$.next())
+      )
+      .subscribe();
   }
 
   private listenToMenuReload() {
