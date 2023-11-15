@@ -43,7 +43,7 @@ export class KpiRootComponent implements OnChanges {
       (changes['item'] && changes['item'].currentValue !== changes['item'].previousValue) ||
       (changes['criteria'] && changes['criteria'].currentValue !== changes['criteria'].previousValue)
     ) {
-      this.isCriteriaValid = this.item.criteriaTerms.checkIfCriteriaValid(this.criteria);
+      this.isCriteriaValid = this.item.criteriaTerms.validate(this.criteria);
     }
   }
 

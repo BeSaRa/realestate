@@ -234,7 +234,11 @@ export default class SellIndicatorsPageComponent implements OnInit, OnDestroy {
       hasPrice: false,
       url: this.urlService.URLS.SELL_KPI30,
     }),
-    new Top10AccordingTo().clone<Top10AccordingTo>({
+    new Top10AccordingTo([
+      'areaCode',
+      { criteriaKey: 'propertyTypeList', term: CriteriaTerms.SINGLE_NOT_ALL },
+      { criteriaKey: 'purposeList', term: CriteriaTerms.SINGLE_NOT_ALL },
+    ]).clone<Top10AccordingTo>({
       id: 1,
       arName: this.lang.getArabicTranslation('average_price_per_unit'),
       enName: this.lang.getEnglishTranslation('average_price_per_unit'),
@@ -261,7 +265,11 @@ export default class SellIndicatorsPageComponent implements OnInit, OnDestroy {
       enName: this.lang.getEnglishTranslation('number_of_units'),
       url: this.urlService.URLS.SELL_KPI33_1,
     }),
-    new Top10AccordingTo().clone<Top10AccordingTo>({
+    new Top10AccordingTo([
+      'areaCode',
+      { criteriaKey: 'propertyTypeList', term: CriteriaTerms.SINGLE_NOT_ALL },
+      { criteriaKey: 'purposeList', term: CriteriaTerms.SINGLE_NOT_ALL },
+    ]).clone<Top10AccordingTo>({
       id: 5,
       arName: this.lang.getArabicTranslation('sell_average_price_per'),
       enName: this.lang.getEnglishTranslation('sell_average_price_per'),

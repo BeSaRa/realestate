@@ -9,8 +9,23 @@
         <app-button
           class="relative min-w-max w-max whitespace-nowrap"
           (click)="selectAccordingTo(item)"
-          [disabled]="item.disabled"
-          [buttonStyle]="item.id === selectedAccordingTo.id ? 'secondary' : 'none-primary'">
+          [disabled]="item.disabled || !item.criteriaTerms.validate(criteria)"
+          [buttonStyle]="item.id === selectedAccordingTo.id ? 'secondary' : 'none-primary'"
+          appCustomTooltip
+          [tooltipContent]="
+            item.disabled
+              ? disabledTooltipTemplate
+              : !item.criteriaTerms.validate(criteria)
+              ? criteriaTooltipTemplate
+              : null
+          "
+          [tooltipContentContext]="item.criteriaTerms.getCriteriaTermsText()"
+          [tooltipPosition]="{
+            originX: 'center',
+            originY: 'center',
+            overlayX: 'center',
+            overlayY: 'center',
+          }">
           <span [ngClass]="{ 'text-transparent': isLoading && selectedAccordingTo.id === item.id }">{{
             item.getNames()
           }}</span>
@@ -56,3 +71,16 @@
     </div>
   </div>
 </div>
+
+<ng-template #criteriaTooltipTemplate let-terms>
+  <div class="bg-black/80 text-white text-xs p-2 rounded-md">
+    <p class="font-bold">{{ lang.map.filter_values_should_be_as_follows }}:</p>
+    <p *ngFor="let term of terms">- {{ term }}</p>
+  </div>
+</ng-template>
+
+<ng-template #disabledTooltipTemplate>
+  <div class="bg-black/80 text-white text-xs p-2 rounded-md">
+    <p class="font-bold">"{{ lang.map.data_is_being_collected_and_audited }}"</p>
+  </div>
+</ng-template>

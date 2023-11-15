@@ -54,7 +54,7 @@ export class ForecastingChartComponent implements OnChanges {
 
   loadChartData() {
     this.isDataAvailable = true;
-    this.isCriteriaValid = this.criteriaTerms.checkIfCriteriaValid(this.filterCriteria);
+    this.isCriteriaValid = this.criteriaTerms.validate(this.filterCriteria);
 
     if (!this.isCriteriaValid) {
       this.realPoints = this._getInitialPoints();

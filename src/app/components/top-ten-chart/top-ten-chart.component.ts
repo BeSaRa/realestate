@@ -16,6 +16,7 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { ButtonComponent } from '@components/button/button.component';
 import { IconButtonComponent } from '@components/icon-button/icon-button.component';
 import { CriteriaContract } from '@contracts/criteria-contract';
+import { CustomTooltipDirective } from '@directives/custom-tooltip.directive';
 import { ChartType } from '@enums/chart-type';
 import { OnDestroyMixin } from '@mixins/on-destroy-mixin';
 import { ChartOptionsModel } from '@models/chart-options-model';
@@ -23,6 +24,7 @@ import { Top10AccordingTo } from '@models/top-10-according-to';
 import { Top10KpiModel } from '@models/top-10-kpi-model';
 import { AppChartTypesService } from '@services/app-chart-types.service';
 import { DashboardService } from '@services/dashboard.service';
+import { TranslationService } from '@services/translation.service';
 import { UnitsService } from '@services/units.service';
 import { objectHasOwnProperty } from '@utils/utils';
 import { ChartComponent, NgApexchartsModule } from 'ng-apexcharts';
@@ -31,7 +33,14 @@ import { catchError, take, throwError } from 'rxjs';
 @Component({
   selector: 'app-top-ten-chart',
   standalone: true,
-  imports: [CommonModule, ButtonComponent, IconButtonComponent, NgApexchartsModule, MatProgressSpinnerModule],
+  imports: [
+    CommonModule,
+    ButtonComponent,
+    IconButtonComponent,
+    NgApexchartsModule,
+    MatProgressSpinnerModule,
+    CustomTooltipDirective,
+  ],
   templateUrl: './top-ten-chart.component.html',
   styleUrls: ['./top-ten-chart.component.scss'],
 })
@@ -46,6 +55,7 @@ export class TopTenChartComponent extends OnDestroyMixin(class {}) implements On
 
   @ViewChildren('chart') chart!: QueryList<ChartComponent>;
 
+  lang = inject(TranslationService);
   appChartTypesService = inject(AppChartTypesService);
   dashboardService = inject(DashboardService);
   unitsService = inject(UnitsService);
@@ -80,7 +90,7 @@ export class TopTenChartComponent extends OnDestroyMixin(class {}) implements On
   }
 
   selectAccordingTo(_new: Top10AccordingTo) {
-    if (_new.disabled) return;
+    if (_new.disabled || !_new.criteriaTerms.validate(this.criteria)) return;
 
     this.selectedAccordingTo = _new;
     this.updateChartData();

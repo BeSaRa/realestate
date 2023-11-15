@@ -263,14 +263,22 @@ export default class RentalIndicatorsPageComponent implements OnInit, OnDestroy 
       url: this.urlService.URLS.RENT_KPI30_1,
       hasPrice: false,
     }),
-    new Top10AccordingTo().clone<Top10AccordingTo>({
+    new Top10AccordingTo([
+      'areaCode',
+      { criteriaKey: 'propertyTypeList', term: CriteriaTerms.SINGLE_NOT_ALL },
+      { criteriaKey: 'purposeList', term: CriteriaTerms.SINGLE_NOT_ALL },
+    ]).clone<Top10AccordingTo>({
       id: 2,
       arName: this.lang.getArabicTranslation('average_price_per_month'),
       enName: this.lang.getEnglishTranslation('average_price_per_month'),
       url: this.urlService.URLS.RENT_KPI31,
       hasPrice: true,
     }),
-    new Top10AccordingTo().clone<Top10AccordingTo>({
+    new Top10AccordingTo([
+      'areaCode',
+      { criteriaKey: 'propertyTypeList', term: CriteriaTerms.SINGLE_NOT_ALL },
+      { criteriaKey: 'purposeList', term: CriteriaTerms.SINGLE_NOT_ALL },
+    ]).clone<Top10AccordingTo>({
       id: 3,
       arName: this.lang.getArabicTranslation('rent_average_price_per'),
       enName: this.lang.getEnglishTranslation('rent_average_price_per'),
