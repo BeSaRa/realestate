@@ -68,6 +68,7 @@ export class UserPreferencePopupComponent implements OnInit {
       )
       .subscribe((updatedUser) => {
         this.userService.currentUserSubject$.next(updatedUser);
+        this.lang.setCurrent(this.lang.languages.find((x) => x.code === updatedUser.language) ?? this.lang.getCurrent());
         this.dialogRef.close();
         this.toast.success(this.lang.map.user_info_has_been_updated_successfully, {
           verticalPosition: 'top',

@@ -51,6 +51,7 @@ export class UserService {
     return this._loadCurrentUserProfile().pipe(
       tap((data) => {
         this.currentUserSubject$.next(data);
+        this.lang.setCurrent(this.lang.languages.find((x) => x.code === data.language) ?? this.lang.getCurrent());
       }
       ));
   }
