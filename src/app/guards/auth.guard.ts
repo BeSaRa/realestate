@@ -1,24 +1,35 @@
-import { CanActivateFn } from '@angular/router';
+import { CanActivateFn, Router } from '@angular/router';
+import { inject } from '@angular/core';
+import { MenuService } from '@services/menu.service';
+import { map } from 'rxjs';
 
-export const authGuard: (url: string, redirectTo?: string) => CanActivateFn = (url, redirectTo) => () => {
-  // return menuService.getMainMenuLinksObject().pipe(
-  //   switchMap((linksObject) => {
-  //     const menuItem = linksObject[url];
-  //     if (!menuItem) {
-  //       return of(true);
-  //     }
-  //     return authService.isLoggedIn().pipe(
-  //       switchMap((isLoggedIn: boolean) => {
-  //         if (isLoggedIn) {
-  //           return authService.currentUser.pipe(
-  //             map((user) => handleAuthenticatedUser(user, menuItem, redirectTo, router))
-  //           );
-  //         } else {
-  //           return handleUnauthenticatedUser(redirectTo, router);
-  //         }
-  //       })
-  //     );
-  //   })
-  // );
-  return true;
-};
+export const authGuard: (url: string, redirectTo?: string) => CanActivateFn =
+  (url, redirectTo = '/home') =>
+  () => {
+    const menuService = inject(MenuService);
+    const router = inject(Router);
+    return menuService.menuMap$.pipe(
+      map((menus) => {
+        return Object.prototype.hasOwnProperty.call(menus, url) ? true : router.parseUrl(redirectTo);
+        // return !Object.prototype.hasOwnProperty.call(menus, url)
+        //   ? true
+        //   : (() => {
+        //       const menu = menus[url];
+        //       let hasAccess: boolean;
+        //       if (menu.roles.length) {
+        //         hasAccess = !!(
+        //           authService.isAuthenticated() &&
+        //           userService.currentUser &&
+        //           userService.currentUser.role &&
+        //           menu.roles.includes(userService.currentUser.role.id)
+        //         );
+        //       } else if (menu.is_authenticated) {
+        //         hasAccess = authService.isAuthenticated();
+        //       } else {
+        //         hasAccess = true;
+        //       }
+        //       return hasAccess ? hasAccess : router.parseUrl(redirectTo);
+        //     })();
+      })
+    );
+  };

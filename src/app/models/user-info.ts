@@ -1,10 +1,8 @@
 import { HasServiceMixin } from '@mixins/has-service-mixin';
-import { UserRole } from './user-role';
 import { ClonerMixin } from '@mixins/cloner-mixin';
-import { ServiceRegistry } from '@services/service-registry';
-import { TranslationService } from '@services/translation.service';
 import { InterceptModel } from 'cast-response';
 import { UserInfoInterceptor } from '@model-interceptors/user-info-interceptor';
+import { Role } from '@models/role';
 
 const { send, receive } = new UserInfoInterceptor();
 
@@ -25,7 +23,7 @@ export class UserInfo extends HasServiceMixin(ClonerMixin(class {})) {
   last_page?: string;
   provider?: string;
   external_identifier?: string;
-  role?: string;
+  role!: Role;
 
   buildForm(): object {
     const { id, title, first_name, last_name, email, language, email_notifications } = this;

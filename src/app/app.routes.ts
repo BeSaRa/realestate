@@ -38,27 +38,27 @@ export const routes: Routes = [
   },
   {
     path: 'sell-indicators',
-    canActivate: [authGuard('/sell-indicators', 'home')],
+    canActivate: [authGuard('/sell-indicators')],
     loadComponent: () => import('@pages/sell-indicators-page/sell-indicators-page.component'),
   },
   {
     path: 'mortgage-indicators',
-    canActivate: [authGuard('/mortgage-indicators', 'home')],
+    canActivate: [authGuard('/mortgage-indicators')],
     loadComponent: () => import('@pages/mortgage-indicators/mortgage-indicators.component'),
   },
   {
     path: 'rental-indicators',
-    canActivate: [authGuard('/rental-indicators', 'home')],
+    canActivate: [authGuard('/rental-indicators')],
     loadComponent: () => import('@pages/rental-indicators-page/rental-indicators-page.component'),
   },
   {
     path: 'ownership-indicators',
-    canActivate: [authGuard('/ownership-indicators', 'home')],
+    canActivate: [authGuard('/ownership-indicators')],
     loadComponent: () => import('@pages/ownership-indicators-page/ownership-indicators-page.component'),
   },
   {
     path: 'occupied-and-vacant-indicators',
-    canActivate: [authGuard('/occupied-and-vacant-indicators', 'home')],
+    canActivate: [authGuard('/occupied-and-vacant-indicators')],
     loadComponent: () =>
       import('@pages/occupied-and-vacant-indicators-page/occupied-and-vacant-indicators-page.component'),
   },

@@ -8,7 +8,7 @@ import { UserPreferencePopupComponent } from '@components/user-preference-popup/
 import { UserInfo } from '@models/user-info';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { CastResponse } from 'cast-response';
-
+import * as qs from 'qs';
 @Injectable({
   providedIn: 'root',
 })
@@ -39,7 +39,11 @@ export class UserService {
 
   @CastResponse(() => UserInfo, { unwrap: 'data' })
   _loadCurrentUserProfile(): Observable<UserInfo> {
-    return this.http.get<UserInfo>(this.urlService.URLS.USERS + '/me');
+    return this.http.get<UserInfo>(this.urlService.URLS.USERS + '/me', {
+      params: new HttpParams({
+        fromString: qs.stringify({ fields: ['*', 'role.id', 'role.admins_access', 'role.name'] }),
+      }),
+    });
   }
 
   loadCurrentUserProfile(): Observable<UserInfo> {

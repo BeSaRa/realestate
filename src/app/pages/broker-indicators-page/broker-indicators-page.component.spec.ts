@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { BrokerIndicatorsPageComponent } from './broker-indicators-page.component';
+import BrokerIndicatorsPageComponent from './broker-indicators-page.component';
 
 describe('BrokerIndicatorsPageComponent', () => {
   let component: BrokerIndicatorsPageComponent;
@@ -8,7 +8,7 @@ describe('BrokerIndicatorsPageComponent', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [BrokerIndicatorsPageComponent]
+      imports: [BrokerIndicatorsPageComponent],
     });
     fixture = TestBed.createComponent(BrokerIndicatorsPageComponent);
     component = fixture.componentInstance;

@@ -26,7 +26,7 @@ import { TranslationService } from '@services/translation.service';
 import { UrlService } from '@services/url.service';
 import { UserService } from '@services/user.service';
 import '@utils/prototypes/custom-prototypes';
-import { filter, map, startWith } from 'rxjs';
+import { filter, map, startWith, switchMap } from 'rxjs';
 
 @Component({
   selector: 'app-root',
@@ -116,8 +116,8 @@ export class AppComponent implements OnInit, AfterViewInit {
       .confirm(this.lang.map.logout_confirmation, undefined, { no: this.lang.map.cancel, yes: this.lang.map.yes })
       .afterClosed()
       .pipe(
-        filter((value) => value === UserClick.YES)
-        // switchMap(() => this.authService.logout())
+        filter((value) => value === UserClick.YES),
+        switchMap(() => this.authService.logout())
       )
       .subscribe(() => {
         this.toast.success(this.lang.map.logged_out_successfully, {
