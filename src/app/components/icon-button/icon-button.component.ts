@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { AppIcons, AppIconsType } from '@constants/app-icons';
 import { MatIconModule } from '@angular/material/icon';
@@ -31,11 +31,11 @@ export class IconButtonComponent {
     return this._disabled;
   }
 
-  clicked($event: MouseEvent) {
-    if (this.disabled) {
-      $event.preventDefault();
-      $event.stopPropagation();
-    }
+  @Output() clicked = new EventEmitter<MouseEvent>();
+
+  onClick($event: MouseEvent) {
+    if (this.disabled) return;
+    this.clicked.emit($event);
   }
 
   get selectedIcon() {
