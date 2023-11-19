@@ -17,6 +17,7 @@ import { OwnerCriteriaContract } from '@contracts/owner-criteria-contract';
 import { BarChartTypes } from '@enums/bar-chart-type';
 import { Breakpoints } from '@enums/breakpoints';
 import { CriteriaType } from '@enums/criteria-type';
+import { FigureType } from '@enums/figure-type';
 import { NationalityCategories } from '@enums/nationality-categories';
 import { ChartConfig, ChartContext, ChartOptionsModel, DataPointSelectionConfig } from '@models/chart-options-model';
 import { KpiBase } from '@models/kpi-base';
@@ -64,6 +65,7 @@ import { QatarInteractiveMapComponent } from 'src/app/qatar-interactive-map/qata
   styleUrls: ['./ownership-indicators-page.component.scss'],
 })
 export default class OwnershipIndicatorsPageComponent implements OnInit, AfterViewInit, OnDestroy {
+  protected readonly FigureType = FigureType;
   @ViewChildren('nationalitiesChart') nationalitiesChart!: QueryList<ChartComponent>;
   @ViewChildren('municipalitiesChart') municipalitiesChart!: QueryList<ChartComponent>;
   @ViewChildren('areasChart') areasChart!: QueryList<ChartComponent>;
@@ -164,6 +166,8 @@ export default class OwnershipIndicatorsPageComponent implements OnInit, AfterVi
   municipalitiesData: (KpiBaseModel & { municipalityId: number })[] = [];
   municipalitiesDataLength = 0;
 
+  selectedFigureType = FigureType.MAP;
+
   municipalitiesChartOptions = new ChartOptionsModel().clone<ChartOptionsModel>(
     this.appChartTypesService.mainChartOptions
   );
@@ -219,6 +223,15 @@ export default class OwnershipIndicatorsPageComponent implements OnInit, AfterVi
       this.nationalityCriteria = { ...this.criteria.criteria, nationalityCode: this.selectedNationality.id };
     }, 0);
   }
+
+
+
+  // prepareChart(): void {
+  //   this._initializeChartsFormatters();
+  //   setTimeout(() => {
+  //     this._listenToScreenSize();
+  //   }, 0);
+  // }
 
   ngOnDestroy(): void {
     this.destroy$.next();
@@ -729,5 +742,14 @@ export default class OwnershipIndicatorsPageComponent implements OnInit, AfterVi
   }
   getStringSelectedCriteria(): string {
     return this.sectionTitle.getSelectedCriteria('owner', this.criteria.criteria, false, true, false);
+  }
+
+  setOwnershipsCountPerMunicipalityFigureType(type: FigureType): void {
+    this.selectedFigureType = type;
+
+  }
+
+  isSelectedFigure(type: FigureType) {
+    return this.selectedFigureType === type
   }
 }
