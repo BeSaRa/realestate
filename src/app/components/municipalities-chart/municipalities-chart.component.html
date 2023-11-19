@@ -39,7 +39,7 @@
         [plotOptions]="chartOptions.plotOptions!"
         [title]="chartOptions.title!" />
     </div>
-    <div *ngIf="isSelectedFigure(FigureType.MAP)" class="mt-2 pt-1 pb-4 flex items-center">
+    <div *ngIf="isSelectedFigure(FigureType.MAP)" class="lg:w-full w-full flex-auto overflow-hidden mt-2 pt-1 pb-4">
       <app-qatar-interactive-map
         [municipalitiesData]="getMapData()"
         [label]="getMapLabel()"
