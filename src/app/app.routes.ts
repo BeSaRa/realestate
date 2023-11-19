@@ -24,6 +24,12 @@ export const routes: Routes = [
     resolve: { pageData: pageResolver },
   },
   {
+    path: Pages.CONTACT,
+    loadComponent: () => import('./pages/page/page.component'),
+    data: { page: Pages.CONTACT },
+    resolve: { pageData: pageResolver },
+  },
+  {
     path: 'laws',
     loadComponent: () => import('./pages/law-page/law-page.component'),
   },
