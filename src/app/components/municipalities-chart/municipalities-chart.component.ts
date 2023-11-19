@@ -27,15 +27,19 @@ import { minMaxAvg, objectHasOwnProperty } from '@utils/utils';
 import { ChartComponent, NgApexchartsModule } from 'ng-apexcharts';
 import { map, take, takeUntil } from 'rxjs';
 import { QatarInteractiveMapComponent } from 'src/app/qatar-interactive-map/qatar-interactive-map.component';
+import { ButtonComponent } from '@components/button/button.component';
+import { FigureType } from '@enums/figure-type';
+import { TranslationService } from '@services/translation.service';
 
 @Component({
   selector: 'app-municipalities-chart',
   standalone: true,
-  imports: [CommonModule, NgApexchartsModule, QatarInteractiveMapComponent],
+  imports: [CommonModule, NgApexchartsModule, QatarInteractiveMapComponent, ButtonComponent],
   templateUrl: './municipalities-chart.component.html',
   styleUrls: ['./municipalities-chart.component.scss'],
 })
-export class MunicipalitiesChartComponent extends OnDestroyMixin(class {}) implements AfterViewInit, OnChanges {
+export class MunicipalitiesChartComponent extends OnDestroyMixin(class { }) implements AfterViewInit, OnChanges {
+  protected readonly FigureType = FigureType;
   @Input({ required: true }) title!: string;
   @Input({ required: true }) seriesNames!: Record<number, string>;
   @Input({ required: true }) criteria!: CriteriaContract;
@@ -43,12 +47,13 @@ export class MunicipalitiesChartComponent extends OnDestroyMixin(class {}) imple
   @Input({ required: true }) bindLabel!: string | ((item: any) => string);
   @Input({ required: true }) unit!: string;
   @Input() bindDataSplitProp!: string;
-  @Input() showMap = true;
+  // @Input() showMap = true;
 
   @Output() selectedMunicipalityChanged = new EventEmitter<{ municipalityId: number }>();
 
   @ViewChildren('chart') chart!: QueryList<ChartComponent>;
 
+  lang = inject(TranslationService);
   dashboardService = inject(DashboardService);
   urlService = inject(UrlService);
   appChartTypesService = inject(AppChartTypesService);
@@ -56,7 +61,7 @@ export class MunicipalitiesChartComponent extends OnDestroyMixin(class {}) imple
   cdr = inject(ChangeDetectorRef);
 
   screenSize = Breakpoints.LG;
-
+  selectedFigureType = FigureType.MAP;
   isChartFirstUpdate = true;
   isUpdatingChartData = false;
   seriesData: Record<number, (KpiBaseModel & { municipalityId: number })[]> = {};
@@ -181,11 +186,11 @@ export class MunicipalitiesChartComponent extends OnDestroyMixin(class {}) imple
       ? typeof (item as never)[this.bindLabel] === 'function'
         ? ((item as never)[this.bindLabel] as () => string)()
         : objectHasOwnProperty(item, this.bindLabel)
-        ? (item[this.bindLabel] as string)
-        : (item as unknown as string)
+          ? (item[this.bindLabel] as string)
+          : (item as unknown as string)
       : this.bindLabel && typeof this.bindLabel === 'function'
-      ? (this.bindLabel(item) as string)
-      : (item as unknown as string);
+        ? (this.bindLabel(item) as string)
+        : (item as unknown as string);
   }
 
   private _listenToScreenSizeChange() {
@@ -269,4 +274,13 @@ export class MunicipalitiesChartComponent extends OnDestroyMixin(class {}) imple
     );
     this.selectedMunicipalityChanged.emit({ municipalityId: this.selectedMunicipality.id });
   };
+
+  setOccupiedVacantFigureType(type: FigureType): void {
+    this.selectedFigureType = type;
+    this.updateChartData();
+  }
+
+  isSelectedFigure(type: FigureType) {
+    return this.selectedFigureType === type
+  }
 }
