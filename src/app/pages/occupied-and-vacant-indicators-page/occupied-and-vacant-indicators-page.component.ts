@@ -320,7 +320,6 @@ export default class OccupiedAndVacantIndicatorsPageComponent
       )
       .subscribe((data) => {
         this.areasDataLength = data[OccupationStatus.OCCUPIED].length;
-
         this.areasChart.first
           ?.updateOptions({
             series: Object.keys(data).map((status) => ({

@@ -115,6 +115,11 @@ export class ChartOptionsModel extends ClonerMixin(class {}) implements PartialC
     return this;
   }
 
+  setChartHeight(height: number) {
+    this.chart && (this.chart.height = height);
+    return this;
+  }
+
   addCustomToolbarOptions() {
     this.chart = {
       ...(this.chart ?? {}),

@@ -7,6 +7,7 @@ import {
   EventEmitter,
   Input,
   OnChanges,
+  OnInit,
   Output,
   QueryList,
   SimpleChanges,
@@ -83,13 +84,17 @@ export class MunicipalitiesChartComponent extends OnDestroyMixin(class { }) impl
   }
 
   ngAfterViewInit(): void {
+    this.selectedMunicipalityChanged.emit({ municipalityId: this.selectedMunicipality.id });
+  }
+
+  prepareChart(): void {
+    this.updateChartData();
     this._initializeFormatters();
     setTimeout(() => {
-      this.chart.first?.updateOptions({ chart: { type: 'bar' } }).then();
+      this.chart.first?.updateOptions({ chart: { type: 'bar'} }).then();
       this._listenToScreenSizeChange();
     }, 0);
   }
-
   updateChartData() {
     this.isUpdatingChartData = true;
 
@@ -213,6 +218,7 @@ export class MunicipalitiesChartComponent extends OnDestroyMixin(class { }) impl
 
   private _initializeFormatters() {
     this.chartOptions
+      // .setChartHeight(475)
       .addDataLabelsFormatter((val, opts) =>
         this.appChartTypesService.dataLabelsFormatter({ val, opts }, this.rootData)
       )
@@ -276,8 +282,11 @@ export class MunicipalitiesChartComponent extends OnDestroyMixin(class { }) impl
   };
 
   setOccupiedVacantFigureType(type: FigureType): void {
+    if (type === FigureType.CHART) {
+      this.prepareChart();
+    }
     this.selectedFigureType = type;
-    this.updateChartData();
+
   }
 
   isSelectedFigure(type: FigureType) {
