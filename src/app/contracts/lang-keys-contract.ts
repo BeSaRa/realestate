@@ -365,4 +365,5 @@ export interface LangKeysContract {
   brokers: string;
   company_name: string;
   phone: string;
+  map: string;
 }
