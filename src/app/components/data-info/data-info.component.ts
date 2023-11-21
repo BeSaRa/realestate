@@ -29,6 +29,14 @@ export class DataInfoComponent implements OnInit {
     return !this.lang.isLtr;
   }
 
+  @HostBinding('class.-translate-x-72') get translateLeft() {
+    return !this.isOpened && !this.lang.isLtr;
+  }
+
+  @HostBinding('class.translate-x-72') get translateRight() {
+    return !this.isOpened && this.lang.isLtr;
+  }
+
   ngOnInit(): void {
     this._listenToRouteChange();
     this._listenToPageClick();

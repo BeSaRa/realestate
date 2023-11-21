@@ -1,18 +1,17 @@
 <div
-  *ngIf="dataInfoService.isEnabled()"
-  [ngClass]="{ '-translate-x-72': !this.isOpened && !lang.isLtr, 'translate-x-72': !this.isOpened && lang.isLtr }"
+  *ngIf="dataInfoService.getText()"
   [ngStyle]="{ transition: 'all 0.3s' }"
-  class="flex justify-center items-center">
+  class="flex justify-center items-center"
+  [ngClass]="{ '-translate-x-90px': !lang.isLtr, 'translate-x-90px': lang.isLtr }">
   <div>
     <button
       (click)="toggleOpened($event)"
-      [ngClass]="{
-        'rtl-transform origin-bottom-left': !lang.isLtr,
-        'ltr-transform origin-bottom-right': lang.isLtr
-      }"
-      class="bg-primary px-2 py-1 text-white rounded-tl-md rounded-tr-md shadow transition-all hover:brightness-90 flex items-center gap-1">
-      <span>{{ lang.map.data_source }}</span
-      ><mat-icon [ngClass]="{ 'rotate-180': isOpened }" class="transition-all" [svgIcon]="icons.CHEVRON_UP"></mat-icon>
+      class="bg-primary py-2 px-1 text-white rtl:rounded-tr-md rtl:rounded-br-md ltr:rounded-tl-md ltr:rounded-bl-md shadow transition-all hover:brightness-90 flex flex-col items-center justify-center gap-1">
+      <span [ngStyle]="{ 'writing-mode': 'vertical-rl' }">{{ lang.map.data_source }}</span
+      ><mat-icon
+        [ngClass]="{ 'rotate-180': isOpened }"
+        class="transition-all"
+        [svgIcon]="lang.isLtr ? icons.CHEVRON_LEFT : icons.CHEVRON_RIGHT"></mat-icon>
     </button>
   </div>
   <div

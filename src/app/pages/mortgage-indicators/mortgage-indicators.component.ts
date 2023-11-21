@@ -23,7 +23,6 @@ import { KpiRoot } from '@models/kpi-root';
 import { MortgageTransaction } from '@models/mortgage-transaction';
 import { TableSortOption } from '@models/table-sort-option';
 import { DashboardService } from '@services/dashboard.service';
-import { DataInfoService } from '@services/data-info.service';
 import { LookupService } from '@services/lookup.service';
 import { SectionTitleService } from '@services/section-title.service';
 import { TranslationService } from '@services/translation.service';
@@ -61,7 +60,6 @@ export default class MortgageIndicatorsComponent implements OnInit {
   dashboardService = inject(DashboardService);
   unitsService = inject(UnitsService);
   sectionTitle = inject(SectionTitleService);
-  dataInfoService = inject(DataInfoService);
 
   reload$ = new ReplaySubject<void>(1);
   private paginate$ = new BehaviorSubject({
@@ -184,10 +182,6 @@ export default class MortgageIndicatorsComponent implements OnInit {
   ];
 
   ngOnInit() {
-    this.dataInfoService.setEnabled(true);
-    this.dataInfoService.setText(
-      'data_sources_for_mortgage_indicators_include_data_from_the_ministry_of_justice_real_estate_registry_database'
-    );
     this.reload$.next();
   }
 

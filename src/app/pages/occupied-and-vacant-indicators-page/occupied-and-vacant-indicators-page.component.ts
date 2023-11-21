@@ -29,7 +29,6 @@ import { KpiRoot } from '@models/kpi-root';
 import { OccupancyTransaction } from '@models/occupancy-transaction';
 import { AppChartTypesService } from '@services/app-chart-types.service';
 import { DashboardService } from '@services/dashboard.service';
-import { DataInfoService } from '@services/data-info.service';
 import { DialogService } from '@services/dialog.service';
 import { LookupService } from '@services/lookup.service';
 import { ScreenBreakpointsService } from '@services/screen-breakpoints.service';
@@ -74,7 +73,6 @@ export default class OccupiedAndVacantIndicatorsPageComponent
   appChartTypesService = inject(AppChartTypesService);
   screenService = inject(ScreenBreakpointsService);
   dialog = inject(DialogService);
-  dataInfoService = inject(DataInfoService);
 
   screenSize = Breakpoints.LG;
 
@@ -173,9 +171,6 @@ export default class OccupiedAndVacantIndicatorsPageComponent
   reload$ = this.reloadSubject.asObservable();
 
   ngOnInit(): void {
-    this.dataInfoService.setEnabled(true);
-    this.dataInfoService.setText('data_sources_for_occupied_and_vacant_indicators_include_data_from_Kahramaa_database');
-
     this._listenToTransactionsReloadAndPaginate();
     setTimeout(() => {
       this.reloadSubject.next();
