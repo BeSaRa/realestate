@@ -63,6 +63,7 @@ import {
   takeUntil,
 } from 'rxjs';
 import { CustomTooltipDirective } from '@directives/custom-tooltip.directive';
+import { DataInfoService } from '@services/data-info.service';
 
 @Component({
   selector: 'app-rental-indicators-page',
@@ -104,6 +105,7 @@ export default class RentalIndicatorsPageComponent implements OnInit, OnDestroy 
   lookupService = inject(LookupService);
   unitsService = inject(UnitsService);
   sectionTitle = inject(SectionTitleService);
+  dataInfoService = inject(DataInfoService);
 
   destroy$ = new Subject<void>();
   reload$ = new ReplaySubject<void>(1);
@@ -412,6 +414,10 @@ export default class RentalIndicatorsPageComponent implements OnInit, OnDestroy 
     this.lookupService.rentFurnitureMap[item.furnitureStatus || 0]?.getNames();
 
   ngOnInit(): void {
+    this.dataInfoService.setEnabled(true);
+    this.dataInfoService.setText(
+      'data_source_for_rental_indicators_includes_data_from_the_ministry_of_municipality_rental_contracts_database'
+    );
     this.reload$.next();
   }
 

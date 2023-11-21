@@ -27,6 +27,7 @@ import { Lookup } from '@models/lookup';
 import { FormatNumbersPipe } from '@pipes/format-numbers.pipe';
 import { AppChartTypesService } from '@services/app-chart-types.service';
 import { DashboardService } from '@services/dashboard.service';
+import { DataInfoService } from '@services/data-info.service';
 import { LookupService } from '@services/lookup.service';
 import { ScreenBreakpointsService } from '@services/screen-breakpoints.service';
 import { SectionTitleService } from '@services/section-title.service';
@@ -77,6 +78,7 @@ export default class OwnershipIndicatorsPageComponent implements OnInit, AfterVi
   appChartTypesService = inject(AppChartTypesService);
   screenService = inject(ScreenBreakpointsService);
   sectionTitle = inject(SectionTitleService);
+  dataInfoService = inject(DataInfoService);
 
   screenSize = Breakpoints.LG;
 
@@ -210,7 +212,12 @@ export default class OwnershipIndicatorsPageComponent implements OnInit, AfterVi
     hasPrice: false,
   };
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    this.dataInfoService.setEnabled(true);
+    this.dataInfoService.setText(
+      'data_sources_for_ownership_indicators_include_data_from_the_ministry_of_justice_real_estate_registry_database'
+    );
+  }
 
   ngAfterViewInit(): void {
     this._initializeChartsFormatters();

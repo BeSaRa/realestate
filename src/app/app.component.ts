@@ -8,6 +8,7 @@ import { MatMenuModule } from '@angular/material/menu';
 import { Router, RouterModule, RouterOutlet } from '@angular/router';
 import { ButtonComponent } from '@components/button/button.component';
 import { ChatGptComponent } from '@components/chat-gpt/chat-gpt.component';
+import { DataInfoComponent } from '@components/data-info/data-info.component';
 import { FooterComponent } from '@components/footer/footer.component';
 import { HeaderComponent } from '@components/header/header.component';
 import { ScrollToTopComponent } from '@components/scroll-to-top/scroll-to-top.component';
@@ -18,6 +19,7 @@ import { SideBarDirection } from '@enums/side-bar-direction';
 import { UserClick } from '@enums/user-click';
 import { UserInfo } from '@models/user-info';
 import { AuthService } from '@services/auth.service';
+import { DataInfoService } from '@services/data-info.service';
 import { DialogService } from '@services/dialog.service';
 import { SplashService } from '@services/splash.service';
 import { StickyService } from '@services/sticky.service';
@@ -46,6 +48,7 @@ import { filter, map, startWith, switchMap } from 'rxjs';
     ScrollToTopComponent,
     MatMenuModule,
     SliderMenuComponent,
+    DataInfoComponent,
   ],
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss'],
@@ -59,6 +62,7 @@ export class AppComponent implements OnInit, AfterViewInit {
   userService = inject(UserService);
   toast = inject(ToastService);
   router = inject(Router);
+  dataInfoService = inject(DataInfoService);
   authService = inject(AuthService);
 
   userInfo?: UserInfo;

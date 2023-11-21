@@ -1,0 +1,13 @@
+:host {
+  position: fixed;
+  bottom: 100px;
+  z-index: 100;
+}
+
+.ltr-transform {
+  transform: rotate(-90deg) translateX(50%);
+}
+
+.rtl-transform {
+  transform: rotate(90deg) translateX(-50%);
+}
