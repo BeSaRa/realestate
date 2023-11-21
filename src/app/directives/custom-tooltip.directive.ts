@@ -1,11 +1,5 @@
 import { Directionality } from '@angular/cdk/bidi';
-import {
-  ConnectedPosition,
-  Overlay,
-  OverlayPositionBuilder,
-  OverlayRef,
-  RepositionScrollStrategy,
-} from '@angular/cdk/overlay';
+import { ConnectedPosition, Overlay, OverlayPositionBuilder, OverlayRef } from '@angular/cdk/overlay';
 import { ComponentPortal } from '@angular/cdk/portal';
 import {
   ComponentRef,
@@ -15,15 +9,13 @@ import {
   InjectionToken,
   Injector,
   Input,
-  OnChanges,
   OnDestroy,
   OnInit,
-  SimpleChanges,
   TemplateRef,
   inject,
 } from '@angular/core';
 import { CustomTooltipComponent } from '@components/custom-tooltip/custom-tooltip.component';
-import { Subject, takeUntil } from 'rxjs';
+import { Subject } from 'rxjs';
 
 export interface CustomTooltipDataContract {
   tooltipContent: TemplateRef<any>;
@@ -54,16 +46,30 @@ export class CustomTooltipDirective implements OnInit, OnDestroy {
   destroy$ = new Subject<void>();
 
   ngOnInit(): void {
-    const _postitionStrategy = this._overlayPositionBuilder.flexibleConnectedTo(this._elementRef).withPositions([
+    const _postitionStrategy = this._overlayPositionBuilder.flexibleConnectedTo(this._elementRef).withPositions(
       this.tooltipPosition
-        ? this.tooltipPosition
-        : {
-            originX: 'center',
-            originY: 'center',
-            overlayX: 'center',
-            overlayY: 'center',
-          },
-    ]);
+        ? [this.tooltipPosition]
+        : [
+            {
+              originX: 'center',
+              originY: 'center',
+              overlayX: 'start',
+              overlayY: 'top',
+            },
+            {
+              originX: 'center',
+              originY: 'center',
+              overlayX: 'center',
+              overlayY: 'top',
+            },
+            {
+              originX: 'center',
+              originY: 'center',
+              overlayX: 'end',
+              overlayY: 'top',
+            },
+          ]
+    );
     this._overlayRef = this._overlay.create({
       positionStrategy: _postitionStrategy,
       direction: this._dir,

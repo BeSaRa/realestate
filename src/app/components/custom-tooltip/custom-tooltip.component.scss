@@ -1,6 +1,9 @@
-.custom-tooltip {
-  @apply bg-white opacity-70 absolute rounded-md overflow-hidden text-sm w-max z-[200];
+::ng-deep .cdk-overlay-pane:has(> app-custom-tooltip) {
   pointer-events: none;
+}
+
+.custom-tooltip {
+  @apply bg-white opacity-70 rounded-md overflow-hidden text-sm w-max;
 }
 
 .custom-tooltip-show {
