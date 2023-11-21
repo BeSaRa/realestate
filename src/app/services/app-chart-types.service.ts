@@ -188,9 +188,9 @@ const mainChartOptions: PartialChartOptions = {
     enabled: true,
     offsetY: -20,
     enabledOnSeries: undefined,
-    style: { 
+    style: {
       colors: [AppColors.JUNGLE],
-     },
+    },
   },
   stroke: {
     curve: 'smooth',
@@ -235,7 +235,6 @@ const mainChartOptions: PartialChartOptions = {
       enabled: false,
     },
   },
-  tooltip: { marker: { fillColors: [AppColors.JUNGLE] } },
 };
 
 const minMaxAvgBarChartOptions: Partial<PartialChartOptions> = {
@@ -297,7 +296,6 @@ const minMaxAvgBarChartOptions: Partial<PartialChartOptions> = {
       enabled: false,
     },
   },
-  tooltip: { marker: { fillColors: [AppColors.JUNGLE] } },
   legend: { show: false },
 };
 
@@ -584,7 +582,8 @@ function getRangeOptions(
       ? {
           plotOptions: {
             bar: {
-              columnWidth: dataCount <= 3 ? '10%' : (dataCount * 10) / 2 <= 80 ? ((dataCount * 10) / 2).toString() + '%' : '70%',
+              columnWidth:
+                dataCount <= 3 ? '10%' : (dataCount * 10) / 2 <= 80 ? ((dataCount * 10) / 2).toString() + '%' : '70%',
             },
           },
           xaxis: {
