@@ -39,6 +39,7 @@ import { TableSortOption } from '@models/table-sort-option';
 import { Top10AccordingTo } from '@models/top-10-according-to';
 import { FormatNumbersPipe } from '@pipes/format-numbers.pipe';
 import { DashboardService } from '@services/dashboard.service';
+import { DataInfoService } from '@services/data-info.service';
 import { LookupService } from '@services/lookup.service';
 import { SectionTitleService } from '@services/section-title.service';
 import { TranslationService } from '@services/translation.service';
@@ -105,6 +106,7 @@ export default class SellIndicatorsPageComponent implements OnInit, OnDestroy {
   lookupService = inject(LookupService);
   unitsService = inject(UnitsService);
   sectionTitle = inject(SectionTitleService);
+  dataInfoService = inject(DataInfoService);
 
   destroy$ = new Subject<void>();
   reload$ = new ReplaySubject<void>(1);
@@ -390,6 +392,10 @@ export default class SellIndicatorsPageComponent implements OnInit, OnDestroy {
   selectedTab: 'sell_indicators' | 'statistical_reports_for_sell' = 'sell_indicators';
 
   ngOnInit(): void {
+    this.dataInfoService.setEnabled(true);
+    this.dataInfoService.setText(
+      'data_sources_for_sale_indicators_include_data_from_the_inistry_of_justice_real_estate_registration_database'
+    );
     this.reload$.next();
   }
 
