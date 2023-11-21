@@ -361,4 +361,8 @@ export interface LangKeysContract {
   about: string;
   brokers_list: string;
   data_source: string;
+
+  brokers: string;
+  company_name: string;
+  phone: string;
 }
