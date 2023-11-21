@@ -158,6 +158,13 @@ const ovEndpoints = {
   OV_KPI7: 'OV|transactions/kpi7',
 };
 
+const brokerEndpoints = {
+  BROKER: 'BE|kpi/broker',
+  BROKER_LOOKUPS: 'BROKER|lookup',
+  BROKER_KPI1: 'BROKER|kpi1',
+  BROKER_KPI_TRANSACTIONS: 'BROKER|transactions',
+};
+
 export const cmsEndpoints = {
   TRANSLATION: 'translations',
   ADMIN: 'admin/login',
@@ -181,6 +188,7 @@ export const EndPoints = {
   ...mortgageEndpoints,
   ...ownerEndpoints,
   ...ovEndpoints,
+  ...brokerEndpoints,
 };
 
 export type EndpointsType = typeof EndPoints;

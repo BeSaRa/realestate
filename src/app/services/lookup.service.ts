@@ -8,7 +8,7 @@ import { LookupsMap } from '@models/lookups-map';
 import { ParamRange } from '@models/param-range';
 import { UrlService } from '@services/url.service';
 import { CastResponse } from 'cast-response';
-import { forkJoin, map, Observable, tap } from 'rxjs';
+import { forkJoin, Observable, tap } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
@@ -23,12 +23,14 @@ export class LookupService extends RegisterServiceMixin(class {}) implements Ser
   mortLookups!: LookupsContract;
   ownerLookups!: LookupsContract;
   ovLookups!: LookupsContract;
+  brokerLookups!: LookupsContract;
 
   rentMunicipalitiesMap: Record<number, Lookup> = {};
   sellMunicipalitiesMap: Record<number, Lookup> = {};
   mortMunicipalitiesMap: Record<number, Lookup> = {};
   ownerMunicipalitiesMap: Record<number, Lookup> = {};
   ovMunicipalitiesMap: Record<number, Lookup> = {};
+  brokerMunicipalitiesMap: Record<number, Lookup> = {};
 
   rentZonesMap: Record<number, Lookup> = {};
   sellZonesMap: Record<number, Lookup> = {};
@@ -69,6 +71,10 @@ export class LookupService extends RegisterServiceMixin(class {}) implements Ser
   ovPremiseCategoryMap: Record<number, Lookup> = {};
 
   ovPremiseTypeMap: Record<number, Lookup> = {};
+
+  brokerCategoryMap: Record<number, Lookup> = {};
+
+  brokerTypeMap: Record<number, Lookup> = {};
 
   @CastResponse(() => LookupsMap, {
     shape: {
@@ -149,6 +155,17 @@ export class LookupService extends RegisterServiceMixin(class {}) implements Ser
     return this.http.get<LookupsMap>(this.urlService.URLS.OV_LOOKUPS).pipe(tap(console.log));
   }
 
+  @CastResponse(() => LookupsMap, {
+    shape: {
+      'municipalityList.*': () => Lookup,
+      'brokerCategoryList.*': () => Lookup,
+      'brokerTypeList.*': () => Lookup,
+    },
+  })
+  _loadBrokerLookups(): Observable<LookupsMap> {
+    return this.http.get<LookupsMap>(this.urlService.URLS.BROKER_LOOKUPS).pipe(tap(console.log));
+  }
+
   private _load(): Observable<LookupsMap[]> {
     return forkJoin([
       this._loadRentLookups(),
@@ -156,6 +173,7 @@ export class LookupService extends RegisterServiceMixin(class {}) implements Ser
       this._loadMortLookups(),
       this._loadOwnerLookups(),
       this._loadOVLookups(),
+      this._loadBrokerLookups(),
     ]).pipe(tap(console.log));
   }
 
@@ -170,7 +188,7 @@ export class LookupService extends RegisterServiceMixin(class {}) implements Ser
           rent.districtList = rent.districtList.filter((i) => i.lookupKey !== -1 && i.lookupKey !== 0); // remove the all from zones
           mort.districtList = mort.districtList.filter((i) => i.lookupKey !== -1 && i.lookupKey !== 0); // remove the all from zones
         }),
-        tap(([rent, sell, mort, owner, ov]) => {
+        tap(([rent, sell, mort, owner, ov, broker]) => {
           this.rentLookups = rent;
           this.sellLookups = this._addAllToDistrict(this._addAllToPropertyType(sell));
           this.mortLookups = this._addAllToDistrict(this._addAllToPropertyType(mort));
@@ -184,6 +202,7 @@ export class LookupService extends RegisterServiceMixin(class {}) implements Ser
           this.ovLookups = this._addAllToPremiseCategories(this._addAllToPremiseTypes(ov));
           // remove unknown district from owner lookups until it removed from be
           this.ownerLookups.districtList = this.ownerLookups.districtList.filter((item) => item.lookupKey !== 0);
+          this.brokerLookups = broker;
         })
       )
       .pipe(
@@ -193,6 +212,7 @@ export class LookupService extends RegisterServiceMixin(class {}) implements Ser
           this.mortMunicipalitiesMap = this._initializeMunicipalitiesMap(res[2]);
           this.ownerMunicipalitiesMap = this._initializeMunicipalitiesMap(res[3]);
           this.ovMunicipalitiesMap = this._initializeMunicipalitiesMap(res[4]);
+          this.brokerMunicipalitiesMap = this._initializeMunicipalitiesMap(res[5]);
         }),
         tap((res) => {
           this.rentZonesMap = this._initializeZonesMap(res[0]);
@@ -223,10 +243,9 @@ export class LookupService extends RegisterServiceMixin(class {}) implements Ser
         tap((res) => {
           this.rentFurnitureMap = this._initializeFurnitureStatusMap(res[0]);
         }),
+
         tap((res) => {
           this.ownerNationalityMap = this._initializeNationalityMap(res[3]);
-        }),
-        tap((res) => {
           this.ownerOwnerCategoryMap = this._initializeOwnerCategoryMap(res[3]);
           this.ownerAgeCategoryMap = this._initializeAgeCategoryMap(res[3]);
           this.ownerGenderMap = this._initializeGenderMap(res[3]);
@@ -235,6 +254,10 @@ export class LookupService extends RegisterServiceMixin(class {}) implements Ser
           this.ovOccupancyStatusMap = this._initializeOccupancyStatusMap(res[4]);
           this.ovPremiseCategoryMap = this._initializePremiseCategoryMap(res[4]);
           this.ovPremiseTypeMap = this._initializePremiseTypeMap(res[4]);
+        }),
+        tap((res) => {
+          this.brokerCategoryMap = this._initializeBrokerCategoryMap(res[5]);
+          this.brokerTypeMap = this._initializeBrokerTypeMap(res[5]);
         })
       );
   }
@@ -310,6 +333,18 @@ export class LookupService extends RegisterServiceMixin(class {}) implements Ser
   }
   private _initializePremiseTypeMap(lookups: LookupsMap) {
     return lookups.premiseTypeList.reduce((acc, i) => {
+      return { ...acc, [i.lookupKey]: i };
+    }, {});
+  }
+
+  private _initializeBrokerCategoryMap(lookups: LookupsMap) {
+    return lookups.brokerCategoryList.reduce((acc, i) => {
+      return { ...acc, [i.lookupKey]: i };
+    }, {});
+  }
+
+  private _initializeBrokerTypeMap(lookups: LookupsMap) {
+    return lookups.brokerTypeList.reduce((acc, i) => {
       return { ...acc, [i.lookupKey]: i };
     }, {});
   }

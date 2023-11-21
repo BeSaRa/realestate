@@ -20,6 +20,8 @@ export class LookupsMap implements LookupsContract {
   occupancyStatusList!: Lookup[];
   premiseCategoryList!: Lookup[];
   premiseTypeList!: Lookup[];
+  brokerCategoryList!: Lookup[];
+  brokerTypeList!: Lookup[];
   maxParams!: ParamRange[];
   rooms = [
     new Lookup().clone<Lookup>({
