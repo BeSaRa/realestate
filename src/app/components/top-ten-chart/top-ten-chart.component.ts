@@ -135,6 +135,11 @@ export class TopTenChartComponent extends OnDestroyMixin(class {}) implements On
               }),
             },
           ],
+          plotOptions: {
+            bar: {
+              barHeight: 25,
+            },
+          },
         })
         .then();
     }, 0);
