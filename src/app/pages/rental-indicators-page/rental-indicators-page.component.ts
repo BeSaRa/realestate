@@ -25,6 +25,7 @@ import { TableComponent } from '@components/table/table.component';
 import { TopTenChartComponent } from '@components/top-ten-chart/top-ten-chart.component';
 import { YoyIndicatorComponent } from '@components/yoy-indicator/yoy-indicator.component';
 import { maskSeparator } from '@constants/mask-separator';
+import { CustomTooltipDirective } from '@directives/custom-tooltip.directive';
 import { TableColumnCellTemplateDirective } from '@directives/table-column-cell-template.directive';
 import { TableColumnHeaderTemplateDirective } from '@directives/table-column-header-template.directive';
 import { TableColumnTemplateDirective } from '@directives/table-column-template.directive';
@@ -62,8 +63,6 @@ import {
   take,
   takeUntil,
 } from 'rxjs';
-import { CustomTooltipDirective } from '@directives/custom-tooltip.directive';
-import { DataInfoService } from '@services/data-info.service';
 
 @Component({
   selector: 'app-rental-indicators-page',
@@ -105,7 +104,6 @@ export default class RentalIndicatorsPageComponent implements OnInit, OnDestroy 
   lookupService = inject(LookupService);
   unitsService = inject(UnitsService);
   sectionTitle = inject(SectionTitleService);
-  dataInfoService = inject(DataInfoService);
 
   destroy$ = new Subject<void>();
   reload$ = new ReplaySubject<void>(1);
@@ -414,10 +412,6 @@ export default class RentalIndicatorsPageComponent implements OnInit, OnDestroy 
     this.lookupService.rentFurnitureMap[item.furnitureStatus || 0]?.getNames();
 
   ngOnInit(): void {
-    this.dataInfoService.setEnabled(true);
-    this.dataInfoService.setText(
-      'data_source_for_rental_indicators_includes_data_from_the_ministry_of_municipality_rental_contracts_database'
-    );
     this.reload$.next();
   }
 
