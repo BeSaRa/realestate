@@ -217,7 +217,7 @@ export default class RentalIndicatorsPageComponent implements OnInit, OnDestroy 
       hasPrice: true,
     }),
     new KpiRoot([
-      'areaCode',
+      'zoneId',
       { criteriaKey: 'propertyTypeList', term: CriteriaTerms.SINGLE_NOT_ALL },
       { criteriaKey: 'purposeList', term: CriteriaTerms.SINGLE_NOT_ALL },
     ]).clone<KpiRoot>({
@@ -234,7 +234,7 @@ export default class RentalIndicatorsPageComponent implements OnInit, OnDestroy 
       hasSqUnit: true,
     }),
     new KpiRoot([
-      'areaCode',
+      'zoneId',
       { criteriaKey: 'propertyTypeList', term: CriteriaTerms.SINGLE_NOT_ALL },
       { criteriaKey: 'purposeList', term: CriteriaTerms.SINGLE_NOT_ALL },
     ]).clone<KpiRoot>({
@@ -321,7 +321,7 @@ export default class RentalIndicatorsPageComponent implements OnInit, OnDestroy 
 
   forecastCriteriaTerms = new CriteriaSpecificTerms([
     'municipalityId',
-    'areaCode',
+    'zoneId',
     { criteriaKey: 'propertyTypeList', term: CriteriaTerms.SINGLE_NOT_ALL, mapTo: 'propertyTypeId' },
     { criteriaKey: 'purposeList', term: CriteriaTerms.SINGLE_NOT_ALL, mapTo: 'property_usage' },
     // temporarily commented until implemented from BE
@@ -355,11 +355,11 @@ export default class RentalIndicatorsPageComponent implements OnInit, OnDestroy 
   transactionsStatisticsColumns = ['average', 'certificates-count', 'area', 'units-count', 'average-square', 'chart'];
 
   purposeTableCriteriaTerms = new CriteriaSpecificTerms([
-    'areaCode',
+    'zoneId',
     { criteriaKey: 'propertyTypeList', term: CriteriaTerms.SINGLE_NOT_ALL },
   ]);
   propertyTypeTableCriteriaTerms = new CriteriaSpecificTerms([
-    'areaCode',
+    'zoneId',
     { criteriaKey: 'purposeList', term: CriteriaTerms.SINGLE_NOT_ALL },
   ]);
 
