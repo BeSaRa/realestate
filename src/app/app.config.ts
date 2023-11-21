@@ -16,7 +16,7 @@ import { TranslationService } from '@services/translation.service';
 import { UrlService } from '@services/url.service';
 import { RECAPTCHA_LANGUAGE, RECAPTCHA_SETTINGS, RECAPTCHA_V3_SITE_KEY, RecaptchaSettings } from 'ng-recaptcha';
 import { NgxMaskPipe, provideNgxMask } from 'ngx-mask';
-import { catchError, delay, forkJoin, map, of, switchMap, tap } from 'rxjs';
+import { delay, forkJoin, of, switchMap, tap } from 'rxjs';
 import { routes } from './app.routes';
 import { TokenInterceptor } from './interceptors/token.interceptor';
 import { UnitsService } from '@services/units.service';
