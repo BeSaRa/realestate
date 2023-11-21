@@ -21,5 +21,7 @@ export interface LookupsContract {
   occupancyStatusList: Lookup[];
   premiseCategoryList: Lookup[];
   premiseTypeList: Lookup[];
+  brokerCategoryList: Lookup[];
+  brokerTypeList: Lookup[];
   maxParams: ParamRange[];
 }

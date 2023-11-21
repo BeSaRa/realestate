@@ -76,7 +76,7 @@ import { Subject, debounceTime, filter, map, takeUntil, tap } from 'rxjs';
   ],
 })
 export class TransactionsFilterComponent implements OnInit, OnDestroy {
-  @Input() indicatorType: 'sell' | 'rent' | 'mortgage' | 'owner' | 'ov' = 'rent';
+  @Input() indicatorType: 'sell' | 'rent' | 'mortgage' | 'owner' | 'ov' | 'broker' = 'rent';
   @Input() municipalities: Lookup[] = [];
   @Input() propertyTypes: Lookup[] = [];
   @Input() propertyUsages: Lookup[] = [];
@@ -89,6 +89,8 @@ export class TransactionsFilterComponent implements OnInit, OnDestroy {
   @Input() occupancyStatuses: Lookup[] = [];
   @Input() premiseCategories: Lookup[] = [];
   @Input() premiseTypes: Lookup[] = [];
+  @Input() brokerCategoryList: Lookup[] = [];
+  @Input() brokerTypeList: Lookup[] = [];
   @Input() paramsRange: ParamRange[] = [];
 
   @Output() fromChanged = new EventEmitter<{ criteria: CriteriaContract; type: CriteriaType }>();
@@ -208,6 +210,7 @@ export class TransactionsFilterComponent implements OnInit, OnDestroy {
       occupancyStatus: [],
       premiseCategoryList: [],
       premiseTypeList: [],
+      brokerCategoryId: [],
 
       // not related to the criteria
       durationType: [],
@@ -304,6 +307,10 @@ export class TransactionsFilterComponent implements OnInit, OnDestroy {
     return this.form.get('premiseTypeList') as AbstractControl;
   }
 
+  get brokerCategoryId(): AbstractControl {
+    return this.form.get('brokerCategoryId') as AbstractControl;
+  }
+
   ngOnInit(): void {
     if (!this.isSell()) this.unitsControl.disable();
     if (this.isRent()) this.nationalityCode.disable();
@@ -355,6 +362,7 @@ export class TransactionsFilterComponent implements OnInit, OnDestroy {
       occupancyStatus: 0,
       premiseCategoryList: [-1],
       premiseTypeList: [-1],
+      brokerCategoryId: 2,
     });
     this.sendFilter(CriteriaType.DEFAULT);
   }
@@ -718,6 +726,13 @@ export class TransactionsFilterComponent implements OnInit, OnDestroy {
       delete value.rentPaymentMonthlyPerUnitTo;
     }
 
+    if (this.isBroker()) {
+      value = {
+        municipalityId: value.municipalityId,
+        brokerCategoryId: value.brokerCategoryId,
+      };
+    }
+
     if (!this.isOwner()) {
       delete value.nationalityCode;
       delete value.ownerCategoryCode;
@@ -731,6 +746,10 @@ export class TransactionsFilterComponent implements OnInit, OnDestroy {
       delete value.premiseTypeList;
     }
 
+    if (!this.isBroker()) {
+      delete value.brokerCategoryId;
+    }
+
     Object.keys(value).forEach((key) => {
       if ((typeof value[key] === 'string' && value[key] === '') || value[key] === null) delete value[key];
       if (Array.isArray(value[key]) && value[key].length === 0) delete value[key];
@@ -739,7 +758,7 @@ export class TransactionsFilterComponent implements OnInit, OnDestroy {
     return value;
   }
 
-  private isIndicator(name: 'sell' | 'rent' | 'mortgage' | 'owner' | 'ov'): boolean {
+  private isIndicator(name: 'sell' | 'rent' | 'mortgage' | 'owner' | 'ov' | 'broker'): boolean {
     return this.indicatorType === name;
   }
 
@@ -761,6 +780,10 @@ export class TransactionsFilterComponent implements OnInit, OnDestroy {
 
   isOV(): boolean {
     return this.isIndicator('ov');
+  }
+
+  isBroker(): boolean {
+    return this.isIndicator('broker');
   }
 
   private setParamsRange() {

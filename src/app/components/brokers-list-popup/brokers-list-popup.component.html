@@ -1,0 +1,17 @@
+<div class="flex flex-col">
+  <div class="dialog-header flex-1">
+    <span>{{ data.title }}</span>
+    <app-icon-button class="close-btn" (click)="ref.close()" icon="CLOSE" />
+  </div>
+  <div class="dialog-content overflow-y-scroll">
+    <div class="p-4 flex items-center justify-center flex-wrap gap-4">
+      <app-broker
+        *ngFor="let broker of data.brokers"
+        [broker]="broker"
+        (click)="showBrokerDetails(broker)"></app-broker>
+    </div>
+  </div>
+  <div class="dialog-footer flex-1">
+    <app-button (click)="ref.close()" buttonStyle="primary">{{ lang.map.close }}</app-button>
+  </div>
+</div>

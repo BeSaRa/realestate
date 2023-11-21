@@ -44,6 +44,7 @@ import { CastResponse } from 'cast-response';
 import { forkJoin, map, Observable } from 'rxjs';
 import { DialogService } from './dialog.service';
 import { TranslationService } from './translation.service';
+import { Broker } from '@models/broker';
 
 @Injectable({
   providedIn: 'root',
@@ -192,6 +193,11 @@ export class DashboardService extends RegisterServiceMixin(class {}) implements 
   @CastResponse(() => Pagination<OccupancyTransaction>, { shape: { 'transactionList.*': () => OccupancyTransaction } })
   loadOccupancyTransactions(criteria: Partial<CriteriaContract>): Observable<Pagination<OccupancyTransaction[]>> {
     return this.http.post<Pagination<OccupancyTransaction[]>>(this.urlService.URLS.OV_KPI7, criteria);
+  }
+
+  @CastResponse(() => Pagination<Broker>, { shape: { 'transactionList.*': () => Broker } })
+  loadBrokers(criteria: Partial<CriteriaContract>): Observable<Pagination<Broker[]>> {
+    return this.http.post<Pagination<Broker[]>>(this.urlService.URLS.BROKER_KPI_TRANSACTIONS, criteria);
   }
 
   loadForecastData(url: string, criteria: Partial<ForecastCriteriaContract>) {

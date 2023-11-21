@@ -354,4 +354,8 @@ export interface LangKeysContract {
 
   total_number_of_licensed_brokers: string;
   download_brokers_list: string;
+
+  broker_category: string;
+  about: string;
+  brokers_list: string;
 }

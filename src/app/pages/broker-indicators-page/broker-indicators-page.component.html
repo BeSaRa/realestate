@@ -19,14 +19,10 @@
 <div class="content-wrapper">
   <div class="p-3 lg:px-16">
     <app-transactions-filter
-      indicatorType="sell"
+      indicatorType="broker"
       [municipalities]="municipalities"
-      [propertyTypes]="propertyTypes"
-      [propertyUsages]="propertyUsages"
-      [areas]="areas"
-      [rooms]="rooms"
-      [paramsRange]="paramsRange"
-      (fromChanged)="(null)" />
+      [brokerCategoryList]="brokerCategories"
+      (fromChanged)="filterChange($event)" />
   </div>
   <div class="py-16 px-3 lg:px-16">
     <div class="flex flex-col">
@@ -45,7 +41,20 @@
         }}</app-button>
       </div>
       <div class="mt-4 flex items-center justify-center flex-wrap gap-4">
-        <app-broker *ngFor="let broker of brokers" [broker]="broker" (click)="showBrokerDetails(broker)"></app-broker>
+        <app-broker
+          *ngFor="let broker of brokers.slice(0, 8)"
+          [broker]="broker"
+          (click)="showBrokerDetails(broker)"></app-broker>
+      </div>
+      <div class="mt-4 flex items-center justify-center gap-2">
+        <app-button
+          *ngIf="brokers.length > 8"
+          size="md"
+          (click)="showAllBrokers()"
+          buttonStyle="secondary"
+          [isRounded]="true"
+          >{{ lang.map.show_all }}</app-button
+        >
       </div>
     </div>
   </div>
