@@ -10,8 +10,8 @@ import { TransactionsFilterComponent } from '@components/transactions-filter/tra
 import { CriteriaContract } from '@contracts/criteria-contract';
 import { CriteriaType } from '@enums/criteria-type';
 import { Broker } from '@models/broker';
-import { KpiModel } from '@models/kpi-model';
 import { KpiRoot } from '@models/kpi-root';
+import { CsvService } from '@services/csv.service';
 import { DashboardService } from '@services/dashboard.service';
 import { DialogService } from '@services/dialog.service';
 import { LookupService } from '@services/lookup.service';
@@ -39,6 +39,7 @@ export default class BrokerIndicatorsPageComponent {
   dialog = inject(DialogService);
   urlService = inject(UrlService);
   dashboardService = inject(DashboardService);
+  csvService = inject(CsvService);
 
   municipalities = this.lookupService.brokerLookups.municipalityList;
   brokerCategories = this.lookupService.brokerLookups.brokerCategoryList;
@@ -89,5 +90,23 @@ export default class BrokerIndicatorsPageComponent {
       minWidth: '95vw',
       maxHeight: '95vh',
     });
+  }
+
+  downloadBrokersList() {
+    const _data = this.csvService.arrayToCsv(this.brokers, [
+      { key: this.lang.isLtr ? 'managerEnName' : 'managerArName', mapTo: this.lang.map.broker_name },
+      { key: this.lang.isLtr ? 'brokerEnName' : 'brokerArName', mapTo: this.lang.map.company_name },
+      { key: 'brokerPhone1', mapTo: this.lang.map.phone },
+      { key: 'brokerEmail', mapTo: this.lang.map.email },
+    ]);
+
+    this.csvService.downloadCsvFile(
+      this.lang.map.brokers_list +
+        '-' +
+        this.lookupService.brokerMunicipalitiesMap[this.criteria.criteria.municipalityId].getNames() +
+        '-' +
+        new Date(Date.now()).toDateString(),
+      _data
+    );
   }
 }
