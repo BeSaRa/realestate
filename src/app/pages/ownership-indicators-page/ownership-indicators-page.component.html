@@ -183,11 +183,15 @@
       <div class="mt-4 flex justify-center md:justify-end">
         <div class="grid grid-cols-2 gap-2">
           <app-button
+            size="sm"
+            [isRounded]="true"
             (click)="setOwnershipsCountPerMunicipalityFigureType(FigureType.MAP)"
             [buttonStyle]="isSelectedFigure(FigureType.MAP) ? 'secondary' : 'secondary-outline'"
             >{{ lang.map.map }}</app-button
           >
           <app-button
+            size="sm"
+            [isRounded]="true"
             (click)="setOwnershipsCountPerMunicipalityFigureType(FigureType.CHART)"
             [buttonStyle]="isSelectedFigure(FigureType.CHART) ? 'secondary' : 'secondary-outline'"
             >{{ lang.map.chart }}</app-button
