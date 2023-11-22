@@ -54,8 +54,4 @@ export class DataInfoComponent implements OnInit {
       }
     });
   }
-
-  outsideClicked() {
-    if (this.isOpened) this.isOpened = false;
-  }
 }

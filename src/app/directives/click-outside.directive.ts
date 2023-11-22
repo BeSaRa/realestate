@@ -1,4 +1,4 @@
-import { Directive, ElementRef, EventEmitter, NgZone, OnInit, Output, inject } from '@angular/core';
+import { Directive, ElementRef, EventEmitter, Input, NgZone, OnInit, Output, inject } from '@angular/core';
 import { OnDestroyMixin } from '@mixins/on-destroy-mixin';
 import { Subject, filter, fromEvent, takeUntil } from 'rxjs';
 
@@ -7,6 +7,7 @@ import { Subject, filter, fromEvent, takeUntil } from 'rxjs';
   standalone: true,
 })
 export class ClickOutsideDirective extends OnDestroyMixin(class {}) implements OnInit {
+  @Input() emitClickOutsideEvent = true;
   @Output() appClickOutside = new EventEmitter<Event>();
 
   zone = inject(NgZone);
@@ -20,12 +21,9 @@ export class ClickOutsideDirective extends OnDestroyMixin(class {}) implements O
 
   private _listenToOutsidClick() {
     this.zone.runOutsideAngular(() => {
-      fromEvent(document, 'click').subscribe(this._oustsideClicked$);
-      document.addEventListener('click', (event) => {
-        if (!this.elementRef.nativeElement.contains(event.target)) {
-          this._oustsideClicked$.next(event);
-        }
-      });
+      fromEvent(document, 'click')
+        .pipe(filter(() => this.emitClickOutsideEvent))
+        .subscribe(this._oustsideClicked$);
     });
 
     this._oustsideClicked$
