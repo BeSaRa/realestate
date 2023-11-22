@@ -15,7 +15,6 @@
     </button>
   </div>
   <div
-    (click)="$event.stopImmediatePropagation()"
     [ngClass]="{ 'rounded-tr-lg rounded-br-lg': !lang.isLtr, 'rounded-tl-lg rounded-bl-lg': lang.isLtr }"
     class="w-72 bg-sand flex flex-col gap-2 items-center justify-center p-4 pt-8 shadow border border-primary/20">
     <img [src]="dataInfoService.infoIconUrl()" alt="" />

@@ -1,4 +1,4 @@
-import { Component, HostBinding, OnInit, inject } from '@angular/core';
+import { Component, ElementRef, HostBinding, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { DataInfoService } from '@services/data-info.service';
 import { TranslationService } from '@services/translation.service';
@@ -17,6 +17,7 @@ export class DataInfoComponent implements OnInit {
   lang = inject(TranslationService);
   dataInfoService = inject(DataInfoService);
   router = inject(Router);
+  elementRef = inject(ElementRef);
 
   icons = AppIcons;
   isOpened = false;
@@ -56,8 +57,8 @@ export class DataInfoComponent implements OnInit {
   }
 
   private _listenToPageClick() {
-    document.querySelector('body')?.addEventListener('click', () => {
-      if (this.isOpened) {
+    document.addEventListener('click', (event) => {
+      if (this.isOpened && !this.elementRef.nativeElement.contains(event.target)) {
         this.isOpened = false;
       }
     });
