@@ -38,7 +38,7 @@ import { minMaxAvg } from '@utils/utils';
 import { ChartComponent, NgApexchartsModule } from 'ng-apexcharts';
 import { NgxMaskPipe } from 'ngx-mask';
 import { Subject, map, take, takeUntil } from 'rxjs';
-import { QatarInteractiveMapComponent } from 'src/app/qatar-interactive-map/qatar-interactive-map.component';
+import { QatarInteractiveMapComponent } from '@components/qatar-interactive-map/qatar-interactive-map.component';
 
 @Component({
   selector: 'app-owner-page',
@@ -223,8 +223,6 @@ export default class OwnershipIndicatorsPageComponent implements OnInit, AfterVi
       this.nationalityCriteria = { ...this.criteria.criteria, nationalityCode: this.selectedNationality.id };
     }, 0);
   }
-
-
 
   // prepareChart(): void {
   //   this._initializeChartsFormatters();
@@ -746,10 +744,9 @@ export default class OwnershipIndicatorsPageComponent implements OnInit, AfterVi
 
   setOwnershipsCountPerMunicipalityFigureType(type: FigureType): void {
     this.selectedFigureType = type;
-
   }
 
   isSelectedFigure(type: FigureType) {
-    return this.selectedFigureType === type
+    return this.selectedFigureType === type;
   }
 }

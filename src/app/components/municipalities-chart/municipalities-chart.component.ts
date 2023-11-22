@@ -27,7 +27,7 @@ import { UrlService } from '@services/url.service';
 import { minMaxAvg, objectHasOwnProperty } from '@utils/utils';
 import { ChartComponent, NgApexchartsModule } from 'ng-apexcharts';
 import { map, take, takeUntil } from 'rxjs';
-import { QatarInteractiveMapComponent } from 'src/app/qatar-interactive-map/qatar-interactive-map.component';
+import { QatarInteractiveMapComponent } from '@components/qatar-interactive-map/qatar-interactive-map.component';
 import { ButtonComponent } from '@components/button/button.component';
 import { FigureType } from '@enums/figure-type';
 import { TranslationService } from '@services/translation.service';
@@ -39,7 +39,7 @@ import { TranslationService } from '@services/translation.service';
   templateUrl: './municipalities-chart.component.html',
   styleUrls: ['./municipalities-chart.component.scss'],
 })
-export class MunicipalitiesChartComponent extends OnDestroyMixin(class { }) implements AfterViewInit, OnChanges {
+export class MunicipalitiesChartComponent extends OnDestroyMixin(class {}) implements AfterViewInit, OnChanges {
   protected readonly FigureType = FigureType;
   @Input({ required: true }) title!: string;
   @Input({ required: true }) seriesNames!: Record<number, string>;
@@ -91,7 +91,7 @@ export class MunicipalitiesChartComponent extends OnDestroyMixin(class { }) impl
     this.updateChartData();
     this._initializeFormatters();
     setTimeout(() => {
-      this.chart.first?.updateOptions({ chart: { type: 'bar'} }).then();
+      this.chart.first?.updateOptions({ chart: { type: 'bar' } }).then();
       this._listenToScreenSizeChange();
     }, 0);
   }
@@ -191,11 +191,11 @@ export class MunicipalitiesChartComponent extends OnDestroyMixin(class { }) impl
       ? typeof (item as never)[this.bindLabel] === 'function'
         ? ((item as never)[this.bindLabel] as () => string)()
         : objectHasOwnProperty(item, this.bindLabel)
-          ? (item[this.bindLabel] as string)
-          : (item as unknown as string)
+        ? (item[this.bindLabel] as string)
+        : (item as unknown as string)
       : this.bindLabel && typeof this.bindLabel === 'function'
-        ? (this.bindLabel(item) as string)
-        : (item as unknown as string);
+      ? (this.bindLabel(item) as string)
+      : (item as unknown as string);
   }
 
   private _listenToScreenSizeChange() {
@@ -286,10 +286,9 @@ export class MunicipalitiesChartComponent extends OnDestroyMixin(class { }) impl
       this.prepareChart();
     }
     this.selectedFigureType = type;
-
   }
 
   isSelectedFigure(type: FigureType) {
-    return this.selectedFigureType === type
+    return this.selectedFigureType === type;
   }
 }

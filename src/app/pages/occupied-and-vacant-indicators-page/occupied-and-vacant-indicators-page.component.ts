@@ -36,7 +36,7 @@ import { TranslationService } from '@services/translation.service';
 import { UrlService } from '@services/url.service';
 import { ChartComponent, NgApexchartsModule } from 'ng-apexcharts';
 import { BehaviorSubject, Subject, combineLatest, map, switchMap, take, takeUntil } from 'rxjs';
-import { QatarInteractiveMapComponent } from 'src/app/qatar-interactive-map/qatar-interactive-map.component';
+import { QatarInteractiveMapComponent } from '@components/qatar-interactive-map/qatar-interactive-map.component';
 
 @Component({
   selector: 'app-occupied-and-vacant-indicators-page',
