@@ -5,6 +5,7 @@ import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { PartialChartOptions } from '@app-types/partialChartOptions';
 import { ButtonComponent } from '@components/button/button.component';
 import { IconButtonComponent } from '@components/icon-button/icon-button.component';
+import { AppColors } from '@constants/app-colors';
 import { ChartWithOppositePopupData } from '@contracts/chart-with-opposite-popup-data';
 import { AppChartTypesService } from '@services/app-chart-types.service';
 import { TranslationService } from '@services/translation.service';
@@ -42,6 +43,7 @@ export class ChartWithOppositePopupComponent implements OnInit, AfterViewInit {
       ...this.chartOptions,
       dataLabels: {
         ...this.chartOptions.dataLabels,
+        enabledOnSeries: [0],
         formatter: this.appChartTypesService.popupLabelsFormatter,
       },
       yaxis: [
@@ -96,12 +98,15 @@ export class ChartWithOppositePopupComponent implements OnInit, AfterViewInit {
               x: this.months[item.issueMonth - 1] + ' - ' + item.issueYear,
             };
           }),
+           color: AppColors.LEAD_80,
         },
       ]);
       const _minMaxAvg = minMaxAvg(this.popupData.list.map((item) => this._getMainChartValue(item)));
       this.chart.updateOptions({
         colors: [this.appChartTypesService.chartColorsFormatter(_minMaxAvg)],
         tooltip: {
+          shared: true,
+          intersect: false,
           x: {
             formatter: function (val: string) {
               return val;
