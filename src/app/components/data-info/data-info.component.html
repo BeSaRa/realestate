@@ -1,5 +1,6 @@
 <div
-  (appClickOutside)="outsideClicked()"
+  (appClickOutside)="isOpened = false"
+  [emitClickOutsideEvent]="isOpened"
   *ngIf="dataInfoService.getText()"
   [ngStyle]="{ transition: 'all 0.3s' }"
   class="flex justify-center items-center"
