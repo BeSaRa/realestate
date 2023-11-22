@@ -14,6 +14,8 @@ import { UserClick } from '@enums/user-click';
 export class DialogService implements DialogContract {
   constructor(private dialog: MatDialog, private lang: TranslationService) {}
 
+  afterDialogOpened$ = this.dialog.afterOpened;
+
   error<R = unknown>(content: string, title?: string, disableClose = true): MatDialogRef<DialogComponent, R> {
     return this.open<DialogComponent, DefaultDialogDataContract<string>, R>(DialogComponent, {
       disableClose,

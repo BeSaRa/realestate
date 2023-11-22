@@ -1,13 +1,13 @@
 import { CommonModule } from '@angular/common';
 import { Component, Input, inject } from '@angular/core';
+import { ClickOutsideDirective } from '@directives/click-outside.directive';
 import { SideBarDirection } from '@enums/side-bar-direction';
 import { SideBarService } from '@services/side-bar.service';
 import { TranslationService } from '@services/translation.service';
-import { MatMenuModule } from '@angular/material/menu';
 @Component({
   selector: 'app-side-bar',
   standalone: true,
-  imports: [CommonModule, MatMenuModule],
+  imports: [CommonModule, ClickOutsideDirective],
   templateUrl: './side-bar.component.html',
   styleUrls: ['./side-bar.component.scss'],
 })
@@ -26,5 +26,13 @@ export class SideBarComponent {
       width: this.width + 'px',
       [this.direction]: this.sideBarService.isOpened() ? 0 : this.width * -1 + 'px',
     };
+  }
+
+  outsideClicked() {
+    if (this.sideBarService.isOpenTriggered) {
+      this.sideBarService.isOpenTriggered = false;
+      return;
+    }
+    this.sideBarService.close();
   }
 }
