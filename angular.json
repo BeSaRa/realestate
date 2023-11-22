@@ -28,7 +28,8 @@
               "apexcharts",
               "as-table",
               "rulyotano.math.interpolation.bezier",
-              "qs"
+              "qs",
+              "file-saver"
             ],
             "outputPath": "dist/real-estate/browser",
             "index": "src/index.html",
