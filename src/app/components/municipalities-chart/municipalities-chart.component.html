@@ -3,32 +3,39 @@
     class="heading text-xl sm:text-2xl md:text-3xl self-center md:self-start text-center text-primary border-secondary font-semibold">
     {{ title }}
   </h3>
+
   <div class="mt-4 flex justify-center md:justify-end">
     <div class="grid grid-cols-2 gap-2">
       <app-button
         size="sm"
+        (click)="selectedChartType = ChartType.MAP"
+        [buttonStyle]="selectedChartType === ChartType.MAP ? 'secondary' : 'secondary-outline'"
         [isRounded]="true"
-        (click)="setOccupiedVacantFigureType(FigureType.MAP)"
-        [buttonStyle]="isSelectedFigure(FigureType.MAP) ? 'secondary' : 'secondary-outline'"
-        >{{ lang.map.map }}</app-button
-      >
+        ><ng-container *ngIf="!isLoading || selectedChartType !== ChartType.MAP">{{ lang.map.map }}</ng-container
+        ><mat-spinner
+          diameter="20"
+          strokeWidth="2"
+          *ngIf="isLoading && selectedChartType === ChartType.MAP"></mat-spinner>
+      </app-button>
       <app-button
         size="sm"
+        (click)="selectedChartType = ChartType.BAR"
+        [buttonStyle]="selectedChartType === ChartType.BAR ? 'secondary' : 'secondary-outline'"
         [isRounded]="true"
-        (click)="setOccupiedVacantFigureType(FigureType.CHART)"
-        [buttonStyle]="isSelectedFigure(FigureType.CHART) ? 'secondary' : 'secondary-outline'"
-        >{{ lang.map.chart }}</app-button
-      >
+        ><ng-container *ngIf="!isLoading || selectedChartType !== ChartType.BAR">{{ lang.map.chart }}</ng-container
+        ><mat-spinner
+          diameter="20"
+          strokeWidth="2"
+          *ngIf="isLoading && selectedChartType === ChartType.BAR"></mat-spinner>
+      </app-button>
     </div>
   </div>
-  <!-- <div class="flex flex-col-reverse items-center mt-2 lg:flex-row gap-2"> -->
-    <div
-      *ngIf="isSelectedFigure(FigureType.CHART)"
-      class="w-full flex-auto overflow-hidden mt-2 pt-1"
-      dir="ltr">
+  <div class="mt-2">
+    <div class="w-full overflow-hidden" dir="ltr">
       <apx-chart
         #chart
-        class="custom-toolbar [&>div]:ml-[-22px]"
+        [ngStyle]="{ display: selectedChartType === ChartType.MAP ? 'none' : 'block' }"
+        class="custom-toolbar [&>div]:ml-[-22px] mt-2 pt-1"
         [series]="chartOptions.series!"
         [chart]="chartOptions.chart!"
         [xaxis]="chartOptions.xaxis!"
@@ -43,7 +50,7 @@
         [plotOptions]="chartOptions.plotOptions!"
         [title]="chartOptions.title!" />
     </div>
-    <div *ngIf="isSelectedFigure(FigureType.MAP)" class="w-full flex-auto overflow-hidden mt-2 pt-1 pb-4">
+    <div [ngClass]="{ hidden: selectedChartType === ChartType.BAR }" class="w-full mt-4">
       <app-qatar-interactive-map
         [municipalitiesData]="getMapData()"
         [label]="getMapLabel()"
@@ -51,5 +58,5 @@
         [selectedMunicipalityId]="selectedMunicipality.id"
         (selectedMunicipalityChanged)="onMapSelectedMunicipalityChanged($event)" />
     </div>
-  <!-- </div> -->
+  </div>
 </div>

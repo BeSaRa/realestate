@@ -136,7 +136,7 @@ export class AreasChartComponent extends OnDestroyMixin(class {}) implements OnC
           this.screenSize,
           BarChartTypes.SINGLE_BAR,
           this.seriesDataLength,
-          true
+          Object.keys(this.seriesNames).length !== 1
         ),
       })
       .then();

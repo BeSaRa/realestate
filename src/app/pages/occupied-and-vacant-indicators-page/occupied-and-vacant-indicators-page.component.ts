@@ -172,7 +172,6 @@ export default class OccupiedAndVacantIndicatorsPageComponent extends OnDestroyM
 
   filterChange({ criteria, type }: { criteria: CriteriaContract; type: CriteriaType }) {
     this.criteria = { criteria: criteria as CriteriaContract & { occupancyStatus: number | null }, type };
-    this.updateAreasChartCriteria(this.selectedMunicipalityId);
     if (type === CriteriaType.DEFAULT) return;
 
     this.rootKPIS.map((item) => {
