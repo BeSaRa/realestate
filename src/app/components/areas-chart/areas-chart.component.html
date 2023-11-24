@@ -1,0 +1,25 @@
+<div class="flex flex-col">
+  <h3
+    class="heading text-xl sm:text-2xl md:text-3xl self-center md:self-start text-center text-primary border-secondary font-semibold">
+    {{ title }}
+  </h3>
+
+  <div class="flex-auto overflow-hidden mt-2 pt-1" dir="ltr">
+    <apx-chart
+      #chart
+      class="custom-toolbar [&>div]:ml-[-22px]"
+      [series]="chartOptions.series!"
+      [chart]="chartOptions.chart!"
+      [xaxis]="chartOptions.xaxis!"
+      [stroke]="chartOptions.stroke!"
+      [colors]="chartOptions.colors!"
+      [dataLabels]="chartOptions.dataLabels!"
+      [legend]="chartOptions.legend!"
+      [markers]="chartOptions.markers!"
+      [grid]="chartOptions.grid!"
+      [yaxis]="chartOptions.yaxis!"
+      [tooltip]="chartOptions.tooltip!"
+      [plotOptions]="chartOptions.plotOptions!"
+      [title]="chartOptions.title!" />
+  </div>
+</div>
