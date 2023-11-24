@@ -1,7 +1,8 @@
 import { KpiBaseModel } from '@abstracts/kpi-base-model';
 import { CommonModule } from '@angular/common';
-import { AfterViewInit, Component, OnInit, QueryList, ViewChildren, inject } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { PageEvent } from '@angular/material/paginator';
+import { AreasChartComponent } from '@components/areas-chart/areas-chart.component';
 import { ButtonComponent } from '@components/button/button.component';
 import { ExtraHeaderComponent } from '@components/extra-header/extra-header.component';
 import { KpiRootComponent } from '@components/kpi-root/kpi-root.component';
@@ -11,18 +12,15 @@ import { PurposeComponent } from '@components/purpose/purpose.component';
 import { StackedDurationChartComponent } from '@components/stacked-duration-chart/stacked-duration-chart.component';
 import { TableComponent } from '@components/table/table.component';
 import { TransactionsFilterComponent } from '@components/transactions-filter/transactions-filter.component';
-import { AppColors } from '@constants/app-colors';
 import { CriteriaContract } from '@contracts/criteria-contract';
 import { TableColumnCellTemplateDirective } from '@directives/table-column-cell-template.directive';
 import { TableColumnHeaderTemplateDirective } from '@directives/table-column-header-template.directive';
 import { TableColumnTemplateDirective } from '@directives/table-column-template.directive';
-import { BarChartTypes } from '@enums/bar-chart-type';
 import { Breakpoints } from '@enums/breakpoints';
 import { CriteriaType } from '@enums/criteria-type';
 import { OccupationStatus } from '@enums/occupation-status';
 import { OnDestroyMixin } from '@mixins/on-destroy-mixin';
 import { AppTableDataSource } from '@models/app-table-data-source';
-import { ChartOptionsModel } from '@models/chart-options-model';
 import { KpiBase } from '@models/kpi-base';
 import { KpiPurpose } from '@models/kpi-purpose';
 import { KpiRoot } from '@models/kpi-root';
@@ -34,9 +32,8 @@ import { LookupService } from '@services/lookup.service';
 import { ScreenBreakpointsService } from '@services/screen-breakpoints.service';
 import { TranslationService } from '@services/translation.service';
 import { UrlService } from '@services/url.service';
-import { ChartComponent, NgApexchartsModule } from 'ng-apexcharts';
-import { BehaviorSubject, Subject, combineLatest, map, switchMap, take, takeUntil } from 'rxjs';
-import { QatarInteractiveMapComponent } from '@components/qatar-interactive-map/qatar-interactive-map.component';
+import { NgApexchartsModule } from 'ng-apexcharts';
+import { BehaviorSubject, Subject, combineLatest, switchMap, take, takeUntil } from 'rxjs';
 
 @Component({
   selector: 'app-occupied-and-vacant-indicators-page',
@@ -50,8 +47,8 @@ import { QatarInteractiveMapComponent } from '@components/qatar-interactive-map/
     ButtonComponent,
     StackedDurationChartComponent,
     MunicipalitiesChartComponent,
+    AreasChartComponent,
     NgApexchartsModule,
-    QatarInteractiveMapComponent,
     TableComponent,
     TableColumnTemplateDirective,
     TableColumnHeaderTemplateDirective,
@@ -60,21 +57,12 @@ import { QatarInteractiveMapComponent } from '@components/qatar-interactive-map/
   templateUrl: './occupied-and-vacant-indicators-page.component.html',
   styleUrls: ['./occupied-and-vacant-indicators-page.component.scss'],
 })
-export default class OccupiedAndVacantIndicatorsPageComponent
-  extends OnDestroyMixin(class {})
-  implements OnInit, AfterViewInit
-{
-  @ViewChildren('areasChart') areasChart!: QueryList<ChartComponent>;
-
+export default class OccupiedAndVacantIndicatorsPageComponent extends OnDestroyMixin(class {}) implements OnInit {
   lang = inject(TranslationService);
   dashboardService = inject(DashboardService);
   urlService = inject(UrlService);
   lookupService = inject(LookupService);
-  appChartTypesService = inject(AppChartTypesService);
-  screenService = inject(ScreenBreakpointsService);
   dialog = inject(DialogService);
-
-  screenSize = Breakpoints.LG;
 
   municipalities = this.lookupService.ovLookups.municipalityList;
   zones = this.lookupService.ovLookups.zoneList;
@@ -87,6 +75,8 @@ export default class OccupiedAndVacantIndicatorsPageComponent
     criteria: CriteriaContract & { occupancyStatus: number | null };
     type: CriteriaType;
   };
+
+  areasCriteria = { ...this.criteria.criteria, occupancyStatus: null } as typeof this.criteria.criteria;
 
   rootKPIS = [
     new KpiRoot().clone<KpiRoot>({
@@ -152,9 +142,12 @@ export default class OccupiedAndVacantIndicatorsPageComponent
 
   selectedMunicipalityId = 4;
 
-  areasDataLength = 0;
+  areaSeriesNames: Record<number, string> = {
+    [OccupationStatus.VACANT]: this.lang.map.vacant,
+    [OccupationStatus.OCCUPIED]: this.lang.map.occupied,
+  };
 
-  areasChartOptions = new ChartOptionsModel().clone<ChartOptionsModel>(this.appChartTypesService.mainChartOptions);
+  areaLabel = (item: { kpiVal: number; zoneNo: number }) => this.lookupService.ovZonesMap[item.zoneNo].getNames();
 
   transactionsSubject = new BehaviorSubject<OccupancyTransaction[]>([]);
   transactions$ = this.transactionsSubject.asObservable();
@@ -177,17 +170,9 @@ export default class OccupiedAndVacantIndicatorsPageComponent
     }, 0);
   }
 
-  ngAfterViewInit(): void {
-    this._initializeChartsFormatters();
-    setTimeout(() => {
-      this._listenToScreenSize();
-      this.areasChart.first?.updateOptions({ chart: { type: 'bar' } }).then();
-    }, 0);
-  }
-
   filterChange({ criteria, type }: { criteria: CriteriaContract; type: CriteriaType }) {
     this.criteria = { criteria: criteria as CriteriaContract & { occupancyStatus: number | null }, type };
-
+    this.updateAreasChartCriteria(this.selectedMunicipalityId);
     if (type === CriteriaType.DEFAULT) return;
 
     this.rootKPIS.map((item) => {
@@ -291,59 +276,9 @@ export default class OccupiedAndVacantIndicatorsPageComponent
     });
   }
 
-  updateAreasChartData(municipalityId: number) {
+  updateAreasChartCriteria(municipalityId: number) {
     this.selectedMunicipalityId = municipalityId;
-    const _criteria = {
-      ...this.criteria.criteria,
-      municipalityId,
-      occupancyStatus: null,
-    };
-    delete (_criteria as any).zoneId;
-    this.dashboardService
-      .loadChartKpiData(
-        {
-          chartDataUrl: this.urlService.URLS.OV_KPI6,
-        },
-        _criteria
-      )
-      .pipe(take(1))
-      .pipe(map((data) => data as unknown as (KpiBaseModel & { zoneNo: number; occupancyStatus: number })[]))
-      .pipe(
-        map((data) =>
-          data.reduce((acc, cur) => {
-            if (!acc[OccupationStatus.OCCUPIED]) acc[OccupationStatus.OCCUPIED] = [];
-            if (!acc[OccupationStatus.VACANT]) acc[OccupationStatus.VACANT] = [];
-            acc[cur.occupancyStatus].push(cur);
-            return acc;
-          }, {} as Record<number, typeof data>)
-        )
-      )
-      .subscribe((data) => {
-        this.areasDataLength = data[OccupationStatus.OCCUPIED].length;
-        this.areasChart.first
-          ?.updateOptions({
-            series: Object.keys(data).map((status) => ({
-              name: this.lookupService.ovOccupancyStatusMap[status as unknown as number].getNames(),
-              data: data[status as unknown as number].map((item, index) => ({
-                x: this.lookupService.ovZonesMap[item.zoneNo]?.getNames() ?? '',
-                y: item.getKpiVal(),
-                id: item.zoneNo,
-                index,
-              })),
-            })),
-            chart: { stacked: true },
-            stroke: { width: 0 },
-            colors: [AppColors.PRIMARY, AppColors.SECONDARY],
-
-            ...this.appChartTypesService.getRangeOptions(
-              this.screenSize,
-              BarChartTypes.SINGLE_BAR,
-              this.areasDataLength,
-              true
-            ),
-          })
-          .then();
-      });
+    this.areasCriteria = { ...this.criteria.criteria, occupancyStatus: null, municipalityId };
   }
 
   paginate($event: PageEvent) {
@@ -370,23 +305,5 @@ export default class OccupiedAndVacantIndicatorsPageComponent
         this.transactionsSubject.next(transactionList);
         this.transactionsCount = count;
       });
-  }
-
-  private _initializeChartsFormatters() {
-    this.areasChartOptions
-      .addDataLabelsFormatter((val, opts) =>
-        this.appChartTypesService.dataLabelsFormatter({ val, opts }, { hasPrice: false })
-      )
-      .addAxisYFormatter((val, opts) => this.appChartTypesService.axisYFormatter({ val, opts }, { hasPrice: false }))
-      .addCustomToolbarOptions();
-  }
-
-  _listenToScreenSize() {
-    this.screenService.screenSizeObserver$.pipe(takeUntil(this.destroy$)).subscribe((size) => {
-      this.screenSize = size;
-      this.areasChart.first?.updateOptions(
-        this.appChartTypesService.getRangeOptions(size, BarChartTypes.SINGLE_BAR, this.areasDataLength, true)
-      );
-    });
   }
 }

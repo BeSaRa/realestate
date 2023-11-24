@@ -100,40 +100,31 @@
       [title]="lang.map.occupied_and_vacant_units_count_per_municipality"
       [seriesNames]="municipalitySeriesNames"
       [rootData]="{
-        chartDataUrl: this.urlService.URLS.OV_KPI5,
+        chartDataUrl: urlService.URLS.OV_KPI5,
         hasPrice: false
       }"
       [criteria]="criteria.criteria"
       [bindLabel]="municipalityLabel"
       [bindDataSplitProp]="'occupancyStatus'"
       [unit]="lang.map.unit"
-      (selectedMunicipalityChanged)="updateAreasChartData($event.municipalityId)" />
+      (selectedMunicipalityChanged)="updateAreasChartCriteria($event.municipalityId)" />
   </div>
-  <div class="px-3 lg:px-16 flex flex-col">
-    <h3
-      class="heading text-xl sm:text-2xl md:text-3xl self-center md:self-start text-center text-primary border-secondary font-semibold">
-      {{ lang.map.occupied_and_vacant_units_count_per_zone }}
-      ({{ lookupService.ovMunicipalitiesMap[selectedMunicipalityId].getNames() }})
-    </h3>
-
-    <div class="flex-auto overflow-hidden mt-2 pt-1" dir="ltr">
-      <apx-chart
-        #areasChart
-        class="custom-toolbar [&>div]:ml-[-22px]"
-        [series]="areasChartOptions.series!"
-        [chart]="areasChartOptions.chart!"
-        [xaxis]="areasChartOptions.xaxis!"
-        [stroke]="areasChartOptions.stroke!"
-        [colors]="areasChartOptions.colors!"
-        [dataLabels]="areasChartOptions.dataLabels!"
-        [legend]="areasChartOptions.legend!"
-        [markers]="areasChartOptions.markers!"
-        [grid]="areasChartOptions.grid!"
-        [yaxis]="areasChartOptions.yaxis!"
-        [tooltip]="areasChartOptions.tooltip!"
-        [plotOptions]="areasChartOptions.plotOptions!"
-        [title]="areasChartOptions.title!" />
-    </div>
+  <div class="py-5 px-3 lg:px-16">
+    <app-areas-chart
+      [title]="
+        lang.map.occupied_and_vacant_units_count_per_zone +
+        ' (' +
+        lookupService.ovMunicipalitiesMap[selectedMunicipalityId].getNames() +
+        ')'
+      "
+      [seriesNames]="areaSeriesNames"
+      [rootData]="{
+        chartDataUrl: urlService.URLS.OV_KPI6,
+        hasPrice: false
+      }"
+      [criteria]="areasCriteria"
+      [bindLabel]="areaLabel"
+      [bindDataSplitProp]="'occupancyStatus'" />
   </div>
   <div class="px-3 lg:px-16 flex flex-col gap-4">
     <h3
