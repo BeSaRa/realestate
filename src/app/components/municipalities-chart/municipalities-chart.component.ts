@@ -7,40 +7,38 @@ import {
   EventEmitter,
   Input,
   OnChanges,
-  OnInit,
   Output,
   QueryList,
   SimpleChanges,
   ViewChildren,
   inject,
 } from '@angular/core';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { ButtonComponent } from '@components/button/button.component';
 import { AppColors } from '@constants/app-colors';
 import { CriteriaContract } from '@contracts/criteria-contract';
 import { BarChartTypes } from '@enums/bar-chart-type';
 import { Breakpoints } from '@enums/breakpoints';
+import { ChartType } from '@enums/chart-type';
 import { OnDestroyMixin } from '@mixins/on-destroy-mixin';
 import { ChartConfig, ChartContext, ChartOptionsModel, DataPointSelectionConfig } from '@models/chart-options-model';
 import { AppChartTypesService } from '@services/app-chart-types.service';
 import { DashboardService } from '@services/dashboard.service';
 import { ScreenBreakpointsService } from '@services/screen-breakpoints.service';
-import { UrlService } from '@services/url.service';
+import { TranslationService } from '@services/translation.service';
 import { minMaxAvg, objectHasOwnProperty } from '@utils/utils';
 import { ChartComponent, NgApexchartsModule } from 'ng-apexcharts';
-import { map, take, takeUntil } from 'rxjs';
-import { QatarInteractiveMapComponent } from '@components/qatar-interactive-map/qatar-interactive-map.component';
-import { ButtonComponent } from '@components/button/button.component';
-import { FigureType } from '@enums/figure-type';
-import { TranslationService } from '@services/translation.service';
+import { catchError, map, take, takeUntil, throwError } from 'rxjs';
+import { QatarInteractiveMapComponent } from 'src/app/components/qatar-interactive-map/qatar-interactive-map.component';
 
 @Component({
   selector: 'app-municipalities-chart',
   standalone: true,
-  imports: [CommonModule, NgApexchartsModule, QatarInteractiveMapComponent, ButtonComponent],
+  imports: [CommonModule, NgApexchartsModule, QatarInteractiveMapComponent, ButtonComponent, MatProgressSpinnerModule],
   templateUrl: './municipalities-chart.component.html',
   styleUrls: ['./municipalities-chart.component.scss'],
 })
 export class MunicipalitiesChartComponent extends OnDestroyMixin(class {}) implements AfterViewInit, OnChanges {
-  protected readonly FigureType = FigureType;
   @Input({ required: true }) title!: string;
   @Input({ required: true }) seriesNames!: Record<number, string>;
   @Input({ required: true }) criteria!: CriteriaContract;
@@ -48,7 +46,6 @@ export class MunicipalitiesChartComponent extends OnDestroyMixin(class {}) imple
   @Input({ required: true }) bindLabel!: string | ((item: any) => string);
   @Input({ required: true }) unit!: string;
   @Input() bindDataSplitProp!: string;
-  // @Input() showMap = true;
 
   @Output() selectedMunicipalityChanged = new EventEmitter<{ municipalityId: number }>();
 
@@ -56,13 +53,12 @@ export class MunicipalitiesChartComponent extends OnDestroyMixin(class {}) imple
 
   lang = inject(TranslationService);
   dashboardService = inject(DashboardService);
-  urlService = inject(UrlService);
   appChartTypesService = inject(AppChartTypesService);
   screenService = inject(ScreenBreakpointsService);
   cdr = inject(ChangeDetectorRef);
 
   screenSize = Breakpoints.LG;
-  selectedFigureType = FigureType.MAP;
+
   isChartFirstUpdate = true;
   isUpdatingChartData = false;
   seriesData: Record<number, (KpiBaseModel & { municipalityId: number })[]> = {};
@@ -70,6 +66,11 @@ export class MunicipalitiesChartComponent extends OnDestroyMixin(class {}) imple
   selectedMunicipality = { id: 4, seriesIndex: 0, dataPointIndex: 0 };
 
   chartOptions = new ChartOptionsModel().clone<ChartOptionsModel>(this.appChartTypesService.mainChartOptions);
+
+  readonly ChartType = ChartType;
+  selectedChartType = ChartType.BAR;
+
+  isLoading = false;
 
   ngOnChanges(changes: SimpleChanges): void {
     if (
@@ -84,19 +85,16 @@ export class MunicipalitiesChartComponent extends OnDestroyMixin(class {}) imple
   }
 
   ngAfterViewInit(): void {
-    this.selectedMunicipalityChanged.emit({ municipalityId: this.selectedMunicipality.id });
-  }
-
-  prepareChart(): void {
-    this.updateChartData();
     this._initializeFormatters();
     setTimeout(() => {
-      this.chart.first?.updateOptions({ chart: { type: 'bar' } }).then();
+      this.chart.first?.updateOptions({ chart: { type: 'bar', height: 430 } }).then();
       this._listenToScreenSizeChange();
     }, 0);
   }
+
   updateChartData() {
     this.isUpdatingChartData = true;
+    this.isLoading = true;
 
     const _criteria = { ...this.criteria };
     if (this.bindDataSplitProp) delete _criteria[this.bindDataSplitProp as keyof CriteriaContract];
@@ -104,12 +102,18 @@ export class MunicipalitiesChartComponent extends OnDestroyMixin(class {}) imple
     this.dashboardService
       .loadChartKpiData(this.rootData, _criteria)
       .pipe(take(1))
-      .pipe(map((data) => data as unknown as (KpiBaseModel & { municipalityId: number; occupancyStatus: number })[]))
+      .pipe(
+        catchError((err) => {
+          this.isLoading = false;
+          return throwError(() => err);
+        })
+      )
+      .pipe(map((data) => data as unknown as (KpiBaseModel & { municipalityId: number })[]))
       .pipe(
         map((data) => {
           if (Object.keys(this.seriesNames).length === 1) {
             data.sort((a, b) => a.getKpiVal() - b.getKpiVal());
-            return { 0: data };
+            return { [Object.keys(this.seriesNames)[0] as unknown as number]: data };
           }
           const _data = {} as Record<number, typeof data>;
           Object.keys(this.seriesNames).forEach((key) => {
@@ -129,7 +133,10 @@ export class MunicipalitiesChartComponent extends OnDestroyMixin(class {}) imple
   }
 
   updateChartOptions() {
-    const _minMaxAvg = minMaxAvg(this.seriesData[0].map((item) => item.getKpiVal()));
+    this.isLoading = false;
+    const _minMaxAvg = minMaxAvg(
+      this.seriesData[Object.keys(this.seriesNames)[0] as unknown as number].map((item) => item.getKpiVal())
+    );
     this.chart.first
       ?.updateOptions({
         series: Object.keys(this.seriesData).map((key) => ({
@@ -146,7 +153,7 @@ export class MunicipalitiesChartComponent extends OnDestroyMixin(class {}) imple
         colors:
           Object.keys(this.seriesNames).length !== 1
             ? [AppColors.PRIMARY, AppColors.SECONDARY]
-            : this.appChartTypesService.chartColorsFormatter(_minMaxAvg),
+            : [this.appChartTypesService.chartColorsFormatter(_minMaxAvg)],
         states: {
           active: {
             filter: {
@@ -159,7 +166,7 @@ export class MunicipalitiesChartComponent extends OnDestroyMixin(class {}) imple
           this.screenSize,
           BarChartTypes.SINGLE_BAR,
           this.seriesDataLength,
-          true
+          Object.keys(this.seriesNames).length !== 1
         ),
       })
       .then();
@@ -171,12 +178,16 @@ export class MunicipalitiesChartComponent extends OnDestroyMixin(class {}) imple
     ].findIndex((m) => m.municipalityId === event.municipalityId));
 
     this.isUpdatingChartData = true;
-    this.chart.first?.toggleDataPointSelection(0, _pointIndex);
+
+    this.selectedMunicipality.id = event.municipalityId;
+    this.selectedMunicipality.dataPointIndex = _pointIndex;
+
+    this.selectedMunicipalityChanged.emit({ municipalityId: this.selectedMunicipality.id });
   }
 
   getMapData() {
     return Object.keys(this.seriesNames).length === 1
-      ? this.seriesData[0]
+      ? this.seriesData[Object.keys(this.seriesNames) as unknown as number] ?? []
       : this.seriesData[this.criteria[this.bindDataSplitProp as keyof CriteriaContract] as number] ?? [];
   }
 
@@ -218,7 +229,6 @@ export class MunicipalitiesChartComponent extends OnDestroyMixin(class {}) imple
 
   private _initializeFormatters() {
     this.chartOptions
-      // .setChartHeight(475)
       .addDataLabelsFormatter((val, opts) =>
         this.appChartTypesService.dataLabelsFormatter({ val, opts }, this.rootData)
       )
@@ -264,8 +274,8 @@ export class MunicipalitiesChartComponent extends OnDestroyMixin(class {}) imple
   ) => {
     if (config.selectedDataPoints[config.seriesIndex].length === 0) return;
     if (!event && !this.isChartFirstUpdate && !this.isUpdatingChartData) return;
-    this.isChartFirstUpdate = false;
     this.isUpdatingChartData = false;
+
     this.selectedMunicipality = {
       id: (chartContext.w.config.series[config.seriesIndex].data[config.dataPointIndex] as unknown as { id: number })
         .id,
@@ -278,17 +288,15 @@ export class MunicipalitiesChartComponent extends OnDestroyMixin(class {}) imple
       this.appChartTypesService.getXAnnotaionForSelectedBar(_municipalityName),
       true
     );
+
+    // doing this because of strange apexchart behaviour when it's display is none
+    if (this.isChartFirstUpdate) {
+      this.isChartFirstUpdate = false;
+      setTimeout(() => {
+        this.selectedChartType = ChartType.MAP;
+      }, 500);
+    }
+
     this.selectedMunicipalityChanged.emit({ municipalityId: this.selectedMunicipality.id });
   };
-
-  setOccupiedVacantFigureType(type: FigureType): void {
-    if (type === FigureType.CHART) {
-      this.prepareChart();
-    }
-    this.selectedFigureType = type;
-  }
-
-  isSelectedFigure(type: FigureType) {
-    return this.selectedFigureType === type;
-  }
 }
