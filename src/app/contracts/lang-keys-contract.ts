@@ -221,6 +221,7 @@ export interface LangKeysContract {
   real_estate_ownership_indicators: string;
   total_number_of_properties_units: string;
   total_number_of_qatari_owners: string;
+  total_number_of_gulf_cooperation_council_countries_owners: string;
   total_number_of_non_qatari_owners: string;
   total_number_of_ownerships: string;
   ownership_transactions_measuring_dashboard: string;
@@ -366,4 +367,22 @@ export interface LangKeysContract {
   company_name: string;
   phone: string;
   map: string;
+
+  owner_indicators: string;
+  owners_transactions_measuring_dashboard: string;
+  total_number_of_owners: string;
+  total_number_of_owners_from_other_nationalities: string;
+  owners_count: string;
+  owner: string;
+  per_municipality: string;
+  per_area: string;
+  total_number_of_qatari_ownerships: string;
+  total_number_of_gulf_cooperation_council_countries_ownerships: string;
+  total_number_of_ownerships_from_other_nationalities: string;
+  ownerships_transactions_list: string;
+  owner_name: string;
+  qid: string;
+  owner_shares: string;
+  doc_date: string;
+  doc_description: string;
 }

@@ -170,6 +170,11 @@ export class MunicipalitiesChartComponent extends OnDestroyMixin(class {}) imple
         ),
       })
       .then();
+
+    setTimeout(() => {
+      if (this.selectedChartType === ChartType.MAP)
+        this.selectedMunicipalityChanged.emit({ municipalityId: this.selectedMunicipality.id });
+    }, 0);
   }
 
   onMapSelectedMunicipalityChanged(event: KpiBaseModel & { municipalityId: number }) {
