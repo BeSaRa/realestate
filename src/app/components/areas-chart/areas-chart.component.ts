@@ -1,3 +1,5 @@
+import { KpiBaseModel } from '@abstracts/kpi-base-model';
+import { CommonModule } from '@angular/common';
 import {
   AfterViewInit,
   ChangeDetectorRef,
@@ -9,20 +11,18 @@ import {
   ViewChildren,
   inject,
 } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { ChartComponent, NgApexchartsModule } from 'ng-apexcharts';
-import { CriteriaContract } from '@contracts/criteria-contract';
-import { DashboardService } from '@services/dashboard.service';
-import { AppChartTypesService } from '@services/app-chart-types.service';
-import { ScreenBreakpointsService } from '@services/screen-breakpoints.service';
-import { Breakpoints } from '@enums/breakpoints';
-import { KpiBaseModel } from '@abstracts/kpi-base-model';
-import { ChartOptionsModel } from '@models/chart-options-model';
-import { map, take, takeUntil } from 'rxjs';
-import { OnDestroyMixin } from '@mixins/on-destroy-mixin';
-import { BarChartTypes } from '@enums/bar-chart-type';
-import { minMaxAvg, objectHasOwnProperty } from '@utils/utils';
 import { AppColors } from '@constants/app-colors';
+import { CriteriaContract } from '@contracts/criteria-contract';
+import { BarChartTypes } from '@enums/bar-chart-type';
+import { Breakpoints } from '@enums/breakpoints';
+import { OnDestroyMixin } from '@mixins/on-destroy-mixin';
+import { ChartOptionsModel } from '@models/chart-options-model';
+import { AppChartTypesService } from '@services/app-chart-types.service';
+import { DashboardService } from '@services/dashboard.service';
+import { ScreenBreakpointsService } from '@services/screen-breakpoints.service';
+import { minMaxAvg, objectHasOwnProperty } from '@utils/utils';
+import { ChartComponent, NgApexchartsModule } from 'ng-apexcharts';
+import { map, take, takeUntil } from 'rxjs';
 
 @Component({
   selector: 'app-areas-chart',
@@ -85,7 +85,6 @@ export class AreasChartComponent extends OnDestroyMixin(class {}) implements OnC
       .pipe(
         map((data) => {
           if (Object.keys(this.seriesNames).length === 1) {
-            data.sort((a, b) => a.getKpiVal() - b.getKpiVal());
             return { [Object.keys(this.seriesNames)[0] as unknown as number]: data };
           }
           const _data = {} as Record<number, typeof data>;
@@ -98,6 +97,43 @@ export class AreasChartComponent extends OnDestroyMixin(class {}) implements OnC
           }, _data);
         })
       )
+      .pipe(
+        map((data) => {
+          // sorting logic
+          data[Object.keys(this.seriesNames)[0] as unknown as number].sort((a, b) => {
+            let _sumA = a.getKpiVal();
+            let _sumB = b.getKpiVal();
+            Object.keys(data).forEach((key, index) => {
+              if (index === 0) return;
+
+              _sumA +=
+                data[key as unknown as number]
+                  .find((item) => this._getLabel(item) === this._getLabel(a))
+                  ?.getKpiVal() ?? 0;
+
+              _sumB +=
+                data[key as unknown as number]
+                  .find((item) => this._getLabel(item) === this._getLabel(b))
+                  ?.getKpiVal() ?? 0;
+            });
+            return _sumA - _sumB;
+          });
+          const _sortedData: typeof data = {};
+          _sortedData[Object.keys(this.seriesNames)[0] as unknown as number] =
+            data[Object.keys(this.seriesNames)[0] as unknown as number];
+          Object.keys(data).forEach((key, index) => {
+            if (index === 0) return;
+            _sortedData[key as unknown as number] = [];
+            _sortedData[Object.keys(this.seriesNames)[0] as unknown as number].forEach((item) => {
+              _sortedData[key as unknown as number].push(
+                data[key as unknown as number].find((i) => this._getLabel(i) === this._getLabel(item)) as KpiBaseModel
+              );
+            });
+          });
+          return _sortedData;
+        })
+      )
+
       .subscribe((data) => {
         this.seriesData = data;
         this.seriesDataLength = data[Object.keys(this.seriesNames)[0] as unknown as number].length;
