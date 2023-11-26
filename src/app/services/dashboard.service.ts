@@ -9,13 +9,12 @@ import { CriteriaContract } from '@contracts/criteria-contract';
 import { DurationDataContract } from '@contracts/duration-data-contract';
 import { ForecastCriteriaContract } from '@contracts/forecast-criteria-contract';
 import { MortgageCriteriaContract } from '@contracts/mortgage-criteria-contract';
-import { OwnerCriteriaContract } from '@contracts/owner-criteria-contract';
 import { RentCriteriaContract } from '@contracts/rent-criteria-contract';
 import { SellCriteriaContract } from '@contracts/sell-criteria-contract';
 import { ServiceContract } from '@contracts/service-contract';
 import { DurationEndpoints } from '@enums/durations';
-import { NationalityCategories } from '@enums/nationality-categories';
 import { RegisterServiceMixin } from '@mixins/register-service-mixin';
+import { Broker } from '@models/broker';
 import {
   CompositeTransaction,
   RentCompositeTransaction,
@@ -27,7 +26,6 @@ import { KpiRoot } from '@models/kpi-root';
 import { Lookup } from '@models/lookup';
 import { MortgageTransaction } from '@models/mortgage-transaction';
 import { OccupancyTransaction } from '@models/occupancy-transaction';
-import { OwnershipCountNationality } from '@models/ownership-count-nationality';
 import { Pagination } from '@models/pagination';
 import { RentDefaultValues } from '@models/rent-default-values';
 import { RentTransaction } from '@models/rent-transaction';
@@ -44,7 +42,7 @@ import { CastResponse } from 'cast-response';
 import { forkJoin, map, Observable } from 'rxjs';
 import { DialogService } from './dialog.service';
 import { TranslationService } from './translation.service';
-import { Broker } from '@models/broker';
+import { OwnershipTransaction } from '@models/ownership-transaction';
 
 @Injectable({
   providedIn: 'root',
@@ -188,6 +186,11 @@ export class DashboardService extends RegisterServiceMixin(class {}) implements 
   @CastResponse(() => Pagination<MortgageTransaction>, { shape: { 'transactionList.*': () => MortgageTransaction } })
   loadMortgageKpiTransactions(criteria: Partial<CriteriaContract>): Observable<Pagination<MortgageTransaction[]>> {
     return this.http.post<Pagination<MortgageTransaction[]>>(this.urlService.URLS.MORT_KPI7, criteria);
+  }
+
+  @CastResponse(() => Pagination<OwnershipTransaction>, { shape: { 'transactionList.*': () => OwnershipTransaction } })
+  loadOwnershipsTransactions(criteria: Partial<CriteriaContract>): Observable<Pagination<OwnershipTransaction[]>> {
+    return this.http.post<Pagination<OwnershipTransaction[]>>(this.urlService.URLS.OWNER_KPI22, criteria);
   }
 
   @CastResponse(() => Pagination<OccupancyTransaction>, { shape: { 'transactionList.*': () => OccupancyTransaction } })
@@ -366,17 +369,6 @@ export class DashboardService extends RegisterServiceMixin(class {}) implements 
     );
   }
 
-  @CastResponse(() => OwnershipCountNationality)
-  loadOwnershipsCountNationality(
-    criteria: Partial<OwnerCriteriaContract>,
-    nationalityCategory: NationalityCategories
-  ): Observable<OwnershipCountNationality[]> {
-    return this.http.post<OwnershipCountNationality[]>(
-      this.getOwnershipCountNationalityEndpoint(nationalityCategory),
-      criteria
-    );
-  }
-
   mapDurationData(data: KpiBaseDurationModel[], durations: Lookup[]): DurationDataContract {
     const durationData: DurationDataContract = {};
 
@@ -403,13 +395,5 @@ export class DashboardService extends RegisterServiceMixin(class {}) implements 
     });
 
     return durationData;
-  }
-
-  private getOwnershipCountNationalityEndpoint(nationalityCategory: NationalityCategories) {
-    return nationalityCategory === NationalityCategories.QATARI
-      ? this.urlService.URLS.OWNER_KPI11
-      : nationalityCategory === NationalityCategories.GCC
-      ? this.urlService.URLS.OWNER_KPI11_1
-      : this.urlService.URLS.OWNER_KPI11_2;
   }
 }

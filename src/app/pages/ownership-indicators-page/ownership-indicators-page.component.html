@@ -32,35 +32,35 @@
     <div class="px-3 lg:px-16 mt-5 flex justify-center">
       <div class="flex justify-center gap-2 lg:gap-5 w-full md:w-3/4 lg:w-2/3 text-lg sm:text-2xl">
         <button
+          [ngClass]="{ active: isSelectedTab('owner_indicators') }"
+          (click)="switchTab('owner_indicators')"
+          class="flex-1 shadow-xl outline-none border border-secondary font-semibold px-2 py-3 lg:py-4 rounded-2xl [&.active]:bg-secondary [&.active]:text-white [&.active]:ring-2 ring-black">
+          {{ lang.map.owner_indicators }}
+        </button>
+        <button
           [ngClass]="{ active: isSelectedTab('ownership_indicators') }"
           (click)="switchTab('ownership_indicators')"
           class="flex-1 shadow-xl outline-none border border-secondary font-semibold px-2 py-3 lg:py-4 rounded-2xl [&.active]:bg-secondary [&.active]:text-white [&.active]:ring-2 ring-black">
           {{ lang.map.ownership_indicators }}
         </button>
-        <button
-          [ngClass]="{ active: isSelectedTab('statistical_reports_for_ownership') }"
-          (click)="switchTab('statistical_reports_for_ownership')"
-          class="flex-1 shadow-xl outline-none border border-secondary font-semibold px-2 py-3 lg:py-4 rounded-2xl [&.active]:bg-secondary [&.active]:text-white [&.active]:ring-2 ring-black">
-          {{ lang.map.statistical_reports_for_ownership }}
-        </button>
       </div>
     </div>
   </div>
-  <div *ngIf="isSelectedTab('ownership_indicators')" class="flex flex-col">
+  <div *ngIf="isSelectedTab('owner_indicators')" class="flex flex-col">
     <div class="py-16 px-3 lg:px-16">
       <div class="flex flex-col">
         <h3
           class="heading text-xl sm:text-2xl md:text-3xl self-center md:self-start text-center text-primary border-secondary font-semibold">
-          {{ lang.map.ownership_transactions_measuring_dashboard }}
+          {{ lang.map.owners_transactions_measuring_dashboard }}
           {{ getStringSelectedCriteria() }}
         </h3>
 
         <div
-          class="flex-1 my-4 p-4 border border-secondary rounded-lg grid grid-cols-1 md:grid-cols-3 justify-center gap-4">
+          class="flex-1 my-4 p-4 border border-secondary rounded-lg grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 justify-center gap-4">
           <app-kpi-root
-            (itemSelected)="rootItemSelected($event)"
+            (itemSelected)="ownerRootItemSelected($event)"
             [showYoy]="false"
-            *ngFor="let item of rootKPIS"
+            *ngFor="let item of ownerRootKpis"
             [item]="item" />
         </div>
       </div>
@@ -68,9 +68,9 @@
     <div class="bg-sand py-16 px-3 lg:px-16">
       <div class="flex flex-col justify-center items-center">
         <h3
-          *ngIf="selectedRoot"
+          *ngIf="selectedOwnerRoot"
           class="heading text-xl sm:text-2xl md:text-3xl self-center text-center text-primary border-secondary font-semibold">
-          {{ selectedRoot.getNames() }} ({{ lang.map.depending_on_use }})
+          {{ selectedOwnerRoot.getNames() }} ({{ lang.map.depending_on_use }})
           {{ getStringSelectedCriteria() }}
         </h3>
 
@@ -96,9 +96,9 @@
         </div>
 
         <h3
-          *ngIf="selectedRoot"
+          *ngIf="selectedOwnerRoot"
           class="heading mt-20 text-xl sm:text-2xl md:text-3xl self-center text-center text-primary border-secondary font-semibold">
-          {{ selectedRoot.getNames() }} ({{ lang.map.depending_on_type }}) {{ getStringSelectedCriteria() }}
+          {{ selectedOwnerRoot.getNames() }} ({{ lang.map.depending_on_type }}) {{ getStringSelectedCriteria() }}
         </h3>
         <div class="mt-4 w-full sm:w-5/6 lg:w-11/12" dir="ltr">
           <app-property-carousel
@@ -109,42 +109,65 @@
         </div>
       </div>
     </div>
-    <div class="flex-1 w-full my-4 p-4 flex justify-center gap-4">
-      <app-kpi-root class="w-full md:w-1/3" [showYoy]="false" [item]="totalOwnershipsRootKpi" />
+    <div class="py-5 px-3 lg:px-16">
+      <app-municipalities-chart
+        [title]="selectedOwnerRoot.getNames() + ' ' + lang.map.per_municipality"
+        [seriesNames]="ownerMunicipalitySeriesNames"
+        [rootData]="{
+          chartDataUrl: urlService.URLS.OWNER_KPI26,
+          hasPrice: false
+        }"
+        [criteria]="ownerMunicipalityCriteria"
+        [bindLabel]="municipalityLabel"
+        [unit]="lang.map.owner"
+        (selectedMunicipalityChanged)="updateOwnerAreasChartCriteria($event.municipalityId)" />
     </div>
+
+    <div class="py-5 px-3 lg:px-16">
+      <app-areas-chart
+        [title]="
+          selectedOwnerRoot.getNames() +
+          ' ' +
+          lang.map.per_area +
+          ' (' +
+          lookupService.ownerMunicipalitiesMap[selectedOwnerMunicipalityId].getNames() +
+          ')'
+        "
+        [seriesNames]="ownerAreaSeriesNames"
+        [rootData]="{
+          chartDataUrl: urlService.URLS.OWNER_KPI27,
+          hasPrice: false
+        }"
+        [criteria]="ownerAreaCriteria"
+        [bindLabel]="areaLabel" />
+    </div>
+  </div>
+  <div *ngIf="isSelectedTab('ownership_indicators')" class="flex flex-col">
+    <div class="py-16 px-3 lg:px-16">
+      <div class="flex flex-col">
+        <h3
+          class="heading text-xl sm:text-2xl md:text-3xl self-center md:self-start text-center text-primary border-secondary font-semibold">
+          {{ lang.map.ownership_transactions_measuring_dashboard }}
+          {{ getStringSelectedCriteria() }}
+        </h3>
+
+        <div
+          class="flex-1 my-4 p-4 border border-secondary rounded-lg grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 justify-center gap-4">
+          <app-kpi-root
+            (itemSelected)="ownershipRootItemSelected($event)"
+            [showYoy]="false"
+            *ngFor="let item of ownershipRootKPIS"
+            [item]="item" />
+        </div>
+      </div>
+    </div>
+
     <div class="mt-8 px-3 lg:px-16 flex flex-col">
       <h3
         class="heading text-xl sm:text-2xl md:text-3xl self-center md:self-start text-center text-primary border-secondary font-semibold">
         {{ lang.map.distribution_of_ownerships_according_to_nationality }}
       </h3>
 
-      <div class="mt-4 flex justify-center md:justify-end gap-2">
-        <app-button
-          size="sm"
-          (click)="updateNationalitiesChartData(NationalityCategories.QATARI)"
-          [buttonStyle]="
-            selectedNationalityCategory === NationalityCategories.QATARI ? 'secondary' : 'secondary-outline'
-          "
-          [isRounded]="true"
-          >{{ lang.map.qatari }}</app-button
-        >
-        <app-button
-          size="sm"
-          (click)="updateNationalitiesChartData(NationalityCategories.GCC)"
-          [buttonStyle]="selectedNationalityCategory === NationalityCategories.GCC ? 'secondary' : 'secondary-outline'"
-          [isRounded]="true"
-          >{{ lang.map.gulf_cooperation_council_countries }}</app-button
-        >
-        <app-button
-          size="sm"
-          (click)="updateNationalitiesChartData(NationalityCategories.OTHER)"
-          [buttonStyle]="
-            selectedNationalityCategory === NationalityCategories.OTHER ? 'secondary' : 'secondary-outline'
-          "
-          [isRounded]="true"
-          >{{ lang.map.other_nationalities }}</app-button
-        >
-      </div>
       <div class="overflow-hidden pt-1 mt-2" dir="ltr">
         <apx-chart
           #nationalitiesChart
@@ -164,6 +187,36 @@
           [title]="nationalitiesChartOptions.title!" />
       </div>
     </div>
+
+    <div class="py-5 px-3 lg:px-16">
+      <app-municipalities-chart
+        [title]="lang.map.ownerships_count_per_municipality + ' (' + getNationalityNames(selectedNationality.id) + ')'"
+        [seriesNames]="ownershipMunicipalitySeriesNames"
+        [rootData]="ownershipMunicipalityRootData"
+        [criteria]="ownershipMunicipalityCriteria"
+        [bindLabel]="municipalityLabel"
+        [unit]="lang.map.owner"
+        (selectedMunicipalityChanged)="updateOwnershipAreasChartCriteria($event.municipalityId)" />
+    </div>
+
+    <div class="py-5 px-3 lg:px-16">
+      <app-areas-chart
+        [title]="
+          lang.map.ownerships_count_per_area +
+          ' (' +
+          getNationalityNames(selectedNationality.id) +
+          ') ' +
+          lang.map.and_municipality +
+          ' (' +
+          lookupService.ownerMunicipalitiesMap[selectedOwnerMunicipalityId].getNames() +
+          ')'
+        "
+        [seriesNames]="ownershipAreaSeriesNames"
+        [rootData]="ownershipAreaRootData"
+        [criteria]="ownershipAreaCriteria"
+        [bindLabel]="areaLabel" />
+    </div>
+
     <div class="px-3 lg:px-16 flex flex-col">
       <app-duration-chart
         [title]="
@@ -174,145 +227,81 @@
         [rootData]="durationRootData"
         [showSelectChartType]="false" />
     </div>
-    <div class="px-3 lg:px-16 flex flex-col">
+
+    <div class="px-3 lg:px-16 flex flex-col gap-4">
       <h3
         class="heading text-xl sm:text-2xl md:text-3xl self-center md:self-start text-center text-primary border-secondary font-semibold">
-        {{ lang.map.ownerships_count_per_municipality }}
-        ({{ getNationalityNames(selectedNationality.id) }})
-      </h3>
-      <div class="mt-4 flex justify-center md:justify-end">
-        <div class="grid grid-cols-2 gap-2">
-          <app-button
-            size="sm"
-            [isRounded]="true"
-            (click)="setOwnershipsCountPerMunicipalityFigureType(FigureType.MAP)"
-            [buttonStyle]="isSelectedFigure(FigureType.MAP) ? 'secondary' : 'secondary-outline'"
-            >{{ lang.map.map }}</app-button
-          >
-          <app-button
-            size="sm"
-            [isRounded]="true"
-            (click)="setOwnershipsCountPerMunicipalityFigureType(FigureType.CHART)"
-            [buttonStyle]="isSelectedFigure(FigureType.CHART) ? 'secondary' : 'secondary-outline'"
-            >{{ lang.map.chart }}</app-button
-          >
-        </div>
-      </div>
-      <!-- <div class="flex flex-col-reverse items-center mt-2 lg:flex-row gap-2"> -->
-        <div *ngIf="isSelectedFigure(FigureType.CHART)" class="w-full flex-auto overflow-hidden mt-2 pt-1 pb-2" dir="ltr">
-          <apx-chart
-            #municipalitiesChart
-            class="custom-toolbar [&>div]:ml-[-22px]"
-            [series]="municipalitiesChartOptions.series!"
-            [chart]="municipalitiesChartOptions.chart!"
-            [xaxis]="municipalitiesChartOptions.xaxis!"
-            [stroke]="municipalitiesChartOptions.stroke!"
-            [colors]="municipalitiesChartOptions.colors!"
-            [dataLabels]="municipalitiesChartOptions.dataLabels!"
-            [legend]="municipalitiesChartOptions.legend!"
-            [markers]="municipalitiesChartOptions.markers!"
-            [grid]="municipalitiesChartOptions.grid!"
-            [yaxis]="municipalitiesChartOptions.yaxis!"
-            [tooltip]="municipalitiesChartOptions.tooltip!"
-            [plotOptions]="municipalitiesChartOptions.plotOptions!"
-            [title]="municipalitiesChartOptions.title!" />
-        </div>
-        <div *ngIf="isSelectedFigure(FigureType.MAP)" class="w-full flex-auto overflow-hidden mt-2 pt-1 pb-6">
-          <app-qatar-interactive-map
-            [municipalitiesData]="municipalitiesData"
-            [label]="lang.map.number_of_ownerships"
-            [unit]="lang.map.ownership"
-            [selectedMunicipalityId]="selectedMunicipality.id"
-            (selectedMunicipalityChanged)="onMapSelectedMunicipalityChanged($event)" />
-        </div>
-      <!-- </div> -->
-    </div>
-    <div class="px-3 lg:px-16 flex flex-col">
-      <h3
-        class="heading text-xl sm:text-2xl md:text-3xl self-center md:self-start text-center text-primary border-secondary font-semibold">
-        {{ lang.map.ownerships_count_per_area }}
-        ({{ getNationalityNames(selectedNationality.id) }}) {{ lang.map.and_municipality }} ({{
-          lookupService.ownerMunicipalitiesMap[selectedMunicipality.id].getNames()
-        }})
+        {{ lang.map.ownerships_transactions_list }} ({{ getNationalityNames(selectedNationality.id) }})
       </h3>
 
-      <div class="flex-auto overflow-hidden mt-2 pt-1" dir="ltr">
-        <apx-chart
-          #areasChart
-          class="custom-toolbar [&>div]:ml-[-22px]"
-          [series]="areasChartOptions.series!"
-          [chart]="areasChartOptions.chart!"
-          [xaxis]="areasChartOptions.xaxis!"
-          [stroke]="areasChartOptions.stroke!"
-          [colors]="areasChartOptions.colors!"
-          [dataLabels]="areasChartOptions.dataLabels!"
-          [legend]="areasChartOptions.legend!"
-          [markers]="areasChartOptions.markers!"
-          [grid]="areasChartOptions.grid!"
-          [yaxis]="areasChartOptions.yaxis!"
-          [tooltip]="areasChartOptions.tooltip!"
-          [plotOptions]="areasChartOptions.plotOptions!"
-          [title]="areasChartOptions.title!" />
-      </div>
+      <app-table
+        minWidth="900px"
+        headerBgColor="!bg-secondary"
+        (paginate)="paginate($event)"
+        [length]="transactionsCount"
+        [dataSource]="dataSource"
+        [sortOptions]="[]">
+        <ng-container appTableColumnTemplate columnName="unitNumber">
+          <span *appTableColumnHeaderTemplate class="flex justify-center"> {{ lang.map.unit_parcel_no }} </span>
+          <span *appTableColumnCellTemplate="let item; typeOf: transactions$" class="flex justify-center">
+            {{ item.unitNumber }}
+          </span>
+        </ng-container>
+        <ng-container appTableColumnTemplate columnName="ownerName">
+          <span *appTableColumnHeaderTemplate class="flex justify-center"> {{ lang.map.owner_name }} </span>
+          <span *appTableColumnCellTemplate="let item; typeOf: transactions$" class="flex justify-center">
+            {{ item.ownerName || "---" }}
+          </span>
+        </ng-container>
+        <ng-container appTableColumnTemplate columnName="ownerId">
+          <span *appTableColumnHeaderTemplate class="flex justify-center"> {{ lang.map.owner_id }} </span>
+          <span *appTableColumnCellTemplate="let item; typeOf: transactions$" class="flex justify-center">
+            {{ item.getqId || "---" }}
+          </span>
+        </ng-container>
+        <ng-container appTableColumnTemplate columnName="ownerShares">
+          <span *appTableColumnHeaderTemplate class="flex justify-center"> {{ lang.map.owner_shares }} </span>
+          <span *appTableColumnCellTemplate="let item; typeOf: transactions$" class="flex justify-center">
+            {{ item.ownerShares | number }}
+          </span>
+        </ng-container>
+        <ng-container appTableColumnTemplate columnName="docDescription">
+          <span *appTableColumnHeaderTemplate class="flex justify-center"> {{ lang.map.doc_description }} </span>
+          <span *appTableColumnCellTemplate="let item; typeOf: transactions$" class="flex justify-center">
+            {{ item.docDescription || "---" }}
+          </span>
+        </ng-container>
+        <ng-container appTableColumnTemplate columnName="docDate">
+          <span *appTableColumnHeaderTemplate class="flex justify-center"> {{ lang.map.doc_date }} </span>
+          <span *appTableColumnCellTemplate="let item; typeOf: transactions$" class="flex justify-center">
+            {{ item.docDate | date : "YYYY-MM-dd" }}
+          </span>
+        </ng-container>
+      </app-table>
     </div>
 
-    <div class="mt-8 py-8 px-3 lg:px-16 bg-sand grid grid-cols-1 lg:grid-cols-2 gap-2">
+    <div
+      class="mt-8 py-8 px-3 lg:px-16 bg-sand flex justify-center items-center flex-wrap [&>*]:min-w-[95%] lg:[&>*]:min-w-[45%] [&>*]:max-w-[100%] lg:[&>*]:max-w-[50%] [&>*]:flex-1 gap-2">
       <app-pie-chart
-        [title]="
-          lang.map.ownerships_count_per_owner_category + ' (' + getNationalityNames(selectedNationality.id) + ')'
-        "
-        [criteria]="nationalityCriteria"
-        [rootData]="ownerTypeRootData"
-        [bindLabel]="ownerTypeLabel"
-        [valueUnit]="lang.map.ownership" />
-      <app-pie-chart
-        [ngClass]="{ hidden: selectedNationality.id === specialNationality.lookupKey }"
-        [title]="lang.map.ownerships_count_per_owner_age + ' (' + getNationalityNames(selectedNationality.id) + ')'"
+        *ngIf="selectedNationality.id !== specialNationality.lookupKey"
+        [title]="lang.map.ownerships_count_per_owner_sex + ' (' + getNationalityNames(selectedNationality.id) + ')'"
         [criteria]="nationalityCriteria"
         [rootData]="ageCategoryRootData"
         [bindLabel]="ageCategoryLabel"
         [valueUnit]="lang.map.ownership" />
-    </div>
-  </div>
-  <div *ngIf="isSelectedTab('statistical_reports_for_ownership')" class="flex flex-col">
-    <div class="mt-8 py-8 px-3 lg:px-16 bg-sand grid grid-cols-1 lg:grid-cols-2 gap-2">
       <app-pie-chart
-        [title]="lang.map.ownerships_count_per_owner_sex"
-        [criteria]="criteria.criteria"
+        *ngIf="selectedNationality.id !== specialNationality.lookupKey"
+        [title]="lang.map.ownerships_count_per_owner_age + ' (' + getNationalityNames(selectedNationality.id) + ')'"
+        [criteria]="nationalityCriteria"
         [rootData]="genderRootData"
         [bindLabel]="genderLabel"
         [valueUnit]="lang.map.ownership" />
       <app-pie-chart
-        [title]="lang.map.ownerships_count_per_owner_age_summary"
+        [title]="lang.map.ownerships_count_per_owner_category_summary"
         [criteria]="criteria.criteria"
-        [rootData]="ageCategorySummaryRootData"
-        [bindLabel]="ageCategoryLabel"
+        [rootData]="ownerTypeRootData"
+        [bindLabel]="ownerTypeLabel"
         [valueUnit]="lang.map.ownership" />
-    </div>
-    <div class="mt-8 px-3 lg:px-16 flex flex-col">
-      <h3
-        class="heading text-xl sm:text-2xl md:text-3xl self-center md:self-start text-center text-primary border-secondary font-semibold">
-        {{ lang.map.ownerships_count_per_owner_category_summary }}
-      </h3>
-
-      <div class="flex-auto overflow-hidden mt-2 pt-1" dir="ltr">
-        <apx-chart
-          #ownerTypeSummaryChart
-          class="custom-toolbar [&>div]:ml-[-22px]"
-          [series]="ownerTypeSummaryChartOptions.series!"
-          [chart]="ownerTypeSummaryChartOptions.chart!"
-          [xaxis]="ownerTypeSummaryChartOptions.xaxis!"
-          [stroke]="ownerTypeSummaryChartOptions.stroke!"
-          [colors]="ownerTypeSummaryChartOptions.colors!"
-          [dataLabels]="ownerTypeSummaryChartOptions.dataLabels!"
-          [legend]="ownerTypeSummaryChartOptions.legend!"
-          [markers]="ownerTypeSummaryChartOptions.markers!"
-          [grid]="ownerTypeSummaryChartOptions.grid!"
-          [yaxis]="ownerTypeSummaryChartOptions.yaxis!"
-          [tooltip]="ownerTypeSummaryChartOptions.tooltip!"
-          [plotOptions]="ownerTypeSummaryChartOptions.plotOptions!"
-          [title]="ownerTypeSummaryChartOptions.title!" />
-      </div>
     </div>
   </div>
 </div>
