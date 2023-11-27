@@ -73,6 +73,8 @@ export default class OccupiedAndVacantIndicatorsPageComponent extends OnDestroyM
     type: CriteriaType;
   };
 
+  durationsCriteria = { ...this.criteria.criteria, occupancyStatus: null } as typeof this.criteria.criteria;
+
   areasCriteria = { ...this.criteria.criteria, occupancyStatus: null } as typeof this.criteria.criteria;
 
   rootKPIS = [
@@ -169,6 +171,7 @@ export default class OccupiedAndVacantIndicatorsPageComponent extends OnDestroyM
 
   filterChange({ criteria, type }: { criteria: CriteriaContract; type: CriteriaType }) {
     this.criteria = { criteria: criteria as CriteriaContract & { occupancyStatus: number | null }, type };
+    this.durationsCriteria = { ...this.criteria.criteria, occupancyStatus: null };
     if (type === CriteriaType.DEFAULT) return;
 
     this.rootKPIS.map((item) => {
