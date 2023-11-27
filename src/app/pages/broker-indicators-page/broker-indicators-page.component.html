@@ -22,7 +22,8 @@
       indicatorType="broker"
       [municipalities]="municipalities"
       [brokerCategoryList]="brokerCategories"
-      (fromChanged)="filterChange($event)" />
+      (fromChanged)="filterChange($event)"
+      (brokerNameChanged)="onBrokerNameFilterChanged($event)" />
   </div>
   <div class="py-16 px-3 lg:px-16">
     <div class="flex flex-col">
@@ -42,9 +43,12 @@
       </div>
       <div class="mt-4 flex items-center justify-center flex-wrap gap-4">
         <app-broker
-          *ngFor="let broker of brokers.slice(0, 8)"
+          *ngFor="let broker of filteredBrokers.slice(0, 8)"
           [broker]="broker"
-          (click)="showBrokerDetails(broker)"></app-broker>
+          [filterText]="brokerNameFilter"></app-broker>
+        <p class="text-xl text-primary font-bold" *ngIf="!filteredBrokers.length">
+          "{{ lang.map.there_is_no_data_for_brokers_matching_the_name_specified_in_the_filter }}"
+        </p>
       </div>
       <div class="mt-4 flex items-center justify-center gap-2">
         <app-button

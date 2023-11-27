@@ -189,6 +189,11 @@
       bindLabel="getNames"
       [options]="ownerTypes" />
 
+    <!-- broker name filter -->
+    <app-input *ngIf="isBroker()" [formControl]="brokerNameControl" [label]="lang.map.broker_name"
+      ><mat-icon class="mx-2 !text-primary" appInputSuffix svgIcon="magnify"></mat-icon
+    ></app-input>
+
     <ng-container *ngIf="isOpened || isOwner()">
       <app-select-input
         *ngIf="isOwner() || isRent()"

@@ -38,4 +38,14 @@ export class Broker extends ClonerMixin(class {}) {
   getManagerName(): string {
     return this._langService.isLtr ? this.managerEnName : this.managerArName;
   }
+
+  validateFilter(name: string) {
+    if (!name) return true;
+    return (
+      this.brokerArName?.includes(name) ||
+      this.brokerEnName?.includes(name) ||
+      this.managerArName?.includes(name) ||
+      this.managerEnName?.includes(name)
+    );
+  }
 }

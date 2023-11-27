@@ -1,14 +1,27 @@
-<div class="flex flex-col">
+<div class="flex flex-col transition-all duration-500">
   <div class="dialog-header flex-1">
-    <span>{{ data.title }}</span>
+    <div class="flex items-center justify-center gap-2">
+      <span>{{ data.title }}</span>
+      <div class="flex items-center justify-center">
+        <app-input
+          [formControl]="brokerNameControl"
+          [placeholder]="lang.map.broker_name"
+          label=""
+          [noMargin]="true"
+          [displayErrors]="false"
+          [borderColor]="'!border-primary'"
+          ><mat-icon class="mx-2 !text-primary" appInputSuffix svgIcon="magnify"></mat-icon
+        ></app-input>
+      </div>
+    </div>
     <app-icon-button class="close-btn" (click)="ref.close()" icon="CLOSE" />
   </div>
   <div class="dialog-content overflow-y-scroll">
     <div class="p-4 flex items-center justify-center flex-wrap gap-4">
-      <app-broker
-        *ngFor="let broker of data.brokers"
-        [broker]="broker"
-        (click)="showBrokerDetails(broker)"></app-broker>
+      <app-broker *ngFor="let broker of filteredBrokers" [broker]="broker" [filterText]="brokerNameFilter"></app-broker>
+      <p class="text-xl text-primary font-bold" *ngIf="!filteredBrokers.length">
+        "{{ lang.map.there_is_no_data_for_brokers_matching_the_name_specified_in_the_filter }}"
+      </p>
     </div>
   </div>
   <div class="dialog-footer flex-1">

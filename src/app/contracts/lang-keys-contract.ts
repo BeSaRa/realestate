@@ -385,4 +385,5 @@ export interface LangKeysContract {
   owner_shares: string;
   doc_date: string;
   doc_description: string;
+  there_is_no_data_for_brokers_matching_the_name_specified_in_the_filter: string;
 }

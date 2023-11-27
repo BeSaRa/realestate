@@ -94,6 +94,7 @@ export class TransactionsFilterComponent implements OnInit, OnDestroy {
   @Input() paramsRange: ParamRange[] = [];
 
   @Output() fromChanged = new EventEmitter<{ criteria: CriteriaContract; type: CriteriaType }>();
+  @Output() brokerNameChanged = new EventEmitter<string>();
 
   lang = inject(TranslationService);
   fb = inject(UntypedFormBuilder);
@@ -228,6 +229,7 @@ export class TransactionsFilterComponent implements OnInit, OnDestroy {
   );
 
   unitsControl = new FormControl(this.unitsService.selectedUnit());
+  brokerNameControl = new FormControl('');
 
   protected readonly AppIcons = AppIcons;
   displayYear = true;
@@ -324,6 +326,7 @@ export class TransactionsFilterComponent implements OnInit, OnDestroy {
     this.listenToFormChanges();
     this.listenToIssueYearChange();
     this.listenToUnitChange();
+    this.listenToBrokerNameChange();
     // this.listenToNationalityChange(); // it needs edit from be
     // this.listenToOwnerCategoryChange(); // it needs edit from be
     this.listenToPremiseCategoryListChange();
@@ -462,6 +465,12 @@ export class TransactionsFilterComponent implements OnInit, OnDestroy {
   listenToUnitChange() {
     this.unitsControl.valueChanges.pipe(takeUntil(this.destroy$)).subscribe((value) => {
       this.unitsService.setUnit(value as SqUnit);
+    });
+  }
+
+  listenToBrokerNameChange() {
+    this.brokerNameControl.valueChanges.pipe(takeUntil(this.destroy$), debounceTime(500)).subscribe((value) => {
+      this.brokerNameChanged.emit(value ?? '');
     });
   }
 
