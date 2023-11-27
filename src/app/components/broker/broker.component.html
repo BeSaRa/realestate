@@ -14,9 +14,9 @@
     src="assets/icons/broker/card-icon.svg"
     alt="" />
   <div class="grid grid-cols-3">
-    <span class="col-span-2 text-primary text-xl font-bold transition-all group-hover:text-white">{{
-      broker.getManagerName()
-    }}</span>
+    <span
+      class="col-span-2 text-primary text-xl font-bold transition-all group-hover:text-white"
+      [innerHTML]="broker.getCompanyName() | highlight : filterText"></span>
   </div>
   <div>
     <div class="flex gap-2 items-center">

@@ -1,6 +1,5 @@
 import { CommonModule } from '@angular/common';
 import { Component, inject } from '@angular/core';
-import { BrokerDetailsPopupComponent } from '@components/broker-details-popup/broker-details-popup.component';
 import { BrokerComponent } from '@components/broker/broker.component';
 import { BrokersListPopupComponent } from '@components/brokers-list-popup/brokers-list-popup.component';
 import { ButtonComponent } from '@components/button/button.component';
@@ -56,7 +55,10 @@ export default class BrokerIndicatorsPageComponent {
     iconUrl: 'assets/icons/broker/1.svg',
   });
 
+  brokerNameFilter = '';
+
   brokers: Broker[] = [];
+  filteredBrokers = this.brokers;
 
   filterChange({ criteria, type }: { criteria: CriteriaContract; type: CriteriaType }) {
     this.criteria = { criteria: criteria as CriteriaContract & { brokerCategoryId: number }, type };
@@ -73,11 +75,15 @@ export default class BrokerIndicatorsPageComponent {
     this.dashboardService
       .loadBrokers(this.criteria.criteria)
       .pipe(take(1))
-      .subscribe((brokers) => (this.brokers = brokers.transactionList));
+      .subscribe((brokers) => {
+        this.brokers = brokers.transactionList;
+        this.filteredBrokers = this.brokers.filter((b) => b.validateFilter(this.brokerNameFilter));
+      });
   }
 
-  showBrokerDetails(broker: Broker) {
-    this.dialog.open(BrokerDetailsPopupComponent, { data: broker, maxWidth: '95vw', minWidth: '60vw' });
+  onBrokerNameFilterChanged(name: string) {
+    this.brokerNameFilter = name;
+    this.filteredBrokers = this.brokers.filter((b) => b.validateFilter(name));
   }
 
   showAllBrokers() {

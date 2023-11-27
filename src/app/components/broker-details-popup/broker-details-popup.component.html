@@ -6,7 +6,7 @@
     <div class="flex justify-center gap-8">
       <img class="w-[100px] md:w-auto" src="assets/icons/broker/popup-icon.svg" alt="" />
       <div class="flex flex-col justify-center gap-4">
-        <span class="text-primary text-2xl font-bold">{{ brokerData.getManagerName() }}</span>
+        <span class="text-primary text-2xl font-bold">{{ brokerData.getCompanyName() }}</span>
         <div>
           <div class="flex gap-2 items-center">
             <img src="assets/icons/broker/call.svg" alt="" />
@@ -33,14 +33,14 @@
       >
     </div>
   </div>
-  <span class="block h-0 w-full my-6 border border-primary/20"></span>
-  <p class="text-secondary font-bold text-xl">{{ lang.map.about }} {{ brokerData.getCompanyName() }}</p>
+  <!-- <span class="block h-0 w-full my-6 border border-primary/20"></span> -->
+  <!-- <p class="text-secondary font-bold text-xl">{{ lang.map.about }} {{ brokerData.getCompanyName() }}</p> -->
   <!-- <div class="mt-4 flex justify-start items-center text-lg gap-2">
     <img src="assets/icons/broker/location.svg" alt="" />
     <span>Head office:</span>
     <span>Al Difaf St, Al Sadd, Al Qamra Holding 2nd floor, P.O. BOX 15983 Doha, Qatar.</span>
   </div> -->
-  <p class="mt-4 text-primary/80 max-w-[900px]">{{ brokerData.getDescription() }}</p>
+  <!-- <p class="mt-4 text-primary/80 max-w-[900px]">{{ brokerData.getDescription() }}</p> -->
 </div>
 <div class="dialog-footer">
   <app-button (click)="ref.close()" buttonStyle="primary">{{ lang.map.close }}</app-button>

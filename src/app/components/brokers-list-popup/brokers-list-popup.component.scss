@@ -1,5 +1,5 @@
 :host {
-  @apply block overflow-hidden max-h-[95vh] #{!important};
+  @apply block overflow-hidden max-h-[95vh] transition-all #{!important};
 }
 
 .dialog-content {
