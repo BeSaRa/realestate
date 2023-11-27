@@ -1,5 +1,5 @@
 import { inject, Injectable } from '@angular/core';
-import { catchError, exhaustMap, filter, map, merge, Observable, of, Subject, tap } from 'rxjs';
+import { catchError, exhaustMap, filter, map, merge, Observable, of, Subject, tap, throwError } from 'rxjs';
 import { CredentialsContract } from '@contracts/credentials-contract';
 import { AuthProviders } from '@enums/auth-providers';
 import { HttpClient } from '@angular/common/http';
@@ -39,9 +39,9 @@ export class AuthService {
     credentials.mode = 'json';
     provider = credentials.identifier?.includes('@') ? AuthProviders.DEFAULT : AuthProviders.LDAP;
     return this._login(credentials, provider).pipe(
-      catchError(() => {
+      catchError((err) => {
         this.authenticated = false;
-        throw Error('Cannot Login');
+        return throwError(() => err);
       }),
       tap((data) => {
         this.updateToken(data);

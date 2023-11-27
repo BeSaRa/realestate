@@ -11,8 +11,11 @@ import { AuthService } from '@services/auth.service';
 import { CustomValidators } from '@validators/custom-validators';
 import { CredentialsContract } from '@contracts/credentials-contract';
 import { ToastService } from '@services/toast.service';
-import { startWith, switchMap } from 'rxjs';
+import { catchError, startWith, switchMap, throwError } from 'rxjs';
 import { UserService } from '@services/user.service';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { CmsErrorContract } from '@contracts/cms-error-contract';
+import { CmsErrorStatus } from '@enums/cms-error-status';
 
 @Component({
   selector: 'app-translation-popup',
@@ -25,6 +28,7 @@ import { UserService } from '@services/user.service';
     TextareaComponent,
     ButtonComponent,
     IconButtonComponent,
+    MatProgressSpinnerModule,
   ],
   templateUrl: './login-popup.component.html',
   styleUrls: ['./login-popup.component.scss'],
@@ -42,20 +46,43 @@ export class LoginPopupComponent {
     password: ['', [CustomValidators.required]],
   });
 
-  isLoggedInFailed = false;
+  invalidCredentials = false;
+  isLoading = false;
 
   login() {
     this.form.markAllAsTouched();
     if (this.form.invalid) {
       return;
     }
+    this.isLoading = true;
     const credentials: CredentialsContract = {
       ...this.form.getRawValue(),
     };
     this.authService
       .login(credentials)
       .pipe(switchMap(() => this.userService.loadCurrentUserProfile()))
+      .pipe(
+        catchError((err: { error: CmsErrorContract }) => {
+          this.isLoading = false;
+          if (err?.error?.errors)
+            err.error.errors.forEach((_err) => {
+              if (_err.extensions.code === CmsErrorStatus.INVALID_CREDENTIALS) this.invalidCredentials = true;
+              else
+                this.toast.error(this.lang.map.unknown_error_occured_when_login, {
+                  verticalPosition: 'top',
+                  horizontalPosition: this.lang.isLtr ? 'left' : 'right',
+                });
+            });
+          else
+            this.toast.error(this.lang.map.unknown_error_occured_when_login, {
+              verticalPosition: 'top',
+              horizontalPosition: this.lang.isLtr ? 'left' : 'right',
+            });
+          return throwError(() => err);
+        })
+      )
       .subscribe(() => {
+        this.isLoading = false;
         this.toast.success(this.lang.map.logged_in_successfully, {
           verticalPosition: 'top',
           horizontalPosition: this.lang.isLtr ? 'left' : 'right',
@@ -65,6 +92,6 @@ export class LoginPopupComponent {
   }
 
   clearError() {
-    this.isLoggedInFailed = false;
+    this.invalidCredentials = false;
   }
 }

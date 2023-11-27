@@ -19,12 +19,15 @@
           (keydown.enter)="login()" />
       </div>
     </div>
-    <div *ngIf="isLoggedInFailed" class="alert alert-danger" role="alert">
+    <div *ngIf="invalidCredentials" class="alert alert-danger" role="alert">
       <span class="mt-2 text-sm text-primary font-bold transition"> {{ lang.map.invalid_user_credentials }}</span>
     </div>
   </div>
   <div class="dialog-footer justify-end">
-    <app-button (click)="login()" buttonStyle="primary">{{ lang.map.sign_in }}</app-button>
+    <app-button (click)="login()" buttonStyle="primary"
+      ><ng-container *ngIf="!isLoading"> {{ lang.map.sign_in }}</ng-container
+      ><mat-spinner *ngIf="isLoading" diameter="20" strokeWidth="2"></mat-spinner
+    ></app-button>
     <app-button mat-dialog-close buttonStyle="primary-outline">{{ lang.map.cancel }}</app-button>
   </div>
 </div>
