@@ -267,14 +267,14 @@
       class="mt-8 py-8 px-3 lg:px-16 bg-sand flex justify-center items-center flex-wrap [&>*]:min-w-[95%] lg:[&>*]:min-w-[45%] [&>*]:max-w-[100%] lg:[&>*]:max-w-[50%] [&>*]:flex-1 gap-2">
       <app-pie-chart
         *ngIf="selectedNationalityId !== specialNationality.lookupKey"
-        [title]="lang.map.ownerships_count_per_owner_sex + ' (' + getNationalityNames(selectedNationalityId) + ')'"
+        [title]="lang.map.ownerships_count_per_owner_age + ' (' + getNationalityNames(selectedNationalityId) + ')'"
         [criteria]="nationalityCriteria"
         [rootData]="ageCategoryRootData"
         [bindLabel]="ageCategoryLabel"
         [valueUnit]="lang.map.ownership" />
       <app-pie-chart
         *ngIf="selectedNationalityId !== specialNationality.lookupKey"
-        [title]="lang.map.ownerships_count_per_owner_age + ' (' + getNationalityNames(selectedNationalityId) + ')'"
+        [title]="lang.map.ownerships_count_per_owner_sex + ' (' + getNationalityNames(selectedNationalityId) + ')'"
         [criteria]="nationalityCriteria"
         [rootData]="genderRootData"
         [bindLabel]="genderLabel"
