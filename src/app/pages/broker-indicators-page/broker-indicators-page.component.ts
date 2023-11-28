@@ -1,7 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component, inject } from '@angular/core';
 import { BrokerComponent } from '@components/broker/broker.component';
-import { BrokersListPopupComponent } from '@components/brokers-list-popup/brokers-list-popup.component';
 import { ButtonComponent } from '@components/button/button.component';
 import { ExtraHeaderComponent } from '@components/extra-header/extra-header.component';
 import { KpiRootComponent } from '@components/kpi-root/kpi-root.component';

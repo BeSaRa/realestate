@@ -22,7 +22,7 @@ export class CsvService {
   }
 
   downloadCsvFile(fileName: string, csvData: string) {
-    const blob = new Blob([csvData], { type: 'text/csv;charset=utf-8' });
+    const blob = new Blob([`\uFEFF${csvData}`], { type: 'text/csv;charset=utf-8' });
     saveAs(blob, fileName + '.csv');
   }
 }
