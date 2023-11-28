@@ -293,6 +293,7 @@ export class DurationChartComponent extends OnDestroyMixin(class {}) implements 
       this.chart.first
         ?.updateOptions({
           chart: { type: this.selectedChartType },
+          dataLabels: { enabled: this.selectedDurationType != this.DurationTypes.QUARTERLY && !this.isMinMaxAvgBar },
           stroke: { width: this.selectedChartType === ChartType.BAR ? 0 : 4 },
           ..._seriesData,
           ...this._getLegendOptions(),
