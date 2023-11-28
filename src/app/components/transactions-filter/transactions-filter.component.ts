@@ -318,7 +318,7 @@ export class TransactionsFilterComponent implements OnInit, OnDestroy {
     if (this.isRent()) this.nationalityCode.disable();
     this.streetNo.disable();
 
-    this.years = range(this.isSell() ? 2006 : 2019, new Date().getFullYear());
+    this.years = range(this.isSell() || this.isMort() ? 2006 : 2019, new Date().getFullYear());
     this.listenToMunicipalityChange();
     this.listenToPropertyTypeListChange();
     this.listenToRentPurposeListChange();
