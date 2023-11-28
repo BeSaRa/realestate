@@ -43,7 +43,7 @@
       </div>
       <div class="mt-4 flex items-center justify-center flex-wrap gap-4">
         <app-broker
-          *ngFor="let broker of filteredBrokers.slice(0, 8)"
+          *ngFor="let broker of filteredBrokers.slice(0, visibleBrokersCount)"
           [broker]="broker"
           [filterText]="brokerNameFilter"></app-broker>
         <p class="text-xl text-primary font-bold" *ngIf="!filteredBrokers.length">
@@ -52,13 +52,14 @@
       </div>
       <div class="mt-4 flex items-center justify-center gap-2">
         <app-button
-          *ngIf="brokers.length > 8"
+          *ngIf="visibleBrokersCount < filteredBrokers.length"
           size="md"
-          (click)="showAllBrokers()"
+          (click)="showMoreBrokers()"
           buttonStyle="secondary"
           [isRounded]="true"
-          >{{ lang.map.show_all }}</app-button
         >
+          {{ lang.map.show_more }}
+        </app-button>
       </div>
     </div>
   </div>

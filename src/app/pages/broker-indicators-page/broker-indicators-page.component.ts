@@ -16,7 +16,7 @@ import { DialogService } from '@services/dialog.service';
 import { LookupService } from '@services/lookup.service';
 import { TranslationService } from '@services/translation.service';
 import { UrlService } from '@services/url.service';
-import { take } from 'rxjs';
+import { take, switchMap } from 'rxjs';
 
 @Component({
   selector: 'app-broker-indicators-page',
@@ -55,47 +55,44 @@ export default class BrokerIndicatorsPageComponent {
     iconUrl: 'assets/icons/broker/1.svg',
   });
 
+  visibleBrokersCount: number = 9;
+  incrementVisibleBrokersCount: number = 9;
   brokerNameFilter = '';
 
   brokers: Broker[] = [];
   filteredBrokers = this.brokers;
+  totalBrokersCount!: number;
 
   filterChange({ criteria, type }: { criteria: CriteriaContract; type: CriteriaType }) {
     this.criteria = { criteria: criteria as CriteriaContract & { brokerCategoryId: number }, type };
-
+  
     if (type === CriteriaType.DEFAULT) return;
-
-    this.dashboardService
-      .loadKpiRoot(this.totalBrokers, this.criteria.criteria)
-      .pipe(take(1))
-      .subscribe((value) => {
-        this.totalBrokers.kpiData = value[0];
-      });
-
-    this.dashboardService
-      .loadBrokers(this.criteria.criteria)
-      .pipe(take(1))
+  
+    this.dashboardService.loadKpiRoot(this.totalBrokers, this.criteria.criteria)
+      .pipe(
+        take(1),
+        switchMap((value) => {
+          this.totalBrokers.kpiData = value[0];
+          this.totalBrokersCount = this.totalBrokers.kpiData.getKpiVal();
+          return this.dashboardService.loadBrokers({ ...this.criteria.criteria, limit: this.totalBrokersCount })
+            .pipe(take(1));
+        })
+      )
       .subscribe((brokers) => {
         this.brokers = brokers.transactionList;
         this.filteredBrokers = this.brokers.filter((b) => b.validateFilter(this.brokerNameFilter));
+        this.visibleBrokersCount = this.incrementVisibleBrokersCount;
       });
   }
 
   onBrokerNameFilterChanged(name: string) {
     this.brokerNameFilter = name;
+    this.visibleBrokersCount = this.incrementVisibleBrokersCount;
     this.filteredBrokers = this.brokers.filter((b) => b.validateFilter(name));
   }
 
-  showAllBrokers() {
-    this.dialog.open(BrokersListPopupComponent, {
-      data: {
-        title: this.lang.map.brokers_list,
-        brokers: this.brokers,
-      },
-      maxWidth: '95vw',
-      minWidth: '95vw',
-      maxHeight: '95vh',
-    });
+  showMoreBrokers() {
+    this.visibleBrokersCount += this.incrementVisibleBrokersCount;
   }
 
   downloadBrokersList() {
