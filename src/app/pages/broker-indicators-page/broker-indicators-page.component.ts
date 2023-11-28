@@ -60,20 +60,23 @@ export default class BrokerIndicatorsPageComponent {
 
   brokers: Broker[] = [];
   filteredBrokers = this.brokers;
-  totalBrokersCount!: number;
 
   filterChange({ criteria, type }: { criteria: CriteriaContract; type: CriteriaType }) {
     this.criteria = { criteria: criteria as CriteriaContract & { brokerCategoryId: number }, type };
-  
+
     if (type === CriteriaType.DEFAULT) return;
-  
-    this.dashboardService.loadKpiRoot(this.totalBrokers, this.criteria.criteria)
+
+    this.dashboardService
+      .loadKpiRoot(this.totalBrokers, this.criteria.criteria)
       .pipe(
         take(1),
         switchMap((value) => {
           this.totalBrokers.kpiData = value[0];
-          this.totalBrokersCount = this.totalBrokers.kpiData.getKpiVal();
-          return this.dashboardService.loadBrokers({ ...this.criteria.criteria, limit: this.totalBrokersCount })
+          // to load all brokers, send limit equal to total count, since
+          // be return only 50 records when limit is not provided in criteria
+          return this.dashboardService
+            .loadBrokers({ ...this.criteria.criteria, 
+              limit: value[0].getKpiVal() > 0 ? value[0].getKpiVal() : undefined })
             .pipe(take(1));
         })
       )
