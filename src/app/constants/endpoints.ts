@@ -184,6 +184,7 @@ export const cmsEndpoints = {
   USERS: '/users',
   README: '/users/me',
   MENU_ITEMS: '/items/menu_items',
+  SECURITY: '/flows/trigger/9CBB1EDC-C5C9-4983-9846-BEA670A0CD66',
 };
 
 export const EndPoints = {

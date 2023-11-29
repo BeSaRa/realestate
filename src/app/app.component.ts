@@ -29,6 +29,7 @@ import { UrlService } from '@services/url.service';
 import { UserService } from '@services/user.service';
 import '@utils/prototypes/custom-prototypes';
 import { filter, map, startWith, switchMap } from 'rxjs';
+import { SecurityService } from '@services/security.service';
 
 @Component({
   selector: 'app-root',
@@ -77,9 +78,13 @@ export class AppComponent implements OnInit, AfterViewInit {
     //   this.userInfo = userInfo;
     // });
   }
-
+  security = inject(SecurityService);
   constructor() {
     registerLocaleData(localeAr, 'ar');
+
+    this.security.load().subscribe((sec) => {
+      console.log(sec);
+    });
   }
 
   ngOnInit(): void {
