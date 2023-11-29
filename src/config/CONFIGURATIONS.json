@@ -1,6 +1,6 @@
 {
   "ENVIRONMENTS_URLS": {
-    "CMS": "http://localhost:8055/"
+    "CMS": "http://192.168.52.5:8055/"
   },
   "BASE_ENVIRONMENT": "CMS",
   "BE": "http://192.168.52.4:9080/mme-services",
