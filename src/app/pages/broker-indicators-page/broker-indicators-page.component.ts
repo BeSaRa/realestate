@@ -1,7 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component, inject } from '@angular/core';
 import { BrokerComponent } from '@components/broker/broker.component';
-import { BrokersListPopupComponent } from '@components/brokers-list-popup/brokers-list-popup.component';
 import { ButtonComponent } from '@components/button/button.component';
 import { ExtraHeaderComponent } from '@components/extra-header/extra-header.component';
 import { KpiRootComponent } from '@components/kpi-root/kpi-root.component';
@@ -33,6 +32,7 @@ import { take } from 'rxjs';
   styleUrls: ['./broker-indicators-page.component.scss'],
 })
 export default class BrokerIndicatorsPageComponent {
+  
   lang = inject(TranslationService);
   lookupService = inject(LookupService);
   dialog = inject(DialogService);
@@ -55,13 +55,22 @@ export default class BrokerIndicatorsPageComponent {
     iconUrl: 'assets/icons/broker/1.svg',
   });
 
-  brokerNameFilter = '';
-
+  private currentOffset: number = 0;
+  showMoreEnabled: boolean = true;
+  visibleBrokersCount: number = 9;
   brokers: Broker[] = [];
   filteredBrokers = this.brokers;
+  brokersCount!: number;
+  brokersCountToFetch: number = 9;
+  brokerNameFilter = '';
 
   filterChange({ criteria, type }: { criteria: CriteriaContract; type: CriteriaType }) {
-    this.criteria = { criteria: criteria as CriteriaContract & { brokerCategoryId: number }, type };
+    this.criteria = {
+      criteria: { ...criteria, limit: this.brokersCountToFetch, offset: 0 } as CriteriaContract & {
+        brokerCategoryId: number;
+      },
+      type,
+    };
 
     if (type === CriteriaType.DEFAULT) return;
 
@@ -77,42 +86,55 @@ export default class BrokerIndicatorsPageComponent {
       .pipe(take(1))
       .subscribe((brokers) => {
         this.brokers = brokers.transactionList;
-        this.filteredBrokers = this.brokers.filter((b) => b.validateFilter(this.brokerNameFilter));
+        this. filteredBrokers = this.brokers.filter((b) => b.validateFilter(this.brokerNameFilter));
+        this.visibleBrokersCount = Math.min(this.filteredBrokers.length, this.brokersCountToFetch)
+        this.brokersCount = brokers.count;
       });
   }
+  
+  downloadBrokersList() {
+    const criteriaForAll = { ...this.criteria.criteria, limit: this.brokersCount };
+    delete this.criteria.criteria.limit;
+    this.dashboardService
+      .loadBrokers(criteriaForAll)
+      .pipe(take(1))
+      .subscribe((res) => {
+       const brokers = res.transactionList;
+        const _data = this.csvService.arrayToCsv(brokers, [
+          { key: this.lang.isLtr ? 'managerEnName' : 'managerArName', mapTo: this.lang.map.broker_name },
+          { key: this.lang.isLtr ? 'brokerEnName' : 'brokerArName', mapTo: this.lang.map.company_name },
+          { key: 'brokerPhone1', mapTo: this.lang.map.phone },
+          { key: 'brokerEmail', mapTo: this.lang.map.email },
+        ]);
 
+        this.csvService.downloadCsvFile(
+          this.lang.map.brokers_list +
+            '-' +
+            this.lookupService.brokerMunicipalitiesMap[this.criteria.criteria.municipalityId].getNames() +
+            '-' +
+            new Date(Date.now()).toDateString(),
+          _data
+        );
+      });
+  }
   onBrokerNameFilterChanged(name: string) {
+    this.showMoreEnabled = name == ''; // to be removed when backend filtering is ready
     this.brokerNameFilter = name;
     this.filteredBrokers = this.brokers.filter((b) => b.validateFilter(name));
   }
 
-  showAllBrokers() {
-    this.dialog.open(BrokersListPopupComponent, {
-      data: {
-        title: this.lang.map.brokers_list,
-        brokers: this.brokers,
-      },
-      maxWidth: '95vw',
-      minWidth: '95vw',
-      maxHeight: '95vh',
-    });
-  }
+  loadMoreBrokers() {
+    this.currentOffset += this.brokersCountToFetch;
+    
+    const criteriaWithOffset = { ...this.criteria.criteria, offset: this.currentOffset };
 
-  downloadBrokersList() {
-    const _data = this.csvService.arrayToCsv(this.brokers, [
-      { key: this.lang.isLtr ? 'managerEnName' : 'managerArName', mapTo: this.lang.map.broker_name },
-      { key: this.lang.isLtr ? 'brokerEnName' : 'brokerArName', mapTo: this.lang.map.company_name },
-      { key: 'brokerPhone1', mapTo: this.lang.map.phone },
-      { key: 'brokerEmail', mapTo: this.lang.map.email },
-    ]);
-
-    this.csvService.downloadCsvFile(
-      this.lang.map.brokers_list +
-        '-' +
-        this.lookupService.brokerMunicipalitiesMap[this.criteria.criteria.municipalityId].getNames() +
-        '-' +
-        new Date(Date.now()).toDateString(),
-      _data
-    );
+    this.dashboardService
+      .loadBrokers(criteriaWithOffset)
+      .pipe(take(1))
+      .subscribe((brokers) => {
+        this.brokers.push(...brokers.transactionList);
+        this.filteredBrokers = this.brokers.filter((b) => b.validateFilter(this.brokerNameFilter));
+      });
+      this.visibleBrokersCount += Math.min(this.brokersCountToFetch, this.filteredBrokers.length);
   }
 }
