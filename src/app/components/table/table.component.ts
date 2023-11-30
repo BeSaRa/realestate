@@ -1,5 +1,17 @@
 import { CommonModule } from '@angular/common';
-import { Component, ContentChildren, Input, OnInit, Output, QueryList, inject, EventEmitter, SimpleChanges, ViewChild, OnChanges } from '@angular/core';
+import {
+  Component,
+  ContentChildren,
+  Input,
+  OnInit,
+  Output,
+  QueryList,
+  inject,
+  EventEmitter,
+  SimpleChanges,
+  ViewChild,
+  OnChanges,
+} from '@angular/core';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { MatPaginator, MatPaginatorModule, PageEvent } from '@angular/material/paginator';
 import { MatSortModule } from '@angular/material/sort';
@@ -9,6 +21,7 @@ import { TableColumnTemplateDirective } from '@directives/table-column-template.
 import { OnDestroyMixin } from '@mixins/on-destroy-mixin';
 import { AppTableDataSource } from '@models/app-table-data-source';
 import { TableSortOption } from '@models/table-sort-option';
+import { SectionGuardService } from '@services/section-guard.service';
 import { TranslationService } from '@services/translation.service';
 import { Observable, isObservable, map, takeUntil } from 'rxjs';
 
@@ -19,22 +32,21 @@ import { Observable, isObservable, map, takeUntil } from 'rxjs';
   templateUrl: './table.component.html',
   styleUrls: ['./table.component.scss'],
 })
-export class TableComponent<T extends object> extends OnDestroyMixin(class { }) implements OnInit, OnChanges {
-  @ViewChild('paginator') paginator!: MatPaginator;
-
-
+export class TableComponent<T extends object> extends OnDestroyMixin(class {}) implements OnInit, OnChanges {
+  @Input() dataSource = new AppTableDataSource<T>([]);
   @Input() pageSize = 5;
   @Input() minWidth = '1000px';
   @Input() headerBgColor = '!bg-primary';
   @Input() sortOptions: TableSortOption[] = [];
   @Input() defaultSortOption?: TableSortOption;
   @Input() length = 0;
+  @Input() tableGuardName = '';
 
   @Output() paginate: EventEmitter<PageEvent> = new EventEmitter<PageEvent>();
 
+  @ViewChild('paginator') paginator!: MatPaginator;
   @ContentChildren(TableColumnTemplateDirective) columnsTemplates!: QueryList<TableColumnTemplateDirective>;
 
-  @Input() dataSource = new AppTableDataSource<T>([]);
   data: T[] | Observable<T[]> = this.dataSource.data as unknown as Observable<T[]>;
   sortedData!: T[] | Observable<T[]>;
 
@@ -44,8 +56,16 @@ export class TableComponent<T extends object> extends OnDestroyMixin(class { }) 
   offset = 0;
 
   lang = inject(TranslationService);
+  sectionGuardService = inject(SectionGuardService);
 
   sortControl = new FormControl<{ column: string; direction: 'asc' | 'desc' } | undefined>(undefined);
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if ('length' in changes) {
+      this.offset = 0;
+      this.paginator && this.paginator.firstPage();
+    }
+  }
 
   ngOnInit(): void {
     this.sortedData = this.data;
@@ -58,7 +78,15 @@ export class TableComponent<T extends object> extends OnDestroyMixin(class { }) 
   }
 
   get displayedColumnNames() {
-    return this.columnsTemplates.map((c) => c.columnName);
+    return this.columnsTemplates.map((c) => c.columnName).filter((c) => !this.isColumnHidden(c));
+  }
+
+  isColumnHidden(columnName: string) {
+    return this.sectionGuardService.currentPageSectionsGuards
+      ? this.sectionGuardService.currentPageSectionsGuards.sections[this.tableGuardName]
+        ? this.sectionGuardService.currentPageSectionsGuards.sections[this.tableGuardName].isColumnHidden(columnName)
+        : false
+      : false;
   }
 
   _paginate($event: PageEvent) {
@@ -66,13 +94,6 @@ export class TableComponent<T extends object> extends OnDestroyMixin(class { }) 
     this.offset = $event.pageSize * $event.pageIndex;
     this.pageSize = $event.pageSize;
     // this._initializeDataSource();
-  }
-
-  ngOnChanges(changes: SimpleChanges): void {
-    if ('length' in changes) {
-      this.offset = 0;
-      this.paginator && this.paginator.firstPage();
-    }
   }
 
   private _initializeDataSource() {

@@ -1,13 +1,13 @@
 import { TestBed } from '@angular/core/testing';
 
-import { SecurityService } from './security.service';
+import { SectionGuardService } from './section-guard.service';
 
-describe('SecurityService', () => {
-  let service: SecurityService;
+describe('SectionGuardService', () => {
+  let service: SectionGuardService;
 
   beforeEach(() => {
     TestBed.configureTestingModule({});
-    service = TestBed.inject(SecurityService);
+    service = TestBed.inject(SectionGuardService);
   });
 
   it('should be created', () => {
