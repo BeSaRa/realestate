@@ -17,6 +17,7 @@ import { TableComponent } from '@components/table/table.component';
 import { TopTenChartComponent } from '@components/top-ten-chart/top-ten-chart.component';
 import { TransactionsFilterComponent } from '@components/transactions-filter/transactions-filter.component';
 import { YoyIndicatorComponent } from '@components/yoy-indicator/yoy-indicator.component';
+import { APP_PAGES_SECTIONS } from '@constants/injection-tokens';
 import { CriteriaContract } from '@contracts/criteria-contract';
 import { CustomTooltipDirective } from '@directives/custom-tooltip.directive';
 import { ExtraHeaderPortalBridgeDirective } from '@directives/extra-header-portal-bridge.directive';
@@ -107,6 +108,7 @@ export default class SellIndicatorsPageComponent implements OnInit, OnDestroy {
   lookupService = inject(LookupService);
   unitsService = inject(UnitsService);
   sectionTitle = inject(SectionTitleService);
+  pageSections = inject(APP_PAGES_SECTIONS).SELL_PAGE;
 
   destroy$ = new Subject<void>();
   reload$ = new ReplaySubject<void>(1);
