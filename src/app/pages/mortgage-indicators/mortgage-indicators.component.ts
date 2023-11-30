@@ -13,6 +13,7 @@ import { TableComponent } from '@components/table/table.component';
 import { TransactionsFilterComponent } from '@components/transactions-filter/transactions-filter.component';
 import { CriteriaContract } from '@contracts/criteria-contract';
 import { ExtraHeaderPortalBridgeDirective } from '@directives/extra-header-portal-bridge.directive';
+import { SectionGuardDirective } from '@directives/section-guard.directive';
 import { TableColumnCellTemplateDirective } from '@directives/table-column-cell-template.directive';
 import { TableColumnHeaderTemplateDirective } from '@directives/table-column-header-template.directive';
 import { TableColumnTemplateDirective } from '@directives/table-column-template.directive';
@@ -49,6 +50,7 @@ import { BehaviorSubject, combineLatest, delay, map, Observable, of, ReplaySubje
     MatTableModule,
     DurationChartComponent,
     StackedDurationChartComponent,
+    SectionGuardDirective,
   ],
   templateUrl: './mortgage-indicators.component.html',
   styleUrls: ['./mortgage-indicators.component.scss'],
