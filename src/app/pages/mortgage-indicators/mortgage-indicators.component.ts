@@ -11,6 +11,7 @@ import { KpiRootComponent } from '@components/kpi-root/kpi-root.component';
 import { StackedDurationChartComponent } from '@components/stacked-duration-chart/stacked-duration-chart.component';
 import { TableComponent } from '@components/table/table.component';
 import { TransactionsFilterComponent } from '@components/transactions-filter/transactions-filter.component';
+import { APP_PAGES_SECTIONS } from '@constants/injection-tokens';
 import { CriteriaContract } from '@contracts/criteria-contract';
 import { ExtraHeaderPortalBridgeDirective } from '@directives/extra-header-portal-bridge.directive';
 import { SectionGuardDirective } from '@directives/section-guard.directive';
@@ -62,6 +63,7 @@ export default class MortgageIndicatorsComponent implements OnInit {
   dashboardService = inject(DashboardService);
   unitsService = inject(UnitsService);
   sectionTitle = inject(SectionTitleService);
+  pageSections = inject(APP_PAGES_SECTIONS).MORT_PAGE;
 
   reload$ = new ReplaySubject<void>(1);
   private paginate$ = new BehaviorSubject({
