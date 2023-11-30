@@ -1,7 +1,7 @@
 import { BidiModule } from '@angular/cdk/bidi';
 import { CommonModule, registerLocaleData } from '@angular/common';
 import localeAr from '@angular/common/locales/ar';
-import { AfterViewInit, Component, HostListener, OnInit, inject } from '@angular/core';
+import { AfterViewInit, Component, HostListener, inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
@@ -29,7 +29,6 @@ import { UrlService } from '@services/url.service';
 import { UserService } from '@services/user.service';
 import '@utils/prototypes/custom-prototypes';
 import { filter, map, startWith, switchMap } from 'rxjs';
-import { SecurityService } from '@services/security.service';
 import { ExtraHeaderComponent } from '@components/extra-header/extra-header.component';
 
 @Component({
@@ -56,7 +55,7 @@ import { ExtraHeaderComponent } from '@components/extra-header/extra-header.comp
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss'],
 })
-export class AppComponent implements OnInit, AfterViewInit {
+export class AppComponent implements AfterViewInit {
   lang = inject(TranslationService);
   stickyService = inject(StickyService);
   dialog = inject(DialogService);
@@ -75,22 +74,8 @@ export class AppComponent implements OnInit, AfterViewInit {
     map(() => (this.lang.isLtr ? SideBarDirection.RIGHT : SideBarDirection.LEFT))
   );
 
-  private _listenToUserChange() {
-    // this.authService.currentUser.subscribe((userInfo) => {
-    //   this.userInfo = userInfo;
-    // });
-  }
-  security = inject(SecurityService);
   constructor() {
     registerLocaleData(localeAr, 'ar');
-
-    this.security.load().subscribe((sec) => {
-      console.log(sec);
-    });
-  }
-
-  ngOnInit(): void {
-    this._listenToUserChange();
   }
 
   ngAfterViewInit(): void {

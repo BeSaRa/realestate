@@ -23,6 +23,7 @@ import { UnitsService } from '@services/units.service';
 import { TokenService } from '@services/token.service';
 import { AuthService } from '@services/auth.service';
 import { UserService } from '@services/user.service';
+import { SectionGuardService } from '@services/section-guard.service';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -54,7 +55,8 @@ export const appConfig: ApplicationConfig = {
         lookups: LookupService,
         tokenService: TokenService,
         userService: UserService,
-        authService: AuthService
+        authService: AuthService,
+        sectionGuardService: SectionGuardService
       ) => {
         return () =>
           forkJoin([config.load()])
@@ -65,13 +67,9 @@ export const appConfig: ApplicationConfig = {
             .pipe(tap(() => tokenService.getTokenFromStorage()))
             .pipe(tap(() => authService.refresh$.next('json')))
             .pipe(delay(0))
-            .pipe(
-              switchMap(() => {
-                return tokenService.getToken() ? userService.loadCurrentUserProfile() : of(true);
-              })
-            );
+            .pipe(switchMap(() => (tokenService.getToken() ? userService.loadCurrentUserProfile() : of(true))))
+            .pipe(switchMap(() => sectionGuardService.load()));
       },
-      // UnitsService add to deps to initialize service at app start and be able to regiser it using ServiceRegistery
       deps: [
         ConfigService,
         UrlService,
@@ -80,8 +78,15 @@ export const appConfig: ApplicationConfig = {
         TokenService,
         UserService,
         AuthService,
-        UnitsService,
+        SectionGuardService,
       ],
+      multi: true,
+    },
+    {
+      // UnitsService add to deps to initialize service at app start and be able to regiser it using ServiceRegistery
+      provide: APP_INITIALIZER,
+      deps: [UnitsService],
+      useFactory: () => () => null,
       multi: true,
     },
     {
