@@ -76,4 +76,12 @@ export const routes: Routes = [
     path: 'broker-indicators',
     loadComponent: () => import('@pages/broker-indicators-page/broker-indicators-page.component'),
   },
+  {
+    path: 'not-found',
+    loadComponent: () => import('@pages/not-found-page/not-found-page.component'),
+  },
+  {
+    path: '**',
+    redirectTo: 'not-found',
+  },
 ];
