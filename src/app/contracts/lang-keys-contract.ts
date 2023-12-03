@@ -386,6 +386,7 @@ export interface LangKeysContract {
   doc_date: string;
   doc_description: string;
   there_is_no_data_for_brokers_matching_the_name_specified_in_the_filter: string;
+  there_is_no_data_for_brokers_matching_the_specified_filters: string;
   unknown_error_occured_when_login: string;
   value_in_square_meter: string;
   we_couldnt_find_the_page_you_were_looking_for: string;
