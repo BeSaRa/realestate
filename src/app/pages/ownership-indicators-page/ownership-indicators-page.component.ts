@@ -122,8 +122,8 @@ export default class OwnershipIndicatorsPageComponent implements OnInit, AfterVi
   ownerRootKpis = [
     new KpiRoot().clone<KpiRoot & { nationalityCategoryId: number | null }>({
       id: 1,
-      arName: this.lang.getArabicTranslation('total_number_of_owners'),
-      enName: this.lang.getEnglishTranslation('total_number_of_owners'),
+      arName: this.lang.getArabicTranslation('total_number_of_properties_units'),
+      enName: this.lang.getEnglishTranslation('total_number_of_properties_units'),
       url: this.urlService.URLS.OWNER_KPI1,
       purposeUrl: this.urlService.URLS.OWNER_KPI2,
       propertyTypeUrl: this.urlService.URLS.OWNER_KPI3,
