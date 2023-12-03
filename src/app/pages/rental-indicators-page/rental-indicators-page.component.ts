@@ -1,7 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component, inject, OnDestroy, OnInit } from '@angular/core';
 
-import { ExtraHeaderComponent } from '@components/extra-header/extra-header.component';
 import { KpiRootComponent } from '@components/kpi-root/kpi-root.component';
 import { PurposeComponent } from '@components/purpose/purpose.component';
 import { TransactionsFilterComponent } from '@components/transactions-filter/transactions-filter.component';
@@ -26,6 +25,7 @@ import { TopTenChartComponent } from '@components/top-ten-chart/top-ten-chart.co
 import { YoyIndicatorComponent } from '@components/yoy-indicator/yoy-indicator.component';
 import { maskSeparator } from '@constants/mask-separator';
 import { CustomTooltipDirective } from '@directives/custom-tooltip.directive';
+import { ExtraHeaderPortalBridgeDirective } from '@directives/extra-header-portal-bridge.directive';
 import { TableColumnCellTemplateDirective } from '@directives/table-column-cell-template.directive';
 import { TableColumnHeaderTemplateDirective } from '@directives/table-column-header-template.directive';
 import { TableColumnTemplateDirective } from '@directives/table-column-template.directive';
@@ -69,7 +69,7 @@ import {
   standalone: true,
   imports: [
     CommonModule,
-    ExtraHeaderComponent,
+    ExtraHeaderPortalBridgeDirective,
     TransactionsFilterComponent,
     KpiRootComponent,
     PurposeComponent,

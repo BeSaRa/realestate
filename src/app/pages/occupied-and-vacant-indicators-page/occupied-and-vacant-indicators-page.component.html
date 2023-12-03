@@ -1,20 +1,6 @@
-<app-extra-header class="flex -mt-32 relative text-white text-center">
-  <div class="h-60 flex flex-col justify-center" id="logo-side">
-    <h1 class="text-3xl sm:text-4xl md:text-5xl font-semibold">{{ lang.map.qatar_real_estate_platform }}</h1>
-    <h2 class="text-xl sm:text-2xl md:text-3xl font-semibold">
-      {{ lang.toggleMap.qatar_real_estate_platform }} -
-      <span class="text-gray-400 font-normal">({{ lang.map.trial_run }})</span>
-    </h2>
-    <h2 class="text-xl sm:text-2xl md:text-3xl font-semibold flex flex-col gap-3 items-center">
-      <span class="text-secondary">{{ lang.map.occupied_and_vacant_units_indicators }}</span>
-    </h2>
-    <!-- <div class="flex justify-center mt-5">
-      <app-button size="md" (click)="toggleFilters()" buttonStyle="secondary" [isRounded]="true" [icon]="'FILTER_LIST'">
-        {{ lang.map.search_options }}
-      </app-button>
-    </div> -->
-  </div>
-</app-extra-header>
+<ng-container *appExtraHeaderPortal>
+  {{ lang.map.occupied_and_vacant_units_indicators }}
+</ng-container>
 
 <div class="content-wrapper">
   <div class="p-3 lg:px-16">

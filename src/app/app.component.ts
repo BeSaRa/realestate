@@ -30,6 +30,7 @@ import { UserService } from '@services/user.service';
 import '@utils/prototypes/custom-prototypes';
 import { filter, map, startWith, switchMap } from 'rxjs';
 import { SecurityService } from '@services/security.service';
+import { ExtraHeaderComponent } from '@components/extra-header/extra-header.component';
 
 @Component({
   selector: 'app-root',
@@ -39,6 +40,7 @@ import { SecurityService } from '@services/security.service';
     RouterModule,
     RouterOutlet,
     HeaderComponent,
+    ExtraHeaderComponent,
     FooterComponent,
     MatButtonModule,
     MatIconModule,

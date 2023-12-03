@@ -1,15 +1,6 @@
-<app-extra-header class="flex -mt-32 relative text-white text-center">
-  <div class="h-60 flex flex-col justify-center" id="logo-side">
-    <h1 class="text-3xl sm:text-4xl md:text-5xl font-semibold">{{ lang.map.qatar_real_estate_platform }}</h1>
-    <h2 class="text-xl sm:text-2xl md:text-3xl font-semibold">
-      {{ lang.toggleMap.qatar_real_estate_platform }} -
-      <span class="text-gray-400 font-normal">({{ lang.map.trial_run }})</span>
-    </h2>
-    <h2 class="text-xl sm:text-2xl md:text-3xl font-semibold flex flex-col gap-3 items-center">
-      <span class="text-secondary">{{ lang.map.real_estate_rent_indicators }}</span>
-    </h2>
-  </div>
-</app-extra-header>
+<ng-container *appExtraHeaderPortal>
+  {{ lang.map.real_estate_rent_indicators }}
+</ng-container>
 
 <div class="content-wrapper">
   <div class="p-3 lg:px-16">
@@ -31,7 +22,7 @@
           [ngClass]="{ active: isSelectedTab('rental_indicators') }"
           (click)="switchTab('rental_indicators')"
           class="flex-1 shadow-xl outline-none border border-secondary font-semibold px-2 py-3 lg:py-4 rounded-2xl [&.active]:bg-secondary [&.active]:text-white [&.active]:ring-2 ring-black">
-         {{ lang.map.rental_indicators }}
+          {{ lang.map.rental_indicators }}
         </button>
         <button
           [ngClass]="{ active: isSelectedTab('statistical_reports_for_rent') }"
@@ -186,13 +177,13 @@
         class="absolute hidden sm:inline right-0 -bottom-16"
         src="assets/images/forecast-images/north-big.svg"
         alt="" />
-        
+
        <app-forecasting-chart
         [title]="lang.map.predicted_rent_price + ' ' + getStringSelectedCriteria(true, false)"
         [rootData]="{ chartDataUrl: urlService.URLS.RENT_KPI_ML, hasPrice: true }"
         [filterCriteria]="criteria.criteria"
         [criteriaTerms]="forecastCriteriaTerms"
-        class="relative w-full md:w-5/6 lg:w-4/6 xl:w-7/12" /> 
+        class="relative w-full md:w-5/6 lg:w-4/6 xl:w-7/12" />
     </div>-->
     <div class="px-3 lg:px-16 py-8 flex bg-sand mt-8 flex-col">
       <h3

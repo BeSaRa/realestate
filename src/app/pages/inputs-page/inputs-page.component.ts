@@ -3,7 +3,6 @@ import { Component, inject } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
 import { ButtonComponent } from '@components/button/button.component';
-import { ExtraHeaderComponent } from '@components/extra-header/extra-header.component';
 import { InputComponent } from '@components/input/input.component';
 import { SelectInputComponent } from '@components/select-input/select-input.component';
 import { TextareaComponent } from '@components/textarea/textarea.component';
@@ -16,7 +15,6 @@ import { TranslationService } from '@services/translation.service';
   standalone: true,
   imports: [
     CommonModule,
-    ExtraHeaderComponent,
     InputComponent,
     TextareaComponent,
     ButtonComponent,
