@@ -2,7 +2,6 @@ import { CommonModule, NgOptimizedImage } from '@angular/common';
 import { Component, Input, OnDestroy, OnInit, inject } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
 import { ActivatedRoute } from '@angular/router';
-import { ExtraHeaderComponent } from '@components/extra-header/extra-header.component';
 import { IconButtonComponent } from '@components/icon-button/icon-button.component';
 import { RelatedNewsListComponent } from '@components/related-news-list/related-news-list.component';
 import { AppIcons } from '@constants/app-icons';
@@ -15,15 +14,7 @@ import { Subject, map, switchMap, takeUntil, tap } from 'rxjs';
 @Component({
   selector: 'app-news-item-details-page',
   standalone: true,
-  imports: [
-    CommonModule,
-    NgOptimizedImage,
-    ExtraHeaderComponent,
-    SafeHtmlPipe,
-    IconButtonComponent,
-    MatIconModule,
-    RelatedNewsListComponent,
-  ],
+  imports: [CommonModule, NgOptimizedImage, SafeHtmlPipe, IconButtonComponent, MatIconModule, RelatedNewsListComponent],
   templateUrl: './news-item-details-page.component.html',
   styleUrls: ['./news-item-details-page.component.scss'],
 })

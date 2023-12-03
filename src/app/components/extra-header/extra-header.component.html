@@ -24,7 +24,18 @@
     <div
       [ngClass]="{ 'clipped-header': !lang.isLtr, 'clipped-header-ltr': lang.isLtr }"
       class="bg-gradient-to-l ltr:bg-gradient-to-r from-primary/90 to-gray-800/90 absolute inset-0 bg-cover bg-center h-[450px] w-full pt-32 px-3 lg:px-10">
-      <ng-content></ng-content>
+      <div class="h-60 flex flex-col justify-center" id="logo-side">
+        <h1 class="text-3xl sm:text-4xl md:text-5xl font-semibold">{{ lang.map.qatar_real_estate_platform }}</h1>
+        <h2 class="text-xl sm:text-2xl md:text-3xl font-semibold">
+          {{ lang.toggleMap.qatar_real_estate_platform }} -
+          <span class="text-gray-400 font-normal">({{ lang.map.trial_run }})</span>
+        </h2>
+        <h2
+          *ngIf="portalService.portal$ | async as portal"
+          class="text-xl sm:text-2xl md:text-3xl font-semibold flex flex-col gap-3 items-center text-secondary">
+          <ng-container [cdkPortalOutlet]="portal"></ng-container>
+        </h2>
+      </div>
     </div>
   </div>
 </div>

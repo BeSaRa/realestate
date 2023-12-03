@@ -2,10 +2,10 @@ import { CommonModule } from '@angular/common';
 import { Component, inject } from '@angular/core';
 import { BrokerComponent } from '@components/broker/broker.component';
 import { ButtonComponent } from '@components/button/button.component';
-import { ExtraHeaderComponent } from '@components/extra-header/extra-header.component';
 import { KpiRootComponent } from '@components/kpi-root/kpi-root.component';
 import { TransactionsFilterComponent } from '@components/transactions-filter/transactions-filter.component';
 import { CriteriaContract } from '@contracts/criteria-contract';
+import { ExtraHeaderPortalBridgeDirective } from '@directives/extra-header-portal-bridge.directive';
 import { CriteriaType } from '@enums/criteria-type';
 import { Broker } from '@models/broker';
 import { KpiRoot } from '@models/kpi-root';
@@ -22,7 +22,7 @@ import { take } from 'rxjs';
   standalone: true,
   imports: [
     CommonModule,
-    ExtraHeaderComponent,
+    ExtraHeaderPortalBridgeDirective,
     TransactionsFilterComponent,
     BrokerComponent,
     KpiRootComponent,
@@ -32,7 +32,6 @@ import { take } from 'rxjs';
   styleUrls: ['./broker-indicators-page.component.scss'],
 })
 export default class BrokerIndicatorsPageComponent {
-  
   lang = inject(TranslationService);
   lookupService = inject(LookupService);
   dialog = inject(DialogService);
@@ -86,12 +85,12 @@ export default class BrokerIndicatorsPageComponent {
       .pipe(take(1))
       .subscribe((brokers) => {
         this.brokers = brokers.transactionList;
-        this. filteredBrokers = this.brokers.filter((b) => b.validateFilter(this.brokerNameFilter));
-        this.visibleBrokersCount = Math.min(this.filteredBrokers.length, this.brokersCountToFetch)
+        this.filteredBrokers = this.brokers.filter((b) => b.validateFilter(this.brokerNameFilter));
+        this.visibleBrokersCount = Math.min(this.filteredBrokers.length, this.brokersCountToFetch);
         this.brokersCount = brokers.count;
       });
   }
-  
+
   downloadBrokersList() {
     const criteriaForAll = { ...this.criteria.criteria, limit: this.brokersCount };
     delete this.criteria.criteria.limit;
@@ -99,7 +98,7 @@ export default class BrokerIndicatorsPageComponent {
       .loadBrokers(criteriaForAll)
       .pipe(take(1))
       .subscribe((res) => {
-       const brokers = res.transactionList;
+        const brokers = res.transactionList;
         const _data = this.csvService.arrayToCsv(brokers, [
           { key: this.lang.isLtr ? 'managerEnName' : 'managerArName', mapTo: this.lang.map.broker_name },
           { key: this.lang.isLtr ? 'brokerEnName' : 'brokerArName', mapTo: this.lang.map.company_name },
@@ -125,7 +124,7 @@ export default class BrokerIndicatorsPageComponent {
 
   loadMoreBrokers() {
     this.currentOffset += this.brokersCountToFetch;
-    
+
     const criteriaWithOffset = { ...this.criteria.criteria, offset: this.currentOffset };
 
     this.dashboardService
@@ -135,6 +134,6 @@ export default class BrokerIndicatorsPageComponent {
         this.brokers.push(...brokers.transactionList);
         this.filteredBrokers = this.brokers.filter((b) => b.validateFilter(this.brokerNameFilter));
       });
-      this.visibleBrokersCount += Math.min(this.brokersCountToFetch, this.filteredBrokers.length);
+    this.visibleBrokersCount += Math.min(this.brokersCountToFetch, this.filteredBrokers.length);
   }
 }

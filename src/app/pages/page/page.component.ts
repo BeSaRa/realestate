@@ -1,14 +1,13 @@
-import { Component, Input, inject } from '@angular/core';
 import { CommonModule, NgOptimizedImage } from '@angular/common';
+import { Component, Input, inject } from '@angular/core';
 import { Page } from '@models/page';
-import { ExtraHeaderComponent } from '@components/extra-header/extra-header.component';
 import { SafeHtmlPipe } from '@pipes/safe-html.pipe';
 import { TranslationService } from '@services/translation.service';
 
 @Component({
   selector: 'app-page',
   standalone: true,
-  imports: [CommonModule, NgOptimizedImage, ExtraHeaderComponent, SafeHtmlPipe],
+  imports: [CommonModule, NgOptimizedImage, SafeHtmlPipe],
   templateUrl: './page.component.html',
   styleUrls: ['./page.component.scss'],
 })

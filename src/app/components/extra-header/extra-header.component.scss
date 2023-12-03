@@ -1,3 +1,7 @@
+:host {
+  @apply flex -mt-32 relative text-white text-center;
+}
+
 .clipped-header {
   clip-path: url("#header-clip-path");
 }

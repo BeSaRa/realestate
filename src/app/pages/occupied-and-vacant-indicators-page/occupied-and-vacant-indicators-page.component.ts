@@ -4,7 +4,6 @@ import { Component, OnInit, inject } from '@angular/core';
 import { PageEvent } from '@angular/material/paginator';
 import { AreasChartComponent } from '@components/areas-chart/areas-chart.component';
 import { ButtonComponent } from '@components/button/button.component';
-import { ExtraHeaderComponent } from '@components/extra-header/extra-header.component';
 import { KpiRootComponent } from '@components/kpi-root/kpi-root.component';
 import { MunicipalitiesChartComponent } from '@components/municipalities-chart/municipalities-chart.component';
 import { PremiseTypesPopupComponent } from '@components/premise-types-popup/premise-types-popup.component';
@@ -13,6 +12,7 @@ import { StackedDurationChartComponent } from '@components/stacked-duration-char
 import { TableComponent } from '@components/table/table.component';
 import { TransactionsFilterComponent } from '@components/transactions-filter/transactions-filter.component';
 import { CriteriaContract } from '@contracts/criteria-contract';
+import { ExtraHeaderPortalBridgeDirective } from '@directives/extra-header-portal-bridge.directive';
 import { TableColumnCellTemplateDirective } from '@directives/table-column-cell-template.directive';
 import { TableColumnHeaderTemplateDirective } from '@directives/table-column-header-template.directive';
 import { TableColumnTemplateDirective } from '@directives/table-column-template.directive';
@@ -37,7 +37,7 @@ import { BehaviorSubject, Subject, combineLatest, switchMap, take, takeUntil } f
   standalone: true,
   imports: [
     CommonModule,
-    ExtraHeaderComponent,
+    ExtraHeaderPortalBridgeDirective,
     TransactionsFilterComponent,
     KpiRootComponent,
     PurposeComponent,

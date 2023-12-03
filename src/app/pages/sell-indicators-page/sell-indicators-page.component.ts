@@ -8,7 +8,6 @@ import { MatTableModule } from '@angular/material/table';
 import { SellTransactionIndicator } from '@app-types/sell-indicators-type';
 import { ButtonComponent } from '@components/button/button.component';
 import { DurationChartComponent } from '@components/duration-chart/duration-chart.component';
-import { ExtraHeaderComponent } from '@components/extra-header/extra-header.component';
 import { ForecastingChartComponent } from '@components/forecasting-chart/forecasting-chart.component';
 import { IconButtonComponent } from '@components/icon-button/icon-button.component';
 import { KpiRootComponent } from '@components/kpi-root/kpi-root.component';
@@ -20,6 +19,7 @@ import { TransactionsFilterComponent } from '@components/transactions-filter/tra
 import { YoyIndicatorComponent } from '@components/yoy-indicator/yoy-indicator.component';
 import { CriteriaContract } from '@contracts/criteria-contract';
 import { CustomTooltipDirective } from '@directives/custom-tooltip.directive';
+import { ExtraHeaderPortalBridgeDirective } from '@directives/extra-header-portal-bridge.directive';
 import { TableColumnCellTemplateDirective } from '@directives/table-column-cell-template.directive';
 import { TableColumnHeaderTemplateDirective } from '@directives/table-column-header-template.directive';
 import { TableColumnTemplateDirective } from '@directives/table-column-template.directive';
@@ -65,7 +65,7 @@ import {
   standalone: true,
   imports: [
     CommonModule,
-    ExtraHeaderComponent,
+    ExtraHeaderPortalBridgeDirective,
     TransactionsFilterComponent,
     KpiRootComponent,
     PurposeComponent,
