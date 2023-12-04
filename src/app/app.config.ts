@@ -8,7 +8,7 @@ import { MatPaginatorIntl } from '@angular/material/paginator';
 import { MAT_SNACK_BAR_DEFAULT_OPTIONS, MatSnackBarModule } from '@angular/material/snack-bar';
 import { DomSanitizer } from '@angular/platform-browser';
 import { provideAnimations } from '@angular/platform-browser/animations';
-import { NGX_COUNTUP_OPTIONS } from '@constants/injection-tokens';
+import { APP_PAGES_SECTIONS, NGX_COUNTUP_OPTIONS } from '@constants/injection-tokens';
 import { PaginatorLocal } from '@constants/paginator-local';
 import { ConfigService } from '@services/config.service';
 import { LookupService } from '@services/lookup.service';
@@ -24,6 +24,7 @@ import { TokenService } from '@services/token.service';
 import { AuthService } from '@services/auth.service';
 import { UserService } from '@services/user.service';
 import { SectionGuardService } from '@services/section-guard.service';
+import { PagesSections } from '@constants/pages-sections';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -88,6 +89,10 @@ export const appConfig: ApplicationConfig = {
       deps: [UnitsService],
       useFactory: () => () => null,
       multi: true,
+    },
+    {
+      provide: APP_PAGES_SECTIONS,
+      useValue: PagesSections,
     },
     {
       provide: RECAPTCHA_SETTINGS,

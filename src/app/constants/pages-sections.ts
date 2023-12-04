@@ -4,7 +4,7 @@ export const PagesSections = {
     PURPOSE_KPIS: 'purpose-kpis',
     PROPERTY_TYPE_KPIS: 'property-type-kpis',
     DURATION_CHART: 'duration-chart',
-    TRANSACTIONS_TABLE: 'transationcs-table',
+    TRANSACTIONS_TABLE: 'transactions-table',
 
     TOP_10_CHART: 'top-10-chart',
     PURPOSE_AND_TYPE_TABLE: 'purpose-ant-type-table',
@@ -17,7 +17,7 @@ export const PagesSections = {
     PURPOSE_KPIS: 'purpose-kpis',
     PROPERTY_TYPE_KPIS: 'property-type-kpis',
     DURATION_CHART: 'duration-chart',
-    TRANSACTIONS_TABLE: 'transationcs-table',
+    TRANSACTIONS_TABLE: 'transactions-table',
 
     TOP_10_CHART: 'top-10-chart',
     PURPOSE_AND_TYPE_TABLE: 'purpose-ant-type-table',
@@ -32,6 +32,7 @@ export const PagesSections = {
     COUNT_CHART: 'count-chart',
     UNITS_CHART: 'units-chart',
     VALUE_CHART: 'value-chart',
+    TRANSACTIONS_TABLE: 'transactions-table',
   },
 
   OWNER_PAGE: {
@@ -46,7 +47,7 @@ export const PagesSections = {
     OWNERSHIP_MUNICIPALITY_CHART: 'ownership-municipality-chart',
     OWNERSHIP_AREA_CHART: 'ownership-area-chart',
     OWNERSHIP_DURATION_CHART: 'ownership-duration-chart',
-    OWNERSHIP_TRANSACTIONS_TABLE: 'ownership-transations-table',
+    OWNERSHIP_TRANSACTIONS_TABLE: 'ownership-transactions-table',
     OWNERSHIP_PER_AGE: 'ownership-per-age',
     OWNERSHIP_PER_GENDER: 'ownership-per-gender',
     OWNERSHIP_PER_OWNER_CATEGORY: 'ownership-per-owner-category',
