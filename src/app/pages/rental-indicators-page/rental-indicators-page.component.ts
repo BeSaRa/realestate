@@ -467,6 +467,15 @@ export default class RentalIndicatorsPageComponent implements OnInit, OnDestroy 
         });
     });
 
+    if (!this.selectedRoot.criteriaTerms.validate(criteria)) {
+      for (let i = 0; i < this.rootKPIS.length; i++) {
+        if (this.rootKPIS[i].criteriaTerms.validate(criteria)) {
+          this.selectedRoot = this.rootKPIS[i];
+          break;
+        }
+      }
+    }
+
     this.rootItemSelected(this.selectedRoot);
 
     this.reload$.next();
