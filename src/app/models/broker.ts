@@ -41,8 +41,9 @@ export class Broker extends ClonerMixin(class {}) {
 
   validateFilter(name: string) {
     if (!name) return true;
+
     return (
-      this.brokerArName?.includes(name) || this.brokerEnName?.includes(name)
+      this.brokerArName?.includes(name) || this.brokerEnName?.toLowerCase().includes(name.toLowerCase())
       // || this.managerArName?.includes(name) ||
       // this.managerEnName?.includes(name)
     );
