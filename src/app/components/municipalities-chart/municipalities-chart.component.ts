@@ -48,6 +48,7 @@ export class MunicipalitiesChartComponent extends OnDestroyMixin(class {}) imple
   @Input({ required: true }) unit!: string;
   @Input({ required: true }) initialMunicipalityId!: number;
   @Input() bindDataSplitProp!: string;
+  @Input() useRentMunicipalityLookups = false;
 
   @Output() selectedMunicipalityChanged = new EventEmitter<{ municipalityId: number }>();
 
