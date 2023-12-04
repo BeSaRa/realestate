@@ -1,5 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component, inject } from '@angular/core';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { BrokerComponent } from '@components/broker/broker.component';
 import { ButtonComponent } from '@components/button/button.component';
 import { KpiRootComponent } from '@components/kpi-root/kpi-root.component';
@@ -15,7 +16,7 @@ import { DialogService } from '@services/dialog.service';
 import { LookupService } from '@services/lookup.service';
 import { TranslationService } from '@services/translation.service';
 import { UrlService } from '@services/url.service';
-import { take } from 'rxjs';
+import { finalize, take } from 'rxjs';
 
 @Component({
   selector: 'app-broker-indicators-page',
@@ -27,6 +28,7 @@ import { take } from 'rxjs';
     BrokerComponent,
     KpiRootComponent,
     ButtonComponent,
+    MatProgressSpinnerModule,
   ],
   templateUrl: './broker-indicators-page.component.html',
   styleUrls: ['./broker-indicators-page.component.scss'],
@@ -62,6 +64,7 @@ export default class BrokerIndicatorsPageComponent {
   brokersCount!: number;
   brokersCountToFetch: number = 9;
   brokerNameFilter = '';
+  isLoadingBrokers = false;
 
   filterChange({ criteria, type }: { criteria: CriteriaContract; type: CriteriaType }) {
     this.criteria = {
@@ -123,6 +126,7 @@ export default class BrokerIndicatorsPageComponent {
   }
 
   loadMoreBrokers() {
+    this.isLoadingBrokers = true;
     this.currentOffset += this.brokersCountToFetch;
 
     const criteriaWithOffset = { ...this.criteria.criteria, offset: this.currentOffset };
@@ -130,6 +134,11 @@ export default class BrokerIndicatorsPageComponent {
     this.dashboardService
       .loadBrokers(criteriaWithOffset)
       .pipe(take(1))
+      .pipe(
+        finalize(() => {
+          this.isLoadingBrokers = false;
+        })
+      )
       .subscribe((brokers) => {
         this.brokers.push(...brokers.transactionList);
         this.filteredBrokers = this.brokers.filter((b) => b.validateFilter(this.brokerNameFilter));
