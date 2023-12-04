@@ -219,8 +219,7 @@ export default class OwnershipIndicatorsPageComponent implements OnInit, AfterVi
 
   areaLabel = (item: { areaCode: number }) => this.lookupService.ownerDistrictMap[item.areaCode]?.getNames() ?? '';
 
-  nationalityLabel = (item: { nationalityId: number }) =>
-    this.lookupService.ownerNationalityMap[item.nationalityId]?.getNames() ?? '';
+  nationalityLabel = (item: { nationalityId: number }) => this.getNationalityNames(item.nationalityId);
 
   selectedNationalityId = 634;
   specialNationality = new Lookup().clone<Lookup>({ lookupKey: 82804, arName: 'أملاك دولة', enName: 'State property' });
