@@ -7,6 +7,7 @@ import {
   EventEmitter,
   Input,
   OnChanges,
+  OnInit,
   Output,
   QueryList,
   SimpleChanges,
@@ -38,13 +39,14 @@ import { QatarInteractiveMapComponent } from 'src/app/components/qatar-interacti
   templateUrl: './municipalities-chart.component.html',
   styleUrls: ['./municipalities-chart.component.scss'],
 })
-export class MunicipalitiesChartComponent extends OnDestroyMixin(class {}) implements AfterViewInit, OnChanges {
+export class MunicipalitiesChartComponent extends OnDestroyMixin(class {}) implements OnChanges, OnInit, AfterViewInit {
   @Input({ required: true }) title!: string;
   @Input({ required: true }) seriesNames!: Record<number, string>;
   @Input({ required: true }) criteria!: CriteriaContract;
   @Input({ required: true }) rootData!: { chartDataUrl: string; hasPrice: boolean };
   @Input({ required: true }) bindLabel!: string | ((item: any) => string);
   @Input({ required: true }) unit!: string;
+  @Input({ required: true }) initialMunicipalityId!: number;
   @Input() bindDataSplitProp!: string;
 
   @Output() selectedMunicipalityChanged = new EventEmitter<{ municipalityId: number }>();
@@ -63,7 +65,7 @@ export class MunicipalitiesChartComponent extends OnDestroyMixin(class {}) imple
   isUpdatingChartData = false;
   seriesData: Record<number, (KpiBaseModel & { municipalityId: number })[]> = {};
   seriesDataLength = 0;
-  selectedMunicipality = { id: 4, seriesIndex: 0, dataPointIndex: 0 };
+  selectedMunicipality = { id: 0, seriesIndex: 0, dataPointIndex: 0 };
 
   chartOptions = new ChartOptionsModel().clone<ChartOptionsModel>(this.appChartTypesService.mainChartOptions);
 
@@ -82,6 +84,10 @@ export class MunicipalitiesChartComponent extends OnDestroyMixin(class {}) imple
         this.updateChartData();
       }, 0);
     }
+  }
+
+  ngOnInit(): void {
+    this.selectedMunicipality.id = this.initialMunicipalityId;
   }
 
   ngAfterViewInit(): void {
