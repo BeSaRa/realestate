@@ -198,6 +198,7 @@ export interface LangKeysContract {
   max_value: string;
   min_value: string;
   max_length: string;
+  only_english_letters_numbers_underscores_and_hyphens : string;
 
   sort_order: string;
   most_recent: string;

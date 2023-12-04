@@ -30,6 +30,7 @@ export const validationPatterns = {
   ), // TODO!: wrong regex
   URL: new RegExp('http(s)?://(www.)?[-a-zA-Z0-9@:%._+~#=]{1,256}', 'ig'),
   HAS_LETTERS: new RegExp(/^[\u0621-\u064A0-9\u0660-\u0669\u0621-\u064Aa-zA-Z0-9]*[\u0621-\u064Aa-zA-Z ]/),
+  LDAP_USERNAME: new RegExp(/^[a-zA-Z0-9_-]*$/),
 };
 
 export type ValidationPatternType = typeof validationPatterns;
