@@ -77,6 +77,14 @@ export class TopTenChartComponent extends OnDestroyMixin(class {}) implements On
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['criteria'] && changes['criteria'].currentValue !== changes['criteria'].previousValue) {
       setTimeout(() => {
+        if (!this.selectedAccordingTo.criteriaTerms.validate(this.criteria)) {
+          for (let i = 0; i < this.accordingToList.length; i++) {
+            if (this.accordingToList[i].criteriaTerms.validate(this.criteria)) {
+              this.selectedAccordingTo = this.accordingToList[i];
+              break;
+            }
+          }
+        }
         this.updateChartData();
       }, 0);
     }
