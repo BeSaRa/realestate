@@ -139,7 +139,7 @@ export default class OccupiedAndVacantIndicatorsPageComponent extends OnDestroyM
   municipalityLabel = (item: { kpiVal: number; municipalityId: number }) =>
     this.lookupService.ovMunicipalitiesMap[item.municipalityId].getNames();
 
-  selectedMunicipalityId = 4;
+  selectedMunicipalityId = 1;
 
   areaSeriesNames: Record<number, string> = {
     [OccupationStatus.VACANT]: this.lang.map.vacant,

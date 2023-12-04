@@ -5,6 +5,7 @@ import {
   EventEmitter,
   Input,
   OnChanges,
+  OnInit,
   Output,
   QueryList,
   SimpleChanges,
@@ -32,12 +33,13 @@ import { minMaxAvg, objectHasOwnProperty } from '@utils/utils';
   templateUrl: './nationalities-chart.component.html',
   styleUrls: ['./nationalities-chart.component.scss'],
 })
-export class NationalitiesChartComponent extends OnDestroyMixin(class {}) implements OnChanges, AfterViewInit {
+export class NationalitiesChartComponent extends OnDestroyMixin(class {}) implements OnChanges, OnInit, AfterViewInit {
   @Input({ required: true }) title!: string;
   @Input({ required: true }) name!: string;
   @Input({ required: true }) criteria!: CriteriaContract;
   @Input({ required: true }) rootData!: { chartDataUrl: string; hasPrice: boolean };
   @Input({ required: true }) bindLabel!: string | ((item: any) => string);
+  @Input({ required: true }) initialNationalityId!: number;
 
   @Output() selectedNationalityChanged = new EventEmitter<{ nationalityCode: number }>();
 
@@ -54,7 +56,7 @@ export class NationalitiesChartComponent extends OnDestroyMixin(class {}) implem
   isUpdatingChartData = false;
   seriesData: (KpiBaseModel & { nationalityCode: number })[] = [];
   seriesDataLength = 0;
-  selectedNationality = { id: 634, seriesIndex: 0, dataPointIndex: 0 };
+  selectedNationality = { id: 0, seriesIndex: 0, dataPointIndex: 0 };
 
   chartOptions = new ChartOptionsModel().clone<ChartOptionsModel>(this.appChartTypesService.mainChartOptions);
 
@@ -69,6 +71,10 @@ export class NationalitiesChartComponent extends OnDestroyMixin(class {}) implem
         this.updateChartData();
       }, 0);
     }
+  }
+
+  ngOnInit(): void {
+    this.selectedNationality.id = this.initialNationalityId;
   }
 
   ngAfterViewInit(): void {
