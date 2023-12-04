@@ -16,6 +16,7 @@ import { CriteriaContract } from '@contracts/criteria-contract';
 import { ControlDirective } from '@directives/control.directive';
 import { InputPrefixDirective } from '@directives/input-prefix.directive';
 import { InputSuffixDirective } from '@directives/input-suffix.directive';
+import { OnlyCurrentLangLettersDirective } from '@directives/only-current-lang-letters.directive';
 import { CriteriaType } from '@enums/criteria-type';
 import { Durations } from '@enums/durations';
 import { HalfYearDurations } from '@enums/half-year-durations';
@@ -53,6 +54,7 @@ import { Subject, debounceTime, filter, map, takeUntil, tap } from 'rxjs';
     InputSuffixDirective,
     ControlDirective,
     NgxMaskDirective,
+    OnlyCurrentLangLettersDirective,
   ],
   providers: [DatePipe, ...ngResizeObserverProviders],
   templateUrl: './transactions-filter.component.html',
