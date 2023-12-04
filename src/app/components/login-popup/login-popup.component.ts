@@ -42,8 +42,8 @@ export class LoginPopupComponent {
   dialogRef = inject(MatDialogRef);
 
   form = this.fb.group({
-    identifier: ['', [CustomValidators.required]],
-    password: ['', [CustomValidators.required]],
+    identifier: ['', [CustomValidators.required, CustomValidators.maxLength(50), CustomValidators.pattern("LDAP_USERNAME")]],
+    password: ['', [CustomValidators.required, CustomValidators.maxLength(50)]],
   });
 
   invalidCredentials = false;
