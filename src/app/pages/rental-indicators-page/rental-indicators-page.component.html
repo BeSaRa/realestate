@@ -34,7 +34,7 @@
     </div>
   </div>
   <div *ngIf="isSelectedTab('rental_indicators')" class="flex flex-col">
-    <div class="py-16 px-3 lg:px-16">
+    <div *appSectionGuard="pageSections.ROOT_KPIS" class="py-16 px-3 lg:px-16">
       <div class="flex flex-col">
         <h3
           class="heading text-xl sm:text-2xl md:text-3xl self-center md:self-start text-center text-primary border-secondary font-semibold">
@@ -62,45 +62,47 @@
     </div>
     <div class="bg-sand py-16 px-3 lg:px-16">
       <div class="flex flex-col justify-center items-center">
-        <h3
-          *ngIf="selectedRoot"
-          class="heading text-xl sm:text-2xl md:text-3xl self-center text-center text-primary border-secondary font-semibold">
-          {{ selectedRoot.getNames() }} ({{ lang.map.depending_on_use }}) {{ getStringSelectedCriteria() }}
-        </h3>
+        <ng-container *appSectionGuard="pageSections.PURPOSE_KPIS">
+          <h3
+            *ngIf="selectedRoot"
+            class="heading text-xl sm:text-2xl md:text-3xl self-center text-center text-primary border-secondary font-semibold">
+            {{ selectedRoot.getNames() }} ({{ lang.map.depending_on_use }}) {{ getStringSelectedCriteria() }}
+          </h3>
 
-        <div class="mt-4 sm:hidden w-full grid grid-cols-2 gap-2 overflow-hidden">
-          <ng-container *ngFor="let item of purposeKPIS; let i = index">
+          <div class="mt-4 sm:hidden w-full grid grid-cols-2 gap-2 overflow-hidden">
+            <ng-container *ngFor="let item of purposeKPIS; let i = index">
+              <app-purpose
+                [item]="item"
+                (click)="purposeSelected(item)"
+                class="border-2 rounded-xl overflow-hidden xl:border-0 xl:rounded-none xl:border-e-2 border-secondary xl:last-of-type:border-e-0" />
+            </ng-container>
+          </div>
+          <div
+            class="mt-4 w-full hidden sm:grid grid-cols-3 xl:grid-cols-6 border-2 border-secondary overflow-hidden rounded-xl">
             <app-purpose
+              *ngFor="let item of purposeKPIS; let i = index"
               [item]="item"
               (click)="purposeSelected(item)"
-              class="border-2 rounded-xl overflow-hidden xl:border-0 xl:rounded-none xl:border-e-2 border-secondary xl:last-of-type:border-e-0" />
-          </ng-container>
-        </div>
-        <div
-          class="mt-4 w-full hidden sm:grid grid-cols-3 xl:grid-cols-6 border-2 border-secondary overflow-hidden rounded-xl">
-          <app-purpose
-            *ngFor="let item of purposeKPIS; let i = index"
-            [item]="item"
-            (click)="purposeSelected(item)"
-            class="xl:border-e-2 border-secondary last-of-type:border-e-0 {{
-              i > 2 ? 'border-t-2 xl:border-t-0' : ''
-            }} {{ i % 3 === 2 ? 'border-e-0 xl:border-e-2' : 'border-e-2' }}" />
-        </div>
+              class="xl:border-e-2 border-secondary last-of-type:border-e-0 {{
+                i > 2 ? 'border-t-2 xl:border-t-0' : ''
+              }} {{ i % 3 === 2 ? 'border-e-0 xl:border-e-2' : 'border-e-2' }}" /></div
+        ></ng-container>
 
-        <h3
-          *ngIf="selectedRoot"
-          class="heading mt-20 text-xl sm:text-2xl md:text-3xl self-center text-center text-primary border-secondary font-semibold">
-          {{ selectedRoot.getNames() }} ({{ lang.map.depending_on_type }}) {{ getStringSelectedCriteria() }}
-        </h3>
-        <div class="mt-4 w-full sm:w-5/6 lg:w-11/12" dir="ltr">
-          <app-property-carousel
-            [properties]="propertiesKPIS"
-            useAssetsFrom="rent"
-            [ignoreLocalImages]="true"></app-property-carousel>
-        </div>
+        <ng-container *appSectionGuard="pageSections.PROPERTY_TYPE_KPIS">
+          <h3
+            *ngIf="selectedRoot"
+            class="heading mt-20 text-xl sm:text-2xl md:text-3xl self-center text-center text-primary border-secondary font-semibold">
+            {{ selectedRoot.getNames() }} ({{ lang.map.depending_on_type }}) {{ getStringSelectedCriteria() }}
+          </h3>
+          <div class="mt-4 w-full sm:w-5/6 lg:w-11/12" dir="ltr">
+            <app-property-carousel
+              [properties]="propertiesKPIS"
+              useAssetsFrom="rent"
+              [ignoreLocalImages]="true"></app-property-carousel></div
+        ></ng-container>
       </div>
     </div>
-    <div class="py-16 px-3 lg:px-16">
+    <div *appSectionGuard="pageSections.DURATION_CHART" class="py-16 px-3 lg:px-16">
       <app-duration-chart
         (isMonthltyDurationTypeEvent)="isMonthlyDurationType($event)"
         [title]="selectedRoot.getNames() + ' ' + getStringSelectedCriteria(true, isMonthlyDuration)"
@@ -108,7 +110,7 @@
         [criteria]="criteria.criteria"
         [rootData]="selectedRoot"></app-duration-chart>
     </div>
-    <div class="px-3 lg:px-16 flex flex-col gap-4">
+    <div *appSectionGuard="pageSections.TRANSACTIONS_TABLE.name" class="px-3 lg:px-16 flex flex-col gap-4">
       <h3
         class="heading text-xl sm:text-2xl md:text-3xl self-center md:self-start text-center text-primary border-secondary font-semibold">
         {{ lang.map.rent_transactions_list }} {{ getStringSelectedCriteria() }}
@@ -121,7 +123,8 @@
         [length]="transactionsCount"
         [dataSource]="dataSource"
         [sortOptions]="[]"
-        [defaultSortOption]="transactionsSortOptions[0]">
+        [defaultSortOption]="transactionsSortOptions[0]"
+        [tableGuardName]="pageSections.TRANSACTIONS_TABLE.name">
         <ng-container appTableColumnTemplate [columnName]="pageSections.TRANSACTIONS_TABLE.columns.MUNICIPALITY"
           ><span *appTableColumnHeaderTemplate>{{ lang.map.municipal }}</span
           ><span *appTableColumnCellTemplate="let item; typeOf: transactions$">{{
@@ -167,7 +170,7 @@
   </div>
   <div *ngIf="isSelectedTab('statistical_reports_for_rent')" class="flex flex-col">
     <!-- Temporarly hide forecasting chart -->
-    <!--<div class="relative px-3 lg:px-16 flex flex-col justify-center items-center">
+    <!--<div *appSectionGuard="pageSections.FORECASTING_CHART" class="relative px-3 lg:px-16 flex flex-col justify-center items-center">
       <img
         class="absolute hidden sm:inline left-0 -bottom-16"
         src="assets/images/forecast-images/all-properties.svg"
@@ -185,7 +188,7 @@
         [criteriaTerms]="forecastCriteriaTerms"
         class="relative w-full md:w-5/6 lg:w-4/6 xl:w-7/12" />
     </div>-->
-    <div class="px-3 lg:px-16 py-8 flex bg-sand mt-8 flex-col">
+    <div *appSectionGuard="pageSections.PURPOSE_AND_TYPE_TABLE" class="px-3 lg:px-16 py-8 flex bg-sand mt-8 flex-col">
       <h3
         class="heading text-xl sm:text-2xl md:text-3xl self-center md:self-start text-center text-primary border-secondary font-semibold">
         {{ lang.map.rental_indicators }} {{ getStringSelectedCriteria() }}
@@ -317,7 +320,7 @@
       </div>
     </div>
 
-    <div class="px-3 lg:px-16">
+    <div *appSectionGuard="pageSections.TOP_10_CHART" class="px-3 lg:px-16">
       <app-top-ten-chart
         [title]="lang.map.top_10_areas + ' ' + getStringSelectedCriteria(false)"
         [criteria]="criteria.criteria"
@@ -325,7 +328,7 @@
         [selectedAccordingTo]="accordingToList[0]"
         [bindLabel]="top10Label"></app-top-ten-chart>
     </div>
-    <div class="px-3 lg:px-16 bg-sand py-5">
+    <div *appSectionGuard="pageSections.COMPOSITE_TABLE" class="px-3 lg:px-16 bg-sand py-5">
       <div class="overflow-x-auto">
         <table
           class="custom-table p-5 w-full !bg-sand"
@@ -491,17 +494,11 @@
             <td class="p-4" colspan="100">{{ lang.map.no_records_to_display }}</td>
           </tr>
         </table>
-
-        <ng-template #tooltipTemplate let-terms>
-          <div class="bg-black/80 text-white text-xs p-2 rounded-md">
-            <p class="font-bold">{{ lang.map.filter_values_should_be_as_follows }}:</p>
-            <p *ngFor="let term of terms">- {{ term }}</p>
-          </div>
-        </ng-template>
       </div>
     </div>
     <div class="px-3 lg:px-16 grid grid-cols-1 lg:grid-cols-2 gap-2">
       <app-pie-chart
+        *appSectionGuard="pageSections.RENT_PER_BEDROOMS"
         [title]="lang.map.rent_contracts_count_according_to_bedrooms + ' ' + getStringSelectedCriteria()"
         [criteria]="criteria.criteria"
         [rootData]="roomsRootData"
@@ -510,6 +507,7 @@
         [valueUnit]="lang.map.contract" />
 
       <app-pie-chart
+        *appSectionGuard="pageSections.RENT_PER_FURNITURE"
         [title]="lang.map.rent_contracts_count_according_to_furniture + ' ' + getStringSelectedCriteria()"
         [criteria]="criteria.criteria"
         [rootData]="furnitureRootData"
@@ -519,3 +517,10 @@
     </div>
   </div>
 </div>
+
+<ng-template #tooltipTemplate let-terms>
+  <div class="bg-black/80 text-white text-xs p-2 rounded-md">
+    <p class="font-bold">{{ lang.map.filter_values_should_be_as_follows }}:</p>
+    <p *ngFor="let term of terms">- {{ term }}</p>
+  </div>
+</ng-template>

@@ -33,7 +33,7 @@
     </div>
   </div>
   <div *ngIf="isSelectedTab('owner_indicators')" class="flex flex-col">
-    <div class="py-16 px-3 lg:px-16">
+    <div *appSectionGuard="pageSections.OWNER_ROOT_KPIS" class="py-16 px-3 lg:px-16">
       <div class="flex flex-col">
         <h3
           class="heading text-xl sm:text-2xl md:text-3xl self-center md:self-start text-center text-primary border-secondary font-semibold">
@@ -53,49 +53,50 @@
     </div>
     <div class="bg-sand py-16 px-3 lg:px-16">
       <div class="flex flex-col justify-center items-center">
-        <h3
-          *ngIf="selectedOwnerRoot"
-          class="heading text-xl sm:text-2xl md:text-3xl self-center text-center text-primary border-secondary font-semibold">
-          {{ selectedOwnerRoot.getNames() }} ({{ lang.map.depending_on_use }})
-          {{ getStringSelectedCriteria() }}
-        </h3>
+        <ng-container *appSectionGuard="pageSections.OWNER_PURPOSE_KPIS">
+          <h3
+            *ngIf="selectedOwnerRoot"
+            class="heading text-xl sm:text-2xl md:text-3xl self-center text-center text-primary border-secondary font-semibold">
+            {{ selectedOwnerRoot.getNames() }} ({{ lang.map.depending_on_use }})
+            {{ getStringSelectedCriteria() }}
+          </h3>
 
-        <div class="mt-4 sm:hidden w-full grid grid-cols-2 gap-2 overflow-hidden">
-          <ng-container *ngFor="let item of purposeKPIS; let i = index">
+          <div class="mt-4 sm:hidden w-full grid grid-cols-2 gap-2 overflow-hidden">
+            <ng-container *ngFor="let item of purposeKPIS; let i = index">
+              <app-purpose
+                [item]="item"
+                [showYoy]="false"
+                (click)="purposeSelected(item)"
+                class="border-2 rounded-xl overflow-hidden xl:border-0 xl:rounded-none xl:border-e-2 border-secondary xl:last-of-type:border-e-0" />
+            </ng-container>
+          </div>
+          <div
+            class="mt-4 w-full hidden sm:grid grid-cols-3 xl:grid-cols-6 border-2 border-secondary overflow-hidden rounded-xl">
             <app-purpose
+              *ngFor="let item of purposeKPIS; let i = index"
               [item]="item"
               [showYoy]="false"
               (click)="purposeSelected(item)"
-              class="border-2 rounded-xl overflow-hidden xl:border-0 xl:rounded-none xl:border-e-2 border-secondary xl:last-of-type:border-e-0" />
-          </ng-container>
-        </div>
-        <div
-          class="mt-4 w-full hidden sm:grid grid-cols-3 xl:grid-cols-6 border-2 border-secondary overflow-hidden rounded-xl">
-          <app-purpose
-            *ngFor="let item of purposeKPIS; let i = index"
-            [item]="item"
-            [showYoy]="false"
-            (click)="purposeSelected(item)"
-            class="xl:border-e-2 border-secondary last-of-type:border-e-0 {{
-              i > 2 ? 'border-t-2 xl:border-t-0' : ''
-            }} {{ i % 3 === 2 ? 'border-e-0 xl:border-e-2' : 'border-e-2' }}" />
-        </div>
-
-        <h3
-          *ngIf="selectedOwnerRoot"
-          class="heading mt-20 text-xl sm:text-2xl md:text-3xl self-center text-center text-primary border-secondary font-semibold">
-          {{ selectedOwnerRoot.getNames() }} ({{ lang.map.depending_on_type }}) {{ getStringSelectedCriteria() }}
-        </h3>
-        <div class="mt-4 w-full sm:w-5/6 lg:w-11/12" dir="ltr">
-          <app-property-carousel
-            [properties]="propertiesKPIS"
-            useAssetsFrom="sell"
-            [ignoreLocalImages]="true"
-            [showYoy]="false"></app-property-carousel>
-        </div>
+              class="xl:border-e-2 border-secondary last-of-type:border-e-0 {{
+                i > 2 ? 'border-t-2 xl:border-t-0' : ''
+              }} {{ i % 3 === 2 ? 'border-e-0 xl:border-e-2' : 'border-e-2' }}" /></div
+        ></ng-container>
+        <ng-container *appSectionGuard="pageSections.OWNER_PROPERTY_TYPE_KPIS">
+          <h3
+            *ngIf="selectedOwnerRoot"
+            class="heading mt-20 text-xl sm:text-2xl md:text-3xl self-center text-center text-primary border-secondary font-semibold">
+            {{ selectedOwnerRoot.getNames() }} ({{ lang.map.depending_on_type }}) {{ getStringSelectedCriteria() }}
+          </h3>
+          <div class="mt-4 w-full sm:w-5/6 lg:w-11/12" dir="ltr">
+            <app-property-carousel
+              [properties]="propertiesKPIS"
+              useAssetsFrom="sell"
+              [ignoreLocalImages]="true"
+              [showYoy]="false"></app-property-carousel></div
+        ></ng-container>
       </div>
     </div>
-    <div class="py-5 px-3 lg:px-16">
+    <div *appSectionGuard="pageSections.OWNER_MUNICIPALITY_CHART" class="py-5 px-3 lg:px-16">
       <app-municipalities-chart
         [title]="selectedOwnerRoot.getNames() + ' ' + lang.map.per_municipality"
         [seriesNames]="ownerMunicipalitySeriesNames"
@@ -110,7 +111,7 @@
         (selectedMunicipalityChanged)="updateOwnerAreasChartCriteria($event.municipalityId)" />
     </div>
 
-    <div class="py-5 px-3 lg:px-16">
+    <div *appSectionGuard="pageSections.OWNER_AREA_CHART" class="py-5 px-3 lg:px-16">
       <app-areas-chart
         [title]="
           selectedOwnerRoot.getNames() +
@@ -130,7 +131,7 @@
     </div>
   </div>
   <div *ngIf="isSelectedTab('ownership_indicators')" class="flex flex-col">
-    <div class="py-16 px-3 lg:px-16">
+    <div *appSectionGuard="pageSections.OWNERSHIP_ROOT_KPIS" class="py-16 px-3 lg:px-16">
       <div class="flex flex-col">
         <h3
           class="heading text-xl sm:text-2xl md:text-3xl self-center md:self-start text-center text-primary border-secondary font-semibold">
@@ -148,7 +149,7 @@
         </div>
       </div>
     </div>
-    <div class="mt-8 px-3 lg:px-16">
+    <div *appSectionGuard="pageSections.OWNERSHIP_NATIONALITY_CHART" class="mt-8 px-3 lg:px-16">
       <app-nationalities-chart
         [title]="lang.map.distribution_of_ownerships_according_to_nationality"
         [name]="lang.map.ownerships_count"
@@ -159,7 +160,7 @@
         (selectedNationalityChanged)="onSelectedNationalityChanged($event.nationalityCode)" />
     </div>
 
-    <div class="py-5 px-3 lg:px-16">
+    <div *appSectionGuard="pageSections.OWNERSHIP_MUNICIPALITY_CHART" class="py-5 px-3 lg:px-16">
       <app-municipalities-chart
         [title]="lang.map.ownerships_count_per_municipality + ' (' + getNationalityNames(selectedNationalityId) + ')'"
         [seriesNames]="ownershipMunicipalitySeriesNames"
@@ -171,7 +172,7 @@
         (selectedMunicipalityChanged)="updateOwnershipAreasChartCriteria($event.municipalityId)" />
     </div>
 
-    <div class="py-5 px-3 lg:px-16">
+    <div *appSectionGuard="pageSections.OWNERSHIP_AREA_CHART" class="py-5 px-3 lg:px-16">
       <app-areas-chart
         [title]="
           lang.map.ownerships_count_per_area +
@@ -189,7 +190,7 @@
         [bindLabel]="areaLabel" />
     </div>
 
-    <div class="px-3 lg:px-16 flex flex-col">
+    <div *appSectionGuard="pageSections.OWNERSHIP_DURATION_CHART" class="px-3 lg:px-16 flex flex-col">
       <app-duration-chart
         [title]="
           lang.map.ownerships_count_change_for_nationality + ' (' + getNationalityNames(selectedNationalityId) + ')'
@@ -200,84 +201,96 @@
         [showSelectChartType]="false" />
     </div>
 
-    <div *ngIf="selectedNationalityId !== specialNationality.lookupKey" class="px-3 lg:px-16 flex flex-col gap-4">
-      <h3
-        class="heading text-xl sm:text-2xl md:text-3xl self-center md:self-start text-center text-primary border-secondary font-semibold">
-        {{ lang.map.ownerships_transactions_list }} ({{ getNationalityNames(selectedNationalityId) }})
-      </h3>
+    <ng-container *ngIf="selectedNationalityId !== specialNationality.lookupKey">
+      <div *appSectionGuard="pageSections.OWNERSHIP_TRANSACTIONS_TABLE.name" class="px-3 lg:px-16 flex flex-col gap-4">
+        <h3
+          class="heading text-xl sm:text-2xl md:text-3xl self-center md:self-start text-center text-primary border-secondary font-semibold">
+          {{ lang.map.ownerships_transactions_list }} ({{ getNationalityNames(selectedNationalityId) }})
+        </h3>
 
-      <app-table
-        minWidth="900px"
-        headerBgColor="!bg-secondary"
-        (paginate)="paginate($event)"
-        [length]="transactionsCount"
-        [dataSource]="dataSource"
-        [sortOptions]="[]">
-        <ng-container
-          appTableColumnTemplate
-          [columnName]="pageSections.OWNERSHIP_TRANSACTIONS_TABLE.columns.UNIT_NUMBER">
-          <span *appTableColumnHeaderTemplate class="flex justify-center"> {{ lang.map.unit_parcel_no }} </span>
-          <span *appTableColumnCellTemplate="let item; typeOf: transactions$" class="flex justify-center">
-            {{ item.unitNumber }}
-          </span>
-        </ng-container>
-        <ng-container
-          appTableColumnTemplate
-          [columnName]="pageSections.OWNERSHIP_TRANSACTIONS_TABLE.columns.OWNER_NAME">
-          <span *appTableColumnHeaderTemplate class="flex justify-center"> {{ lang.map.owner_name }} </span>
-          <span *appTableColumnCellTemplate="let item; typeOf: transactions$" class="flex justify-center">
-            {{ item.ownerName || "---" }}
-          </span>
-        </ng-container>
-        <ng-container appTableColumnTemplate [columnName]="pageSections.OWNERSHIP_TRANSACTIONS_TABLE.columns.OWNER_ID">
-          <span *appTableColumnHeaderTemplate class="flex justify-center"> {{ lang.map.owner_id }} </span>
-          <span *appTableColumnCellTemplate="let item; typeOf: transactions$" class="flex justify-center">
-            {{ item.getqId || "---" }}
-          </span>
-        </ng-container>
-        <ng-container
-          appTableColumnTemplate
-          [columnName]="pageSections.OWNERSHIP_TRANSACTIONS_TABLE.columns.OWNER_SHARES">
-          <span *appTableColumnHeaderTemplate class="flex justify-center"> {{ lang.map.owner_shares }} </span>
-          <span *appTableColumnCellTemplate="let item; typeOf: transactions$" class="flex justify-center">
-            {{ item.ownerShares | number }}
-          </span>
-        </ng-container>
-        <ng-container
-          appTableColumnTemplate
-          [columnName]="pageSections.OWNERSHIP_TRANSACTIONS_TABLE.columns.DOC_DESCRIPTION">
-          <span *appTableColumnHeaderTemplate class="flex justify-center"> {{ lang.map.doc_description }} </span>
-          <span *appTableColumnCellTemplate="let item; typeOf: transactions$" class="flex justify-center">
-            {{ item.docDescription || "---" }}
-          </span>
-        </ng-container>
-        <ng-container appTableColumnTemplate [columnName]="pageSections.OWNERSHIP_TRANSACTIONS_TABLE.columns.DOC_DATE">
-          <span *appTableColumnHeaderTemplate class="flex justify-center"> {{ lang.map.doc_date }} </span>
-          <span *appTableColumnCellTemplate="let item; typeOf: transactions$" class="flex justify-center">
-            {{ item.docDate | date : "YYYY-MM-dd" }}
-          </span>
-        </ng-container>
-      </app-table>
-    </div>
+        <app-table
+          minWidth="900px"
+          headerBgColor="!bg-secondary"
+          (paginate)="paginate($event)"
+          [length]="transactionsCount"
+          [dataSource]="dataSource"
+          [sortOptions]="[]"
+          [tableGuardName]="pageSections.OWNERSHIP_TRANSACTIONS_TABLE.name">
+          <ng-container
+            appTableColumnTemplate
+            [columnName]="pageSections.OWNERSHIP_TRANSACTIONS_TABLE.columns.UNIT_NUMBER">
+            <span *appTableColumnHeaderTemplate class="flex justify-center"> {{ lang.map.unit_parcel_no }} </span>
+            <span *appTableColumnCellTemplate="let item; typeOf: transactions$" class="flex justify-center">
+              {{ item.unitNumber }}
+            </span>
+          </ng-container>
+          <ng-container
+            appTableColumnTemplate
+            [columnName]="pageSections.OWNERSHIP_TRANSACTIONS_TABLE.columns.OWNER_NAME">
+            <span *appTableColumnHeaderTemplate class="flex justify-center"> {{ lang.map.owner_name }} </span>
+            <span *appTableColumnCellTemplate="let item; typeOf: transactions$" class="flex justify-center">
+              {{ item.ownerName || "---" }}
+            </span>
+          </ng-container>
+          <ng-container
+            appTableColumnTemplate
+            [columnName]="pageSections.OWNERSHIP_TRANSACTIONS_TABLE.columns.OWNER_ID">
+            <span *appTableColumnHeaderTemplate class="flex justify-center"> {{ lang.map.owner_id }} </span>
+            <span *appTableColumnCellTemplate="let item; typeOf: transactions$" class="flex justify-center">
+              {{ item.getqId || "---" }}
+            </span>
+          </ng-container>
+          <ng-container
+            appTableColumnTemplate
+            [columnName]="pageSections.OWNERSHIP_TRANSACTIONS_TABLE.columns.OWNER_SHARES">
+            <span *appTableColumnHeaderTemplate class="flex justify-center"> {{ lang.map.owner_shares }} </span>
+            <span *appTableColumnCellTemplate="let item; typeOf: transactions$" class="flex justify-center">
+              {{ item.ownerShares | number }}
+            </span>
+          </ng-container>
+          <ng-container
+            appTableColumnTemplate
+            [columnName]="pageSections.OWNERSHIP_TRANSACTIONS_TABLE.columns.DOC_DESCRIPTION">
+            <span *appTableColumnHeaderTemplate class="flex justify-center"> {{ lang.map.doc_description }} </span>
+            <span *appTableColumnCellTemplate="let item; typeOf: transactions$" class="flex justify-center">
+              {{ item.docDescription || "---" }}
+            </span>
+          </ng-container>
+          <ng-container
+            appTableColumnTemplate
+            [columnName]="pageSections.OWNERSHIP_TRANSACTIONS_TABLE.columns.DOC_DATE">
+            <span *appTableColumnHeaderTemplate class="flex justify-center"> {{ lang.map.doc_date }} </span>
+            <span *appTableColumnCellTemplate="let item; typeOf: transactions$" class="flex justify-center">
+              {{ item.docDate | date : "YYYY-MM-dd" }}
+            </span>
+          </ng-container>
+        </app-table>
+      </div></ng-container
+    >
 
     <div
       class="mt-8 py-8 px-3 lg:px-16 bg-sand flex justify-center items-center flex-wrap [&>*]:min-w-[95%] lg:[&>*]:min-w-[45%] [&>*]:max-w-[100%] lg:[&>*]:max-w-[50%] [&>*]:flex-1 gap-2">
-      <app-pie-chart
-        *ngIf="selectedNationalityId !== specialNationality.lookupKey"
-        [title]="lang.map.ownerships_count_per_owner_age + ' (' + getNationalityNames(selectedNationalityId) + ')'"
-        [criteria]="nationalityCriteria"
-        [rootData]="ageCategoryRootData"
-        [bindLabel]="ageCategoryLabel"
-        [valueUnit]="lang.map.ownership" />
-      <app-pie-chart
-        *ngIf="selectedNationalityId !== specialNationality.lookupKey"
-        [title]="lang.map.ownerships_count_per_owner_sex + ' (' + getNationalityNames(selectedNationalityId) + ')'"
-        [criteria]="nationalityCriteria"
-        [rootData]="genderRootData"
-        [bindLabel]="genderLabel"
-        [valueUnit]="lang.map.ownership" />
+      <ng-container *ngIf="selectedNationalityId !== specialNationality.lookupKey">
+        <app-pie-chart
+          *appSectionGuard="pageSections.OWNERSHIP_PER_AGE"
+          [title]="lang.map.ownerships_count_per_owner_age + ' (' + getNationalityNames(selectedNationalityId) + ')'"
+          [criteria]="nationalityCriteria"
+          [rootData]="ageCategoryRootData"
+          [bindLabel]="ageCategoryLabel"
+          [valueUnit]="lang.map.ownership"
+      /></ng-container>
+      <ng-container *ngIf="selectedNationalityId !== specialNationality.lookupKey">
+        <app-pie-chart
+          *appSectionGuard="pageSections.OWNERSHIP_PER_GENDER"
+          [title]="lang.map.ownerships_count_per_owner_sex + ' (' + getNationalityNames(selectedNationalityId) + ')'"
+          [criteria]="nationalityCriteria"
+          [rootData]="genderRootData"
+          [bindLabel]="genderLabel"
+          [valueUnit]="lang.map.ownership"
+      /></ng-container>
       <app-pie-chart
         [title]="lang.map.ownerships_count_per_owner_category_summary"
+        *appSectionGuard="pageSections.OWNERSHIP_PER_OWNER_CATEGORY"
         [criteria]="criteria.criteria"
         [rootData]="ownerTypeRootData"
         [bindLabel]="ownerTypeLabel"

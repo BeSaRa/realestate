@@ -34,8 +34,8 @@
     </div>
   </div>
   <div *ngIf="isSelectedTab('sell_indicators')" class="flex flex-col">
-    <div class="py-16 px-3 lg:px-16">
-      <div *appSectionGuard="pageSections.ROOT_KPIS" class="flex flex-col">
+    <div *appSectionGuard="pageSections.ROOT_KPIS" class="py-16 px-3 lg:px-16">
+      <div class="flex flex-col">
         <h3
           class="heading text-xl sm:text-2xl md:text-3xl self-center md:self-start text-center text-primary border-secondary font-semibold">
           {{ lang.map.sell_transactions_measuring_dashboard }} {{ getStringSelectedCriteria() }}
@@ -62,46 +62,48 @@
     </div>
     <div class="bg-sand py-16 px-3 lg:px-16">
       <div class="flex flex-col justify-center items-center">
-        <h3
-          *ngIf="selectedRoot"
-          class="heading text-xl sm:text-2xl md:text-3xl self-center text-center text-primary border-secondary font-semibold">
-          {{ selectedRoot.getNames() }} ({{ lang.map.depending_on_use }}) {{ getStringSelectedCriteria() }}
-        </h3>
+        <ng-container *appSectionGuard="pageSections.PURPOSE_KPIS">
+          <h3
+            *ngIf="selectedRoot"
+            class="heading text-xl sm:text-2xl md:text-3xl self-center text-center text-primary border-secondary font-semibold">
+            {{ selectedRoot.getNames() }} ({{ lang.map.depending_on_use }}) {{ getStringSelectedCriteria() }}
+          </h3>
 
-        <div class="mt-4 sm:hidden w-full grid grid-cols-2 gap-2 overflow-hidden">
-          <ng-container *ngFor="let item of purposeKPIS; let i = index">
+          <div class="mt-4 sm:hidden w-full grid grid-cols-2 gap-2 overflow-hidden">
+            <ng-container *ngFor="let item of purposeKPIS; let i = index">
+              <app-purpose
+                [item]="item"
+                (click)="purposeSelected(item)"
+                class="border-2 rounded-xl overflow-hidden xl:border-0 xl:rounded-none xl:border-e-2 border-secondary xl:last-of-type:border-e-0" />
+            </ng-container>
+          </div>
+          <div
+            class="mt-4 w-full hidden sm:grid grid-cols-3 xl:grid-cols-6 border-2 border-secondary overflow-hidden rounded-xl">
             <app-purpose
+              *ngFor="let item of purposeKPIS; let i = index"
               [item]="item"
               (click)="purposeSelected(item)"
-              class="border-2 rounded-xl overflow-hidden xl:border-0 xl:rounded-none xl:border-e-2 border-secondary xl:last-of-type:border-e-0" />
-          </ng-container>
-        </div>
-        <div
-          class="mt-4 w-full hidden sm:grid grid-cols-3 xl:grid-cols-6 border-2 border-secondary overflow-hidden rounded-xl">
-          <app-purpose
-            *ngFor="let item of purposeKPIS; let i = index"
-            [item]="item"
-            (click)="purposeSelected(item)"
-            class="xl:border-e-2 border-secondary last-of-type:border-e-0 {{
-              i > 2 ? 'border-t-2 xl:border-t-0' : ''
-            }} {{ i % 3 === 2 ? 'border-e-0 xl:border-e-2' : 'border-e-2' }}" />
-        </div>
-
-        <h3
-          *ngIf="selectedRoot"
-          class="heading mt-20 text-xl sm:text-2xl md:text-3xl self-center text-center text-primary border-secondary font-semibold">
-          {{ selectedRoot.getNames() }} ({{ lang.map.depending_on_type }}) {{ getStringSelectedCriteria() }}
-        </h3>
-        <div class="mt-4 w-full sm:w-5/6 lg:w-11/12" dir="ltr">
-          <app-property-carousel
-            [properties]="propertiesKPIS"
-            useAssetsFrom="sell"
-            [ignoreLocalImages]="true"></app-property-carousel>
-        </div>
+              class="xl:border-e-2 border-secondary last-of-type:border-e-0 {{
+                i > 2 ? 'border-t-2 xl:border-t-0' : ''
+              }} {{ i % 3 === 2 ? 'border-e-0 xl:border-e-2' : 'border-e-2' }}" />
+          </div>
+        </ng-container>
+        <ng-container *appSectionGuard="pageSections.PROPERTY_TYPE_KPIS">
+          <h3
+            *ngIf="selectedRoot"
+            class="heading mt-20 text-xl sm:text-2xl md:text-3xl self-center text-center text-primary border-secondary font-semibold">
+            {{ selectedRoot.getNames() }} ({{ lang.map.depending_on_type }}) {{ getStringSelectedCriteria() }}
+          </h3>
+          <div class="mt-4 w-full sm:w-5/6 lg:w-11/12" dir="ltr">
+            <app-property-carousel
+              [properties]="propertiesKPIS"
+              useAssetsFrom="sell"
+              [ignoreLocalImages]="true"></app-property-carousel></div
+        ></ng-container>
       </div>
     </div>
 
-    <div class="py-16 px-3 lg:px-16">
+    <div *appSectionGuard="pageSections.DURATION_CHART" class="py-16 px-3 lg:px-16">
       <app-duration-chart
         (isMonthltyDurationTypeEvent)="isMonthlyDurationType($event)"
         [title]="selectedRoot.getNames() + ' ' + getStringSelectedCriteria(true, isMonthlyDuration)"
@@ -109,7 +111,7 @@
         [criteria]="criteria.criteria"
         [rootData]="selectedRoot"></app-duration-chart>
     </div>
-    <div class="px-3 lg:px-16 flex flex-col gap-4">
+    <div *appSectionGuard="pageSections.TRANSACTIONS_TABLE.name" class="px-3 lg:px-16 flex flex-col gap-4">
       <h3
         class="heading text-xl sm:text-2xl md:text-3xl self-center md:self-start text-center text-primary border-secondary font-semibold">
         {{ lang.map.sell_transactions_list }} {{ getStringSelectedCriteria() }}
@@ -197,7 +199,7 @@
   <div></div>
   <div *ngIf="isSelectedTab('statistical_reports_for_sell')" class="flex flex-col">
     <!-- Temporarly hide forecasting chart -->
-    <!-- <div class="relative px-3 lg:px-16 flex flex-col justify-center items-center">
+    <!-- <div *appSectionGuard="pageSections.FORECASTING_CHART" class="relative px-3 lg:px-16 flex flex-col justify-center items-center">
       <img
         class="absolute hidden sm:inline left-0 -bottom-16"
         src="assets/images/forecast-images/all-properties.svg"
@@ -216,7 +218,7 @@
         class="relative w-full md:w-5/6 lg:w-4/6 xl:w-7/12" />
     </div> -->
 
-    <div class="px-3 lg:px-16 py-8 flex bg-sand mt-8 flex-col">
+    <div *appSectionGuard="pageSections.PURPOSE_AND_TYPE_TABLE" class="px-3 lg:px-16 py-8 flex bg-sand mt-8 flex-col">
       <h3
         class="heading text-xl sm:text-2xl md:text-3xl self-center md:self-start text-center text-primary border-secondary font-semibold">
         {{ lang.map.sell_indicators }} {{ getStringSelectedCriteria() }}
@@ -375,7 +377,7 @@
       </div>
     </div>
 
-    <div class="px-3 lg:px-16">
+    <div *appSectionGuard="pageSections.TOP_10_CHART" class="px-3 lg:px-16">
       <app-top-ten-chart
         [title]="lang.map.top_10_areas + ' ' + getStringSelectedCriteria(false)"
         [criteria]="criteria.criteria"
@@ -384,7 +386,7 @@
         [bindLabel]="top10Label"></app-top-ten-chart>
     </div>
 
-    <div class="px-3 lg:px-16 bg-sand py-5">
+    <div *appSectionGuard="pageSections.COMPOSITE_TABLE" class="px-3 lg:px-16 bg-sand py-5">
       <div class="overflow-x-auto">
         <table
           class="custom-table p-5 w-full !bg-sand"
@@ -542,35 +544,12 @@
         </table>
       </div>
     </div>
-
-    <ng-template #tooltipTemplate let-terms>
-      <div class="bg-black/80 text-white text-xs p-2 rounded-md">
-        <p class="font-bold">{{ lang.map.filter_values_should_be_as_follows }}:</p>
-        <p *ngFor="let term of terms">- {{ term }}</p>
-      </div>
-    </ng-template>
-    <!-- TODO: Mousa To be added when KPI_34 is implemented by be team -->
-    <!-- <div class="px-3 lg:px-16">
-      <div class="py-5">
-        <div class="shadow-lg rounded-lg overflow-hidden">
-          <div class="bg-primary p-4 flex justify-center items-center">
-            <span class="text-white text-center text-lg sm:text-xl font-semibold"
-              >{{ lang.map.sell_contracts_count_according_to_price_range }} {{ getSelectedArea(true, true) }}</span
-            >
-          </div>
-          <div dir="ltr" class="flex justify-center">
-            <apx-chart
-              #pieChart
-              [series]="pieChartOptions.series"
-              [labels]="pieChartOptions.labels"
-              [responsive]="pieChartOptions.responsive!"
-              [chart]="pieChartOptions.chart"
-              [legend]="pieChartOptions.legend!"
-              [colors]="pieChartOptions.colors!" />
-          </div>
-        </div>
-      </div>
-
-  </div>-->
   </div>
 </div>
+
+<ng-template #tooltipTemplate let-terms>
+  <div class="bg-black/80 text-white text-xs p-2 rounded-md">
+    <p class="font-bold">{{ lang.map.filter_values_should_be_as_follows }}:</p>
+    <p *ngFor="let term of terms">- {{ term }}</p>
+  </div>
+</ng-template>
