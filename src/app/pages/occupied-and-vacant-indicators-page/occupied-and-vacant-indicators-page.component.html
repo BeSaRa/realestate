@@ -13,7 +13,7 @@
       [premiseTypes]="premiseTypes"
       (fromChanged)="filterChange($event)" />
   </div>
-  <div class="py-16 px-3 lg:px-16">
+  <div *appSectionGuard="pageSections.ROOT_KPIS" class="py-16 px-3 lg:px-16">
     <div class="flex flex-col">
       <h3
         class="heading text-xl sm:text-2xl md:text-3xl self-center md:self-start text-center text-primary border-secondary font-semibold">
@@ -26,7 +26,7 @@
       </div>
     </div>
   </div>
-  <div class="bg-sand py-16 px-3 lg:px-16">
+  <div *appSectionGuard="pageSections.PREMISE_CATEGORY_KPIS" class="bg-sand py-16 px-3 lg:px-16">
     <div class="flex flex-col justify-center items-center">
       <h3
         *ngIf="selectedRoot"
@@ -44,7 +44,7 @@
       </div>
     </div>
   </div>
-  <div class="py-16 px-3 lg:px-16">
+  <div *appSectionGuard="pageSections.PREMISE_TYPE_KPIS" class="py-16 px-3 lg:px-16">
     <div class="flex flex-col justify-center items-center">
       <h3
         *ngIf="selectedRoot"
@@ -71,7 +71,7 @@
       </div>
     </div>
   </div>
-  <div class="flex flex-col mt-4 px-3 lg:px-16">
+  <div *appSectionGuard="pageSections.DURATION_CHART" class="flex flex-col mt-4 px-3 lg:px-16">
     <app-stacked-duration-chart
       [title]="lang.map.total_number_of_occupied_and_vacant"
       [seriesNames]="totalCountSeriesNames"
@@ -81,7 +81,7 @@
       [showSelectChartType]="true">
     </app-stacked-duration-chart>
   </div>
-  <div class="px-3 lg:px-16">
+  <div *appSectionGuard="pageSections.MUNICIPALITY_CHART" class="px-3 lg:px-16">
     <app-municipalities-chart
       [title]="lang.map.occupied_and_vacant_units_count_per_municipality"
       [seriesNames]="municipalitySeriesNames"
@@ -97,7 +97,7 @@
       [useRentMunicipalityLookups]="true"
       (selectedMunicipalityChanged)="updateAreasChartCriteria($event.municipalityId)" />
   </div>
-  <div class="py-5 px-3 lg:px-16">
+  <div *appSectionGuard="pageSections.AREA_CHART" class="py-5 px-3 lg:px-16">
     <app-areas-chart
       [title]="
         lang.map.occupied_and_vacant_units_count_per_zone +
@@ -114,7 +114,7 @@
       [bindLabel]="areaLabel"
       [bindDataSplitProp]="'occupancyStatus'" />
   </div>
-  <div class="px-3 lg:px-16 flex flex-col gap-4">
+  <div *appSectionGuard="pageSections.TRANSACTIONS_TABLE.name" class="px-3 lg:px-16 flex flex-col gap-4">
     <h3
       class="heading text-xl sm:text-2xl md:text-3xl self-center md:self-start text-center text-primary border-secondary font-semibold">
       {{ lang.map.occupied_and_vacant_records_list }}
@@ -126,7 +126,8 @@
       (paginate)="paginate($event)"
       [length]="transactionsCount"
       [dataSource]="dataSource"
-      [sortOptions]="[]">
+      [sortOptions]="[]"
+      [tableGuardName]="pageSections.TRANSACTIONS_TABLE.name">
       <ng-container appTableColumnTemplate [columnName]="pageSections.TRANSACTIONS_TABLE.columns.LOCATION">
         <div *appTableColumnHeaderTemplate class="flex justify-center">
           <div class="text-start">

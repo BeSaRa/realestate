@@ -1,4 +1,4 @@
-import { Directive, Input, OnInit, TemplateRef, ViewContainerRef, inject } from '@angular/core';
+import { Directive, EmbeddedViewRef, Input, OnInit, TemplateRef, ViewContainerRef, inject } from '@angular/core';
 import { OnDestroyMixin } from '@mixins/on-destroy-mixin';
 import { AuthService } from '@services/auth.service';
 import { SectionGuardService } from '@services/section-guard.service';
@@ -16,6 +16,7 @@ export class SectionGuardDirective extends OnDestroyMixin(class {}) implements O
   private _userService = inject(UserService);
 
   private _context = { $implicit: '' };
+  private _viewRef?: EmbeddedViewRef<typeof this._context>;
 
   @Input({ required: true }) set appSectionGuard(sectionName: string) {
     this._context.$implicit = sectionName;
@@ -29,8 +30,12 @@ export class SectionGuardDirective extends OnDestroyMixin(class {}) implements O
   }
 
   private _updateView() {
-    this._viewConatainerRef.clear();
-    if (this._sectionGuardService.isSectionHidden(this._context.$implicit)) return;
-    this._viewConatainerRef.createEmbeddedView(this._templateRef, this._context);
+    if (this._sectionGuardService.isSectionHidden(this._context.$implicit)) {
+      this._viewConatainerRef.clear();
+      this._viewRef = undefined;
+      return;
+    }
+    if (this._viewRef) return;
+    this._viewRef = this._viewConatainerRef.createEmbeddedView(this._templateRef, this._context);
   }
 }

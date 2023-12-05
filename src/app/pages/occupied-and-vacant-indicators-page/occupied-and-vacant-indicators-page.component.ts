@@ -14,6 +14,7 @@ import { TransactionsFilterComponent } from '@components/transactions-filter/tra
 import { APP_PAGES_SECTIONS } from '@constants/injection-tokens';
 import { CriteriaContract } from '@contracts/criteria-contract';
 import { ExtraHeaderPortalBridgeDirective } from '@directives/extra-header-portal-bridge.directive';
+import { SectionGuardDirective } from '@directives/section-guard.directive';
 import { TableColumnCellTemplateDirective } from '@directives/table-column-cell-template.directive';
 import { TableColumnHeaderTemplateDirective } from '@directives/table-column-header-template.directive';
 import { TableColumnTemplateDirective } from '@directives/table-column-template.directive';
@@ -51,6 +52,7 @@ import { BehaviorSubject, Subject, combineLatest, switchMap, take, takeUntil } f
     TableColumnTemplateDirective,
     TableColumnHeaderTemplateDirective,
     TableColumnCellTemplateDirective,
+    SectionGuardDirective,
   ],
   templateUrl: './occupied-and-vacant-indicators-page.component.html',
   styleUrls: ['./occupied-and-vacant-indicators-page.component.scss'],

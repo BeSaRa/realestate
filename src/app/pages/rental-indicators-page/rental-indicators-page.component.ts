@@ -64,6 +64,7 @@ import {
   takeUntil,
 } from 'rxjs';
 import { APP_PAGES_SECTIONS } from '@constants/injection-tokens';
+import { SectionGuardDirective } from '@directives/section-guard.directive';
 
 @Component({
   selector: 'app-rental-indicators-page',
@@ -92,6 +93,7 @@ import { APP_PAGES_SECTIONS } from '@constants/injection-tokens';
     TopTenChartComponent,
     ForecastingChartComponent,
     CustomTooltipDirective,
+    SectionGuardDirective,
   ],
   templateUrl: './rental-indicators-page.component.html',
   styleUrls: ['./rental-indicators-page.component.scss'],
