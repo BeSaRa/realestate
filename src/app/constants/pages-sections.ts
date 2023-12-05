@@ -1,10 +1,10 @@
 export const PagesSections = {
   SELL_PAGE: {
-    ROOT_KPIS: 'root-kpis',
-    PURPOSE_KPIS: 'purpose-kpis',
-    PROPERTY_TYPE_KPIS: 'property-type-kpis',
-    DURATION_CHART: 'duration-chart',
-    TRANSACTIONS_TABLE: {
+    SELL_ROOT_KPIS: 'sell-root-kpis',
+    SELL_PURPOSE_KPIS: 'sell-purpose-kpis',
+    SELL_PROPERTY_TYPE_KPIS: 'sell-property-type-kpis',
+    SELL_DURATION_CHART: 'sell-duration-chart',
+    SELL_TRANSACTIONS_TABLE: {
       name: 'sell-transactions-table',
       columns: {
         LOCATION: 'location',
@@ -16,18 +16,18 @@ export const PagesSections = {
       },
     },
 
-    TOP_10_CHART: 'top-10-chart',
-    PURPOSE_AND_TYPE_TABLE: 'purpose-ant-type-table',
-    FORECASTING_CHART: 'forecasting-chart',
-    COMPOSITE_TABLE: 'componsite-table',
+    SELL_TOP_10_CHART: 'sell-top-10-chart',
+    SELL_PURPOSE_AND_TYPE_TABLE: 'sell-purpose-ant-type-table',
+    SELL_FORECASTING_CHART: 'sell-forecasting-chart',
+    SELL_COMPOSITE_TABLE: 'sell-componsite-table',
   },
 
   RENT_PAGE: {
-    ROOT_KPIS: 'root-kpis',
-    PURPOSE_KPIS: 'purpose-kpis',
-    PROPERTY_TYPE_KPIS: 'property-type-kpis',
-    DURATION_CHART: 'duration-chart',
-    TRANSACTIONS_TABLE: {
+    RENT_ROOT_KPIS: 'rent-root-kpis',
+    RENT_PURPOSE_KPIS: 'rent-purpose-kpis',
+    RENT_PROPERTY_TYPE_KPIS: 'rent-property-type-kpis',
+    RENT_DURATION_CHART: 'rent-duration-chart',
+    RENT_TRANSACTIONS_TABLE: {
       name: 'rent-transactions-table',
       columns: {
         MUNICIPALITY: 'municipality',
@@ -38,20 +38,20 @@ export const PagesSections = {
       },
     },
 
-    TOP_10_CHART: 'top-10-chart',
-    PURPOSE_AND_TYPE_TABLE: 'purpose-ant-type-table',
-    FORECASTING_CHART: 'forecasting-chart',
-    COMPOSITE_TABLE: 'componsite-table',
+    RENT_TOP_10_CHART: 'rent-top-10-chart',
+    RENT_PURPOSE_AND_TYPE_TABLE: 'rent-purpose-ant-type-table',
+    RENT_FORECASTING_CHART: 'rent-forecasting-chart',
+    RENT_COMPOSITE_TABLE: 'rent-componsite-table',
     RENT_PER_BEDROOMS: 'rent-per-bedrooms',
     RENT_PER_FURNITURE: 'rent-per-furniture',
   },
 
   MORT_PAGE: {
-    ROOT_KPIS: 'root-kpis',
-    COUNT_CHART: 'count-chart',
-    UNITS_CHART: 'units-chart',
-    VALUE_CHART: 'value-chart',
-    TRANSACTIONS_TABLE: {
+    MORT_ROOT_KPIS: 'mort-root-kpis',
+    MORT_COUNT_CHART: 'mort-count-chart',
+    MORT_UNITS_CHART: 'mort-units-chart',
+    MORT_VALUE_CHART: 'mort-value-chart',
+    MORT_TRANSACTIONS_TABLE: {
       name: 'mort-transactions-table',
       columns: {
         LOCATION: 'location',
@@ -92,13 +92,13 @@ export const PagesSections = {
   },
 
   OCCUPATION_PAGE: {
-    ROOT_KPIS: 'root-kpis',
-    PREMISE_CATEGORY_KPIS: 'premise-category-kpis',
-    PREMISE_TYPE_KPIS: 'premise-type-kpis',
-    DURATION_CHART: 'duration-chart',
-    MUNICIPALITY_CHART: 'municipality-chart',
-    AREA_CHART: 'area-chart',
-    TRANSACTIONS_TABLE: {
+    OCCUPATION_ROOT_KPIS: 'occupation-root-kpis',
+    OCCUPATION_PREMISE_CATEGORY_KPIS: 'occupation-premise-category-kpis',
+    OCCUPATION_PREMISE_TYPE_KPIS: 'occupation-premise-type-kpis',
+    OCCUPATION_DURATION_CHART: 'occupation-duration-chart',
+    OCCUPATION_MUNICIPALITY_CHART: 'occupation-municipality-chart',
+    OCCUPATION_AREA_CHART: 'occupation-area-chart',
+    OCCUPATION_TRANSACTIONS_TABLE: {
       name: 'occupation-transactions-table',
       columns: {
         LOCATION: 'location',

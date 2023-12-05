@@ -15,7 +15,7 @@
   </div>
 
   <div class="flex flex-col">
-    <div *appSectionGuard="pageSections.ROOT_KPIS" class="py-16 px-3 lg:px-16">
+    <div *appSectionGuard="pageSections.MORT_ROOT_KPIS" class="py-16 px-3 lg:px-16">
       <div class="flex flex-col">
         <h3
           class="heading text-xl sm:text-2xl md:text-3xl self-center md:self-start text-center text-primary border-secondary font-semibold">
@@ -27,7 +27,7 @@
         </div>
       </div>
     </div>
-    <div *appSectionGuard="pageSections.COUNT_CHART" class="flex flex-col mt-4 px-3 lg:px-16">
+    <div *appSectionGuard="pageSections.MORT_COUNT_CHART" class="flex flex-col mt-4 px-3 lg:px-16">
       <app-stacked-duration-chart
         (isMonthltyDurationTypeEvent)="isMonthlyDurationTypeForStacked($event)"
         [title]="lang.map.total_mortgage_transactions + ' ' + getStringSelectedCriteria(isMonthlyDurationForStacked)"
@@ -38,7 +38,7 @@
         [showSelectChartType]="true">
       </app-stacked-duration-chart>
     </div>
-    <div *appSectionGuard="pageSections.UNITS_CHART" class="flex flex-col mt-4 px-3 lg:px-16">
+    <div *appSectionGuard="pageSections.MORT_UNITS_CHART" class="flex flex-col mt-4 px-3 lg:px-16">
       <app-duration-chart
         (isMonthltyDurationTypeEvent)="isMonthlyDurationTypeForUnits($event)"
         [title]="
@@ -48,7 +48,7 @@
         [criteria]="criteria.criteria"
         [rootData]="unitsRootData"></app-duration-chart>
     </div>
-    <div *appSectionGuard="pageSections.VALUE_CHART" class="flex flex-col mt-4 px-3 lg:px-16">
+    <div *appSectionGuard="pageSections.MORT_VALUE_CHART" class="flex flex-col mt-4 px-3 lg:px-16">
       <app-duration-chart
         (isMonthltyDurationTypeEvent)="isMonthlyDurationType($event)"
         [title]="lang.map.total_value_of_mortgage_transactions + ' ' + getStringSelectedCriteria(isMonthlyDuration)"
@@ -56,7 +56,7 @@
         [criteria]="criteria.criteria"
         [rootData]="valueRootData"></app-duration-chart>
     </div>
-    <div *appSectionGuard="pageSections.TRANSACTIONS_TABLE.name" class="px-3 lg:px-16 flex flex-col gap-4">
+    <div *appSectionGuard="pageSections.MORT_TRANSACTIONS_TABLE.name" class="px-3 lg:px-16 flex flex-col gap-4">
       <h3
         class="heading text-xl sm:text-2xl md:text-3xl self-center md:self-start text-center text-primary border-secondary font-semibold">
         {{ lang.map.mortgage_transactions_list }} {{ getStringSelectedCriteria() }}
@@ -69,8 +69,8 @@
         [dataSource]="dataSource"
         [sortOptions]="[]"
         [defaultSortOption]="transactionsSortOptions[0]"
-        [tableGuardName]="pageSections.TRANSACTIONS_TABLE.name">
-        <ng-container appTableColumnTemplate [columnName]="pageSections.TRANSACTIONS_TABLE.columns.LOCATION">
+        [tableGuardName]="pageSections.MORT_TRANSACTIONS_TABLE.name">
+        <ng-container appTableColumnTemplate [columnName]="pageSections.MORT_TRANSACTIONS_TABLE.columns.LOCATION">
           <div *appTableColumnHeaderTemplate class="flex justify-center">
             <div class="text-start">
               <p>{{ lang.map.location }}</p>
@@ -84,25 +84,25 @@
             </div>
           </div>
         </ng-container>
-        <ng-container appTableColumnTemplate [columnName]="pageSections.TRANSACTIONS_TABLE.columns.MORTGAGED_FOR">
+        <ng-container appTableColumnTemplate [columnName]="pageSections.MORT_TRANSACTIONS_TABLE.columns.MORTGAGED_FOR">
           <span *appTableColumnHeaderTemplate>{{ lang.map.mortgaged_for }}</span>
           <span *appTableColumnCellTemplate="let item; typeOf: transactions$" class="font-bold">{{
             item.realEstateValue | number
           }}</span>
         </ng-container>
-        <ng-container appTableColumnTemplate [columnName]="pageSections.TRANSACTIONS_TABLE.columns.AREA">
+        <ng-container appTableColumnTemplate [columnName]="pageSections.MORT_TRANSACTIONS_TABLE.columns.AREA">
           <span *appTableColumnHeaderTemplate>{{ lang.map.area_in_square_foot }}</span>
           <span *appTableColumnCellTemplate="let item; typeOf: transactions$" class="font-bold">
             {{ item.realEstateArea }}
           </span>
         </ng-container>
-        <!-- <ng-container appTableColumnTemplate [columnName]="pageSections.TRANSACTIONS_TABLE.columns.SQUARE_PRICE">
+        <!-- <ng-container appTableColumnTemplate [columnName]="pageSections.MORT_TRANSACTIONS_TABLE.columns.SQUARE_PRICE">
             <span *appTableColumnHeaderTemplate>{{ lang.map.square_feet_price }}</span>
             <span *appTableColumnCellTemplate="let item; typeOf: transactions" class="font-bold">{{
               item.priceMT | number : "1.0-0"
             }}</span>
           </ng-container> -->
-        <ng-container appTableColumnTemplate [columnName]="pageSections.TRANSACTIONS_TABLE.columns.ISSUE_DATE">
+        <ng-container appTableColumnTemplate [columnName]="pageSections.MORT_TRANSACTIONS_TABLE.columns.ISSUE_DATE">
           <div *appTableColumnHeaderTemplate class="flex justify-center">
             <div class="text-start">
               <p>{{ lang.map.issue_date }}</p>
