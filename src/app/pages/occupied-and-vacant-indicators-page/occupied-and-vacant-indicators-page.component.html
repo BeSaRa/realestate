@@ -13,7 +13,7 @@
       [premiseTypes]="premiseTypes"
       (fromChanged)="filterChange($event)" />
   </div>
-  <div *appSectionGuard="pageSections.ROOT_KPIS" class="py-16 px-3 lg:px-16">
+  <div *appSectionGuard="pageSections.OCCUPATION_ROOT_KPIS" class="py-16 px-3 lg:px-16">
     <div class="flex flex-col">
       <h3
         class="heading text-xl sm:text-2xl md:text-3xl self-center md:self-start text-center text-primary border-secondary font-semibold">
@@ -26,7 +26,7 @@
       </div>
     </div>
   </div>
-  <div *appSectionGuard="pageSections.PREMISE_CATEGORY_KPIS" class="bg-sand py-16 px-3 lg:px-16">
+  <div *appSectionGuard="pageSections.OCCUPATION_PREMISE_CATEGORY_KPIS" class="bg-sand py-16 px-3 lg:px-16">
     <div class="flex flex-col justify-center items-center">
       <h3
         *ngIf="selectedRoot"
@@ -44,7 +44,7 @@
       </div>
     </div>
   </div>
-  <div *appSectionGuard="pageSections.PREMISE_TYPE_KPIS" class="py-16 px-3 lg:px-16">
+  <div *appSectionGuard="pageSections.OCCUPATION_PREMISE_TYPE_KPIS" class="py-16 px-3 lg:px-16">
     <div class="flex flex-col justify-center items-center">
       <h3
         *ngIf="selectedRoot"
@@ -71,7 +71,7 @@
       </div>
     </div>
   </div>
-  <div *appSectionGuard="pageSections.DURATION_CHART" class="flex flex-col mt-4 px-3 lg:px-16">
+  <div *appSectionGuard="pageSections.OCCUPATION_DURATION_CHART" class="flex flex-col mt-4 px-3 lg:px-16">
     <app-stacked-duration-chart
       [title]="lang.map.total_number_of_occupied_and_vacant"
       [seriesNames]="totalCountSeriesNames"
@@ -81,7 +81,7 @@
       [showSelectChartType]="true">
     </app-stacked-duration-chart>
   </div>
-  <div *appSectionGuard="pageSections.MUNICIPALITY_CHART" class="px-3 lg:px-16">
+  <div *appSectionGuard="pageSections.OCCUPATION_MUNICIPALITY_CHART" class="px-3 lg:px-16">
     <app-municipalities-chart
       [title]="lang.map.occupied_and_vacant_units_count_per_municipality"
       [seriesNames]="municipalitySeriesNames"
@@ -97,7 +97,7 @@
       [useRentMunicipalityLookups]="true"
       (selectedMunicipalityChanged)="updateAreasChartCriteria($event.municipalityId)" />
   </div>
-  <div *appSectionGuard="pageSections.AREA_CHART" class="py-5 px-3 lg:px-16">
+  <div *appSectionGuard="pageSections.OCCUPATION_AREA_CHART" class="py-5 px-3 lg:px-16">
     <app-areas-chart
       [title]="
         lang.map.occupied_and_vacant_units_count_per_zone +
@@ -114,7 +114,7 @@
       [bindLabel]="areaLabel"
       [bindDataSplitProp]="'occupancyStatus'" />
   </div>
-  <div *appSectionGuard="pageSections.TRANSACTIONS_TABLE.name" class="px-3 lg:px-16 flex flex-col gap-4">
+  <div *appSectionGuard="pageSections.OCCUPATION_TRANSACTIONS_TABLE.name" class="px-3 lg:px-16 flex flex-col gap-4">
     <h3
       class="heading text-xl sm:text-2xl md:text-3xl self-center md:self-start text-center text-primary border-secondary font-semibold">
       {{ lang.map.occupied_and_vacant_records_list }}
@@ -127,8 +127,8 @@
       [length]="transactionsCount"
       [dataSource]="dataSource"
       [sortOptions]="[]"
-      [tableGuardName]="pageSections.TRANSACTIONS_TABLE.name">
-      <ng-container appTableColumnTemplate [columnName]="pageSections.TRANSACTIONS_TABLE.columns.LOCATION">
+      [tableGuardName]="pageSections.OCCUPATION_TRANSACTIONS_TABLE.name">
+      <ng-container appTableColumnTemplate [columnName]="pageSections.OCCUPATION_TRANSACTIONS_TABLE.columns.LOCATION">
         <div *appTableColumnHeaderTemplate class="flex justify-center">
           <div class="text-start">
             <p>{{ lang.map.location }}</p>
@@ -141,7 +141,9 @@
           </div>
         </div>
       </ng-container>
-      <ng-container appTableColumnTemplate [columnName]="pageSections.TRANSACTIONS_TABLE.columns.CATEGORY_AND_TYPE">
+      <ng-container
+        appTableColumnTemplate
+        [columnName]="pageSections.OCCUPATION_TRANSACTIONS_TABLE.columns.CATEGORY_AND_TYPE">
         <div *appTableColumnHeaderTemplate class="flex justify-center">
           <div class="text-start">
             <p>{{ lang.map.premise_category_and_type }}</p>
@@ -155,36 +157,44 @@
         </div>
       </ng-container>
 
-      <ng-container appTableColumnTemplate [columnName]="pageSections.TRANSACTIONS_TABLE.columns.OCCUPANCY_STATUS">
+      <ng-container
+        appTableColumnTemplate
+        [columnName]="pageSections.OCCUPATION_TRANSACTIONS_TABLE.columns.OCCUPANCY_STATUS">
         <span *appTableColumnHeaderTemplate>{{ lang.map.occupancy_status }}</span>
         <span *appTableColumnCellTemplate="let item; typeOf: transactions$" class="font-bold">{{
           item.occupancyStatusInfo.getNames()
         }}</span>
       </ng-container>
-      <ng-container appTableColumnTemplate [columnName]="pageSections.TRANSACTIONS_TABLE.columns.OWNER_ID">
+      <ng-container appTableColumnTemplate [columnName]="pageSections.OCCUPATION_TRANSACTIONS_TABLE.columns.OWNER_ID">
         <span *appTableColumnHeaderTemplate>{{ lang.map.owner_id }}</span>
         <span *appTableColumnCellTemplate="let item; typeOf: transactions$" class="font-bold">{{ item.ownerId }}</span>
       </ng-container>
-      <ng-container appTableColumnTemplate [columnName]="pageSections.TRANSACTIONS_TABLE.columns.TENANT_ID">
+      <ng-container appTableColumnTemplate [columnName]="pageSections.OCCUPATION_TRANSACTIONS_TABLE.columns.TENANT_ID">
         <span *appTableColumnHeaderTemplate>{{ lang.map.tenant_id }}</span>
         <span *appTableColumnCellTemplate="let item; typeOf: transactions$" class="font-bold">{{
           item.tenantNumber
         }}</span>
       </ng-container>
 
-      <ng-container appTableColumnTemplate [columnName]="pageSections.TRANSACTIONS_TABLE.columns.RECORD_DATE">
+      <ng-container
+        appTableColumnTemplate
+        [columnName]="pageSections.OCCUPATION_TRANSACTIONS_TABLE.columns.RECORD_DATE">
         <span *appTableColumnHeaderTemplate>{{ lang.map.record_date }}</span>
         <span *appTableColumnCellTemplate="let item; typeOf: transactions$">
           {{ item.rowDate | date : "YYYY-MM-dd" }}</span
         >
       </ng-container>
-      <ng-container appTableColumnTemplate [columnName]="pageSections.TRANSACTIONS_TABLE.columns.ELECTRICITY_NUMBER">
+      <ng-container
+        appTableColumnTemplate
+        [columnName]="pageSections.OCCUPATION_TRANSACTIONS_TABLE.columns.ELECTRICITY_NUMBER">
         <span *appTableColumnHeaderTemplate>{{ lang.map.electricity_number }}</span>
         <span *appTableColumnCellTemplate="let item; typeOf: transactions$" class="font-bold">{{
           item.electricityNo
         }}</span>
       </ng-container>
-      <ng-container appTableColumnTemplate [columnName]="pageSections.TRANSACTIONS_TABLE.columns.WATER_NUMBER">
+      <ng-container
+        appTableColumnTemplate
+        [columnName]="pageSections.OCCUPATION_TRANSACTIONS_TABLE.columns.WATER_NUMBER">
         <span *appTableColumnHeaderTemplate>{{ lang.map.water_number }}</span>
         <span *appTableColumnCellTemplate="let item; typeOf: transactions$" class="font-bold">{{
           item.waterNumber

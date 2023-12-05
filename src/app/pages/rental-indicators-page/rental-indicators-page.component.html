@@ -34,7 +34,7 @@
     </div>
   </div>
   <div *ngIf="isSelectedTab('rental_indicators')" class="flex flex-col">
-    <div *appSectionGuard="pageSections.ROOT_KPIS" class="py-16 px-3 lg:px-16">
+    <div *appSectionGuard="pageSections.RENT_ROOT_KPIS" class="py-16 px-3 lg:px-16">
       <div class="flex flex-col">
         <h3
           class="heading text-xl sm:text-2xl md:text-3xl self-center md:self-start text-center text-primary border-secondary font-semibold">
@@ -62,7 +62,7 @@
     </div>
     <div class="bg-sand py-16 px-3 lg:px-16">
       <div class="flex flex-col justify-center items-center">
-        <ng-container *appSectionGuard="pageSections.PURPOSE_KPIS">
+        <ng-container *appSectionGuard="pageSections.RENT_PURPOSE_KPIS">
           <h3
             *ngIf="selectedRoot"
             class="heading text-xl sm:text-2xl md:text-3xl self-center text-center text-primary border-secondary font-semibold">
@@ -88,7 +88,7 @@
               }} {{ i % 3 === 2 ? 'border-e-0 xl:border-e-2' : 'border-e-2' }}" /></div
         ></ng-container>
 
-        <ng-container *appSectionGuard="pageSections.PROPERTY_TYPE_KPIS">
+        <ng-container *appSectionGuard="pageSections.RENT_PROPERTY_TYPE_KPIS">
           <h3
             *ngIf="selectedRoot"
             class="heading mt-20 text-xl sm:text-2xl md:text-3xl self-center text-center text-primary border-secondary font-semibold">
@@ -102,7 +102,7 @@
         ></ng-container>
       </div>
     </div>
-    <div *appSectionGuard="pageSections.DURATION_CHART" class="py-16 px-3 lg:px-16">
+    <div *appSectionGuard="pageSections.RENT_DURATION_CHART" class="py-16 px-3 lg:px-16">
       <app-duration-chart
         (isMonthltyDurationTypeEvent)="isMonthlyDurationType($event)"
         [title]="selectedRoot.getNames() + ' ' + getStringSelectedCriteria(true, isMonthlyDuration)"
@@ -110,7 +110,7 @@
         [criteria]="criteria.criteria"
         [rootData]="selectedRoot"></app-duration-chart>
     </div>
-    <div *appSectionGuard="pageSections.TRANSACTIONS_TABLE.name" class="px-3 lg:px-16 flex flex-col gap-4">
+    <div *appSectionGuard="pageSections.RENT_TRANSACTIONS_TABLE.name" class="px-3 lg:px-16 flex flex-col gap-4">
       <h3
         class="heading text-xl sm:text-2xl md:text-3xl self-center md:self-start text-center text-primary border-secondary font-semibold">
         {{ lang.map.rent_transactions_list }} {{ getStringSelectedCriteria() }}
@@ -124,14 +124,14 @@
         [dataSource]="dataSource"
         [sortOptions]="[]"
         [defaultSortOption]="transactionsSortOptions[0]"
-        [tableGuardName]="pageSections.TRANSACTIONS_TABLE.name">
-        <ng-container appTableColumnTemplate [columnName]="pageSections.TRANSACTIONS_TABLE.columns.MUNICIPALITY"
+        [tableGuardName]="pageSections.RENT_TRANSACTIONS_TABLE.name">
+        <ng-container appTableColumnTemplate [columnName]="pageSections.RENT_TRANSACTIONS_TABLE.columns.MUNICIPALITY"
           ><span *appTableColumnHeaderTemplate>{{ lang.map.municipal }}</span
           ><span *appTableColumnCellTemplate="let item; typeOf: transactions$">{{
             item.municipalityInfo.getNames()
           }}</span></ng-container
         >
-        <ng-container appTableColumnTemplate [columnName]="pageSections.TRANSACTIONS_TABLE.columns.UNIT_DETAILS">
+        <ng-container appTableColumnTemplate [columnName]="pageSections.RENT_TRANSACTIONS_TABLE.columns.UNIT_DETAILS">
           <span *appTableColumnHeaderTemplate>{{ lang.map.unit_details }}</span>
           <div *appTableColumnCellTemplate="let item; typeOf: transactions$" class="flex justify-center">
             <div class="text-start">
@@ -147,19 +147,23 @@
             </div>
           </div>
         </ng-container>
-        <ng-container appTableColumnTemplate [columnName]="pageSections.TRANSACTIONS_TABLE.columns.RENTAL_VALUE"
+        <ng-container appTableColumnTemplate [columnName]="pageSections.RENT_TRANSACTIONS_TABLE.columns.RENTAL_VALUE"
           ><span *appTableColumnHeaderTemplate>{{ lang.map.rental_value }}</span
           ><span *appTableColumnCellTemplate="let item; typeOf: transactions$">
             {{ item.rentPaymentMonthly ? item.rentPaymentMonthly : "---" }}</span
           >
         </ng-container>
-        <ng-container appTableColumnTemplate [columnName]="pageSections.TRANSACTIONS_TABLE.columns.CONTRACT_START_DATE"
+        <ng-container
+          appTableColumnTemplate
+          [columnName]="pageSections.RENT_TRANSACTIONS_TABLE.columns.CONTRACT_START_DATE"
           ><span *appTableColumnHeaderTemplate>{{ lang.map.contract_start_date }}</span>
           <span *appTableColumnCellTemplate="let item; typeOf: transactions$">{{
             item.startDate | date : "YYYY-MM-dd"
           }}</span></ng-container
         >
-        <ng-container appTableColumnTemplate [columnName]="pageSections.TRANSACTIONS_TABLE.columns.CONTRACT_END_DATE"
+        <ng-container
+          appTableColumnTemplate
+          [columnName]="pageSections.RENT_TRANSACTIONS_TABLE.columns.CONTRACT_END_DATE"
           ><span *appTableColumnHeaderTemplate>{{ lang.map.contract_end_date }}</span
           ><span *appTableColumnCellTemplate="let item; typeOf: transactions$">{{
             item.endDate | date : "YYYY-MM-dd"
@@ -170,7 +174,7 @@
   </div>
   <div *ngIf="isSelectedTab('statistical_reports_for_rent')" class="flex flex-col">
     <!-- Temporarly hide forecasting chart -->
-    <!--<div *appSectionGuard="pageSections.FORECASTING_CHART" class="relative px-3 lg:px-16 flex flex-col justify-center items-center">
+    <!--<div *appSectionGuard="pageSections.RENT_FORECASTING_CHART" class="relative px-3 lg:px-16 flex flex-col justify-center items-center">
       <img
         class="absolute hidden sm:inline left-0 -bottom-16"
         src="assets/images/forecast-images/all-properties.svg"
@@ -188,7 +192,9 @@
         [criteriaTerms]="forecastCriteriaTerms"
         class="relative w-full md:w-5/6 lg:w-4/6 xl:w-7/12" />
     </div>-->
-    <div *appSectionGuard="pageSections.PURPOSE_AND_TYPE_TABLE" class="px-3 lg:px-16 py-8 flex bg-sand mt-8 flex-col">
+    <div
+      *appSectionGuard="pageSections.RENT_PURPOSE_AND_TYPE_TABLE"
+      class="px-3 lg:px-16 py-8 flex bg-sand mt-8 flex-col">
       <h3
         class="heading text-xl sm:text-2xl md:text-3xl self-center md:self-start text-center text-primary border-secondary font-semibold">
         {{ lang.map.rental_indicators }} {{ getStringSelectedCriteria() }}
@@ -320,7 +326,7 @@
       </div>
     </div>
 
-    <div *appSectionGuard="pageSections.TOP_10_CHART" class="px-3 lg:px-16">
+    <div *appSectionGuard="pageSections.RENT_TOP_10_CHART" class="px-3 lg:px-16">
       <app-top-ten-chart
         [title]="lang.map.top_10_areas + ' ' + getStringSelectedCriteria(false)"
         [criteria]="criteria.criteria"
@@ -328,7 +334,7 @@
         [selectedAccordingTo]="accordingToList[0]"
         [bindLabel]="top10Label"></app-top-ten-chart>
     </div>
-    <div *appSectionGuard="pageSections.COMPOSITE_TABLE" class="px-3 lg:px-16 bg-sand py-5">
+    <div *appSectionGuard="pageSections.RENT_COMPOSITE_TABLE" class="px-3 lg:px-16 bg-sand py-5">
       <div class="overflow-x-auto">
         <table
           class="custom-table p-5 w-full !bg-sand"
