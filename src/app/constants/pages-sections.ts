@@ -5,7 +5,7 @@ export const PagesSections = {
     PROPERTY_TYPE_KPIS: 'property-type-kpis',
     DURATION_CHART: 'duration-chart',
     TRANSACTIONS_TABLE: {
-      name: 'transactions-table',
+      name: 'sell-transactions-table',
       columns: {
         LOCATION: 'location',
         SOLD_FOR: 'sold-for',
@@ -28,7 +28,7 @@ export const PagesSections = {
     PROPERTY_TYPE_KPIS: 'property-type-kpis',
     DURATION_CHART: 'duration-chart',
     TRANSACTIONS_TABLE: {
-      name: 'transactions-table',
+      name: 'rent-transactions-table',
       columns: {
         MUNICIPALITY: 'municipality',
         UNIT_DETAILS: 'unit-details',
@@ -52,7 +52,7 @@ export const PagesSections = {
     UNITS_CHART: 'units-chart',
     VALUE_CHART: 'value-chart',
     TRANSACTIONS_TABLE: {
-      name: 'transactions-table',
+      name: 'mort-transactions-table',
       columns: {
         LOCATION: 'location',
         MORTGAGED_FOR: 'mortgaged-for',
@@ -99,7 +99,7 @@ export const PagesSections = {
     MUNICIPALITY_CHART: 'municipality-chart',
     AREA_CHART: 'area-chart',
     TRANSACTIONS_TABLE: {
-      name: 'transactions-table',
+      name: 'occupation-transactions-table',
       columns: {
         LOCATION: 'location',
         CATEGORY_AND_TYPE: 'category-and-type',
