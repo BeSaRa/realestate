@@ -63,6 +63,7 @@ import {
   take,
   takeUntil,
 } from 'rxjs';
+import { APP_PAGES_SECTIONS } from '@constants/injection-tokens';
 
 @Component({
   selector: 'app-rental-indicators-page',
@@ -104,6 +105,7 @@ export default class RentalIndicatorsPageComponent implements OnInit, OnDestroy 
   lookupService = inject(LookupService);
   unitsService = inject(UnitsService);
   sectionTitle = inject(SectionTitleService);
+  pageSections = inject(APP_PAGES_SECTIONS).RENT_PAGE;
 
   destroy$ = new Subject<void>();
   reload$ = new ReplaySubject<void>(1);
