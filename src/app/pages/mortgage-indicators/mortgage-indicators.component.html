@@ -69,7 +69,7 @@
         [dataSource]="dataSource"
         [sortOptions]="[]"
         [defaultSortOption]="transactionsSortOptions[0]">
-        <ng-container appTableColumnTemplate columnName="location">
+        <ng-container appTableColumnTemplate [columnName]="pageSections.TRANSACTIONS_TABLE.columns.LOCATION">
           <div *appTableColumnHeaderTemplate class="flex justify-center">
             <div class="text-start">
               <p>{{ lang.map.location }}</p>
@@ -83,25 +83,25 @@
             </div>
           </div>
         </ng-container>
-        <ng-container appTableColumnTemplate columnName="mortgaged_for">
+        <ng-container appTableColumnTemplate [columnName]="pageSections.TRANSACTIONS_TABLE.columns.MORTGAGED_FOR">
           <span *appTableColumnHeaderTemplate>{{ lang.map.mortgaged_for }}</span>
           <span *appTableColumnCellTemplate="let item; typeOf: transactions$" class="font-bold">{{
             item.realEstateValue | number
           }}</span>
         </ng-container>
-        <ng-container appTableColumnTemplate columnName="area_in_square_feet">
+        <ng-container appTableColumnTemplate [columnName]="pageSections.TRANSACTIONS_TABLE.columns.AREA">
           <span *appTableColumnHeaderTemplate>{{ lang.map.area_in_square_foot }}</span>
           <span *appTableColumnCellTemplate="let item; typeOf: transactions$" class="font-bold">
             {{ item.realEstateArea }}
           </span>
         </ng-container>
-        <!-- <ng-container appTableColumnTemplate columnName="square_feet_price">
+        <!-- <ng-container appTableColumnTemplate [columnName]="pageSections.TRANSACTIONS_TABLE.columns.SQUARE_PRICE">
             <span *appTableColumnHeaderTemplate>{{ lang.map.square_feet_price }}</span>
             <span *appTableColumnCellTemplate="let item; typeOf: transactions" class="font-bold">{{
               item.priceMT | number : "1.0-0"
             }}</span>
           </ng-container> -->
-        <ng-container appTableColumnTemplate columnName="issue_date">
+        <ng-container appTableColumnTemplate [columnName]="pageSections.TRANSACTIONS_TABLE.columns.ISSUE_DATE">
           <div *appTableColumnHeaderTemplate class="flex justify-center">
             <div class="text-start">
               <p>{{ lang.map.issue_date }}</p>

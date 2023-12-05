@@ -17,6 +17,7 @@ import { QatarInteractiveMapComponent } from '@components/qatar-interactive-map/
 import { TableComponent } from '@components/table/table.component';
 import { TransactionsFilterComponent } from '@components/transactions-filter/transactions-filter.component';
 import { YoyIndicatorComponent } from '@components/yoy-indicator/yoy-indicator.component';
+import { APP_PAGES_SECTIONS } from '@constants/injection-tokens';
 import { CriteriaContract } from '@contracts/criteria-contract';
 import { ExtraHeaderPortalBridgeDirective } from '@directives/extra-header-portal-bridge.directive';
 import { TableColumnCellTemplateDirective } from '@directives/table-column-cell-template.directive';
@@ -75,6 +76,7 @@ export default class OwnershipIndicatorsPageComponent implements OnInit, AfterVi
   urlService = inject(UrlService);
   lookupService = inject(LookupService);
   sectionTitle = inject(SectionTitleService);
+  pageSections = inject(APP_PAGES_SECTIONS).OWNER_PAGE;
 
   destroy$ = new Subject<void>();
 

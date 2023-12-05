@@ -11,6 +11,7 @@ import { PurposeComponent } from '@components/purpose/purpose.component';
 import { StackedDurationChartComponent } from '@components/stacked-duration-chart/stacked-duration-chart.component';
 import { TableComponent } from '@components/table/table.component';
 import { TransactionsFilterComponent } from '@components/transactions-filter/transactions-filter.component';
+import { APP_PAGES_SECTIONS } from '@constants/injection-tokens';
 import { CriteriaContract } from '@contracts/criteria-contract';
 import { ExtraHeaderPortalBridgeDirective } from '@directives/extra-header-portal-bridge.directive';
 import { TableColumnCellTemplateDirective } from '@directives/table-column-cell-template.directive';
@@ -60,6 +61,7 @@ export default class OccupiedAndVacantIndicatorsPageComponent extends OnDestroyM
   urlService = inject(UrlService);
   lookupService = inject(LookupService);
   dialog = inject(DialogService);
+  pageSections = inject(APP_PAGES_SECTIONS).OCCUPATION_PAGE;
 
   municipalities = this.lookupService.ovLookups.municipalityList;
   zones = this.lookupService.ovLookups.zoneList;

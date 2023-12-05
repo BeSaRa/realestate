@@ -122,13 +122,13 @@
         [dataSource]="dataSource"
         [sortOptions]="[]"
         [defaultSortOption]="transactionsSortOptions[0]">
-        <ng-container appTableColumnTemplate columnName="municipality_id"
+        <ng-container appTableColumnTemplate [columnName]="pageSections.TRANSACTIONS_TABLE.columns.MUNICIPALITY"
           ><span *appTableColumnHeaderTemplate>{{ lang.map.municipal }}</span
           ><span *appTableColumnCellTemplate="let item; typeOf: transactions$">{{
             item.municipalityInfo.getNames()
           }}</span></ng-container
         >
-        <ng-container appTableColumnTemplate columnName="unit_details">
+        <ng-container appTableColumnTemplate [columnName]="pageSections.TRANSACTIONS_TABLE.columns.UNIT_DETAILS">
           <span *appTableColumnHeaderTemplate>{{ lang.map.unit_details }}</span>
           <div *appTableColumnCellTemplate="let item; typeOf: transactions$" class="flex justify-center">
             <div class="text-start">
@@ -144,19 +144,19 @@
             </div>
           </div>
         </ng-container>
-        <ng-container appTableColumnTemplate columnName="rental_value"
+        <ng-container appTableColumnTemplate [columnName]="pageSections.TRANSACTIONS_TABLE.columns.RENTAL_VALUE"
           ><span *appTableColumnHeaderTemplate>{{ lang.map.rental_value }}</span
           ><span *appTableColumnCellTemplate="let item; typeOf: transactions$">
             {{ item.rentPaymentMonthly ? item.rentPaymentMonthly : "---" }}</span
           >
         </ng-container>
-        <ng-container appTableColumnTemplate columnName="contract_start_date"
+        <ng-container appTableColumnTemplate [columnName]="pageSections.TRANSACTIONS_TABLE.columns.CONTRACT_START_DATE"
           ><span *appTableColumnHeaderTemplate>{{ lang.map.contract_start_date }}</span>
           <span *appTableColumnCellTemplate="let item; typeOf: transactions$">{{
             item.startDate | date : "YYYY-MM-dd"
           }}</span></ng-container
         >
-        <ng-container appTableColumnTemplate columnName="contract_end_date"
+        <ng-container appTableColumnTemplate [columnName]="pageSections.TRANSACTIONS_TABLE.columns.CONTRACT_END_DATE"
           ><span *appTableColumnHeaderTemplate>{{ lang.map.contract_end_date }}</span
           ><span *appTableColumnCellTemplate="let item; typeOf: transactions$">{{
             item.endDate | date : "YYYY-MM-dd"
