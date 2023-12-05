@@ -123,8 +123,8 @@
         [dataSource]="dataSource"
         [sortOptions]="[]"
         [defaultSortOption]="transactionsSortOptions[0]"
-        [tableGuardName]="pageSections.TRANSACTIONS_TABLE">
-        <ng-container appTableColumnTemplate columnName="location">
+        [tableGuardName]="pageSections.TRANSACTIONS_TABLE.name">
+        <ng-container appTableColumnTemplate [columnName]="pageSections.TRANSACTIONS_TABLE.columns.LOCATION">
           <div *appTableColumnHeaderTemplate class="flex justify-center">
             <div class="text-start">
               <p>{{ lang.map.location }}</p>
@@ -138,13 +138,13 @@
             </div>
           </div>
         </ng-container>
-        <ng-container appTableColumnTemplate columnName="sold_for">
+        <ng-container appTableColumnTemplate [columnName]="pageSections.TRANSACTIONS_TABLE.columns.SOLD_FOR">
           <span *appTableColumnHeaderTemplate>{{ lang.map.sold_for }}</span>
           <span *appTableColumnCellTemplate="let item; typeOf: transactions$" class="font-bold">{{
             item.realEstateValue | number
           }}</span>
         </ng-container>
-        <ng-container appTableColumnTemplate columnName="area_in_square_feet">
+        <ng-container appTableColumnTemplate [columnName]="pageSections.TRANSACTIONS_TABLE.columns.AREA">
           <span *appTableColumnHeaderTemplate>{{
             unitsService.isMeterSelected() ? lang.map.area_in_square_meter : lang.map.area_in_square_foot
           }}</span>
@@ -152,7 +152,7 @@
             unitsService.isMeterSelected() ? item.realEstateMT : item.realEstateSQT
           }}</span>
         </ng-container>
-        <ng-container appTableColumnTemplate columnName="square_feet_price">
+        <ng-container appTableColumnTemplate [columnName]="pageSections.TRANSACTIONS_TABLE.columns.SQUARE_PRICE">
           <span *appTableColumnHeaderTemplate>{{
             unitsService.isMeterSelected() ? lang.map.the_square_meter_price : lang.map.the_square_foot_price
           }}</span>
@@ -160,7 +160,7 @@
             (unitsService.isMeterSelected() ? item.priceMT : item.priceSQ) | number : "1.0-0"
           }}</span>
         </ng-container>
-        <ng-container appTableColumnTemplate columnName="issue_date">
+        <ng-container appTableColumnTemplate [columnName]="pageSections.TRANSACTIONS_TABLE.columns.ISSUE_DATE">
           <div *appTableColumnHeaderTemplate class="flex justify-center">
             <div class="text-start">
               <p>{{ lang.map.issue_date }}</p>
@@ -175,7 +175,7 @@
           </div>
         </ng-container>
 
-        <ng-container appTableColumnTemplate columnName="roi">
+        <ng-container appTableColumnTemplate [columnName]="pageSections.TRANSACTIONS_TABLE.columns.ROI">
           <span *appTableColumnHeaderTemplate>ROI</span>
           <span *appTableColumnCellTemplate="let item; typeOf: transactions$" class="font-bold">{{
             item.roi === null ? "---" : (item.roi | percent : "1.2")
