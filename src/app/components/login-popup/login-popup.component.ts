@@ -42,7 +42,7 @@ export class LoginPopupComponent {
   dialogRef = inject(MatDialogRef);
 
   form = this.fb.group({
-    identifier: ['', [CustomValidators.required, CustomValidators.maxLength(50), CustomValidators.pattern("LDAP_USERNAME")]],
+    identifier: ['', [CustomValidators.required, CustomValidators.maxLength(50)]],
     password: ['', [CustomValidators.required, CustomValidators.maxLength(50)]],
   });
 
