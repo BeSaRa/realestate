@@ -2,6 +2,7 @@ import { KpiBaseModel } from '@abstracts/kpi-base-model';
 import { CommonModule } from '@angular/common';
 import { Component, OnInit, inject } from '@angular/core';
 import { PageEvent } from '@angular/material/paginator';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { AreasChartComponent } from '@components/areas-chart/areas-chart.component';
 import { ButtonComponent } from '@components/button/button.component';
 import { KpiRootComponent } from '@components/kpi-root/kpi-root.component';
@@ -32,7 +33,7 @@ import { LookupService } from '@services/lookup.service';
 import { TranslationService } from '@services/translation.service';
 import { UrlService } from '@services/url.service';
 import { NgApexchartsModule } from 'ng-apexcharts';
-import { BehaviorSubject, Subject, combineLatest, switchMap, take, takeUntil } from 'rxjs';
+import { BehaviorSubject, Subject, combineLatest, finalize, switchMap, take, takeUntil } from 'rxjs';
 
 @Component({
   selector: 'app-occupied-and-vacant-indicators-page',
@@ -53,6 +54,7 @@ import { BehaviorSubject, Subject, combineLatest, switchMap, take, takeUntil } f
     TableColumnHeaderTemplateDirective,
     TableColumnCellTemplateDirective,
     SectionGuardDirective,
+    MatProgressSpinnerModule,
   ],
   templateUrl: './occupied-and-vacant-indicators-page.component.html',
   styleUrls: ['./occupied-and-vacant-indicators-page.component.scss'],
@@ -68,7 +70,6 @@ export default class OccupiedAndVacantIndicatorsPageComponent extends OnDestroyM
   municipalities = this.lookupService.ovLookups.municipalityList;
   zones = this.lookupService.ovLookups.zoneList;
   areas = this.lookupService.ovLookups.districtList;
-  occupancyStatuses = this.lookupService.ovLookups.occupancyStatusList;
   premiseCategories = this.lookupService.ovLookups.premiseCategoryList;
   premiseTypes = this.lookupService.ovLookups.premiseTypeList;
 
@@ -158,6 +159,10 @@ export default class OccupiedAndVacantIndicatorsPageComponent extends OnDestroyM
   transactions$ = this.transactionsSubject.asObservable();
   dataSource: AppTableDataSource<OccupancyTransaction> = new AppTableDataSource(this.transactions$);
   transactionsCount = 0;
+
+  readonly OccupationStatus = OccupationStatus;
+  selectedOccupancyStatus = OccupationStatus.VACANT;
+  isTransactionsLoading = false;
 
   paginateSubject = new BehaviorSubject({
     offset: 0,
@@ -294,17 +299,29 @@ export default class OccupiedAndVacantIndicatorsPageComponent extends OnDestroyM
     });
   }
 
+  onOccupancyStatusSelect(occupancyStatus: OccupationStatus) {
+    if (this.selectedOccupancyStatus === occupancyStatus) return;
+    this.selectedOccupancyStatus = occupancyStatus;
+    this.reloadSubject.next();
+  }
+
   private _listenToTransactionsReloadAndPaginate() {
     combineLatest([this.reload$, this.paginate$])
       .pipe(
         takeUntil(this.destroy$),
         switchMap(([, paginationOptions]) => {
+          this.isTransactionsLoading = true;
           const _criteria = {
             ...this.criteria.criteria,
             limit: paginationOptions.limit,
             offset: paginationOptions.offset,
-          } as CriteriaContract;
-          return this.dashboardService.loadOccupancyTransactions(_criteria);
+            occupancyStatus: this.selectedOccupancyStatus,
+          };
+          return this.dashboardService.loadOccupancyTransactions(_criteria).pipe(
+            finalize(() => {
+              this.isTransactionsLoading = false;
+            })
+          );
         })
       )
       .subscribe(({ count, transactionList }) => {

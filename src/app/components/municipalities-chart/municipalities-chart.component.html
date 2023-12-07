@@ -52,10 +52,9 @@
     </div>
     <div [ngClass]="{ hidden: selectedChartType === ChartType.BAR }" class="w-full mt-4">
       <app-qatar-interactive-map
-        [municipalitiesData]="getMapData()"
-        [label]="getMapLabel()"
-        [unit]="unit"
+        [seriesData]="mapSeriesData"
         [selectedMunicipalityId]="selectedMunicipality.id"
+        [unit]="unit"
         [useRentMunicipalityLookups]="useRentMunicipalityLookups"
         (selectedMunicipalityChanged)="onMapSelectedMunicipalityChanged($event)" />
     </div>

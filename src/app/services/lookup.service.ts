@@ -189,9 +189,9 @@ export class LookupService extends RegisterServiceMixin(class {}) implements Ser
           mort.districtList = mort.districtList.filter((i) => i.lookupKey !== -1 && i.lookupKey !== 0); // remove the all from zones
         }),
         tap(([rent, sell, mort, owner, ov, broker]) => {
-          this.rentLookups = rent;
-          this.sellLookups = this._addAllToDistrict(this._addAllToPropertyType(sell));
-          this.mortLookups = this._addAllToDistrict(this._addAllToPropertyType(mort));
+          this.rentLookups = this._addAllToMunicipalities(rent);
+          this.sellLookups = this._addAllToMunicipalities(this._addAllToDistrict(this._addAllToPropertyType(sell)));
+          this.mortLookups = this._addAllToMunicipalities(this._addAllToDistrict(this._addAllToPropertyType(mort)));
           this.ownerLookups = this._addAllToOwnerCategories(
             this._addStatePropertyToOwnerCategories(
               this._addAllToNationalities(
@@ -199,7 +199,9 @@ export class LookupService extends RegisterServiceMixin(class {}) implements Ser
               )
             )
           );
-          this.ovLookups = this._addAllToPremiseCategories(this._addAllToPremiseTypes(ov));
+          this.ovLookups = this._addAllToMunicipalities(
+            this._addAllToPremiseCategories(this._addAllToPremiseTypes(ov))
+          );
           // remove unknown district from owner lookups until it removed from be
           this.ownerLookups.districtList = this.ownerLookups.districtList.filter((item) => item.lookupKey !== 0);
           this.brokerLookups = broker;

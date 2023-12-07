@@ -88,7 +88,6 @@ export class TransactionsFilterComponent implements OnInit, OnDestroy {
   @Input() areas: Lookup[] = [];
   @Input() nationalities: Lookup[] = [];
   @Input() ownerTypes: Lookup[] = [];
-  @Input() occupancyStatuses: Lookup[] = [];
   @Input() premiseCategories: Lookup[] = [];
   @Input() premiseTypes: Lookup[] = [];
   @Input() brokerCategoryList: Lookup[] = [];
@@ -210,7 +209,6 @@ export class TransactionsFilterComponent implements OnInit, OnDestroy {
       streetNo: [],
       nationalityCode: [],
       ownerCategoryCode: [],
-      occupancyStatus: [],
       premiseCategoryList: [],
       premiseTypeList: [],
       brokerCategoryId: [],
@@ -299,10 +297,6 @@ export class TransactionsFilterComponent implements OnInit, OnDestroy {
     return this.form.get('ownerCategoryCode') as AbstractControl;
   }
 
-  get occupancyStatus(): AbstractControl {
-    return this.form.get('occupancyStatus') as AbstractControl;
-  }
-
   get premiseCategoryList(): AbstractControl {
     return this.form.get('premiseCategoryList') as AbstractControl;
   }
@@ -364,7 +358,6 @@ export class TransactionsFilterComponent implements OnInit, OnDestroy {
       furnitureStatus: this.furnitureStatus.length ? -1 : undefined,
       nationalityCode: -1,
       ownerCategoryCode: -1,
-      occupancyStatus: 0,
       premiseCategoryList: [-1],
       premiseTypeList: [-1],
       brokerCategoryId: 2,
@@ -752,7 +745,6 @@ export class TransactionsFilterComponent implements OnInit, OnDestroy {
     if (!this.isOV()) {
       delete value.issueDateMonth;
 
-      delete value.occupancyStatus;
       delete value.premiseCategoryList;
       delete value.premiseTypeList;
     }
