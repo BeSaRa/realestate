@@ -5,31 +5,32 @@
   </h3>
   <div *ngIf="accordingToList.length" class="bg-sand shadow rounded-xl p-2 self-center mt-5">
     <ul class="flex flex-wrap gap-2">
-      <li class="flex-1" *ngFor="let item of accordingToList">
-        <app-button
-          class="relative min-w-max w-max whitespace-nowrap"
-          (click)="selectAccordingTo(item)"
-          [disabled]="item.disabled || !item.criteriaTerms.validate(criteria)"
-          [buttonStyle]="item.id === selectedAccordingTo.id ? 'secondary' : 'none-primary'"
-          appCustomTooltip
-          [tooltipContent]="
-            item.disabled
-              ? disabledTooltipTemplate
-              : !item.criteriaTerms.validate(criteria)
-              ? criteriaTooltipTemplate
-              : null
-          "
-          [tooltipContentContext]="item.criteriaTerms.getCriteriaTermsText()">
-          <span [ngClass]="{ 'text-transparent': isLoading && selectedAccordingTo.id === item.id }">{{
-            item.getNames()
-          }}</span>
-          <div class="absolute left-0 top-0 w-full h-full flex items-center justify-center">
-            <mat-spinner
-              diameter="20"
-              strokeWidth="2"
-              *ngIf="isLoading && selectedAccordingTo.id === item.id"></mat-spinner></div
-        ></app-button>
-      </li>
+      <ng-container *ngFor="let item of accordingToList">
+        <li *ngIf="!item.disabled" class="flex-1">
+          <app-button
+            class="relative min-w-max w-max whitespace-nowrap"
+            (click)="selectAccordingTo(item)"
+            [disabled]="item.disabled || !item.criteriaTerms.validate(criteria)"
+            [buttonStyle]="item.id === selectedAccordingTo.id ? 'secondary' : 'none-primary'"
+            appCustomTooltip
+            [tooltipContent]="
+              item.disabled
+                ? disabledTooltipTemplate
+                : !item.criteriaTerms.validate(criteria)
+                ? criteriaTooltipTemplate
+                : null
+            "
+            [tooltipContentContext]="item.criteriaTerms.getCriteriaTermsText()">
+            <span [ngClass]="{ 'text-transparent': isLoading && selectedAccordingTo.id === item.id }">{{
+              item.getNames()
+            }}</span>
+            <div class="absolute left-0 top-0 w-full h-full flex items-center justify-center">
+              <mat-spinner
+                diameter="20"
+                strokeWidth="2"
+                *ngIf="isLoading && selectedAccordingTo.id === item.id"></mat-spinner></div
+          ></app-button></li
+      ></ng-container>
     </ul>
   </div>
   <div dir="ltr">

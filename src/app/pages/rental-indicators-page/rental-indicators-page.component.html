@@ -271,13 +271,14 @@
           </ng-container>
           <!-- count -->
 
-          <ng-container matColumnDef="area">
-            <th mat-header-cell class="!text-white" mat-sort-header="area" *matHeaderCellDef>
+          <!-- <ng-container matColumnDef="area"> -->
+          <!-- <th mat-header-cell class="!text-white" mat-sort-header="area" *matHeaderCellDef>
               {{ lang.map.total_area }}
             </th>
             <!-- <td mat-cell *matCellDef="let element">{{ element.sumArea | formatNumbers : 0 }}</td> -->
-            <td mat-cell *matCellDef="let element">"{{ lang.map.data_is_being_collected_and_audited }}"</td>
-          </ng-container>
+          <td mat-cell *matCellDef="let element">"{{ lang.map.data_is_being_collected_and_audited }}"</td>
+          -->
+          <!-- </ng-container> -->
 
           <ng-container matColumnDef="units-count">
             <th mat-header-cell class="!text-white" mat-sort-header="units-count" *matHeaderCellDef>
@@ -286,8 +287,8 @@
             <td mat-cell *matCellDef="let element">{{ element.certificateCount | formatNumbers : 0 }}</td>
           </ng-container>
 
-          <ng-container matColumnDef="average-square">
-            <th mat-header-cell class="!text-white" mat-sort-header="average-square" *matHeaderCellDef>
+          <!-- <ng-container matColumnDef="average-square"> -->
+          <!-- <th mat-header-cell class="!text-white" mat-sort-header="average-square" *matHeaderCellDef>
               {{
                 unitsService.selectedUnit() === 1
                   ? lang.map.average_price_per_square_meter
@@ -295,8 +296,9 @@
               }}
             </th>
             <!-- <td mat-cell *matCellDef="let element">{{ element.unitSquareRentPayment() | formatNumbers : 2 }}</td> -->
-            <td mat-cell *matCellDef="let element">"{{ lang.map.data_is_being_collected_and_audited }}"</td>
-          </ng-container>
+          <td mat-cell *matCellDef="let element">"{{ lang.map.data_is_being_collected_and_audited }}"</td>
+          -->
+          <!-- </ng-container> -->
 
           <ng-container matColumnDef="chart">
             <th mat-header-cell class="!text-white" *matHeaderCellDef>{{ lang.map.chart }}</th>
