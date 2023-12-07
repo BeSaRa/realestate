@@ -152,7 +152,7 @@ export default class OwnershipIndicatorsPageComponent implements OnInit, AfterVi
       purposeUrl: this.urlService.URLS.OWNER_KPI8,
       propertyTypeUrl: this.urlService.URLS.OWNER_KPI9,
       iconUrl: 'assets/icons/kpi/svg/owner/3.svg',
-      nationalityCategoryId: 2,
+      nationalityCategoryId: 3,
     }),
     new KpiRoot().clone<KpiRoot & { nationalityCategoryId: number | null }>({
       id: 71,
@@ -162,7 +162,7 @@ export default class OwnershipIndicatorsPageComponent implements OnInit, AfterVi
       purposeUrl: this.urlService.URLS.OWNER_KPI8_1,
       propertyTypeUrl: this.urlService.URLS.OWNER_KPI9_1,
       iconUrl: 'assets/icons/kpi/svg/owner/3.svg',
-      nationalityCategoryId: 3,
+      nationalityCategoryId: 2,
     }),
   ] as (KpiRoot & { nationalityCategoryId: number | null })[];
 

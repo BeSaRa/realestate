@@ -6,6 +6,10 @@
   background-color: transparent !important;
 }
 
-.gradient-legend {
+.gradient-legend-primary {
   background: linear-gradient(rgba(138, 21, 56, 1), rgba(138, 21, 56, 0.2));
+}
+
+.gradient-legend-secondary {
+  background: linear-gradient(rgba(162, 148, 117, 1), rgba(162, 148, 117, 0.2));
 }

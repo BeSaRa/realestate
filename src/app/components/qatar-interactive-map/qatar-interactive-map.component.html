@@ -1,4 +1,6 @@
-<div class="flex justify-between items-start p-4 border border-primary rounded-lg">
+<div
+  class="flex justify-between items-start p-4 border rounded-lg transition-all"
+  [ngClass]="{ 'border-primary': selectedSeriesIndex % 2 === 0, 'border-secondary': selectedSeriesIndex % 2 === 1 }">
   <div></div>
   <div class="w-[200px]">
     <svg class="h-full" viewBox="150 0 300 600">
@@ -6,9 +8,11 @@
         <path
           *ngFor="let municipalitySvgPath of municipalitiesSvgPath"
           [ngStyle]="{ opacity: getOpacity(municipalitiesDataMap[municipalitySvgPath.id].getKpiVal()) }"
-          class="fill-primary stroke-primary stroke-1 cursor-pointer transition-all hover:brightness-[0.25] hover:stroke-[4] hover:stroke-white"
+          class="stroke-1 cursor-pointer transition-all hover:brightness-[0.25] hover:stroke-[4] hover:stroke-white"
           [ngClass]="{
-            'brightness-50 stroke-[4] stroke-white': selectedMunicipalityId === municipalitySvgPath.id
+            'brightness-50 stroke-[4] stroke-white': selectedMunicipalityId === municipalitySvgPath.id,
+            'fill-primary stroke-primary': selectedSeriesIndex % 2 === 0,
+            'fill-secondary stroke-secondary': selectedSeriesIndex % 2 === 1
           }"
           [attr.d]="municipalitySvgPath.path"
           (click)="onMunicipalityClick(municipalitiesDataMap[municipalitySvgPath.id])"
@@ -20,16 +24,38 @@
             originY: 'top',
             overlayX: 'center',
             overlayY: 'center',
-          }"
-          matTooltipClass="!bg-secondary rounded-md" />
+          }" />
       </g>
     </svg>
+    <mat-radio-group
+      *ngIf="seriesData.length > 1"
+      class="mt-3 flex items-center justify-center gap-2 flex-wrap"
+      [formControl]="selectedSeriesControl">
+      <mat-radio-button
+        [color]="i % 2 === 0 ? 'primary' : 'accent'"
+        *ngFor="let item of seriesData; let i = index"
+        class="font-semibold text-primary"
+        [value]="i"
+        ><span [ngClass]="{ 'text-primary': i % 2 === 0, 'text-secondary': i % 2 === 1 }">{{
+          item.label
+        }}</span></mat-radio-button
+      >
+    </mat-radio-group>
   </div>
   <div class="py-4 flex flex-col justify-between items-end self-stretch gap-8">
-    <div class="bg-white border border-primary rounded-md overflow-hidden">
-      <div class="bg-primary text-white font-bold px-2 py-1">{{ getName(selectedMunicipalityId) }}</div>
+    <div
+      class="bg-white border rounded-md overflow-hidden transition-all"
+      [ngClass]="{
+        'border-primary': selectedSeriesIndex % 2 === 0,
+        'border-secondary': selectedSeriesIndex % 2 === 1
+      }">
+      <div
+        class="text-white font-bold px-2 py-1 transition-all"
+        [ngClass]="{ 'bg-primary': selectedSeriesIndex % 2 === 0, 'bg-secondary': selectedSeriesIndex % 2 === 1 }">
+        {{ getName(selectedMunicipalityId) }}
+      </div>
       <div class="flex justify-between items-end px-2 py-1 gap-2">
-        <span>{{ label }}: </span>
+        <span>{{ getLabel() }}: </span>
         <span class="font-bold">{{ getFormatedValue(getSelectedMunicipality().getKpiVal()) }}</span>
       </div>
     </div>
@@ -38,15 +64,24 @@
         <span>{{ getFormatedValue(minMaxKpis.max) }} ({{ unit }})</span>
         <span>{{ getFormatedValue(minMaxKpis.min) }} ({{ unit }})</span>
       </div>
-      <div class="gradient-legend flex-1 h-full w-5"></div>
+      <div
+        class="flex-1 h-full w-5 transition-all"
+        [ngClass]="{
+          'gradient-legend-primary': selectedSeriesIndex % 2 === 0,
+          'gradient-legend-secondary': selectedSeriesIndex % 2 === 1
+        }"></div>
     </div>
   </div>
 </div>
 
 <ng-template #tooltipTemplate let-municipality>
-  <div class="bg-secondary text-white font-bold px-2 py-1">{{ getName(municipality.municipalityId) }}</div>
+  <div
+    class="bg-secondary text-white font-bold px-2 py-1 transition-all"
+    [ngClass]="{ 'bg-primary': selectedSeriesIndex % 2 === 0, 'bg-secondary': selectedSeriesIndex % 2 === 1 }">
+    {{ getName(municipality.municipalityId) }}
+  </div>
   <div class="flex justify-between px-2 py-1 gap-2">
-    <span>{{ label }}: </span>
+    <span>{{ getLabel() }}: </span>
     <span class="font-bold">{{ getFormatedValue(municipality.getKpiVal()) }}</span>
   </div>
 </ng-template>

@@ -75,6 +75,8 @@ export class MunicipalitiesChartComponent extends OnDestroyMixin(class {}) imple
 
   isLoading = false;
 
+  mapSeriesData = [{ label: '', data: [] as (KpiBaseModel & { municipalityId: number })[] }];
+
   ngOnChanges(changes: SimpleChanges): void {
     if (
       (changes['rootData'] && changes['rootData'].currentValue !== changes['rootData'].previousValue) ||
@@ -135,6 +137,7 @@ export class MunicipalitiesChartComponent extends OnDestroyMixin(class {}) imple
       .subscribe((data) => {
         this.seriesData = data;
         this.seriesDataLength = data[Object.keys(this.seriesNames)[0] as unknown as number].length;
+        this.updateMapSeriesData();
         this.updateChartOptions();
       });
   }
@@ -184,6 +187,16 @@ export class MunicipalitiesChartComponent extends OnDestroyMixin(class {}) imple
     }, 0);
   }
 
+  updateMapSeriesData() {
+    this.mapSeriesData = [];
+    Object.keys(this.seriesNames ?? []).forEach((key, i) => {
+      this.mapSeriesData.push({
+        label: this.seriesNames[key as unknown as number],
+        data: this.seriesData[key as unknown as number],
+      });
+    });
+  }
+
   onMapSelectedMunicipalityChanged(event: KpiBaseModel & { municipalityId: number }) {
     const _pointIndex = (this.selectedMunicipality.dataPointIndex = this.seriesData[
       Object.keys(this.seriesNames)[0] as unknown as number
@@ -195,18 +208,6 @@ export class MunicipalitiesChartComponent extends OnDestroyMixin(class {}) imple
     this.selectedMunicipality.dataPointIndex = _pointIndex;
 
     this.selectedMunicipalityChanged.emit({ municipalityId: this.selectedMunicipality.id });
-  }
-
-  getMapData() {
-    return Object.keys(this.seriesNames).length === 1
-      ? this.seriesData[Object.keys(this.seriesNames) as unknown as number] ?? []
-      : this.seriesData[this.criteria[this.bindDataSplitProp as keyof CriteriaContract] as number] ?? [];
-  }
-
-  getMapLabel() {
-    return Object.keys(this.seriesNames).length === 1
-      ? this.seriesNames[Object.keys(this.seriesNames)[0] as unknown as number]
-      : this.seriesNames[this.criteria[this.bindDataSplitProp as keyof CriteriaContract] as number];
   }
 
   private _getLabel(item: unknown): string {

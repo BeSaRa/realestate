@@ -63,17 +63,6 @@
       *ngIf="isOV()"
       [enableFilter]="true"
       bindFilter="getNames"
-      formControlName="occupancyStatus"
-      bindValue="lookupKey"
-      [label]="lang.map.occupancy_status"
-      bindLabel="getNames"
-      [options]="occupancyStatuses"
-      [isSecondary]="isOpened" />
-
-    <app-select-input
-      *ngIf="isOV()"
-      [enableFilter]="true"
-      bindFilter="getNames"
       formControlName="premiseCategoryList"
       [isMultiple]="true"
       bindValue="lookupKey"
@@ -230,7 +219,7 @@
         [isSecondary]="true" />
 
       <app-select-input
-        *ngIf="!isOwner() && !isOV() && !isBroker()"
+        *ngIf="isSell()"
         [formControl]="unitsControl"
         bindLabel="getNames"
         bindValue="lookupKey"
@@ -244,9 +233,9 @@
       <!--        [options]="spaces" />-->
 
       <!-- street input was removed from mortgage filter as requested by QA -->
-      <app-input *ngIf="!isMort()" formControlName="streetNo" [label]="lang.map.street" [isSecondary]="true">
+      <!-- <app-input *ngIf="!isMort()" formControlName="streetNo" [label]="lang.map.street" [isSecondary]="true">
         <input appControl formControlName="streetNo" class="text-gray-500" mask="9999" />
-      </app-input>
+      </app-input> -->
       <ng-container *ngIf="isRent()">
         <app-input
           formControlName="rentPaymentMonthlyPerUnitFrom"
@@ -303,7 +292,7 @@
          </app-input>
       </ng-container> -->
 
-      <app-input formControlName="areaFrom" [label]="lang.map.area_from" [isSecondary]="true">
+      <app-input *ngIf="!isRent()" formControlName="areaFrom" [label]="lang.map.area_from" [isSecondary]="true">
         <input
           appControl
           [placeholder]="lang.map.value_in_square_meter"
@@ -313,7 +302,7 @@
           thousandSeparator=","
           [maxlength]="areaMaxLength" />
       </app-input>
-      <app-input formControlName="areaTo" [label]="lang.map.area_to" [isSecondary]="true">
+      <app-input *ngIf="!isRent()" formControlName="areaTo" [label]="lang.map.area_to" [isSecondary]="true">
         <input
           appControl
           [placeholder]="lang.map.value_in_square_meter"
