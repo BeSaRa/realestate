@@ -460,6 +460,7 @@ export class TransactionsFilterComponent implements OnInit, OnDestroy {
   listenToUnitChange() {
     this.unitsControl.valueChanges.pipe(takeUntil(this.destroy$)).subscribe((value) => {
       this.unitsService.setUnit(value as SqUnit);
+      this.sendFilter(CriteriaType.USER)
     });
   }
 
@@ -644,6 +645,10 @@ export class TransactionsFilterComponent implements OnInit, OnDestroy {
 
   sendFilter(criteriaType: CriteriaType): void {
     let value = { ...this.form.value };
+    if (!this.unitsService.isMeterSelected()) { // the backend is assumin that always this filter value is in meters
+      value.areaFrom = value.areaFrom / 10.8;
+      value.areaTo = value.areaTo / 10.8;
+    }
     if (this.displayYear) {
       const date = new Date();
       date.getFullYear() === value.issueDateYear ? (value.issueDateEndMonth = date.getMonth() + 1) : null;
