@@ -179,6 +179,7 @@ export class StackedDurationChartComponent
         })
       )
       .subscribe((data) => {
+        data.sort((a, b) => a.issueYear - b.issueYear);
         const _data = this._splitAccordingToDataSplitProp(data);
 
         this.chartSeriesData = Object.keys(this.seriesNames).map((type) => ({

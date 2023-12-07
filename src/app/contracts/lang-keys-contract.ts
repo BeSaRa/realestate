@@ -198,7 +198,7 @@ export interface LangKeysContract {
   max_value: string;
   min_value: string;
   max_length: string;
-  only_english_letters_numbers_underscores_and_hyphens : string;
+  only_english_letters_numbers_underscores_and_hyphens: string;
 
   sort_order: string;
   most_recent: string;
@@ -390,6 +390,7 @@ export interface LangKeysContract {
   there_is_no_data_for_brokers_matching_the_specified_filters: string;
   unknown_error_occured_when_login: string;
   value_in_square_meter: string;
+  value_in_square_foot: string;
   we_couldnt_find_the_page_you_were_looking_for: string;
   back_to_home: string;
 }
