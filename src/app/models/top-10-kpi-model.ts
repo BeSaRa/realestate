@@ -23,6 +23,6 @@ export class Top10KpiModel {
   getKpiVal() {
     if (this.kpiVal !== undefined) return this.kpiVal;
     if (this.priceMT !== undefined) return this._unitsService.isMeterSelected() ? this.priceMT : this.priceSQ;
-    return this._unitsService.isMeterSelected() ? this.realEstateMT : this.realEstateMT;
+    return this._unitsService.isMeterSelected() ? this.realEstateMT : this.realEstateSQT;
   }
 }
