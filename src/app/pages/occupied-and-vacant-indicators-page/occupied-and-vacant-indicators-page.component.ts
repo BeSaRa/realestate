@@ -144,7 +144,7 @@ export default class OccupiedAndVacantIndicatorsPageComponent extends OnDestroyM
   };
 
   municipalityLabel = (item: { kpiVal: number; municipalityId: number }) => {
-    return this.lookupService.sellMunicipalitiesMap[item.municipalityId].getNames();
+    return this.lookupService.ovMunicipalitiesMap[item.municipalityId].getNames();
   };
 
   selectedMunicipalityId = 1;

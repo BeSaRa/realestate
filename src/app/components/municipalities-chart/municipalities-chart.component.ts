@@ -120,8 +120,8 @@ export class MunicipalitiesChartComponent extends OnDestroyMixin(class {}) imple
       .pipe(map((data) => data as unknown as (KpiBaseModel & { municipalityId: number })[]))
       .pipe(
         map((data) => {
+          data.sort((a, b) => a.getKpiVal() - b.getKpiVal());
           if (Object.keys(this.seriesNames).length === 1) {
-            data.sort((a, b) => a.getKpiVal() - b.getKpiVal());
             return { [Object.keys(this.seriesNames)[0] as unknown as number]: data };
           }
           const _data = {} as Record<number, typeof data>;

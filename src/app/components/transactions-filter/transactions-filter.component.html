@@ -168,7 +168,7 @@
     </app-input>
 
     <!-- [isMultiple]="true" should be added -->
-    <app-select-input
+    <!-- <app-select-input
       *ngIf="isOwner()"
       [enableFilter]="true"
       bindFilter="getNames"
@@ -176,7 +176,7 @@
       bindValue="lookupKey"
       [label]="lang.map.owner_type"
       bindLabel="getNames"
-      [options]="ownerTypes" />
+      [options]="ownerTypes" /> -->
 
     <!-- broker name filter -->
     <app-input *ngIf="isBroker()" [formControl]="brokerNameControl" [label]="lang.map.broker_name">
@@ -295,7 +295,9 @@
       <app-input *ngIf="!isRent()" formControlName="areaFrom" [label]="lang.map.area_from" [isSecondary]="true">
         <input
           appControl
-          [placeholder]="lang.map.value_in_square_meter"
+          [placeholder]="
+            unitsService.isMeterSelected() ? lang.map.value_in_square_meter : lang.map.value_in_square_foot
+          "
           formControlName="areaFrom"
           class="text-gray-500"
           mask="separator"
@@ -305,7 +307,9 @@
       <app-input *ngIf="!isRent()" formControlName="areaTo" [label]="lang.map.area_to" [isSecondary]="true">
         <input
           appControl
-          [placeholder]="lang.map.value_in_square_meter"
+          [placeholder]="
+            unitsService.isMeterSelected() ? lang.map.value_in_square_meter : lang.map.value_in_square_foot
+          "
           formControlName="areaTo"
           class="text-gray-500"
           mask="separator"

@@ -356,7 +356,12 @@ export default class RentalIndicatorsPageComponent implements OnInit, OnDestroy 
     { criteriaKey: 'purposeList', term: CriteriaTerms.SINGLE_NOT_ALL },
   ]);
 
-  transactionsStatisticsColumns = ['average', 'certificates-count', 'area', 'units-count', 'average-square', 'chart'];
+  transactionsStatisticsColumns = [
+    'average',
+    'certificates-count',
+    /* 'area',*/ 'units-count',
+    /*'average-square',*/ 'chart',
+  ];
 
   purposeTableCriteriaTerms = new CriteriaSpecificTerms([
     'zoneId',
@@ -432,7 +437,7 @@ export default class RentalIndicatorsPageComponent implements OnInit, OnDestroy 
         switchMap(() => {
           return combineLatest([this.reload$, this.basedOn$]).pipe(
             switchMap(([, basedOn]) => {
-              this.transactionsStatisticsColumns.length === 7
+              this.transactionsStatisticsColumns.length === 5
                 ? (this.transactionsStatisticsColumns[0] = basedOn)
                 : this.transactionsStatisticsColumns.unshift(basedOn);
               this.selectedIndicators = basedOn;

@@ -151,7 +151,7 @@ export default class OwnershipIndicatorsPageComponent implements OnInit, AfterVi
       url: this.urlService.URLS.OWNER_KPI7,
       purposeUrl: this.urlService.URLS.OWNER_KPI8,
       propertyTypeUrl: this.urlService.URLS.OWNER_KPI9,
-      iconUrl: 'assets/icons/kpi/svg/owner/3.svg',
+      iconUrl: 'assets/icons/kpi/svg/owner/2.svg',
       nationalityCategoryId: 3,
     }),
     new KpiRoot().clone<KpiRoot & { nationalityCategoryId: number | null }>({
