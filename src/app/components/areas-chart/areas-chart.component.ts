@@ -101,8 +101,8 @@ export class AreasChartComponent extends OnDestroyMixin(class {}) implements OnC
         map((data) => {
           // sorting logic
           data[Object.keys(this.seriesNames)[0] as unknown as number].sort((a, b) => {
-            let _sumA = a.getKpiVal();
-            let _sumB = b.getKpiVal();
+            let _sumA = a?.getKpiVal() ?? 0;
+            let _sumB = b?.getKpiVal() ?? 0;
             Object.keys(data).forEach((key, index) => {
               if (index === 0) return;
 
@@ -143,7 +143,7 @@ export class AreasChartComponent extends OnDestroyMixin(class {}) implements OnC
 
   updateChartOptions() {
     const _minMaxAvg = minMaxAvg(
-      this.seriesData[Object.keys(this.seriesNames)[0] as unknown as number].map((item) => item.getKpiVal())
+      this.seriesData[Object.keys(this.seriesNames)[0] as unknown as number].map((item) => item?.getKpiVal() ?? 0)
     );
     this.chart.first
       ?.updateOptions({
@@ -151,7 +151,7 @@ export class AreasChartComponent extends OnDestroyMixin(class {}) implements OnC
           name: this.seriesNames[key as unknown as number],
           data: this.seriesData[key as unknown as number].map((item) => ({
             x: this._getLabel(item),
-            y: item.getKpiVal(),
+            y: item?.getKpiVal() ?? 0,
           })),
         })),
         chart: { stacked: Object.keys(this.seriesNames).length !== 1 },

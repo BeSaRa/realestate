@@ -154,7 +154,8 @@ export default class OccupiedAndVacantIndicatorsPageComponent extends OnDestroyM
     [OccupationStatus.OCCUPIED]: this.lang.map.occupied,
   };
 
-  areaLabel = (item: { kpiVal: number; zoneNo: number }) => this.lookupService.ovZonesMap[item.zoneNo].getNames();
+  areaLabel = (item: { kpiVal: number; zoneNo: number }) =>
+    this.lookupService.ovZonesMap[item?.zoneNo]?.getNames() ?? '';
 
   transactionsSubject = new BehaviorSubject<OccupancyTransaction[]>([]);
   transactions$ = this.transactionsSubject.asObservable();
