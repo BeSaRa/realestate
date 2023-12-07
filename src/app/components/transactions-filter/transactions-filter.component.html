@@ -49,7 +49,7 @@
       [options]="propertyTypes" />
 
     <app-select-input
-      *ngIf="!isOV() && !isBroker()"
+      *ngIf="!isOV() && !isBroker() && !isMort()"
       [enableFilter]="true"
       bindFilter="getNames"
       formControlName="purposeList"
