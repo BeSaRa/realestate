@@ -466,7 +466,6 @@ export default class RentalIndicatorsPageComponent implements OnInit, OnDestroy 
 
   filterChange({ criteria, type }: { criteria: CriteriaContract; type: CriteriaType }) {
     this.criteria = { criteria: { ...criteria, limit: 5 }, type };
-
     this.rootKPIS.map((item) => {
       this.dashboardService
         .loadKpiRoot(item, this.criteria.criteria)

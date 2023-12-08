@@ -16,6 +16,7 @@ export interface CriteriaContract {
   zoneId: number;
   offset?: number;
   limit?: number;
+  bedRoomsCount?: number;
   // not related to model
   halfYearDuration: number;
 }

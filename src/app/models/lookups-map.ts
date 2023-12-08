@@ -27,7 +27,7 @@ export class LookupsMap implements LookupsContract {
     new Lookup().clone<Lookup>({
       arName: 'غير محدد',
       enName: 'indefinite',
-      lookupKey: undefined,
+      lookupKey: null as unknown as undefined,
     }),
     new Lookup().clone<Lookup>({
       arName: 'ستوديو',

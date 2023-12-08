@@ -1,7 +1,7 @@
 import { inject, Injectable } from '@angular/core';
-import { authentication, createDirectus, DirectusClient, refresh, rest, RestClient } from '@directus/sdk';
+import { authentication, AuthenticationClient, createDirectus, DirectusClient, rest, RestClient } from '@directus/sdk';
 import { DirectusSchemaContract } from '@contracts/directus-schema-contract';
-import { d as AuthenticationClient } from '@directus/sdk/dist/login-93da9005';
+
 import { ConfigService } from '@services/config.service';
 import { delay, of, switchMap } from 'rxjs';
 

@@ -153,7 +153,7 @@ export class TransactionsFilterComponent implements OnInit, OnDestroy {
       propertyTypeList: [],
       purposeList: [],
       issueDateQuarterList: [],
-      bedRoomsCount: [],
+      bedRoomsCount: [null],
       furnitureStatus: [],
 
       issueDateYear: [],
@@ -356,7 +356,7 @@ export class TransactionsFilterComponent implements OnInit, OnDestroy {
       issueDateEndMonth: 12,
       areaCode: -1,
       unit: this.isRent() ? 1 : 2,
-      bedRoomsCount: undefined,
+      bedRoomsCount: null,
       furnitureStatus: this.furnitureStatus.length ? -1 : undefined,
       nationalityCode: -1,
       ownerCategoryCode: -1,
@@ -764,9 +764,11 @@ export class TransactionsFilterComponent implements OnInit, OnDestroy {
     }
 
     Object.keys(value).forEach((key) => {
-      if ((typeof value[key] === 'string' && value[key] === '') || value[key] === null) delete value[key];
+      if ((typeof value[key] === 'string' && value[key] === '') || value[key] === null) {
+        delete value[key];
+      }
       if (Array.isArray(value[key]) && value[key].length === 0) delete value[key];
-      typeof value[key] === 'undefined' && key !== 'bedRoomsCount' ? delete value[key] : null;
+      typeof value[key] === 'undefined' ? delete value[key] : null;
     });
     return value;
   }

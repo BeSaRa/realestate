@@ -461,7 +461,6 @@ export default class SellIndicatorsPageComponent implements OnInit, OnDestroy {
 
   filterChange({ criteria, type }: { criteria: CriteriaContract; type: CriteriaType }) {
     this.criteria = { criteria, type };
-
     this.rootKPIS.map((item) => {
       this.dashboardService
         .loadKpiRoot(item, this.criteria.criteria)
