@@ -24,17 +24,40 @@
     <div
       [ngClass]="{ 'clipped-header': !lang.isLtr, 'clipped-header-ltr': lang.isLtr }"
       class="bg-gradient-to-l ltr:bg-gradient-to-r from-primary/90 to-gray-800/90 absolute inset-0 bg-cover bg-center h-[450px] w-full pt-32 px-3 lg:px-10">
-      <div class="h-60 flex flex-col justify-center" id="logo-side">
+      <div
+        *ngIf="(portalService.portal$ | async) === undefined"
+        class="h-60 flex flex-col justify-center"
+        id="logo-side">
         <h1 class="text-3xl sm:text-4xl md:text-5xl font-semibold">{{ lang.map.qatar_real_estate_platform }}</h1>
         <h2 class="text-xl sm:text-2xl md:text-3xl font-semibold">
           {{ lang.toggleMap.qatar_real_estate_platform }} -
           <span class="text-gray-400 font-normal">({{ lang.map.trial_run }})</span>
         </h2>
         <h2
-          *ngIf="portalService.portal$ | async as portal"
+          *ngIf="portalService.subTitle$ | async as subTitle"
           class="text-xl sm:text-2xl md:text-3xl font-semibold flex flex-col gap-3 items-center text-secondary">
-          <ng-container [cdkPortalOutlet]="portal"></ng-container>
+          {{ subTitle }}
+          <!-- <ng-container [cdkPortalOutlet]="portal"></ng-container> -->
         </h2>
+      </div>
+      <div
+        *ngIf="portalService.portal$ | async as portal"
+        class="flex flex-col justify-start -mt-4 lg:mt-0 lg:flex-row lg:justify-between items-center h-60">
+        <div class="h-60 flex flex-col justify-center items-center lg:items-start" id="logo-side">
+          <h1 class="text-2xl sm:text-3xl md:text-4xl font-semibold">{{ lang.map.qatar_real_estate_platform }}</h1>
+          <h2 class="text-lg sm:text-xl md:text-2xl font-semibold">
+            {{ lang.toggleMap.qatar_real_estate_platform }} -
+            <span class="text-gray-400 font-normal">({{ lang.map.trial_run }})</span>
+          </h2>
+          <h2
+            *ngIf="portalService.subTitle$ | async as subTitle"
+            class="text-xl sm:text-2xl md:text-3xl font-semibold flex flex-col gap-3 items-center text-secondary">
+            {{ subTitle }}
+          </h2>
+        </div>
+        <div id="slider-side" class="flex flex-col gap-2 text-sm md:text-base -mt-10 lg:mt-0">
+          <ng-container [cdkPortalOutlet]="portal"></ng-container>
+        </div>
       </div>
     </div>
   </div>
