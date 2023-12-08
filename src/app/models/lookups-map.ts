@@ -25,6 +25,11 @@ export class LookupsMap implements LookupsContract {
   maxParams!: ParamRange[];
   rooms = [
     new Lookup().clone<Lookup>({
+      arName: 'غير محدد',
+      enName: 'indefinite',
+      lookupKey: undefined,
+    }),
+    new Lookup().clone<Lookup>({
       arName: 'ستوديو',
       enName: 'Studio',
       lookupKey: 0,
@@ -63,11 +68,6 @@ export class LookupsMap implements LookupsContract {
       arName: 'سبع غرف',
       enName: 'Seven Rooms',
       lookupKey: 7,
-    }),
-    new Lookup().clone<Lookup>({
-      arName: 'غير محدد',
-      enName: 'indefinite',
-      lookupKey: undefined,
     }) /*
     new Lookup().clone<Lookup>({
       arName: 'ثماني غرف',

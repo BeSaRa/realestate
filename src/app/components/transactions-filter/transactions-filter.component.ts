@@ -766,7 +766,7 @@ export class TransactionsFilterComponent implements OnInit, OnDestroy {
     Object.keys(value).forEach((key) => {
       if ((typeof value[key] === 'string' && value[key] === '') || value[key] === null) delete value[key];
       if (Array.isArray(value[key]) && value[key].length === 0) delete value[key];
-      typeof value[key] === 'undefined' ? delete value[key] : null;
+      typeof value[key] === 'undefined' && key !== 'bedRoomsCount' ? delete value[key] : null;
     });
     return value;
   }
