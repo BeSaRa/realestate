@@ -1,6 +1,6 @@
 import { animate, state, style, transition, trigger } from '@angular/animations';
 import { CommonModule, DatePipe } from '@angular/common';
-import { Component, EventEmitter, HostListener, Input, OnDestroy, OnInit, Output, inject } from '@angular/core';
+import { Component, EventEmitter, HostListener, inject, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { AbstractControl, FormControl, ReactiveFormsModule, UntypedFormBuilder } from '@angular/forms';
 import { DateAdapter, MatNativeDateModule, MatRippleModule } from '@angular/material/core';
 import { MatDatepickerModule } from '@angular/material/datepicker';
@@ -32,7 +32,7 @@ import { range } from '@utils/utils';
 import { CustomValidators } from '@validators/custom-validators';
 import { NgResizeObserver, ngResizeObserverProviders } from 'ng-resize-observer';
 import { NgxMaskDirective } from 'ngx-mask';
-import { Subject, debounceTime, filter, map, takeUntil, tap } from 'rxjs';
+import { debounceTime, filter, map, Subject, takeUntil, tap } from 'rxjs';
 
 @Component({
   selector: 'app-transactions-filter',
@@ -330,6 +330,8 @@ export class TransactionsFilterComponent implements OnInit, OnDestroy {
     this.setDefaultValues();
     this.setParamsRange();
     this.initializeUnitAccordingToPage();
+
+    this.isMort() && this.unitsService.setUnit(SqUnit.SQUARE_METER);
   }
 
   ngOnDestroy(): void {
@@ -644,13 +646,14 @@ export class TransactionsFilterComponent implements OnInit, OnDestroy {
 
   sendFilter(criteriaType: CriteriaType): void {
     let value = { ...this.form.value };
-    if (!this.unitsService.isMeterSelected()) {
-      // the backend is assumin that always this filter value is in meters
+    if (!this.unitsService.isMeterSelected() && !this.isMort()) {
+      // the backend is assuming that always this filter value is in meters
       if (value.areaFrom !== null && value.areaFrom !== undefined && value.areaFrom !== '')
         value.areaFrom = value.areaFrom / 10.8;
       if (value.areaTo !== null && value.areaTo !== undefined && value.areaFrom !== '')
         value.areaTo = value.areaTo / 10.8;
     }
+
     if (this.displayYear) {
       const date = new Date();
       date.getFullYear() === value.issueDateYear ? (value.issueDateEndMonth = date.getMonth() + 1) : null;
