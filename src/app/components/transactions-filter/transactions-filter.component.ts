@@ -191,14 +191,14 @@ export class TransactionsFilterComponent implements OnInit, OnDestroy {
         ],
       ],
       areaFrom: [
-        '',
+        null,
         [
           (control: AbstractControl) => CustomValidators.minValue(this.areaRange?.minVal)(control),
           (control: AbstractControl) => CustomValidators.maxValue(this.areaRange?.maxVal)(control),
         ],
       ],
       areaTo: [
-        '',
+        null,
         [
           (control: AbstractControl) => CustomValidators.minValue(this.areaRange?.minVal)(control),
           (control: AbstractControl) => CustomValidators.maxValue(this.areaRange?.maxVal)(control),
@@ -646,8 +646,8 @@ export class TransactionsFilterComponent implements OnInit, OnDestroy {
     let value = { ...this.form.value };
     if (!this.unitsService.isMeterSelected()) {
       // the backend is assumin that always this filter value is in meters
-      value.areaFrom = value.areaFrom / 10.8;
-      value.areaTo = value.areaTo / 10.8;
+      if (value.areaFrom !== null && value.areaFrom !== undefined) value.areaFrom = value.areaFrom / 10.8;
+      if (value.areaTo !== null && value.areaTo !== undefined) value.areaTo = value.areaTo / 10.8;
     }
     if (this.displayYear) {
       const date = new Date();
