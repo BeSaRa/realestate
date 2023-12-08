@@ -4,5 +4,6 @@ import { MenuItem } from '@models/menu-item';
 
 export class Menus implements MenusContract {
   main_menu!: Menu;
+  footer_menu!: Menu;
   recent!: MenuItem[];
 }

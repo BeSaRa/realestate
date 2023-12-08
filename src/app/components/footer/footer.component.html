@@ -1,4 +1,4 @@
-<div class="h-[600px] md:h-[500px] xl:h-80 relative text-white">
+<div class="h-[500px] xl:h-80 relative text-white">
   <div class="absolute inset-0 bg-pattern">
     <div class="absolute inset-0 bg-gradient-to-t from-transparent to-white to-100%"></div>
   </div>
@@ -18,23 +18,17 @@
   </svg>
   <div
     [ngClass]="{ 'clipped-footer': !lang.isLtr, 'clipped-footer-ltr': lang.isLtr }"
-    class="clipped-footer px-10 h-[520px] md:h-[420px] xl:h-60 w-full bg-footer ltr:bg-footer-ltr bg-cover absolute top-8 right-0 left-0"></div>
+    class="clipped-footer px-10 h-[420px] md:h-[420px] xl:h-60 w-full bg-footer ltr:bg-footer-ltr bg-cover absolute top-8 right-0 left-0"></div>
   <div
     id="top-footer"
     [ngClass]="{ 'clipped-footer': !lang.isLtr, 'clipped-footer-ltr': lang.isLtr }"
-    class="px-0 sm:px-10 pt-40 md:pt-32 xl:pt-16 h-[520px] md:h-[420px] xl:h-60 w-full bg-gradient-to-r ltr:bg-gradient-to-l from-primary/90 to-gray-800/90 absolute top-8 right-0 left-0 xl:flex grid auto-rows-min gap-8 grid-cols-12 items-center md:justify-between">
+    class="px-0 sm:px-10 pt-32 xl:pt-16 h-[420px] md:h-[420px] xl:h-60 w-full bg-gradient-to-r ltr:bg-gradient-to-l from-primary/90 to-gray-800/90 absolute top-8 right-0 left-0 xl:flex grid auto-rows-min gap-8 grid-cols-12 items-center md:justify-between">
     <div class="col-span-5 md:col-span-6 flex xl:block justify-end md:justify-center xl:justify-start">
       <ul id="top-footer-menu" class="flex flex-col items-start">
-        <li>
-          <app-button buttonStyle="none" routerLink="/about" routerLinkActive="active">{{
-            lang.map.about_us
+        <li *ngFor="let link of footerMenu.links">
+          <app-button buttonStyle="none" [routerLink]="link.url" routerLinkActive="active">{{
+            link.getNames()
           }}</app-button>
-        </li>
-        <!--        <li>-->
-        <!--          <app-button buttonStyle="none">{{ lang.map.surveys }}</app-button>-->
-        <!--        </li>-->
-        <li>
-          <app-button buttonStyle="none" routerLink="/faq" routerLinkActive="active">{{ lang.map.faq }}</app-button>
         </li>
       </ul>
     </div>
@@ -44,8 +38,8 @@
     <div
       id="follow-us"
       class="xl:order-last flex flex-col items-start md:items-center xl:items-start col-span-5 md:col-span-6">
-      <p class="ps-2">{{ lang.map.follow_us }}</p>
-      <ul class="grid grid-cols-2 sm:grid-cols-4" id="follow-us-menu">
+      <!-- <p class="ps-2">{{ lang.map.follow_us }}</p> -->
+      <!-- <ul class="grid grid-cols-2 sm:grid-cols-4" id="follow-us-menu">
         <li>
           <app-icon-button icon="TWITTER"></app-icon-button>
         </li>
@@ -58,7 +52,7 @@
         <li>
           <app-icon-button icon="INSTAGRAM"></app-icon-button>
         </li>
-      </ul>
+      </ul> -->
       <app-version class="ps-2"></app-version>
     </div>
     <!--    <div id="top-footer-downloads" class="flex flex-col items-center col-span-12 md:col-span-6">-->
@@ -110,15 +104,15 @@
   <!-- top-footer-->
   <div
     id="bottom-footer"
-    class="flex flex-col justify-center xl:flex-row items-center text-xs sm:text-sm xl:text-base xl:justify-between h-20 xl:h-12 absolute bottom-0 right-0 left-0 bg-[#666666] px-3 xl:px-10 w-full">
-    <ul class="flex justify-center gap-x-3 divide-items">
-      <li>
+    class="flex justify-center items-center text-xs sm:text-sm xl:text-base h-12 absolute bottom-0 right-0 left-0 bg-[#666666] px-3 xl:px-10 w-full">
+    <!-- <ul class="flex justify-center gap-x-3 divide-items"> -->
+    <!-- <li>
         <app-button buttonStyle="none">{{ lang.map.privacy_and_rights }}</app-button>
-      </li>
-      <!--      <li>-->
-      <!--        <app-button buttonStyle="none">{{ lang.map.location_map }}</app-button>-->
-      <!--      </li>-->
-    </ul>
+      </li> -->
+    <!--      <li>-->
+    <!--        <app-button buttonStyle="none">{{ lang.map.location_map }}</app-button>-->
+    <!--      </li>-->
+    <!-- </ul> -->
     <div class="flex justify-center">
       <span class="text-center"
         >{{ lang.map.municipality_is_not_responsible_for_any_citation_from_the_site }} -
