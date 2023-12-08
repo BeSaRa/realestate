@@ -152,7 +152,7 @@ export class LookupService extends RegisterServiceMixin(class {}) implements Ser
     },
   })
   _loadOVLookups(): Observable<LookupsMap> {
-    return this.http.get<LookupsMap>(this.urlService.URLS.OV_LOOKUPS).pipe(tap(console.log));
+    return this.http.get<LookupsMap>(this.urlService.URLS.OV_LOOKUPS);
   }
 
   @CastResponse(() => LookupsMap, {
@@ -163,7 +163,7 @@ export class LookupService extends RegisterServiceMixin(class {}) implements Ser
     },
   })
   _loadBrokerLookups(): Observable<LookupsMap> {
-    return this.http.get<LookupsMap>(this.urlService.URLS.BROKER_LOOKUPS).pipe(tap(console.log));
+    return this.http.get<LookupsMap>(this.urlService.URLS.BROKER_LOOKUPS);
   }
 
   private _load(): Observable<LookupsMap[]> {
@@ -174,7 +174,7 @@ export class LookupService extends RegisterServiceMixin(class {}) implements Ser
       this._loadOwnerLookups(),
       this._loadOVLookups(),
       this._loadBrokerLookups(),
-    ]).pipe(tap(console.log));
+    ]);
   }
 
   load(): Observable<LookupsMap[]> {
