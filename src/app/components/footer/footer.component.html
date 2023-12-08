@@ -25,7 +25,7 @@
     class="px-0 sm:px-10 pt-32 xl:pt-16 h-[420px] md:h-[420px] xl:h-60 w-full bg-gradient-to-r ltr:bg-gradient-to-l from-primary/90 to-gray-800/90 absolute top-8 right-0 left-0 xl:flex grid auto-rows-min gap-8 grid-cols-12 items-center md:justify-between">
     <div class="col-span-5 md:col-span-6 flex xl:block justify-end md:justify-center xl:justify-start">
       <ul id="top-footer-menu" class="flex flex-col items-start">
-        <li *ngFor="let link of footerMenu.links">
+        <li *ngFor="let link of footerMenu?.links ?? []">
           <app-button buttonStyle="none" [routerLink]="link.url" routerLinkActive="active">{{
             link.getNames()
           }}</app-button>
