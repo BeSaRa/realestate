@@ -30,6 +30,18 @@ export const routes: Routes = [
     resolve: { pageData: pageResolver },
   },
   {
+    path: Pages.PRIVACY,
+    loadComponent: () => import('./pages/page/page.component'),
+    data: { page: Pages.PRIVACY },
+    resolve: { pageData: pageResolver },
+  },
+  {
+    path: Pages.DISCLAIMER,
+    loadComponent: () => import('./pages/page/page.component'),
+    data: { page: Pages.DISCLAIMER },
+    resolve: { pageData: pageResolver },
+  },
+  {
     path: 'laws',
     loadComponent: () => import('./pages/law-page/law-page.component'),
   },

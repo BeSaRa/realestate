@@ -38,6 +38,8 @@ export class MenuService extends RegisterServiceMixin(class {}) implements Servi
     shape: {
       main_menu: () => Menu,
       'main_menu.links.*': () => MenuItem,
+      footer_menu: () => Menu,
+      'footer_menu.links.*': () => MenuItem,
       'recent.*': () => MenuItem,
     },
   })
@@ -111,6 +113,7 @@ export class MenuService extends RegisterServiceMixin(class {}) implements Servi
       .pipe(
         map((menus) => {
           return {
+            ...menus,
             main_menu: {
               ...menus.main_menu,
               links: [

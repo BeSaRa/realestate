@@ -21,7 +21,6 @@ import { UserInfo } from '@models/user-info';
 import { AuthService } from '@services/auth.service';
 import { DataInfoService } from '@services/data-info.service';
 import { DialogService } from '@services/dialog.service';
-import { SplashService } from '@services/splash.service';
 import { StickyService } from '@services/sticky.service';
 import { ToastService } from '@services/toast.service';
 import { TranslationService } from '@services/translation.service';
@@ -55,11 +54,10 @@ import { ExtraHeaderComponent } from '@components/extra-header/extra-header.comp
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss'],
 })
-export class AppComponent implements AfterViewInit {
+export class AppComponent {
   lang = inject(TranslationService);
   stickyService = inject(StickyService);
   dialog = inject(DialogService);
-  splashService = inject(SplashService);
   urlService = inject(UrlService);
   userService = inject(UserService);
   toast = inject(ToastService);
@@ -76,12 +74,6 @@ export class AppComponent implements AfterViewInit {
 
   constructor() {
     registerLocaleData(localeAr, 'ar');
-  }
-
-  ngAfterViewInit(): void {
-    setTimeout(() => {
-      this.splashService.removeSplash();
-    }, 500);
   }
 
   @HostListener('window:scroll')

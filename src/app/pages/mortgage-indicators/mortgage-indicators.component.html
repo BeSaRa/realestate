@@ -91,7 +91,7 @@
           }}</span>
         </ng-container>
         <ng-container appTableColumnTemplate [columnName]="pageSections.MORT_TRANSACTIONS_TABLE.columns.AREA">
-          <span *appTableColumnHeaderTemplate>{{ lang.map.area_in_square_foot }}</span>
+          <span *appTableColumnHeaderTemplate>{{ lang.map.area_in_square_meter }}</span>
           <span *appTableColumnCellTemplate="let item; typeOf: transactions$" class="font-bold">
             {{ item.realEstateArea }}
           </span>

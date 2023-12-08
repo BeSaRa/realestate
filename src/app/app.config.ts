@@ -25,6 +25,7 @@ import { AuthService } from '@services/auth.service';
 import { UserService } from '@services/user.service';
 import { SectionGuardService } from '@services/section-guard.service';
 import { PagesSections } from '@constants/pages-sections';
+import { SplashService } from '@services/splash.service';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -86,7 +87,7 @@ export const appConfig: ApplicationConfig = {
     {
       // UnitsService add to deps to initialize service at app start and be able to regiser it using ServiceRegistery
       provide: APP_INITIALIZER,
-      deps: [UnitsService],
+      deps: [SplashService, UnitsService],
       useFactory: () => () => null,
       multi: true,
     },
