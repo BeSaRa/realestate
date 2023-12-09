@@ -41,7 +41,7 @@ export default class BrokerIndicatorsPageComponent {
   dashboardService = inject(DashboardService);
   csvService = inject(CsvService);
 
-  municipalities = this.lookupService.brokerLookups.municipalityList;
+  municipalities = this.lookupService.ovLookups.municipalityList;
   brokerCategories = this.lookupService.brokerLookups.brokerCategoryList;
 
   criteria = {} as {
