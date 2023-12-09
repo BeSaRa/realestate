@@ -672,6 +672,8 @@ export class TransactionsFilterComponent implements OnInit, OnDestroy {
       value.issueDateMonth = null;
     } else if (this.displayRange) {
       if (!this.issueDateFrom.value || !this.issueDateTo.value) return;
+      value.issueDateFrom = this.datePipe.transform(this.issueDateFrom.value, 'YYY-MM-dd');
+      value.issueDateTo = this.datePipe.transform(this.issueDateTo.value, 'YYY-MM-dd');
     }
 
     value = this._removeUnusedProps(value) as Partial<CriteriaContract>;
