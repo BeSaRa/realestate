@@ -384,7 +384,6 @@ export class TransactionsFilterComponent implements OnInit, OnDestroy {
       }
       this.filteredZones = this.zones.filter((item) => item.municipalityId === value);
       !this.filteredZones.find((i) => i.lookupKey === -1) &&
-        this.filteredZones.length > 1 &&
         this.filteredZones.unshift(
           new Lookup().clone<Lookup>({
             arName: 'الكل',
@@ -668,7 +667,7 @@ export class TransactionsFilterComponent implements OnInit, OnDestroy {
       }
     } else if (this.displayMonth) {
       value.issueDateStartMonth = this.form.value.issueDateMonth;
-      value.issueDateEndMonth = this.form.value.issueDateMonth + 1;
+      value.issueDateEndMonth = this.form.value.issueDateMonth;
       value.issueDateQuarterList = [1, 2, 3, 4];
       value.issueDateMonth = null;
     } else if (this.displayRange) {
