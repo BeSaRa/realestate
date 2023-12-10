@@ -107,11 +107,11 @@ export class LookupsMap implements LookupsContract {
       enName: 'Monthly',
       lookupKey: Durations.MONTHLY,
     }),
-    new Lookup().clone<Lookup>({
-      arName: 'مدة زمنية',
-      enName: 'Duration',
-      lookupKey: Durations.DURATION,
-    }),
+    // new Lookup().clone<Lookup>({
+    //   arName: 'مدة زمنية',
+    //   enName: 'Duration',
+    //   lookupKey: Durations.DURATION,
+    // }),
   ];
 
   halfYearDurations = [

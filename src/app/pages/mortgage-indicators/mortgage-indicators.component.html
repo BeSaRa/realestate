@@ -109,7 +109,7 @@
           </div>
           <div *appTableColumnCellTemplate="let item; typeOf: transactions$" class="text-center">
             <p>{{ item.issueDate | date : "YYYY-MM-dd" }}</p>
-            <p class="font-bold">{{ item.seller || "أفراد" }}</p>
+            <!-- <p class="font-bold">{{ item.seller || "أفراد" }}</p> -->
           </div>
         </ng-container>
         <!--          <ng-container appTableColumnTemplate columnName="unit_parcel_no">-->

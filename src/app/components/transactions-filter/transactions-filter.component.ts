@@ -606,7 +606,8 @@ export class TransactionsFilterComponent implements OnInit, OnDestroy {
       value: index,
     }));
 
-    if (this.issueDateYear.value === 2019) this.months = this.months.filter((month) => month.value >= 3);
+    if (this.issueDateYear.value === 2019 && !(this.isSell() || this.isMort()))
+      this.months = this.months.filter((month) => month.value >= 3);
     if (this.issueDateYear.value === new Date().getFullYear()) {
       this.months = this.months.filter((month) => month.value <= new Date().getMonth());
     }
