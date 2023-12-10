@@ -118,9 +118,9 @@ export class MunicipalitiesChartComponent extends OnDestroyMixin(class {}) imple
         })
       )
       .pipe(map((data) => data as unknown as (KpiBaseModel & { municipalityId: number })[]))
+
       .pipe(
         map((data) => {
-          data.sort((a, b) => a.getKpiVal() - b.getKpiVal());
           if (Object.keys(this.seriesNames).length === 1) {
             return { [Object.keys(this.seriesNames)[0] as unknown as number]: data };
           }
@@ -132,6 +132,44 @@ export class MunicipalitiesChartComponent extends OnDestroyMixin(class {}) imple
             acc[cur[this.bindDataSplitProp as keyof KpiBaseModel] as number].push(cur);
             return acc;
           }, _data);
+        })
+      )
+      .pipe(
+        map((data) => {
+          // sorting logic
+          data[Object.keys(this.seriesNames)[0] as unknown as number].sort((a, b) => {
+            let _sumA = a?.getKpiVal() ?? 0;
+            let _sumB = b?.getKpiVal() ?? 0;
+            Object.keys(data).forEach((key, index) => {
+              if (index === 0) return;
+
+              _sumA +=
+                data[key as unknown as number]
+                  .find((item) => this._getLabel(item) === this._getLabel(a))
+                  ?.getKpiVal() ?? 0;
+
+              _sumB +=
+                data[key as unknown as number]
+                  .find((item) => this._getLabel(item) === this._getLabel(b))
+                  ?.getKpiVal() ?? 0;
+            });
+            return _sumA - _sumB;
+          });
+          const _sortedData: typeof data = {};
+          _sortedData[Object.keys(this.seriesNames)[0] as unknown as number] =
+            data[Object.keys(this.seriesNames)[0] as unknown as number];
+          Object.keys(data).forEach((key, index) => {
+            if (index === 0) return;
+            _sortedData[key as unknown as number] = [];
+            _sortedData[Object.keys(this.seriesNames)[0] as unknown as number].forEach((item) => {
+              _sortedData[key as unknown as number].push(
+                data[key as unknown as number].find(
+                  (i) => this._getLabel(i) === this._getLabel(item)
+                ) as KpiBaseModel & { municipalityId: number }
+              );
+            });
+          });
+          return _sortedData;
         })
       )
       .subscribe((data) => {

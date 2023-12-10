@@ -219,8 +219,8 @@ export class DurationChartComponent extends OnDestroyMixin(class {}) implements 
                 y: item.getKpiVal(),
                 x: months[item.issuePeriod - 1],
                 P2Pyoy: item.getKpiP2PYoY(),
-                PreviousPeriodRate: Number((item.getKpiP2PDifference()/100).toFixed(1)),
-                baseYear: item.issueYear ? item.issueYear - 1 : this.criteria.issueDateYear - 1
+                PreviousPeriodRate: Number((item.getKpiP2PDifference() / 100).toFixed(1)),
+                baseYear: item.issueYear ? item.issueYear - 1 : this.criteria.issueDateYear - 1,
               };
             }),
           },
@@ -428,8 +428,7 @@ export class DurationChartComponent extends OnDestroyMixin(class {}) implements 
     ) {
       return this._getDurationDefaultTooltipTemplate(opts.dataPointIndex);
     }
-    if(this.selectedDurationType === DurationEndpoints.MONTHLY) 
-    {
+    if (this.selectedDurationType === DurationEndpoints.MONTHLY) {
       return this._getDurationCustomTooltipTemplate(
         _dataPoint.x,
         _dataPoint.y,
@@ -438,8 +437,7 @@ export class DurationChartComponent extends OnDestroyMixin(class {}) implements 
         _dataPoint.PreviousPeriodRate ?? 0,
         _series.name ?? ''
       );
-    }
-    else {
+    } else {
       return this._getDurationCustomTooltipTemplate(
         _dataPoint.x,
         _dataPoint.y,
@@ -514,7 +512,9 @@ export class DurationChartComponent extends OnDestroyMixin(class {}) implements 
             )}</span>
           </div>
           <div class="apexcharts-tooltip-y-group flex justify-between gap-2">
-            <span class="apexcharts-tooltip-text-y-label">${this.selectedDurationType == this.DurationTypes.YEARLY ? this.lang.map.annually : this.lang.map.monthly}: </span>
+            <span class="apexcharts-tooltip-text-y-label">${
+              this.selectedDurationType == this.DurationTypes.YEARLY ? this.lang.map.annually : this.lang.map.monthly
+            }: </span>
             <span class="apexcharts-tooltip-text-y-value" dir="ltr">${yoy.toFixed(1)}%</span>
           </div>
           <div class="apexcharts-tooltip-y-group flex justify-between gap-2">
