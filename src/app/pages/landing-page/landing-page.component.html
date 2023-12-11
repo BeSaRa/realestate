@@ -1,6 +1,6 @@
 <ng-container *appExtraHeaderPortal>
   <app-slider [list]="(homeSliderContent$ | async)!">
-    <div *appSliderTemplate="let item" class="bg-black/50 gap-3 py-5 px-5 rounded-xl flex flex-col items-center">
+    <div *appSliderTemplate="let item" class="bg-black/50 gap-3 py-5 my-2 px-5 rounded-xl flex flex-col items-center">
       <p>{{ item.getTitle() }}</p>
       <p class="text-xl md:text-2xl text-secondary">{{ item.value }} {{ item.hasPrice ? lang.map.qr : "" }}</p>
     </div>
@@ -13,7 +13,7 @@
   <br /> -->
   <app-news-list [title]="lang.map.latest_news" [newsData]="(newsData | async) ?? []" />
   <div class="flex justify-center mt-10">
-    <app-button buttonStyle="secondary" routerLink="/news"> {{ lang.map.more }}... </app-button>
+    <app-button buttonStyle="secondary" routerLink="/news"> {{ lang.map.more }}...</app-button>
   </div>
 
   <br />

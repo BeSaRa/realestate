@@ -14,7 +14,7 @@ export const Config = {
     SECRET_KEY: '',
     RECAPTCHA_TOKEN_VALIDATION_URL: '',
   },
-  REFRESH_TOKEN_BEFORE_MS: 0, // 870000
+  REFRESH_TOKEN_BEFORE_MS: 120000, // refresh token before 2 minutes from expiration
   LOCAL_STORAGE_KEY: '$$_S__$$',
 };
 

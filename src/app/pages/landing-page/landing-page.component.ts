@@ -4,7 +4,6 @@ import { MatRadioModule } from '@angular/material/radio';
 import { RouterModule } from '@angular/router';
 import { BannerComponent } from '@components/banner/banner.component';
 import { ButtonComponent } from '@components/button/button.component';
-import { ExtraHeaderComponent } from '@components/extra-header/extra-header.component';
 import { InquiriesComponent } from '@components/inquiries/inquiries.component';
 import { InwaniComponent } from '@components/inwani/inwani.component';
 import { NewsListComponent } from '@components/news-list/news-list.component';
@@ -17,7 +16,8 @@ import { DirectusClientService } from '@services/directus-client.service';
 import { HomeSliderService } from '@services/home-slider.service';
 import { NewsService } from '@services/news.service';
 import { TranslationService } from '@services/translation.service';
-import { map, tap } from 'rxjs';
+import { map, Observable } from 'rxjs';
+import { chunks } from '@utils/utils';
 
 @Component({
   selector: 'app-landing-page',
@@ -48,7 +48,8 @@ export default class LandingPageComponent {
   lang = inject(TranslationService);
   homeSliderService = inject(HomeSliderService);
 
-  homeSliderContent$ = this.homeSliderService
-    .load()
-    .pipe(map((data) => data.map((item) => new HomeSlider().clone<HomeSlider>(item))));
+  homeSliderContent$: Observable<HomeSlider[][]> = this.homeSliderService.load().pipe(
+    map((data) => data.map((item) => new HomeSlider().clone<HomeSlider>(item))),
+    map((slides) => [...chunks(slides, 2)])
+  );
 }

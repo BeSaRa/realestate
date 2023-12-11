@@ -4,13 +4,14 @@ import { animate, state, style, transition, trigger } from '@angular/animations'
 import { IconButtonComponent } from '@components/icon-button/icon-button.component';
 import { TranslationService } from '@services/translation.service';
 import { filter, interval, tap } from 'rxjs';
+import { HomeSlider } from '@models/home-slider';
 
 @Directive({
   selector: '[appSliderTemplate]',
   standalone: true,
 })
 export class SliderTemplateDirective {
-  templateRef = inject(TemplateRef<any>);
+  templateRef = inject(TemplateRef);
 }
 
 @Component({
@@ -23,12 +24,12 @@ export class SliderTemplateDirective {
     trigger('fade', [state('void', style({ opacity: 0 })), transition('void => *', [animate('0.5s ease-in-out')])]),
   ],
 })
-export class SliderComponent<T> implements OnInit {
+export class SliderComponent implements OnInit {
   ngOnInit(): void {
     this.interval$.subscribe();
   }
 
-  @Input({ required: true }) list: T[] = [];
+  @Input({ required: true }) list!: HomeSlider[][];
 
   @ContentChild(SliderTemplateDirective) slideTemplateRef!: SliderTemplateDirective;
 

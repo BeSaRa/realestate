@@ -4,12 +4,13 @@
     [disabled]="!this.hasPrev()"
     [icon]="lang.isLtr ? 'CHEVRON_LEFT' : 'CHEVRON_RIGHT'"></app-icon-button>
   <div class="overflow-hidden">
-    <ng-container *ngFor="let slide of list; let i = index">
+    <ng-container *ngFor="let row of list; let i = index">
       <div class="py-10" @fade *ngIf="i === counter">
         <ng-container
+          *ngFor="let item of row"
           [ngTemplateOutlet]="slideTemplateRef.templateRef"
           [ngTemplateOutletContext]="{
-            $implicit: slide
+            $implicit: item
           }"></ng-container>
       </div>
     </ng-container>
