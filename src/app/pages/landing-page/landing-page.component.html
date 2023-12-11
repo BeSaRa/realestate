@@ -3,8 +3,8 @@
     <div
       *appSliderTemplate="let item"
       class="bg-black/50 gap-1 lg:gap-3 py-2 lg:py-5 my-2 px-5 rounded-xl flex flex-col items-center">
-      <p>{{ item.getTitle() }}</p>
-      <p class="text-xl md:text-2xl text-secondary">{{ item.value }} {{ item.hasPrice ? lang.map.qr : "" }}</p>
+      <p class="md:text-xl">{{ item.getTitle() }}</p>
+      <p class="md:text-xl text-secondary">{{ item.value }} {{ item.hasPrice ? lang.map.qr : "" }}</p>
     </div>
   </app-slider>
 </ng-container>
@@ -17,7 +17,6 @@
   <div class="flex justify-center mt-10">
     <app-button buttonStyle="secondary" routerLink="/news"> {{ lang.map.more }}...</app-button>
   </div>
-
   <br />
   <br />
   <div class="flex justify-center items-center">
