@@ -461,6 +461,9 @@ export class TransactionsFilterComponent implements OnInit, OnDestroy {
   listenToUnitChange() {
     this.unitsControl.valueChanges.pipe(takeUntil(this.destroy$)).subscribe((value) => {
       this.unitsService.setUnit(value as SqUnit);
+      // here we should send the filter (refetch data) since the values in 'areaFrom' and 'areaTo'
+      // (if the user already provided them) have a differnet menaning (i.e., according to the selected unit)
+      if (this.form.valid) this.sendFilter(CriteriaType.USER)
     });
   }
 
