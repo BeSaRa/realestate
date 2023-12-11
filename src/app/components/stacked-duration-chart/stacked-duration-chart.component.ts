@@ -185,7 +185,9 @@ export class StackedDurationChartComponent
         this.chartSeriesData = Object.keys(this.seriesNames).map((type) => ({
           name: this.seriesNames[type as unknown as number],
           group: '0',
-          data: _data[type as unknown as number].map((i) => ({ y: i.getKpiVal(), x: i.issueYear })),
+          data: _data[type as unknown as number].map((i) => {
+            return { y: i.getKpiVal(), x: i.issueYear.toString() };
+          }),
         }));
         this.chartDataLength = this.chartSeriesData[0].data?.length;
 
@@ -217,7 +219,6 @@ export class StackedDurationChartComponent
 
         this.chartSeriesData = Object.keys(this.seriesNames).map((type) => ({
           name: this.seriesNames[type as unknown as number],
-          group: '0',
           data: _data[type as unknown as number].map((i) => ({
             y: i.getKpiVal(),
             x: months[i.issuePeriod - 1],
@@ -226,6 +227,7 @@ export class StackedDurationChartComponent
         this.chartDataLength = this.chartSeriesData[0].data.length;
 
         this.chartOptions = this.yearlyOrMonthlyChartOptions;
+
         this._updateChartOptions();
       });
   }
@@ -361,10 +363,10 @@ export class StackedDurationChartComponent
       (chart, index) =>
         chart
           .addDataLabelsFormatter((val, opts) =>
-            this.appChartTypesService.dataLabelsFormatter({ val, opts }, { hasPrice: index === 5 ? true : false })
+            this.appChartTypesService.dataLabelsFormatter({ val, opts }, { hasPrice: index === 5 })
           )
           .addAxisYFormatter((val, opts) =>
-            this.appChartTypesService.axisYFormatter({ val, opts }, { hasPrice: index === 5 ? true : false })
+            this.appChartTypesService.axisYFormatter({ val, opts }, { hasPrice: index === 5 })
           )
           .addCustomToolbarOptions()
     );

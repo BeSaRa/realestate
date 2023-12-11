@@ -183,7 +183,7 @@ export class DurationChartComponent extends OnDestroyMixin(class {}) implements 
             name: this.name,
             data: data.map((item) => ({
               y: item.getKpiVal(),
-              x: item.issueYear,
+              x: item.issueYear.toString(),
               yoy: item.getKpiYoYVal(),
               baseYear: data[0].issueYear,
               yoyBase: ((item.getKpiVal() - data[0].getKpiVal()) / data[0].getKpiVal()) * 100,
@@ -260,7 +260,10 @@ export class DurationChartComponent extends OnDestroyMixin(class {}) implements 
         this.durationDataLength = data[1].kpiValues.length;
         this.chartSeriesData = Object.keys(data).map((key) => ({
           name: data[key as unknown as number].period.getNames(),
-          data: data[key as unknown as number].kpiValues.map((item) => ({ y: item.getKpiVal(), x: item.issueYear })),
+          data: data[key as unknown as number].kpiValues.map((item) => ({
+            y: item.getKpiVal(),
+            x: item.issueYear.toString(),
+          })),
         }));
         this._updateChartOptions();
       });

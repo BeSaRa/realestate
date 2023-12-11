@@ -33,6 +33,7 @@ export class AppChartTypesService extends RegisterServiceMixin(class {}) impleme
 
   private _top10LineChartOptions = top10LineChartOptions;
   private _top10BarChartOptions = top10BarChartOptions;
+
   get top10ChartOptions(): { line: Partial<PartialChartOptions>; bar: Partial<PartialChartOptions> } {
     return { line: { ...this._top10LineChartOptions }, bar: { ...this._top10BarChartOptions } };
   }
@@ -579,24 +580,30 @@ function getRangeOptions(
   }
   const returned =
     dataCount <= _range + 1
-      ? {
-          plotOptions: {
-            bar: {
-              columnWidth:
-                dataCount <= 3 ? '10%' : (dataCount * 10) / 2 <= 80 ? ((dataCount * 10) / 2).toString() + '%' : '70%',
+      ? (() => {
+          console.log('First');
+          return {
+            plotOptions: {
+              bar: {
+                columnWidth:
+                  dataCount <= 3 ? '10%' : (dataCount * 10) / 2 <= 80 ? ((dataCount * 10) / 2).toString() + '%' : '70%',
+              },
             },
-          },
-          xaxis: {
-            range: dataCount === 1 ? 0 : dataCount <= 3 ? 2 : dataCount - 1,
-          },
-        }
-      : {
-          xaxis: { range: _range },
-          plotOptions: {
-            bar: {
-              columnWidth: isStacked ? '50%' : Math.round((dataCount / _range / 1.5) * 100).toString() + '%',
+            xaxis: {
+              range: dataCount === 1 ? 0 : dataCount <= 3 ? 2 : dataCount - 1,
             },
-          },
-        };
+          };
+        })()
+      : (() => {
+          console.log('SECOND');
+          return {
+            xaxis: { range: _range },
+            plotOptions: {
+              bar: {
+                columnWidth: isStacked ? '50%' : Math.round((dataCount / _range / 1.5) * 100).toString() + '%',
+              },
+            },
+          };
+        })();
   return returned;
 }
