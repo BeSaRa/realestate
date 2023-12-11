@@ -249,6 +249,14 @@ export class TransactionsFilterComponent implements OnInit, OnDestroy {
     return this.form.get('areaCode') as AbstractControl;
   }
 
+  get areaFrom(): AbstractControl {
+    return this.form.get('areaFrom') as AbstractControl;
+  }
+
+  get areaTo(): AbstractControl {
+    return this.form.get('areaTo') as AbstractControl;
+  }
+
   get zoneId(): AbstractControl {
     return this.form.get('zoneId') as AbstractControl;
   }
@@ -461,9 +469,18 @@ export class TransactionsFilterComponent implements OnInit, OnDestroy {
   listenToUnitChange() {
     this.unitsControl.valueChanges.pipe(takeUntil(this.destroy$)).subscribe((value) => {
       this.unitsService.setUnit(value as SqUnit);
-      // here we should send the filter (refetch data) since the values in 'areaFrom' and 'areaTo'
-      // (if the user already provided them) have a differnet menaning (i.e., according to the selected unit)
-      if (this.form.valid) this.sendFilter(CriteriaType.USER)
+      if (this.areaFrom.value)
+        this.areaFrom.setValue(
+          this.unitsService.isMeterSelected() ? this.areaFrom.value / 10.8 : this.areaFrom.value * 10.8,
+          { emitEvent: false }
+        );
+      if (this.areaTo.value)
+        this.areaTo.setValue(
+          this.unitsService.isMeterSelected() ? this.areaTo.value / 10.8 : this.areaTo.value * 10.8,
+          {
+            emitEvent: false,
+          }
+        );
     });
   }
 
