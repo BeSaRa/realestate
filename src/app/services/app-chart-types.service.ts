@@ -581,7 +581,6 @@ function getRangeOptions(
   const returned =
     dataCount <= _range + 1
       ? (() => {
-          console.log('First');
           return {
             plotOptions: {
               bar: {
@@ -595,7 +594,6 @@ function getRangeOptions(
           };
         })()
       : (() => {
-          console.log('SECOND');
           return {
             xaxis: { range: _range },
             plotOptions: {

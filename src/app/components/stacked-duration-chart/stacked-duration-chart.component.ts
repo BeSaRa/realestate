@@ -33,6 +33,7 @@ import { ChartType } from '@enums/chart-type';
 import { DurationEndpoints } from '@enums/durations';
 import { OnDestroyMixin } from '@mixins/on-destroy-mixin';
 import { ChartOptionsModel } from '@models/chart-options-model';
+import { KpiBase } from '@models/kpi-base';
 import { AppChartTypesService } from '@services/app-chart-types.service';
 import { DashboardService } from '@services/dashboard.service';
 import { LookupService } from '@services/lookup.service';
@@ -210,19 +211,34 @@ export class StackedDurationChartComponent
         })
       )
       .subscribe((data) => {
-        data.sort((a, b) => a.issuePeriod - b.issuePeriod);
-
         const _data = this._splitAccordingToDataSplitProp(data as unknown as KpiBaseModel[]) as unknown as Record<
           number,
           KpiBaseDurationModel[]
         >;
 
+        Object.keys(this.seriesNames).forEach((type) => {
+          months.forEach((m, i) => {
+            const _currentDate = new Date();
+            if (this.criteria.issueDateYear === _currentDate.getFullYear()) {
+              if (i >= _currentDate.getMonth()) return;
+            }
+            if (!_data[type as unknown as number].find((item) => item.issuePeriod === i + 1)) {
+              _data[type as unknown as number].push(
+                KpiBase.kpiDurationFactory(false).clone<KpiBaseDurationModel>({ issuePeriod: i + 1 })
+              );
+            }
+          });
+          _data[type as unknown as number].sort((a, b) => a.issuePeriod - b.issuePeriod);
+        });
+
         this.chartSeriesData = Object.keys(this.seriesNames).map((type) => ({
           name: this.seriesNames[type as unknown as number],
-          data: _data[type as unknown as number].map((i) => ({
-            y: i.getKpiVal(),
-            x: months[i.issuePeriod - 1],
-          })),
+          data: _data[type as unknown as number]
+            .map((i) => ({
+              y: i.getKpiVal(),
+              x: months[i.issuePeriod - 1],
+            }))
+            .sort((a, b) => parseInt(a.x) - parseInt(b.x)),
         }));
         this.chartDataLength = this.chartSeriesData[0].data.length;
 
