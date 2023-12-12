@@ -1,4 +1,16 @@
+:host {
+  @apply block overflow-hidden max-h-[95vh] #{!important};
+}
+
 .checkbox-container {
-    display: flex;
-    align-items: center;
+  display: flex;
+  align-items: center;
+}
+
+.dialog-content {
+  max-height: calc(95vh - 56px - 72px) !important;
+}
+
+.mat-mdc-progress-spinner {
+  --mdc-circular-progress-active-indicator-color: #ffffff;
 }

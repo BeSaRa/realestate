@@ -13,6 +13,7 @@ import {
   uniqueValidator,
   validateFieldsStatus,
   validateSum,
+  passwordEqualConfirm,
 } from '@validators/validation-utils';
 
 export const CustomValidators = {
@@ -30,4 +31,5 @@ export const CustomValidators = {
   compareFromTo: compareFromTo,
   minValue: minvValueValidator,
   maxValue: maxValueValidator,
+  passwordEqualConfirm: passwordEqualConfirm,
 };

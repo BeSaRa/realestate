@@ -393,4 +393,6 @@ export interface LangKeysContract {
   value_in_square_foot: string;
   we_couldnt_find_the_page_you_were_looking_for: string;
   back_to_home: string;
+  password_confirm: string;
+  password_and_password_confirm_should_be_equal: string;
 }

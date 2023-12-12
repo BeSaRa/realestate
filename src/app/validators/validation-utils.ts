@@ -227,3 +227,18 @@ export function compareFromTo(fromControlName: string, toControlName: string) {
     return null;
   };
 }
+
+export function passwordEqualConfirm(passwordConrol: string, confirmControl: string) {
+  return (formGroup: FormGroup): ValidationErrors | null => {
+    const password = formGroup.controls[passwordConrol];
+    const confirm = formGroup.controls[confirmControl];
+
+    if ((password.value || confirm.value) && password.value !== confirm.value) {
+      return {
+        password_and_password_confirm_should_be_equal: true,
+      };
+    }
+
+    return null;
+  };
+}

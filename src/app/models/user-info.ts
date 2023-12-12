@@ -15,6 +15,7 @@ export class UserInfo extends HasServiceMixin(ClonerMixin(class {})) {
   email!: string;
   language!: string;
   email_notifications!: boolean;
+  password!: string;
   location?: string;
   description?: string;
   tags?: string;
@@ -36,6 +37,8 @@ export class UserInfo extends HasServiceMixin(ClonerMixin(class {})) {
       email: email,
       language: language,
       email_notifications: email_notifications ?? false,
+      password: '',
+      passwordConfirm: '',
     };
   }
 }

@@ -9,7 +9,8 @@ export const ValidationMessages: Record<string, ValidationMessageContract> = {
   maxValue: { key: 'max_value' },
   minValue: { key: 'min_value' },
   maxLength: { key: 'max_length' },
-  LDAP_USERNAME: {key: 'only_english_letters_numbers_underscores_and_hyphens'}
+  LDAP_USERNAME: { key: 'only_english_letters_numbers_underscores_and_hyphens' },
+  password_and_password_confirm_should_be_equal: { key: 'password_and_password_confirm_should_be_equal' },
 };
 
 export type ValidationMessagesType = typeof ValidationMessages;

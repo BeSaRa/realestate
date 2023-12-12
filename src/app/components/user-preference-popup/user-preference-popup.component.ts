@@ -9,11 +9,14 @@ import { ButtonComponent } from '@components/button/button.component';
 import { InputComponent } from '@components/input/input.component';
 import { SelectInputComponent } from '@components/select-input/select-input.component';
 import { UserService } from '@services/user.service';
-import { catchError } from 'rxjs';
+import { catchError, finalize } from 'rxjs';
 import { MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { ToastService } from '@services/toast.service';
+import { ValidationErrorsComponent } from '@components/validation-errors/validation-errors.component';
+import { CustomValidators } from '@validators/custom-validators';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 @Component({
   selector: 'app-user-preference-popup',
@@ -28,6 +31,8 @@ import { ToastService } from '@services/toast.service';
     SelectInputComponent,
     MatCheckboxModule,
     MatSlideToggleModule,
+    ValidationErrorsComponent,
+    MatProgressSpinnerModule,
   ],
   templateUrl: './user-preference-popup.component.html',
   styleUrls: ['./user-preference-popup.component.scss'],
@@ -43,8 +48,12 @@ export class UserPreferencePopupComponent implements OnInit {
   fb = inject(UntypedFormBuilder);
   form!: UntypedFormGroup;
 
+  isLoading = false;
+
   _buildForm(): void {
-    this.form = this.fb.group(new UserInfo().clone<UserInfo>({ ...this.userService.currentUser }).buildForm());
+    this.form = this.fb.group(new UserInfo().clone<UserInfo>({ ...this.userService.currentUser }).buildForm(), {
+      validators: [CustomValidators.passwordEqualConfirm('password', 'passwordConfirm')],
+    });
   }
 
   ngOnInit(): void {
@@ -52,10 +61,21 @@ export class UserPreferencePopupComponent implements OnInit {
   }
 
   save() {
+    if (this.form.invalid || this.isLoading) return;
+
     const value = { ...this.form.value };
+
+    if (!value.password) delete value.password;
+    delete value.passwordConfirm;
+
+    this.isLoading = true;
+
     this.userService
       .updateUser(value)
       .pipe(
+        finalize(() => {
+          this.isLoading = false;
+        }),
         catchError((err) => {
           this.toast.success(this.lang.map.updating_user_info_failed, { verticalPosition: 'top' });
           throw err;
