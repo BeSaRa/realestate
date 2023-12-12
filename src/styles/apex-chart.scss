@@ -11,3 +11,11 @@
 // .apexcharts-xaxis-inversed {
 //   transform: translateX(-20px);
 // }
+
+.apexcharts-tooltip .apexcharts-tooltip-series-group {
+  padding-bottom: 0 !important;
+
+  .apexcharts-tooltip-text .apexcharts-tooltip-y-group {
+    padding: 3px 0 3px !important;
+  }
+}
