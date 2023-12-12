@@ -43,7 +43,7 @@ export class UserService extends RegisterServiceMixin(class {}) implements Servi
   }
 
   openUserPreferencesPopup() {
-    this.dialog.open(UserPreferencePopupComponent);
+    this.dialog.open(UserPreferencePopupComponent, { maxWidth: '95vw', maxHeight: '95vh' });
   }
 
   @CastResponse(() => UserInfo, { unwrap: 'data' })

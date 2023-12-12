@@ -51,7 +51,7 @@ export class LoginPopupComponent {
 
   login() {
     this.form.markAllAsTouched();
-    if (this.form.invalid) {
+    if (this.form.invalid || this.isLoading) {
       return;
     }
     this.isLoading = true;
