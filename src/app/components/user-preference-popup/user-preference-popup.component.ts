@@ -52,6 +52,10 @@ export class UserPreferencePopupComponent implements OnInit {
   }
 
   save() {
+    this.form.markAllAsTouched();
+    if (this.form.invalid) {
+      return;
+    }
     const value = { ...this.form.value };
     this.userService
       .updateUser(value)
