@@ -25,6 +25,7 @@
         class="{{ disabled ? 'bg-slate-50' : bgColor }} {{ caretColor }} disabled:cursor-not-allowed {{
           placeholderColor
         }}"
+        [readonly]="readonly"
         [ngClass]="tailwindClass"
         autocomplete="off"
         [type]="type"

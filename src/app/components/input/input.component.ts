@@ -59,6 +59,7 @@ export class InputComponent implements ControlValueAccessor, OnInit, OnDestroy, 
   @Input() marginBottom = 'mb-5';
   @Input() noMargin = false;
   @Input() name = generateUUID();
+  @Input() readonly = false;
 
   @ContentChild(ControlDirective) template?: ControlDirective;
   @ContentChild(InputPrefixDirective) inputPrefix?: InputPrefixDirective;

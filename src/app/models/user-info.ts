@@ -34,7 +34,7 @@ export class UserInfo extends HasServiceMixin(ClonerMixin(class {})) {
       title: [title, [CustomValidators.maxLength(50)]],
       first_name: [first_name, [CustomValidators.maxLength(50)]],
       last_name: [last_name, [CustomValidators.maxLength(50)]],
-      email: [email, [CustomValidators.pattern('EMAIL'), CustomValidators.maxLength(50)]],
+      email: email,
       language: language,
       email_notifications: email_notifications ?? false,
     };

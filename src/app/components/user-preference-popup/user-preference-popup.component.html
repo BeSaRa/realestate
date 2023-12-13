@@ -10,7 +10,7 @@
         <app-input class="col-span-3" formControlName="last_name" [label]="lang.map.last_name" />
         <div class="border-t border-gray-300 col-span-6"></div>
         <app-input class="col-span-3" formControlName="title" [label]="lang.map.title" />
-        <app-input class="col-span-3" formControlName="email" [label]="lang.map.email" />
+        <app-input class="col-span-3" [readonly]="true" formControlName="email" [label]="lang.map.email" />
         <div class="border-t border-gray-300 col-span-6"></div>
         <div class="checkbox-container col-span-3">
           <mat-checkbox formControlName="email_notifications"></mat-checkbox>
