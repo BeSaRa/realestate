@@ -172,6 +172,13 @@
           }}</span></ng-container
         >
       </app-table>
+      <p class="text-primary">
+        <span class="font-bold">*{{ lang.map.notice }}: </span>
+        {{
+          lang.map
+            .rent_transactions_are_retrieved_based_on_the_specified_date_of_documenting_the_lease_contracts_and_it_does_not_necessarily_correspond_to_the_start_date_of_the_lease_contract
+        }}
+      </p>
     </div>
   </div>
   <div *ngIf="isSelectedTab('statistical_reports_for_rent')" class="flex flex-col">
