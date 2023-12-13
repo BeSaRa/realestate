@@ -9,7 +9,7 @@ import { ButtonComponent } from '@components/button/button.component';
 import { InputComponent } from '@components/input/input.component';
 import { SelectInputComponent } from '@components/select-input/select-input.component';
 import { UserService } from '@services/user.service';
-import { catchError } from 'rxjs';
+import { catchError, finalize } from 'rxjs';
 import { MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
@@ -43,6 +43,8 @@ export class UserPreferencePopupComponent implements OnInit {
   fb = inject(UntypedFormBuilder);
   form!: UntypedFormGroup;
 
+  isLoading = false;
+
   _buildForm(): void {
     this.form = this.fb.group(new UserInfo().clone<UserInfo>({ ...this.userService.currentUser }).buildForm());
   }
@@ -52,14 +54,17 @@ export class UserPreferencePopupComponent implements OnInit {
   }
 
   save() {
-    this.form.markAllAsTouched();
-    if (this.form.invalid) {
-      return;
-    }
+    if (this.form.invalid || this.isLoading) return;
+
     const value = { ...this.form.value };
+    this.isLoading = true;
+
     this.userService
       .updateUser(value)
       .pipe(
+        finalize(() => {
+          this.isLoading = false;
+        }),
         catchError((err) => {
           this.toast.success(this.lang.map.updating_user_info_failed, { verticalPosition: 'top' });
           throw err;
