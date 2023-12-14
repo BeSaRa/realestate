@@ -22,9 +22,11 @@
           [options]="lang.languages"
           bindLabel="name"
           bindValue="code" />
-        <div class="border-t border-gray-300 !min-w-full"></div>
-        <app-input type="password" formControlName="password" [label]="lang.map.password" />
-        <app-input type="password" formControlName="passwordConfirm" [label]="lang.map.password_confirm" />
+        <ng-container *ngIf="isProviderDefault()">
+          <div class="border-t border-gray-300 !min-w-full"></div>
+          <app-input type="password" formControlName="password" [label]="lang.map.password" />
+          <app-input type="password" formControlName="passwordConfirm" [label]="lang.map.password_confirm"
+        /></ng-container>
       </div>
       <app-validation-errors class="relative block" [errors]="form.errors"></app-validation-errors>
     </div>

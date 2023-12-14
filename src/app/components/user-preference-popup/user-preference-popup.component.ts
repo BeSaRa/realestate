@@ -58,6 +58,7 @@ export class UserPreferencePopupComponent implements OnInit {
 
   ngOnInit(): void {
     this._buildForm();
+    this.isProviderDefault() && this.form.get('email')?.disable();
   }
 
   save() {
@@ -65,7 +66,9 @@ export class UserPreferencePopupComponent implements OnInit {
 
     const value = { ...this.form.value };
 
-    if (!value.password) delete value.password;
+    this.isProviderDefault() && delete value.email;
+
+    !value.password && delete value.password;
     delete value.passwordConfirm;
 
     this.isLoading = true;
@@ -89,5 +92,9 @@ export class UserPreferencePopupComponent implements OnInit {
           horizontalPosition: this.lang.isLtr ? 'left' : 'right',
         });
       });
+  }
+
+  isProviderDefault() {
+    return this.userService.currentUser?.provider === 'default';
   }
 }
