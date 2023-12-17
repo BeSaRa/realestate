@@ -1,7 +1,17 @@
 <div class="hidden lg:block">
   <ul id="main-menu" class="flex gap-x-3">
-    <ng-container *ngFor="let menuItem of mainMenu?.links ?? []">
-      <li>
+    <ng-container *ngFor="let menuItem of mainMenu?.links ?? []; let i = index">
+      <li *ngIf="i === 1">
+        <app-button
+          [buttonStyle]="sticky.isSticky() ? 'none-primary' : 'none'"
+          [icon]="isIndicatorsMenuOpened ? 'CHEVRON_UP' : 'CHEVRON_DOWN'"
+          [matMenuTriggerFor]="indicatorsMenu"
+          (menuClosed)="isIndicatorsMenuOpened = false"
+          (menuOpened)="isIndicatorsMenuOpened = true">
+          <span class="ltr:text-sm">{{ lang.map.real_estate_indicators }}</span>
+        </app-button>
+      </li>
+      <li *ngIf="!menuItem.isIndicatorPage">
         <app-button
           [buttonStyle]="sticky.isSticky() ? 'none-primary' : 'none'"
           [routerLink]="menuItem.url"
@@ -9,7 +19,20 @@
           routerLinkActive="active">
           <span class="ltr:text-sm">{{ menuItem.getNames() }}</span>
         </app-button>
-      </li>
-    </ng-container>
+      </li></ng-container
+    >
   </ul>
 </div>
+
+<mat-menu #indicatorsMenu="matMenu">
+  <ng-container *ngFor="let menuItem of mainMenu?.links ?? []; let i = index">
+    <button
+      *ngIf="menuItem.isIndicatorPage"
+      mat-menu-item
+      [routerLink]="menuItem.url"
+      (click)="addClick(menuItem)"
+      routerLinkActive="active">
+      {{ menuItem.getNames() }}
+    </button>
+  </ng-container>
+</mat-menu>

@@ -397,4 +397,5 @@ export interface LangKeysContract {
   password_and_password_confirm_should_be_equal: string;
   rent_transactions_are_retrieved_based_on_the_specified_date_of_documenting_the_lease_contracts_and_it_does_not_necessarily_correspond_to_the_start_date_of_the_lease_contract: string;
   notice: string;
+  real_estate_indicators: string;
 }
