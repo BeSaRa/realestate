@@ -12,6 +12,7 @@ export class MenuItem extends HasServiceMixin(ClonerMixin(GetNamesMixin(class {}
   clicks!: string;
   menu_id!: number;
   is_authenticated!: boolean;
+  isIndicatorPage!: boolean;
   recent = false;
   roles: string[] = [];
 

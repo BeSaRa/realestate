@@ -1,5 +1,5 @@
 .btn {
-  @apply flex gap-2 items-center disabled:text-white/70 px-4 py-2 outline-0 transition
+  @apply flex items-center disabled:text-white/70 px-4 py-2 outline-0 transition
   [&.none]:hover:ring-1 [&.none-primary]:hover:ring-1 [&.active]:ring-1 focus:ring-1 ring-offset-1 text-white;
 }
 
@@ -87,18 +87,18 @@
   @apply flex justify-between items-center w-full;
 }
 
-.sm .with-icon {
-  @apply gap-2;
-}
-.md .with-icon {
-  @apply gap-3;
-}
-.lg .with-icon {
-  @apply gap-4;
-}
-.xl .with-icon {
-  @apply gap-5;
-}
+// .sm .with-icon {
+//   @apply gap-2;
+// }
+// .md .with-icon {
+//   @apply gap-3;
+// }
+// .lg .with-icon {
+//   @apply gap-4;
+// }
+// .xl .with-icon {
+//   @apply gap-5;
+// }
 
 .sm .btn-icon {
   @apply w-5;
