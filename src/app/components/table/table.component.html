@@ -1,5 +1,11 @@
 <div
-  class="overflow-x-auto overflow-y-hidden py-4 px-8 rounded-xl border border-secondary/50 shadow-gray-100 custom-shadow">
+  class="relative overflow-x-auto overflow-y-hidden py-4 px-8 rounded-xl border border-secondary/50 shadow-gray-100 custom-shadow">
+  <mat-progress-bar
+    *ngIf="isLoading"
+    color="accent"
+    class="!absolute top-0 left-0 w-full"
+    mode="indeterminate"></mat-progress-bar>
+
   <!--  <div class="flex justify-between mb-4">-->
   <!--    <div *ngIf="sortOptions.length" class="flex justify-start items-center gap-2 lg:gap-4">-->
   <!--      <span class="font-bold">{{ lang.map.sort_order }}: </span>-->
@@ -23,7 +29,7 @@
       <th *matHeaderCellDef class="p-2">
         <ng-container [ngTemplateOutlet]="getColumnTemplate(displayedColumn)!.header.templateRef"></ng-container>
       </th>
-      <td *matCellDef="let row" class="text-primary py-2">
+      <td *matCellDef="let row" class="text-primary py-2 transition-all" [ngClass]="{ 'text-opacity-25': isLoading }">
         <ng-container
           [ngTemplateOutlet]="getColumnTemplate(displayedColumn)!.cell.templateRef"
           [ngTemplateOutletContext]="{
@@ -36,7 +42,8 @@
     <tr
       mat-header-row
       *matHeaderRowDef="displayedColumnNames"
-      class="{{ headerBgColor }} !text-white !text-xl font-bold"></tr>
+      [ngClass]="{ 'opacity-25': isLoading }"
+      class="{{ headerBgColor }} !text-white !text-xl font-bold transition-all"></tr>
     <tr
       mat-row
       *matRowDef="let row; columns: displayedColumnNames"

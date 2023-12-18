@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, inject, OnDestroy, OnInit } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 
 import { KpiRootComponent } from '@components/kpi-root/kpi-root.component';
 import { PurposeComponent } from '@components/purpose/purpose.component';
@@ -10,7 +10,6 @@ import { KpiRoot } from '@models/kpi-root';
 
 import { KpiBaseModel } from '@abstracts/kpi-base-model';
 import { MatNativeDateModule } from '@angular/material/core';
-import { PageEvent } from '@angular/material/paginator';
 import { MatSortModule } from '@angular/material/sort';
 import { MatTableModule } from '@angular/material/table';
 import { RentTransactionIndicator } from '@app-types/rent-indicators-type';
@@ -23,13 +22,16 @@ import { PropertyCarouselComponent } from '@components/property-carousel/propert
 import { TableComponent } from '@components/table/table.component';
 import { TopTenChartComponent } from '@components/top-ten-chart/top-ten-chart.component';
 import { YoyIndicatorComponent } from '@components/yoy-indicator/yoy-indicator.component';
+import { APP_PAGES_SECTIONS } from '@constants/injection-tokens';
 import { maskSeparator } from '@constants/mask-separator';
 import { CustomTooltipDirective } from '@directives/custom-tooltip.directive';
 import { ExtraHeaderPortalBridgeDirective } from '@directives/extra-header-portal-bridge.directive';
+import { SectionGuardDirective } from '@directives/section-guard.directive';
 import { TableColumnCellTemplateDirective } from '@directives/table-column-cell-template.directive';
 import { TableColumnHeaderTemplateDirective } from '@directives/table-column-header-template.directive';
 import { TableColumnTemplateDirective } from '@directives/table-column-template.directive';
 import { indicatorsTypes } from '@enums/Indicators-type';
+import { OnDestroyMixin } from '@mixins/on-destroy-mixin';
 import { AppTableDataSource } from '@models/app-table-data-source';
 import { RentCompositeTransaction } from '@models/composite-transaction';
 import { CriteriaSpecificTerms, CriteriaTerms } from '@models/criteria-specific-terms';
@@ -58,13 +60,10 @@ import {
   Observable,
   of,
   ReplaySubject,
-  Subject,
   switchMap,
   take,
   takeUntil,
 } from 'rxjs';
-import { APP_PAGES_SECTIONS } from '@constants/injection-tokens';
-import { SectionGuardDirective } from '@directives/section-guard.directive';
 
 @Component({
   selector: 'app-rental-indicators-page',
@@ -98,7 +97,7 @@ import { SectionGuardDirective } from '@directives/section-guard.directive';
   templateUrl: './rental-indicators-page.component.html',
   styleUrls: ['./rental-indicators-page.component.scss'],
 })
-export default class RentalIndicatorsPageComponent implements OnInit, OnDestroy {
+export default class RentalIndicatorsPageComponent extends OnDestroyMixin(class {}) implements OnInit {
   protected readonly IndicatorsType = indicatorsTypes;
 
   lang = inject(TranslationService);
@@ -109,7 +108,6 @@ export default class RentalIndicatorsPageComponent implements OnInit, OnDestroy 
   sectionTitle = inject(SectionTitleService);
   pageSections = inject(APP_PAGES_SECTIONS).RENT_PAGE;
 
-  destroy$ = new Subject<void>();
   reload$ = new ReplaySubject<void>(1);
   private basedOn$ = new BehaviorSubject<indicatorsTypes>(indicatorsTypes.PURPOSE);
 
@@ -123,10 +121,6 @@ export default class RentalIndicatorsPageComponent implements OnInit, OnDestroy 
   nationalities = this.lookupService.ownerLookups.nationalityList;
 
   isMonthlyDuration = true;
-
-  transactions$: Observable<RentTransaction[]> = this.loadTransactions();
-  transactionsCount = 0;
-  dataSource: AppTableDataSource<RentTransaction> = new AppTableDataSource(this.transactions$);
 
   transactionsStatistics$: Observable<RentTransactionIndicator[]> = this.setIndicatorsTableDataSource();
   transactionsStatisticsDatasource = new AppTableDataSource<RentTransactionIndicator>(this.transactionsStatistics$);
@@ -172,10 +166,6 @@ export default class RentalIndicatorsPageComponent implements OnInit, OnDestroy 
 
   selectedIndicators = this.IndicatorsType.PURPOSE;
 
-  private paginate$ = new BehaviorSubject({
-    offset: 0,
-    limit: 5,
-  });
   rootKPIS = [
     new KpiRoot().clone<KpiRoot>({
       id: 1,
@@ -333,8 +323,6 @@ export default class RentalIndicatorsPageComponent implements OnInit, OnDestroy 
     // 'bedRoomsCount'
   ]);
 
-  protected readonly maskSeparator = maskSeparator;
-
   compositeTransactions: RentCompositeTransaction[][] = [];
   compositeYears!: { selectedYear: number; previousYear: number };
   compositeTransactionsColumns = [
@@ -420,14 +408,10 @@ export default class RentalIndicatorsPageComponent implements OnInit, OnDestroy 
   furnitureLabel = (item: { kpiVal: number; furnitureStatus: number }) =>
     this.lookupService.rentFurnitureMap[item.furnitureStatus || 0]?.getNames();
 
+  readonly maskSeparator = maskSeparator;
+
   ngOnInit(): void {
     this.reload$.next();
-  }
-
-  ngOnDestroy(): void {
-    this.destroy$.next();
-    this.destroy$.complete();
-    this.destroy$.unsubscribe();
   }
 
   protected setIndicatorsTableDataSource(): Observable<RentTransactionIndicator[]> {
@@ -556,38 +540,16 @@ export default class RentalIndicatorsPageComponent implements OnInit, OnDestroy 
   updateRentIndicatorsTable(basedOn: indicatorsTypes) {
     this.basedOn$.next(basedOn);
   }
-  protected loadTransactions(): Observable<RentTransaction[]> {
-    return of(undefined)
-      .pipe(delay(0))
-      .pipe(
-        switchMap(() => {
-          return combineLatest([this.reload$, this.paginate$]).pipe(
-            switchMap(([, paginationOptions]) => {
-              this.criteria.criteria.limit = paginationOptions.limit;
-              this.criteria.criteria.offset = paginationOptions.offset;
-              return this.dashboardService.loadRentKpiTransactions(this.criteria.criteria);
-            }),
-            map(({ count, transactionList }) => {
-              this.transactionsCount = count;
-              return transactionList;
-            })
-          );
-        })
-      );
-  }
+
+  getTransactionType = () => RentTransaction;
+
+  transactionsLoadFn = (criteria: CriteriaContract) => this.dashboardService.loadRentKpiTransactions(criteria);
 
   switchTab(tab: 'rental_indicators' | 'statistical_reports_for_rent'): void {
     this.selectedTab = tab;
     if (this.selectedTab === 'rental_indicators') {
       this.reload$.next();
     }
-  }
-
-  paginate($event: PageEvent) {
-    this.paginate$.next({
-      offset: $event.pageSize * $event.pageIndex,
-      limit: $event.pageSize,
-    });
   }
 
   isSelectedTab(tab: string): boolean {

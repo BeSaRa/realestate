@@ -144,23 +144,22 @@
       </div>
     </div>
     <app-table
-      minWidth="1200px"
-      headerBgColor="!bg-secondary"
-      (paginate)="paginate($event)"
-      [length]="transactionsCount"
-      [dataSource]="dataSource"
+      [criteria]="transactionsTableCriteria"
+      [dataLoadFn]="transactionsLoadFn"
       [sortOptions]="[]"
-      [tableGuardName]="pageSections.OCCUPATION_TRANSACTIONS_TABLE.name">
+      [tableGuardName]="pageSections.OCCUPATION_TRANSACTIONS_TABLE.name"
+      headerBgColor="!bg-secondary"
+      minWidth="1200px">
       <ng-container appTableColumnTemplate [columnName]="pageSections.OCCUPATION_TRANSACTIONS_TABLE.columns.LOCATION">
         <div *appTableColumnHeaderTemplate class="flex justify-center">
           <div class="text-start">
             <p>{{ lang.map.location }}</p>
           </div>
         </div>
-        <div *appTableColumnCellTemplate="let item; typeOf: transactions$" class="flex justify-center">
+        <div *appTableColumnCellTemplate="let item; dataType: getTransactionType()" class="flex justify-center">
           <div class="text-start">
-            <p class="font-bold">{{ item.municipalityInfo.getNames() }}</p>
-            <p>{{ item.zoneInfo && item.zoneInfo.getNames() && "---" }}</p>
+            <p class="font-bold">{{ (item.municipalityInfo && item.municipalityInfo.getNames()) || "---" }}</p>
+            <p>{{ (item.zoneInfo && item.zoneInfo.getNames()) || "---" }}</p>
           </div>
         </div>
       </ng-container>
@@ -172,10 +171,10 @@
             <p>{{ lang.map.premise_category_and_type }}</p>
           </div>
         </div>
-        <div *appTableColumnCellTemplate="let item; typeOf: transactions$" class="flex justify-center">
+        <div *appTableColumnCellTemplate="let item; dataType: getTransactionType()" class="flex justify-center">
           <div class="text-start">
-            <p class="font-bold">{{ item.premiseCategoryInfo.getNames() }}</p>
-            <p>{{ item.permiseTypeInfo.getNames() }}</p>
+            <p class="font-bold">{{ (item.premiseCategoryInfo && item.premiseCategoryInfo.getNames()) || "---" }}</p>
+            <p>{{ (item.permiseTypeInfo && item.permiseTypeInfo.getNames()) || "---" }}</p>
           </div>
         </div>
       </ng-container>
@@ -184,17 +183,19 @@
         appTableColumnTemplate
         [columnName]="pageSections.OCCUPATION_TRANSACTIONS_TABLE.columns.OCCUPANCY_STATUS">
         <span *appTableColumnHeaderTemplate>{{ lang.map.occupancy_status }}</span>
-        <span *appTableColumnCellTemplate="let item; typeOf: transactions$" class="font-bold">{{
-          item.occupancyStatusInfo.getNames()
+        <span *appTableColumnCellTemplate="let item; dataType: getTransactionType()" class="font-bold">{{
+          (item.occupancyStatusInfo && item.occupancyStatusInfo.getNames()) || "---"
         }}</span>
       </ng-container>
       <ng-container appTableColumnTemplate [columnName]="pageSections.OCCUPATION_TRANSACTIONS_TABLE.columns.OWNER_ID">
         <span *appTableColumnHeaderTemplate>{{ lang.map.owner_id }}</span>
-        <span *appTableColumnCellTemplate="let item; typeOf: transactions$" class="font-bold">{{ item.ownerId }}</span>
+        <span *appTableColumnCellTemplate="let item; dataType: getTransactionType()" class="font-bold">{{
+          item.ownerId
+        }}</span>
       </ng-container>
       <ng-container appTableColumnTemplate [columnName]="pageSections.OCCUPATION_TRANSACTIONS_TABLE.columns.TENANT_ID">
         <span *appTableColumnHeaderTemplate>{{ lang.map.tenant_id }}</span>
-        <span *appTableColumnCellTemplate="let item; typeOf: transactions$" class="font-bold">{{
+        <span *appTableColumnCellTemplate="let item; dataType: getTransactionType()" class="font-bold">{{
           item.tenantNumber
         }}</span>
       </ng-container>
@@ -203,7 +204,7 @@
         appTableColumnTemplate
         [columnName]="pageSections.OCCUPATION_TRANSACTIONS_TABLE.columns.RECORD_DATE">
         <span *appTableColumnHeaderTemplate>{{ lang.map.record_date }}</span>
-        <span *appTableColumnCellTemplate="let item; typeOf: transactions$">
+        <span *appTableColumnCellTemplate="let item; dataType: getTransactionType()">
           {{ item.rowDate | date : "YYYY-MM-dd" }}</span
         >
       </ng-container>
@@ -211,7 +212,7 @@
         appTableColumnTemplate
         [columnName]="pageSections.OCCUPATION_TRANSACTIONS_TABLE.columns.ELECTRICITY_NUMBER">
         <span *appTableColumnHeaderTemplate>{{ lang.map.electricity_number }}</span>
-        <span *appTableColumnCellTemplate="let item; typeOf: transactions$" class="font-bold">{{
+        <span *appTableColumnCellTemplate="let item; dataType: getTransactionType()" class="font-bold">{{
           item.electricityNo
         }}</span>
       </ng-container>
@@ -219,7 +220,7 @@
         appTableColumnTemplate
         [columnName]="pageSections.OCCUPATION_TRANSACTIONS_TABLE.columns.WATER_NUMBER">
         <span *appTableColumnHeaderTemplate>{{ lang.map.water_number }}</span>
-        <span *appTableColumnCellTemplate="let item; typeOf: transactions$" class="font-bold">{{
+        <span *appTableColumnCellTemplate="let item; dataType: getTransactionType()" class="font-bold">{{
           item.waterNumber
         }}</span>
       </ng-container>

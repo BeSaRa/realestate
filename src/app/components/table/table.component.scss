@@ -5,3 +5,7 @@ th:first-child {
 th:last-child {
   @apply ltr:rounded-r-lg rtl:rounded-l-lg;
 }
+
+.mat-mdc-progress-bar {
+  --mdc-linear-progress-active-indicator-color: #a29475;
+}

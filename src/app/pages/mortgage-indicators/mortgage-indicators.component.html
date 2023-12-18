@@ -60,14 +60,12 @@
         {{ lang.map.mortgage_transactions_list }} {{ getStringSelectedCriteria() }}
       </h3>
       <app-table
-        minWidth="900px"
-        headerBgColor="!bg-secondary"
-        (paginate)="paginate($event)"
-        [length]="transactionsCount"
-        [dataSource]="dataSource"
+        [criteria]="criteria.criteria"
+        [dataLoadFn]="transactionsLoadFn"
         [sortOptions]="[]"
-        [defaultSortOption]="transactionsSortOptions[0]"
-        [tableGuardName]="pageSections.MORT_TRANSACTIONS_TABLE.name">
+        [tableGuardName]="pageSections.MORT_TRANSACTIONS_TABLE.name"
+        minWidth="900px"
+        headerBgColor="!bg-secondary">
         <ng-container appTableColumnTemplate [columnName]="pageSections.MORT_TRANSACTIONS_TABLE.columns.LOCATION">
           <div *appTableColumnHeaderTemplate class="flex justify-center">
             <div class="text-start">
@@ -75,22 +73,22 @@
               <p class="font-normal">{{ lang.map.real_estate_status }}</p>
             </div>
           </div>
-          <div *appTableColumnCellTemplate="let item; typeOf: transactions$" class="flex justify-center">
-            <div class="text-start">
-              <p class="font-bold">{{ item.municipalityInfo.getNames() }}</p>
-              <p>{{ item.areaInfo && item.areaInfo.getNames() && "---" }}</p>
+          <div *appTableColumnCellTemplate="let item; dataType: getTransactionType()" class="flex justify-center">
+            <div class="text-center">
+              <p class="font-bold">{{ (item.municipalityInfo && item.municipalityInfo.getNames()) || "---" }}</p>
+              <p>{{ (item.areaInfo && item.areaInfo.getNames()) || "---" }}</p>
             </div>
           </div>
         </ng-container>
         <ng-container appTableColumnTemplate [columnName]="pageSections.MORT_TRANSACTIONS_TABLE.columns.MORTGAGED_FOR">
           <span *appTableColumnHeaderTemplate>{{ lang.map.mortgaged_for }}</span>
-          <span *appTableColumnCellTemplate="let item; typeOf: transactions$" class="font-bold">{{
+          <span *appTableColumnCellTemplate="let item; dataType: getTransactionType()" class="font-bold">{{
             item.realEstateValue | number
           }}</span>
         </ng-container>
         <ng-container appTableColumnTemplate [columnName]="pageSections.MORT_TRANSACTIONS_TABLE.columns.AREA">
           <span *appTableColumnHeaderTemplate>{{ lang.map.area_in_square_meter }}</span>
-          <span *appTableColumnCellTemplate="let item; typeOf: transactions$" class="font-bold">
+          <span *appTableColumnCellTemplate="let item; dataType: getTransactionType()" class="font-bold">
             {{ item.realEstateArea }}
           </span>
         </ng-container>
@@ -107,14 +105,14 @@
               <!--                <p class="font-normal">{{ lang.map.sold_by }}</p>-->
             </div>
           </div>
-          <div *appTableColumnCellTemplate="let item; typeOf: transactions$" class="text-center">
+          <div *appTableColumnCellTemplate="let item; dataType: getTransactionType()" class="text-center">
             <p>{{ item.issueDate | date : "YYYY-MM-dd" }}</p>
             <!-- <p class="font-bold">{{ item.seller || "أفراد" }}</p> -->
           </div>
         </ng-container>
         <!--          <ng-container appTableColumnTemplate columnName="unit_parcel_no">-->
         <!--            <span *appTableColumnHeaderTemplate>{{ lang.map.unit_parcel_no }}</span>-->
-        <!--            <span *appTableColumnCellTemplate="let item; typeOf: transactions$" class="font-bold">{{-->
+        <!--            <span *appTableColumnCellTemplate="let item; dataType: getTransactionType()" class="font-bold">{{-->
         <!--              item.unitNo | number-->
         <!--            }}</span>-->
         <!--          </ng-container>-->

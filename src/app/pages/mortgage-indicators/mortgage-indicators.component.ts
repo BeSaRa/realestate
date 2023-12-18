@@ -1,10 +1,9 @@
 import { BidiModule } from '@angular/cdk/bidi';
 import { CommonModule } from '@angular/common';
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatOptionModule } from '@angular/material/core';
-import { PageEvent } from '@angular/material/paginator';
 import { MatTableModule } from '@angular/material/table';
 import { DurationChartComponent } from '@components/duration-chart/duration-chart.component';
 import { KpiRootComponent } from '@components/kpi-root/kpi-root.component';
@@ -20,7 +19,6 @@ import { TableColumnHeaderTemplateDirective } from '@directives/table-column-hea
 import { TableColumnTemplateDirective } from '@directives/table-column-template.directive';
 import { CriteriaType } from '@enums/criteria-type';
 import { TransactionType } from '@enums/transaction-type';
-import { AppTableDataSource } from '@models/app-table-data-source';
 import { KpiRoot } from '@models/kpi-root';
 import { MortgageTransaction } from '@models/mortgage-transaction';
 import { TableSortOption } from '@models/table-sort-option';
@@ -30,7 +28,7 @@ import { SectionTitleService } from '@services/section-title.service';
 import { TranslationService } from '@services/translation.service';
 import { UnitsService } from '@services/units.service';
 import { UrlService } from '@services/url.service';
-import { BehaviorSubject, combineLatest, delay, map, Observable, of, ReplaySubject, switchMap, take } from 'rxjs';
+import { take } from 'rxjs';
 
 @Component({
   selector: 'app-mortgage-indicators',
@@ -56,7 +54,7 @@ import { BehaviorSubject, combineLatest, delay, map, Observable, of, ReplaySubje
   templateUrl: './mortgage-indicators.component.html',
   styleUrls: ['./mortgage-indicators.component.scss'],
 })
-export default class MortgageIndicatorsComponent implements OnInit {
+export default class MortgageIndicatorsComponent {
   lang = inject(TranslationService);
   lookupService = inject(LookupService);
   urlService = inject(UrlService);
@@ -64,12 +62,6 @@ export default class MortgageIndicatorsComponent implements OnInit {
   unitsService = inject(UnitsService);
   sectionTitle = inject(SectionTitleService);
   pageSections = inject(APP_PAGES_SECTIONS).MORT_PAGE;
-
-  reload$ = new ReplaySubject<void>(1);
-  private paginate$ = new BehaviorSubject({
-    offset: 0,
-    limit: 5,
-  });
 
   municipalities = this.lookupService.mortLookups.municipalityList;
   areas = this.lookupService.mortLookups.districtList;
@@ -131,9 +123,6 @@ export default class MortgageIndicatorsComponent implements OnInit {
     hasPrice: true,
   };
 
-  transactions$: Observable<MortgageTransaction[]> = this.loadTransactions();
-  dataSource: AppTableDataSource<MortgageTransaction> = new AppTableDataSource(this.transactions$);
-  transactionsCount = 0;
   transactionsSortOptions: TableSortOption[] = [
     new TableSortOption().clone<TableSortOption>({
       arName: this.lang.getArabicTranslation('most_recent'),
@@ -185,10 +174,6 @@ export default class MortgageIndicatorsComponent implements OnInit {
     }),
   ];
 
-  ngOnInit() {
-    this.reload$.next();
-  }
-
   filterChange($event: { criteria: CriteriaContract; type: CriteriaType }): void {
     this.criteria = $event;
     this.dashboardService
@@ -198,35 +183,7 @@ export default class MortgageIndicatorsComponent implements OnInit {
         this.rootKpis.map((item, index) => {
           item.kpiData = values[index];
         });
-        this.reload$.next();
       });
-  }
-
-  paginate($event: PageEvent) {
-    this.paginate$.next({
-      offset: $event.pageSize * $event.pageIndex,
-      limit: $event.pageSize,
-    });
-  }
-
-  protected loadTransactions(): Observable<MortgageTransaction[]> {
-    return of(undefined)
-      .pipe(delay(0))
-      .pipe(
-        switchMap(() => {
-          return combineLatest([this.reload$, this.paginate$]).pipe(
-            switchMap(([, paginationOptions]) => {
-              this.criteria.criteria.limit = paginationOptions.limit;
-              this.criteria.criteria.offset = paginationOptions.offset;
-              return this.dashboardService.loadMortgageKpiTransactions(this.criteria.criteria);
-            }),
-            map(({ count, transactionList }) => {
-              this.transactionsCount = count;
-              return transactionList;
-            })
-          );
-        })
-      );
   }
 
   isMonthlyDurationType(value: boolean) {
@@ -239,6 +196,10 @@ export default class MortgageIndicatorsComponent implements OnInit {
   isMonthlyDurationTypeForUnits(value: boolean) {
     this.isMonthlyDurationForUnits = value;
   }
+
+  getTransactionType = () => MortgageTransaction;
+
+  transactionsLoadFn = (criteria: CriteriaContract) => this.dashboardService.loadMortgageKpiTransactions(criteria);
 
   getStringSelectedCriteria(showYearInTitle = true): string {
     return this.sectionTitle.getSelectedCriteria('mort', this.criteria.criteria, false, true, showYearInTitle);

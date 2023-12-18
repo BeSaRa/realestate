@@ -1,7 +1,6 @@
 import { KpiBaseModel } from '@abstracts/kpi-base-model';
 import { CommonModule } from '@angular/common';
-import { Component, OnInit, inject } from '@angular/core';
-import { PageEvent } from '@angular/material/paginator';
+import { Component, inject } from '@angular/core';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { AreasChartComponent } from '@components/areas-chart/areas-chart.component';
 import { ButtonComponent } from '@components/button/button.component';
@@ -22,7 +21,6 @@ import { TableColumnTemplateDirective } from '@directives/table-column-template.
 import { CriteriaType } from '@enums/criteria-type';
 import { OccupationStatus } from '@enums/occupation-status';
 import { OnDestroyMixin } from '@mixins/on-destroy-mixin';
-import { AppTableDataSource } from '@models/app-table-data-source';
 import { KpiBase } from '@models/kpi-base';
 import { KpiPurpose } from '@models/kpi-purpose';
 import { KpiRoot } from '@models/kpi-root';
@@ -33,7 +31,7 @@ import { LookupService } from '@services/lookup.service';
 import { TranslationService } from '@services/translation.service';
 import { UrlService } from '@services/url.service';
 import { NgApexchartsModule } from 'ng-apexcharts';
-import { BehaviorSubject, Subject, combineLatest, finalize, switchMap, take, takeUntil } from 'rxjs';
+import { finalize, take } from 'rxjs';
 
 @Component({
   selector: 'app-occupied-and-vacant-indicators-page',
@@ -59,7 +57,7 @@ import { BehaviorSubject, Subject, combineLatest, finalize, switchMap, take, tak
   templateUrl: './occupied-and-vacant-indicators-page.component.html',
   styleUrls: ['./occupied-and-vacant-indicators-page.component.scss'],
 })
-export default class OccupiedAndVacantIndicatorsPageComponent extends OnDestroyMixin(class {}) implements OnInit {
+export default class OccupiedAndVacantIndicatorsPageComponent extends OnDestroyMixin(class {}) {
   lang = inject(TranslationService);
   dashboardService = inject(DashboardService);
   urlService = inject(UrlService);
@@ -157,30 +155,15 @@ export default class OccupiedAndVacantIndicatorsPageComponent extends OnDestroyM
   areaLabel = (item: { kpiVal: number; zoneNo: number }) =>
     this.lookupService.ovZonesMap[item?.zoneNo]?.getNames() ?? '';
 
-  transactionsSubject = new BehaviorSubject<OccupancyTransaction[]>([]);
-  transactions$ = this.transactionsSubject.asObservable();
-  dataSource: AppTableDataSource<OccupancyTransaction> = new AppTableDataSource(this.transactions$);
-  transactionsCount = 0;
-
   readonly OccupationStatus = OccupationStatus;
-  selectedOccupancyStatus = OccupationStatus.VACANT;
   isTransactionsLoading = false;
 
-  paginateSubject = new BehaviorSubject({
-    offset: 0,
-    limit: 5,
-  });
-  paginate$ = this.paginateSubject.asObservable();
+  selectedOccupancyStatus = OccupationStatus.VACANT;
 
-  reloadSubject = new Subject<void>();
-  reload$ = this.reloadSubject.asObservable();
-
-  ngOnInit(): void {
-    this._listenToTransactionsReloadAndPaginate();
-    setTimeout(() => {
-      this.reloadSubject.next();
-    }, 0);
-  }
+  transactionsTableCriteria = {
+    ...this.criteria.criteria,
+    occupancyStatus: this.selectedOccupancyStatus,
+  };
 
   filterChange({ criteria, type }: { criteria: CriteriaContract; type: CriteriaType }) {
     this.criteria = { criteria: criteria as CriteriaContract & { occupancyStatus: number | null }, type };
@@ -200,7 +183,8 @@ export default class OccupiedAndVacantIndicatorsPageComponent extends OnDestroyM
     });
 
     this.rootItemSelected(this.selectedRoot);
-    this.reloadSubject.next();
+
+    this.updateTransactionTableCriteria();
   }
 
   rootItemSelected(item?: KpiRoot) {
@@ -294,41 +278,31 @@ export default class OccupiedAndVacantIndicatorsPageComponent extends OnDestroyM
     this.areasCriteria = { ...this.criteria.criteria, occupancyStatus: null, municipalityId };
   }
 
-  paginate($event: PageEvent) {
-    this.paginateSubject.next({
-      offset: $event.pageSize * $event.pageIndex,
-      limit: $event.pageSize,
-    });
+  updateTransactionTableCriteria() {
+    this.transactionsTableCriteria = {
+      ...this.criteria.criteria,
+      occupancyStatus: this.selectedOccupancyStatus,
+    };
   }
+
+  getTransactionType = () => OccupancyTransaction;
+
+  transactionsLoadFn = (criteria: CriteriaContract) => {
+    setTimeout(() => {
+      this.isTransactionsLoading = true;
+    }, 0);
+    return this.dashboardService.loadOccupancyTransactions(criteria).pipe(
+      finalize(() => {
+        setTimeout(() => {
+          this.isTransactionsLoading = false;
+        }, 0);
+      })
+    );
+  };
 
   onOccupancyStatusSelect(occupancyStatus: OccupationStatus) {
     if (this.selectedOccupancyStatus === occupancyStatus) return;
     this.selectedOccupancyStatus = occupancyStatus;
-    this.reloadSubject.next();
-  }
-
-  private _listenToTransactionsReloadAndPaginate() {
-    combineLatest([this.reload$, this.paginate$])
-      .pipe(
-        takeUntil(this.destroy$),
-        switchMap(([, paginationOptions]) => {
-          this.isTransactionsLoading = true;
-          const _criteria = {
-            ...this.criteria.criteria,
-            limit: paginationOptions.limit,
-            offset: paginationOptions.offset,
-            occupancyStatus: this.selectedOccupancyStatus,
-          };
-          return this.dashboardService.loadOccupancyTransactions(_criteria).pipe(
-            finalize(() => {
-              this.isTransactionsLoading = false;
-            })
-          );
-        })
-      )
-      .subscribe(({ count, transactionList }) => {
-        this.transactionsSubject.next(transactionList);
-        this.transactionsCount = count;
-      });
+    this.updateTransactionTableCriteria();
   }
 }
