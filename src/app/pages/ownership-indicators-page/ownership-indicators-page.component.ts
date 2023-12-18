@@ -1,8 +1,7 @@
 import { KpiBaseModel } from '@abstracts/kpi-base-model';
 import { CommonModule } from '@angular/common';
-import { AfterViewInit, Component, OnDestroy, OnInit, inject } from '@angular/core';
+import { AfterViewInit, Component, inject } from '@angular/core';
 import { MatNativeDateModule } from '@angular/material/core';
-import { PageEvent } from '@angular/material/paginator';
 import { AreasChartComponent } from '@components/areas-chart/areas-chart.component';
 import { ButtonComponent } from '@components/button/button.component';
 import { DurationChartComponent } from '@components/duration-chart/duration-chart.component';
@@ -25,7 +24,7 @@ import { TableColumnCellTemplateDirective } from '@directives/table-column-cell-
 import { TableColumnHeaderTemplateDirective } from '@directives/table-column-header-template.directive';
 import { TableColumnTemplateDirective } from '@directives/table-column-template.directive';
 import { CriteriaType } from '@enums/criteria-type';
-import { AppTableDataSource } from '@models/app-table-data-source';
+import { OnDestroyMixin } from '@mixins/on-destroy-mixin';
 import { KpiBase } from '@models/kpi-base';
 import { KpiPropertyType } from '@models/kpi-property-type';
 import { KpiPurpose } from '@models/kpi-purpose';
@@ -39,7 +38,7 @@ import { SectionTitleService } from '@services/section-title.service';
 import { TranslationService } from '@services/translation.service';
 import { UrlService } from '@services/url.service';
 import { NgxMaskPipe } from 'ngx-mask';
-import { BehaviorSubject, Subject, combineLatest, switchMap, take, takeUntil } from 'rxjs';
+import { take, takeUntil } from 'rxjs';
 
 @Component({
   selector: 'app-owner-page',
@@ -72,15 +71,13 @@ import { BehaviorSubject, Subject, combineLatest, switchMap, take, takeUntil } f
   templateUrl: './ownership-indicators-page.component.html',
   styleUrls: ['./ownership-indicators-page.component.scss'],
 })
-export default class OwnershipIndicatorsPageComponent implements OnInit, AfterViewInit, OnDestroy {
+export default class OwnershipIndicatorsPageComponent extends OnDestroyMixin(class {}) implements AfterViewInit {
   lang = inject(TranslationService);
   dashboardService = inject(DashboardService);
   urlService = inject(UrlService);
   lookupService = inject(LookupService);
   sectionTitle = inject(SectionTitleService);
   pageSections = inject(APP_PAGES_SECTIONS).OWNER_PAGE;
-
-  destroy$ = new Subject<void>();
 
   municipalities = this.lookupService.ownerLookups.municipalityList;
   propertyTypes = this.lookupService.ownerLookups.propertyTypeList;
@@ -276,37 +273,10 @@ export default class OwnershipIndicatorsPageComponent implements OnInit, AfterVi
 
   genderLabel = (item: { gender: number }) => this.lookupService.ownerGenderMap[item.gender]?.getNames() ?? '-';
 
-  transactionsSubject = new BehaviorSubject<OwnershipTransaction[]>([]);
-  transactions$ = this.transactionsSubject.asObservable();
-  dataSource: AppTableDataSource<OwnershipTransaction> = new AppTableDataSource(this.transactions$);
-  transactionsCount = 0;
-
-  paginateSubject = new BehaviorSubject({
-    offset: 0,
-    limit: 5,
-  });
-  paginate$ = this.paginateSubject.asObservable();
-
-  reloadSubject = new Subject<void>();
-  reload$ = this.reloadSubject.asObservable();
-
-  ngOnInit(): void {
-    this._listenToTransactionsReloadAndPaginate();
-    setTimeout(() => {
-      this.reloadSubject.next();
-    }, 0);
-  }
-
   ngAfterViewInit(): void {
     setTimeout(() => {
       this.nationalityCriteria = { ...this.criteria.criteria, nationalityCode: this.selectedNationalityId };
     }, 0);
-  }
-
-  ngOnDestroy(): void {
-    this.destroy$.next();
-    this.destroy$.complete();
-    this.destroy$.unsubscribe();
   }
 
   switchTab(tab: 'ownership_indicators' | 'owner_indicators'): void {
@@ -438,8 +408,6 @@ export default class OwnershipIndicatorsPageComponent implements OnInit, AfterVi
       ...this.nationalityCriteria,
       municipalityId: -1,
     };
-
-    this.reloadSubject.next();
   }
 
   updateOwnershipAreasChartCriteria(municipalityId: number) {
@@ -454,31 +422,10 @@ export default class OwnershipIndicatorsPageComponent implements OnInit, AfterVi
     this.selectedOwnershipMunicipalityId = municipalityId;
   }
 
-  paginate($event: PageEvent) {
-    this.paginateSubject.next({
-      offset: $event.pageSize * $event.pageIndex,
-      limit: $event.pageSize,
-    });
-  }
+  getOwnershipTransactionType = () => OwnershipTransaction;
 
-  private _listenToTransactionsReloadAndPaginate() {
-    combineLatest([this.reload$, this.paginate$])
-      .pipe(
-        takeUntil(this.destroy$),
-        switchMap(([, paginationOptions]) => {
-          const _criteria = {
-            ...this.nationalityCriteria,
-            limit: paginationOptions.limit,
-            offset: paginationOptions.offset,
-          } as CriteriaContract;
-          return this.dashboardService.loadOwnershipsTransactions(_criteria);
-        })
-      )
-      .subscribe(({ count, transactionList }) => {
-        this.transactionsSubject.next(transactionList);
-        this.transactionsCount = count;
-      });
-  }
+  ownershipTransactionsLoadFn = (criteria: CriteriaContract) =>
+    this.dashboardService.loadOwnershipsTransactions(criteria);
 
   private _getChartDataUrl(baseUrl: keyof typeof this.urlService.URLS): keyof typeof this.urlService.URLS {
     if (this.selectedNationalityId === this.specialNationality.lookupKey)

@@ -1,8 +1,7 @@
 import { KpiBaseModel } from '@abstracts/kpi-base-model';
 import { CommonModule } from '@angular/common';
-import { Component, OnDestroy, OnInit, QueryList, ViewChildren, inject } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { MatNativeDateModule } from '@angular/material/core';
-import { PageEvent } from '@angular/material/paginator';
 import { MatSortModule } from '@angular/material/sort';
 import { MatTableModule } from '@angular/material/table';
 import { SellTransactionIndicator } from '@app-types/sell-indicators-type';
@@ -27,6 +26,7 @@ import { TableColumnHeaderTemplateDirective } from '@directives/table-column-hea
 import { TableColumnTemplateDirective } from '@directives/table-column-template.directive';
 import { indicatorsTypes } from '@enums/Indicators-type';
 import { CriteriaType } from '@enums/criteria-type';
+import { OnDestroyMixin } from '@mixins/on-destroy-mixin';
 import { AppTableDataSource } from '@models/app-table-data-source';
 import { CompositeTransaction } from '@models/composite-transaction';
 import { CriteriaSpecificTerms, CriteriaTerms } from '@models/criteria-specific-terms';
@@ -46,13 +46,11 @@ import { SectionTitleService } from '@services/section-title.service';
 import { TranslationService } from '@services/translation.service';
 import { UnitsService } from '@services/units.service';
 import { UrlService } from '@services/url.service';
-import { CarouselComponent } from 'angular-responsive-carousel2';
 import { NgxMaskPipe } from 'ngx-mask';
 import {
   BehaviorSubject,
   Observable,
   ReplaySubject,
-  Subject,
   combineLatest,
   delay,
   map,
@@ -93,14 +91,8 @@ import {
   templateUrl: './sell-indicators-page.component.html',
   styleUrls: ['./sell-indicators-page.component.scss'],
 })
-export default class SellIndicatorsPageComponent implements OnInit, OnDestroy {
+export default class SellIndicatorsPageComponent extends OnDestroyMixin(class {}) implements OnInit {
   protected readonly IndicatorsType = indicatorsTypes;
-  @ViewChildren('carousel') carousel!: QueryList<CarouselComponent>;
-
-  private paginate$ = new BehaviorSubject({
-    offset: 0,
-    limit: 5,
-  });
 
   lang = inject(TranslationService);
   dashboardService = inject(DashboardService);
@@ -110,7 +102,6 @@ export default class SellIndicatorsPageComponent implements OnInit, OnDestroy {
   sectionTitle = inject(SectionTitleService);
   pageSections = inject(APP_PAGES_SECTIONS).SELL_PAGE;
 
-  destroy$ = new Subject<void>();
   reload$ = new ReplaySubject<void>(1);
 
   private basedOn$ = new BehaviorSubject<indicatorsTypes>(indicatorsTypes.PURPOSE);
@@ -119,8 +110,7 @@ export default class SellIndicatorsPageComponent implements OnInit, OnDestroy {
   propertyTypes = this.lookupService.sellLookups.propertyTypeList;
   propertyUsages = this.lookupService.sellLookups.rentPurposeList.slice().sort((a, b) => a.lookupKey - b.lookupKey);
   areas = this.lookupService.sellLookups.districtList.slice().sort((a, b) => a.lookupKey - b.lookupKey);
-  // zones = this.lookupService.sellLookups.zoneList;
-  rooms = [] /*this.lookupService.sellLookups.rooms*/;
+
   paramsRange = this.lookupService.sellLookups.maxParams;
 
   purposeKPIS = this.lookupService.sellLookups.rentPurposeList.map((item) =>
@@ -285,11 +275,6 @@ export default class SellIndicatorsPageComponent implements OnInit, OnDestroy {
 
   top10Label = (item: { kpiVal: number; zoneId: number }) => this.lookupService.sellDistrictMap[item.zoneId].getNames();
 
-  // transactions = new ReplaySubject<SellTransaction[]>(1);
-  transactions$: Observable<SellTransaction[]> = this.loadTransactions();
-  dataSource: AppTableDataSource<SellTransaction> = new AppTableDataSource(this.transactions$);
-  transactionsCount = 0;
-
   transactionsStatistics$: Observable<SellTransactionIndicator[]> = this.setIndicatorsTableDataSource();
   transactionsStatisticsDatasource = new AppTableDataSource<SellTransactionIndicator>(this.transactionsStatistics$);
   transactionsSortOptions: TableSortOption[] = [
@@ -344,6 +329,7 @@ export default class SellIndicatorsPageComponent implements OnInit, OnDestroy {
   ];
 
   transactionsStatisticsColumns = ['average', 'certificates-count', 'area', 'units-count', 'average-square', 'chart'];
+
   purposeTableCriteriaTerms = new CriteriaSpecificTerms([
     'areaCode',
     { criteriaKey: 'propertyTypeList', term: CriteriaTerms.SINGLE_NOT_ALL },
@@ -397,12 +383,6 @@ export default class SellIndicatorsPageComponent implements OnInit, OnDestroy {
     this.reload$.next();
   }
 
-  ngOnDestroy(): void {
-    this.destroy$.next();
-    this.destroy$.complete();
-    this.destroy$.unsubscribe();
-  }
-
   protected setIndicatorsTableDataSource(): Observable<SellTransactionIndicator[]> {
     return of(undefined)
       .pipe(delay(0))
@@ -446,13 +426,6 @@ export default class SellIndicatorsPageComponent implements OnInit, OnDestroy {
 
   updateSellIndicatorsTable(basedOn: indicatorsTypes) {
     this.basedOn$.next(basedOn);
-  }
-
-  paginate($event: PageEvent) {
-    this.paginate$.next({
-      offset: $event.pageSize * $event.pageIndex,
-      limit: $event.pageSize,
-    });
   }
 
   isSelectedTab(tab: string): boolean {
@@ -549,25 +522,9 @@ export default class SellIndicatorsPageComponent implements OnInit, OnDestroy {
       (_propertyType.kpiData = KpiBase.kpiFactory(this.selectedRoot.hasSqUnit).clone(this.selectedPurpose.kpiData));
   }
 
-  protected loadTransactions(): Observable<SellTransaction[]> {
-    return of(undefined)
-      .pipe(delay(0))
-      .pipe(
-        switchMap(() => {
-          return combineLatest([this.reload$, this.paginate$]).pipe(
-            switchMap(([, paginationOptions]) => {
-              this.criteria.criteria.limit = paginationOptions.limit;
-              this.criteria.criteria.offset = paginationOptions.offset;
-              return this.dashboardService.loadSellKpiTransactions(this.criteria.criteria);
-            }),
-            map(({ count, transactionList }) => {
-              this.transactionsCount = count;
-              return transactionList;
-            })
-          );
-        })
-      );
-  }
+  getTransactionType = () => SellTransaction;
+
+  transactionsLoadFn = (criteria: CriteriaContract) => this.dashboardService.loadSellKpiTransactions(criteria);
 
   openChart(item: SellTransactionPurpose | SellTransactionPropertyType): void {
     item.openChart(this.criteria.criteria).pipe(take(1)).subscribe();

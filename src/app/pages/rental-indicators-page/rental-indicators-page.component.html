@@ -119,23 +119,21 @@
       </h3>
 
       <app-table
-        minWidth="900px"
-        headerBgColor="!bg-secondary"
-        (paginate)="paginate($event)"
-        [length]="transactionsCount"
-        [dataSource]="dataSource"
+        [criteria]="criteria.criteria"
+        [dataLoadFn]="transactionsLoadFn"
         [sortOptions]="[]"
-        [defaultSortOption]="transactionsSortOptions[0]"
-        [tableGuardName]="pageSections.RENT_TRANSACTIONS_TABLE.name">
+        [tableGuardName]="pageSections.RENT_TRANSACTIONS_TABLE.name"
+        minWidth="900px"
+        headerBgColor="!bg-secondary">
         <ng-container appTableColumnTemplate [columnName]="pageSections.RENT_TRANSACTIONS_TABLE.columns.MUNICIPALITY"
           ><span *appTableColumnHeaderTemplate>{{ lang.map.municipal }}</span
-          ><span *appTableColumnCellTemplate="let item; typeOf: transactions$">{{
-            item.municipalityInfo.getNames()
+          ><span *appTableColumnCellTemplate="let item; dataType: getTransactionType()">{{
+            (item.municipalityInfo && item.municipalityInfo.getNames()) || "---"
           }}</span></ng-container
         >
         <ng-container appTableColumnTemplate [columnName]="pageSections.RENT_TRANSACTIONS_TABLE.columns.UNIT_DETAILS">
           <span *appTableColumnHeaderTemplate>{{ lang.map.unit_details }}</span>
-          <div *appTableColumnCellTemplate="let item; typeOf: transactions$" class="flex justify-center">
+          <div *appTableColumnCellTemplate="let item; dataType: getTransactionType()" class="flex justify-center">
             <div class="text-start">
               <div>
                 <b>{{ lang.map.rooms }}</b> : {{ item.bedRoomsCount ? item.bedRoomsCount : "---" }}
@@ -144,14 +142,15 @@
                 <b>{{ lang.map.space }}</b> : {{ item.area ? item.area : "---" }}
               </div> -->
               <div>
-                <b>{{ lang.map.unit_type }}</b> : {{ item.area ? item.propertyTypeInfo.getNames() : "---" }}
+                <b>{{ lang.map.unit_type }}</b> :
+                {{ (item.propertyTypeInfo && item.propertyTypeInfo.getNames()) || "---" }}
               </div>
             </div>
           </div>
         </ng-container>
         <ng-container appTableColumnTemplate [columnName]="pageSections.RENT_TRANSACTIONS_TABLE.columns.RENTAL_VALUE"
           ><span *appTableColumnHeaderTemplate>{{ lang.map.rental_value }}</span
-          ><span *appTableColumnCellTemplate="let item; typeOf: transactions$">
+          ><span *appTableColumnCellTemplate="let item; dataType: getTransactionType()">
             {{ item.rentPaymentMonthly ? item.rentPaymentMonthly : "---" }}</span
           >
         </ng-container>
@@ -159,7 +158,7 @@
           appTableColumnTemplate
           [columnName]="pageSections.RENT_TRANSACTIONS_TABLE.columns.CONTRACT_START_DATE"
           ><span *appTableColumnHeaderTemplate>{{ lang.map.contract_start_date }}</span>
-          <span *appTableColumnCellTemplate="let item; typeOf: transactions$">{{
+          <span *appTableColumnCellTemplate="let item; dataType: getTransactionType()">{{
             item.startDate | date : "YYYY-MM-dd"
           }}</span></ng-container
         >
@@ -167,7 +166,7 @@
           appTableColumnTemplate
           [columnName]="pageSections.RENT_TRANSACTIONS_TABLE.columns.CONTRACT_END_DATE"
           ><span *appTableColumnHeaderTemplate>{{ lang.map.contract_end_date }}</span
-          ><span *appTableColumnCellTemplate="let item; typeOf: transactions$">{{
+          ><span *appTableColumnCellTemplate="let item; dataType: getTransactionType()">{{
             item.endDate | date : "YYYY-MM-dd"
           }}</span></ng-container
         >

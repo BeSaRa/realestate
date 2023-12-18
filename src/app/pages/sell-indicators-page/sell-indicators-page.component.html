@@ -8,7 +8,6 @@
       [propertyTypes]="propertyTypes"
       [propertyUsages]="propertyUsages"
       [areas]="areas"
-      [rooms]="rooms"
       [paramsRange]="paramsRange"
       (fromChanged)="filterChange($event)" />
   </div>
@@ -116,31 +115,29 @@
       </h3>
 
       <app-table
-        minWidth="900px"
-        headerBgColor="!bg-secondary"
-        (paginate)="paginate($event)"
-        [length]="transactionsCount"
-        [dataSource]="dataSource"
+        [criteria]="criteria.criteria"
+        [dataLoadFn]="transactionsLoadFn"
         [sortOptions]="[]"
-        [defaultSortOption]="transactionsSortOptions[0]"
-        [tableGuardName]="pageSections.SELL_TRANSACTIONS_TABLE.name">
+        [tableGuardName]="pageSections.SELL_TRANSACTIONS_TABLE.name"
+        minWidth="900px"
+        headerBgColor="!bg-secondary">
         <ng-container appTableColumnTemplate [columnName]="pageSections.SELL_TRANSACTIONS_TABLE.columns.LOCATION">
           <div *appTableColumnHeaderTemplate class="flex justify-center">
             <div class="text-start">
               <p>{{ lang.map.location }}</p>
-              <p class="font-normal">{{ lang.map.real_estate_status }}</p>
+              <!-- <p class="font-normal">{{ lang.map.real_estate_status }}</p> -->
             </div>
           </div>
-          <div *appTableColumnCellTemplate="let item; typeOf: transactions$" class="flex justify-center">
-            <div class="text-start">
-              <p class="font-bold">{{ item.municipalityInfo.getNames() }}</p>
-              <p>{{ item.areaInfo && item.areaInfo.getNames() && "---" }}</p>
+          <div *appTableColumnCellTemplate="let item; dataType: getTransactionType()" class="flex justify-center">
+            <div class="text-center">
+              <p class="font-bold">{{ (item.municipalityInfo && item.municipalityInfo.getNames()) || "---" }}</p>
+              <p>{{ (item.areaInfo && item.areaInfo.getNames()) || "---" }}</p>
             </div>
           </div>
         </ng-container>
         <ng-container appTableColumnTemplate [columnName]="pageSections.SELL_TRANSACTIONS_TABLE.columns.SOLD_FOR">
           <span *appTableColumnHeaderTemplate>{{ lang.map.sold_for }}</span>
-          <span *appTableColumnCellTemplate="let item; typeOf: transactions$" class="font-bold">{{
+          <span *appTableColumnCellTemplate="let item; dataType: getTransactionType()" class="font-bold">{{
             item.realEstateValue | number
           }}</span>
         </ng-container>
@@ -148,7 +145,7 @@
           <span *appTableColumnHeaderTemplate>{{
             unitsService.isMeterSelected() ? lang.map.area_in_square_meter : lang.map.area_in_square_foot
           }}</span>
-          <span *appTableColumnCellTemplate="let item; typeOf: transactions$" class="font-bold">{{
+          <span *appTableColumnCellTemplate="let item; dataType: getTransactionType()" class="font-bold">{{
             unitsService.isMeterSelected() ? item.realEstateMT : item.realEstateSQT
           }}</span>
         </ng-container>
@@ -156,7 +153,7 @@
           <span *appTableColumnHeaderTemplate>{{
             unitsService.isMeterSelected() ? lang.map.the_square_meter_price : lang.map.the_square_foot_price
           }}</span>
-          <span *appTableColumnCellTemplate="let item; typeOf: transactions$" class="font-bold">{{
+          <span *appTableColumnCellTemplate="let item; dataType: getTransactionType()" class="font-bold">{{
             (unitsService.isMeterSelected() ? item.priceMT : item.priceSQ) | number : "1.0-0"
           }}</span>
         </ng-container>
@@ -168,7 +165,7 @@
               <!-- <p class="font-normal">{{ lang.map.sold_by }}</p> -->
             </div>
           </div>
-          <div *appTableColumnCellTemplate="let item; typeOf: transactions$" class="text-center">
+          <div *appTableColumnCellTemplate="let item; dataType: getTransactionType()" class="text-center">
             <p>{{ item.issueDate | date : "YYYY-MM-dd" }}</p>
             <!-- Hide sold_by for now as client request Issue 60399 -->
             <!-- <p class="font-bold">{{ item.soldTo || "أفراد" }}</p> -->
@@ -177,7 +174,7 @@
 
         <ng-container appTableColumnTemplate [columnName]="pageSections.SELL_TRANSACTIONS_TABLE.columns.ROI">
           <span *appTableColumnHeaderTemplate>ROI</span>
-          <span *appTableColumnCellTemplate="let item; typeOf: transactions$" class="font-bold">{{
+          <span *appTableColumnCellTemplate="let item; dataType: getTransactionType()" class="font-bold">{{
             item.roi === null ? "---" : (item.roi | percent : "1.2")
           }}</span>
         </ng-container>

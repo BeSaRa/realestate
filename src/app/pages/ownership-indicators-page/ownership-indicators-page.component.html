@@ -207,18 +207,19 @@
         </h3>
 
         <app-table
-          minWidth="900px"
-          headerBgColor="!bg-secondary"
-          (paginate)="paginate($event)"
-          [length]="transactionsCount"
-          [dataSource]="dataSource"
+          [criteria]="nationalityCriteria"
+          [dataLoadFn]="ownershipTransactionsLoadFn"
           [sortOptions]="[]"
-          [tableGuardName]="pageSections.OWNERSHIP_TRANSACTIONS_TABLE.name">
+          [tableGuardName]="pageSections.OWNERSHIP_TRANSACTIONS_TABLE.name"
+          minWidth="900px"
+          headerBgColor="!bg-secondary">
           <ng-container
             appTableColumnTemplate
             [columnName]="pageSections.OWNERSHIP_TRANSACTIONS_TABLE.columns.UNIT_NUMBER">
             <span *appTableColumnHeaderTemplate class="flex justify-center"> {{ lang.map.unit_parcel_no }} </span>
-            <span *appTableColumnCellTemplate="let item; typeOf: transactions$" class="flex justify-center">
+            <span
+              *appTableColumnCellTemplate="let item; dataType: getOwnershipTransactionType()"
+              class="flex justify-center">
               {{ item.unitNumber }}
             </span>
           </ng-container>
@@ -226,7 +227,9 @@
             appTableColumnTemplate
             [columnName]="pageSections.OWNERSHIP_TRANSACTIONS_TABLE.columns.OWNER_NAME">
             <span *appTableColumnHeaderTemplate class="flex justify-center"> {{ lang.map.owner_name }} </span>
-            <span *appTableColumnCellTemplate="let item; typeOf: transactions$" class="flex justify-center">
+            <span
+              *appTableColumnCellTemplate="let item; dataType: getOwnershipTransactionType()"
+              class="flex justify-center">
               {{ item.ownerName || "---" }}
             </span>
           </ng-container>
@@ -234,7 +237,9 @@
             appTableColumnTemplate
             [columnName]="pageSections.OWNERSHIP_TRANSACTIONS_TABLE.columns.OWNER_ID">
             <span *appTableColumnHeaderTemplate class="flex justify-center"> {{ lang.map.owner_id }} </span>
-            <span *appTableColumnCellTemplate="let item; typeOf: transactions$" class="flex justify-center">
+            <span
+              *appTableColumnCellTemplate="let item; dataType: getOwnershipTransactionType()"
+              class="flex justify-center">
               {{ item.getqId || "---" }}
             </span>
           </ng-container>
@@ -242,7 +247,9 @@
             appTableColumnTemplate
             [columnName]="pageSections.OWNERSHIP_TRANSACTIONS_TABLE.columns.OWNER_SHARES">
             <span *appTableColumnHeaderTemplate class="flex justify-center"> {{ lang.map.owner_shares }} </span>
-            <span *appTableColumnCellTemplate="let item; typeOf: transactions$" class="flex justify-center">
+            <span
+              *appTableColumnCellTemplate="let item; dataType: getOwnershipTransactionType()"
+              class="flex justify-center">
               {{ item.ownerShares | number }}
             </span>
           </ng-container>
@@ -250,7 +257,9 @@
             appTableColumnTemplate
             [columnName]="pageSections.OWNERSHIP_TRANSACTIONS_TABLE.columns.DOC_DESCRIPTION">
             <span *appTableColumnHeaderTemplate class="flex justify-center"> {{ lang.map.doc_description }} </span>
-            <span *appTableColumnCellTemplate="let item; typeOf: transactions$" class="flex justify-center">
+            <span
+              *appTableColumnCellTemplate="let item; dataType: getOwnershipTransactionType()"
+              class="flex justify-center">
               {{ item.docDescription || "---" }}
             </span>
           </ng-container>
@@ -258,7 +267,9 @@
             appTableColumnTemplate
             [columnName]="pageSections.OWNERSHIP_TRANSACTIONS_TABLE.columns.DOC_DATE">
             <span *appTableColumnHeaderTemplate class="flex justify-center"> {{ lang.map.doc_date }} </span>
-            <span *appTableColumnCellTemplate="let item; typeOf: transactions$" class="flex justify-center">
+            <span
+              *appTableColumnCellTemplate="let item; dataType: getOwnershipTransactionType()"
+              class="flex justify-center">
               {{ item.docDate | date : "YYYY-MM-dd" }}
             </span>
           </ng-container>
