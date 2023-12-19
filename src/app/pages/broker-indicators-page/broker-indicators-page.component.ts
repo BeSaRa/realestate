@@ -103,7 +103,7 @@ export default class BrokerIndicatorsPageComponent {
       .subscribe((res) => {
         const brokers = res.transactionList;
         const _data = this.csvService.arrayToCsv(brokers, [
-          { key: this.lang.isLtr ? 'managerEnName' : 'managerArName', mapTo: this.lang.map.broker_name },
+          // { key: this.lang.isLtr ? 'managerEnName' : 'managerArName', mapTo: this.lang.map.broker_name },
           { key: this.lang.isLtr ? 'brokerEnName' : 'brokerArName', mapTo: this.lang.map.company_name },
           { key: 'brokerPhone1', mapTo: this.lang.map.phone },
           { key: 'brokerEmail', mapTo: this.lang.map.email },
