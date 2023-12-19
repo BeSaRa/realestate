@@ -31,6 +31,7 @@ import {
   finalize,
   switchMap,
   takeUntil,
+  tap,
   throttleTime,
 } from 'rxjs';
 
@@ -86,6 +87,7 @@ export class TableComponent<T extends object> extends OnDestroyMixin(class {}) i
   offset = 0;
 
   isLoading = false;
+  isReload = false;
 
   get displayedColumnNames() {
     return this.columnsTemplates.map((c) => c.columnName).filter((c) => !this.isColumnHidden(c));
@@ -126,6 +128,7 @@ export class TableComponent<T extends object> extends OnDestroyMixin(class {}) i
   }
 
   private _listenToTransactionsReloadAndPaginate() {
+    this.reload$.pipe(takeUntil(this.destroy$)).subscribe(() => (this.isReload = true));
     combineLatest([this.reload$, this.paginate$])
       .pipe(
         throttleTime(500),
@@ -140,6 +143,7 @@ export class TableComponent<T extends object> extends OnDestroyMixin(class {}) i
           return this.dataLoadFn(_criteria).pipe(
             finalize(() => {
               this.isLoading = false;
+              this.isReload = false;
             })
           );
         })
