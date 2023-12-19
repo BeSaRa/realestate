@@ -592,7 +592,7 @@ export class TransactionsFilterComponent implements OnInit, OnDestroy {
       {
         issueDateFrom: null,
         issueDateTo: null,
-        issueDateMonth: 0,
+        issueDateMonth: 1,
       },
       { emitEvent: false }
     );
@@ -603,11 +603,11 @@ export class TransactionsFilterComponent implements OnInit, OnDestroy {
     const _months = this.adapter.getMonthNames('long');
     this.months = _months.map((month, index) => ({
       label: month,
-      value: index,
+      value: index + 1,
     }));
 
     if (this.issueDateYear.value === 2019 && !(this.isSell() || this.isMort()))
-      this.months = this.months.filter((month) => month.value >= 3);
+      this.months = this.months.filter((month) => month.value >= 4);
     if (this.issueDateYear.value === new Date().getFullYear()) {
       this.months = this.months.filter((month) => month.value <= new Date().getMonth());
     }
