@@ -17,7 +17,7 @@
       </h3>
 
       <div class="flex-1 w-full my-4 p-4 flex justify-center gap-4">
-        <app-kpi-root class="w-full md:w-1/3" [showYoy]="false" [item]="totalBrokers" />
+        <app-kpi-root class="w-full md:w-1/3" [showYoy]="false" [item]="totalBrokers" [criteria]="criteria.criteria" />
       </div>
       <br />
       <div *ngIf="brokers.length > 0" class="flex justify-center md:justify-end">

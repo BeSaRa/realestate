@@ -21,7 +21,7 @@
         </h3>
         <div
           class="flex-1 my-4 p-4 border border-secondary rounded-lg grid grid-cols-1 md:grid-cols-3 justify-center gap-4">
-          <app-kpi-root *ngFor="let item of rootKpis" [item]="item" />
+          <app-kpi-root *ngFor="let item of rootKpis" [item]="item" [criteria]="criteria.criteria" />
         </div>
       </div>
     </div>
