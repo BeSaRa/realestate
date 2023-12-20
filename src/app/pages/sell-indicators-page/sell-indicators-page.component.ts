@@ -1,4 +1,3 @@
-import { KpiBaseModel } from '@abstracts/kpi-base-model';
 import { CommonModule } from '@angular/common';
 import { Component, OnInit, inject } from '@angular/core';
 import { MatNativeDateModule } from '@angular/material/core';
@@ -10,7 +9,7 @@ import { DurationChartComponent } from '@components/duration-chart/duration-char
 import { IconButtonComponent } from '@components/icon-button/icon-button.component';
 import { KpiRootComponent } from '@components/kpi-root/kpi-root.component';
 import { PropertyCarouselComponent } from '@components/property-carousel/property-carousel.component';
-import { PurposeComponent } from '@components/purpose/purpose.component';
+import { PurposeListComponent } from '@components/purpose-list/purpose-list.component';
 import { TableComponent } from '@components/table/table.component';
 import { TopTenChartComponent } from '@components/top-ten-chart/top-ten-chart.component';
 import { TransactionsFilterComponent } from '@components/transactions-filter/transactions-filter.component';
@@ -67,7 +66,6 @@ import {
     ExtraHeaderPortalBridgeDirective,
     TransactionsFilterComponent,
     KpiRootComponent,
-    PurposeComponent,
     PropertyCarouselComponent,
     ButtonComponent,
     IconButtonComponent,
@@ -85,6 +83,7 @@ import {
     TopTenChartComponent,
     CustomTooltipDirective,
     SectionGuardDirective,
+    PurposeListComponent,
   ],
   templateUrl: './sell-indicators-page.component.html',
   styleUrls: ['./sell-indicators-page.component.scss'],
@@ -454,34 +453,9 @@ export default class SellIndicatorsPageComponent extends OnDestroyMixin(class {}
     this.rootKPIS.forEach((i) => {
       item !== i ? (i.selected = false) : (item.selected = true);
     });
-
-    this.dashboardService
-      .loadPurposeKpi(item, this.criteria.criteria)
-      .pipe(take(1))
-      .subscribe((data) => {
-        const _purposeKpiData = data.reduce((acc, item) => {
-          return { ...acc, [item.purposeId]: item };
-        }, {} as Record<number, KpiBaseModel>);
-
-        this.purposeKPIS.forEach((item) => item.kpiData.resetAllValues());
-        this.selectedRoot && this.updateAllPurpose();
-        this.purposeKPIS.forEach((item) => {
-          Object.prototype.hasOwnProperty.call(_purposeKpiData, item.id) && (item.kpiData = _purposeKpiData[item.id]);
-        });
-        this.selectedPurpose && this.purposeSelected(this.selectedPurpose);
-      });
-  }
-
-  updateAllPurpose(): void {
-    const _purpose = this.purposeKPIS.find((i) => i.id === -1);
-    _purpose && (_purpose.kpiData = KpiBase.kpiFactory(this.selectedRoot.hasSqUnit).clone(this.selectedRoot.kpiData));
   }
 
   purposeSelected(item: KpiPurpose) {
-    this.purposeKPIS.forEach((i) => {
-      item !== i ? (i.selected = false) : (item.selected = true);
-    });
-
     this.selectedPurpose = item;
 
     this.selectedRoot &&

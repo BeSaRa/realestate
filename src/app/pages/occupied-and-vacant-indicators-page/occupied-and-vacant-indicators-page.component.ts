@@ -7,6 +7,7 @@ import { ButtonComponent } from '@components/button/button.component';
 import { KpiRootComponent } from '@components/kpi-root/kpi-root.component';
 import { MunicipalitiesChartComponent } from '@components/municipalities-chart/municipalities-chart.component';
 import { PremiseTypesPopupComponent } from '@components/premise-types-popup/premise-types-popup.component';
+import { PurposeListComponent } from '@components/purpose-list/purpose-list.component';
 import { PurposeComponent } from '@components/purpose/purpose.component';
 import { StackedDurationChartComponent } from '@components/stacked-duration-chart/stacked-duration-chart.component';
 import { TableComponent } from '@components/table/table.component';
@@ -53,6 +54,7 @@ import { finalize, take } from 'rxjs';
     TableColumnCellTemplateDirective,
     SectionGuardDirective,
     MatProgressSpinnerModule,
+    PurposeListComponent,
   ],
   templateUrl: './occupied-and-vacant-indicators-page.component.html',
   styleUrls: ['./occupied-and-vacant-indicators-page.component.scss'],
@@ -75,6 +77,8 @@ export default class OccupiedAndVacantIndicatorsPageComponent extends OnDestroyM
     criteria: CriteriaContract & { occupancyStatus: number | null };
     type: CriteriaType;
   };
+
+  occupationCriteria = this.criteria.criteria;
 
   municipalityCriteria = this.criteria.criteria;
 
@@ -187,41 +191,14 @@ export default class OccupiedAndVacantIndicatorsPageComponent extends OnDestroyM
     if (!item) return;
     this.selectedRoot = item;
 
-    const _criteria = { ...this.criteria.criteria, occupancyStatus: item?.id === -1 ? null : item?.id ?? 0 };
+    this.occupationCriteria = { ...this.criteria.criteria, occupancyStatus: item?.id === -1 ? null : item?.id ?? 0 };
 
     this.rootKPIS.forEach((i) => {
       item !== i ? (i.selected = false) : (item.selected = true);
     });
-
-    this.dashboardService
-      .loadPurposeKpi(item, _criteria)
-      .pipe(take(1))
-      .subscribe((data) => {
-        const _categoriesKpiData = data.reduce((acc, item) => {
-          return { ...acc, [item['premiseCategoryId' as keyof KpiBaseModel] as number]: item };
-        }, {} as Record<number, KpiBaseModel>);
-
-        this.categoryKPIs.forEach((item) => item.kpiData.resetAllValues());
-        this.selectedRoot && this.updateAllCategory();
-        this.categoryKPIs.forEach((item) => {
-          Object.prototype.hasOwnProperty.call(_categoriesKpiData, item.id) &&
-            (item.kpiData = _categoriesKpiData[item.id]);
-        });
-        this.selectedCategory && this.categorySelected(this.selectedCategory);
-        //   this.rootDataSubject.next(this.selectedRoot);
-      });
-  }
-
-  updateAllCategory(): void {
-    const _category = this.categoryKPIs.find((i) => i.id === -1);
-    _category && (_category.kpiData = KpiBase.kpiFactory(this.selectedRoot.hasSqUnit).clone(this.selectedRoot.kpiData));
   }
 
   categorySelected(item: KpiPurpose) {
-    this.categoryKPIs.forEach((i) => {
-      item !== i ? (i.selected = false) : (item.selected = true);
-    });
-
     this.selectedCategory = item;
 
     const _criteria = {
