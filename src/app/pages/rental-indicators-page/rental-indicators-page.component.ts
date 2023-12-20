@@ -2,13 +2,11 @@ import { CommonModule } from '@angular/common';
 import { Component, inject, OnInit } from '@angular/core';
 
 import { KpiRootComponent } from '@components/kpi-root/kpi-root.component';
-import { PurposeComponent } from '@components/purpose/purpose.component';
 import { TransactionsFilterComponent } from '@components/transactions-filter/transactions-filter.component';
 import { CriteriaContract } from '@contracts/criteria-contract';
 import { CriteriaType } from '@enums/criteria-type';
 import { KpiRoot } from '@models/kpi-root';
 
-import { KpiBaseModel } from '@abstracts/kpi-base-model';
 import { MatNativeDateModule } from '@angular/material/core';
 import { MatSortModule } from '@angular/material/sort';
 import { MatTableModule } from '@angular/material/table';
@@ -18,6 +16,7 @@ import { DurationChartComponent } from '@components/duration-chart/duration-char
 import { IconButtonComponent } from '@components/icon-button/icon-button.component';
 import { PieChartComponent } from '@components/pie-chart/pie-chart.component';
 import { PropertyCarouselComponent } from '@components/property-carousel/property-carousel.component';
+import { PurposeListComponent } from '@components/purpose-list/purpose-list.component';
 import { TableComponent } from '@components/table/table.component';
 import { TopTenChartComponent } from '@components/top-ten-chart/top-ten-chart.component';
 import { YoyIndicatorComponent } from '@components/yoy-indicator/yoy-indicator.component';
@@ -72,7 +71,6 @@ import {
     ExtraHeaderPortalBridgeDirective,
     TransactionsFilterComponent,
     KpiRootComponent,
-    PurposeComponent,
     PropertyCarouselComponent,
     TableComponent,
     TableColumnTemplateDirective,
@@ -91,6 +89,7 @@ import {
     TopTenChartComponent,
     CustomTooltipDirective,
     SectionGuardDirective,
+    PurposeListComponent,
   ],
   templateUrl: './rental-indicators-page.component.html',
   styleUrls: ['./rental-indicators-page.component.scss'],
@@ -467,33 +466,9 @@ export default class RentalIndicatorsPageComponent extends OnDestroyMixin(class 
     this.rootKPIS.forEach((i) => {
       item !== i ? (i.selected = false) : (item.selected = true);
     });
-
-    this.dashboardService
-      .loadPurposeKpi(item, this.criteria.criteria)
-      .pipe(take(1))
-      .subscribe((data) => {
-        const _purposeKpiData = data.reduce((acc, item) => {
-          return { ...acc, [item.purposeId]: item };
-        }, {} as Record<number, KpiBaseModel>);
-        this.purposeKPIS.forEach((item) => item.kpiData.resetAllValues());
-        this.selectedRoot && this.updateAllPurpose();
-        this.purposeKPIS.forEach((item) => {
-          Object.prototype.hasOwnProperty.call(_purposeKpiData, item.id) && (item.kpiData = _purposeKpiData[item.id]);
-        });
-        this.selectedPurpose && this.purposeSelected(this.selectedPurpose);
-      });
-  }
-
-  updateAllPurpose(): void {
-    const _purpose = this.purposeKPIS.find((i) => i.id === -1);
-    _purpose && (_purpose.kpiData = KpiBase.kpiFactory(this.selectedRoot.hasSqUnit).clone(this.selectedRoot.kpiData));
   }
 
   purposeSelected(item: KpiPurpose) {
-    this.purposeKPIS.forEach((i) => {
-      item !== i ? (i.selected = false) : (item.selected = true);
-    });
-
     this.selectedPurpose = item;
 
     this.selectedRoot &&

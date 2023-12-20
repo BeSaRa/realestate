@@ -1,29 +1,32 @@
 <div
   (mouseenter)="isHovered = true"
   (mouseleave)="isHovered = false"
-  [ngClass]="{ selected: item.selected, 'pb-2': !showYoy }"
+  [ngClass]="{ selected: item.selected, 'pb-2': !showYoy, 'opacity-30': isLoading }"
   class="group px-2 pt-2 h-full flex hover:cursor-pointer flex-col   justify-between items-center text-center bg-sand transition {{
     lang.isLtr ? 'ltr-gradient' : 'gradient'
   }} ">
   <span
     [ngClass]="{ 'lg:-mb-3': showYoy }"
-    class="flex-1"
-    [ngClass]="{ 'flex flex-col-reverse items-center justify-end': !alignHorizontal }">
+    class="flex-1 flex items-center justify-center"
+    [ngClass]="{ 'flex-col-reverse items-center justify-end': !alignHorizontal, 'gap-2': isLoading }">
     <span
-      *ngIf="enableCountup"
+      *ngIf="enableCountup && !isLoading"
       class="text-2xl me-2 text-primary font-bold group-hover:text-white group-[.selected]:text-white transition"
       [countUp]="item.kpiData.getKpiVal()"
       [options]="countUpOptions"></span>
     <span
-      *ngIf="!enableCountup"
+      *ngIf="!enableCountup && !isLoading"
       class="text-2xl me-2 text-primary font-bold group-hover:text-white group-[.selected]:text-white transition"
       >{{ item.kpiData.getKpiVal() }}</span
     >
+    <mat-spinner diameter="20" strokeWidth="2" *ngIf="isLoading"></mat-spinner>
+
     <span class="text-lg lg:text-xl text-black font-bold group-[.selected]:text-white transition">{{
       item.getNames()
     }}</span>
   </span>
   <app-change-indicator
+    [ngClass]="{ 'opacity-50': isLoading }"
     class="hidden sm:block"
     *ngIf="showYoy"
     [value]="item.kpiData.getKpiYoYVal()"
