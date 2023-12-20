@@ -28,7 +28,6 @@ import { SectionTitleService } from '@services/section-title.service';
 import { TranslationService } from '@services/translation.service';
 import { UnitsService } from '@services/units.service';
 import { UrlService } from '@services/url.service';
-import { take } from 'rxjs';
 
 @Component({
   selector: 'app-mortgage-indicators',
@@ -176,14 +175,6 @@ export default class MortgageIndicatorsComponent {
 
   filterChange($event: { criteria: CriteriaContract; type: CriteriaType }): void {
     this.criteria = $event;
-    this.dashboardService
-      .loadMortgageRoots(this.criteria.criteria)
-      .pipe(take(1))
-      .subscribe((values) => {
-        this.rootKpis.map((item, index) => {
-          item.kpiData = values[index];
-        });
-      });
   }
 
   isMonthlyDurationType(value: boolean) {

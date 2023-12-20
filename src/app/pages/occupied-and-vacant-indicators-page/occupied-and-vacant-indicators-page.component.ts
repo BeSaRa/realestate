@@ -1,6 +1,6 @@
 import { KpiBaseModel } from '@abstracts/kpi-base-model';
 import { CommonModule } from '@angular/common';
-import { Component, inject } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { AreasChartComponent } from '@components/areas-chart/areas-chart.component';
 import { ButtonComponent } from '@components/button/button.component';
@@ -57,7 +57,7 @@ import { finalize, take } from 'rxjs';
   templateUrl: './occupied-and-vacant-indicators-page.component.html',
   styleUrls: ['./occupied-and-vacant-indicators-page.component.scss'],
 })
-export default class OccupiedAndVacantIndicatorsPageComponent extends OnDestroyMixin(class {}) {
+export default class OccupiedAndVacantIndicatorsPageComponent extends OnDestroyMixin(class {}) implements OnInit {
   lang = inject(TranslationService);
   dashboardService = inject(DashboardService);
   urlService = inject(UrlService);
@@ -165,26 +165,22 @@ export default class OccupiedAndVacantIndicatorsPageComponent extends OnDestroyM
     occupancyStatus: this.selectedOccupancyStatus,
   };
 
+  ngOnInit(): void {
+    this.rootItemSelected(this.selectedRoot);
+  }
+
   filterChange({ criteria, type }: { criteria: CriteriaContract; type: CriteriaType }) {
     this.criteria = { criteria: criteria as CriteriaContract & { occupancyStatus: number | null }, type };
     this.municipalityCriteria = { ...this.criteria.criteria, municipalityId: null as unknown as number };
     this.durationsCriteria = { ...this.criteria.criteria, occupancyStatus: null };
     if (type === CriteriaType.DEFAULT) return;
 
-    this.rootKPIS.map((item) => {
-      const _criteria = { ...this.criteria.criteria, occupancyStatus: item?.id === -1 ? null : item?.id ?? 0 };
-
-      this.dashboardService
-        .loadKpiRoot(item, _criteria)
-        .pipe(take(1))
-        .subscribe((value) => {
-          item.kpiData = value[0];
-        });
-    });
-
-    this.rootItemSelected(this.selectedRoot);
-
     this.updateTransactionTableCriteria();
+  }
+
+  getRootCriteria(item: KpiRoot) {
+    this.criteria.criteria.occupancyStatus = item?.id === -1 ? null : item?.id ?? 0;
+    return this.criteria.criteria;
   }
 
   rootItemSelected(item?: KpiRoot) {
