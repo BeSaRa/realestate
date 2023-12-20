@@ -1,4 +1,3 @@
-import { KpiBaseModel } from '@abstracts/kpi-base-model';
 import { CommonModule } from '@angular/common';
 import { AfterViewInit, Component, inject } from '@angular/core';
 import { MatNativeDateModule } from '@angular/material/core';
@@ -11,7 +10,7 @@ import { MunicipalitiesChartComponent } from '@components/municipalities-chart/m
 import { NationalitiesChartComponent } from '@components/nationalities-chart/nationalities-chart.component';
 import { PieChartComponent } from '@components/pie-chart/pie-chart.component';
 import { PropertyCarouselComponent } from '@components/property-carousel/property-carousel.component';
-import { PurposeComponent } from '@components/purpose/purpose.component';
+import { PurposeListComponent } from '@components/purpose-list/purpose-list.component';
 import { QatarInteractiveMapComponent } from '@components/qatar-interactive-map/qatar-interactive-map.component';
 import { TableComponent } from '@components/table/table.component';
 import { TransactionsFilterComponent } from '@components/transactions-filter/transactions-filter.component';
@@ -38,7 +37,7 @@ import { SectionTitleService } from '@services/section-title.service';
 import { TranslationService } from '@services/translation.service';
 import { UrlService } from '@services/url.service';
 import { NgxMaskPipe } from 'ngx-mask';
-import { take, takeUntil } from 'rxjs';
+import { takeUntil } from 'rxjs';
 
 @Component({
   selector: 'app-owner-page',
@@ -48,7 +47,6 @@ import { take, takeUntil } from 'rxjs';
     ExtraHeaderPortalBridgeDirective,
     TransactionsFilterComponent,
     KpiRootComponent,
-    PurposeComponent,
     PropertyCarouselComponent,
     ButtonComponent,
     IconButtonComponent,
@@ -67,6 +65,7 @@ import { take, takeUntil } from 'rxjs';
     TableColumnHeaderTemplateDirective,
     TableColumnCellTemplateDirective,
     SectionGuardDirective,
+    PurposeListComponent,
   ],
   templateUrl: './ownership-indicators-page.component.html',
   styleUrls: ['./ownership-indicators-page.component.scss'],
@@ -304,22 +303,6 @@ export default class OwnershipIndicatorsPageComponent extends OnDestroyMixin(cla
       municipalityId: -1,
       nationalityCategoryId: this.selectedOwnerRoot.nationalityCategoryId,
     };
-
-    this.dashboardService
-      .loadPurposeKpi(item, this.criteria.criteria)
-      .pipe(take(1))
-      .subscribe((data) => {
-        const _purposeKpiData = data.reduce((acc, item) => {
-          return { ...acc, [item.purposeId]: item };
-        }, {} as Record<number, KpiBaseModel>);
-
-        this.purposeKPIS.forEach((item) => item.kpiData.resetAllValues());
-        this.selectedOwnershipRoot && this.updateAllPurpose();
-        this.purposeKPIS.forEach((item) => {
-          Object.prototype.hasOwnProperty.call(_purposeKpiData, item.id) && (item.kpiData = _purposeKpiData[item.id]);
-        });
-        this.selectedOwnerPurpose && this.purposeSelected(this.selectedOwnerPurpose);
-      });
   }
 
   ownershipRootItemSelected(item?: KpiRoot) {
@@ -330,17 +313,7 @@ export default class OwnershipIndicatorsPageComponent extends OnDestroyMixin(cla
     });
   }
 
-  updateAllPurpose(): void {
-    const _purpose = this.purposeKPIS.find((i) => i.id === -1);
-    _purpose &&
-      (_purpose.kpiData = KpiBase.kpiFactory(this.selectedOwnerRoot.hasSqUnit).clone(this.selectedOwnerRoot.kpiData));
-  }
-
   purposeSelected(item: KpiPurpose) {
-    this.purposeKPIS.forEach((i) => {
-      item !== i ? (i.selected = false) : (item.selected = true);
-    });
-
     this.selectedOwnerPurpose = item;
 
     this.selectedOwnerRoot &&
