@@ -8,26 +8,31 @@ import { NGX_COUNTUP_OPTIONS } from '@constants/injection-tokens';
 import { TranslationService } from '@services/translation.service';
 import { CriteriaContract } from '@contracts/criteria-contract';
 import { CustomTooltipDirective } from '@directives/custom-tooltip.directive';
+import { DashboardService } from '@services/dashboard.service';
+import { finalize, take } from 'rxjs';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 @Component({
   selector: 'app-kpi-root',
   standalone: true,
-  imports: [CommonModule, CountUpModule, ChangeIndicatorComponent, CustomTooltipDirective],
+  imports: [CommonModule, CountUpModule, ChangeIndicatorComponent, CustomTooltipDirective, MatProgressSpinnerModule],
   templateUrl: './kpi-root.component.html',
   styleUrls: ['./kpi-root.component.scss'],
 })
 export class KpiRootComponent implements OnChanges {
-  @Input() item!: KpiRoot;
+  @Input({ required: true }) item!: KpiRoot;
+  @Input({ required: true }) criteria!: CriteriaContract;
   @Input() showYoy = true;
-  @Input() criteria!: CriteriaContract;
 
   @Output() itemSelected = new EventEmitter<KpiRoot>();
 
   countUpOptions: CountUpOptionsContract = inject(NGX_COUNTUP_OPTIONS);
   lang = inject(TranslationService);
+  dashboardService = inject(DashboardService);
 
   isHovered = false;
   isCriteriaValid = true;
+  isLoading = false;
 
   get iconUrl() {
     return this.item.iconUrl;
@@ -44,11 +49,27 @@ export class KpiRootComponent implements OnChanges {
       (changes['criteria'] && changes['criteria'].currentValue !== changes['criteria'].previousValue)
     ) {
       this.isCriteriaValid = this.item.criteriaTerms.validate(this.criteria);
+      if (this.criteria) this.loadKpiData();
     }
   }
 
-  selectItem(): void {
+  loadKpiData() {
     if (!this.item.isDataAvailable || !this.isCriteriaValid) return;
+    this.isLoading = true;
+    this.dashboardService
+      .loadKpiRoot(this.item, this.criteria)
+      .pipe(
+        take(1),
+        finalize(() => (this.isLoading = false))
+      )
+      .subscribe((value) => {
+        this.item.kpiData = value[0];
+        this.item.selected && this.itemSelected.emit(this.item);
+      });
+  }
+
+  selectItem(): void {
+    if (!this.item.isDataAvailable || !this.isCriteriaValid || this.isLoading) return;
     this.isHovered = true;
     this.itemSelected.emit(this.item);
   }

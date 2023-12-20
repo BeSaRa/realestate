@@ -371,6 +371,7 @@ export default class SellIndicatorsPageComponent extends OnDestroyMixin(class {}
   selectedTab: 'sell_indicators' | 'statistical_reports_for_sell' = 'sell_indicators';
 
   ngOnInit(): void {
+    this.rootItemSelected(this.selectedRoot);
     this.reload$.next();
   }
 
@@ -425,29 +426,26 @@ export default class SellIndicatorsPageComponent extends OnDestroyMixin(class {}
 
   filterChange({ criteria, type }: { criteria: CriteriaContract; type: CriteriaType }) {
     this.criteria = { criteria, type };
-    this.rootKPIS.map((item) => {
-      this.dashboardService
-        .loadKpiRoot(item, this.criteria.criteria)
-        .pipe(take(1))
-        .subscribe((value) => {
-          item.kpiData = value[0];
-        });
-    });
 
-    if (!this.selectedRoot.criteriaTerms.validate(criteria)) {
-      for (let i = 0; i < this.rootKPIS.length; i++) {
-        if (this.rootKPIS[i].criteriaTerms.validate(criteria)) {
-          this.selectedRoot = this.rootKPIS[i];
-          break;
-        }
-      }
-    }
-
-    this.rootItemSelected(this.selectedRoot);
+    this.validateSelectedRoot();
 
     this.reload$.next();
     this.loadCompositeTransactions();
     this.setIndicatorsTableDataSource();
+  }
+
+  validateSelectedRoot() {
+    if (!this.selectedRoot.criteriaTerms.validate(this.criteria.criteria)) {
+      for (let i = 0; i < this.rootKPIS.length; i++) {
+        if (this.rootKPIS[i].criteriaTerms.validate(this.criteria.criteria)) {
+          this.selectedRoot = this.rootKPIS[i];
+          break;
+        }
+      }
+      this.rootKPIS.forEach((i) => {
+        this.selectedRoot !== i ? (i.selected = false) : (this.selectedRoot.selected = true);
+      });
+    }
   }
 
   rootItemSelected(item?: KpiRoot) {

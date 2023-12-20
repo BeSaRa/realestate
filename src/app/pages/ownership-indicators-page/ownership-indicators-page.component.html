@@ -42,10 +42,11 @@
         <div
           class="flex-1 my-4 p-4 border border-secondary rounded-lg grid grid-cols-1 md:grid-cols-3 justify-center gap-4">
           <app-kpi-root
-            (itemSelected)="ownerRootItemSelected($event)"
+            [item]="item"
+            [criteria]="criteria.criteria"
             [showYoy]="false"
-            *ngFor="let item of ownerRootKpis"
-            [item]="item" />
+            (itemSelected)="ownerRootItemSelected($event)"
+            *ngFor="let item of ownerRootKpis" />
         </div>
       </div>
     </div>
@@ -140,10 +141,11 @@
         <div
           class="flex-1 my-4 p-4 border border-secondary rounded-lg grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 justify-center gap-4">
           <app-kpi-root
-            (itemSelected)="ownershipRootItemSelected($event)"
+            [item]="item"
+            [criteria]="criteria.criteria"
             [showYoy]="false"
-            *ngFor="let item of ownershipRootKPIS"
-            [item]="item" />
+            (itemSelected)="ownershipRootItemSelected($event)"
+            *ngFor="let item of ownershipRootKPIS" />
         </div>
       </div>
     </div>

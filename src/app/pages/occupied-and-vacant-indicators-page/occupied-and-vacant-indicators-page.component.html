@@ -20,7 +20,11 @@
 
       <div
         class="flex-1 my-4 p-4 border border-secondary rounded-lg grid grid-cols-1 md:grid-cols-3 justify-center gap-4">
-        <app-kpi-root (itemSelected)="rootItemSelected($event)" *ngFor="let item of rootKPIS" [item]="item" />
+        <app-kpi-root
+          (itemSelected)="rootItemSelected($event)"
+          *ngFor="let item of rootKPIS"
+          [item]="item"
+          [criteria]="getRootCriteria(item)" />
       </div>
     </div>
   </div>
