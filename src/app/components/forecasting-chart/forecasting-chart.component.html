@@ -1,86 +1,82 @@
-<div class="py-5">
-  <div class="shadow-lg rounded-lg overflow-hidden bg-white">
-    <div class="bg-secondary p-4 flex justify-center items-center">
-      <span class="text-white text-center text-lg sm:text-xl font-semibold">{{ title }} </span>
-    </div>
+<div class="shadow-lg rounded-lg overflow-hidden bg-sand/40 border border-secondary">
+  <div *ngIf="title" class="bg-secondary p-4 flex justify-center items-center">
+    <span class="text-white text-center text-lg sm:text-xl font-semibold">{{ title }} </span>
+  </div>
+  <div class="relative px-2 pb-2" [ngClass]="{ 'cursor-crosshair': !isLoading && isDataAvailable && isCriteriaValid }">
     <div
-      class="relative px-2 pb-2"
-      [ngClass]="{ 'cursor-crosshair': !isLoading && isDataAvailable && isCriteriaValid }">
-      <div
-        *ngIf="isLoading || !isCriteriaValid || !isDataAvailable"
-        class="absolute top-0 left-0 h-full w-full p-4 bg-white/80 z-[1] transition-all">
-        <div *ngIf="isLoading" class="flex justify-end ltr:justify-start">
-          <mat-spinner diameter="30" strokeWidth="3"></mat-spinner>
-        </div>
-        <div *ngIf="!isDataAvailable" class="h-full w-full flex justify-center items-center">
-          <p class="text-2xl md:text-3xl text-primary text-center">
-            "{{ lang.map.no_data_is_currently_available_for_the_selected_parameters }}"
-          </p>
-        </div>
-        <div
-          *ngIf="!isCriteriaValid"
-          class="h-full w-full flex flex-col justify-center items-center text-center gap-2 text-primary [&>p]:text-base sm:[&>p]:text-lg md:[&>p]:text-2xl">
-          <p class="font-bold">{{ lang.map.to_display_forecast_chart_filter_values_must_be_as_follows }}:</p>
-          <p *ngFor="let term of criteriaTerms.getCriteriaTermsText()">
-            -
-            {{ term }}
-          </p>
-        </div>
+      *ngIf="isLoading || !isCriteriaValid || !isDataAvailable"
+      class="absolute top-0 left-0 h-full w-full p-4 bg-white/80 z-[1] transition-all">
+      <div *ngIf="isLoading" class="flex justify-end ltr:justify-start">
+        <mat-spinner diameter="30" strokeWidth="3"></mat-spinner>
       </div>
-      <svg class="w-full fill-transparent transition-all" viewBox="0 0 100 50">
-        <path
-          *ngFor="let path of svgPaths; trackBy: notChangeTrackBy; let i = index"
-          class="chart-line stroke-[0.5] transition-all transition-curve"
-          [ngStyle]="{ 'transition-duration': '400ms' }"
-          [ngClass]="{
-            'stroke-secondary': i !== svgPaths.length - 1,
-            'stroke-secondary/50': i === svgPaths.length - 1
-          }"
-          [attr.stroke-dasharray]="i === svgPaths.length - 1 ? 2 : 0"
-          [attr.d]="path"></path>
+      <div *ngIf="!isDataAvailable" class="h-full w-full flex justify-center items-center">
+        <p class="text-2xl md:text-3xl text-primary text-center">
+          "{{ lang.map.no_data_is_currently_available_for_the_selected_parameters }}"
+        </p>
+      </div>
+      <div
+        *ngIf="!isCriteriaValid"
+        class="h-full w-full flex flex-col justify-center items-center text-center gap-2 text-primary [&>p]:text-base sm:[&>p]:text-lg md:[&>p]:text-2xl">
+        <p class="font-bold">{{ lang.map.to_display_forecast_chart_filter_values_must_be_as_follows }}:</p>
+        <p *ngFor="let term of criteriaTerms.getCriteriaTermsText()">
+          -
+          {{ term }}
+        </p>
+      </div>
+    </div>
+    <svg class="w-full fill-transparent transition-all" viewBox="0 0 100 50">
+      <path
+        *ngFor="let path of svgPaths; trackBy: notChangeTrackBy; let i = index"
+        class="chart-line stroke-[0.5] transition-all transition-curve"
+        [ngStyle]="{ 'transition-duration': '400ms' }"
+        [ngClass]="{
+          'stroke-secondary': i !== svgPaths.length - 1,
+          'stroke-secondary/50': i === svgPaths.length - 1
+        }"
+        [attr.stroke-dasharray]="i === svgPaths.length - 1 ? 2 : 0"
+        [attr.d]="path"></path>
 
-        <g class="group" *ngFor="let point of viewPoints; let i = index; trackBy: notChangeTrackBy">
-          <line
-            class="dashed-line stroke-secondary stroke-[0.2] transition-all group-hover:brightness-50"
-            stroke-dasharray="1"
-            [attr.x1]="point.x"
-            [attr.x2]="point.x"
-            [attr.y1]="point.y"
-            [attr.y2]="45"></line>
-          <circle
-            class="marker transition-all group-hover:brightness-50"
-            [ngClass]="{
+      <g class="group" *ngFor="let point of viewPoints; let i = index; trackBy: notChangeTrackBy">
+        <line
+          class="dashed-line stroke-secondary stroke-[0.2] transition-all group-hover:brightness-50"
+          stroke-dasharray="1"
+          [attr.x1]="point.x"
+          [attr.x2]="point.x"
+          [attr.y1]="point.y"
+          [attr.y2]="45"></line>
+        <circle
+          class="marker transition-all group-hover:brightness-50"
+          [ngClass]="{
           'fill-primary stroke-primary stroke-[0.5]': i !== viewPoints.length - 1,
           'fill-[#D0C9BA] stroke-primary stroke-[0.5]': i === viewPoints.length - 1,
         }"
-            [attr.cx]="point.x"
-            [attr.cy]="point.y"
-            r="1"></circle>
-          <text
-            class="x-label"
-            class="fill-primary text-[3px] transition-all group-hover:brightness-50"
-            [attr.x]="point.x"
-            y="49"
-            [attr.dx]="lang.isLtr ? -3 : 3">
-            {{ realPoints[i].x }}
-          </text>
-          <text
-            *ngIf="realPoints[i].y !== 0"
-            class="y-label fill-primary text-[3px] transition-all group-hover:brightness-50"
-            [attr.x]="point.x"
-            [attr.y]="point.y - 3"
-            [attr.dx]="lang.isLtr ? '-3' : '3'">
-            {{ getFormattedValue(realPoints[i].y) }}
-          </text>
-        </g>
+          [attr.cx]="point.x"
+          [attr.cy]="point.y"
+          r="1"></circle>
+        <text
+          class="x-label"
+          class="fill-primary text-[3px] transition-all group-hover:brightness-50"
+          [attr.x]="point.x"
+          y="49"
+          [attr.dx]="lang.isLtr ? -3 : 3">
+          {{ realPoints[i].x }}
+        </text>
+        <text
+          *ngIf="realPoints[i].y !== 0"
+          class="y-label fill-primary text-[3px] transition-all group-hover:brightness-50"
+          [attr.x]="point.x"
+          [attr.y]="point.y - 3"
+          [attr.dx]="lang.isLtr ? '-3' : '3'">
+          {{ getFormattedValue(realPoints[i].y) }}
+        </text>
+      </g>
 
-        <g class="x-axis stroke-[0.5] stroke-secondary">
-          <circle class="fill-secondary" r="0.5" cx="2" cy="45"></circle>
-          <line x1="2" x2="99" y1="45" y2="45"></line>
-          <line stroke-linecap="round" x1="97" x2="99" y1="43.5" y2="45"></line>
-          <line stroke-linecap="round" x1="97" x2="99" y1="46.5" y2="45"></line>
-        </g>
-      </svg>
-    </div>
+      <g class="x-axis stroke-[0.5] stroke-secondary">
+        <circle class="fill-secondary" r="0.5" cx="2" cy="45"></circle>
+        <line x1="2" x2="99" y1="45" y2="45"></line>
+        <line stroke-linecap="round" x1="97" x2="99" y1="43.5" y2="45"></line>
+        <line stroke-linecap="round" x1="97" x2="99" y1="46.5" y2="45"></line>
+      </g>
+    </svg>
   </div>
 </div>

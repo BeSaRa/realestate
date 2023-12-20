@@ -1,0 +1,95 @@
+<ng-container appExtraHeaderPortal [extraHeaderSubTitle]="lang.map.real_estate_forecasting_indicators"> </ng-container>
+
+<div class="content-wrapper">
+  <div class="flex flex-col">
+    <div class="px-3 lg:px-16 mt-5 flex justify-center">
+      <div class="flex justify-center gap-2 lg:gap-5 w-full md:w-3/4 lg:w-2/3 text-lg sm:text-2xl"></div>
+    </div>
+  </div>
+  <div class="w-full px-3 lg:px-16 py-8 flex flex-col md:flex-row items-center justify-center lg:items-start gap-6">
+    <div class="w-full md:w-1/4">
+      <div class="flex items-center justify-center">
+        <div class="w-full grid grid-cols-2 gap-4">
+          <app-button
+            size="lg"
+            (click)="switchTab('sell')"
+            [buttonStyle]="isSelectedTab('sell') ? 'secondary' : 'secondary-outline'"
+            >{{ lang.map.sell }}</app-button
+          >
+          <app-button
+            size="lg"
+            (click)="switchTab('rent')"
+            [buttonStyle]="isSelectedTab('rent') ? 'secondary' : 'secondary-outline'"
+            >{{ lang.map.rent }}</app-button
+          >
+        </div>
+      </div>
+      <div class="mt-6 grid grid-cols-2 md:flex md:flex-col md:[&>*]:w-full justify-center items-center gap-4 md:gap-0">
+        <ng-container
+          *ngIf="isSelectedTab('sell')"
+          [ngTemplateOutlet]="form"
+          [ngTemplateOutletContext]="{ $implicit: sellFilter }"></ng-container>
+        <ng-container
+          *ngIf="isSelectedTab('rent')"
+          [ngTemplateOutlet]="form"
+          [ngTemplateOutletContext]="{ $implicit: rentFilter }"></ng-container>
+      </div>
+    </div>
+
+    <div class="w-full md:w-3/4 flex flex-col justify-center items-center">
+      <app-forecasting-chart
+        class="relative w-full"
+        title=""
+        [rootData]="isSelectedTab('sell') ? sellRootData : rentRootData"
+        [filterCriteria]="criteria"
+        [criteriaTerms]="citeriaTerms" />
+    </div>
+  </div>
+</div>
+
+<ng-template #form let-form>
+  <ng-container [formGroup]="form">
+    <app-select-input
+      [enableFilter]="true"
+      bindFilter="getNames"
+      formControlName="municipalityId"
+      bindLabel="getNames"
+      bindValue="lookupKey"
+      [label]="lang.map.municipal"
+      [options]="isSelectedTab('sell') ? sellMunicipalities : rentMunicipalities" />
+    <app-select-input
+      *ngIf="isSelectedTab('sell')"
+      [enableFilter]="true"
+      bindFilter="getNames"
+      [formControlName]="'areaCode'"
+      bindLabel="getNames"
+      bindValue="lookupKey"
+      [label]="lang.map.district"
+      [options]="filteredSellAreas" />
+    <app-select-input
+      *ngIf="isSelectedTab('rent')"
+      [enableFilter]="true"
+      bindFilter="getNames"
+      [formControlName]="'zoneId'"
+      bindLabel="getNames"
+      bindValue="lookupKey"
+      [label]="lang.map.zone"
+      [options]="filteredRentZones" />
+    <app-select-input
+      [enableFilter]="true"
+      bindFilter="getNames"
+      formControlName="purposeId"
+      bindLabel="getNames"
+      bindValue="lookupKey"
+      [label]="lang.map.property_usage"
+      [options]="isSelectedTab('sell') ? sellPropertyUsages : rentPropertyUsages" />
+    <app-select-input
+      [enableFilter]="true"
+      bindFilter="getNames"
+      formControlName="propertyTypeId"
+      bindLabel="getNames"
+      bindValue="lookupKey"
+      [label]="lang.map.property_type"
+      [options]="isSelectedTab('sell') ? sellPropertyTypes : rentPropertyTypes"
+  /></ng-container>
+</ng-template>

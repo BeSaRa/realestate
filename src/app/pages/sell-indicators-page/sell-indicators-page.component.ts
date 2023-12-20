@@ -7,7 +7,6 @@ import { MatTableModule } from '@angular/material/table';
 import { SellTransactionIndicator } from '@app-types/sell-indicators-type';
 import { ButtonComponent } from '@components/button/button.component';
 import { DurationChartComponent } from '@components/duration-chart/duration-chart.component';
-import { ForecastingChartComponent } from '@components/forecasting-chart/forecasting-chart.component';
 import { IconButtonComponent } from '@components/icon-button/icon-button.component';
 import { KpiRootComponent } from '@components/kpi-root/kpi-root.component';
 import { PropertyCarouselComponent } from '@components/property-carousel/property-carousel.component';
@@ -84,7 +83,6 @@ import {
     MatNativeDateModule,
     DurationChartComponent,
     TopTenChartComponent,
-    ForecastingChartComponent,
     CustomTooltipDirective,
     SectionGuardDirective,
   ],
@@ -214,13 +212,6 @@ export default class SellIndicatorsPageComponent extends OnDestroyMixin(class {}
   get nonePriceList() {
     return this.rootKPIS.filter((item) => !item.hasPrice);
   }
-
-  forecastCriteriaTerms = new CriteriaSpecificTerms([
-    'municipalityId',
-    'areaCode',
-    { criteriaKey: 'propertyTypeList', term: CriteriaTerms.SINGLE_NOT_ALL, mapTo: 'propertyTypeId' },
-    { criteriaKey: 'purposeList', term: CriteriaTerms.SINGLE_NOT_ALL, mapTo: 'property_usage' },
-  ]);
 
   accordingToList: Top10AccordingTo[] = [
     new Top10AccordingTo().clone<Top10AccordingTo>({
