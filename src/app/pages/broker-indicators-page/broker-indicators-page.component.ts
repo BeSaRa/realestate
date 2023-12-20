@@ -56,13 +56,13 @@ export default class BrokerIndicatorsPageComponent {
     iconUrl: 'assets/icons/broker/1.svg',
   });
 
-  private currentOffset: number = 0;
-  showMoreEnabled: boolean = true;
-  visibleBrokersCount: number = 9;
+  private currentOffset = 0;
+  showMoreEnabled = true;
+  visibleBrokersCount = 9;
   brokers: Broker[] = [];
   filteredBrokers = this.brokers;
   brokersCount!: number;
-  brokersCountToFetch: number = 9;
+  brokersCountToFetch = 9;
   brokerNameFilter = '';
   isLoadingBrokers = false;
 
@@ -75,13 +75,6 @@ export default class BrokerIndicatorsPageComponent {
     };
 
     if (type === CriteriaType.DEFAULT) return;
-
-    this.dashboardService
-      .loadKpiRoot(this.totalBrokers, this.criteria.criteria)
-      .pipe(take(1))
-      .subscribe((value) => {
-        this.totalBrokers.kpiData = value[0];
-      });
 
     this.dashboardService
       .loadBrokers(this.criteria.criteria)

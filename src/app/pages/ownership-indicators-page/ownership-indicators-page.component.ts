@@ -274,6 +274,8 @@ export default class OwnershipIndicatorsPageComponent extends OnDestroyMixin(cla
   genderLabel = (item: { gender: number }) => this.lookupService.ownerGenderMap[item.gender]?.getNames() ?? '-';
 
   ngAfterViewInit(): void {
+    this.ownerRootItemSelected(this.selectedOwnerRoot);
+    this.ownershipRootItemSelected(this.selectedOwnershipRoot);
     setTimeout(() => {
       this.nationalityCriteria = { ...this.criteria.criteria, nationalityCode: this.selectedNationalityId };
     }, 0);
@@ -281,7 +283,6 @@ export default class OwnershipIndicatorsPageComponent extends OnDestroyMixin(cla
 
   switchTab(tab: 'ownership_indicators' | 'owner_indicators'): void {
     this.selectedTab = tab;
-    this.loadRootKpisData();
   }
 
   isSelectedTab(tab: string): boolean {
@@ -290,23 +291,6 @@ export default class OwnershipIndicatorsPageComponent extends OnDestroyMixin(cla
 
   filterChange({ criteria, type }: { criteria: CriteriaContract; type: CriteriaType }) {
     this.criteria = { criteria, type };
-
-    this.loadRootKpisData();
-  }
-
-  loadRootKpisData() {
-    (this.selectedTab === 'owner_indicators' ? this.ownerRootKpis : this.ownershipRootKPIS).map((item) => {
-      this.dashboardService
-        .loadKpiRoot(item, this.criteria.criteria)
-        .pipe(take(1))
-        .subscribe((value) => {
-          item.kpiData = value[0];
-        });
-    });
-
-    this.selectedTab === 'owner_indicators'
-      ? this.ownerRootItemSelected(this.selectedOwnerRoot)
-      : this.ownershipRootItemSelected(this.selectedOwnershipRoot);
   }
 
   ownerRootItemSelected(item: KpiRoot) {
