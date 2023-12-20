@@ -70,6 +70,7 @@ export class CriteriaSpecificTerms {
 
   getMappedCriteria(criteria: CriteriaContract) {
     if (!criteria) return {};
+    if (!this.hasTerms) return criteria;
     const _criteria: any = {};
     this._terms.forEach((term) => {
       if (typeof term === 'string') {
