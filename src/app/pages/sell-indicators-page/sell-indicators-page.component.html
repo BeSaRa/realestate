@@ -193,26 +193,6 @@
   </div>
   <div></div>
   <div *ngIf="isSelectedTab('statistical_reports_for_sell')" class="flex flex-col">
-    <!-- Temporarly hide forecasting chart -->
-    <!-- <div *appSectionGuard="pageSections.SELL_FORECASTING_CHART" class="relative px-3 lg:px-16 flex flex-col justify-center items-center">
-      <img
-        class="absolute hidden sm:inline left-0 -bottom-16"
-        src="assets/images/forecast-images/all-properties.svg"
-        alt="" />
-      <img class="absolute hidden sm:inline right-16 -bottom-14" src="assets/images/forecast-images/north.svg" alt="" />
-      <img
-        class="absolute hidden sm:inline right-0 -bottom-16"
-        src="assets/images/forecast-images/north-big.svg"
-        alt="" />
-
-      <app-forecasting-chart
-        [title]="lang.map.predicted_sell_price + ' ' + getStringSelectedCriteria(true, false)"
-        [rootData]="{ chartDataUrl: urlService.URLS.SELL_KPI_ML, hasPrice: true }"
-        [filterCriteria]="criteria.criteria"
-        [criteriaTerms]="forecastCriteriaTerms"
-        class="relative w-full md:w-5/6 lg:w-4/6 xl:w-7/12" />
-    </div> -->
-
     <div
       *appSectionGuard="pageSections.SELL_PURPOSE_AND_TYPE_TABLE"
       class="px-3 lg:px-16 py-8 flex bg-sand mt-8 flex-col">
