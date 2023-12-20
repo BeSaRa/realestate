@@ -15,7 +15,6 @@ import { MatTableModule } from '@angular/material/table';
 import { RentTransactionIndicator } from '@app-types/rent-indicators-type';
 import { ButtonComponent } from '@components/button/button.component';
 import { DurationChartComponent } from '@components/duration-chart/duration-chart.component';
-import { ForecastingChartComponent } from '@components/forecasting-chart/forecasting-chart.component';
 import { IconButtonComponent } from '@components/icon-button/icon-button.component';
 import { PieChartComponent } from '@components/pie-chart/pie-chart.component';
 import { PropertyCarouselComponent } from '@components/property-carousel/property-carousel.component';
@@ -90,7 +89,6 @@ import {
     DurationChartComponent,
     PieChartComponent,
     TopTenChartComponent,
-    ForecastingChartComponent,
     CustomTooltipDirective,
     SectionGuardDirective,
   ],
@@ -312,16 +310,6 @@ export default class RentalIndicatorsPageComponent extends OnDestroyMixin(class 
 
   selectedPurpose = this.purposeKPIS[0];
   selectedTab: 'rental_indicators' | 'statistical_reports_for_rent' = 'rental_indicators';
-
-  forecastCriteriaTerms = new CriteriaSpecificTerms([
-    'municipalityId',
-    'zoneId',
-    { criteriaKey: 'propertyTypeList', term: CriteriaTerms.SINGLE_NOT_ALL, mapTo: 'propertyTypeId' },
-    { criteriaKey: 'purposeList', term: CriteriaTerms.SINGLE_NOT_ALL, mapTo: 'property_usage' },
-    // temporarily commented until implemented from BE
-    // 'streetNo',
-    // 'bedRoomsCount'
-  ]);
 
   compositeTransactions: RentCompositeTransaction[][] = [];
   compositeYears!: { selectedYear: number; previousYear: number };

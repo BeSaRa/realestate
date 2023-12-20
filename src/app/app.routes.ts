@@ -81,6 +81,10 @@ export const routes: Routes = [
       import('@pages/occupied-and-vacant-indicators-page/occupied-and-vacant-indicators-page.component'),
   },
   {
+    path: 'forecasting-indicators',
+    loadComponent: () => import('@pages/forecasting-indicators-page/forecasting-indicators-page.component'),
+  },
+  {
     path: 'inputs',
     loadComponent: () => import('@pages/inputs-page/inputs-page.component'),
   },
