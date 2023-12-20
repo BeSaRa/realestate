@@ -8,7 +8,6 @@ import { ChartWithOppositePopupData } from '@contracts/chart-with-opposite-popup
 import { CriteriaContract } from '@contracts/criteria-contract';
 import { DurationDataContract } from '@contracts/duration-data-contract';
 import { ForecastCriteriaContract } from '@contracts/forecast-criteria-contract';
-import { MortgageCriteriaContract } from '@contracts/mortgage-criteria-contract';
 import { RentCriteriaContract } from '@contracts/rent-criteria-contract';
 import { SellCriteriaContract } from '@contracts/sell-criteria-contract';
 import { ServiceContract } from '@contracts/service-contract';
@@ -26,12 +25,11 @@ import { KpiRoot } from '@models/kpi-root';
 import { Lookup } from '@models/lookup';
 import { MortgageTransaction } from '@models/mortgage-transaction';
 import { OccupancyTransaction } from '@models/occupancy-transaction';
+import { OwnershipTransaction } from '@models/ownership-transaction';
 import { Pagination } from '@models/pagination';
-import { RentDefaultValues } from '@models/rent-default-values';
 import { RentTransaction } from '@models/rent-transaction';
 import { RentTransactionPropertyType } from '@models/rent-transaction-property-type';
 import { RentTransactionPurpose } from '@models/rent-transaction-purpose';
-import { SellDefaultValues } from '@models/sell-default-values';
 import { SellTransaction } from '@models/sell-transaction';
 import { SellTransactionPropertyType } from '@models/sell-transaction-property-type';
 import { SellTransactionPurpose } from '@models/sell-transaction-purpose';
@@ -39,10 +37,9 @@ import { Top10KpiModel } from '@models/top-10-kpi-model';
 import { UrlService } from '@services/url.service';
 import { groupBy, minMaxAvg, range } from '@utils/utils';
 import { CastResponse } from 'cast-response';
-import { forkJoin, map, Observable } from 'rxjs';
+import { map, Observable } from 'rxjs';
 import { DialogService } from './dialog.service';
 import { TranslationService } from './translation.service';
-import { OwnershipTransaction } from '@models/ownership-transaction';
 
 @Injectable({
   providedIn: 'root',
@@ -53,29 +50,6 @@ export class DashboardService extends RegisterServiceMixin(class {}) implements 
   private urlService = inject(UrlService);
   private lang = inject(TranslationService);
   private dialog = inject(DialogService);
-
-  @CastResponse(() => RentDefaultValues)
-  loadRentDefaults(criteria: Partial<RentCriteriaContract>): Observable<RentDefaultValues[]> {
-    return this.http.post<RentDefaultValues[]>(this.urlService.URLS.DEFAULT_RENT, criteria);
-  }
-
-  @CastResponse(() => SellDefaultValues)
-  loadSellDefaults(criteria: Partial<SellCriteriaContract>): Observable<SellDefaultValues[]> {
-    return this.http.post<SellDefaultValues[]>(this.urlService.URLS.DEFAULT_SELL, criteria);
-  }
-
-  loadMortgageRoots(criteria: Partial<MortgageCriteriaContract>, hasSqUnit = false): Observable<KpiBaseModel[]> {
-    return forkJoin([
-      this.http.post<KpiBaseModel[]>(this.urlService.URLS.MORT_KPI1, criteria),
-      this.http.post<KpiBaseModel[]>(this.urlService.URLS.MORT_KPI3, criteria),
-      this.http.post<KpiBaseModel[]>(this.urlService.URLS.MORT_KPI5, criteria),
-    ]).pipe(
-      map(([first, second, third]) => {
-        return [first[0], second[0], third[0]];
-      }),
-      map((data) => data.map((item) => KpiBase.kpiFactory(hasSqUnit).clone(item)))
-    );
-  }
 
   loadKpiRoot(kpi: KpiRoot, criteria: CriteriaContract): Observable<KpiBaseModel[]> {
     return this.http
