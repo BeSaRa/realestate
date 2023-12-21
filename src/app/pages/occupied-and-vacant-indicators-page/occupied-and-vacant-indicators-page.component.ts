@@ -127,6 +127,7 @@ export default class OccupiedAndVacantIndicatorsPageComponent extends OnDestroyM
     new KpiPurpose().clone<KpiPurpose>({ id: item.lookupKey, arName: item.arName, enName: item.enName })
   );
   filteredTypeKPIs = this.typeKPIs;
+  isLoadingPremiseTypes = false;
 
   readonly shownTypeKpisCount = 14;
 
@@ -207,10 +208,15 @@ export default class OccupiedAndVacantIndicatorsPageComponent extends OnDestroyM
       ['premiseCategoryList' as keyof CriteriaContract]: [item.id],
     };
 
+    this.isLoadingPremiseTypes = true;
+
     this.selectedRoot &&
       this.dashboardService
         .loadPropertyTypeKpi(this.selectedRoot, _criteria)
-        .pipe(take(1))
+        .pipe(
+          take(1),
+          finalize(() => (this.isLoadingPremiseTypes = false))
+        )
         .subscribe((result) => {
           const _types = result.reduce((acc, cur) => {
             return { ...acc, [cur['premiseTypeId' as keyof KpiBaseModel] as number]: cur };
