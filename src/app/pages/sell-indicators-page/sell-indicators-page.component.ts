@@ -201,7 +201,6 @@ export default class SellIndicatorsPageComponent extends OnDestroyMixin(class {}
   ];
 
   selectedRoot = this.rootKPIS[0];
-
   selectedPurpose = this.purposeKPIS[0];
 
   get priceList() {
@@ -453,36 +452,6 @@ export default class SellIndicatorsPageComponent extends OnDestroyMixin(class {}
     this.rootKPIS.forEach((i) => {
       item !== i ? (i.selected = false) : (item.selected = true);
     });
-  }
-
-  purposeSelected(item: KpiPurpose) {
-    this.selectedPurpose = item;
-
-    this.selectedRoot &&
-      this.dashboardService
-        .loadPropertyTypeKpi(this.selectedRoot, {
-          ...this.criteria.criteria,
-          purposeList: [item.id],
-        })
-        .pipe(takeUntil(this.destroy$))
-        .subscribe((result) => {
-          this.propertiesKPIS.forEach((item) => item.kpiData.resetAllValues());
-
-          this.propertiesKPIS = this.propertiesKPIS
-            .map((item) => {
-              const _propertyTypeKpiData = result.find((i) => i.propertyTypeId === item.id);
-              _propertyTypeKpiData && (item.kpiData = _propertyTypeKpiData);
-              return item;
-            })
-            .sort((a, b) => a.kpiData.getKpiVal() - b.kpiData.getKpiVal());
-          this.updateAllPropertyType();
-        });
-  }
-
-  updateAllPropertyType(): void {
-    const _propertyType = this.propertiesKPIS.find((i) => i.id === -1);
-    _propertyType &&
-      (_propertyType.kpiData = KpiBase.kpiFactory(this.selectedRoot.hasSqUnit).clone(this.selectedPurpose.kpiData));
   }
 
   getTransactionType = () => SellTransaction;

@@ -468,36 +468,6 @@ export default class RentalIndicatorsPageComponent extends OnDestroyMixin(class 
     });
   }
 
-  purposeSelected(item: KpiPurpose) {
-    this.selectedPurpose = item;
-
-    this.selectedRoot &&
-      this.dashboardService
-        .loadPropertyTypeKpi(this.selectedRoot, {
-          ...this.criteria.criteria,
-          purposeList: [item.id],
-        })
-        .pipe(takeUntil(this.destroy$))
-        .subscribe((result) => {
-          this.propertiesKPIS.forEach((item) => item.kpiData.resetAllValues());
-
-          this.propertiesKPIS = this.propertiesKPIS
-            .map((item) => {
-              const _propertyTypeKpiData = result.find((i) => i.propertyTypeId === item.id);
-              _propertyTypeKpiData && (item.kpiData = _propertyTypeKpiData);
-              return item;
-            })
-            .sort((a, b) => a.kpiData.getKpiVal() - b.kpiData.getKpiVal());
-          this.updateAllPropertyType();
-        });
-  }
-
-  updateAllPropertyType(): void {
-    const _propertyType = this.propertiesKPIS.find((i) => i.id === -1);
-    _propertyType &&
-      (_propertyType.kpiData = KpiBase.kpiFactory(this.selectedRoot.hasSqUnit).clone(this.selectedPurpose.kpiData));
-  }
-
   updateRentIndicatorsTable(basedOn: indicatorsTypes) {
     this.basedOn$.next(basedOn);
   }

@@ -65,19 +65,18 @@
           [purposeKpiList]="purposeKPIS"
           [kpiRoot]="selectedRoot"
           [criteria]="criteria.criteria"
-          (purposeSelected)="purposeSelected($event)" />
-        <ng-container *appSectionGuard="pageSections.SELL_PROPERTY_TYPE_KPIS">
-          <h3
-            *ngIf="selectedRoot"
-            class="heading mt-20 text-xl sm:text-2xl md:text-3xl self-center text-center text-primary border-secondary font-semibold">
-            {{ selectedRoot.getNames() }} ({{ lang.map.depending_on_type }}) {{ getStringSelectedCriteria() }}
-          </h3>
-          <div class="mt-4 w-full sm:w-5/6 lg:w-11/12" dir="ltr">
-            <app-property-carousel
-              [properties]="propertiesKPIS"
-              useAssetsFrom="sell"
-              [ignoreLocalImages]="true"></app-property-carousel></div
-        ></ng-container>
+          (purposeSelected)="selectedPurpose = $event" />
+
+        <div *appSectionGuard="pageSections.SELL_PROPERTY_TYPE_KPIS" class="w-full sm:w-5/6 lg:w-11/12" dir="ltr">
+          <app-property-carousel
+            [title]="selectedRoot.getNames() + ' (' + lang.map.depending_on_type + ') ' + getStringSelectedCriteria()"
+            [properties]="propertiesKPIS"
+            [kpiRoot]="selectedRoot"
+            [purpose]="selectedPurpose"
+            [criteria]="criteria.criteria"
+            useAssetsFrom="sell"
+            [ignoreLocalImages]="true"></app-property-carousel>
+        </div>
       </div>
     </div>
 
