@@ -26,3 +26,7 @@
 :host ::ng-deep .carousel-arrow.carousel-arrow-next {
   background-image: url("../../../assets/icons/chart/chevron-right-circle.svg") !important;
 }
+
+.mat-mdc-progress-spinner {
+  --mdc-circular-progress-active-indicator-color: #8a1538;
+}

@@ -59,20 +59,21 @@
           [kpiRoot]="selectedOwnerRoot"
           [criteria]="criteria.criteria"
           [showYoy]="false"
-          (purposeSelected)="purposeSelected($event)" />
-        <ng-container *appSectionGuard="pageSections.OWNER_PROPERTY_TYPE_KPIS">
-          <h3
-            *ngIf="selectedOwnerRoot"
-            class="heading mt-20 text-xl sm:text-2xl md:text-3xl self-center text-center text-primary border-secondary font-semibold">
-            {{ selectedOwnerRoot.getNames() }} ({{ lang.map.depending_on_type }}) {{ getStringSelectedCriteria() }}
-          </h3>
-          <div class="mt-4 w-full sm:w-5/6 lg:w-11/12" dir="ltr">
-            <app-property-carousel
-              [properties]="propertiesKPIS"
-              useAssetsFrom="sell"
-              [ignoreLocalImages]="true"
-              [showYoy]="false"></app-property-carousel></div
-        ></ng-container>
+          (purposeSelected)="selectedOwnerPurpose = $event" />
+
+        <div *appSectionGuard="pageSections.OWNER_PROPERTY_TYPE_KPIS" class="w-full sm:w-5/6 lg:w-11/12" dir="ltr">
+          <app-property-carousel
+            [title]="
+              selectedOwnerRoot.getNames() + ' (' + lang.map.depending_on_type + ') ' + getStringSelectedCriteria()
+            "
+            [properties]="propertiesKPIS"
+            [kpiRoot]="selectedOwnerRoot"
+            [purpose]="selectedOwnerPurpose"
+            [criteria]="criteria.criteria"
+            useAssetsFrom="sell"
+            [ignoreLocalImages]="true"
+            [showYoy]="false"></app-property-carousel>
+        </div>
       </div>
     </div>
     <div *appSectionGuard="pageSections.OWNER_MUNICIPALITY_CHART" class="py-5 px-3 lg:px-16">

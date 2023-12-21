@@ -313,38 +313,6 @@ export default class OwnershipIndicatorsPageComponent extends OnDestroyMixin(cla
     });
   }
 
-  purposeSelected(item: KpiPurpose) {
-    this.selectedOwnerPurpose = item;
-
-    this.selectedOwnerRoot &&
-      this.dashboardService
-        .loadPropertyTypeKpi(this.selectedOwnerRoot, {
-          ...this.criteria.criteria,
-          purposeList: [item.id],
-        })
-        .pipe(takeUntil(this.destroy$))
-        .subscribe((result) => {
-          this.propertiesKPIS.forEach((item) => item.kpiData.resetAllValues());
-
-          this.propertiesKPIS = this.propertiesKPIS
-            .map((item) => {
-              const _propertyTypeKpiData = result.find((i) => i.propertyTypeId === item.id);
-              _propertyTypeKpiData && (item.kpiData = _propertyTypeKpiData);
-              return item;
-            })
-            .sort((a, b) => a.kpiData.getKpiVal() - b.kpiData.getKpiVal());
-          this.updateAllPropertyType();
-        });
-  }
-
-  updateAllPropertyType(): void {
-    const _propertyType = this.propertiesKPIS.find((i) => i.id === -1);
-    _propertyType &&
-      (_propertyType.kpiData = KpiBase.kpiFactory(this.selectedOwnerRoot.hasSqUnit).clone(
-        this.selectedOwnerPurpose.kpiData
-      ));
-  }
-
   updateOwnerAreasChartCriteria(municipalityId: number) {
     this.selectedOwnerMunicipalityId = municipalityId;
 
