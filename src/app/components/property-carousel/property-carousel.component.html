@@ -1,6 +1,12 @@
-<div>
-  <carousel #carousel [arrowsOutside]="isArrowOutside" [margin]="20" [cellWidth]="350">
+<div class="flex flex-col">
+  <h3
+    class="heading mt-20 text-xl sm:text-2xl md:text-3xl self-center text-center text-primary border-secondary font-semibold">
+    {{ title }}
+  </h3>
+  <carousel class="mt-4" #carousel [arrowsOutside]="isArrowOutside" [margin]="20" [cellWidth]="350">
     <div
+      class="transition-all"
+      [ngClass]="{ 'opacity-30': isLoading }"
       *ngFor="let item of properties"
       [dir]="lang.isLtr ? 'ltr' : 'rtl'"
       (mouseenter)="item.selected = true"
@@ -11,6 +17,8 @@
       <img class="!h-[150px]" [src]="getItemImage(item)" [alt]="item.getNames()" />
       <div class="flex flex-col items-center">
         <app-change-indicator
+          class="transition-all"
+          [ngClass]="{ 'opacity-50': isLoading }"
           *ngIf="showYoy"
           [value]="item.kpiData.getKpiYoYVal()"
           [isHovered]="item.selected"></app-change-indicator>
@@ -18,10 +26,11 @@
         <span class="flex-1 text-3xl text-black font-bold group-hover:text-white transition">{{
           item.getNames()
         }}</span>
-        <span class="mt-2 text-4xl text-primary font-bold group-hover:text-white transition">
+        <span *ngIf="!isLoading" class="mt-2 text-4xl text-primary font-bold group-hover:text-white transition">
           <span [countUp]="item.kpiData.getKpiVal()" [options]="countUpOptions"></span>
           <!--      {{ !item.hasPrice ? lang.map.qr : "" }}-->
         </span>
+        <mat-spinner class="mt-2" diameter="30" strokeWidth="3" *ngIf="isLoading"></mat-spinner>
       </div>
     </div>
   </carousel>
