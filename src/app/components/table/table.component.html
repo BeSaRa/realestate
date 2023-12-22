@@ -43,18 +43,18 @@
       mat-header-row
       *matHeaderRowDef="displayedColumnNames"
       [ngClass]="{ 'opacity-25': isLoading }"
-      class="{{ headerBgColor }} !text-white !text-xl font-bold transition-all"></tr>
+      class="{{ headerBgColor }} !text-white {{ textSize }} font-bold transition-all"></tr>
     <tr
       mat-row
       *matRowDef="let row; columns: displayedColumnNames"
-      class="text-center !text-xl border-b border-gray-200"></tr>
-    <tr *matNoDataRow>
+      class="text-center {{ textSize }} border-b border-gray-200"></tr>
+    <tr *matNoDataRow [ngClass]="{ 'opacity-25': isLoading }">
       <td class="p-4" colspan="100">{{ lang.map.no_records_to_display }}</td>
     </tr>
   </table>
 
   <!-- paginator -->
-  <div *ngIf="length" class="flex justify-between items-center" [ngStyle]="{ minWidth}">
+  <div *ngIf="length && enablePagination" class="flex justify-between items-center" [ngStyle]="{ minWidth}">
     <span class="text-primary/70">
       {{ lang.map.paginator_showing_label }} {{ length ? offset + 1 : 0 }}
       {{ lang.map.paginator_to_label }}

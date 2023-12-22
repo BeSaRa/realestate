@@ -183,155 +183,131 @@
       <div class="mt-4 flex justify-center md:justify-end">
         <div class="grid grid-cols-2 gap-2">
           <app-button
-            (click)="updateSellIndicatorsTable(IndicatorsType.PURPOSE)"
-            [buttonStyle]="selectedIndicators === IndicatorsType.PURPOSE ? 'secondary' : 'secondary-outline'"
+            (click)="setSelectedStatsTableType('purpose')"
+            [buttonStyle]="selectedStatsTableType === 'purpose' ? 'secondary' : 'secondary-outline'"
             >{{ lang.map.depending_on_use }}</app-button
           >
           <app-button
-            (click)="updateSellIndicatorsTable(IndicatorsType.TYPE)"
-            [buttonStyle]="selectedIndicators === IndicatorsType.TYPE ? 'secondary' : 'secondary-outline'"
+            (click)="setSelectedStatsTableType('propertyType')"
+            [buttonStyle]="selectedStatsTableType === 'propertyType' ? 'secondary' : 'secondary-outline'"
             >{{ lang.map.depending_on_type }}</app-button
           >
         </div>
       </div>
-      <div class="overflow-x-auto">
-        <table
-          class="mt-5 custom-table w-full"
-          [ngStyle]="{ minWidth: '1200px' }"
-          mat-table
-          matSort
-          [dataSource]="transactionsStatisticsDatasource">
-          <!-- purpose -->
-          <ng-container matColumnDef="{{ transactionsStatisticsColumns[0] }}">
-            <th
-              mat-header-cell
-              class="!text-white"
-              mat-sort-header="{{ transactionsStatisticsColumns[0] }}"
-              *matHeaderCellDef>
-              {{ selectedIndicators === IndicatorsType.PURPOSE ? lang.map.purpose : lang.map.property_type }}
-            </th>
-            <td mat-cell *matCellDef="let element">
-              {{ element.purposeInfo?.getNames() ?? element.propertyTypeInfo?.getNames() }}
-            </td>
-          </ng-container>
 
-          <ng-container matColumnDef="average">
-            <th mat-header-cell class="!text-white" mat-sort-header="average" *matHeaderCellDef>
-              {{ lang.map.average_sell_price_per_unit_property }}
-            </th>
-            <td
-              mat-cell
-              *matCellDef="let element"
-              appCustomTooltip
-              [tooltipContent]="isPurposeOrTypeTermsValid ? null : tooltipTemplate"
-              [tooltipContentContext]="purposeOrTypeTermsText">
-              <ng-container *ngIf="isPurposeOrTypeTermsValid">{{ element.medianPrice | formatNumbers }}</ng-container>
-              <ng-container *ngIf="!isPurposeOrTypeTermsValid"
-                >"{{ lang.map.filter_values_must_be_modified_to_display_data }}"</ng-container
-              >
-            </td>
-          </ng-container>
-          <!-- count -->
-          <ng-container matColumnDef="certificates-count">
-            <th mat-header-cell class="!text-white" mat-sort-header="certificates-count" *matHeaderCellDef>
-              {{ lang.map.number_of_sell_contracts }}
-            </th>
-            <td mat-cell *matCellDef="let element">{{ element.countCertificateCode | formatNumbers : 0 }}</td>
-          </ng-container>
-
-          <ng-container matColumnDef="area">
-            <th mat-header-cell class="!text-white" mat-sort-header="area" *matHeaderCellDef>
-              {{
-                unitsService.isMeterSelected()
-                  ? lang.map.total_area_in_square_meter
-                  : lang.map.total_area_in_square_feet
-              }}
-            </th>
-            <td mat-cell *matCellDef="let element">{{ element.sumArea | formatNumbers : 0 }}</td>
-          </ng-container>
-
-          <ng-container matColumnDef="units-count">
-            <th mat-header-cell class="!text-white" mat-sort-header="units-count" *matHeaderCellDef>
-              {{ lang.map.number_of_sold_units }}
-            </th>
-            <td mat-cell *matCellDef="let element">{{ element.countCertificateCode | formatNumbers : 0 }}</td>
-          </ng-container>
-
-          <ng-container matColumnDef="average-square">
-            <th mat-header-cell class="!text-white" mat-sort-header="average-square" *matHeaderCellDef>
-              {{
-                unitsService.isMeterSelected()
-                  ? lang.map.average_price_per_square_meter
-                  : lang.map.average_price_per_square_foot
-              }}
-            </th>
-            <td
-              mat-cell
-              appCustomTooltip
-              [tooltipContent]="isPurposeOrTypeTermsValid ? null : tooltipTemplate"
-              [tooltipContentContext]="purposeOrTypeTermsText"
-              *matCellDef="let element">
-              <ng-container *ngIf="isPurposeOrTypeTermsValid">{{
-                element.unitSquareMedianPrice() | formatNumbers : 0
-              }}</ng-container>
-              <ng-container *ngIf="!isPurposeOrTypeTermsValid"
-                >"{{ lang.map.filter_values_must_be_modified_to_display_data }}"</ng-container
-              >
-            </td>
-          </ng-container>
-
-          <!-- <ng-container matColumnDef="area">
-          <th mat-header-cell class="!text-white" mat-sort-header="area" *matHeaderCellDef>
-            {{ lang.map.total_area }}
-          </th>
-          <td mat-cell *matCellDef="let element">
-            {{ element.totalArea ? (element.totalArea | formatNumbers : 0) : "---" }}
-          </td>
+      <app-table
+        [criteria]="statsTableCriteria"
+        [dataLoadFn]="transactionsStatsLoadFn"
+        [sortOptions]="[]"
+        [enablePagination]="false"
+        minWidth="900px"
+        headerBgColor="!bg-secondary"
+        textSize="!text-sm"
+        class="mt-4"
+        ><ng-container appTableColumnTemplate columnName="statsType">
+          <div *appTableColumnHeaderTemplate class="flex justify-center">
+            {{ selectedStatsTableType === "purpose" ? lang.map.purpose : lang.map.property_type }}
+          </div>
+          <div
+            *appTableColumnCellTemplate="let item; dataType: getTransactionStatsType()"
+            class="flex justify-center font-bold">
+            {{
+              selectedStatsTableType === "purpose"
+                ? lookupService.sellPurposeMap[item.purposeId] &&
+                  lookupService.sellPurposeMap[item.purposeId].getNames()
+                : lookupService.sellPropertyTypeMap[item.propertyTypeId] &&
+                  lookupService.sellPropertyTypeMap[item.propertyTypeId].getNames()
+            }}
+          </div> </ng-container
+        ><ng-container appTableColumnTemplate columnName="average">
+          <div *appTableColumnHeaderTemplate class="flex justify-center">
+            {{ lang.map.average_sell_price_per_unit_property }}
+          </div>
+          <div
+            *appTableColumnCellTemplate="let item; dataType: getTransactionStatsType()"
+            class="flex justify-center font-bold"
+            appCustomTooltip
+            [tooltipContent]="isPurposeOrTypeStatsTermsValid ? null : tooltipTemplate"
+            [tooltipContentContext]="purposeOrTypeStatsTermsText">
+            <ng-container *ngIf="isPurposeOrTypeStatsTermsValid">{{
+              item.medianPrice || 0 | formatNumbers
+            }}</ng-container>
+            <ng-container *ngIf="!isPurposeOrTypeStatsTermsValid"
+              >"{{ lang.map.filter_values_must_be_modified_to_display_data }}"</ng-container
+            >
+          </div>
         </ng-container>
-
-        <ng-container matColumnDef="count">
-          <th mat-header-cell class="!text-white" mat-sort-header="count" *matHeaderCellDef>
+        <ng-container appTableColumnTemplate columnName="certificates-count">
+          <div *appTableColumnHeaderTemplate class="flex justify-center">
             {{ lang.map.number_of_sell_contracts }}
-          </th>
-          <td mat-cell *matCellDef="let element">{{ element.countCertificateCode | formatNumbers : 0 }}</td>
+          </div>
+          <div
+            *appTableColumnCellTemplate="let item; dataType: getTransactionStatsType()"
+            class="flex justify-center font-bold">
+            {{ item.countCertificateCode | formatNumbers : 0 }}
+          </div>
         </ng-container>
-
-        <ng-container matColumnDef="count">
-          <th mat-header-cell class="!text-white" mat-sort-header="count" *matHeaderCellDef>
-            {{ lang.map.number_of_sell_contracts }}
-          </th>
-          <td mat-cell *matCellDef="let element">{{ element.countCertificateCode | formatNumbers : 0 }}</td>
-        </ng-container> -->
-          <!-- count -->
-          <ng-container matColumnDef="chart">
-            <th mat-header-cell class="!text-white" *matHeaderCellDef>{{ lang.map.chart }}</th>
-            <td
-              appCustomTooltip
-              [tooltipContent]="isPurposeOrTypeTermsValid ? null : tooltipTemplate"
-              [tooltipContentContext]="purposeOrTypeTermsText"
-              mat-cell
-              *matCellDef="let element">
-              <app-icon-button
-                [disabled]="!isPurposeOrTypeTermsValid"
-                (clicked)="openChart(element)"
-                icon="BAR_CHART"></app-icon-button>
-            </td>
-          </ng-container>
-
-          <tr
-            mat-header-row
-            class="rounded-first-tr !bg-secondary !text-white"
-            *matHeaderRowDef="transactionsStatisticsColumns"></tr>
-          <tr
-            mat-row
-            class="rounded-last-tr !bg-white"
-            *matRowDef="let element; columns: transactionsStatisticsColumns"></tr>
-          <!-- Row shown when there is no matching data. -->
-          <tr class="mat-row" *matNoDataRow>
-            <td class="p-4" colspan="100">{{ lang.map.no_records_to_display }}</td>
-          </tr>
-        </table>
-      </div>
+        <ng-container appTableColumnTemplate columnName="area">
+          <div *appTableColumnHeaderTemplate class="flex justify-center">
+            {{
+              unitsService.isMeterSelected() ? lang.map.total_area_in_square_meter : lang.map.total_area_in_square_feet
+            }}
+          </div>
+          <div
+            *appTableColumnCellTemplate="let item; dataType: getTransactionStatsType()"
+            class="flex justify-center font-bold">
+            {{ item.sumArea | formatNumbers : 0 }}
+          </div>
+        </ng-container>
+        <ng-container appTableColumnTemplate columnName="units-count">
+          <div *appTableColumnHeaderTemplate class="flex justify-center">
+            {{ lang.map.number_of_sold_units }}
+          </div>
+          <div
+            *appTableColumnCellTemplate="let item; dataType: getTransactionStatsType()"
+            class="flex justify-center font-bold">
+            {{ item.countCertificateCode | formatNumbers : 0 }}
+          </div>
+        </ng-container>
+        <ng-container appTableColumnTemplate columnName="average-square">
+          <div *appTableColumnHeaderTemplate class="flex justify-center">
+            {{
+              unitsService.isMeterSelected()
+                ? lang.map.average_price_per_square_meter
+                : lang.map.average_price_per_square_foot
+            }}
+          </div>
+          <div
+            *appTableColumnCellTemplate="let item; dataType: getTransactionStatsType()"
+            class="flex justify-center font-bold"
+            appCustomTooltip
+            [tooltipContent]="isPurposeOrTypeStatsTermsValid ? null : tooltipTemplate"
+            [tooltipContentContext]="purposeOrTypeStatsTermsText">
+            <ng-container *ngIf="isPurposeOrTypeStatsTermsValid">{{
+              item.unitSquareMedianPrice || 0 | formatNumbers : 0
+            }}</ng-container>
+            <ng-container *ngIf="!isPurposeOrTypeStatsTermsValid"
+              >"{{ lang.map.filter_values_must_be_modified_to_display_data }}"</ng-container
+            >
+          </div>
+        </ng-container>
+        <ng-container appTableColumnTemplate columnName="chart">
+          <div *appTableColumnHeaderTemplate class="flex justify-center">
+            {{ lang.map.chart }}
+          </div>
+          <div
+            *appTableColumnCellTemplate="let item; dataType: getTransactionStatsType()"
+            class="flex justify-center font-bold"
+            appCustomTooltip
+            [tooltipContent]="isPurposeOrTypeStatsTermsValid ? null : tooltipTemplate"
+            [tooltipContentContext]="purposeOrTypeStatsTermsText">
+            <app-icon-button
+              [disabled]="!isPurposeOrTypeStatsTermsValid"
+              (clicked)="openStatsChart(item)"
+              icon="BAR_CHART"></app-icon-button>
+          </div>
+        </ng-container>
+      </app-table>
     </div>
 
     <div *appSectionGuard="pageSections.SELL_TOP_10_CHART" class="px-3 lg:px-16">

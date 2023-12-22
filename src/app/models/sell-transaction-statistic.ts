@@ -1,7 +1,5 @@
-import { DashboardService } from '@services/dashboard.service';
 import { ServiceRegistry } from '@services/service-registry';
 import { UnitsService } from '@services/units.service';
-import { computed } from '@angular/core';
 
 export class SellTransactionStatistic {
   countCertificateCode!: number;
@@ -13,18 +11,12 @@ export class SellTransactionStatistic {
 
   sumArea!: number;
 
-  // not related to model
-  // totalArea: number | null = null;
+  purposeId!: number;
+  propertyTypeId!: number;
 
-  dashboardService: DashboardService;
-  unitsService: UnitsService;
-
-  constructor() {
-    this.dashboardService = ServiceRegistry.get<DashboardService>('DashboardService');
-    this.unitsService = ServiceRegistry.get<UnitsService>('UnitsService');
-  }
+  unitsService = ServiceRegistry.get<UnitsService>('UnitsService');
 
   get unitSquareMedianPrice() {
-    return computed(() => (this.unitsService.selectedUnit() === 1 ? this.medianPriceMt : this.medianPriceSqf));
+    return this.unitsService.selectedUnit() === 1 ? this.medianPriceMt : this.medianPriceSqf;
   }
 }
