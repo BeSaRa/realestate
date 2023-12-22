@@ -10,7 +10,6 @@ import { KpiRoot } from '@models/kpi-root';
 import { MatNativeDateModule } from '@angular/material/core';
 import { MatSortModule } from '@angular/material/sort';
 import { MatTableModule } from '@angular/material/table';
-import { RentTransactionIndicator } from '@app-types/rent-indicators-type';
 import { ButtonComponent } from '@components/button/button.component';
 import { DurationChartComponent } from '@components/duration-chart/duration-chart.component';
 import { IconButtonComponent } from '@components/icon-button/icon-button.component';
@@ -28,18 +27,14 @@ import { SectionGuardDirective } from '@directives/section-guard.directive';
 import { TableColumnCellTemplateDirective } from '@directives/table-column-cell-template.directive';
 import { TableColumnHeaderTemplateDirective } from '@directives/table-column-header-template.directive';
 import { TableColumnTemplateDirective } from '@directives/table-column-template.directive';
-import { indicatorsTypes } from '@enums/Indicators-type';
 import { OnDestroyMixin } from '@mixins/on-destroy-mixin';
-import { AppTableDataSource } from '@models/app-table-data-source';
 import { RentCompositeTransaction } from '@models/composite-transaction';
 import { CriteriaSpecificTerms, CriteriaTerms } from '@models/criteria-specific-terms';
-import { KpiBase } from '@models/kpi-base';
 import { KpiPropertyType } from '@models/kpi-property-type';
 import { KpiPurpose } from '@models/kpi-purpose';
 import { Lookup } from '@models/lookup';
 import { RentTransaction } from '@models/rent-transaction';
-import { RentTransactionPropertyType } from '@models/rent-transaction-property-type';
-import { RentTransactionPurpose } from '@models/rent-transaction-purpose';
+import { RentTransactionStatistics } from '@models/rent-transaction-statistics';
 import { TableSortOption } from '@models/table-sort-option';
 import { Top10AccordingTo } from '@models/top-10-according-to';
 import { FormatNumbersPipe } from '@pipes/format-numbers.pipe';
@@ -50,18 +45,7 @@ import { TranslationService } from '@services/translation.service';
 import { UnitsService } from '@services/units.service';
 import { UrlService } from '@services/url.service';
 import { NgxMaskPipe } from 'ngx-mask';
-import {
-  BehaviorSubject,
-  combineLatest,
-  delay,
-  map,
-  Observable,
-  of,
-  ReplaySubject,
-  switchMap,
-  take,
-  takeUntil,
-} from 'rxjs';
+import { map, take } from 'rxjs';
 
 @Component({
   selector: 'app-rental-indicators-page',
@@ -95,8 +79,6 @@ import {
   styleUrls: ['./rental-indicators-page.component.scss'],
 })
 export default class RentalIndicatorsPageComponent extends OnDestroyMixin(class {}) implements OnInit {
-  protected readonly IndicatorsType = indicatorsTypes;
-
   lang = inject(TranslationService);
   dashboardService = inject(DashboardService);
   urlService = inject(UrlService);
@@ -104,9 +86,6 @@ export default class RentalIndicatorsPageComponent extends OnDestroyMixin(class 
   unitsService = inject(UnitsService);
   sectionTitle = inject(SectionTitleService);
   pageSections = inject(APP_PAGES_SECTIONS).RENT_PAGE;
-
-  reload$ = new ReplaySubject<void>(1);
-  private basedOn$ = new BehaviorSubject<indicatorsTypes>(indicatorsTypes.PURPOSE);
 
   municipalities = this.lookupService.rentLookups.municipalityList;
   propertyTypes = this.lookupService.rentLookups.propertyTypeList;
@@ -119,8 +98,6 @@ export default class RentalIndicatorsPageComponent extends OnDestroyMixin(class 
 
   isMonthlyDuration = true;
 
-  transactionsStatistics$: Observable<RentTransactionIndicator[]> = this.setIndicatorsTableDataSource();
-  transactionsStatisticsDatasource = new AppTableDataSource<RentTransactionIndicator>(this.transactionsStatistics$);
   transactionsSortOptions: TableSortOption[] = [
     new TableSortOption().clone<TableSortOption>({
       arName: this.lang.getArabicTranslation('most_recent'),
@@ -161,7 +138,7 @@ export default class RentalIndicatorsPageComponent extends OnDestroyMixin(class 
     type: CriteriaType;
   };
 
-  selectedIndicators = this.IndicatorsType.PURPOSE;
+  statsTableCriteria = this.criteria.criteria;
 
   rootKPIS = [
     new KpiRoot().clone<KpiRoot>({
@@ -310,6 +287,8 @@ export default class RentalIndicatorsPageComponent extends OnDestroyMixin(class 
   selectedPurpose = this.purposeKPIS[0];
   selectedTab: 'rental_indicators' | 'statistical_reports_for_rent' = 'rental_indicators';
 
+  selectedStatsTableType: 'purpose' | 'propertyType' = 'purpose';
+
   compositeTransactions: RentCompositeTransaction[][] = [];
   compositeYears!: { selectedYear: number; previousYear: number };
   compositeTransactionsColumns = [
@@ -331,35 +310,28 @@ export default class RentalIndicatorsPageComponent extends OnDestroyMixin(class 
     { criteriaKey: 'purposeList', term: CriteriaTerms.SINGLE_NOT_ALL },
   ]);
 
-  transactionsStatisticsColumns = [
-    'average',
-    'certificates-count',
-    /* 'area',*/ 'units-count',
-    /*'average-square',*/ 'chart',
-  ];
-
-  purposeTableCriteriaTerms = new CriteriaSpecificTerms([
+  purposeStatsTableCriteriaTerms = new CriteriaSpecificTerms([
     'zoneId',
     { criteriaKey: 'propertyTypeList', term: CriteriaTerms.SINGLE_NOT_ALL },
   ]);
-  propertyTypeTableCriteriaTerms = new CriteriaSpecificTerms([
+  propertyTypeStatsTableCriteriaTerms = new CriteriaSpecificTerms([
     'zoneId',
     { criteriaKey: 'purposeList', term: CriteriaTerms.SINGLE_NOT_ALL },
   ]);
 
-  get isPurposeOrTypeTermsValid() {
+  get isPurposeOrTypeStatsTermsValid() {
     return (
-      (this.selectedIndicators === this.IndicatorsType.PURPOSE &&
-        this.purposeTableCriteriaTerms.validate(this.criteria.criteria)) ||
-      (this.selectedIndicators === this.IndicatorsType.TYPE &&
-        this.propertyTypeTableCriteriaTerms.validate(this.criteria.criteria))
+      (this.selectedStatsTableType === 'purpose' &&
+        this.purposeStatsTableCriteriaTerms.validate(this.criteria.criteria)) ||
+      (this.selectedStatsTableType === 'propertyType' &&
+        this.propertyTypeStatsTableCriteriaTerms.validate(this.criteria.criteria))
     );
   }
 
-  get purposeOrTypeTermsText() {
-    return this.selectedIndicators === this.IndicatorsType.PURPOSE
-      ? this.purposeTableCriteriaTerms.getCriteriaTermsText()
-      : this.propertyTypeTableCriteriaTerms.getCriteriaTermsText();
+  get purposeOrTypeStatsTermsText() {
+    return this.selectedStatsTableType === 'purpose'
+      ? this.purposeStatsTableCriteriaTerms.getCriteriaTermsText()
+      : this.propertyTypeStatsTableCriteriaTerms.getCriteriaTermsText();
   }
 
   get priceList() {
@@ -399,41 +371,6 @@ export default class RentalIndicatorsPageComponent extends OnDestroyMixin(class 
 
   ngOnInit(): void {
     this.rootItemSelected(this.selectedRoot);
-    this.reload$.next();
-  }
-
-  protected setIndicatorsTableDataSource(): Observable<RentTransactionIndicator[]> {
-    return of(undefined)
-      .pipe(delay(0))
-      .pipe(
-        switchMap(() => {
-          return combineLatest([this.reload$, this.basedOn$]).pipe(
-            switchMap(([, basedOn]) => {
-              this.transactionsStatisticsColumns.length === 5
-                ? (this.transactionsStatisticsColumns[0] = basedOn)
-                : this.transactionsStatisticsColumns.unshift(basedOn);
-              this.selectedIndicators = basedOn;
-              return basedOn === indicatorsTypes.PURPOSE
-                ? // ToDO: since limit filter is not working (we rigestered an issue to be team for that)
-                  // ToDo: applay pagination on table
-                  // For now we take only five records
-                  this.dashboardService.loadRentTransactionsBasedOnPurpose(this.criteria.criteria).pipe(
-                    map((items) => {
-                      return items.slice(0, 5);
-                    })
-                  )
-                : this.dashboardService.loadRentTransactionsBasedOnPropertyType(this.criteria.criteria).pipe(
-                    map((items) => {
-                      return items.slice(0, 5);
-                    })
-                  );
-            }),
-            map((response) => {
-              return response;
-            })
-          );
-        })
-      );
   }
 
   filterChange({ criteria, type }: { criteria: CriteriaContract; type: CriteriaType }) {
@@ -441,9 +378,9 @@ export default class RentalIndicatorsPageComponent extends OnDestroyMixin(class 
 
     this.validateSelectedRoot();
 
-    this.reload$.next();
+    this.statsTableCriteria = criteria;
+
     this.loadCompositeTransactions();
-    this.setIndicatorsTableDataSource();
   }
 
   validateSelectedRoot() {
@@ -468,19 +405,34 @@ export default class RentalIndicatorsPageComponent extends OnDestroyMixin(class 
     });
   }
 
-  updateRentIndicatorsTable(basedOn: indicatorsTypes) {
-    this.basedOn$.next(basedOn);
-  }
-
   getTransactionType = () => RentTransaction;
 
   transactionsLoadFn = (criteria: CriteriaContract) => this.dashboardService.loadRentKpiTransactions(criteria);
 
+  getTransactionStatsType = () => RentTransactionStatistics;
+
+  transactionsStatsLoadFn = (criteria: CriteriaContract) =>
+    this.dashboardService.loadRentTransactionsStatistics(criteria, this.selectedStatsTableType).pipe(
+      map((data) => ({
+        count: data.length,
+        transactionList: data,
+      }))
+    );
+
+  setSelectedStatsTableType(type: 'purpose' | 'propertyType') {
+    this.selectedStatsTableType = type;
+    this.statsTableCriteria = { ...this.criteria.criteria };
+  }
+
+  openStatsChart(item: RentTransactionStatistics) {
+    this.dashboardService
+      .openRentStatsChartDialog(this.statsTableCriteria, item, this.selectedStatsTableType)
+      .pipe(take(1))
+      .subscribe();
+  }
+
   switchTab(tab: 'rental_indicators' | 'statistical_reports_for_rent'): void {
     this.selectedTab = tab;
-    if (this.selectedTab === 'rental_indicators') {
-      this.reload$.next();
-    }
   }
 
   isSelectedTab(tab: string): boolean {
@@ -495,10 +447,6 @@ export default class RentalIndicatorsPageComponent extends OnDestroyMixin(class 
         this.compositeTransactions = value.items;
         this.compositeYears = value.years;
       });
-  }
-
-  openChart(item: RentTransactionPurpose | RentTransactionPropertyType): void {
-    item.openChart(this.criteria.criteria).pipe(take(1)).subscribe();
   }
 
   isMonthlyDurationType(value: boolean) {
