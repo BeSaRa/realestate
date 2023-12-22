@@ -28,11 +28,9 @@ import { OccupancyTransaction } from '@models/occupancy-transaction';
 import { OwnershipTransaction } from '@models/ownership-transaction';
 import { Pagination } from '@models/pagination';
 import { RentTransaction } from '@models/rent-transaction';
-import { RentTransactionPropertyType } from '@models/rent-transaction-property-type';
-import { RentTransactionPurpose } from '@models/rent-transaction-purpose';
+import { RentTransactionStatistics } from '@models/rent-transaction-statistics';
 import { SellTransaction } from '@models/sell-transaction';
-import { SellTransactionPropertyType } from '@models/sell-transaction-property-type';
-import { SellTransactionPurpose } from '@models/sell-transaction-purpose';
+import { SellTransactionStatistic } from '@models/sell-transaction-statistic';
 import { Top10KpiModel } from '@models/top-10-kpi-model';
 import { UrlService } from '@services/url.service';
 import { groupBy, minMaxAvg, range } from '@utils/utils';
@@ -40,6 +38,7 @@ import { CastResponse } from 'cast-response';
 import { map, Observable } from 'rxjs';
 import { DialogService } from './dialog.service';
 import { TranslationService } from './translation.service';
+import { LookupService } from './lookup.service';
 
 @Injectable({
   providedIn: 'root',
@@ -48,6 +47,7 @@ export class DashboardService extends RegisterServiceMixin(class {}) implements 
   serviceName = 'DashboardService';
   private http = inject(HttpClient);
   private urlService = inject(UrlService);
+  private lookupService = inject(LookupService);
   private lang = inject(TranslationService);
   private dialog = inject(DialogService);
 
@@ -93,42 +93,20 @@ export class DashboardService extends RegisterServiceMixin(class {}) implements 
     return this.http.post<Top10KpiModel[]>(chartData.chartDataUrl, criteria);
   }
 
-  @CastResponse(() => RentTransactionPurpose)
-  loadRentTransactionsBasedOnPurpose(criteria: Partial<RentCriteriaContract>): Observable<RentTransactionPurpose[]> {
-    return this.http.post<RentTransactionPurpose[]>(this.urlService.URLS.RENT_KPI25, criteria);
+  @CastResponse(() => SellTransactionStatistic)
+  loadSellTransactionsStatistics(criteria: Partial<SellCriteriaContract>, type: 'purpose' | 'propertyType') {
+    return this.http.post<SellTransactionStatistic[]>(
+      type === 'purpose' ? this.urlService.URLS.SELL_KPI25 : this.urlService.URLS.SELL_KPI27,
+      criteria
+    );
   }
 
-  @CastResponse(() => RentTransactionPropertyType)
-  loadRentTransactionsBasedOnPropertyType(
-    criteria: Partial<RentCriteriaContract>
-  ): Observable<RentTransactionPropertyType[]> {
-    return this.http.post<RentTransactionPropertyType[]>(this.urlService.URLS.RENT_KPI27, criteria);
-  }
-
-  @CastResponse(() => SellTransactionPurpose)
-  loadSellTransactionsBasedOnPurpose(criteria: Partial<SellCriteriaContract>): Observable<SellTransactionPurpose[]> {
-    return this.http.post<SellTransactionPurpose[]>(this.urlService.URLS.SELL_KPI25, criteria);
-  }
-
-  @CastResponse(() => RentTransactionPurpose)
-  loadRentTransactionsBasedOnPurposeDetails(
-    criteria: Partial<RentCriteriaContract>
-  ): Observable<RentTransactionPurpose[]> {
-    return this.http.post<RentTransactionPurpose[]>(this.urlService.URLS.RENT_KPI26, criteria);
-  }
-
-  @CastResponse(() => SellTransactionPropertyType)
-  loadSellTransactionsBasedOnPropertyType(
-    criteria: Partial<SellCriteriaContract>
-  ): Observable<SellTransactionPropertyType[]> {
-    return this.http.post<SellTransactionPropertyType[]>(this.urlService.URLS.SELL_KPI27, criteria);
-  }
-
-  @CastResponse(() => SellTransactionPurpose)
-  loadSellTransactionsBasedOnPurposeDetails(
-    criteria: Partial<SellCriteriaContract>
-  ): Observable<SellTransactionPurpose[]> {
-    return this.http.post<SellTransactionPurpose[]>(this.urlService.URLS.SELL_KPI26, criteria);
+  @CastResponse(() => RentTransactionStatistics)
+  loadRentTransactionsStatistics(criteria: Partial<RentCriteriaContract>, type: 'purpose' | 'propertyType') {
+    return this.http.post<RentTransactionStatistics[]>(
+      type === 'purpose' ? this.urlService.URLS.RENT_KPI25 : this.urlService.URLS.RENT_KPI27,
+      criteria
+    );
   }
 
   @CastResponse(() => Pagination<RentTransaction>, { shape: { 'transactionList.*': () => RentTransaction } })
@@ -139,22 +117,6 @@ export class DashboardService extends RegisterServiceMixin(class {}) implements 
   @CastResponse(() => Pagination<SellTransaction>, { shape: { 'transactionList.*': () => SellTransaction } })
   loadSellKpiTransactions(criteria: Partial<CriteriaContract>): Observable<Pagination<SellTransaction[]>> {
     return this.http.post<Pagination<SellTransaction[]>>(this.urlService.URLS.SELL_KPI29, criteria);
-  }
-
-  @CastResponse(() => RentTransactionPropertyType)
-  loadRentTransactionsBasedOnPropertyTypeDetails(
-    criteria: Partial<RentCriteriaContract>
-  ): Observable<RentTransactionPropertyType[]> {
-    return this.http.post<RentTransactionPropertyType[]>(this.urlService.URLS.RENT_KPI27, criteria);
-  }
-
-  @CastResponse(() => SellTransactionPropertyType)
-  loadSellTransactionsBasedOnPropertyTypeDetails(
-    criteria: Partial<SellCriteriaContract>
-  ): Observable<SellTransactionPropertyType[]> {
-    // KPI26 should be replaced by KPI28, but it's not implemented yet by the BE team
-    // so just for testing the built UI (table) we will use KPI26
-    return this.http.post<SellTransactionPropertyType[]>(this.urlService.URLS.SELL_KPI26, criteria);
   }
 
   @CastResponse(() => Pagination<MortgageTransaction>, { shape: { 'transactionList.*': () => MortgageTransaction } })
@@ -259,88 +221,74 @@ export class DashboardService extends RegisterServiceMixin(class {}) implements 
       );
   }
 
-  openRentChartDialogBasedOnPurpose(
-    criteria: Partial<RentCriteriaContract>
-  ): Observable<MatDialogRef<ChartWithOppositePopupComponent>> {
-    return this.loadRentTransactionsBasedOnPurposeDetails(criteria).pipe(
-      map((data) =>
-        this.dialog.open<ChartWithOppositePopupComponent, ChartWithOppositePopupData<RentTransactionPurpose>>(
-          ChartWithOppositePopupComponent,
-          {
-            data: {
-              title: data[0].purposeInfo.getNames(),
-              list: data,
-              mainChart: { title: this.lang.map.average_price_per_month, bindValue: 'rentPaymentMonthly' },
-              oppositeChart: { title: this.lang.map.rent_contracts_count, bindValue: 'certificateCount' },
-            },
-            maxWidth: '95vw',
-          }
-        )
+  openRentStatsChartDialog(
+    criteria: Partial<RentCriteriaContract>,
+    item: RentTransactionStatistics,
+    type: 'purpose' | 'propertyType'
+  ) {
+    const _criteria = { ...criteria };
+    type === 'purpose'
+      ? (_criteria.purposeList = [item.purposeId])
+      : (_criteria.propertyTypeList = [item.propertyTypeId]);
+    return this.http
+      .post<RentTransactionStatistics[]>(
+        type === 'purpose' ? this.urlService.URLS.RENT_KPI26 : this.urlService.URLS.RENT_KPI26,
+        _criteria
       )
-    );
+      .pipe(
+        map((data) =>
+          this.dialog.open<ChartWithOppositePopupComponent, ChartWithOppositePopupData<RentTransactionStatistics>>(
+            ChartWithOppositePopupComponent,
+            {
+              data: {
+                title:
+                  type === 'purpose'
+                    ? this.lookupService.rentPurposeMap[data[0].purposeId]?.getNames()
+                    : this.lookupService.rentPropertyTypeMap[data[0].propertyTypeId]?.getNames(),
+                list: data,
+                mainChart: { title: this.lang.map.average_price_per_month, bindValue: 'rentPaymentMonthly' },
+                oppositeChart: { title: this.lang.map.rent_contracts_count, bindValue: 'certificateCount' },
+              },
+              maxWidth: '95vw',
+            }
+          )
+        )
+      );
   }
 
-  openRentChartDialogBasedOnPrpoertyType(
-    criteria: Partial<RentCriteriaContract>
-  ): Observable<MatDialogRef<ChartWithOppositePopupComponent>> {
-    return this.loadRentTransactionsBasedOnPropertyTypeDetails(criteria).pipe(
-      map((data) =>
-        this.dialog.open<ChartWithOppositePopupComponent, ChartWithOppositePopupData<RentTransactionPropertyType>>(
-          ChartWithOppositePopupComponent,
-          {
-            data: {
-              title: data[0].propertyTypeInfo.getNames(),
-              list: data,
-              mainChart: { title: this.lang.map.average_price_per_month, bindValue: 'rentPaymentMonthly' },
-              oppositeChart: { title: this.lang.map.rent_contracts_count, bindValue: 'certificateCount' },
-            },
-            maxWidth: '95vw',
-          }
-        )
+  openSellStatsChartDialog(
+    criteria: Partial<SellCriteriaContract>,
+    item: SellTransactionStatistic,
+    type: 'purpose' | 'propertyType'
+  ) {
+    const _criteria = { ...criteria };
+    type === 'purpose'
+      ? (_criteria.purposeList = [item.purposeId])
+      : (_criteria.propertyTypeList = [item.propertyTypeId]);
+    return this.http
+      .post<SellTransactionStatistic[]>(
+        type === 'purpose' ? this.urlService.URLS.SELL_KPI26 : this.urlService.URLS.SELL_KPI26,
+        _criteria
       )
-    );
-  }
-
-  openSellChartDialogBasedOnPropertype(
-    criteria: Partial<SellCriteriaContract>
-  ): Observable<MatDialogRef<ChartWithOppositePopupComponent>> {
-    return this.loadSellTransactionsBasedOnPropertyTypeDetails(criteria).pipe(
-      map((data) =>
-        this.dialog.open<ChartWithOppositePopupComponent, ChartWithOppositePopupData<SellTransactionPropertyType>>(
-          ChartWithOppositePopupComponent,
-          {
-            data: {
-              title: data[0].propertyTypeInfo.getNames(),
-              list: data,
-              mainChart: { title: this.lang.map.average_sell_price_per_unit_property, bindValue: 'medianPrice' },
-              oppositeChart: { title: this.lang.map.number_of_sell_contracts, bindValue: 'countCertificateCode' },
-            },
-            maxWidth: '95vw',
-          }
+      .pipe(
+        map((data) =>
+          this.dialog.open<ChartWithOppositePopupComponent, ChartWithOppositePopupData<SellTransactionStatistic>>(
+            ChartWithOppositePopupComponent,
+            {
+              data: {
+                title:
+                  type === 'purpose'
+                    ? this.lookupService.sellPurposeMap[data[0].purposeId]?.getNames()
+                    : this.lookupService.sellPropertyTypeMap[data[0].propertyTypeId]?.getNames(),
+                list: data,
+                mainChart: { title: this.lang.map.average_sell_price_per_unit_property, bindValue: 'medianPrice' },
+                oppositeChart: { title: this.lang.map.number_of_sell_contracts, bindValue: 'countCertificateCode' },
+              },
+              maxWidth: '95vw',
+            }
+          )
         )
-      )
-    );
-  }
-
-  openSellChartDialogBasedOnPurpose(
-    criteria: Partial<SellCriteriaContract>
-  ): Observable<MatDialogRef<ChartWithOppositePopupComponent>> {
-    return this.loadSellTransactionsBasedOnPurposeDetails(criteria).pipe(
-      map((data) =>
-        this.dialog.open<ChartWithOppositePopupComponent, ChartWithOppositePopupData<SellTransactionPurpose>>(
-          ChartWithOppositePopupComponent,
-          {
-            data: {
-              title: data[0].purposeInfo.getNames(),
-              list: data,
-              mainChart: { title: this.lang.map.average_sell_price_per_unit_property, bindValue: 'medianPrice' },
-              oppositeChart: { title: this.lang.map.number_of_sell_contracts, bindValue: 'countCertificateCode' },
-            },
-            maxWidth: '95vw',
-          }
-        )
-      )
-    );
+      );
   }
 
   mapDurationData(data: KpiBaseDurationModel[], durations: Lookup[]): DurationDataContract {

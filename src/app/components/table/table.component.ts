@@ -59,8 +59,10 @@ export class TableComponent<T extends object> extends OnDestroyMixin(class {}) i
   @Input() tableGuardName = '';
   @Input() sortOptions: TableSortOption[] = [];
   @Input() defaultSortOption?: TableSortOption;
+  @Input() enablePagination = true;
   @Input() minWidth = '1000px';
   @Input() headerBgColor = '!bg-primary';
+  @Input() textSize = '!text-xl';
 
   @ViewChild('paginator') paginator!: MatPaginator;
   @ContentChildren(TableColumnTemplateDirective) columnsTemplates!: QueryList<TableColumnTemplateDirective>;
@@ -96,7 +98,9 @@ export class TableComponent<T extends object> extends OnDestroyMixin(class {}) i
   ngOnChanges(changes: SimpleChanges): void {
     if ('criteria' in changes) {
       if (this.criteria) {
-        this.reload$.next();
+        setTimeout(() => {
+          this.reload$.next();
+        }, 0);
         this.paginator && this.paginator.firstPage();
       }
     }
@@ -135,11 +139,13 @@ export class TableComponent<T extends object> extends OnDestroyMixin(class {}) i
         takeUntil(this.destroy$),
         switchMap(([, paginationOptions]) => {
           this.isLoading = true;
-          const _criteria = {
-            ...this.criteria,
-            limit: paginationOptions.limit,
-            offset: paginationOptions.offset,
-          };
+          const _criteria = this.enablePagination
+            ? {
+                ...this.criteria,
+                limit: paginationOptions.limit,
+                offset: paginationOptions.offset,
+              }
+            : this.criteria;
           return this.dataLoadFn(_criteria).pipe(
             finalize(() => {
               this.isLoading = false;

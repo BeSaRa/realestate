@@ -3,7 +3,6 @@ import { Component, OnInit, inject } from '@angular/core';
 import { MatNativeDateModule } from '@angular/material/core';
 import { MatSortModule } from '@angular/material/sort';
 import { MatTableModule } from '@angular/material/table';
-import { SellTransactionIndicator } from '@app-types/sell-indicators-type';
 import { ButtonComponent } from '@components/button/button.component';
 import { DurationChartComponent } from '@components/duration-chart/duration-chart.component';
 import { IconButtonComponent } from '@components/icon-button/icon-button.component';
@@ -22,19 +21,15 @@ import { SectionGuardDirective } from '@directives/section-guard.directive';
 import { TableColumnCellTemplateDirective } from '@directives/table-column-cell-template.directive';
 import { TableColumnHeaderTemplateDirective } from '@directives/table-column-header-template.directive';
 import { TableColumnTemplateDirective } from '@directives/table-column-template.directive';
-import { indicatorsTypes } from '@enums/Indicators-type';
 import { CriteriaType } from '@enums/criteria-type';
 import { OnDestroyMixin } from '@mixins/on-destroy-mixin';
-import { AppTableDataSource } from '@models/app-table-data-source';
 import { CompositeTransaction } from '@models/composite-transaction';
 import { CriteriaSpecificTerms, CriteriaTerms } from '@models/criteria-specific-terms';
-import { KpiBase } from '@models/kpi-base';
 import { KpiPropertyType } from '@models/kpi-property-type';
 import { KpiPurpose } from '@models/kpi-purpose';
 import { KpiRoot } from '@models/kpi-root';
 import { SellTransaction } from '@models/sell-transaction';
-import { SellTransactionPropertyType } from '@models/sell-transaction-property-type';
-import { SellTransactionPurpose } from '@models/sell-transaction-purpose';
+import { SellTransactionStatistic } from '@models/sell-transaction-statistic';
 import { TableSortOption } from '@models/table-sort-option';
 import { Top10AccordingTo } from '@models/top-10-according-to';
 import { FormatNumbersPipe } from '@pipes/format-numbers.pipe';
@@ -45,18 +40,7 @@ import { TranslationService } from '@services/translation.service';
 import { UnitsService } from '@services/units.service';
 import { UrlService } from '@services/url.service';
 import { NgxMaskPipe } from 'ngx-mask';
-import {
-  BehaviorSubject,
-  Observable,
-  ReplaySubject,
-  combineLatest,
-  delay,
-  map,
-  of,
-  switchMap,
-  take,
-  takeUntil,
-} from 'rxjs';
+import { map, take } from 'rxjs';
 
 @Component({
   selector: 'app-sell-indicators-page',
@@ -89,8 +73,6 @@ import {
   styleUrls: ['./sell-indicators-page.component.scss'],
 })
 export default class SellIndicatorsPageComponent extends OnDestroyMixin(class {}) implements OnInit {
-  protected readonly IndicatorsType = indicatorsTypes;
-
   lang = inject(TranslationService);
   dashboardService = inject(DashboardService);
   urlService = inject(UrlService);
@@ -98,10 +80,6 @@ export default class SellIndicatorsPageComponent extends OnDestroyMixin(class {}
   unitsService = inject(UnitsService);
   sectionTitle = inject(SectionTitleService);
   pageSections = inject(APP_PAGES_SECTIONS).SELL_PAGE;
-
-  reload$ = new ReplaySubject<void>(1);
-
-  private basedOn$ = new BehaviorSubject<indicatorsTypes>(indicatorsTypes.PURPOSE);
 
   municipalities = this.lookupService.sellLookups.municipalityList;
   propertyTypes = this.lookupService.sellLookups.propertyTypeList;
@@ -121,6 +99,8 @@ export default class SellIndicatorsPageComponent extends OnDestroyMixin(class {}
     criteria: CriteriaContract;
     type: CriteriaType;
   };
+
+  statsTableCriteria = this.criteria.criteria;
 
   isMonthlyDuration = true;
 
@@ -211,6 +191,8 @@ export default class SellIndicatorsPageComponent extends OnDestroyMixin(class {}
     return this.rootKPIS.filter((item) => !item.hasPrice);
   }
 
+  selectedStatsTableType: 'purpose' | 'propertyType' = 'purpose';
+
   accordingToList: Top10AccordingTo[] = [
     new Top10AccordingTo().clone<Top10AccordingTo>({
       id: 0,
@@ -264,8 +246,6 @@ export default class SellIndicatorsPageComponent extends OnDestroyMixin(class {}
 
   top10Label = (item: { kpiVal: number; zoneId: number }) => this.lookupService.sellDistrictMap[item.zoneId].getNames();
 
-  transactionsStatistics$: Observable<SellTransactionIndicator[]> = this.setIndicatorsTableDataSource();
-  transactionsStatisticsDatasource = new AppTableDataSource<SellTransactionIndicator>(this.transactionsStatistics$);
   transactionsSortOptions: TableSortOption[] = [
     new TableSortOption().clone<TableSortOption>({
       arName: this.lang.getArabicTranslation('most_recent'),
@@ -317,33 +297,29 @@ export default class SellIndicatorsPageComponent extends OnDestroyMixin(class {}
     }),
   ];
 
-  transactionsStatisticsColumns = ['average', 'certificates-count', 'area', 'units-count', 'average-square', 'chart'];
-
-  purposeTableCriteriaTerms = new CriteriaSpecificTerms([
+  purposeStatsTableCriteriaTerms = new CriteriaSpecificTerms([
     'areaCode',
     { criteriaKey: 'propertyTypeList', term: CriteriaTerms.SINGLE_NOT_ALL },
   ]);
-  propertyTypeTableCriteriaTerms = new CriteriaSpecificTerms([
+  propertyTypeStatsTableCriteriaTerms = new CriteriaSpecificTerms([
     'areaCode',
     { criteriaKey: 'purposeList', term: CriteriaTerms.SINGLE_NOT_ALL },
   ]);
 
-  get isPurposeOrTypeTermsValid() {
+  get isPurposeOrTypeStatsTermsValid() {
     return (
-      (this.selectedIndicators === this.IndicatorsType.PURPOSE &&
-        this.purposeTableCriteriaTerms.validate(this.criteria.criteria)) ||
-      (this.selectedIndicators === this.IndicatorsType.TYPE &&
-        this.propertyTypeTableCriteriaTerms.validate(this.criteria.criteria))
+      (this.selectedStatsTableType === 'purpose' &&
+        this.purposeStatsTableCriteriaTerms.validate(this.criteria.criteria)) ||
+      (this.selectedStatsTableType === 'propertyType' &&
+        this.propertyTypeStatsTableCriteriaTerms.validate(this.criteria.criteria))
     );
   }
 
-  get purposeOrTypeTermsText() {
-    return this.selectedIndicators === this.IndicatorsType.PURPOSE
-      ? this.purposeTableCriteriaTerms.getCriteriaTermsText()
-      : this.propertyTypeTableCriteriaTerms.getCriteriaTermsText();
+  get purposeOrTypeStatsTermsText() {
+    return this.selectedStatsTableType === 'purpose'
+      ? this.purposeStatsTableCriteriaTerms.getCriteriaTermsText()
+      : this.propertyTypeStatsTableCriteriaTerms.getCriteriaTermsText();
   }
-
-  selectedIndicators = this.IndicatorsType.PURPOSE;
 
   compositeTransactions: CompositeTransaction[][] = [];
   compositeYears!: { selectedYear: number; previousYear: number };
@@ -370,52 +346,10 @@ export default class SellIndicatorsPageComponent extends OnDestroyMixin(class {}
 
   ngOnInit(): void {
     this.rootItemSelected(this.selectedRoot);
-    this.reload$.next();
-  }
-
-  protected setIndicatorsTableDataSource(): Observable<SellTransactionIndicator[]> {
-    return of(undefined)
-      .pipe(delay(0))
-      .pipe(
-        switchMap(() => {
-          return combineLatest([this.reload$, this.basedOn$]).pipe(
-            switchMap(([, basedOn]) => {
-              this.transactionsStatisticsColumns.length === 7
-                ? (this.transactionsStatisticsColumns[0] = basedOn)
-                : this.transactionsStatisticsColumns.unshift(basedOn);
-              this.selectedIndicators = basedOn;
-              return basedOn === indicatorsTypes.PURPOSE
-                ? // ToDO: since limit filter is not working (we rigestered an issue to be team for that)
-                  // ToDo: applay pagination on table
-                  // For now we take only five records
-                  this.dashboardService.loadSellTransactionsBasedOnPurpose(this.criteria.criteria).pipe(
-                    map((items) => {
-                      return items.slice(0, 5);
-                    })
-                  )
-                : this.dashboardService.loadSellTransactionsBasedOnPropertyType(this.criteria.criteria).pipe(
-                    map((items) => {
-                      return items.slice(0, 5);
-                    })
-                  );
-            }),
-            map((response) => {
-              return response;
-            })
-          );
-        })
-      );
   }
 
   switchTab(tab: 'sell_indicators' | 'statistical_reports_for_sell'): void {
     this.selectedTab = tab;
-    if (this.selectedTab === 'sell_indicators') {
-      this.reload$.next();
-    }
-  }
-
-  updateSellIndicatorsTable(basedOn: indicatorsTypes) {
-    this.basedOn$.next(basedOn);
   }
 
   isSelectedTab(tab: string): boolean {
@@ -427,9 +361,8 @@ export default class SellIndicatorsPageComponent extends OnDestroyMixin(class {}
 
     this.validateSelectedRoot();
 
-    this.reload$.next();
+    this.statsTableCriteria = criteria;
     this.loadCompositeTransactions();
-    this.setIndicatorsTableDataSource();
   }
 
   validateSelectedRoot() {
@@ -458,8 +391,26 @@ export default class SellIndicatorsPageComponent extends OnDestroyMixin(class {}
 
   transactionsLoadFn = (criteria: CriteriaContract) => this.dashboardService.loadSellKpiTransactions(criteria);
 
-  openChart(item: SellTransactionPurpose | SellTransactionPropertyType): void {
-    item.openChart(this.criteria.criteria).pipe(take(1)).subscribe();
+  getTransactionStatsType = () => SellTransactionStatistic;
+
+  transactionsStatsLoadFn = (criteria: CriteriaContract) =>
+    this.dashboardService.loadSellTransactionsStatistics(criteria, this.selectedStatsTableType).pipe(
+      map((data) => ({
+        count: data.length,
+        transactionList: data,
+      }))
+    );
+
+  setSelectedStatsTableType(type: 'purpose' | 'propertyType') {
+    this.selectedStatsTableType = type;
+    this.statsTableCriteria = { ...this.criteria.criteria };
+  }
+
+  openStatsChart(item: SellTransactionStatistic) {
+    this.dashboardService
+      .openSellStatsChartDialog(this.statsTableCriteria, item, this.selectedStatsTableType)
+      .pipe(take(1))
+      .subscribe();
   }
 
   loadCompositeTransactions(): void {
