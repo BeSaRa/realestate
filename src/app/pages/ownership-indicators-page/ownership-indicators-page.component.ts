@@ -14,7 +14,6 @@ import { PurposeListComponent } from '@components/purpose-list/purpose-list.comp
 import { QatarInteractiveMapComponent } from '@components/qatar-interactive-map/qatar-interactive-map.component';
 import { TableComponent } from '@components/table/table.component';
 import { TransactionsFilterComponent } from '@components/transactions-filter/transactions-filter.component';
-import { YoyIndicatorComponent } from '@components/yoy-indicator/yoy-indicator.component';
 import { APP_PAGES_SECTIONS } from '@constants/injection-tokens';
 import { CriteriaContract } from '@contracts/criteria-contract';
 import { ExtraHeaderPortalBridgeDirective } from '@directives/extra-header-portal-bridge.directive';
@@ -24,7 +23,6 @@ import { TableColumnHeaderTemplateDirective } from '@directives/table-column-hea
 import { TableColumnTemplateDirective } from '@directives/table-column-template.directive';
 import { CriteriaType } from '@enums/criteria-type';
 import { OnDestroyMixin } from '@mixins/on-destroy-mixin';
-import { KpiBase } from '@models/kpi-base';
 import { KpiPropertyType } from '@models/kpi-property-type';
 import { KpiPurpose } from '@models/kpi-purpose';
 import { KpiRoot } from '@models/kpi-root';
@@ -37,7 +35,6 @@ import { SectionTitleService } from '@services/section-title.service';
 import { TranslationService } from '@services/translation.service';
 import { UrlService } from '@services/url.service';
 import { NgxMaskPipe } from 'ngx-mask';
-import { takeUntil } from 'rxjs';
 
 @Component({
   selector: 'app-owner-page',
@@ -51,7 +48,6 @@ import { takeUntil } from 'rxjs';
     ButtonComponent,
     IconButtonComponent,
     FormatNumbersPipe,
-    YoyIndicatorComponent,
     NgxMaskPipe,
     MatNativeDateModule,
     QatarInteractiveMapComponent,
