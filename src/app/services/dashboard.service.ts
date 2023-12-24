@@ -2,7 +2,6 @@ import { KpiBaseDurationModel } from '@abstracts/kpi-base-duration-model';
 import { KpiBaseModel } from '@abstracts/kpi-base-model';
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
-import { MatDialogRef } from '@angular/material/dialog';
 import { ChartWithOppositePopupComponent } from '@components/chart-with-opposite-popup/chart-with-opposite-popup.component';
 import { ChartWithOppositePopupData } from '@contracts/chart-with-opposite-popup-data';
 import { CriteriaContract } from '@contracts/criteria-contract';
@@ -14,11 +13,7 @@ import { ServiceContract } from '@contracts/service-contract';
 import { DurationEndpoints } from '@enums/durations';
 import { RegisterServiceMixin } from '@mixins/register-service-mixin';
 import { Broker } from '@models/broker';
-import {
-  CompositeTransaction,
-  RentCompositeTransaction,
-  SellCompositeTransaction,
-} from '@models/composite-transaction';
+import { CompositeTransaction } from '@models/composite-transaction';
 import { ForecastData } from '@models/forecast-data';
 import { KpiBase } from '@models/kpi-base';
 import { KpiRoot } from '@models/kpi-root';
@@ -33,12 +28,12 @@ import { SellTransaction } from '@models/sell-transaction';
 import { SellTransactionStatistic } from '@models/sell-transaction-statistic';
 import { Top10KpiModel } from '@models/top-10-kpi-model';
 import { UrlService } from '@services/url.service';
-import { groupBy, minMaxAvg, range } from '@utils/utils';
+import { minMaxAvg, range } from '@utils/utils';
 import { CastResponse } from 'cast-response';
 import { map, Observable } from 'rxjs';
 import { DialogService } from './dialog.service';
-import { TranslationService } from './translation.service';
 import { LookupService } from './lookup.service';
+import { TranslationService } from './translation.service';
 
 @Injectable({
   providedIn: 'root',
@@ -143,82 +138,9 @@ export class DashboardService extends RegisterServiceMixin(class {}) implements 
     return this.http.post<ForecastData[]>(url, criteria).pipe(map((data) => data[0]));
   }
 
-  @CastResponse(() => SellCompositeTransaction)
-  _loadSellCompositeTransactions(criteria: Partial<SellCriteriaContract>) {
-    return this.http.post<SellCompositeTransaction[]>(this.urlService.URLS.SELL_KPI35_36_37, criteria);
-  }
-
-  @CastResponse(() => RentCompositeTransaction)
-  _loadRentCompositeTransactions(criteria: Partial<RentCriteriaContract>) {
-    return this.http.post<RentCompositeTransaction[]>(this.urlService.URLS.RENT_KPI35_36_37, criteria);
-  }
-
-  loadSellCompositeTransactions(criteria: Partial<SellCriteriaContract>) {
-    return this.mapCompositeTransactions(this._loadSellCompositeTransactions(criteria));
-  }
-
-  loadRentCompositeTransactions(criteria: Partial<RentCriteriaContract>) {
-    return this.mapCompositeTransactions(this._loadRentCompositeTransactions(criteria));
-  }
-
-  private mapCompositeTransactions(compositeTransactions: Observable<CompositeTransaction[]>): Observable<{
-    years: { selectedYear: number; previousYear: number };
-    items: CompositeTransaction[][];
-  }> {
-    return compositeTransactions
-      .pipe(
-        map((values) => {
-          return values;
-        }),
-        map((values) => {
-          // instead of chunk each two consecutive items, we should group by municipalityId
-          // since may one municipality has no transaction in current or previous year
-          // as fetched data shows
-          return Object.values(groupBy(values, (x: CompositeTransaction) => x.municipalityId));
-          // return [...chunks(values, 2)];
-        })
-      )
-      .pipe(
-        map((values) => {
-          // get the distinct years values instead of using first item, since
-          // it may have only one transaction
-          const years = [...new Set(values.flat().map((x) => x.issueYear))].sort();
-
-          // if some item has only one transaction fill another one with
-          // appropriate values i.e., zeros for kpi values and 100 or -100 to YoY values
-          values.forEach((item) => {
-            if (item.length == 2) return;
-            else if (item.length == 1) {
-              const secondCompositeTransaction =
-                item[0].issueYear == years[0]
-                  ? new SellCompositeTransaction(
-                      years[1],
-                      item[0].municipalityId,
-                      item[0].municipalityInfo,
-                      -100,
-                      -100,
-                      -100
-                    )
-                  : new SellCompositeTransaction(
-                      years[0],
-                      item[0].municipalityId,
-                      item[0].municipalityInfo,
-                      100,
-                      100,
-                      100
-                    );
-              item.push(secondCompositeTransaction);
-            }
-          });
-          return {
-            years: {
-              previousYear: years[1] ? years[0] : years[0] - 1, //values[0][0].issueYear,
-              selectedYear: years[1] ? years[1] : years[0], //values[0][1].issueYear,
-            },
-            items: values,
-          };
-        })
-      );
+  @CastResponse(() => CompositeTransaction)
+  loadComponsiteTransacitons(dataUrl: string, criteria: Partial<RentCriteriaContract>) {
+    return this.http.post<CompositeTransaction[]>(dataUrl, criteria);
   }
 
   openRentStatsChartDialog(

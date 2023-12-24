@@ -11,6 +11,7 @@ import { MatNativeDateModule } from '@angular/material/core';
 import { MatSortModule } from '@angular/material/sort';
 import { MatTableModule } from '@angular/material/table';
 import { ButtonComponent } from '@components/button/button.component';
+import { CompositeTransactionsTableComponent } from '@components/composite-transactions-table/composite-transactions-table.component';
 import { DurationChartComponent } from '@components/duration-chart/duration-chart.component';
 import { IconButtonComponent } from '@components/icon-button/icon-button.component';
 import { PieChartComponent } from '@components/pie-chart/pie-chart.component';
@@ -18,7 +19,6 @@ import { PropertyCarouselComponent } from '@components/property-carousel/propert
 import { PurposeListComponent } from '@components/purpose-list/purpose-list.component';
 import { TableComponent } from '@components/table/table.component';
 import { TopTenChartComponent } from '@components/top-ten-chart/top-ten-chart.component';
-import { YoyIndicatorComponent } from '@components/yoy-indicator/yoy-indicator.component';
 import { APP_PAGES_SECTIONS } from '@constants/injection-tokens';
 import { maskSeparator } from '@constants/mask-separator';
 import { CustomTooltipDirective } from '@directives/custom-tooltip.directive';
@@ -28,7 +28,6 @@ import { TableColumnCellTemplateDirective } from '@directives/table-column-cell-
 import { TableColumnHeaderTemplateDirective } from '@directives/table-column-header-template.directive';
 import { TableColumnTemplateDirective } from '@directives/table-column-template.directive';
 import { OnDestroyMixin } from '@mixins/on-destroy-mixin';
-import { RentCompositeTransaction } from '@models/composite-transaction';
 import { CriteriaSpecificTerms, CriteriaTerms } from '@models/criteria-specific-terms';
 import { KpiPropertyType } from '@models/kpi-property-type';
 import { KpiPurpose } from '@models/kpi-purpose';
@@ -65,7 +64,6 @@ import { map, take } from 'rxjs';
     MatTableModule,
     MatSortModule,
     FormatNumbersPipe,
-    YoyIndicatorComponent,
     NgxMaskPipe,
     MatNativeDateModule,
     DurationChartComponent,
@@ -74,6 +72,7 @@ import { map, take } from 'rxjs';
     CustomTooltipDirective,
     SectionGuardDirective,
     PurposeListComponent,
+    CompositeTransactionsTableComponent,
   ],
   templateUrl: './rental-indicators-page.component.html',
   styleUrls: ['./rental-indicators-page.component.scss'],
@@ -289,27 +288,6 @@ export default class RentalIndicatorsPageComponent extends OnDestroyMixin(class 
 
   selectedStatsTableType: 'purpose' | 'propertyType' = 'purpose';
 
-  compositeTransactions: RentCompositeTransaction[][] = [];
-  compositeYears!: { selectedYear: number; previousYear: number };
-  compositeTransactionsColumns = [
-    'municipality',
-    'firstYear1',
-    'firstYear2',
-    'firstYoy',
-    'secondYear1',
-    'secondYear2',
-    'secondYoy',
-    'thirdYear1',
-    'thirdYear2',
-    'thirdYoy',
-  ];
-  compositeTransactionsExtraColumns = ['contractCounts', 'contractValues', 'avgContract'];
-
-  compositeAvgRentCriteriaTerms = new CriteriaSpecificTerms([
-    { criteriaKey: 'propertyTypeList', term: CriteriaTerms.SINGLE_NOT_ALL },
-    { criteriaKey: 'purposeList', term: CriteriaTerms.SINGLE_NOT_ALL },
-  ]);
-
   purposeStatsTableCriteriaTerms = new CriteriaSpecificTerms([
     'zoneId',
     { criteriaKey: 'propertyTypeList', term: CriteriaTerms.SINGLE_NOT_ALL },
@@ -379,8 +357,6 @@ export default class RentalIndicatorsPageComponent extends OnDestroyMixin(class 
     this.validateSelectedRoot();
 
     this.statsTableCriteria = criteria;
-
-    this.loadCompositeTransactions();
   }
 
   validateSelectedRoot() {
@@ -437,16 +413,6 @@ export default class RentalIndicatorsPageComponent extends OnDestroyMixin(class 
 
   isSelectedTab(tab: string): boolean {
     return this.selectedTab === tab;
-  }
-
-  loadCompositeTransactions(): void {
-    this.dashboardService
-      .loadRentCompositeTransactions(this.criteria.criteria)
-      .pipe(take(1))
-      .subscribe((value) => {
-        this.compositeTransactions = value.items;
-        this.compositeYears = value.years;
-      });
   }
 
   isMonthlyDurationType(value: boolean) {
