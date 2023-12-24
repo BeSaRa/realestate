@@ -6,7 +6,7 @@ import { CompositeTransaction } from '@models/composite-transaction';
 import { LookupService } from '@services/lookup.service';
 import { CriteriaSpecificTerms, CriteriaTerms } from '@models/criteria-specific-terms';
 import { CriteriaContract } from '@contracts/criteria-contract';
-import { Observable, map, take } from 'rxjs';
+import { Observable, finalize, map, take } from 'rxjs';
 import { groupBy } from '@utils/utils';
 import { MatTableModule } from '@angular/material/table';
 import { maskSeparator } from '@constants/mask-separator';
@@ -14,6 +14,7 @@ import { YoyIndicatorComponent } from '@components/yoy-indicator/yoy-indicator.c
 import { FormatNumbersPipe } from '@pipes/format-numbers.pipe';
 import { NgxMaskPipe } from 'ngx-mask';
 import { CustomTooltipDirective } from '@directives/custom-tooltip.directive';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 @Component({
   selector: 'app-composite-transactions-table',
@@ -25,6 +26,7 @@ import { CustomTooltipDirective } from '@directives/custom-tooltip.directive';
     FormatNumbersPipe,
     NgxMaskPipe,
     CustomTooltipDirective,
+    MatProgressSpinnerModule,
   ],
   templateUrl: './composite-transactions-table.component.html',
   styleUrls: ['./composite-transactions-table.component.scss'],
@@ -37,6 +39,8 @@ export class CompositeTransactionsTableComponent implements OnChanges {
   lang = inject(TranslationService);
   dashboardService = inject(DashboardService);
   lookupService = inject(LookupService);
+
+  isLoading = false;
 
   compositeTransactions: CompositeTransaction[][] = [];
   compositeYears!: { selectedYear: number; previousYear: number };
@@ -70,9 +74,13 @@ export class CompositeTransactionsTableComponent implements OnChanges {
   }
 
   loadCompositeTransactions(): void {
+    this.isLoading = true;
     this.dashboardService
       .loadComponsiteTransacitons(this.dataUrl, this.criteria)
-      .pipe(take(1))
+      .pipe(
+        take(1),
+        finalize(() => (this.isLoading = false))
+      )
       .pipe(this._mapCompositeTransactions)
       .subscribe((value) => {
         this.compositeTransactions = value.items;
