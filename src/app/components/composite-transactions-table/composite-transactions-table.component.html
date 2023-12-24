@@ -1,0 +1,170 @@
+<div class="overflow-x-auto">
+  <table
+    class="custom-table p-5 w-full !bg-sand"
+    [ngStyle]="{ minWidth: '1200px' }"
+    mat-table
+    matSort
+    [dataSource]="compositeTransactions">
+    <!-- arName -->
+    <ng-container matColumnDef="municipality">
+      <!--          mat-sort-header="municipality" -->
+      <th mat-header-cell class="!bg-azure !text-white" *matHeaderCellDef>
+        {{ lang.map.municipal }}
+      </th>
+      <td mat-cell *matCellDef="let element">{{ getMuniciplaityNames(element[0].municipalityId) }}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="firstYear1">
+      <!--          mat-sort-header="firstYear1" -->
+      <th mat-header-cell class="!bg-azure !text-white" *matHeaderCellDef>
+        {{ compositeYears && compositeYears.previousYear }}
+      </th>
+      <td mat-cell *matCellDef="let element">
+        {{
+          element[0].kpi1Val | mask : maskSeparator.SEPARATOR : { thousandSeparator: maskSeparator.THOUSAND_SEPARATOR }
+        }}
+      </td>
+    </ng-container>
+    <ng-container matColumnDef="firstYear2">
+      <!--          mat-sort-header="firstYear2" -->
+      <th mat-header-cell class="!bg-azure !text-white" *matHeaderCellDef>
+        {{ compositeYears && compositeYears.selectedYear }}
+      </th>
+      <td mat-cell *matCellDef="let element">
+        {{
+          element[1].kpi1Val | mask : maskSeparator.SEPARATOR : { thousandSeparator: maskSeparator.THOUSAND_SEPARATOR }
+        }}
+      </td>
+    </ng-container>
+    <ng-container matColumnDef="firstYoy">
+      <!--          mat-sort-header="firstYoy" -->
+      <th mat-header-cell class="!bg-azure !text-white" *matHeaderCellDef>{{ lang.map.change }} (YOY)</th>
+      <td mat-cell *matCellDef="let element">
+        <div class="flex gap-2 items-center justify-center">
+          <app-yoy-indicator [value]="element[1].kpi1YoYVal?.toFixed(2)" />
+          <div>{{ element[1].kpi1YoYVal?.toFixed(2) }} %</div>
+        </div>
+      </td>
+    </ng-container>
+
+    <ng-container matColumnDef="secondYear1">
+      <!--          mat-sort-header="secondYear1" -->
+      <th mat-header-cell class="!bg-jungle !text-white" *matHeaderCellDef>
+        {{ compositeYears && compositeYears.previousYear }}
+      </th>
+      <td mat-cell *matCellDef="let element">{{ element[0].kpi2Val | formatNumbers }}</td>
+    </ng-container>
+    <ng-container matColumnDef="secondYear2">
+      <!--          mat-sort-header="secondYear2" -->
+      <th mat-header-cell class="!bg-jungle !text-white" *matHeaderCellDef>
+        {{ compositeYears && compositeYears.selectedYear }}
+      </th>
+      <td mat-cell *matCellDef="let element">{{ element[1].kpi2Val | formatNumbers }}</td>
+    </ng-container>
+    <ng-container matColumnDef="secondYoy">
+      <!--          mat-sort-header="secondYoy" -->
+      <th mat-header-cell class="!bg-jungle !text-white" *matHeaderCellDef>{{ lang.map.change }} (YOY)</th>
+      <td mat-cell *matCellDef="let element">
+        <div class="flex gap-2 items-center justify-center">
+          <app-yoy-indicator [value]="element[1].kpi2YoYVal?.toFixed(2)" />
+          <div>{{ element[1].kpi2YoYVal?.toFixed(2) }} %</div>
+        </div>
+      </td>
+    </ng-container>
+
+    <ng-container matColumnDef="thirdYear1">
+      <!--          mat-sort-header="thirdYear1" -->
+      <th mat-header-cell class="!bg-indigo-rainbow !text-white" *matHeaderCellDef>
+        {{ compositeYears && compositeYears.previousYear }}
+      </th>
+      <td
+        mat-cell
+        *matCellDef="let element"
+        [attr.colspan]="compositeAvgCriteriaTerms.validate(criteria) ? 1 : 3"
+        [ngClass]="{
+          '!text-center !text-gray-400 !bg-slate-50': !compositeAvgCriteriaTerms.validate(criteria)
+        }"
+        appCustomTooltip
+        [tooltipContent]="compositeAvgCriteriaTerms.validate(criteria) ? null : tooltipTemplate"
+        [tooltipContentContext]="compositeAvgCriteriaTerms.getCriteriaTermsText()">
+        <ng-container *ngIf="compositeAvgCriteriaTerms.validate(criteria)">{{
+          element[0].kpi3Val | formatNumbers
+        }}</ng-container>
+        <ng-container *ngIf="!compositeAvgCriteriaTerms.validate(criteria)"
+          >"{{ lang.map.filter_values_must_be_modified_to_display_data }}"</ng-container
+        >
+      </td>
+    </ng-container>
+    <ng-container matColumnDef="thirdYear2">
+      <!--          mat-sort-header="thirdYear2" -->
+      <th mat-header-cell class="!bg-indigo-rainbow !text-white" *matHeaderCellDef>
+        {{ compositeYears && compositeYears.selectedYear }}
+      </th>
+      <td [ngClass]="{ hidden: !compositeAvgCriteriaTerms.validate(criteria) }" mat-cell *matCellDef="let element">
+        {{ element[1].kpi3Val | formatNumbers }}
+      </td>
+    </ng-container>
+    <ng-container matColumnDef="thirdYoy">
+      <!--          mat-sort-header="thirdYoy" -->
+      <th mat-header-cell class="!bg-indigo-rainbow !text-white" *matHeaderCellDef>{{ lang.map.change }} (YOY)</th>
+      <td [ngClass]="{ hidden: !compositeAvgCriteriaTerms.validate(criteria) }" mat-cell *matCellDef="let element">
+        <div class="flex gap-2 items-center justify-center">
+          <app-yoy-indicator [value]="element[1].kpi3YoYVal?.toFixed(2)" />
+          <div>{{ element[1].kpi3YoYVal?.toFixed(2) }} %</div>
+        </div>
+      </td>
+    </ng-container>
+
+    <ng-container matColumnDef="contractCounts">
+      <th colspan="4" mat-header-cell *matHeaderCellDef>
+        <div class="flex justify-center">
+          <span class="text-azure text-2xl">{{
+            type === "rent" ? lang.map.rent_contracts_count : lang.map.sell_contracts_count
+          }}</span>
+        </div>
+      </th>
+    </ng-container>
+
+    <ng-container matColumnDef="contractValues">
+      <th colspan="3" mat-header-cell *matHeaderCellDef>
+        <div class="flex justify-center">
+          <span class="text-jungle text-2xl">{{
+            type === "rent" ? lang.map.rent_contracts_values : lang.map.sell_contracts_value
+          }}</span>
+        </div>
+      </th>
+    </ng-container>
+
+    <ng-container matColumnDef="avgContract">
+      <th colspan="3" mat-header-cell *matHeaderCellDef>
+        <div class="flex justify-center">
+          <span class="text-indigo-rainbow text-2xl">{{
+            type === "rent"
+              ? lang.map.average_rental_price_per_unit_property
+              : lang.map.average_sell_price_per_unit_property
+          }}</span>
+        </div>
+      </th>
+    </ng-container>
+    <tr mat-header-row class="[&>th]:border-none" *matHeaderRowDef="compositeTransactionsExtraColumns"></tr>
+    <tr
+      mat-header-row
+      class="rounded-first-tr [&>th]:!text-center"
+      *matHeaderRowDef="compositeTransactionsColumns"></tr>
+    <tr
+      mat-row
+      class="rounded-last-tr !bg-white [&>td]:!text-center"
+      *matRowDef="let element; columns: compositeTransactionsColumns"></tr>
+    <!-- Row shown when there is no matching data. -->
+    <tr class="mat-row" *matNoDataRow>
+      <td class="p-4 [&>td]:!text-center" colspan="100">{{ lang.map.no_records_to_display }}</td>
+    </tr>
+  </table>
+</div>
+
+<ng-template #tooltipTemplate let-terms>
+  <div class="bg-black/80 text-white text-xs p-2 rounded-md">
+    <p class="font-bold">{{ lang.map.filter_values_should_be_as_follows }}:</p>
+    <p *ngFor="let term of terms">- {{ term }}</p>
+  </div>
+</ng-template>
