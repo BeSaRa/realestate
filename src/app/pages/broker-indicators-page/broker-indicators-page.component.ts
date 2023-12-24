@@ -105,7 +105,7 @@ export default class BrokerIndicatorsPageComponent {
         this.csvService.downloadCsvFile(
           this.lang.map.brokers_list +
             '-' +
-            this.lookupService.brokerMunicipalitiesMap[this.criteria.criteria.municipalityId].getNames() +
+            this.lookupService.ovMunicipalitiesMap[this.criteria.criteria.municipalityId].getNames() +
             '-' +
             new Date(Date.now()).toDateString(),
           _data
