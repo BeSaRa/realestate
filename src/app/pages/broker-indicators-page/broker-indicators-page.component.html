@@ -6,8 +6,7 @@
       indicatorType="broker"
       [municipalities]="municipalities"
       [brokerCategoryList]="brokerCategories"
-      (fromChanged)="filterChange($event)"
-      (brokerNameChanged)="onBrokerNameFilterChanged($event)" />
+      (fromChanged)="filterChange($event)" />
   </div>
   <div class="py-16 px-3 lg:px-16">
     <div class="flex flex-col">
@@ -40,7 +39,7 @@
       <div class="mt-4 flex items-center justify-center gap-2">
         <mat-spinner diameter="40" strokeWidth="4" *ngIf="isLoadingBrokers"></mat-spinner>
         <app-button
-          *ngIf="showMoreEnabled && visibleBrokersCount < brokersCount && !isLoadingBrokers"
+          *ngIf="visibleBrokersCount < brokersCount && !isLoadingBrokers"
           size="md"
           (click)="loadMoreBrokers()"
           buttonStyle="secondary"
