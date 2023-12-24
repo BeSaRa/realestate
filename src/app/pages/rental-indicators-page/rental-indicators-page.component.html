@@ -134,6 +134,12 @@
             {{ item.rentPaymentMonthly ? item.rentPaymentMonthly : "---" }}</span
           >
         </ng-container>
+        <ng-container appTableColumnTemplate [columnName]="pageSections.RENT_TRANSACTIONS_TABLE.columns.ISSUE_DATE"
+          ><span *appTableColumnHeaderTemplate>{{ lang.map.issue_date }}</span>
+          <span *appTableColumnCellTemplate="let item; dataType: getTransactionType()">{{
+            item.issueDate | date : "YYYY-MM-dd"
+          }}</span></ng-container
+        >
         <ng-container
           appTableColumnTemplate
           [columnName]="pageSections.RENT_TRANSACTIONS_TABLE.columns.CONTRACT_START_DATE"

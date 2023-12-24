@@ -18,7 +18,6 @@ export const PagesSections = {
 
     SELL_TOP_10_CHART: 'sell-top-10-chart',
     SELL_PURPOSE_AND_TYPE_TABLE: 'sell-purpose-ant-type-table',
-    SELL_FORECASTING_CHART: 'sell-forecasting-chart',
     SELL_COMPOSITE_TABLE: 'sell-componsite-table',
   },
 
@@ -33,6 +32,7 @@ export const PagesSections = {
         MUNICIPALITY: 'rent-municipality',
         UNIT_DETAILS: 'rent-unit-details',
         RENTAL_VALUE: 'rent-rental-value',
+        ISSUE_DATE: 'rent-issue-date',
         CONTRACT_START_DATE: 'rent-contract-start-date',
         CONTRACT_END_DATE: 'rent-contract-end-date',
       },
@@ -40,7 +40,6 @@ export const PagesSections = {
 
     RENT_TOP_10_CHART: 'rent-top-10-chart',
     RENT_PURPOSE_AND_TYPE_TABLE: 'rent-purpose-ant-type-table',
-    RENT_FORECASTING_CHART: 'rent-forecasting-chart',
     RENT_COMPOSITE_TABLE: 'rent-componsite-table',
     RENT_PER_BEDROOMS: 'rent-per-bedrooms',
     RENT_PER_FURNITURE: 'rent-per-furniture',
