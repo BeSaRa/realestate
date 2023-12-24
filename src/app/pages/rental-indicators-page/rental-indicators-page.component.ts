@@ -355,8 +355,7 @@ export default class RentalIndicatorsPageComponent extends OnDestroyMixin(class 
     this.criteria = { criteria: { ...criteria, limit: 5 }, type };
 
     this.validateSelectedRoot();
-
-    this.statsTableCriteria = criteria;
+    this.updateStatsTableCriteria();
   }
 
   validateSelectedRoot() {
@@ -397,7 +396,15 @@ export default class RentalIndicatorsPageComponent extends OnDestroyMixin(class 
 
   setSelectedStatsTableType(type: 'purpose' | 'propertyType') {
     this.selectedStatsTableType = type;
-    this.statsTableCriteria = { ...this.criteria.criteria };
+    this.updateStatsTableCriteria();
+  }
+
+  updateStatsTableCriteria() {
+    this.statsTableCriteria = {
+      ...this.criteria.criteria,
+      purposeList: this.selectedStatsTableType === 'purpose' ? [-1] : this.criteria.criteria.purposeList,
+      propertyTypeList: this.selectedStatsTableType === 'propertyType' ? [-1] : this.criteria.criteria.propertyTypeList,
+    };
   }
 
   openStatsChart(item: RentTransactionStatistics) {
