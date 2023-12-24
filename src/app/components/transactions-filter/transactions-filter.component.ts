@@ -1,6 +1,6 @@
 import { animate, state, style, transition, trigger } from '@angular/animations';
 import { CommonModule, DatePipe } from '@angular/common';
-import { Component, EventEmitter, HostListener, inject, Input, OnDestroy, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, HostListener, Input, OnDestroy, OnInit, Output, inject } from '@angular/core';
 import { AbstractControl, FormControl, ReactiveFormsModule, UntypedFormBuilder } from '@angular/forms';
 import { DateAdapter, MatNativeDateModule, MatRippleModule } from '@angular/material/core';
 import { MatDatepickerModule } from '@angular/material/datepicker';
@@ -32,7 +32,7 @@ import { range } from '@utils/utils';
 import { CustomValidators } from '@validators/custom-validators';
 import { NgResizeObserver, ngResizeObserverProviders } from 'ng-resize-observer';
 import { NgxMaskDirective } from 'ngx-mask';
-import { debounceTime, filter, map, Subject, takeUntil, tap } from 'rxjs';
+import { Subject, debounceTime, filter, map, takeUntil, tap } from 'rxjs';
 
 @Component({
   selector: 'app-transactions-filter',
@@ -95,7 +95,6 @@ export class TransactionsFilterComponent implements OnInit, OnDestroy {
   @Input() paramsRange: ParamRange[] = [];
 
   @Output() fromChanged = new EventEmitter<{ criteria: CriteriaContract; type: CriteriaType }>();
-  @Output() brokerNameChanged = new EventEmitter<string>();
 
   lang = inject(TranslationService);
   fb = inject(UntypedFormBuilder);
@@ -212,6 +211,7 @@ export class TransactionsFilterComponent implements OnInit, OnDestroy {
       premiseCategoryList: [],
       premiseTypeList: [],
       brokerCategoryId: [],
+      brokerName: [],
 
       // not related to the criteria
       durationType: [],
@@ -229,7 +229,6 @@ export class TransactionsFilterComponent implements OnInit, OnDestroy {
   );
 
   unitsControl = new FormControl(this.unitsService.selectedUnit());
-  brokerNameControl = new FormControl('');
 
   protected readonly AppIcons = AppIcons;
   displayYear = true;
@@ -322,7 +321,6 @@ export class TransactionsFilterComponent implements OnInit, OnDestroy {
     this.listenToFormChanges();
     this.listenToIssueYearChange();
     this.listenToUnitChange();
-    this.listenToBrokerNameChange();
     // this.listenToNationalityChange(); // it needs edit from be
     // this.listenToOwnerCategoryChange(); // it needs edit from be
     this.listenToPremiseCategoryListChange();
@@ -461,12 +459,6 @@ export class TransactionsFilterComponent implements OnInit, OnDestroy {
   listenToUnitChange() {
     this.unitsControl.valueChanges.pipe(takeUntil(this.destroy$)).subscribe((value) => {
       this.unitsService.setUnit(value as SqUnit);
-    });
-  }
-
-  listenToBrokerNameChange() {
-    this.brokerNameControl.valueChanges.pipe(takeUntil(this.destroy$), debounceTime(500)).subscribe((value) => {
-      this.brokerNameChanged.emit(value ?? '');
     });
   }
 
@@ -745,6 +737,7 @@ export class TransactionsFilterComponent implements OnInit, OnDestroy {
       value = {
         municipalityId: value.municipalityId,
         brokerCategoryId: value.brokerCategoryId,
+        brokerName: value.brokerName,
       };
     }
 
@@ -760,6 +753,7 @@ export class TransactionsFilterComponent implements OnInit, OnDestroy {
 
     if (!this.isBroker()) {
       delete value.brokerCategoryId;
+      delete value.brokerName;
     }
 
     Object.keys(value).forEach((key) => {

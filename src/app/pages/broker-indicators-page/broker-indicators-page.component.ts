@@ -57,7 +57,6 @@ export default class BrokerIndicatorsPageComponent {
   });
 
   private currentOffset = 0;
-  showMoreEnabled = true;
   visibleBrokersCount = 9;
   brokers: Broker[] = [];
   filteredBrokers = this.brokers;
@@ -73,6 +72,8 @@ export default class BrokerIndicatorsPageComponent {
       },
       type,
     };
+
+    this.brokerNameFilter = (criteria as unknown as { brokerName: string }).brokerName;
 
     if (type === CriteriaType.DEFAULT) return;
 
@@ -111,11 +112,6 @@ export default class BrokerIndicatorsPageComponent {
           _data
         );
       });
-  }
-  onBrokerNameFilterChanged(name: string) {
-    this.showMoreEnabled = name == ''; // to be removed when backend filtering is ready
-    this.brokerNameFilter = name;
-    this.filteredBrokers = this.brokers.filter((b) => b.validateFilter(name));
   }
 
   loadMoreBrokers() {
