@@ -12,6 +12,7 @@ export class RentTransaction {
   propertyTypeId!: number;
   rentPaymentMonthly!: number;
   issueYear!: number;
+  issueDate!: string;
   startDate!: string;
   endDate!: string;
   unitNo!: number;
