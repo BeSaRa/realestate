@@ -123,15 +123,17 @@ export class NationalitiesChartComponent extends OnDestroyMixin(class {}) implem
   }
 
   private _getLabel(item: unknown): string {
-    return this.bindLabel && typeof this.bindLabel === 'string'
-      ? typeof (item as never)[this.bindLabel] === 'function'
-        ? ((item as never)[this.bindLabel] as () => string)()
-        : objectHasOwnProperty(item, this.bindLabel)
-        ? (item[this.bindLabel] as string)
-        : (item as unknown as string)
-      : this.bindLabel && typeof this.bindLabel === 'function'
-      ? (this.bindLabel(item) as string)
-      : (item as unknown as string);
+    return (
+      (this.bindLabel && typeof this.bindLabel === 'string'
+        ? typeof (item as never)[this.bindLabel] === 'function'
+          ? ((item as never)[this.bindLabel] as () => string)()
+          : objectHasOwnProperty(item, this.bindLabel)
+          ? (item[this.bindLabel] as string)
+          : (item as unknown as string)
+        : this.bindLabel && typeof this.bindLabel === 'function'
+        ? (this.bindLabel(item) as string)
+        : (item as unknown as string)) ?? this.appChartTypesService.getUndefinedLabel()
+    );
   }
 
   private _listenToScreenSizeChange() {

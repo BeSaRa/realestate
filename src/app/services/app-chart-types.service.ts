@@ -11,6 +11,7 @@ import { RegisterServiceMixin } from '@mixins/register-service-mixin';
 import { formatNumber } from '@utils/utils';
 import { NgxMaskPipe } from 'ngx-mask';
 import { TranslationService } from './translation.service';
+import { Lookup } from '@models/lookup';
 
 @Injectable({
   providedIn: 'root',
@@ -51,6 +52,15 @@ export class AppChartTypesService extends RegisterServiceMixin(class {}) impleme
   private _popupChartOptions = popupChartOptions;
   get popupChartOptions() {
     return { ...this._popupChartOptions };
+  }
+
+  private _undefinedLabel = new Lookup().clone<Lookup>({
+    arName: 'غير محدد',
+    enName: 'N/A',
+  });
+
+  getUndefinedLabel() {
+    return this._undefinedLabel.getNames();
   }
 
   dataLabelsFormatter(
