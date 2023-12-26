@@ -670,7 +670,6 @@ export class TransactionsFilterComponent implements OnInit, OnDestroy {
       value.issueDateStartMonth = this.form.value.issueDateMonth;
       value.issueDateEndMonth = this.form.value.issueDateMonth;
       value.issueDateQuarterList = [1, 2, 3, 4];
-      value.issueDateMonth = null;
     } else if (this.displayRange) {
       if (!this.issueDateFrom.value || !this.issueDateTo.value) return;
       value.issueDateFrom = this.datePipe.transform(this.issueDateFrom.value, 'YYY-MM-dd');
@@ -755,8 +754,6 @@ export class TransactionsFilterComponent implements OnInit, OnDestroy {
     }
 
     if (!this.isOV()) {
-      delete value.issueDateMonth;
-
       delete value.premiseCategoryList;
       delete value.premiseTypeList;
     }
