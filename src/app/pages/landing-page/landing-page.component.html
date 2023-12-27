@@ -10,9 +10,9 @@
 </ng-container>
 
 <div class="content-wrapper p-5 lg:p-10">
-  <!-- <app-banner />
+  <app-banner />
   <br />
-  <br /> -->
+  <br />
   <app-news-list [title]="lang.map.latest_news" [newsData]="(newsData | async) ?? []" />
   <div class="flex justify-center mt-10">
     <app-button buttonStyle="secondary" routerLink="/news"> {{ lang.map.more }}...</app-button>
