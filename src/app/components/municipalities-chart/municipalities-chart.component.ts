@@ -196,7 +196,10 @@ export class MunicipalitiesChartComponent extends OnDestroyMixin(class {}) imple
             index,
           })),
         })),
-        chart: { stacked: Object.keys(this.seriesNames).length !== 1 },
+        chart: {
+          stacked: Object.keys(this.seriesNames).length !== 1,
+          ...this.appChartTypesService.getDownloadOptions(this.title, this.lang.map.municipal),
+        },
         stroke: { width: 0 },
         colors:
           Object.keys(this.seriesNames).length !== 1

@@ -135,6 +135,9 @@ export class TopTenChartComponent extends OnDestroyMixin(class {}) implements On
     setTimeout(() => {
       this.chart.first
         .updateOptions({
+          chart: {
+            ...this.appChartTypesService.getDownloadOptions(this.title, this.lang.map.district),
+          },
           series: [
             {
               name: this.selectedAccordingTo.getNames(),
