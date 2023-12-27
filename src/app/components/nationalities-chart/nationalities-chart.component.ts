@@ -25,6 +25,8 @@ import { map, take, takeUntil } from 'rxjs';
 import { OnDestroyMixin } from '@mixins/on-destroy-mixin';
 import { BarChartTypes } from '@enums/bar-chart-type';
 import { minMaxAvg, objectHasOwnProperty } from '@utils/utils';
+import { TranslationService } from '@services/translation.service';
+import { KpiRoot } from '@models/kpi-root';
 
 @Component({
   selector: 'app-nationalities-chart',
@@ -37,7 +39,7 @@ export class NationalitiesChartComponent extends OnDestroyMixin(class {}) implem
   @Input({ required: true }) title!: string;
   @Input({ required: true }) name!: string;
   @Input({ required: true }) criteria!: CriteriaContract;
-  @Input({ required: true }) rootData!: { chartDataUrl: string; hasPrice: boolean };
+  @Input({ required: true }) rootData!: KpiRoot;
   @Input({ required: true }) bindLabel!: string | ((item: any) => string);
   @Input({ required: true }) initialNationalityId!: number;
 
@@ -45,6 +47,7 @@ export class NationalitiesChartComponent extends OnDestroyMixin(class {}) implem
 
   @ViewChildren('chart') chart!: QueryList<ChartComponent>;
 
+  lang = inject(TranslationService);
   dashboardService = inject(DashboardService);
   appChartTypesService = inject(AppChartTypesService);
   screenService = inject(ScreenBreakpointsService);
@@ -100,6 +103,9 @@ export class NationalitiesChartComponent extends OnDestroyMixin(class {}) implem
         data.sort((a, b) => a.getKpiVal() - b.getKpiVal());
         this.chart.first
           ?.updateOptions({
+            chart: {
+              ...this.appChartTypesService.getDownloadOptions(this.rootData.getNames(), this.lang.map.nationality),
+            },
             series: [
               {
                 name: this.name,

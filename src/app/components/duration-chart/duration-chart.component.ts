@@ -298,7 +298,13 @@ export class DurationChartComponent extends OnDestroyMixin(class {}) implements 
     setTimeout(() => {
       this.chart.first
         ?.updateOptions({
-          chart: { type: this.selectedChartType },
+          chart: {
+            type: this.selectedChartType,
+            ...this.appChartTypesService.getDownloadOptions(
+              this.title,
+              this.selectedDurationType === DurationEndpoints.MONTHLY ? this.lang.map.month : this.lang.map.year
+            ),
+          },
           dataLabels: { enabled: this.selectedDurationType != this.DurationTypes.QUARTERLY && !this.isMinMaxAvgBar },
           stroke: { width: this.selectedChartType === ChartType.BAR ? 0 : 4 },
           ..._seriesData,

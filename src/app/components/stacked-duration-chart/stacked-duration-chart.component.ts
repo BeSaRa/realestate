@@ -325,6 +325,10 @@ export class StackedDurationChartComponent
           chart: {
             type: this.selectedChartType,
             stacked: this.selectedChartType === ChartType.BAR,
+            ...this.appChartTypesService.getDownloadOptions(
+              this.title,
+              this.selectedDurationType === DurationEndpoints.MONTHLY ? this.lang.map.month : this.lang.map.year
+            ),
           },
           stroke: { width: this.selectedChartType === ChartType.BAR ? 0 : 4 },
           dataLabels: { enabled: this.selectedDurationType !== DurationEndpoints.QUARTERLY },

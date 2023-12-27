@@ -20,6 +20,7 @@ import { ChartOptionsModel } from '@models/chart-options-model';
 import { AppChartTypesService } from '@services/app-chart-types.service';
 import { DashboardService } from '@services/dashboard.service';
 import { ScreenBreakpointsService } from '@services/screen-breakpoints.service';
+import { TranslationService } from '@services/translation.service';
 import { minMaxAvg, objectHasOwnProperty } from '@utils/utils';
 import { ChartComponent, NgApexchartsModule } from 'ng-apexcharts';
 import { map, take, takeUntil } from 'rxjs';
@@ -41,6 +42,7 @@ export class AreasChartComponent extends OnDestroyMixin(class {}) implements OnC
 
   @ViewChildren('chart') chart!: QueryList<ChartComponent>;
 
+  lang = inject(TranslationService);
   dashboardService = inject(DashboardService);
   appChartTypesService = inject(AppChartTypesService);
   screenService = inject(ScreenBreakpointsService);
@@ -154,7 +156,10 @@ export class AreasChartComponent extends OnDestroyMixin(class {}) implements OnC
             y: item?.getKpiVal() ?? 0,
           })),
         })),
-        chart: { stacked: Object.keys(this.seriesNames).length !== 1 },
+        chart: {
+          stacked: Object.keys(this.seriesNames).length !== 1,
+          ...this.appChartTypesService.getDownloadOptions(this.title, this.lang.map.district),
+        },
         stroke: { width: 0 },
         colors:
           Object.keys(this.seriesNames).length !== 1
