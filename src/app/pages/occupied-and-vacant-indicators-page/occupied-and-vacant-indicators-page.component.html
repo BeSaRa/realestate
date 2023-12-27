@@ -190,13 +190,13 @@
       <ng-container appTableColumnTemplate [columnName]="pageSections.OCCUPATION_TRANSACTIONS_TABLE.columns.OWNER_ID">
         <span *appTableColumnHeaderTemplate>{{ lang.map.owner_id }}</span>
         <span *appTableColumnCellTemplate="let item; dataType: getTransactionType()" class="font-bold">{{
-          item.ownerId
+          item.ownerId || "---"
         }}</span>
       </ng-container>
       <ng-container appTableColumnTemplate [columnName]="pageSections.OCCUPATION_TRANSACTIONS_TABLE.columns.TENANT_ID">
         <span *appTableColumnHeaderTemplate>{{ lang.map.tenant_id }}</span>
         <span *appTableColumnCellTemplate="let item; dataType: getTransactionType()" class="font-bold">{{
-          item.tenantNumber
+          item.tenantNumber || "---"
         }}</span>
       </ng-container>
 
@@ -213,7 +213,7 @@
         [columnName]="pageSections.OCCUPATION_TRANSACTIONS_TABLE.columns.ELECTRICITY_NUMBER">
         <span *appTableColumnHeaderTemplate>{{ lang.map.electricity_number }}</span>
         <span *appTableColumnCellTemplate="let item; dataType: getTransactionType()" class="font-bold">{{
-          item.electricityNo
+          item.electricityNo || "---"
         }}</span>
       </ng-container>
       <ng-container
@@ -221,7 +221,7 @@
         [columnName]="pageSections.OCCUPATION_TRANSACTIONS_TABLE.columns.WATER_NUMBER">
         <span *appTableColumnHeaderTemplate>{{ lang.map.water_number }}</span>
         <span *appTableColumnCellTemplate="let item; dataType: getTransactionType()" class="font-bold">{{
-          item.waterNumber
+          item.waterNumber || "---"
         }}</span>
       </ng-container>
     </app-table>
