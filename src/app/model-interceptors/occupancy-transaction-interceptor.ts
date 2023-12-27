@@ -11,7 +11,7 @@ export class OccupancyTransactionInterceptor implements ModelInterceptorContract
     model.occupancyStatusInfo = lookupService.ovOccupancyStatusMap[model.occupancyStatus];
     model.premiseCategoryInfo = lookupService.ovPremiseCategoryMap[model.premiseCategoryId];
     model.permiseTypeInfo = lookupService.ovPremiseTypeMap[model.permiseTypeId];
-    model.ownerId = Number(model.ownerId).toString();
+    // model.ownerId = Number(model.ownerId).toString();
     return model;
   }
 
