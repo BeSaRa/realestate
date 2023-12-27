@@ -8,10 +8,10 @@ import { ServiceContract } from '@contracts/service-contract';
 import { BarChartTypes } from '@enums/bar-chart-type';
 import { Breakpoints } from '@enums/breakpoints';
 import { RegisterServiceMixin } from '@mixins/register-service-mixin';
+import { Lookup } from '@models/lookup';
 import { formatNumber } from '@utils/utils';
 import { NgxMaskPipe } from 'ngx-mask';
 import { TranslationService } from './translation.service';
-import { Lookup } from '@models/lookup';
 
 @Injectable({
   providedIn: 'root',
@@ -171,6 +171,21 @@ export class AppChartTypesService extends RegisterServiceMixin(class {}) impleme
           background: AppColors.SECONDARY,
           color: '#ffffff',
           fontSize: '18px',
+        },
+      },
+    };
+  }
+
+  getDownloadOptions(filename: string, headerCategoryText: string) {
+    return {
+      toolbar: {
+        export: {
+          csv: {
+            filename,
+            headerCategory: headerCategoryText,
+          },
+          svg: { filename },
+          png: { filename },
         },
       },
     };

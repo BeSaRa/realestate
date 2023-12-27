@@ -401,4 +401,5 @@ export interface LangKeysContract {
   real_estate_forecasting_indicators: string;
 
   rent: string;
+  month: string;
 }
