@@ -7,7 +7,7 @@ export class MortgageTransactionInterceptor implements ModelInterceptorContract<
   receive(model: MortgageTransaction): MortgageTransaction {
     const lookupService = ServiceRegistry.get('LookupService') as LookupService;
     model.municipalityInfo = lookupService.mortMunicipalitiesMap[model.municipalityId];
-    model.areaInfo = lookupService.mortZonesMap[model.areaCode];
+    model.areaInfo = lookupService.mortDistrictMap[model.areaCode];
     model.unitStatusInfo = lookupService.mortLookups.unitStatus[model.unitStatus ?? 0];
     return model;
   }
