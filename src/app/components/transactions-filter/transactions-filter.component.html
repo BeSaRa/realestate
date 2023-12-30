@@ -319,6 +319,11 @@
     </ng-container>
   </ng-container>
 </div>
+<div *ngIf="filterMessages.length" class="flex items-center justify-start gap-2 flex-wrap">
+  <p *ngFor="let message of filterMessages" class="bg-sand py-1 px-2 rounded text-primary font-bold">
+    {{ message.getMessage() }}
+  </p>
+</div>
 <div class="flex justify-center xl:justify-end gap-3 mt-5 xl:mt-0">
   <app-button
     *ngIf="!isOV() && !isBroker()"
