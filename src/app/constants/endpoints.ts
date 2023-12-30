@@ -185,6 +185,7 @@ export const cmsEndpoints = {
   README: '/users/me',
   MENU_ITEMS: '/items/menu_items',
   SECURITY: '/flows/trigger/9CBB1EDC-C5C9-4983-9846-BEA670A0CD66',
+  RENT_FILTER_MESSAGES: '/flows/trigger/F597040F-EAC8-49C2-A1B3-631C249851E9',
 };
 
 export const EndPoints = {

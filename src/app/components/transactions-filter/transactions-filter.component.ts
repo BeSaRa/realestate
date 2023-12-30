@@ -22,8 +22,10 @@ import { Durations } from '@enums/durations';
 import { HalfYearDurations } from '@enums/half-year-durations';
 import { ParamRangeField } from '@enums/param-range-field';
 import { SqUnit } from '@enums/sq-unit';
+import { FilterMessage } from '@models/filter-message';
 import { Lookup } from '@models/lookup';
 import { ParamRange } from '@models/param-range';
+import { FilterMessagesService } from '@services/filter-messages.service';
 import { LookupService } from '@services/lookup.service';
 import { StickyService } from '@services/sticky.service';
 import { TranslationService } from '@services/translation.service';
@@ -32,7 +34,7 @@ import { range } from '@utils/utils';
 import { CustomValidators } from '@validators/custom-validators';
 import { NgResizeObserver, ngResizeObserverProviders } from 'ng-resize-observer';
 import { NgxMaskDirective } from 'ngx-mask';
-import { Subject, debounceTime, filter, map, takeUntil, tap } from 'rxjs';
+import { Subject, debounceTime, filter, map, take, takeUntil, tap } from 'rxjs';
 
 @Component({
   selector: 'app-transactions-filter',
@@ -103,6 +105,7 @@ export class TransactionsFilterComponent implements OnInit, OnDestroy {
   stickyService = inject(StickyService);
   adapter = inject(DateAdapter);
   unitsService = inject(UnitsService);
+  filterMessageService = inject(FilterMessagesService);
   resize$ = inject(NgResizeObserver);
 
   private destroy$: Subject<void> = new Subject();
@@ -239,6 +242,8 @@ export class TransactionsFilterComponent implements OnInit, OnDestroy {
   minDate: Date = new Date('2019-01-01');
   maxDate: Date = new Date();
   isOpened = false;
+
+  filterMessages: FilterMessage[] = [];
 
   get municipalityId(): AbstractControl {
     return this.form.get('municipalityId') as AbstractControl;
@@ -670,6 +675,7 @@ export class TransactionsFilterComponent implements OnInit, OnDestroy {
     }
 
     value = this._removeUnusedProps(value) as Partial<CriteriaContract>;
+    if (criteriaType !== CriteriaType.DEFAULT) this.checkForCurrentCriteriaMessages(value);
     this.fromChanged.emit({ criteria: value as CriteriaContract, type: criteriaType });
   }
 
@@ -828,5 +834,12 @@ export class TransactionsFilterComponent implements OnInit, OnDestroy {
     this.areaRange &&
       (this.areaMaxLength =
         this.areaRange.maxVal.toString().length + Math.ceil(this.areaRange.maxVal.toString().length / 3));
+  }
+
+  checkForCurrentCriteriaMessages(criteria: CriteriaContract) {
+    this.filterMessageService
+      .loadMessages(criteria, this.indicatorType)
+      .pipe(take(1))
+      .subscribe((messages) => (this.filterMessages = messages));
   }
 }
