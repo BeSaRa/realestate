@@ -19,6 +19,9 @@ export class Broker extends ClonerMixin(class {}) {
   brokerCategoryId!: number;
   brokerTypeId!: number;
   municipalityId!: number;
+  zoneNo!: number;
+  streetNo!: number;
+  buuildingNo!: number;
 
   private _langService: TranslationService;
 
