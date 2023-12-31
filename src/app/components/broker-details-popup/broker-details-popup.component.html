@@ -2,7 +2,7 @@
   <app-icon-button class="close-btn" (click)="ref.close()" icon="CLOSE" />
 </div>
 <div class="content py-4 px-8">
-  <div class="flex flex-col md:flex-row justify-between items-center gap-4">
+  <div class="flex flex-col md:flex-row justify-between items-center gap-8">
     <div class="flex justify-center gap-8">
       <img class="w-[100px] md:w-auto" src="assets/icons/broker/popup-icon.svg" alt="" />
       <div class="flex flex-col justify-center gap-4">
@@ -16,6 +16,35 @@
           <div class="flex gap-2 items-center">
             <img src="assets/icons/broker/mail.svg" alt="" />
             <p>{{ brokerData.brokerEmail }}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="bg-[#2F4775] border-4 border-sand pt-1 pb-2 rounded-lg">
+      <div class="px-6">
+        <div class="flex justify-center text-white mb-1">
+          <span>{{ lang.map.building_number }}</span>
+        </div>
+        <div class="flex items-center justify-center py-1 bg-white rounded-md border-secondary text-2xl font-bold">
+          {{ brokerData.buuildingNo }}
+        </div>
+      </div>
+      <div class="h-0 w-full mt-2 border-b-4 border-sand"></div>
+      <div class="grid grid-cols-2 gap-2 mt-2 px-6">
+        <div>
+          <div class="flex justify-center text-white mb-1">
+            <span>{{ lang.map.street }}</span>
+          </div>
+          <div class="flex items-center justify-center py-1 bg-white rounded-md border-secondary text-2xl font-bold">
+            {{ brokerData.streetNo }}
+          </div>
+        </div>
+        <div>
+          <div class="flex justify-center text-white mb-1">
+            <span>{{ lang.map.zone }}</span>
+          </div>
+          <div class="flex items-center justify-center py-1 bg-white rounded-md border-secondary text-2xl font-bold">
+            {{ brokerData.zoneNo }}
           </div>
         </div>
       </div>
@@ -35,11 +64,7 @@
   </div>
   <!-- <span class="block h-0 w-full my-6 border border-primary/20"></span> -->
   <!-- <p class="text-secondary font-bold text-xl">{{ lang.map.about }} {{ brokerData.getCompanyName() }}</p> -->
-  <!-- <div class="mt-4 flex justify-start items-center text-lg gap-2">
-    <img src="assets/icons/broker/location.svg" alt="" />
-    <span>Head office:</span>
-    <span>Al Difaf St, Al Sadd, Al Qamra Holding 2nd floor, P.O. BOX 15983 Doha, Qatar.</span>
-  </div> -->
+
   <!-- <p class="mt-4 text-primary/80 max-w-[900px]">{{ brokerData.getDescription() }}</p> -->
 </div>
 <div class="dialog-footer">

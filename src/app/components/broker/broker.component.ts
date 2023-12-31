@@ -23,7 +23,7 @@ export class BrokerComponent {
   dialog = inject(DialogService);
 
   @HostListener('click') showBrokerDetails() {
-    this.dialog.open(BrokerDetailsPopupComponent, { data: this.broker, maxWidth: '95vw', minWidth: '60vw' });
+    this.dialog.open(BrokerDetailsPopupComponent, { data: this.broker, maxWidth: '95vw', minWidth: '50vw' });
   }
 
   getMunicipalityName() {
