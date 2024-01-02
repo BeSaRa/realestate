@@ -24,11 +24,11 @@ criteriaFields.set('municipalityId', new CriteriaField('municipalityId', true, t
 criteriaFields.set('areaCode', new CriteriaField('areaCode', true, true, false, 'LookupKey', '', '_eq'));
 criteriaFields.set(
   'purposeList',
-  new CriteriaField('purposeList', true, false, true, 'Dim_Rent_Rent_Purpose_Id', 'LookupKey', '_in')
+  new CriteriaField('purposeList', true, false, true, 'Dim_Sell_Sell_Purpose_Id', 'LookupKey', '_in')
 );
 criteriaFields.set(
   'propertyTypeList',
-  new CriteriaField('propertyTypeList', true, false, true, 'Dim_Rent_Property_Type_Id', 'LookupKey', '_in')
+  new CriteriaField('propertyTypeList', true, false, true, 'Dim_Sell_Real_Estate_Category_Id', 'LookupKey', '_in')
 );
 criteriaFields.set(
   'issueDateQuarterList',
