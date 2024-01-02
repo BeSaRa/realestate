@@ -22,6 +22,7 @@ export class FilterMessagesService {
 
   _getUrl(indicatorType: 'sell' | 'rent' | 'mortgage' | 'owner' | 'ov' | 'broker') {
     if (indicatorType === 'rent') return this.urlService.URLS.RENT_FILTER_MESSAGES;
+    if (indicatorType === 'sell') return this.urlService.URLS.SELL_FILTER_MESSAGES;
 
     return '';
   }
