@@ -26,6 +26,7 @@ import { UserService } from '@services/user.service';
 import { SectionGuardService } from '@services/section-guard.service';
 import { PagesSections } from '@constants/pages-sections';
 import { SplashService } from '@services/splash.service';
+import { GoogleAnalyticsService } from '@services/google-analytics.service';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -87,7 +88,7 @@ export const appConfig: ApplicationConfig = {
     {
       // UnitsService add to deps to initialize service at app start and be able to regiser it using ServiceRegistery
       provide: APP_INITIALIZER,
-      deps: [SplashService, UnitsService],
+      deps: [SplashService, UnitsService, GoogleAnalyticsService],
       useFactory: () => () => null,
       multi: true,
     },
