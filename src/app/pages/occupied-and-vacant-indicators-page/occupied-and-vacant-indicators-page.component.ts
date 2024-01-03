@@ -29,6 +29,7 @@ import { OccupancyTransaction } from '@models/occupancy-transaction';
 import { DashboardService } from '@services/dashboard.service';
 import { DialogService } from '@services/dialog.service';
 import { LookupService } from '@services/lookup.service';
+import { SectionTitleService } from '@services/section-title.service';
 import { TranslationService } from '@services/translation.service';
 import { UrlService } from '@services/url.service';
 import { NgApexchartsModule } from 'ng-apexcharts';
@@ -64,6 +65,7 @@ export default class OccupiedAndVacantIndicatorsPageComponent extends OnDestroyM
   dashboardService = inject(DashboardService);
   urlService = inject(UrlService);
   lookupService = inject(LookupService);
+  sectionTitle = inject(SectionTitleService);
   dialog = inject(DialogService);
   pageSections = inject(APP_PAGES_SECTIONS).OCCUPATION_PAGE;
 
@@ -85,6 +87,8 @@ export default class OccupiedAndVacantIndicatorsPageComponent extends OnDestroyM
   durationsCriteria = { ...this.criteria.criteria, occupancyStatus: null } as typeof this.criteria.criteria;
 
   areasCriteria = { ...this.criteria.criteria, occupancyStatus: null } as typeof this.criteria.criteria;
+
+  isSelectedDurationChartTypeMonthly = false;
 
   rootKPIS = [
     new KpiRoot().clone<KpiRoot>({
@@ -283,5 +287,16 @@ export default class OccupiedAndVacantIndicatorsPageComponent extends OnDestroyM
     if (this.selectedOccupancyStatus === occupancyStatus) return;
     this.selectedOccupancyStatus = occupancyStatus;
     this.updateTransactionTableCriteria();
+  }
+
+  getStringSelectedCriteria(isMunicipalityRequired = true, isZoneRequired = true, showYearInTitle = true): string {
+    return this.sectionTitle.getSelectedCriteria(
+      'ov',
+      this.criteria.criteria,
+      isZoneRequired,
+      false,
+      showYearInTitle,
+      isMunicipalityRequired
+    );
   }
 }

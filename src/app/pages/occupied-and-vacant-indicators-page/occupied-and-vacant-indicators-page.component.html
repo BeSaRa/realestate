@@ -15,7 +15,7 @@
     <div class="flex flex-col">
       <h3
         class="heading text-xl sm:text-2xl md:text-3xl self-center md:self-start text-center text-primary border-secondary font-semibold">
-        {{ lang.map.occupied_and_vacant_units_indicators_dashboard }}
+        {{ lang.map.occupied_and_vacant_units_indicators_dashboard }} {{ getStringSelectedCriteria() }}
       </h3>
 
       <div
@@ -31,7 +31,9 @@
   <div *appSectionGuard="pageSections.OCCUPATION_PREMISE_CATEGORY_KPIS" class="bg-sand py-16 px-3 lg:px-16">
     <div class="flex flex-col justify-center items-center">
       <app-purpose-list
-        [title]="selectedRoot.getNames() + ' (' + lang.map.depending_on_category + ') '"
+        [title]="
+          selectedRoot.getNames() + ' (' + lang.map.depending_on_category + ') ' + ' ' + getStringSelectedCriteria()
+        "
         [purposeKpiList]="categoryKPIs"
         [kpiRoot]="selectedRoot"
         [criteria]="occupationCriteria"
@@ -46,7 +48,7 @@
       <h3
         *ngIf="selectedRoot"
         class="heading text-xl sm:text-2xl md:text-3xl self-center text-center text-primary border-secondary font-semibold">
-        {{ selectedRoot.getNames() }} ({{ lang.map.depending_on_type }})
+        {{ selectedRoot.getNames() }} ({{ lang.map.depending_on_type }}) {{ getStringSelectedCriteria() }}
       </h3>
 
       <div class="mt-4 w-full flex items-center justify-center flex-wrap gap-2 overflow-hidden">
@@ -72,17 +74,24 @@
   </div>
   <div *appSectionGuard="pageSections.OCCUPATION_DURATION_CHART" class="flex flex-col mt-4 px-3 lg:px-16">
     <app-stacked-duration-chart
-      [title]="lang.map.total_number_of_occupied_and_vacant"
+      [title]="
+        lang.map.total_number_of_occupied_and_vacant +
+        ' ' +
+        getStringSelectedCriteria(true, true, isSelectedDurationChartTypeMonthly)
+      "
       [seriesNames]="totalCountSeriesNames"
       [criteria]="durationsCriteria"
       [rootData]="totalCountChartData"
       [bindDataSplitProp]="'occupancyStatus'"
-      [showSelectChartType]="true">
+      [showSelectChartType]="true"
+      (isMonthltyDurationTypeEvent)="isSelectedDurationChartTypeMonthly = $event">
     </app-stacked-duration-chart>
   </div>
   <div *appSectionGuard="pageSections.OCCUPATION_MUNICIPALITY_CHART" class="px-3 lg:px-16">
     <app-municipalities-chart
-      [title]="lang.map.occupied_and_vacant_units_count_per_municipality"
+      [title]="
+        lang.map.occupied_and_vacant_units_count_per_municipality + ' ' + getStringSelectedCriteria(false, false)
+      "
       [seriesNames]="municipalitySeriesNames"
       [rootData]="{
         chartDataUrl: urlService.URLS.OV_KPI5,
@@ -102,7 +111,9 @@
         lang.map.occupied_and_vacant_units_count_per_zone +
         ' (' +
         lookupService.ovMunicipalitiesMap[selectedMunicipalityId].getNames() +
-        ')'
+        ')' +
+        ' ' +
+        getStringSelectedCriteria(false, false)
       "
       [seriesNames]="areaSeriesNames"
       [rootData]="{
@@ -116,7 +127,7 @@
   <div *appSectionGuard="pageSections.OCCUPATION_TRANSACTIONS_TABLE.name" class="px-3 lg:px-16 flex flex-col gap-4">
     <h3
       class="heading text-xl sm:text-2xl md:text-3xl self-center md:self-start text-center text-primary border-secondary font-semibold">
-      {{ lang.map.occupied_and_vacant_records_list }}
+      {{ lang.map.occupied_and_vacant_records_list }} {{ getStringSelectedCriteria() }}
     </h3>
     <div class="mt-4 flex justify-center md:justify-end">
       <div class="grid grid-cols-2 gap-2">
