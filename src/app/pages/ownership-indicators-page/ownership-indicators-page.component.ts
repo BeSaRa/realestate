@@ -200,8 +200,8 @@ export default class OwnershipIndicatorsPageComponent extends OnDestroyMixin(cla
 
   selectedTab: 'ownership_indicators' | 'owner_indicators' = 'owner_indicators';
 
-  ownerMunicipalitySeriesNames: Record<number, string> = {
-    0: this.lang.map.owners_count,
+  ownerMunicipalitySeriesNames: Record<number, () => string> = {
+    0: () => this.lang.map.owners_count,
   };
 
   municipalityLabel = (item: { municipalityId: number }) =>
@@ -209,8 +209,8 @@ export default class OwnershipIndicatorsPageComponent extends OnDestroyMixin(cla
 
   selectedOwnerMunicipalityId = 4;
 
-  ownerAreaSeriesNames: Record<number, string> = {
-    0: this.lang.map.owners_count,
+  ownerAreaSeriesNames: Record<number, () => string> = {
+    0: () => this.lang.map.owners_count,
   };
 
   areaLabel = (item: { areaCode: number }) => this.lookupService.ownerDistrictMap[item.areaCode]?.getNames() ?? '';
@@ -225,8 +225,8 @@ export default class OwnershipIndicatorsPageComponent extends OnDestroyMixin(cla
     hasPrice: false,
   };
 
-  ownershipMunicipalitySeriesNames: Record<number, string> = {
-    0: this.lang.map.ownerships_count,
+  ownershipMunicipalitySeriesNames: Record<number, () => string> = {
+    0: () => this.lang.map.ownerships_count,
   };
 
   selectedOwnershipMunicipalityId = 4;
@@ -236,8 +236,8 @@ export default class OwnershipIndicatorsPageComponent extends OnDestroyMixin(cla
     hasPrice: false,
   };
 
-  ownershipAreaSeriesNames: Record<number, string> = {
-    0: this.lang.map.ownerships_count,
+  ownershipAreaSeriesNames: Record<number, () => string> = {
+    0: () => this.lang.map.ownerships_count,
   };
 
   durationRootData = {

@@ -34,7 +34,7 @@ import { map, take, takeUntil } from 'rxjs';
 })
 export class AreasChartComponent extends OnDestroyMixin(class {}) implements OnChanges, AfterViewInit {
   @Input({ required: true }) title!: string;
-  @Input({ required: true }) seriesNames!: Record<number, string>;
+  @Input({ required: true }) seriesNames!: Record<number, () => string>;
   @Input({ required: true }) criteria!: CriteriaContract;
   @Input({ required: true }) rootData!: { chartDataUrl: string; hasPrice: boolean };
   @Input({ required: true }) bindLabel!: string | ((item: any) => string);
@@ -150,7 +150,7 @@ export class AreasChartComponent extends OnDestroyMixin(class {}) implements OnC
     this.chart.first
       ?.updateOptions({
         series: Object.keys(this.seriesData).map((key) => ({
-          name: this.seriesNames[key as unknown as number],
+          name: this.seriesNames[key as unknown as number](),
           data: this.seriesData[key as unknown as number].map((item) => ({
             x: this._getLabel(item),
             y: item?.getKpiVal() ?? 0,

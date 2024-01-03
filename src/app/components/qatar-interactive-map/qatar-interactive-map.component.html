@@ -2,31 +2,33 @@
   class="flex justify-between items-start p-4 border rounded-lg transition-all"
   [ngClass]="{ 'border-primary': selectedSeriesIndex % 2 === 0, 'border-secondary': selectedSeriesIndex % 2 === 1 }">
   <div></div>
-  <div class="w-[200px]">
-    <svg class="h-full" viewBox="150 0 300 600">
-      <g>
-        <path
-          *ngFor="let municipalitySvgPath of municipalitiesSvgPath"
-          [ngStyle]="{ opacity: getOpacity(municipalitiesDataMap[municipalitySvgPath.id].getKpiVal()) }"
-          class="stroke-1 cursor-pointer transition-all hover:brightness-[0.25] hover:stroke-[4] hover:stroke-white"
-          [ngClass]="{
-            'brightness-50 stroke-[4] stroke-white': selectedMunicipalityId === municipalitySvgPath.id,
-            'fill-primary stroke-primary': selectedSeriesIndex % 2 === 0,
-            'fill-secondary stroke-secondary': selectedSeriesIndex % 2 === 1
-          }"
-          [attr.d]="municipalitySvgPath.path"
-          (click)="onMunicipalityClick(municipalitiesDataMap[municipalitySvgPath.id])"
-          appCustomTooltip
-          [tooltipContent]="tooltipTemplate"
-          [tooltipContentContext]="municipalitiesDataMap[municipalitySvgPath.id]"
-          [tooltipPosition]="{
+  <div>
+    <div class="w-[200px]">
+      <svg class="h-full" viewBox="150 0 300 600">
+        <g>
+          <path
+            *ngFor="let municipalitySvgPath of municipalitiesSvgPath"
+            [ngStyle]="{ opacity: getOpacity(municipalitiesDataMap[municipalitySvgPath.id].getKpiVal()) }"
+            class="stroke-1 cursor-pointer transition-all hover:brightness-[0.25] hover:stroke-[4] hover:stroke-white"
+            [ngClass]="{
+              'brightness-50 stroke-[4] stroke-white': selectedMunicipalityId === municipalitySvgPath.id,
+              'fill-primary stroke-primary': selectedSeriesIndex % 2 === 0,
+              'fill-secondary stroke-secondary': selectedSeriesIndex % 2 === 1
+            }"
+            [attr.d]="municipalitySvgPath.path"
+            (click)="onMunicipalityClick(municipalitiesDataMap[municipalitySvgPath.id])"
+            appCustomTooltip
+            [tooltipContent]="tooltipTemplate"
+            [tooltipContentContext]="municipalitiesDataMap[municipalitySvgPath.id]"
+            [tooltipPosition]="{
             originX: 'center',
             originY: 'top',
             overlayX: 'center',
             overlayY: 'center',
           }" />
-      </g>
-    </svg>
+        </g>
+      </svg>
+    </div>
     <mat-radio-group
       *ngIf="seriesData.length > 1"
       class="mt-3 flex items-center justify-center gap-2 flex-wrap"
