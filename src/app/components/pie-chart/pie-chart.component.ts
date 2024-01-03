@@ -24,7 +24,7 @@ import { TranslationService } from '@services/translation.service';
 import { UnitsService } from '@services/units.service';
 import { objectHasOwnProperty } from '@utils/utils';
 import { ChartComponent, NgApexchartsModule } from 'ng-apexcharts';
-import { catchError, take, throwError } from 'rxjs';
+import { catchError, take, takeUntil, throwError } from 'rxjs';
 
 @Component({
   selector: 'app-pie-chart',
@@ -62,6 +62,7 @@ export class PieChartComponent extends OnDestroyMixin(class {}) implements OnIni
   ngOnInit(): void {
     setTimeout(() => {
       this._listenToUnitChange();
+      this._listenToLangChange();
     }, 0);
   }
 
@@ -110,6 +111,10 @@ export class PieChartComponent extends OnDestroyMixin(class {}) implements OnIni
         if (this.rootData.hasSqUnit) this._updatePieChartData();
       })
     );
+  }
+
+  private _listenToLangChange() {
+    this.lang.change$.pipe(takeUntil(this.destroy$)).subscribe(() => this._updatePieChartData());
   }
 
   private _getValue(item: unknown): number {

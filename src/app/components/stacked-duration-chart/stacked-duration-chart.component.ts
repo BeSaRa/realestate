@@ -133,6 +133,7 @@ export class StackedDurationChartComponent
       this._initializeFormatters();
       this._listenToScreenSize();
       this._listenToUnitChange();
+      this._listenToLangChange();
     }, 0);
   }
 
@@ -415,6 +416,12 @@ export class StackedDurationChartComponent
         if (this.rootData.hasSqUnit) this.updateChartDataForDuration(this.selectedDurationType, true);
       })
     );
+  }
+
+  private _listenToLangChange() {
+    this.lang.change$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(() => this.updateChartDataForDuration(this.selectedDurationType, true));
   }
 
   private _initializeBarColorsAccordingToValue(data: Record<number, DurationDataContract>) {

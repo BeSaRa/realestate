@@ -28,7 +28,7 @@ import { TranslationService } from '@services/translation.service';
 import { UnitsService } from '@services/units.service';
 import { objectHasOwnProperty } from '@utils/utils';
 import { ChartComponent, NgApexchartsModule } from 'ng-apexcharts';
-import { catchError, take, throwError } from 'rxjs';
+import { catchError, take, takeUntil, throwError } from 'rxjs';
 
 @Component({
   selector: 'app-top-ten-chart',
@@ -94,6 +94,7 @@ export class TopTenChartComponent extends OnDestroyMixin(class {}) implements On
     setTimeout(() => {
       this._initializeChartFormatters();
       this._listenToUnitChange();
+      this._listenToLangChange();
     }, 0);
   }
 
@@ -205,5 +206,9 @@ export class TopTenChartComponent extends OnDestroyMixin(class {}) implements On
         if (this.selectedAccordingTo.hasSqUnit) this._updateOptions();
       })
     );
+  }
+
+  private _listenToLangChange() {
+    this.lang.change$.pipe(takeUntil(this.destroy$)).subscribe(() => this._updateOptions());
   }
 }

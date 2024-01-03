@@ -57,7 +57,7 @@ export class NationalitiesChartComponent extends OnDestroyMixin(class {}) implem
 
   isChartFirstUpdate = true;
   isUpdatingChartData = false;
-  seriesData: (KpiBaseModel & { nationalityCode: number })[] = [];
+  seriesData: (KpiBaseModel & { nationalityId: number })[] = [];
   seriesDataLength = 0;
   selectedNationality = { id: 0, seriesIndex: 0, dataPointIndex: 0 };
 
@@ -85,6 +85,7 @@ export class NationalitiesChartComponent extends OnDestroyMixin(class {}) implem
     setTimeout(() => {
       this.chart.first?.updateOptions({ chart: { type: 'bar' } }).then();
       this._listenToScreenSizeChange();
+      this._listenToLangChange();
     }, 0);
   }
 
@@ -98,34 +99,36 @@ export class NationalitiesChartComponent extends OnDestroyMixin(class {}) implem
       .pipe(take(1))
       .pipe(map((data) => data as (KpiBaseModel & { nationalityId: number })[]))
       .subscribe((data) => {
-        const _minMaxAvg = minMaxAvg(data.map((item) => item.getKpiVal()));
         this.seriesDataLength = data.length;
         data.sort((a, b) => a.getKpiVal() - b.getKpiVal());
-        this.chart.first
-          ?.updateOptions({
-            chart: {
-              ...this.appChartTypesService.getDownloadOptions(this.rootData.getNames(), this.lang.map.nationality),
-            },
-            series: [
-              {
-                name: this.name,
-                data: data.map((item, index) => ({
-                  x: this._getLabel(item),
-                  y: item.getKpiVal(),
-                  id: item.nationalityId,
-                  index,
-                })),
-              },
-            ],
-            colors: [this.appChartTypesService.chartColorsFormatter(_minMaxAvg)],
-            ...this.appChartTypesService.getRangeOptions(
-              this.screenSize,
-              BarChartTypes.SINGLE_BAR,
-              this.seriesDataLength
-            ),
-          })
-          .then();
+        this.seriesData = data;
+        this.updateChartOptions();
       });
+  }
+
+  updateChartOptions() {
+    const _minMaxAvg = minMaxAvg(this.seriesData.map((item) => item.getKpiVal()));
+
+    this.chart.first
+      ?.updateOptions({
+        chart: {
+          ...this.appChartTypesService.getDownloadOptions(this.rootData.getNames(), this.lang.map.nationality),
+        },
+        series: [
+          {
+            name: this.name,
+            data: this.seriesData.map((item, index) => ({
+              x: this._getLabel(item),
+              y: item.getKpiVal(),
+              id: item.nationalityId,
+              index,
+            })),
+          },
+        ],
+        colors: [this.appChartTypesService.chartColorsFormatter(_minMaxAvg)],
+        ...this.appChartTypesService.getRangeOptions(this.screenSize, BarChartTypes.SINGLE_BAR, this.seriesDataLength),
+      })
+      .then();
   }
 
   private _getLabel(item: unknown): string {
@@ -153,6 +156,10 @@ export class NationalitiesChartComponent extends OnDestroyMixin(class {}) implem
           this.cdr.detectChanges();
         });
     });
+  }
+
+  private _listenToLangChange() {
+    this.lang.change$.pipe(takeUntil(this.destroy$)).subscribe(() => this.updateChartOptions());
   }
 
   private _initializeFormatters() {

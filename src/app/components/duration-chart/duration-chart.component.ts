@@ -128,6 +128,7 @@ export class DurationChartComponent extends OnDestroyMixin(class {}) implements 
       this._initializeFormatters();
       this._listenToScreenSizeChange();
       this._listenToUnitChange();
+      this._listenToLangChange();
     }, 0);
   }
 
@@ -360,6 +361,12 @@ export class DurationChartComponent extends OnDestroyMixin(class {}) implements 
         if (this.rootData.hasSqUnit) this.updateChartDataForDuration(this.selectedDurationType, true);
       })
     );
+  }
+
+  private _listenToLangChange() {
+    this.lang.change$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(() => this.updateChartDataForDuration(this.selectedDurationType, true));
   }
 
   private _initializeBarColorsAccordingToValue(data: DurationDataContract) {
