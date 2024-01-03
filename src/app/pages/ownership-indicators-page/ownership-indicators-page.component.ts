@@ -360,7 +360,20 @@ export default class OwnershipIndicatorsPageComponent extends OnDestroyMixin(cla
       ? this.specialNationality.getNames()
       : this.lookupService.ownerNationalityMap[nationalityId]?.getNames() || '';
   }
-  getStringSelectedCriteria(): string {
-    return this.sectionTitle.getSelectedCriteria('owner', this.criteria.criteria, false, true, false);
+
+  getStringSelectedCriteria(
+    isMunicipalityRequired = true,
+    isDistrictRequired = true,
+    isNationalityRequired = false
+  ): string {
+    return this.sectionTitle.getSelectedCriteria(
+      'owner',
+      this.criteria.criteria,
+      false,
+      isDistrictRequired,
+      false,
+      isMunicipalityRequired,
+      isNationalityRequired
+    );
   }
 }
