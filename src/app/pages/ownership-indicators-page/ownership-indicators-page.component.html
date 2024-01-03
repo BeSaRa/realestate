@@ -36,7 +36,7 @@
         <h3
           class="heading text-xl sm:text-2xl md:text-3xl self-center md:self-start text-center text-primary border-secondary font-semibold">
           {{ lang.map.owners_transactions_measuring_dashboard }}
-          {{ getStringSelectedCriteria() }}
+          {{ getStringSelectedCriteria(true, true, true) }}
         </h3>
 
         <div
@@ -54,7 +54,13 @@
       <div class="flex flex-col justify-center items-center">
         <app-purpose-list
           *appSectionGuard="pageSections.OWNER_PURPOSE_KPIS"
-          [title]="selectedOwnerRoot.getNames() + ' (' + lang.map.depending_on_use + ') ' + getStringSelectedCriteria()"
+          [title]="
+            selectedOwnerRoot.getNames() +
+            ' (' +
+            lang.map.depending_on_use +
+            ') ' +
+            getStringSelectedCriteria(true, true, true)
+          "
           [purposeKpiList]="purposeKPIS"
           [kpiRoot]="selectedOwnerRoot"
           [criteria]="criteria.criteria"
@@ -64,7 +70,11 @@
         <div *appSectionGuard="pageSections.OWNER_PROPERTY_TYPE_KPIS" class="w-full sm:w-5/6 lg:w-11/12" dir="ltr">
           <app-property-carousel
             [title]="
-              selectedOwnerRoot.getNames() + ' (' + lang.map.depending_on_type + ') ' + getStringSelectedCriteria()
+              selectedOwnerRoot.getNames() +
+              ' (' +
+              lang.map.depending_on_type +
+              ') ' +
+              getStringSelectedCriteria(true, true, true)
             "
             [properties]="propertiesKPIS"
             [kpiRoot]="selectedOwnerRoot"
@@ -78,7 +88,13 @@
     </div>
     <div *appSectionGuard="pageSections.OWNER_MUNICIPALITY_CHART" class="py-5 px-3 lg:px-16">
       <app-municipalities-chart
-        [title]="selectedOwnerRoot.getNames() + ' ' + lang.map.per_municipality"
+        [title]="
+          selectedOwnerRoot.getNames() +
+          ' ' +
+          lang.map.per_municipality +
+          ' ' +
+          getStringSelectedCriteria(false, false, true)
+        "
         [seriesNames]="ownerMunicipalitySeriesNames"
         [rootData]="{
           chartDataUrl: urlService.URLS.OWNER_KPI26,
@@ -99,7 +115,8 @@
           lang.map.per_area +
           ' (' +
           lookupService.ownerMunicipalitiesMap[selectedOwnerMunicipalityId].getNames() +
-          ')'
+          ') ' +
+          getStringSelectedCriteria(false, false, true)
         "
         [seriesNames]="ownerAreaSeriesNames"
         [rootData]="{
@@ -132,7 +149,7 @@
     </div>
     <div *appSectionGuard="pageSections.OWNERSHIP_NATIONALITY_CHART" class="mt-8 px-3 lg:px-16">
       <app-nationalities-chart
-        [title]="lang.map.distribution_of_ownerships_according_to_nationality"
+        [title]="lang.map.distribution_of_ownerships_according_to_nationality + ' ' + getStringSelectedCriteria()"
         [name]="lang.map.ownerships_count"
         [rootData]="selectedOwnershipRoot"
         [criteria]="criteria.criteria"
@@ -143,7 +160,13 @@
 
     <div *appSectionGuard="pageSections.OWNERSHIP_MUNICIPALITY_CHART" class="py-5 px-3 lg:px-16">
       <app-municipalities-chart
-        [title]="lang.map.ownerships_count_per_municipality + ' (' + getNationalityNames(selectedNationalityId) + ')'"
+        [title]="
+          lang.map.ownerships_count_per_municipality +
+          ' (' +
+          getNationalityNames(selectedNationalityId) +
+          ') ' +
+          getStringSelectedCriteria(false, false, false)
+        "
         [seriesNames]="ownershipMunicipalitySeriesNames"
         [rootData]="ownershipMunicipalityRootData"
         [criteria]="ownershipMunicipalityCriteria"
@@ -163,7 +186,8 @@
           lang.map.and_municipality +
           ' (' +
           lookupService.ownerMunicipalitiesMap[selectedOwnershipMunicipalityId].getNames() +
-          ')'
+          ') ' +
+          getStringSelectedCriteria(false, false, false)
         "
         [seriesNames]="ownershipAreaSeriesNames"
         [rootData]="ownershipAreaRootData"
@@ -174,7 +198,11 @@
     <div *appSectionGuard="pageSections.OWNERSHIP_DURATION_CHART" class="px-3 lg:px-16 flex flex-col">
       <app-duration-chart
         [title]="
-          lang.map.ownerships_count_change_for_nationality + ' (' + getNationalityNames(selectedNationalityId) + ')'
+          lang.map.ownerships_count_change_for_nationality +
+          ' (' +
+          getNationalityNames(selectedNationalityId) +
+          ') ' +
+          getStringSelectedCriteria()
         "
         [name]="lang.map.ownerships_count"
         [criteria]="nationalityCriteria"
@@ -187,6 +215,7 @@
         <h3
           class="heading text-xl sm:text-2xl md:text-3xl self-center md:self-start text-center text-primary border-secondary font-semibold">
           {{ lang.map.ownerships_transactions_list }} ({{ getNationalityNames(selectedNationalityId) }})
+          {{ getStringSelectedCriteria() }}
         </h3>
 
         <app-table
@@ -265,7 +294,13 @@
       <ng-container *ngIf="selectedNationalityId !== specialNationality.lookupKey">
         <app-pie-chart
           *appSectionGuard="pageSections.OWNERSHIP_PER_AGE"
-          [title]="lang.map.ownerships_count_per_owner_age + ' (' + getNationalityNames(selectedNationalityId) + ')'"
+          [title]="
+            lang.map.ownerships_count_per_owner_age +
+            ' (' +
+            getNationalityNames(selectedNationalityId) +
+            ') ' +
+            getStringSelectedCriteria()
+          "
           [criteria]="nationalityCriteria"
           [rootData]="ageCategoryRootData"
           [bindLabel]="ageCategoryLabel"
@@ -274,14 +309,20 @@
       <ng-container *ngIf="selectedNationalityId !== specialNationality.lookupKey">
         <app-pie-chart
           *appSectionGuard="pageSections.OWNERSHIP_PER_GENDER"
-          [title]="lang.map.ownerships_count_per_owner_sex + ' (' + getNationalityNames(selectedNationalityId) + ')'"
+          [title]="
+            lang.map.ownerships_count_per_owner_sex +
+            ' (' +
+            getNationalityNames(selectedNationalityId) +
+            ') ' +
+            getStringSelectedCriteria()
+          "
           [criteria]="nationalityCriteria"
           [rootData]="genderRootData"
           [bindLabel]="genderLabel"
           [valueUnit]="lang.map.ownership"
       /></ng-container>
       <app-pie-chart
-        [title]="lang.map.ownerships_count_per_owner_category_summary"
+        [title]="lang.map.ownerships_count_per_owner_category_summary + ' ' + getStringSelectedCriteria()"
         *appSectionGuard="pageSections.OWNERSHIP_PER_OWNER_CATEGORY"
         [criteria]="criteria.criteria"
         [rootData]="ownerTypeRootData"

@@ -14,7 +14,8 @@ export class SectionTitleService {
     isZoneRequired = true,
     isDistrictRequired = true,
     isYearRequired = true,
-    isMunicipalityRequired = true
+    isMunicipalityRequired = true,
+    isNationalityRequired = false
   ): string {
     const generatedTitle: string[] = [];
 
@@ -45,6 +46,11 @@ export class SectionTitleService {
     propertyType.length && generatedTitle.push(propertyType);
     purpose.length && generatedTitle.push(purpose);
 
+    if (isNationalityRequired) {
+      const nationality = this.getSelectedNationality(indicatorPrefix, criteria);
+      nationality.length && generatedTitle.push(nationality);
+    }
+
     if (isYearRequired) {
       const year = this.getSelectedYear(criteria);
       generatedTitle.push(year);
@@ -61,20 +67,20 @@ export class SectionTitleService {
       number,
       Lookup
     >;
-    return lookupMap[criteria.municipalityId].getNames() || '';
+    return lookupMap[criteria.municipalityId]?.getNames() || '';
   }
 
   private getSelectedDistrict(prefix: string, criteria: CriteriaContract): string {
     const areaCode = criteria.areaCode;
     if (areaCode === -1) return '';
     const lookupMap = this.lookupService[(prefix + 'DistrictMap') as keyof LookupService] as Record<number, Lookup>;
-    return lookupMap[areaCode!].getNames() || '';
+    return lookupMap[areaCode!]?.getNames() || '';
   }
 
   private getSelectedPropertyType(prefix: string, criteria: CriteriaContract): string {
     const lookupMap = this.lookupService[(prefix + 'PropertyTypeMap') as keyof LookupService] as Record<number, Lookup>;
     return criteria.propertyTypeList && criteria.propertyTypeList[0] !== -1
-      ? lookupMap[criteria.propertyTypeList[0]].getNames()
+      ? lookupMap[criteria.propertyTypeList[0]]?.getNames()
       : '';
   }
   private getSelectedYear(criteria: CriteriaContract): string {
@@ -82,14 +88,21 @@ export class SectionTitleService {
   }
   private getSelectedPurpose(prefix: string, criteria: CriteriaContract): string {
     const lookupMap = this.lookupService[(prefix + 'PurposeMap') as keyof LookupService] as Record<number, Lookup>;
-    return criteria.purposeList && criteria.purposeList[0] !== -1 ? lookupMap[criteria.purposeList[0]].getNames() : '';
+    return criteria.purposeList && criteria.purposeList[0] !== -1 ? lookupMap[criteria.purposeList[0]]?.getNames() : '';
   }
 
   private getSelectedZone(prefix: string, criteria: CriteriaContract): string {
     if (criteria.zoneId === -1) return '';
     const lookupMap = this.lookupService[(prefix + 'ZonesMap') as keyof LookupService] as Record<number, Lookup>;
 
-    return lookupMap[criteria.zoneId!].getNames() || '';
+    return lookupMap[criteria.zoneId!]?.getNames() || '';
+  }
+
+  private getSelectedNationality(prefix: string, criteria: CriteriaContract): string {
+    if (criteria.nationalityCode === -1) return '';
+    const lookupMap = this.lookupService[(prefix + 'NationalityMap') as keyof LookupService] as Record<number, Lookup>;
+
+    return lookupMap[criteria.nationalityCode!]?.getNames() || '';
   }
 
   private getSelectedPremiseCategory(
@@ -101,14 +114,14 @@ export class SectionTitleService {
       Lookup
     >;
     return criteria.premiseCategoryList && criteria.premiseCategoryList[0] !== -1
-      ? lookupMap[criteria.premiseCategoryList[0]].getNames()
+      ? lookupMap[criteria.premiseCategoryList[0]]?.getNames()
       : '';
   }
 
   private getSelectedPremiseType(prefix: string, criteria: CriteriaContract & { premiseTypeList: number[] }): string {
     const lookupMap = this.lookupService[(prefix + 'PremiseTypeMap') as keyof LookupService] as Record<number, Lookup>;
     return criteria.premiseTypeList && criteria.premiseTypeList[0] !== -1
-      ? lookupMap[criteria.premiseTypeList[0]].getNames()
+      ? lookupMap[criteria.premiseTypeList[0]]?.getNames()
       : '';
   }
 }
