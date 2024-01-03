@@ -98,6 +98,7 @@ export class MunicipalitiesChartComponent extends OnDestroyMixin(class {}) imple
     setTimeout(() => {
       this.chart.first?.updateOptions({ chart: { type: 'bar', height: 430 } }).then();
       this._listenToScreenSizeChange();
+      this._listenToLangChange();
     }, 0);
   }
 
@@ -183,7 +184,7 @@ export class MunicipalitiesChartComponent extends OnDestroyMixin(class {}) imple
   updateChartOptions() {
     this.isLoading = false;
     const _minMaxAvg = minMaxAvg(
-      this.seriesData[Object.keys(this.seriesNames)[0] as unknown as number].map((item) => item.getKpiVal())
+      this.seriesData[Object.keys(this.seriesNames)[0] as unknown as number]?.map((item) => item.getKpiVal()) ?? []
     );
     this.chart.first
       ?.updateOptions({
@@ -261,6 +262,13 @@ export class MunicipalitiesChartComponent extends OnDestroyMixin(class {}) imple
       : this.bindLabel && typeof this.bindLabel === 'function'
       ? (this.bindLabel(item) as string)
       : (item as unknown as string);
+  }
+
+  private _listenToLangChange() {
+    this.lang.change$.pipe(takeUntil(this.destroy$)).subscribe(() => {
+      this.updateMapSeriesData();
+      this.updateChartOptions();
+    });
   }
 
   private _listenToScreenSizeChange() {

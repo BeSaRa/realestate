@@ -72,6 +72,7 @@ export class AreasChartComponent extends OnDestroyMixin(class {}) implements OnC
     setTimeout(() => {
       this.chart.first?.updateOptions({ chart: { type: 'bar' } }).then();
       this._listenToScreenSizeChange();
+      this._listenToLangChange();
     }, 0);
   }
 
@@ -145,7 +146,8 @@ export class AreasChartComponent extends OnDestroyMixin(class {}) implements OnC
 
   updateChartOptions() {
     const _minMaxAvg = minMaxAvg(
-      this.seriesData[Object.keys(this.seriesNames)[0] as unknown as number].map((item) => item?.getKpiVal() ?? 0)
+      this.seriesData[Object.keys(this.seriesNames)[0] as unknown as number]?.map((item) => item?.getKpiVal() ?? 0) ??
+        []
     );
     this.chart.first
       ?.updateOptions({
@@ -204,6 +206,10 @@ export class AreasChartComponent extends OnDestroyMixin(class {}) implements OnC
       )
       .addAxisYFormatter((val, opts) => this.appChartTypesService.axisYFormatter({ val, opts }, this.rootData))
       .addCustomToolbarOptions();
+  }
+
+  private _listenToLangChange() {
+    this.lang.change$.pipe(takeUntil(this.destroy$)).subscribe(() => this.updateChartOptions());
   }
 
   private _listenToScreenSizeChange() {

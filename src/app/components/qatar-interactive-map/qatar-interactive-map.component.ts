@@ -94,7 +94,7 @@ export class QatarInteractiveMapComponent implements OnChanges, OnInit {
       return {
         ...acc,
         [cur.id]:
-          this.seriesData[this.selectedSeriesIndex].data.find((m) => m.municipalityId === cur.id) ??
+          this.seriesData[this.selectedSeriesIndex].data?.find((m) => m.municipalityId === cur.id) ??
           ({
             municipalityId: cur.id,
             getKpiVal: () => 0,
