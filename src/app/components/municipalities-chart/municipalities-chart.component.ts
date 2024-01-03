@@ -41,7 +41,7 @@ import { QatarInteractiveMapComponent } from 'src/app/components/qatar-interacti
 })
 export class MunicipalitiesChartComponent extends OnDestroyMixin(class {}) implements OnChanges, OnInit, AfterViewInit {
   @Input({ required: true }) title!: string;
-  @Input({ required: true }) seriesNames!: Record<number, string>;
+  @Input({ required: true }) seriesNames!: Record<number, () => string>;
   @Input({ required: true }) criteria!: CriteriaContract;
   @Input({ required: true }) rootData!: { chartDataUrl: string; hasPrice: boolean };
   @Input({ required: true }) bindLabel!: string | ((item: any) => string);
@@ -188,7 +188,7 @@ export class MunicipalitiesChartComponent extends OnDestroyMixin(class {}) imple
     this.chart.first
       ?.updateOptions({
         series: Object.keys(this.seriesData).map((key) => ({
-          name: this.seriesNames[key as unknown as number],
+          name: this.seriesNames[key as unknown as number](),
           data: this.seriesData[key as unknown as number].map((item, index) => ({
             x: this._getLabel(item),
             y: item.getKpiVal(),
@@ -232,7 +232,7 @@ export class MunicipalitiesChartComponent extends OnDestroyMixin(class {}) imple
     this.mapSeriesData = [];
     Object.keys(this.seriesNames ?? []).forEach((key, i) => {
       this.mapSeriesData.push({
-        label: this.seriesNames[key as unknown as number],
+        label: this.seriesNames[key as unknown as number](),
         data: this.seriesData[key as unknown as number],
       });
     });

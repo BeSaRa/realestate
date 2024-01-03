@@ -56,7 +56,7 @@ export class StackedDurationChartComponent
   implements OnChanges, OnInit, AfterViewInit, OnDestroy
 {
   @Input({ required: true }) title!: string;
-  @Input({ required: true }) seriesNames!: Record<number, string>;
+  @Input({ required: true }) seriesNames!: Record<number, () => string>;
   @Input({ required: true }) criteria!: CriteriaContract;
   @Input({ required: true }) rootData!: { chartDataUrl: string; hasPrice: boolean; hasSqUnit?: boolean };
   @Input({ required: true }) bindDataSplitProp!: string;
@@ -184,7 +184,7 @@ export class StackedDurationChartComponent
         const _data = this._splitAccordingToDataSplitProp(data);
 
         this.chartSeriesData = Object.keys(this.seriesNames).map((type) => ({
-          name: this.seriesNames[type as unknown as number],
+          name: this.seriesNames[type as unknown as number](),
           group: '0',
           data: _data[type as unknown as number].map((i) => {
             return { y: i.getKpiVal(), x: i.issueYear.toString() };
@@ -232,7 +232,7 @@ export class StackedDurationChartComponent
         });
 
         this.chartSeriesData = Object.keys(this.seriesNames).map((type) => ({
-          name: this.seriesNames[type as unknown as number],
+          name: this.seriesNames[type as unknown as number](),
           data: _data[type as unknown as number]
             .map((i) => ({
               y: i.getKpiVal(),
@@ -294,7 +294,7 @@ export class StackedDurationChartComponent
           this.chartSeriesData.push(
             ...Object.keys(data[type as unknown as number]).map((key, index) => ({
               name:
-                this.seriesNames[type as unknown as number] +
+                this.seriesNames[type as unknown as number]() +
                 ': ' +
                 data[type as unknown as number][key as unknown as number].period.getNames(),
               group: index.toString(),

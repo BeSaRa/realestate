@@ -140,14 +140,14 @@ export default class OccupiedAndVacantIndicatorsPageComponent extends OnDestroyM
     hasPrice: false,
   };
 
-  totalCountSeriesNames: Record<number, string> = {
-    [OccupationStatus.VACANT]: this.lang.map.vacant,
-    [OccupationStatus.OCCUPIED]: this.lang.map.occupied,
+  totalCountSeriesNames: Record<number, () => string> = {
+    [OccupationStatus.VACANT]: () => this.lang.map.vacant,
+    [OccupationStatus.OCCUPIED]: () => this.lang.map.occupied,
   };
 
-  municipalitySeriesNames: Record<number, string> = {
-    [OccupationStatus.VACANT]: this.lang.map.vacant,
-    [OccupationStatus.OCCUPIED]: this.lang.map.occupied,
+  municipalitySeriesNames: Record<number, () => string> = {
+    [OccupationStatus.VACANT]: () => this.lang.map.vacant,
+    [OccupationStatus.OCCUPIED]: () => this.lang.map.occupied,
   };
 
   municipalityLabel = (item: { kpiVal: number; municipalityId: number }) => {
@@ -156,9 +156,9 @@ export default class OccupiedAndVacantIndicatorsPageComponent extends OnDestroyM
 
   selectedMunicipalityId = 1;
 
-  areaSeriesNames: Record<number, string> = {
-    [OccupationStatus.VACANT]: this.lang.map.vacant,
-    [OccupationStatus.OCCUPIED]: this.lang.map.occupied,
+  areaSeriesNames: Record<number, () => string> = {
+    [OccupationStatus.VACANT]: () => this.lang.map.vacant,
+    [OccupationStatus.OCCUPIED]: () => this.lang.map.occupied,
   };
 
   areaLabel = (item: { kpiVal: number; zoneNo: number }) =>
