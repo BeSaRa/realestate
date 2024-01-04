@@ -403,4 +403,6 @@ export interface LangKeysContract {
   rent: string;
   month: string;
   all: string;
+  sell_price_forecasting: string;
+  monthly_rent_value_forecasting: string;
 }
