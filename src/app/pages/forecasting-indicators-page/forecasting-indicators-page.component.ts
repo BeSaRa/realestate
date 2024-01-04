@@ -1,18 +1,18 @@
-import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ExtraHeaderPortalBridgeDirective } from '@directives/extra-header-portal-bridge.directive';
-import { TranslationService } from '@services/translation.service';
-import { SelectInputComponent } from '@components/select-input/select-input.component';
+import { Component, OnInit, inject } from '@angular/core';
 import { AbstractControl, ReactiveFormsModule, UntypedFormBuilder } from '@angular/forms';
-import { LookupService } from '@services/lookup.service';
-import { Lookup } from '@models/lookup';
-import { OnDestroyMixin } from '@mixins/on-destroy-mixin';
-import { combineLatest, takeUntil } from 'rxjs';
-import { ForecastingChartComponent } from '@components/forecasting-chart/forecasting-chart.component';
-import { UrlService } from '@services/url.service';
-import { CriteriaSpecificTerms } from '@models/criteria-specific-terms';
-import { CriteriaContract } from '@contracts/criteria-contract';
 import { ButtonComponent } from '@components/button/button.component';
+import { ForecastingChartComponent } from '@components/forecasting-chart/forecasting-chart.component';
+import { SelectInputComponent } from '@components/select-input/select-input.component';
+import { CriteriaContract } from '@contracts/criteria-contract';
+import { ExtraHeaderPortalBridgeDirective } from '@directives/extra-header-portal-bridge.directive';
+import { OnDestroyMixin } from '@mixins/on-destroy-mixin';
+import { CriteriaSpecificTerms } from '@models/criteria-specific-terms';
+import { Lookup } from '@models/lookup';
+import { LookupService } from '@services/lookup.service';
+import { TranslationService } from '@services/translation.service';
+import { UrlService } from '@services/url.service';
+import { takeUntil } from 'rxjs';
 
 @Component({
   selector: 'app-forecasting-indicators-page',
@@ -91,7 +91,7 @@ export default class ForecastingIndicatorsPageComponent extends OnDestroyMixin(c
 
   setDefaultValues() {
     this.sellFilter.patchValue({ municipalityId: 4, areaCode: 765, purposeId: 1, propertyTypeId: 1 });
-    this.rentFilter.patchValue({ municipalityId: 1, zoneId: 10, purposeId: 1, propertyTypeId: 40 });
+    this.rentFilter.patchValue({ municipalityId: 1, zoneId: 14, purposeId: 1, propertyTypeId: 39 });
     this.updateCriteria();
   }
 
