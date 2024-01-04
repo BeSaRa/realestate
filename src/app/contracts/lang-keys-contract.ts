@@ -402,4 +402,5 @@ export interface LangKeysContract {
 
   rent: string;
   month: string;
+  all: string;
 }

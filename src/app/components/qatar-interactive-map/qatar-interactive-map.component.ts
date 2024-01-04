@@ -25,6 +25,7 @@ export class QatarInteractiveMapComponent implements OnChanges, OnInit {
   ];
   @Input({ required: true }) unit!: string;
   @Input() useOVMunicipalityLookups = false;
+  @Input() enableAllChoice = false;
 
   @Output() selectedMunicipalityChanged = new EventEmitter<KpiBaseModel & { municipalityId: number }>();
 
@@ -75,12 +76,12 @@ export class QatarInteractiveMapComponent implements OnChanges, OnInit {
   }
 
   getLabel() {
-    return this.seriesData[this.selectedSeriesIndex].label;
+    return this.selectedSeriesIndex === -1 ? this.lang.map.all : this.seriesData[this.selectedSeriesIndex].label;
   }
 
   onMunicipalityClick(municipality: KpiBaseModel & { municipalityId: number }) {
     if (
-      this.seriesData[this.selectedSeriesIndex].data.findIndex(
+      this.seriesData[this.selectedSeriesIndex === -1 ? 0 : this.selectedSeriesIndex].data.findIndex(
         (item) => item.municipalityId === municipality.municipalityId
       ) === -1
     )
@@ -94,11 +95,22 @@ export class QatarInteractiveMapComponent implements OnChanges, OnInit {
       return {
         ...acc,
         [cur.id]:
-          this.seriesData[this.selectedSeriesIndex].data?.find((m) => m.municipalityId === cur.id) ??
-          ({
-            municipalityId: cur.id,
-            getKpiVal: () => 0,
-          } as KpiBaseModel & { municipalityId: number }),
+          this.selectedSeriesIndex !== -1
+            ? this.seriesData[this.selectedSeriesIndex].data?.find((m) => m.municipalityId === cur.id) ??
+              ({
+                municipalityId: cur.id,
+                getKpiVal: () => 0,
+              } as KpiBaseModel & { municipalityId: number })
+            : ({
+                municipalityId: cur.id,
+                getKpiVal: () => {
+                  let val = 0;
+                  this.seriesData.forEach((s) => {
+                    val += s.data?.find((m) => m.municipalityId === cur.id)?.getKpiVal() ?? 0;
+                  });
+                  return val;
+                },
+              } as KpiBaseModel & { municipalityId: number }),
       };
     }, {} as Record<number, KpiBaseModel & { municipalityId: number }>);
   }
