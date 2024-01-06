@@ -319,7 +319,10 @@
     </ng-container>
   </ng-container>
 </div>
-<div *ngIf="filterMessages.length" class="flex items-center justify-start gap-2 flex-wrap">
+<div *ngIf="filterMessages.length || isOV()" class="flex items-center justify-start gap-2 flex-wrap">
+  <p *ngIf="isOV()" class="bg-sand py-1 px-2 rounded text-primary font-bold">
+    {{ lang.map.notice }}: {{ lang.map.displayed_data_is_for_the_last_month_of_the_selected_time_period }}
+  </p>
   <p *ngFor="let message of filterMessages" class="bg-sand py-1 px-2 rounded text-primary font-bold">
     {{ message.getMessage() }}
   </p>
