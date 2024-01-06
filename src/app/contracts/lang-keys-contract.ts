@@ -407,4 +407,5 @@ export interface LangKeysContract {
   monthly_rent_value_forecasting: string;
   area: string;
   show_location: string;
+  displayed_data_is_for_the_last_month_of_the_selected_time_period: string;
 }
