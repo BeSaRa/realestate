@@ -17,4 +17,12 @@ export class BrokerDetailsPopupComponent {
   lang = inject(TranslationService);
   brokerData: Broker = inject(MAT_DIALOG_DATA);
   ref = inject(MatDialogRef);
+
+  get href() {
+    return `https://geoportal.gisqatar.org.qa/inwani/index.html?zone=${this.brokerData.zoneNo}&street=${this.brokerData.streetNo}&building=${this.brokerData.buuildingNo}`;
+  }
+
+  onShowLocation() {
+    window.open(this.href, '_blank');
+  }
 }
