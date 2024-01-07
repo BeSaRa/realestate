@@ -22,53 +22,61 @@
     </div>
 
     <div class="md:w-[200px] flex md:flex-col justify-center gap-4">
-      <a
-        class="p-2 bg-secondary text-white text-center rounded-sm transition-all hover:brightness-90"
-        href="tel:{{ brokerData.brokerPhone1 }}"
-        >{{ lang.map.call_broker }}</a
-      >
-      <a
-        class="p-2 bg-secondary text-white text-center rounded-sm transition-all hover:brightness-90"
-        href="mailto:{{ brokerData.brokerEmail }}"
-        >{{ lang.map.mail_broker }}</a
-      >
+      <div class="bg-[#2F4775] border-4 border-sand pt-1 pb-2 rounded-lg">
+        <div class="px-6">
+          <div class="flex justify-center text-white text-sm mb-1">
+            <span>{{ lang.map.building_number }}</span>
+          </div>
+          <div class="flex items-center justify-center py-1 bg-white rounded-md border-secondary text-xl font-bold">
+            {{ brokerData.buuildingNo }}
+          </div>
+        </div>
+        <div class="h-0 w-full mt-2 border-b-4 border-sand"></div>
+        <div class="grid grid-cols-2 gap-2 mt-2 px-6">
+          <div>
+            <div class="flex justify-center text-white text-sm mb-1">
+              <span>{{ lang.map.street }}</span>
+            </div>
+            <div class="flex items-center justify-center py-1 bg-white rounded-md border-secondary text-xl font-bold">
+              {{ brokerData.streetNo }}
+            </div>
+          </div>
+          <div>
+            <div class="flex justify-center text-white text-sm mb-1">
+              <span>{{ lang.map.area }}</span>
+            </div>
+            <div class="flex items-center justify-center py-1 bg-white rounded-md border-secondary text-xl font-bold">
+              {{ brokerData.zoneNo }}
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
-  <div class="my-4 flex items-center justify-center">
-    <div class="bg-[#2F4775] border-4 border-sand py-2 px-3 rounded-lg flex justify-center items-center gap-6">
-      <div class="flex justify-center items-center gap-2">
-        <span class="text-white">{{ lang.map.building_number }}</span>
-        <span
-          class="min-w-[50px] flex items-center justify-center py-1 bg-white rounded-md border-secondary text-xl font-bold">
-          {{ brokerData.buuildingNo }}
-        </span>
-      </div>
-      <!-- <div class="h-0 w-full mt-2 border-b-4 border-sand"></div> -->
 
-      <div class="flex justify-center items-center gap-2">
-        <span class="text-white">{{ lang.map.street }}</span>
-        <span
-          class="min-w-[50px] flex items-center justify-center py-1 bg-white rounded-md border-secondary text-xl font-bold">
-          {{ brokerData.streetNo }}
-        </span>
-      </div>
-      <div class="flex justify-center items-center gap-2">
-        <span class="text-white">{{ lang.map.area }}</span>
-        <span
-          class="min-w-[50px] flex items-center justify-center py-1 bg-white rounded-md border-secondary text-xl font-bold">
-          {{ brokerData.zoneNo }}
-        </span>
-      </div>
-      <app-button buttonStyle="secondary" (click)="onShowLocation()">
-        {{ lang.map.show_location }}
-      </app-button>
-    </div>
-    <!-- <span class="block h-0 w-full my-6 border border-primary/20"></span> -->
-    <!-- <p class="text-secondary font-bold text-xl">{{ lang.map.about }} {{ brokerData.getCompanyName() }}</p> -->
+  <!-- <span class="block h-0 w-full my-6 border border-primary/20"></span> -->
+  <!-- <p class="text-secondary font-bold text-xl">{{ lang.map.about }} {{ brokerData.getCompanyName() }}</p> -->
 
-    <!-- <p class="mt-4 text-primary/80 max-w-[900px]">{{ brokerData.getDescription() }}</p> -->
-  </div>
+  <!-- <p class="mt-4 text-primary/80 max-w-[900px]">{{ brokerData.getDescription() }}</p> -->
 </div>
-<div class="dialog-footer">
+<div class="border border-t p-4 space-x-4 rtl:space-x-reverse flex items-center justify-between">
+  <div class="flex items-center justify-center flex-wrap gap-4">
+    <a
+      class="p-2 bg-secondary text-sm text-white text-center rounded-sm transition-all hover:brightness-90"
+      href="tel:{{ brokerData.brokerPhone1 }}"
+      >{{ lang.map.call_broker }}</a
+    >
+    <a
+      class="p-2 bg-secondary text-sm text-white text-center rounded-sm transition-all hover:brightness-90"
+      href="mailto:{{ brokerData.brokerEmail }}"
+      >{{ lang.map.mail_broker }}</a
+    >
+    <a
+      class="p-2 bg-secondary text-sm text-white text-center rounded-sm transition-all hover:brightness-90"
+      [href]="href"
+      target="_blank"
+      >{{ lang.map.show_location }}</a
+    >
+  </div>
   <app-button (click)="ref.close()" buttonStyle="primary">{{ lang.map.close }}</app-button>
 </div>

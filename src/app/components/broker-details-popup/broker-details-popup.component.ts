@@ -21,8 +21,4 @@ export class BrokerDetailsPopupComponent {
   get href() {
     return `https://geoportal.gisqatar.org.qa/inwani/index.html?zone=${this.brokerData.zoneNo}&street=${this.brokerData.streetNo}&building=${this.brokerData.buuildingNo}`;
   }
-
-  onShowLocation() {
-    window.open(this.href, '_blank');
-  }
 }
