@@ -53,6 +53,7 @@
               "src/styles.scss"
             ],
             "scripts": [
+              "src/scripts/google.js",
               "node_modules/apexcharts/dist/apexcharts.min.js"
             ]
           },
