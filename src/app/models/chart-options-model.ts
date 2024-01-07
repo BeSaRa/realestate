@@ -142,13 +142,13 @@ export class ChartOptionsModel extends ClonerMixin(class {}) implements PartialC
     return this;
   }
 
-  addDurationCustomTooltip(
+  addCustomTooltip(
     customTooltip: (opts: { seriesIndex: number; dataPointIndex: number }) => string | undefined,
-    isMinMaxAvg: boolean
+    isShared: boolean
   ) {
     this.tooltip = {
       ...(this.tooltip ?? {}),
-      shared: isMinMaxAvg,
+      shared: isShared,
       custom: customTooltip,
     };
     return this;
