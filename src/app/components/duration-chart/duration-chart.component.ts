@@ -332,7 +332,7 @@ export class DurationChartComponent extends OnDestroyMixin(class {}) implements 
         )
         .addAxisYFormatter((val, opts) => this.appChartTypesService.axisYFormatter({ val, opts }, this.rootData))
         .addCustomToolbarOptions()
-        .addDurationCustomTooltip(this._durationCustomTooltip, this.isMinMaxAvgBar);
+        .addCustomTooltip(this._durationCustomTooltip, this.isMinMaxAvgBar);
     });
   }
 

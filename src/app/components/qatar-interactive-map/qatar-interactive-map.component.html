@@ -71,7 +71,11 @@
       </div>
       <div class="flex justify-between items-end px-2 py-1 gap-2">
         <span>{{ getLabel() }}: </span>
-        <span class="font-bold">{{ getFormatedValue(getSelectedMunicipality().getKpiVal()) }}</span>
+        <span class="font-bold">
+          {{ getFormatedValue(getSelectedMunicipality().getKpiVal()) }} ({{
+            getSelectedMunicipality().getKpiVal() / sum | percent
+          }})</span
+        >
       </div>
     </div>
     <div class="flex justify-end gap-2 flex-1">
@@ -102,6 +106,8 @@
   </div>
   <div class="flex justify-between px-2 py-1 gap-2">
     <span>{{ getLabel() }}: </span>
-    <span class="font-bold">{{ getFormatedValue(municipality.getKpiVal()) }}</span>
+    <span class="font-bold"
+      >{{ getFormatedValue(municipality.getKpiVal()) }} ({{ municipality.getKpiVal() / sum | percent }})</span
+    >
   </div>
 </ng-template>

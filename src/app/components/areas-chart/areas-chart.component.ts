@@ -53,6 +53,8 @@ export class AreasChartComponent extends OnDestroyMixin(class {}) implements OnC
   seriesData: Record<number, KpiBaseModel[]> = {};
   seriesDataLength = 0;
 
+  seriesSumData: number[] = [];
+
   chartOptions = new ChartOptionsModel().clone<ChartOptionsModel>(this.appChartTypesService.mainChartOptions);
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -140,6 +142,10 @@ export class AreasChartComponent extends OnDestroyMixin(class {}) implements OnC
       .subscribe((data) => {
         this.seriesData = data;
         this.seriesDataLength = data[Object.keys(this.seriesNames)[0] as unknown as number].length;
+        this.seriesSumData = Object.keys(this.seriesData).map((key) => {
+          return this.seriesData[key as unknown as number].reduce((acc, cur) => (acc += cur.getKpiVal()), 0);
+        });
+
         this.updateChartOptions();
       });
   }
@@ -205,7 +211,8 @@ export class AreasChartComponent extends OnDestroyMixin(class {}) implements OnC
         this.appChartTypesService.dataLabelsFormatter({ val, opts }, this.rootData)
       )
       .addAxisYFormatter((val, opts) => this.appChartTypesService.axisYFormatter({ val, opts }, this.rootData))
-      .addCustomToolbarOptions();
+      .addCustomToolbarOptions()
+      .addCustomTooltip(this._getCustomTooltipTemplate, true);
   }
 
   private _listenToLangChange() {
@@ -229,4 +236,41 @@ export class AreasChartComponent extends OnDestroyMixin(class {}) implements OnC
         });
     });
   }
+
+  private _getCustomTooltipTemplate = (opts: { seriesIndex: number; dataPointIndex: number }) => {
+    const _colors = [AppColors.PRIMARY, AppColors.SECONDARY];
+    return `
+      <div dir="${
+        this.lang.isLtr ? 'ltr' : 'rtl'
+      }" class="apexcharts-tooltip-title" style="font-family: Helvetica, Arial, sans-serif; font-size: 12px">${this._getLabel(
+      this.seriesData[Object.keys(this.seriesData)[0] as unknown as number][opts.dataPointIndex]
+    )}</div>
+      <div dir="${
+        this.lang.isLtr ? 'ltr' : 'rtl'
+      }" class="apexcharts-tooltip-series-group apexcharts-active" style="order: 1; display: flex">
+        <div class="apexcharts-tooltip-text" style="font-family: Helvetica, Arial, sans-serif; font-size: 12px">
+          ${Object.keys(this.seriesData)
+            .map(
+              (key, index) => `
+          <div class="apexcharts-tooltip-y-group flex justify-between items-center gap-2">
+            <span class="apexcharts-tooltip-marker" style="background-color: ${_colors[index % 2]};"></span>
+            <span class="apexcharts-tooltip-text-y-label">${this.seriesNames[key as unknown as number]() ?? ''}: </span>
+            <span class="apexcharts-tooltip-text-y-value">${this.appChartTypesService.axisYFormatter(
+              {
+                val: this.seriesData[key as unknown as number][opts.dataPointIndex].getKpiVal(),
+              },
+              this.rootData
+            )} (${(
+                (this.seriesData[key as unknown as number][opts.dataPointIndex].getKpiVal() /
+                  this.seriesSumData[key as unknown as number]) *
+                100
+              ).toFixed(0)}%)</span>
+          </div>
+          `
+            )
+            .join('')}
+        </div>
+      </div>
+    `;
+  };
 }

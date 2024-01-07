@@ -38,6 +38,7 @@ export class QatarInteractiveMapComponent implements OnChanges, OnInit {
   municipalitiesDataMap = this._updateMunicipalitiesDataMap();
 
   minMaxKpis = minMaxAvg(Object.values(this.municipalitiesDataMap).map((m) => m.getKpiVal()));
+  sum = this._updateSum();
 
   selectedSeriesControl = new FormControl<number>(0);
   get selectedSeriesIndex() {
@@ -47,12 +48,14 @@ export class QatarInteractiveMapComponent implements OnChanges, OnInit {
   ngOnChanges(): void {
     this.municipalitiesSvgPath = this._prepareMunicipalitySvgPath();
     this.municipalitiesDataMap = this._updateMunicipalitiesDataMap();
+    this.sum = this._updateSum();
     this.minMaxKpis = minMaxAvg(Object.values(this.municipalitiesDataMap).map((m) => m.getKpiVal()));
   }
 
   ngOnInit(): void {
     this.selectedSeriesControl.valueChanges.subscribe(() => {
       this.municipalitiesDataMap = this._updateMunicipalitiesDataMap();
+      this.sum = this._updateSum();
       this.minMaxKpis = minMaxAvg(Object.values(this.municipalitiesDataMap).map((m) => m.getKpiVal()));
     });
   }
@@ -113,6 +116,12 @@ export class QatarInteractiveMapComponent implements OnChanges, OnInit {
               } as KpiBaseModel & { municipalityId: number }),
       };
     }, {} as Record<number, KpiBaseModel & { municipalityId: number }>);
+  }
+
+  private _updateSum() {
+    return Object.values(this.municipalitiesDataMap)
+      .map((m) => m.getKpiVal())
+      .reduce((acc, cur) => (acc += cur), 0);
   }
 
   private _prepareMunicipalitySvgPath() {
