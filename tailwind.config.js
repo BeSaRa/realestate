@@ -11,6 +11,7 @@ module.exports = {
         jungle: "#259C80",
         "indigo-rainbow": "#1A4161",
         "primary-light": "#ae4967",
+        silver: "#B2B0B0",
       },
       animation: {
         sticky: "sticky .65s cubic-bezier(0.23, 1, 0.32, 1) both",
