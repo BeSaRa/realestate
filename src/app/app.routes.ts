@@ -90,6 +90,10 @@ export const routes: Routes = [
     loadComponent: () => import('@pages/forecasting-indicators-page/forecasting-indicators-page.component'),
   },
   {
+    path: 'realestate-flyers',
+    loadComponent: () => import('@pages/flyers-page/flyers-page.component'),
+  },
+  {
     path: 'inputs',
     loadComponent: () => import('@pages/inputs-page/inputs-page.component'),
   },
