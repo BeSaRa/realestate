@@ -66,7 +66,7 @@
           class="y-label fill-primary text-[3px] transition-all group-hover:brightness-50"
           [attr.x]="point.x"
           [attr.y]="point.y - 3"
-          [attr.dx]="lang.isLtr ? '-3' : '3'">
+          text-anchor="middle">
           {{ getFormattedValue(realPoints[i].y) }}
         </text>
       </g>

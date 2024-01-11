@@ -429,4 +429,8 @@ export interface LangKeysContract {
   ownership_restrictions: string;
   from_year: string;
   documentation_date: string;
+
+  indicators: string;
+  total_number_of_contracts: string;
+  total_value_of_contracts: string;
 }
