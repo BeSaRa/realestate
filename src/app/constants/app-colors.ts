@@ -21,5 +21,5 @@ export const AppColors = {
   LEAD_80: '#757575',
   LEAD_60: '#959595',
   LEAD_40: '#b5b5b5',
-  SILVER: '#B2B0B0',
+  SILVER: '#ADADAD',
 };
