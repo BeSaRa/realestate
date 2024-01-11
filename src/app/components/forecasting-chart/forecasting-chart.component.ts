@@ -97,12 +97,12 @@ export class ForecastingChartComponent implements OnChanges {
   }
 
   private _getInitialPoints() {
-    return [new Point(2018, 0), new Point(2022, 0), new Point(2023, 0), new Point(2028, 0)];
+    return [new Point(2019, 0), new Point(2022, 0), new Point(2023, 0), new Point(2028, 0)];
   }
 
   private _getPredictedPoints(data: ForecastData) {
     return [
-      new Point(2018, data.kpiPast ?? 0),
+      new Point(2019, data.kpiPast ?? 0),
       new Point(2022, data.kpiPreviousYear ?? 0),
       new Point(2023, data.kpiCurrent ?? 0),
       new Point(2028, data.kpiPredicated ?? 0),
