@@ -82,6 +82,7 @@ export const routes: Routes = [
   },
   {
     path: 'forecasting-indicators',
+    canActivate: [authGuard('/forecasting-indicators')],
     loadComponent: () => import('@pages/forecasting-indicators-page/forecasting-indicators-page.component'),
   },
   {
