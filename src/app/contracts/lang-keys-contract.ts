@@ -408,4 +408,18 @@ export interface LangKeysContract {
   area: string;
   show_location: string;
   displayed_data_is_for_the_last_month_of_the_selected_time_period: string;
+
+  first_quarter: string;
+  second_quarter: string;
+  third_quarter: string;
+  last_quarter: string;
+  for_year: string;
+  in: string;
+
+  total_number_of_sell_transactions: string;
+  total_value_of_sell_transactions: string;
+  total_number_of_rent_transactions: string;
+  total_value_of_rent_transactions: string;
+  total_number_of_mort_transactions: string;
+  total_value_of_mort_transactions: string;
 }

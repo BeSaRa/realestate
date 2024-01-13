@@ -34,6 +34,7 @@ import { map, Observable } from 'rxjs';
 import { DialogService } from './dialog.service';
 import { LookupService } from './lookup.service';
 import { TranslationService } from './translation.service';
+import { HomeSlider } from '@models/home-slider';
 
 @Injectable({
   providedIn: 'root',
@@ -141,6 +142,11 @@ export class DashboardService extends RegisterServiceMixin(class {}) implements 
   @CastResponse(() => CompositeTransaction)
   loadComponsiteTransacitons(dataUrl: string, criteria: Partial<RentCriteriaContract>) {
     return this.http.post<CompositeTransaction[]>(dataUrl, criteria);
+  }
+
+  @CastResponse(() => HomeSlider)
+  loadHomeSliderData(dataUrl: string) {
+    return this.http.get<HomeSlider[]>(dataUrl);
   }
 
   openRentStatsChartDialog(

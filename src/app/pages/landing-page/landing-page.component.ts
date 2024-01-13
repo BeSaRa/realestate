@@ -11,13 +11,11 @@ import { NewsletterFormComponent } from '@components/newsletter-form/newsletter-
 import { SliderComponent, SliderTemplateDirective } from '@components/slider/slider.component';
 import { VotingFormComponent } from '@components/voting-form/voting-form.component';
 import { ExtraHeaderPortalBridgeDirective } from '@directives/extra-header-portal-bridge.directive';
-import { HomeSlider } from '@models/home-slider';
-import { DirectusClientService } from '@services/directus-client.service';
-import { HomeSliderService } from '@services/home-slider.service';
+import { OnDestroyMixin } from '@mixins/on-destroy-mixin';
+import { DashboardService } from '@services/dashboard.service';
 import { NewsService } from '@services/news.service';
 import { TranslationService } from '@services/translation.service';
-import { map, Observable } from 'rxjs';
-import { chunks } from '@utils/utils';
+import { UrlService } from '@services/url.service';
 
 @Component({
   selector: 'app-landing-page',
@@ -41,15 +39,13 @@ import { chunks } from '@utils/utils';
   templateUrl: './landing-page.component.html',
   styleUrls: ['./landing-page.component.scss'],
 })
-export default class LandingPageComponent {
+export default class LandingPageComponent extends OnDestroyMixin(class {}) {
   newsService = inject(NewsService);
-  service = inject(DirectusClientService);
-  newsData = this.newsService.load({ limit: 4 });
   lang = inject(TranslationService);
-  homeSliderService = inject(HomeSliderService);
+  urlService = inject(UrlService);
+  dashboardService = inject(DashboardService);
 
-  homeSliderContent$: Observable<HomeSlider[][]> = this.homeSliderService.load().pipe(
-    map((data) => data.map((item) => new HomeSlider().clone<HomeSlider>(item))),
-    map((slides) => [...chunks(slides, 2)])
-  );
+  sliderContent$ = this.dashboardService.loadHomeSliderData(this.urlService.URLS.HOME_SLIDER);
+
+  newsData = this.newsService.load({ limit: 4 });
 }

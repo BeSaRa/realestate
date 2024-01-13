@@ -172,6 +172,10 @@ const brokerEndpoints = {
   BROKER_KPI_TRANSACTIONS: 'BROKER|transactions',
 };
 
+const configEndpoints = {
+  HOME_SLIDER: 'BE|kpi/config/comments',
+};
+
 export const cmsEndpoints = {
   TRANSLATION: 'translations',
   ADMIN: 'admin/login',
@@ -199,6 +203,7 @@ export const EndPoints = {
   ...ownerEndpoints,
   ...ovEndpoints,
   ...brokerEndpoints,
+  ...configEndpoints,
 };
 
 export type EndpointsType = typeof EndPoints;
