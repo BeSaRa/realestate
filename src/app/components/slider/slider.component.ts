@@ -29,7 +29,7 @@ export class SliderComponent implements OnInit {
     this.interval$.subscribe();
   }
 
-  @Input({ required: true }) list!: HomeSlider[][];
+  @Input({ required: true }) list!: HomeSlider[];
 
   @ContentChild(SliderTemplateDirective) slideTemplateRef!: SliderTemplateDirective;
 
