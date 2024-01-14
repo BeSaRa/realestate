@@ -55,7 +55,7 @@ export class UserService extends RegisterServiceMixin(class {}) implements Servi
   _loadCurrentUserProfile(): Observable<UserInfo> {
     return this.http.get<UserInfo>(this.urlService.URLS.USERS + '/me', {
       params: new HttpParams({
-        fromString: qs.stringify({ fields: ['*', 'role.id', 'role.admins_access', 'role.name'] }),
+        fromString: qs.stringify({ fields: ['*', 'role.id', 'role.admin_access', 'role.name'] }),
       }),
     });
   }
