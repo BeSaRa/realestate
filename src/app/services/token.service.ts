@@ -15,6 +15,7 @@ export class TokenService {
   private refresh$ = new Subject<AuthenticationMode>();
   private mode: AuthenticationMode = 'json';
   refreshTokenTrigger$ = this.refresh$.asObservable();
+  private _guestToken = '';
 
   getToken(): string | null {
     return this.accessToken;
@@ -96,5 +97,13 @@ export class TokenService {
     this.expires = expires;
     this.expireAt = expireAt;
     this.accessToken = access_token;
+  }
+
+  setGuestToken(value: string) {
+    this._guestToken = value;
+  }
+
+  getGuestToken(): string {
+    return this._guestToken;
   }
 }

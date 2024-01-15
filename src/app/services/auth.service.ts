@@ -147,4 +147,12 @@ export class AuthService {
     this.tokenService.setToken(data.access_token, data.refresh_token, data.expires);
     this.login$.next();
   }
+
+  getGuestToken(): Observable<string> {
+    return this.http.get<string>(this.urlService.URLS.AUTH_GUEST).pipe(
+      tap((token) => {
+        this.tokenService.setGuestToken(token);
+      })
+    );
+  }
 }

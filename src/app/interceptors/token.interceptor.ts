@@ -8,14 +8,23 @@ export class TokenInterceptor implements HttpInterceptor {
   tokenService = inject(TokenService);
 
   intercept(req: HttpRequest<object>, next: HttpHandler): Observable<HttpEvent<object>> {
+    const isBackendURL = this.isBackendURL(req.url);
     return next.handle(
       req.clone({
         setHeaders: {
           Authorization:
             'Bearer ' +
-            (this.tokenService.getToken() ? this.tokenService.getToken() : 'lyHWSTHj1SBm9IRECnLAHviNHnXGaS27'),
+            (isBackendURL
+              ? this.tokenService.getToken()
+                ? this.tokenService.getToken()
+                : this.tokenService.getGuestToken()
+              : 'lyHWSTHj1SBm9IRECnLAHviNHnXGaS27'),
         },
       })
     );
+  }
+
+  isBackendURL(url: string): boolean {
+    return url.includes('mme-services');
   }
 }
