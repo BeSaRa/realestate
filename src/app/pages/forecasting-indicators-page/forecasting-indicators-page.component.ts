@@ -90,7 +90,7 @@ export default class ForecastingIndicatorsPageComponent extends OnDestroyMixin(c
   }
 
   setDefaultValues() {
-    this.sellFilter.patchValue({ municipalityId: 4, areaCode: 765, purposeId: 1, propertyTypeId: 1 });
+    this.sellFilter.patchValue({ municipalityId: 4, areaCode: 12, purposeId: 4, propertyTypeId: 1 });
     this.rentFilter.patchValue({ municipalityId: 1, zoneId: 14, purposeId: 1, propertyTypeId: 39 });
     this.updateCriteria();
   }
