@@ -137,7 +137,7 @@
         <ng-container appTableColumnTemplate [columnName]="pageSections.RENT_TRANSACTIONS_TABLE.columns.ISSUE_DATE"
           ><span *appTableColumnHeaderTemplate>{{ lang.map.issue_date }}</span>
           <span *appTableColumnCellTemplate="let item; dataType: getTransactionType()">{{
-            item.issueDate | date : "YYYY-MM-dd"
+            (item.issueDate && item.issueDate.slice(0, 10)) || "---"
           }}</span></ng-container
         >
         <ng-container
@@ -145,7 +145,7 @@
           [columnName]="pageSections.RENT_TRANSACTIONS_TABLE.columns.CONTRACT_START_DATE"
           ><span *appTableColumnHeaderTemplate>{{ lang.map.contract_start_date }}</span>
           <span *appTableColumnCellTemplate="let item; dataType: getTransactionType()">{{
-            item.startDate | date : "YYYY-MM-dd"
+            (item.startDate && item.startDate.slice(0, 10)) || "---"
           }}</span></ng-container
         >
         <ng-container
@@ -153,7 +153,7 @@
           [columnName]="pageSections.RENT_TRANSACTIONS_TABLE.columns.CONTRACT_END_DATE"
           ><span *appTableColumnHeaderTemplate>{{ lang.map.contract_end_date }}</span
           ><span *appTableColumnCellTemplate="let item; dataType: getTransactionType()">{{
-            item.endDate | date : "YYYY-MM-dd"
+            (item.endDate && item.endDate.slice(0, 10)) || "---"
           }}</span></ng-container
         >
       </app-table>

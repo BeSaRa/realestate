@@ -218,7 +218,7 @@
         [columnName]="pageSections.OCCUPATION_TRANSACTIONS_TABLE.columns.RECORD_DATE">
         <span *appTableColumnHeaderTemplate>{{ lang.map.record_date }}</span>
         <span *appTableColumnCellTemplate="let item; dataType: getTransactionType()">
-          {{ item.rowDate | date : "YYYY-MM-dd" }}</span
+          {{ (item.rowDate && item.rowDate.slice(0, 10)) || "---" }}</span
         >
       </ng-container>
       <ng-container

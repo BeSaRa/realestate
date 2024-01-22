@@ -106,7 +106,7 @@
             </div>
           </div>
           <div *appTableColumnCellTemplate="let item; dataType: getTransactionType()" class="text-center">
-            <p>{{ item.issueDate | date : "YYYY-MM-dd" }}</p>
+            <p>{{ (item.issueDate && item.issueDate.slice(0, 10)) || "---" }}</p>
             <!-- <p class="font-bold">{{ item.seller || "أفراد" }}</p> -->
           </div>
         </ng-container>
