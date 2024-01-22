@@ -143,7 +143,7 @@ export class AreasChartComponent extends OnDestroyMixin(class {}) implements OnC
         this.seriesData = data;
         this.seriesDataLength = data[Object.keys(this.seriesNames)[0] as unknown as number].length;
         this.seriesSumData = Object.keys(this.seriesData).map((key) => {
-          return this.seriesData[key as unknown as number].reduce((acc, cur) => (acc += cur.getKpiVal()), 0);
+          return this.seriesData[key as unknown as number].reduce((acc, cur) => (acc += cur?.getKpiVal() ?? 0), 0);
         });
 
         this.updateChartOptions();
@@ -257,11 +257,11 @@ export class AreasChartComponent extends OnDestroyMixin(class {}) implements OnC
             <span class="apexcharts-tooltip-text-y-label">${this.seriesNames[key as unknown as number]() ?? ''}: </span>
             <span class="apexcharts-tooltip-text-y-value">${this.appChartTypesService.axisYFormatter(
               {
-                val: this.seriesData[key as unknown as number][opts.dataPointIndex].getKpiVal(),
+                val: this.seriesData[key as unknown as number][opts.dataPointIndex]?.getKpiVal() ?? 0,
               },
               this.rootData
             )} (${(
-                (this.seriesData[key as unknown as number][opts.dataPointIndex].getKpiVal() /
+                (this.seriesData[key as unknown as number][opts.dataPointIndex]?.getKpiVal() /
                   this.seriesSumData[key as unknown as number]) *
                 100
               ).toFixed(0)}%)</span>
