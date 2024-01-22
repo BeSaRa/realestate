@@ -282,7 +282,7 @@
             <span
               *appTableColumnCellTemplate="let item; dataType: getOwnershipTransactionType()"
               class="flex justify-center">
-              {{ item.docDate | date : "YYYY-MM-dd" }}
+              {{ (item.docDate && item.docDate.slice(0, 10)) || "---" }}
             </span>
           </ng-container>
         </app-table>

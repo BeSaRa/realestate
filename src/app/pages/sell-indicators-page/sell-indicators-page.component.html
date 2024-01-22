@@ -146,7 +146,7 @@
             </div>
           </div>
           <div *appTableColumnCellTemplate="let item; dataType: getTransactionType()" class="text-center">
-            <p>{{ item.issueDate | date : "YYYY-MM-dd" }}</p>
+            <p>{{ (item.issueDate && item.issueDate.slice(0, 10)) || "---" }}</p>
             <!-- Hide sold_by for now as client request Issue 60399 -->
             <!-- <p class="font-bold">{{ item.soldTo || "أفراد" }}</p> -->
           </div>
