@@ -39,7 +39,9 @@
     <div class="w-full md:w-3/4 flex flex-col justify-center items-center">
       <app-forecasting-chart
         class="relative w-full"
-        [title]="isSelectedTab('sell') ? lang.map.sell_price_forecasting : lang.map.monthly_rent_value_forecasting"
+        [title]="
+          isSelectedTab('sell') ? lang.map.square_foot_price_forecasting : lang.map.monthly_rent_value_forecasting
+        "
         [rootData]="isSelectedTab('sell') ? sellRootData : rentRootData"
         [filterCriteria]="criteria"
         [criteriaTerms]="citeriaTerms" />
