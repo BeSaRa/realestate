@@ -16,10 +16,12 @@ import {
   inject,
   runInInjectionContext,
 } from '@angular/core';
+import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { DateAdapter } from '@angular/material/core';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { ButtonComponent } from '@components/button/button.component';
 import { IconButtonComponent } from '@components/icon-button/icon-button.component';
+import { SelectInputComponent } from '@components/select-input/select-input.component';
 import { AppColors } from '@constants/app-colors';
 import { CriteriaContract } from '@contracts/criteria-contract';
 import { DurationDataContract } from '@contracts/duration-data-contract';
@@ -39,7 +41,7 @@ import { ScreenBreakpointsService } from '@services/screen-breakpoints.service';
 import { TranslationService } from '@services/translation.service';
 import { UnitsService } from '@services/units.service';
 import { UrlService } from '@services/url.service';
-import { minMaxAvg } from '@utils/utils';
+import { minMaxAvg, range } from '@utils/utils';
 import { ChartComponent, NgApexchartsModule } from 'ng-apexcharts';
 import { NgxMaskPipe } from 'ngx-mask';
 import { catchError, map, take, takeUntil, throwError } from 'rxjs';
@@ -55,6 +57,8 @@ import { catchError, map, take, takeUntil, throwError } from 'rxjs';
     FormatNumbersPipe,
     NgxMaskPipe,
     MatProgressSpinnerModule,
+    SelectInputComponent,
+    ReactiveFormsModule,
   ],
   templateUrl: './duration-chart.component.html',
   styleUrls: ['./duration-chart.component.scss'],
@@ -66,6 +70,7 @@ export class DurationChartComponent extends OnDestroyMixin(class {}) implements 
   @Input({ required: true }) rootData!: { chartDataUrl: string; hasPrice: boolean; hasSqUnit?: boolean };
   @Input() showSelectChartType = true;
   @Input() changeBarColorsAccordingToValue = false;
+  @Input() showStartYearFilter = false;
 
   @Output() isMonthltyDurationTypeEvent = new EventEmitter<boolean>();
 
@@ -110,6 +115,9 @@ export class DurationChartComponent extends OnDestroyMixin(class {}) implements 
 
   barColorsAccordingToValue: Record<number, string>[] = [];
 
+  yearsRange = [new Date().getFullYear()];
+  fromYearControl = new FormControl<number | null>(null);
+
   ngOnChanges(changes: SimpleChanges): void {
     if (
       (changes['rootData'] && changes['rootData'].currentValue !== changes['rootData'].previousValue) ||
@@ -129,6 +137,10 @@ export class DurationChartComponent extends OnDestroyMixin(class {}) implements 
       this._listenToScreenSizeChange();
       this._listenToUnitChange();
       this._listenToLangChange();
+
+      this.fromYearControl.valueChanges.pipe(takeUntil(this.destroy$)).subscribe(() => {
+        if (!this.isLoading) this._updateChartOptions();
+      });
     }, 0);
   }
 
@@ -177,7 +189,6 @@ export class DurationChartComponent extends OnDestroyMixin(class {}) implements 
         })
       )
       .subscribe((data) => {
-        this.durationDataLength = data.length;
         this.minMaxAvgChartData = minMaxAvg(data.map((item) => item.getKpiVal()));
         this.chartSeriesData = [
           {
@@ -209,7 +220,6 @@ export class DurationChartComponent extends OnDestroyMixin(class {}) implements 
         })
       )
       .subscribe((data) => {
-        this.durationDataLength = data.length;
         this.minMaxAvgChartData = minMaxAvg(data.map((d) => d.getKpiVal()));
         data.sort((a, b) => a.issuePeriod - b.issuePeriod);
         this.chartSeriesData = [
@@ -258,7 +268,6 @@ export class DurationChartComponent extends OnDestroyMixin(class {}) implements 
       .subscribe((data) => {
         if (this.changeBarColorsAccordingToValue) this._initializeBarColorsAccordingToValue(data);
 
-        this.durationDataLength = data[1].kpiValues.length;
         this.chartSeriesData = Object.keys(data).map((key) => ({
           name: data[key as unknown as number].period.getNames(),
           data: data[key as unknown as number].kpiValues.map((item) => ({
@@ -271,10 +280,25 @@ export class DurationChartComponent extends OnDestroyMixin(class {}) implements 
   }
 
   private _updateChartOptions() {
-    this.isLoading = false;
     if (!this.chartSeriesData.length) {
+      this.isLoading = false;
       return;
     }
+
+    if (this.isLoading && this.showStartYearFilter && this.selectedDurationType !== DurationEndpoints.MONTHLY) {
+      const _minMaxYears = minMaxAvg((this.chartSeriesData[0]?.data ?? []).map((item) => parseInt(item.x.toString())));
+      this.yearsRange = range(_minMaxYears.min, _minMaxYears.max);
+      if (!this.yearsRange.find((year) => year === parseInt(this.fromYearControl.value?.toString() ?? ''))) {
+        this.fromYearControl.setValue(null, { emitEvent: false });
+      }
+    }
+
+    this.isLoading = false;
+
+    if (this.selectedDurationType === DurationEndpoints.MONTHLY && this.showStartYearFilter) {
+      this.fromYearControl.disable({ emitEvent: false });
+      this.fromYearControl.setValue(null, { emitEvent: false });
+    } else this.fromYearControl.enable({ emitEvent: false });
 
     if (
       this.selectedDurationType === DurationEndpoints.HALFY ||
@@ -292,9 +316,27 @@ export class DurationChartComponent extends OnDestroyMixin(class {}) implements 
       }
     }
 
+    const _data: DurationSeriesDataContract[] = [];
+
+    this.chartSeriesData.forEach((s) => {
+      const _newSeries = structuredClone(s) as DurationSeriesDataContract;
+      if (
+        this.showStartYearFilter &&
+        this.selectedDurationType !== DurationEndpoints.MONTHLY &&
+        this.fromYearControl.value
+      ) {
+        _newSeries.data = _newSeries.data.filter((item) => {
+          return parseInt(item.x.toString()) >= (this.fromYearControl.value ?? 0);
+        });
+      }
+      _data.push(_newSeries);
+    });
+
+    this.durationDataLength = _data[0].data.length;
+
     const _seriesData = this.isMinMaxAvgBar
-      ? this.appChartTypesService.getSplittedSeriesChartOptions(this.chartSeriesData ?? [], [this.minMaxAvgChartData])
-      : { series: this.chartSeriesData ?? [] };
+      ? this.appChartTypesService.getSplittedSeriesChartOptions(_data ?? [], [this.minMaxAvgChartData])
+      : { series: _data ?? [] };
 
     setTimeout(() => {
       this.chart.first

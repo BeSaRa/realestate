@@ -426,4 +426,5 @@ export interface LangKeysContract {
   total_value_of_mort_transactions: string;
 
   ownership_restrictions: string;
+  from_year: string;
 }
