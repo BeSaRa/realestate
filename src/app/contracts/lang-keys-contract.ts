@@ -424,4 +424,6 @@ export interface LangKeysContract {
   total_value_of_rent_transactions: string;
   total_number_of_mort_transactions: string;
   total_value_of_mort_transactions: string;
+
+  ownership_restrictions: string;
 }

@@ -81,6 +81,7 @@ export const PagesSections = {
         OWNER_NAME: 'ownership-owner-name',
         OWNER_ID: 'ownership-owner-id',
         OWNER_SHARES: 'ownership-owner-shares',
+        OWNERSHIP_RESTRICTIONS: 'ownership-restrictions',
         DOC_DESCRIPTION: 'ownership-doc-description',
         DOC_DATE: 'ownership-doc-date',
       },
