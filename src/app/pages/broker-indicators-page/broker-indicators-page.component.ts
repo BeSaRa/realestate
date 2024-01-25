@@ -59,7 +59,6 @@ export default class BrokerIndicatorsPageComponent {
   private currentOffset = 0;
   visibleBrokersCount = 9;
   brokers: Broker[] = [];
-  filteredBrokers = this.brokers;
   brokersCount!: number;
   brokersCountToFetch = 9;
   brokerNameFilter = '';
@@ -82,8 +81,7 @@ export default class BrokerIndicatorsPageComponent {
       .pipe(take(1))
       .subscribe((brokers) => {
         this.brokers = brokers.transactionList;
-        this.filteredBrokers = this.brokers.filter((b) => b.validateFilter(this.brokerNameFilter));
-        this.visibleBrokersCount = Math.min(this.filteredBrokers.length, this.brokersCountToFetch);
+        this.visibleBrokersCount = Math.min(this.brokersCountToFetch, brokers.transactionList.length);
         this.brokersCount = brokers.count;
       });
   }
@@ -130,8 +128,8 @@ export default class BrokerIndicatorsPageComponent {
       )
       .subscribe((brokers) => {
         this.brokers.push(...brokers.transactionList);
-        this.filteredBrokers = this.brokers.filter((b) => b.validateFilter(this.brokerNameFilter));
+        this.brokers = this.brokers.filter((b) => b.validateFilter(this.brokerNameFilter));
       });
-    this.visibleBrokersCount += Math.min(this.brokersCountToFetch, this.filteredBrokers.length);
+    this.visibleBrokersCount = Math.min(this.visibleBrokersCount + this.brokersCountToFetch, this.brokersCount);
   }
 }

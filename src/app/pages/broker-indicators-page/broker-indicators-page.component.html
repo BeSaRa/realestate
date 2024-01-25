@@ -25,11 +25,8 @@
         }}</app-button>
       </div>
       <div class="mt-4 flex items-center justify-center flex-wrap gap-4">
-        <app-broker
-          *ngFor="let broker of filteredBrokers"
-          [broker]="broker"
-          [filterText]="brokerNameFilter"></app-broker>
-        <p class="text-xl text-primary font-bold" *ngIf="!filteredBrokers.length && brokerNameFilter && brokers.length">
+        <app-broker *ngFor="let broker of brokers" [broker]="broker" [filterText]="brokerNameFilter"></app-broker>
+        <p class="text-xl text-primary font-bold" *ngIf="!brokers.length && brokerNameFilter && brokers.length">
           "{{ lang.map.there_is_no_data_for_brokers_matching_the_name_specified_in_the_filter }}"
         </p>
         <p class="text-xl text-primary font-bold" *ngIf="!brokers.length">
