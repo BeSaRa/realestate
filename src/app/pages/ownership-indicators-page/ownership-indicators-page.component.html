@@ -223,7 +223,7 @@
           [dataLoadFn]="ownershipTransactionsLoadFn"
           [sortOptions]="[]"
           [tableGuardName]="pageSections.OWNERSHIP_TRANSACTIONS_TABLE.name"
-          minWidth="900px"
+          minWidth="1000px"
           headerBgColor="!bg-secondary">
           <ng-container
             appTableColumnTemplate
@@ -263,6 +263,18 @@
               *appTableColumnCellTemplate="let item; dataType: getOwnershipTransactionType()"
               class="flex justify-center">
               {{ item.ownerShares | number }}
+            </span>
+          </ng-container>
+          <ng-container
+            appTableColumnTemplate
+            [columnName]="pageSections.OWNERSHIP_TRANSACTIONS_TABLE.columns.OWNERSHIP_RESTRICTIONS">
+            <span *appTableColumnHeaderTemplate class="flex justify-center">
+              {{ lang.map.ownership_restrictions }}
+            </span>
+            <span
+              *appTableColumnCellTemplate="let item; dataType: getOwnershipTransactionType()"
+              class="flex justify-center">
+              {{ item.restr || "---" }}
             </span>
           </ng-container>
           <ng-container
