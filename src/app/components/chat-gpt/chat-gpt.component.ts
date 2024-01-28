@@ -5,7 +5,6 @@ import { animate, AnimationEvent, state, style, transition, trigger } from '@ang
 import { ChatGptService } from '@services/chat-gpt.service';
 import { MessageContract } from '@contracts/message-contract';
 import { FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
-import * as asTable from 'as-table';
 
 @Component({
   selector: 'app-chat-gpt',
@@ -115,7 +114,7 @@ export class ChatGptComponent {
         ...this.messages,
         ...[
           {
-            text: asTable(messages),
+            text: '',
             index: 0,
             logprobs: null,
             finishReason: 'length',

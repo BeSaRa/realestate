@@ -22,7 +22,7 @@
       "prefix": "app",
       "architect": {
         "build": {
-          "builder": "@angular-devkit/build-angular:browser",
+          "builder": "@angular-devkit/build-angular:application",
           "options": {
             "allowedCommonJsDependencies": [
               "apexcharts",
@@ -31,9 +31,11 @@
               "qs",
               "file-saver"
             ],
-            "outputPath": "dist/real-estate/browser",
+            "outputPath": "dist/real-estate",
             "index": "src/index.html",
-            "main": "src/main.ts",
+            "browser": "src/main.ts",
+            "prerender": false,
+            "ssr": false,
             "polyfills": [
               "zone.js"
             ],
@@ -74,9 +76,7 @@
               "outputHashing": "all"
             },
             "development": {
-              "buildOptimizer": false,
               "optimization": false,
-              "vendorChunk": true,
               "extractLicenses": false,
               "sourceMap": true,
               "namedChunks": true
@@ -88,10 +88,10 @@
           "builder": "@angular-devkit/build-angular:dev-server",
           "configurations": {
             "production": {
-              "browserTarget": "real-estate:build:production"
+              "buildTarget": "real-estate:build:production"
             },
             "development": {
-              "browserTarget": "real-estate:build:development"
+              "buildTarget": "real-estate:build:development"
             }
           },
           "defaultConfiguration": "development"
@@ -99,7 +99,7 @@
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "real-estate:build"
+            "buildTarget": "real-estate:build"
           }
         },
         "test": {
@@ -111,61 +111,6 @@
             ],
             "tsConfig": "tsconfig.spec.json"
           }
-        },
-        "server": {
-          "builder": "@angular-devkit/build-angular:server",
-          "options": {
-            "outputPath": "dist/real-estate/server",
-            "main": "server.ts",
-            "tsConfig": "tsconfig.server.json",
-            "inlineStyleLanguage": "scss"
-          },
-          "configurations": {
-            "production": {
-              "outputHashing": "media"
-            },
-            "development": {
-              "buildOptimizer": false,
-              "optimization": false,
-              "sourceMap": true,
-              "extractLicenses": false,
-              "vendorChunk": true
-            }
-          },
-          "defaultConfiguration": "production"
-        },
-        "serve-ssr": {
-          "builder": "@nguniversal/builders:ssr-dev-server",
-          "configurations": {
-            "development": {
-              "browserTarget": "real-estate:build:development",
-              "serverTarget": "real-estate:server:development"
-            },
-            "production": {
-              "browserTarget": "real-estate:build:production",
-              "serverTarget": "real-estate:server:production"
-            }
-          },
-          "defaultConfiguration": "development"
-        },
-        "prerender": {
-          "builder": "@nguniversal/builders:prerender",
-          "options": {
-            "routes": [
-              "/"
-            ]
-          },
-          "configurations": {
-            "production": {
-              "browserTarget": "real-estate:build:production",
-              "serverTarget": "real-estate:server:production"
-            },
-            "development": {
-              "browserTarget": "real-estate:build:development",
-              "serverTarget": "real-estate:server:development"
-            }
-          },
-          "defaultConfiguration": "production"
         },
         "lint": {
           "builder": "@angular-eslint/builder:lint",
