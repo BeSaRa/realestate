@@ -171,8 +171,6 @@ export class LookupService extends RegisterServiceMixin(class {}) implements Ser
       this._loadRentLookups(),
       this._loadSellLookups(),
       this._loadMortLookups(),
-      this._loadOwnerLookups(),
-      this._loadOVLookups(),
       this._loadBrokerLookups(),
     ]);
   }
@@ -188,22 +186,10 @@ export class LookupService extends RegisterServiceMixin(class {}) implements Ser
           rent.districtList = rent.districtList.filter((i) => i.lookupKey !== -1 && i.lookupKey !== 0); // remove the all from zones
           mort.districtList = mort.districtList.filter((i) => i.lookupKey !== -1 && i.lookupKey !== 0); // remove the all from zones
         }),
-        tap(([rent, sell, mort, owner, ov, broker]) => {
+        tap(([rent, sell, mort, broker]) => {
           this.rentLookups = this._addAllToMunicipalities(rent);
           this.sellLookups = this._addAllToMunicipalities(this._addAllToDistrict(this._addAllToPropertyType(sell)));
           this.mortLookups = this._addAllToMunicipalities(this._addAllToDistrict(this._addAllToPropertyType(mort)));
-          this.ownerLookups = this._addAllToOwnerCategories(
-            this._addStatePropertyToOwnerCategories(
-              this._addAllToNationalities(
-                this._addAllToDistrict(this._addAllToMunicipalities(this._addAllToPropertyType(owner)))
-              )
-            )
-          );
-          this.ovLookups = this._addAllToMunicipalities(
-            this._addAllToPremiseCategories(this._addAllToPremiseTypes(ov))
-          );
-          // remove unknown district from owner lookups until it removed from be
-          this.ownerLookups.districtList = this.ownerLookups.districtList.filter((item) => item.lookupKey !== 0);
           this.brokerLookups = broker;
         })
       )
@@ -212,56 +198,79 @@ export class LookupService extends RegisterServiceMixin(class {}) implements Ser
           this.rentMunicipalitiesMap = this._initializeMunicipalitiesMap(res[0]);
           this.sellMunicipalitiesMap = this._initializeMunicipalitiesMap(res[1]);
           this.mortMunicipalitiesMap = this._initializeMunicipalitiesMap(res[2]);
-          this.ownerMunicipalitiesMap = this._initializeMunicipalitiesMap(res[3]);
-          this.ovMunicipalitiesMap = this._initializeMunicipalitiesMap(res[4]);
-          this.brokerMunicipalitiesMap = this._initializeMunicipalitiesMap(res[5]);
+          this.brokerMunicipalitiesMap = this._initializeMunicipalitiesMap(res[3]);
         }),
         tap((res) => {
           this.rentZonesMap = this._initializeZonesMap(res[0]);
           this.sellZonesMap = this._initializeZonesMap(res[1]);
           this.mortZonesMap = this._initializeZonesMap(res[2]);
-          this.ownerZonesMap = this._initializeZonesMap(res[3]);
-          this.ovZonesMap = this._initializeZonesMap(res[4]);
         }),
         tap((res) => {
           this.rentPurposeMap = this._initializePurposeMap(res[0]);
           this.sellPurposeMap = this._initializePurposeMap(res[1]);
           this.mortPurposeMap = this._initializePurposeMap(res[2]);
-          this.ownerPurposeMap = this._initializePurposeMap(res[3]);
         }),
         tap((res) => {
           this.rentPropertyTypeMap = this._initializePropertyTypeMap(res[0]);
           this.sellPropertyTypeMap = this._initializePropertyTypeMap(res[1]);
           this.mortPropertyTypeMap = this._initializePropertyTypeMap(res[2]);
-          this.ownerPropertyTypeMap = this._initializePropertyTypeMap(res[3]);
         }),
         tap((res) => {
           this.rentDistrictMap = this._initializeDistrictMap(res[0]);
           this.sellDistrictMap = this._initializeDistrictMap(res[1]);
           this.mortDistrictMap = this._initializeDistrictMap(res[2]);
-          this.ownerDistrictMap = this._initializeDistrictMap(res[3]);
-          this.ovDistrictMap = this._initializeDistrictMap(res[4]);
         }),
         tap((res) => {
           this.rentFurnitureMap = this._initializeFurnitureStatusMap(res[0]);
         }),
 
         tap((res) => {
-          this.ownerNationalityMap = this._initializeNationalityMap(res[3]);
-          this.ownerOwnerCategoryMap = this._initializeOwnerCategoryMap(res[3]);
-          this.ownerAgeCategoryMap = this._initializeAgeCategoryMap(res[3]);
-          this.ownerGenderMap = this._initializeGenderMap(res[3]);
-        }),
-        tap((res) => {
-          this.ovOccupancyStatusMap = this._initializeOccupancyStatusMap(res[4]);
-          this.ovPremiseCategoryMap = this._initializePremiseCategoryMap(res[4]);
-          this.ovPremiseTypeMap = this._initializePremiseTypeMap(res[4]);
-        }),
-        tap((res) => {
-          this.brokerCategoryMap = this._initializeBrokerCategoryMap(res[5]);
-          this.brokerTypeMap = this._initializeBrokerTypeMap(res[5]);
+          this.brokerCategoryMap = this._initializeBrokerCategoryMap(res[3]);
+          this.brokerTypeMap = this._initializeBrokerTypeMap(res[3]);
         })
       );
+  }
+
+  loadOwnerLookups() {
+    return this._loadOwnerLookups().pipe(
+      tap((owner) => {
+        this.ownerLookups = this._addAllToOwnerCategories(
+          this._addStatePropertyToOwnerCategories(
+            this._addAllToNationalities(
+              this._addAllToDistrict(this._addAllToMunicipalities(this._addAllToPropertyType(owner)))
+            )
+          )
+        );
+
+        // remove unknown district from owner lookups until it removed from be
+        this.ownerLookups.districtList = this.ownerLookups.districtList.filter((item) => item.lookupKey !== 0);
+
+        this.ownerMunicipalitiesMap = this._initializeMunicipalitiesMap(owner);
+        this.ownerZonesMap = this._initializeZonesMap(owner);
+        this.ownerPurposeMap = this._initializePurposeMap(owner);
+        this.ownerPropertyTypeMap = this._initializePropertyTypeMap(owner);
+        this.ownerDistrictMap = this._initializeDistrictMap(owner);
+        this.ownerNationalityMap = this._initializeNationalityMap(owner);
+        this.ownerOwnerCategoryMap = this._initializeOwnerCategoryMap(owner);
+        this.ownerAgeCategoryMap = this._initializeAgeCategoryMap(owner);
+        this.ownerGenderMap = this._initializeGenderMap(owner);
+      })
+    );
+  }
+
+  loadOVLookups() {
+    return this._loadOVLookups().pipe(
+      tap((ov) => {
+        this.ovLookups = this._addAllToMunicipalities(this._addAllToPremiseCategories(this._addAllToPremiseTypes(ov)));
+
+        this.ovMunicipalitiesMap = this._initializeMunicipalitiesMap(ov);
+        this.ovZonesMap = this._initializeZonesMap(ov);
+        this.ovDistrictMap = this._initializeDistrictMap(ov);
+        this.ovOccupancyStatusMap = this._initializeOccupancyStatusMap(ov);
+        this.ovPremiseCategoryMap = this._initializePremiseCategoryMap(ov);
+        this.ovPremiseTypeMap = this._initializePremiseTypeMap(ov);
+      })
+    );
   }
 
   private _initializeZonesMap(lookups: LookupsMap) {

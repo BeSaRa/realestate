@@ -27,6 +27,6 @@ export class BrokerComponent {
   }
 
   getMunicipalityName() {
-    return this.lookupService.ovMunicipalitiesMap[this.broker.municipalityId].getNames();
+    return this.lookupService.brokerMunicipalitiesMap[this.broker.municipalityId].getNames();
   }
 }
