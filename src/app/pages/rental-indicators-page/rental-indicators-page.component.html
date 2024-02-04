@@ -6,7 +6,6 @@
       [municipalities]="municipalities"
       [propertyTypes]="propertyTypes"
       [propertyUsages]="propertyUsages"
-      [nationalities]="nationalities"
       [zones]="zones"
       [rooms]="rooms"
       [furnitureStatus]="furnitureStatusList"
@@ -135,7 +134,7 @@
           >
         </ng-container>
         <ng-container appTableColumnTemplate [columnName]="pageSections.RENT_TRANSACTIONS_TABLE.columns.ISSUE_DATE"
-          ><span *appTableColumnHeaderTemplate>{{ lang.map.issue_date }}</span>
+          ><span *appTableColumnHeaderTemplate>{{ lang.map.documentation_date }}</span>
           <span *appTableColumnCellTemplate="let item; dataType: getTransactionType()">{{
             (item.issueDate && item.issueDate.slice(0, 10)) || "---"
           }}</span></ng-container
