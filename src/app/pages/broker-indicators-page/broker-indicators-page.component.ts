@@ -41,7 +41,7 @@ export default class BrokerIndicatorsPageComponent {
   dashboardService = inject(DashboardService);
   csvService = inject(CsvService);
 
-  municipalities = this.lookupService.ovLookups.municipalityList;
+  municipalities = this.lookupService.brokerLookups.municipalityList;
   brokerCategories = this.lookupService.brokerLookups.brokerCategoryList;
 
   criteria = {} as {
@@ -104,7 +104,7 @@ export default class BrokerIndicatorsPageComponent {
         this.csvService.downloadCsvFile(
           this.lang.map.brokers_list +
             '-' +
-            this.lookupService.ovMunicipalitiesMap[this.criteria.criteria.municipalityId].getNames() +
+            this.lookupService.brokerMunicipalitiesMap[this.criteria.criteria.municipalityId].getNames() +
             '-' +
             new Date(Date.now()).toDateString(),
           _data

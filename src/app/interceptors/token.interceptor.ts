@@ -18,6 +18,8 @@ export class TokenInterceptor implements HttpInterceptor {
               ? this.tokenService.getToken()
                 ? this.tokenService.getToken()
                 : this.tokenService.getGuestToken()
+              : this.tokenService.getToken()
+              ? this.tokenService.getToken()
               : 'lyHWSTHj1SBm9IRECnLAHviNHnXGaS27'),
         },
       })

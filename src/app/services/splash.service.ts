@@ -10,6 +10,8 @@ export class SplashService {
 
   private _isShown = true;
 
+  private _splashScreen = document.getElementById('splash-screen');
+
   constructor() {
     this._listenToFirstRouteEnd();
   }
@@ -17,18 +19,27 @@ export class SplashService {
   private _listenToFirstRouteEnd() {
     this.router.events.pipe(takeWhile(() => this._isShown)).subscribe((event) => {
       if (event instanceof NavigationEnd) {
-        this._isShown = false;
         this.removeSplash();
       }
     });
   }
 
+  showSplash() {
+    if (this._isShown) return;
+    this._isShown = true;
+    if (this._splashScreen) {
+      this._splashScreen?.classList.remove('removed');
+      document.body.appendChild(this._splashScreen);
+    }
+  }
+
   removeSplash() {
-    const splashScreen = document.getElementById('splash-screen');
-    if (splashScreen) {
-      splashScreen.classList.add('removed');
+    if (!this._isShown) return;
+    this._isShown = false;
+    if (this._splashScreen) {
+      this._splashScreen.classList.add('removed');
       setTimeout(() => {
-        document.body.removeChild(splashScreen);
+        document.body.removeChild(this._splashScreen!);
       }, 500);
     }
   }

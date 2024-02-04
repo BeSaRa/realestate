@@ -4,6 +4,7 @@ import { lawResolver } from '@resolvers/law.resolver';
 import { newsItemResolver } from '@resolvers/news-item.resolver';
 import { pageResolver } from '@resolvers/page.resolver';
 import { authGuard } from '@guards/auth.guard';
+import { lookupsResolver } from '@resolvers/lookups.resolver';
 
 export const routes: Routes = [
   { path: '', pathMatch: 'full', redirectTo: 'home' },
@@ -72,11 +73,14 @@ export const routes: Routes = [
   {
     path: 'ownership-indicators',
     canActivate: [authGuard('/ownership-indicators')],
+    resolve: { lookupsLoad: lookupsResolver('ownerLookups', 'loadOwnerLookups') },
     loadComponent: () => import('@pages/ownership-indicators-page/ownership-indicators-page.component'),
   },
   {
     path: 'occupied-and-vacant-indicators',
     canActivate: [authGuard('/occupied-and-vacant-indicators')],
+    resolve: { lookupsLoad: lookupsResolver('ovLookups', 'loadOVLookups') },
+
     loadComponent: () =>
       import('@pages/occupied-and-vacant-indicators-page/occupied-and-vacant-indicators-page.component'),
   },
