@@ -83,7 +83,7 @@ export default class SellIndicatorsPageComponent extends OnDestroyMixin(class {}
   municipalities = this.lookupService.sellLookups.municipalityList;
   propertyTypes = this.lookupService.sellLookups.propertyTypeList;
   propertyUsages = this.lookupService.sellLookups.rentPurposeList.slice().sort((a, b) => a.lookupKey - b.lookupKey);
-  areas = this.lookupService.sellLookups.districtList.slice().sort((a, b) => a.lookupKey - b.lookupKey);
+  areas = this.lookupService.sellLookups.districtList;
 
   paramsRange = this.lookupService.sellLookups.maxParams;
 

@@ -37,9 +37,8 @@ export default class ForecastingIndicatorsPageComponent extends OnDestroyMixin(c
   sellMunicipalities = this.lookupService.sellLookups.municipalityList.filter(
     (item) => item.lookupKey !== -1 && item.lookupKey
   );
-  sellAreas = this.lookupService.sellLookups.districtList
-    .filter((item) => item.lookupKey !== -1 && item.lookupKey)
-    .sort((a, b) => a.lookupKey - b.lookupKey);
+  sellAreas = this.lookupService.sellLookups.districtList;
+
   sellPropertyUsages = this.lookupService.sellLookups.rentPurposeList
     .filter((item) => item.lookupKey !== -1 && item.lookupKey)
     .sort((a, b) => a.lookupKey - b.lookupKey);
@@ -50,9 +49,8 @@ export default class ForecastingIndicatorsPageComponent extends OnDestroyMixin(c
   rentMunicipalities = this.lookupService.rentLookups.municipalityList.filter(
     (item) => item.lookupKey !== -1 && item.lookupKey
   );
-  rentZones = this.lookupService.rentLookups.zoneList
-    .filter((item) => item.lookupKey !== -1 && item.lookupKey)
-    .sort((a, b) => a.lookupKey - b.lookupKey);
+  rentZones = this.lookupService.rentLookups.zoneList;
+
   rentPropertyUsages = this.lookupService.rentLookups.rentPurposeList
     .filter((item) => item.lookupKey !== -1 && item.lookupKey)
     .sort((a, b) => a.lookupKey - b.lookupKey);
@@ -85,6 +83,7 @@ export default class ForecastingIndicatorsPageComponent extends OnDestroyMixin(c
 
   ngOnInit(): void {
     this.listenToMunicipalityChange();
+    this.listenToLangChange();
     this.setDefaultValues();
     this.listenToFilterChange();
   }
@@ -97,12 +96,23 @@ export default class ForecastingIndicatorsPageComponent extends OnDestroyMixin(c
 
   listenToMunicipalityChange() {
     this.sellMunicipalityId.valueChanges.pipe(takeUntil(this.destroy$)).subscribe((value) => {
-      this.filteredSellAreas = this.sellAreas.filter((item) => item.municipalityId === value);
+      this.filteredSellAreas = this.sellAreas.filter((item) => item.lookupKey !== -1 && item.municipalityId === value);
       this.sellFilter.get('areaCode')?.patchValue(this.filteredSellAreas[0].lookupKey, { emitEvent: false });
     });
     this.rentMunicipalityId.valueChanges.pipe(takeUntil(this.destroy$)).subscribe((value) => {
-      this.filteredRentZones = this.rentZones.filter((item) => item.municipalityId === value);
+      this.filteredRentZones = this.rentZones.filter((item) => item.lookupKey !== -1 && item.municipalityId === value);
       this.rentFilter.get('zoneId')?.patchValue(this.filteredRentZones[0].lookupKey, { emitEvent: false });
+    });
+  }
+
+  listenToLangChange() {
+    this.lang.change$.pipe(takeUntil(this.destroy$)).subscribe(() => {
+      this.filteredSellAreas = this.sellAreas.filter(
+        (item) => item.lookupKey !== -1 && item.municipalityId === this.sellMunicipalityId.value
+      );
+      this.filteredRentZones = this.rentZones.filter(
+        (item) => item.lookupKey !== -1 && item.municipalityId === this.rentMunicipalityId.value
+      );
     });
   }
 
