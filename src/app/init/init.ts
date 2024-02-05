@@ -13,6 +13,7 @@ import { delay, forkJoin, of, switchMap, tap } from 'rxjs';
 import { SplashService } from '@services/splash.service';
 import { UnitsService } from '@services/units.service';
 import { GoogleAnalyticsService } from '@services/google-analytics.service';
+import { DistrictSortService } from '@services/district-sort.service';
 
 export const applicationInit = [
   {
@@ -30,6 +31,7 @@ export const applicationInit = [
       url: UrlService,
       translation: TranslationService,
       lookups: LookupService,
+
       tokenService: TokenService,
       userService: UserService,
       authService: AuthService,
@@ -63,8 +65,8 @@ export const applicationInit = [
   {
     // UnitsService add to deps to initialize service at app start and be able to register it using ServiceRegister
     provide: APP_INITIALIZER,
-    deps: [SplashService, UnitsService, GoogleAnalyticsService],
-    useFactory: () => () => null,
+    deps: [DistrictSortService, SplashService, UnitsService, GoogleAnalyticsService],
+    useFactory: (districtSort: DistrictSortService) => () => districtSort.listenToRouteAndLangChange(),
     multi: true,
   },
 ];
