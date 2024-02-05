@@ -34,7 +34,7 @@ import { range } from '@utils/utils';
 import { CustomValidators } from '@validators/custom-validators';
 import { NgResizeObserver, ngResizeObserverProviders } from 'ng-resize-observer';
 import { NgxMaskDirective } from 'ngx-mask';
-import { Subject, combineLatest, debounceTime, filter, map, take, takeUntil, tap } from 'rxjs';
+import { Subject, debounceTime, filter, map, take, takeUntil, tap } from 'rxjs';
 
 @Component({
   selector: 'app-transactions-filter',
@@ -320,6 +320,7 @@ export class TransactionsFilterComponent implements OnInit, OnDestroy {
 
     this.years = range(this.isSell() || this.isMort() ? 2006 : 2019, new Date().getFullYear());
     this.listenToMunicipalityChange();
+    this.listenToLangChange();
     this.listenToPropertyTypeListChange();
     this.listenToRentPurposeListChange();
     this.listenToDurationTypeChange();
@@ -371,10 +372,7 @@ export class TransactionsFilterComponent implements OnInit, OnDestroy {
   }
 
   listenToMunicipalityChange(): void {
-    combineLatest([
-      this.municipalityId.valueChanges.pipe(takeUntil(this.destroy$)),
-      this.lang.change$.pipe(takeUntil(this.destroy$)),
-    ]).subscribe(([value]) => {
+    this.municipalityId.valueChanges.pipe(takeUntil(this.destroy$)).subscribe((value) => {
       if (this.isSell() || this.isMort() || this.isOwner()) {
         this.filteredAreas = this.areas.filter((item) => item.municipalityId === value);
         !this.filteredAreas.find((i) => i.lookupKey === -1) &&
@@ -400,6 +398,32 @@ export class TransactionsFilterComponent implements OnInit, OnDestroy {
       this.filteredZones.length === 1
         ? this.zoneId.setValue(this.filteredZones.at(0)?.lookupKey)
         : this.zoneId.setValue(-1);
+    });
+  }
+
+  listenToLangChange() {
+    this.lang.change$.pipe(takeUntil(this.destroy$)).subscribe(() => {
+      if (this.isSell() || this.isMort() || this.isOwner()) {
+        this.filteredAreas = this.areas.filter((item) => item.municipalityId === this.municipalityId.value);
+        !this.filteredAreas.find((i) => i.lookupKey === -1) &&
+          this.filteredAreas.unshift(
+            new Lookup().clone<Lookup>({
+              arName: 'الكل',
+              enName: 'All',
+              lookupKey: -1,
+            })
+          );
+        return;
+      }
+      this.filteredZones = this.zones.filter((item) => item.municipalityId === this.municipalityId.value);
+      !this.filteredZones.find((i) => i.lookupKey === -1) &&
+        this.filteredZones.unshift(
+          new Lookup().clone<Lookup>({
+            arName: 'الكل',
+            enName: 'All',
+            lookupKey: -1,
+          })
+        );
     });
   }
 

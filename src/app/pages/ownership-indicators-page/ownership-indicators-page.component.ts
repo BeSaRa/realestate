@@ -77,7 +77,7 @@ export default class OwnershipIndicatorsPageComponent extends OnDestroyMixin(cla
   municipalities = this.lookupService.ownerLookups.municipalityList;
   propertyTypes = this.lookupService.ownerLookups.propertyTypeList;
   propertyUsages = this.lookupService.ownerLookups.rentPurposeList.slice().sort((a, b) => a.lookupKey - b.lookupKey);
-  areas = this.lookupService.ownerLookups.districtList.slice().sort((a, b) => a.lookupKey - b.lookupKey);
+  areas = this.lookupService.ownerLookups.districtList;
   nationalities = this.lookupService.ownerLookups.nationalityList;
   ownerTypes = this.lookupService.ownerLookups.ownerCategoryList;
 
