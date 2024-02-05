@@ -34,7 +34,7 @@ import { range } from '@utils/utils';
 import { CustomValidators } from '@validators/custom-validators';
 import { NgResizeObserver, ngResizeObserverProviders } from 'ng-resize-observer';
 import { NgxMaskDirective } from 'ngx-mask';
-import { Subject, debounceTime, filter, map, take, takeUntil, tap } from 'rxjs';
+import { Subject, combineLatest, debounceTime, filter, map, take, takeUntil, tap } from 'rxjs';
 
 @Component({
   selector: 'app-transactions-filter',
@@ -371,7 +371,10 @@ export class TransactionsFilterComponent implements OnInit, OnDestroy {
   }
 
   listenToMunicipalityChange(): void {
-    this.municipalityId.valueChanges.pipe(takeUntil(this.destroy$)).subscribe((value: number) => {
+    combineLatest([
+      this.municipalityId.valueChanges.pipe(takeUntil(this.destroy$)),
+      this.lang.change$.pipe(takeUntil(this.destroy$)),
+    ]).subscribe(([value]) => {
       if (this.isSell() || this.isMort() || this.isOwner()) {
         this.filteredAreas = this.areas.filter((item) => item.municipalityId === value);
         !this.filteredAreas.find((i) => i.lookupKey === -1) &&
