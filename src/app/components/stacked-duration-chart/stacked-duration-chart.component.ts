@@ -279,8 +279,8 @@ export class StackedDurationChartComponent
               [cur]: this.dashboardService.mapDurationData(
                 data[cur as unknown as number],
                 this.selectedDurationType === DurationEndpoints.HALFY
-                  ? this.lookupService.ownerLookups.halfYearDurations
-                  : this.lookupService.ownerLookups.quarterYearDurations
+                  ? this.lookupService.sellLookups.halfYearDurations
+                  : this.lookupService.sellLookups.quarterYearDurations
               ),
             }),
             {} as Record<number, DurationDataContract>
