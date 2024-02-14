@@ -176,6 +176,26 @@ const configEndpoints = {
   HOME_SLIDER: 'BE|kpi/config/comments',
 };
 
+const flyerEndpoints = {
+  FLYER: 'BE|kpi/brochure',
+  FLYER_SELL_KPI1: 'FLYER|sell/kpi1',
+  FLYER_SELL_KPI2: 'FLYER|sell/kpi2',
+  FLYER_SELL_KPI3: 'FLYER|sell/kpi3',
+  FLYER_SELL_KPI4: 'FLYER|sell/kpi4',
+  FLYER_SELL_KPI5_COM: 'FLYER|sell/com/kpi5',
+  FLYER_SELL_KPI5_RES: 'FLYER|sell/res/kpi5',
+  FLYER_SELL_KPI6: 'FLYER|sell/kpi6',
+  FLYER_SELL_KPI7: 'FLYER|sell/kpi7',
+
+  FLYER_RENT_KPI1: 'FLYER|rent/kpi1',
+  FLYER_RENT_KPI2: 'FLYER|rent/kpi2',
+  FLYER_RENT_KPI5_COM: 'FLYER|rent/com/kpi5',
+  FLYER_RENT_KPI5_RES: 'FLYER|rent/res/kpi5',
+
+  FLYER_MORT_KPI1: 'FLYER|mortgage/kpi1',
+  FLYER_MORT_KPI2: 'FLYER|mortgage/kpi2',
+};
+
 export const cmsEndpoints = {
   TRANSLATION: 'translations',
   ADMIN: 'admin/login',
@@ -205,6 +225,7 @@ export const EndPoints = {
   ...ovEndpoints,
   ...brokerEndpoints,
   ...configEndpoints,
+  ...flyerEndpoints,
 };
 
 export type EndpointsType = typeof EndPoints;

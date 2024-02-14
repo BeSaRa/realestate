@@ -1,44 +1,46 @@
-<div class="relative p-2">
-  <svg class="w-full" viewBox="0 0 110 20">
-    <defs>
-      <linearGradient id="linear" x1="0%" y1="0%" x2="100%" y2="0%">
-        <stop offset="0%" stop-color="#8A1538" />
-        <stop offset="100%" stop-color="#A29475" />
-      </linearGradient>
-    </defs>
+<div class="overflow-x-auto rounded-md border border-primary md:border-transparent">
+  <div class="min-w-[750px] relative p-2 transition-all" [ngClass]="{ 'opacity-30': isLoading }">
+    <svg class="w-full" viewBox="0 0 110 20">
+      <defs>
+        <linearGradient id="linear" x1="0%" y1="0%" x2="100%" y2="0%">
+          <stop offset="0%" stop-color="#8A1538" />
+          <stop offset="100%" stop-color="#A29475" />
+        </linearGradient>
+      </defs>
 
-    <g class="axis">
-      <rect x="1" y="8.5" rx="1.5" ry="1.5" width="109" height="3" fill="url(#linear)" />
-      <polygon points="0,10 3,12.5 3,7.5" fill="#8A1538"></polygon>
-      <circle *ngFor="let price of prices" class="fill-white" r="1.25" [attr.cx]="getX(price)" cy="10"></circle>
-    </g>
-    <g class="price">
-      <text
-        *ngFor="let price of prices"
-        class="fill-silver text-[2px]"
-        [attr.x]="getX(price)"
-        [attr.y]="14"
-        text-anchor="middle">
-        {{ price }} مليون
-      </text>
-      <text
-        *ngFor="let price of prices"
-        class="fill-silver text-[1.5px]"
-        [attr.x]="getX(price)"
-        [attr.y]="15.5"
-        text-anchor="middle">
-        ر.ق
-      </text>
-    </g>
-    <g class="count">
-      <text
-        *ngFor="let count of contractsCount; let index = index"
-        class="fill-primary font-bold text-[3px]"
-        [attr.x]="getCountX(index)"
-        [attr.y]="7"
-        text-anchor="middle">
-        {{ count }}
-      </text>
-    </g>
-  </svg>
+      <g class="axis">
+        <rect x="1" y="8.5" rx="1.5" ry="1.5" width="109" height="3" fill="url(#linear)" />
+        <polygon points="0,10 3,12.5 3,7.5" fill="#8A1538"></polygon>
+        <circle *ngFor="let price of prices" class="fill-white" r="1.25" [attr.cx]="getX(price)" cy="10"></circle>
+      </g>
+      <g class="price">
+        <text
+          *ngFor="let price of prices"
+          class="fill-silver text-[2px]"
+          [attr.x]="getX(price)"
+          [attr.y]="14"
+          text-anchor="middle">
+          {{ price }} {{ lang.map.million }}
+        </text>
+        <text
+          *ngFor="let price of prices"
+          class="fill-silver text-[1.5px]"
+          [attr.x]="getX(price)"
+          [attr.y]="15.5"
+          text-anchor="middle">
+          {{ lang.map.qr }}
+        </text>
+      </g>
+      <g class="count">
+        <text
+          *ngFor="let key of pricesKeys; let index = index"
+          class="fill-primary font-bold text-[3px]"
+          [attr.x]="getCountX(index)"
+          [attr.y]="7"
+          text-anchor="middle">
+          {{ pricesMap[key] | number }}
+        </text>
+      </g>
+    </svg>
+  </div>
 </div>

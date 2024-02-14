@@ -433,4 +433,19 @@ export interface LangKeysContract {
   indicators: string;
   total_number_of_contracts: string;
   total_value_of_contracts: string;
+  transaction: string;
+  value_average: string;
+  value_total: string;
+  qatari_ryal: string;
+  million: string;
+  real_estate_flyer: string;
+  top_ten_areas_according_to_the_number_of_sell_transactions: string;
+  top_ten_areas_according_to_the_value_of_sell_transactions: string;
+  number_of_transactions_by_price_range: string;
+  residential: string;
+  commercial: string;
+  quarterly: string;
+  transactions_count: string;
+  transactions_cost: string;
+  sell_statistics_by_municipality: string;
 }
