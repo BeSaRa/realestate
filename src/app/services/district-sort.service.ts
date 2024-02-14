@@ -74,10 +74,10 @@ export class DistrictSortService {
   };
 
   private _enCompare = (a: Lookup, b: Lookup) => {
-    if (a.enName > b.enName) {
+    if (a.enName.toLowerCase() > b.enName.toLowerCase()) {
       return 1;
     }
-    if (b.enName > a.enName) {
+    if (b.enName.toLowerCase() > a.enName.toLowerCase()) {
       return -1;
     }
     return 0;
