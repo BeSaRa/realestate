@@ -1,76 +1,76 @@
-import { Component, Input, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { LookupService } from '@services/lookup.service';
-import { minMaxAvg } from '@utils/utils';
+import { Component, Input, OnChanges, SimpleChanges, inject } from '@angular/core';
+import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { YoyIndicatorComponent } from '@components/yoy-indicator/yoy-indicator.component';
+import { maskSeparator } from '@constants/mask-separator';
+import { FlyerCriteriaContract } from '@contracts/flyer-criteria-contract';
+import { FlyerAreaKpi } from '@models/flyer-area-kpi';
+import { DashboardService } from '@services/dashboard.service';
+import { LookupService } from '@services/lookup.service';
+import { formatNumber, minMaxAvg, repeat } from '@utils/utils';
+import { NgxMaskPipe } from 'ngx-mask';
+import { finalize, take } from 'rxjs';
 
 @Component({
   selector: 'app-flyer-top-ten',
   standalone: true,
-  imports: [CommonModule, YoyIndicatorComponent],
+  imports: [CommonModule, YoyIndicatorComponent, MatProgressBarModule],
   templateUrl: './flyer-top-ten.component.html',
   styleUrls: ['./flyer-top-ten.component.scss'],
 })
-export class FlyerTopTenComponent {
+export class FlyerTopTenComponent implements OnChanges {
   @Input({ required: true }) title!: string;
+  @Input({ required: true }) criteria!: FlyerCriteriaContract;
+  @Input({ required: true }) dataUrl!: string;
   @Input() type: 'price' | 'count' = 'count';
 
   lookupService = inject(LookupService);
+  dashboardService = inject(DashboardService);
+  maskPipe = inject(NgxMaskPipe);
 
   areas = this.lookupService.sellLookups.districtList;
 
-  data = [
-    {
-      value: 615,
-      yoy: 1.7,
-      area: this.areas[0],
-    },
-    {
-      value: 751,
-      yoy: 9.7,
-      area: this.areas[1],
-    },
-    {
-      value: 770,
-      yoy: 1.2,
-      area: this.areas[2],
-    },
-    {
-      value: 810,
-      yoy: 1.2,
-      area: this.areas[3],
-    },
-    {
-      value: 856,
-      yoy: -1.2,
-      area: this.areas[4],
-    },
-    {
-      value: 910,
-      yoy: -1.7,
-      area: this.areas[5],
-    },
-    {
-      value: 1050,
-      yoy: -1.9,
-      area: this.areas[6],
-    },
-    {
-      value: 1070,
-      yoy: 2.9,
-      area: this.areas[7],
-    },
-    {
-      value: 1099,
-      yoy: -1.3,
-      area: this.areas[8],
-    },
-    {
-      value: 1105,
-      yoy: 2.3,
-      area: this.areas[9],
-    },
-  ].sort((a, b) => b.value - a.value);
+  chartData = repeat<FlyerAreaKpi>(new FlyerAreaKpi(), 10);
 
-  minMaxAvg = minMaxAvg(this.data.map((i) => i.value));
+  minMaxAvg = minMaxAvg(this.chartData.map((i) => i.kpiVal));
+
+  isLoading = false;
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if (
+      (changes['dataUrl'] && changes['dataUrl'].currentValue !== changes['dataUrl'].previousValue) ||
+      (changes['criteria'] && changes['criteria'].currentValue !== changes['criteria'].previousValue)
+    ) {
+      if (!this.dataUrl || !this.criteria) return;
+      this.loadData();
+    }
+  }
+
+  loadData() {
+    this.isLoading = true;
+
+    this.dashboardService
+      .loadFlyerTop10AreaData(this.dataUrl, this.criteria)
+      .pipe(
+        take(1),
+        finalize(() => (this.isLoading = false))
+      )
+      .subscribe((data) => {
+        this.chartData = data;
+        this.chartData.sort((a, b) => b.kpiVal - a.kpiVal);
+        this.minMaxAvg = minMaxAvg(this.chartData.map((i) => i.kpiVal));
+      });
+  }
+
+  getValue(value: number) {
+    return this.type === 'price'
+      ? (formatNumber(value) as string)
+      : (this.maskPipe.transform(value.toFixed(0), maskSeparator.SEPARATOR, {
+          thousandSeparator: ',',
+        }) as unknown as string);
+  }
+
+  notChangeTrackBy() {
+    return true;
+  }
 }

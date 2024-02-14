@@ -46,6 +46,22 @@ export function formatNumber(num: number, precision = 1): string | number {
   return num.toFixed(precision);
 }
 
+export function formatNumberWithSuffix(num: number, precision = 1) {
+  const map = [
+    { enSuffix: 'Trillions', arSuffix: 'تريليون', threshold: 1e12 },
+    { enSuffix: 'Billions', arSuffix: 'مليار', threshold: 1e9 },
+    { enSuffix: 'Millions', arSuffix: 'مليون', threshold: 1e6 },
+    { enSuffix: 'Thousands', arSuffix: 'ألف', threshold: 1e3 },
+    { enSuffix: '', arSuffix: '', threshold: 1 },
+  ];
+
+  const found = map.find((x) => Math.abs(num) >= x.threshold);
+  if (found) {
+    return { num: (num / found.threshold).toFixed(precision), arSuffix: found.arSuffix, enSuffix: found.enSuffix };
+  }
+  return { num: num.toFixed(precision), enSuffix: '', arSuffix: '' };
+}
+
 export function isNgModel(control: unknown): control is NgModel {
   return control instanceof NgModel;
 }
@@ -100,4 +116,13 @@ export function minMaxAvg(values: number[]): MinMaxAvgContract {
   avg = avg + (max - avg) * 0.4;
   // return { min: 0.5 * max, avg: 0.8 * max, max: max }; // this makes app to crash when trying to change to another duration type
   return { min, max, avg }; // because of customer requirements
+}
+
+export function repeat<T>(value: T, count: number) {
+  const array: T[] = [];
+  for (let i = 0; i < count; i++) {
+    array.push(value);
+  }
+
+  return array;
 }

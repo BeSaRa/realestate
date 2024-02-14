@@ -1,79 +1,141 @@
 <ng-container appExtraHeaderPortal [extraHeaderSubTitle]="lang.map.real_estate_flyers"> </ng-container>
+
 <div class="relative">
   <img class="absolute left-0 top-20" src="assets/images/flyer-images/arrows.png" alt="" />
   <!-- <img class="absolute bottom-0 right-0" src="assets/images/flyer-images/layer.png" alt="" /> -->
 
   <div class="relative content-wrapper">
     <div class="flex flex-col gap-8">
-      <div class="p-3 lg:px-16 flex items-center justify-between">
+      <div class="p-3 lg:px-16 flex flex-col rtl:lg:flex-row ltr:xl:flex-row gap-4 items-center justify-between">
         <h3
-          class="heading text-xl sm:text-2xl md:text-3xl self-center md:self-start text-center text-primary border-secondary font-semibold">
-          النشرة العقارية للربع الثاني سنة 2023
+          class="heading text-xl sm:text-2xl md:text-3xl self-center rtl:lg:self-start ltr:xl:self-start text-center text-primary border-secondary font-semibold">
+          {{ lang.map.real_estate_flyer }} {{ getTitleSuffix() }}
         </h3>
-        <div class="grid grid-cols-4 gap-2">
-          <app-button
-            (click)="updateDuration(DurationTypes.YEARLY)"
-            [buttonStyle]="selectedDurationType === DurationTypes.YEARLY ? 'secondary' : 'secondary-outline'"
-            [isRounded]="true"
-            >{{ lang.map.yearly }}</app-button
-          >
-          <app-button
-            (click)="updateDuration(DurationTypes.HALFY)"
-            [buttonStyle]="selectedDurationType === DurationTypes.HALFY ? 'secondary' : 'secondary-outline'"
-            [isRounded]="true"
-            >{{ lang.map.half_yearly }}</app-button
-          >
-          <app-button
-            (click)="updateDuration(DurationTypes.QUARTERLY)"
-            [buttonStyle]="selectedDurationType === DurationTypes.QUARTERLY ? 'secondary' : 'secondary-outline'"
-            [isRounded]="true"
-            >{{ lang.map.quarter_yearly }}</app-button
-          >
-          <app-button
-            (click)="updateDuration(DurationTypes.MONTHLY)"
-            [buttonStyle]="selectedDurationType === DurationTypes.MONTHLY ? 'secondary' : 'secondary-outline'"
-            [isRounded]="true"
-            >{{ lang.map.monthly }}</app-button
-          >
+        <div class="flex flex-col sm:flex-row justify-center items-center gap-3">
+          <div class="grid grid-cols-3 gap-2">
+            <app-button
+              (click)="updateDuration(DurationTypes.YEARLY)"
+              [buttonStyle]="selectedDurationType === DurationTypes.YEARLY ? 'secondary' : 'secondary-outline'"
+              [isRounded]="true"
+              >{{ lang.map.yearly }}</app-button
+            >
+            <app-button
+              (click)="updateDuration(DurationTypes.QUARTERLY)"
+              [buttonStyle]="selectedDurationType === DurationTypes.QUARTERLY ? 'secondary' : 'secondary-outline'"
+              [isRounded]="true"
+              >{{ lang.map.quarterly }}</app-button
+            >
+            <app-button
+              (click)="updateDuration(DurationTypes.MONTHLY)"
+              [buttonStyle]="selectedDurationType === DurationTypes.MONTHLY ? 'secondary' : 'secondary-outline'"
+              [isRounded]="true"
+              >{{ lang.map.monthly }}</app-button
+            >
+          </div>
+          @if(selectedDurationType === DurationTypes.MONTHLY) {
+          <app-select-input
+            class="w-full sm:w-[150px]"
+            [formControl]="monthControl"
+            bindLabel="label"
+            bindValue="value"
+            label=""
+            [noMargin]="true"
+            [placeholder]="lang.map.select_month"
+            [options]="months" />} @if(selectedDurationType === DurationTypes.QUARTERLY) {
+          <app-select-input
+            class="w-full sm:w-[150px]"
+            [formControl]="quarterControl"
+            bindLabel="getNames"
+            bindValue="lookupKey"
+            label=""
+            [noMargin]="true"
+            [placeholder]="lang.map.select_quarter"
+            [options]="quarterYearDurations" />}
         </div>
       </div>
-      <div class="p-3 lg:px-16">
-        <app-flyer-summary indicatorType="sell" [isOpened]="true">
-          <div class="my-4">
-            <app-flyer-top-ten title="أعلى عشر مناطق تبعاً لعدد صفقات البيع"></app-flyer-top-ten>
-          </div>
-          <div class="my-4">
-            <app-flyer-top-ten type="price" title="أعلى عشر مناطق تبعاً لقيم صفقات البيع"></app-flyer-top-ten>
-          </div>
-          <div class="flex flex-col">
-            <h3
-              class="heading text-xl sm:text-2xl md:text-3xl self-center md:self-start text-center text-primary border-secondary font-semibold">
-              حسب استخدام العقار - سكني خاص
-            </h3>
-            <div class="my-4 flex items-center justify-center flex-wrap gap-8">
-              <app-flyer-property *ngFor="let property of propertyTypes" [item]="property"></app-flyer-property>
-            </div>
-          </div>
-          <div class="flex flex-col">
-            <h3
-              class="heading text-xl sm:text-2xl md:text-3xl self-center md:self-start text-center text-primary border-secondary font-semibold">
-              حسب استخدام العقار - تجاري
-            </h3>
-            <div class="my-4 flex items-center justify-center flex-wrap gap-8">
-              <app-flyer-property *ngFor="let property of propertyTypes" [item]="property"></app-flyer-property>
-            </div>
-          </div>
-          <div class="flex flex-col">
-            <h3
-              class="heading text-xl sm:text-2xl md:text-3xl self-center md:self-start text-center text-primary border-secondary font-semibold">
-              عدد الصفقات حسب نطاق السعر
-            </h3>
-            <app-price-range></app-price-range>
-          </div>
+      <div id="sell" class="relative p-3 lg:px-16">
+        <img class="absolute bottom-0 start-0 ltr:-scale-x-100" src="assets/images/flyer-images/layer.png" alt="" />
+        <app-flyer-summary
+          indicatorType="sell"
+          [dataUrls]="{ countUrl: urlService.URLS.FLYER_SELL_KPI1, valueUrl: urlService.URLS.FLYER_SELL_KPI2 }"
+          [criteria]="criteria">
         </app-flyer-summary>
-        <app-flyer-summary indicatorType="rent"></app-flyer-summary>
-        <app-flyer-summary indicatorType="mort"></app-flyer-summary>
+        <div class="my-4">
+          <app-flyer-top-ten
+            [title]="lang.map.top_ten_areas_according_to_the_number_of_sell_transactions"
+            [criteria]="criteria"
+            [dataUrl]="urlService.URLS.FLYER_SELL_KPI3"></app-flyer-top-ten>
+        </div>
+        <div class="my-4">
+          <app-flyer-top-ten
+            type="price"
+            [title]="lang.map.top_ten_areas_according_to_the_value_of_sell_transactions"
+            [criteria]="criteria"
+            [dataUrl]="urlService.URLS.FLYER_SELL_KPI4"></app-flyer-top-ten>
+        </div>
+        <div class="relative my-4">
+          <app-flyer-property-list
+            [title]="lang.map.depending_on_use + ' - ' + lang.map.residential"
+            [criteria]="criteria"
+            [useAssetsFrom]="'sell'"
+            [dataUrl]="urlService.URLS.FLYER_SELL_KPI5_RES" />
+          <app-flyer-property-list
+            [title]="lang.map.depending_on_use + ' - ' + lang.map.commercial"
+            [criteria]="criteria"
+            [useAssetsFrom]="'sell'"
+            [dataUrl]="urlService.URLS.FLYER_SELL_KPI5_COM" />
+
+          <div class="flex flex-col gap-2">
+            <h3
+              class="heading text-xl sm:text-2xl md:text-3xl self-center md:self-start text-center text-primary border-secondary font-semibold">
+              {{ lang.map.number_of_transactions_by_price_range }}
+            </h3>
+            <app-price-range [dataUrl]="urlService.URLS.FLYER_SELL_KPI6" [criteria]="criteria" />
+          </div>
+          <div class="flex flex-col gap-2 items-end justify-center my-8">
+            <h3
+              class="heading text-xl sm:text-2xl md:text-3xl self-center md:self-start text-center text-primary border-secondary font-semibold">
+              {{ lang.map.sell_statistics_by_municipality }}
+            </h3>
+            <app-flyer-composite-table
+              class="max-w-full"
+              [dataUrl]="urlService.URLS.FLYER_SELL_KPI7"
+              [criteria]="criteria" />
+          </div>
+        </div>
       </div>
+      <div class="px-3 pt-5 lg:px-16"><div class="w-full h-0 border-b-2 border-b-silver"></div></div>
+      <div id="rent" class="p-3 lg:px-16">
+        <app-flyer-summary
+          indicatorType="rent"
+          [dataUrls]="{
+            countUrl: urlService.URLS.FLYER_RENT_KPI1,
+            valueUrl: urlService.URLS.FLYER_RENT_KPI2
+          }"
+          [criteria]="criteria"></app-flyer-summary>
+        <div class="relative my-4">
+          <app-flyer-property-list
+            [title]="lang.map.depending_on_use + ' - ' + lang.map.residential"
+            [criteria]="criteria"
+            [useAssetsFrom]="'rent'"
+            [dataUrl]="urlService.URLS.FLYER_RENT_KPI5_RES" />
+          <app-flyer-property-list
+            [title]="lang.map.depending_on_use + ' - ' + lang.map.commercial"
+            [criteria]="criteria"
+            [useAssetsFrom]="'rent'"
+            [dataUrl]="urlService.URLS.FLYER_RENT_KPI5_COM" />
+        </div>
+      </div>
+    </div>
+    <div class="px-3 pt-5 lg:px-16"><div class="w-full h-0 border-b-2 border-b-silver"></div></div>
+    <div id="mort" class="p-3 lg:px-16">
+      <app-flyer-summary
+        indicatorType="mort"
+        [dataUrls]="{
+          countUrl: urlService.URLS.FLYER_MORT_KPI1,
+          valueUrl: urlService.URLS.FLYER_MORT_KPI2
+        }"
+        [criteria]="criteria"></app-flyer-summary>
     </div>
   </div>
 </div>

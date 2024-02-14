@@ -6,6 +6,7 @@ import { ChartWithOppositePopupComponent } from '@components/chart-with-opposite
 import { ChartWithOppositePopupData } from '@contracts/chart-with-opposite-popup-data';
 import { CriteriaContract } from '@contracts/criteria-contract';
 import { DurationDataContract } from '@contracts/duration-data-contract';
+import { FlyerCriteriaContract } from '@contracts/flyer-criteria-contract';
 import { ForecastCriteriaContract } from '@contracts/forecast-criteria-contract';
 import { RentCriteriaContract } from '@contracts/rent-criteria-contract';
 import { SellCriteriaContract } from '@contracts/sell-criteria-contract';
@@ -14,8 +15,15 @@ import { DurationEndpoints } from '@enums/durations';
 import { RegisterServiceMixin } from '@mixins/register-service-mixin';
 import { Broker } from '@models/broker';
 import { CompositeTransaction } from '@models/composite-transaction';
+import { FlyerAreaKpi } from '@models/flyer-area-kpi';
+import { FlyerCompositeTransaction } from '@models/flyer-composite-transaction';
+import { FlyerPriceRange } from '@models/flyer-price-range';
+import { FlyerProperty } from '@models/flyer-property';
 import { ForecastData } from '@models/forecast-data';
+import { HomeSlider } from '@models/home-slider';
 import { KpiBase } from '@models/kpi-base';
+import { KpiFlyerDurationModel } from '@models/kpi-flyer-duration-model';
+import { KpiModel } from '@models/kpi-model';
 import { KpiRoot } from '@models/kpi-root';
 import { Lookup } from '@models/lookup';
 import { MortgageTransaction } from '@models/mortgage-transaction';
@@ -30,11 +38,10 @@ import { Top10KpiModel } from '@models/top-10-kpi-model';
 import { UrlService } from '@services/url.service';
 import { minMaxAvg, range } from '@utils/utils';
 import { CastResponse } from 'cast-response';
-import { map, Observable } from 'rxjs';
+import { forkJoin, map, Observable } from 'rxjs';
 import { DialogService } from './dialog.service';
 import { LookupService } from './lookup.service';
 import { TranslationService } from './translation.service';
-import { HomeSlider } from '@models/home-slider';
 
 @Injectable({
   providedIn: 'root',
@@ -147,6 +154,76 @@ export class DashboardService extends RegisterServiceMixin(class {}) implements 
   @CastResponse(() => HomeSlider)
   loadHomeSliderData(dataUrl: string) {
     return this.http.get<HomeSlider[]>(dataUrl);
+  }
+
+  loadFlyerSummaryData(urls: { valueUrl: string; countUrl: string }, criteria: FlyerCriteriaContract) {
+    delete criteria.issueDateMonth;
+    delete criteria.issueDateQuarter;
+
+    return forkJoin([
+      this.http.post<KpiModel[]>(urls.countUrl, criteria),
+      this.http.post<KpiModel[]>(urls.valueUrl, criteria),
+    ]).pipe(
+      map(([count, value]) => [new KpiModel().clone<KpiModel>(count[0]), new KpiModel().clone<KpiModel>(value[0])])
+    );
+  }
+
+  loadFlyerDurationSummaryData(urls: { valueUrl: string; countUrl: string }, criteria: FlyerCriteriaContract) {
+    const _urls = { ...urls };
+    if (criteria.issueDateMonth) {
+      _urls.valueUrl += '/' + DurationEndpoints.MONTHLY;
+      _urls.countUrl += '/' + DurationEndpoints.MONTHLY;
+      delete criteria.issueDateQuarter;
+    } else {
+      _urls.valueUrl += '/' + DurationEndpoints.QUARTERLY;
+      _urls.countUrl += '/' + DurationEndpoints.QUARTERLY;
+      delete criteria.issueDateMonth;
+    }
+
+    return forkJoin([
+      this.http.post<KpiFlyerDurationModel[]>(_urls.countUrl, criteria),
+      this.http.post<KpiFlyerDurationModel[]>(_urls.valueUrl, criteria),
+    ]).pipe(
+      map(([count, value]) => [
+        new KpiFlyerDurationModel().clone<KpiFlyerDurationModel>(count[0]),
+        new KpiFlyerDurationModel().clone<KpiFlyerDurationModel>(value[0]),
+      ])
+    );
+  }
+
+  @CastResponse(() => FlyerProperty)
+  loadFlyerPropertiesData(url: string, criteria: FlyerCriteriaContract) {
+    return this.http.post<FlyerProperty[]>(this._prepareFlyerUrl(url, criteria), criteria);
+  }
+
+  @CastResponse(() => FlyerPriceRange)
+  loadFlyerPriceRangeData(url: string, criteria: FlyerCriteriaContract) {
+    return this.http.post<FlyerPriceRange[]>(this._prepareFlyerUrl(url, criteria), criteria);
+  }
+
+  @CastResponse(() => FlyerAreaKpi)
+  loadFlyerTop10AreaData(url: string, criteria: FlyerCriteriaContract) {
+    return this.http.post<FlyerAreaKpi[]>(this._prepareFlyerUrl(url, criteria), criteria);
+  }
+
+  @CastResponse(() => FlyerCompositeTransaction)
+  loadFlyerComponsiteTransacitons(url: string, criteria: FlyerCriteriaContract) {
+    return this.http.post<FlyerCompositeTransaction[]>(url, criteria);
+  }
+
+  private _prepareFlyerUrl(url: string, criteria: FlyerCriteriaContract) {
+    if (criteria.issueDateMonth) {
+      url += '/' + DurationEndpoints.MONTHLY;
+      delete criteria.issueDateQuarter;
+    } else if (criteria.issueDateQuarter) {
+      url += '/' + DurationEndpoints.QUARTERLY;
+      delete criteria.issueDateMonth;
+    } else {
+      delete criteria.issueDateMonth;
+      delete criteria.issueDateQuarter;
+    }
+
+    return url;
   }
 
   openRentStatsChartDialog(

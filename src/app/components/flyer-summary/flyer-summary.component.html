@@ -1,27 +1,34 @@
-<div class="p-10 flex items-center justify-between gap-8 rounded-xl transition-all hover:bg-silver/50">
-  <div class="flex flex-col justify-center items-start font-bold">
-    <span class="text-5xl text-silver">{{ lang.map.indicators }}</span>
-    <span class="text-6xl text-primary">{{ getTitle() }}</span>
+<div
+  class="p-10 flex flex-col md:flex-row items-center justify-between gap-8 rounded-xl transition-all hover:bg-silver/50 border border-silver/50 md:border-0">
+  <div
+    class="flex ltr:flex-row-reverse ltr:md:flex-col md:flex-col justify-center items-center md:items-start gap-2 md:gap-0 font-bold">
+    <span class="text-5xl ltr:text-3xl ltr:sm:text-4xl text-silver"> {{ lang.map.indicators }} </span>
+    <span class="text-6xl ltr:text-4xl ltr:sm:text-5xl text-primary"> {{ getTitle() }} </span>
   </div>
-  <div class="flex-1 flex items-center justify-center gap-20">
-    <div class="flex items-center justify-center gap-3">
+  <div
+    [ngClass]="{ 'opacity-30': isLoading }"
+    class="flex-1 flex flex-col md:flex-row items-center justify-center gap-4 md:gap-10 lg:gap-20 transition-all">
+    <div class="flex md:flex-col lg:flex-row items-center justify-between md:justify-center gap-3">
       <img class="h-full" src="assets/icons/flyer/1.png" alt="" />
-      <div class="text-center font-bold">
-        <p class="text-3xl text-primary">615</p>
+      <div class="flex flex-col items-center justify-center gap-2 text-center font-bold">
+        @if (isLoading) {<mat-spinner diameter="30" strokeWidth="3"></mat-spinner>} @else {
+        <p class="text-3xl text-primary" [countUp]="data.count" [options]="countUpOptions"></p>
+        }
         <p class="text-xl">{{ lang.map.total_number_of_contracts }}</p>
       </div>
     </div>
-    <div class="w-1 h-[60px] bg-silver rounded-full"></div>
-    <div class="flex items-center justify-center gap-3">
+    <div class="hidden md:block w-1 h-[60px] bg-silver rounded-full"></div>
+    <div class="md:hidden w-full h-0.5 bg-silver rounded-full"></div>
+    <div class="flex md:flex-col lg:flex-row items-center justify-between md:justify-center gap-3">
       <img class="h-full" src="assets/icons/flyer/2.png" alt="" />
-      <div class="text-center font-bold">
-        <p class="text-3xl text-primary">61,523 {{ lang.map.qr }}</p>
+      <div class="flex flex-col items-center justify-center gap-2 text-center font-bold">
+        @if (isLoading) {<mat-spinner diameter="30" strokeWidth="3"></mat-spinner>} @else {
+        <p class="text-3xl text-primary">
+          <span [countUp]="data.value" [options]="countUpOptions"></span> {{ lang.map.qr }}
+        </p>
+        }
         <p class="text-xl">{{ lang.map.total_value_of_contracts }}</p>
       </div>
     </div>
   </div>
-</div>
-
-<div *ngIf="isOpened" class="relative my-4">
-  <ng-content> </ng-content>
 </div>

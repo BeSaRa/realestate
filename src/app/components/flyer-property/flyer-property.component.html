@@ -1,14 +1,19 @@
-<div class="w-[300px] grid grid-cols-4 gap-2 p-2 border border-gray-200 rounded-lg">
+<div
+  class="group h-full rtl:max-w-[300px] ltr:min-w-[350px] ltr:max-w-[400px] grid grid-cols-4 items-center gap-2 p-2 border border-gray-200 rounded-lg transition-all duration-300 hover:border-transparent hover:bg-primary hover:shadow-gray-300">
   <div
-    class="px-2 py-2 col-span-1 flex flex-col items-center justify-center gap-4 text-center text-lg bg-gray-200 rounded-md">
+    class="h-full px-2 py-2 col-span-1 flex flex-col items-center justify-center gap-4 text-center text-lg ltr:text-base bg-gray-200 rounded-md transition-all duration-300 overflow-hidden group-hover:bg-white">
     <img class="w-full" [src]="getIconUrl()" alt="" />
-    <span>{{ item.getNames() }}</span>
+    <span>{{ getNames() }}</span>
   </div>
-  <div class="py-2 col-span-3 text-center text-lg">
-    <p class="text-secondary font-bold">1000 صفقة</p>
-    <p class="text-primary">متوسط القيمة <span class="text-2xl font-bold">1.5 مليون</span></p>
-    <p class="text-silver text-sm">(ريال قطري)</p>
-    <p class="text-primary">إجمالي القيمة <span class="text-2xl font-bold">23 مليون</span></p>
-    <p class="text-silver text-sm">(ريال قطري)</p>
+  <div class="py-2 col-span-3 text-center text-lg ltr:text-base">
+    <p class="text-secondary font-bold">{{ getCount() | number }} {{ lang.map.transaction }}</p>
+    <p class="text-primary transition-all group-hover:text-white">
+      {{ lang.map.value_average }} <span class="text-2xl ltr:text-xl font-bold">{{ getAvgValue() }}</span>
+    </p>
+    <p class="text-silver text-sm ltr:text-xs">({{ lang.map.qatari_ryal }})</p>
+    <p class="text-primary transition-all group-hover:text-white">
+      {{ lang.map.value_total }} <span class="text-2xl ltr:text-xl font-bold">{{ getTotalValue() }}</span>
+    </p>
+    <p class="text-silver text-sm ltr:text-xs">({{ lang.map.qatari_ryal }})</p>
   </div>
 </div>

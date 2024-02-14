@@ -1,22 +1,39 @@
-<div class="relative py-8 px-20 border-2 border-silver rounded-xl overflow-hidden">
-  <img class="absolute bottom-0 left-0" *ngIf="type === 'count'" src="assets/images/flyer-images/layer-2.png" alt="" />
-  <img class="absolute top-0 left-0" *ngIf="type === 'price'" src="assets/images/flyer-images/layer-3.png" alt="" />
+<div class="relative pt-8 border-2 border-silver rounded-xl overflow-hidden">
+  <mat-progress-bar
+    *ngIf="isLoading"
+    color="accent"
+    class="!absolute top-0 left-0 w-full"
+    mode="indeterminate"></mat-progress-bar>
   <h3 class="text-center text-xl text-primary font-bold">{{ title }}</h3>
 
-  <div class="mt-10 flex justify-center items-stretch gap-6">
-    <div class="flex-1 flex flex-col justify-start items-stretch" *ngFor="let item of data">
-      <div class="flex flex-col justify-end h-[200px]">
-        <div
-          class="border-[3px] border-silver text-center py-2"
-          [ngStyle]="{ height: ((item.value / minMaxAvg.max) * 200).toFixed(0) + 'px' }">
-          <span class="text-primary text-xl font-bold">{{ item.value }}</span>
-        </div>
-      </div>
-      <p class="flex-1 mt-3 text-center text-primary font-bold">{{ item.area.getNames() }}</p>
+  <img class="absolute bottom-0 left-0" *ngIf="type === 'count'" src="assets/images/flyer-images/layer-2.png" alt="" />
+  <img class="absolute top-0 left-0" *ngIf="type === 'price'" src="assets/images/flyer-images/layer-3.png" alt="" />
 
-      <div class="mt-2 flex flex-col xl:flex-row xl:gap-2 items-center justify-center">
-        <app-yoy-indicator [value]="item.yoy" />
-        <div class="-mt-2 xl:mt-0">{{ item.yoy.toFixed(1) }} %</div>
+  <div class="relative pb-8 px-5 xl:px-20 transition-all overflow-x-auto" [ngClass]="{ 'opacity-30': isLoading }">
+    <div class="mt-10 flex justify-center items-stretch gap-6 min-w-[900px]">
+      <div
+        class="flex-1 flex flex-col justify-start items-stretch"
+        *ngFor="let item of chartData; trackBy: notChangeTrackBy">
+        <div class="flex flex-col justify-end h-[200px]">
+          <div
+            class="group relative border-[3px] border-silver text-center py-2 transition-all duration-300 hover:bg-primary hover:border-primary"
+            [ngStyle]="{ height: ((item.kpiVal / (minMaxAvg.max === 0 ? 1 : minMaxAvg.max)) * 200).toFixed(0) + 'px' }">
+            <span class="relative -top-10 text-primary text-xl font-bold transition-all">{{
+              getValue(item.kpiVal)
+            }}</span>
+          </div>
+        </div>
+        <p class="flex-1 mt-3 text-center text-primary font-bold">
+          {{
+            (lookupService.sellDistrictMap[item.areaCode] && lookupService.sellDistrictMap[item.areaCode].getNames()) ||
+              ""
+          }}
+        </p>
+
+        <div class="mt-2 flex flex-col xl:flex-row xl:gap-2 items-center justify-center">
+          <app-yoy-indicator [value]="item.kpiYoYDifference" />
+          <div class="-mt-2 xl:mt-0">{{ (item.kpiYoYDifference && item.kpiYoYDifference.toFixed(0)) || 0.0 }} %</div>
+        </div>
       </div>
     </div>
   </div>
