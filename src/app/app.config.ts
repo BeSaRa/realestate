@@ -15,6 +15,7 @@ import { routes } from './app.routes';
 import { TokenInterceptor } from './interceptors/token.interceptor';
 import { PagesSections } from '@constants/pages-sections';
 import { applicationInit } from './init/init';
+import { MatNativeDateModule } from '@angular/material/core';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -24,6 +25,7 @@ export const appConfig: ApplicationConfig = {
     provideNgxMask(),
     importProvidersFrom(MatDialogModule),
     importProvidersFrom(MatSnackBarModule),
+    importProvidersFrom(MatNativeDateModule),
     {
       provide: HTTP_INTERCEPTORS,
       useClass: TokenInterceptor,

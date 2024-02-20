@@ -51,6 +51,7 @@ export const AppIcons = {
   MAP_CHART: 'map-marker-radius',
   CHECK_OUTLINE: 'check-circle-outline',
   CHECK: 'check-circle',
+  INFO: 'information',
 };
 
 export type AppIconsType = typeof AppIcons;

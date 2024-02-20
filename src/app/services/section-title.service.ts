@@ -2,11 +2,23 @@ import { Injectable, inject } from '@angular/core';
 import { LookupService } from './lookup.service';
 import { CriteriaContract } from '@contracts/criteria-contract';
 import { Lookup } from '@models/lookup';
+import { DateAdapter } from '@angular/material/core';
+import { TranslationService } from './translation.service';
 @Injectable({
   providedIn: 'root',
 })
 export class SectionTitleService {
   lookupService = inject(LookupService);
+  lang = inject(TranslationService);
+  adapter = inject(DateAdapter);
+
+  months: { label: string; value: number }[] = [];
+  quarterYearDurations = this.lookupService.rentLookups.quarterYearDurations;
+
+  constructor() {
+    this._setMonths();
+    this._listenToLangChange();
+  }
 
   getSelectedCriteria(
     indicatorPrefix: string,
@@ -15,7 +27,8 @@ export class SectionTitleService {
     isDistrictRequired = true,
     isYearRequired = true,
     isMunicipalityRequired = true,
-    isNationalityRequired = false
+    isNationalityRequired = false,
+    showMonthOrQuarter = false
   ): string {
     const generatedTitle: string[] = [];
 
@@ -52,8 +65,25 @@ export class SectionTitleService {
     }
 
     if (isYearRequired) {
-      const year = this.getSelectedYear(criteria);
-      generatedTitle.push(year);
+      let _duration = this.getSelectedYear(criteria);
+      if (showMonthOrQuarter) {
+        if (criteria.issueDateStartMonth === criteria.issueDateEndMonth) {
+          _duration += ' (' + this.months[criteria.issueDateStartMonth - 1].label + ')';
+        }
+        if (criteria.issueDateQuarterList.length < 4 && criteria.issueDateQuarterList.length >= 1) {
+          if (criteria.issueDateQuarterList.length === 1) {
+            _duration += ' (' + this.quarterYearDurations[criteria.issueDateQuarterList[0] - 1].getNames() + ')';
+          } else {
+            _duration += ' (';
+            criteria.issueDateQuarterList.forEach((q, i) => {
+              if (i === criteria.issueDateQuarterList.length - 1)
+                _duration += this.quarterYearDurations[q - 1].getNames() + ')';
+              else _duration += this.quarterYearDurations[q - 1].getNames() + '+';
+            });
+          }
+        }
+      }
+      generatedTitle.push(_duration);
     }
     return generatedTitle.length ? `(${generatedTitle.join(' , ')})` : '';
   }
@@ -123,5 +153,18 @@ export class SectionTitleService {
     return criteria.premiseTypeList && criteria.premiseTypeList[0] !== -1
       ? lookupMap[criteria.premiseTypeList[0]]?.getNames()
       : '';
+  }
+
+  private _listenToLangChange() {
+    this.lang.change$.subscribe(() => this._setMonths());
+  }
+
+  private _setMonths() {
+    this.adapter.setLocale(this.lang.getCurrent().code === 'ar-SA' ? 'ar-EG' : 'en-US');
+    const _months = this.adapter.getMonthNames('long');
+    this.months = _months.map((month, index) => ({
+      label: month,
+      value: index + 1,
+    }));
   }
 }

@@ -20,6 +20,7 @@ import { CriteriaContract } from '@contracts/criteria-contract';
 import { TableColumnTemplateDirective } from '@directives/table-column-template.directive';
 import { OnDestroyMixin } from '@mixins/on-destroy-mixin';
 import { AppTableDataSource } from '@models/app-table-data-source';
+import { Pagination } from '@models/pagination';
 import { TableSortOption } from '@models/table-sort-option';
 import { SectionGuardService } from '@services/section-guard.service';
 import { TranslationService } from '@services/translation.service';
@@ -27,11 +28,12 @@ import {
   BehaviorSubject,
   Observable,
   Subject,
+  catchError,
   combineLatest,
   finalize,
+  of,
   switchMap,
   takeUntil,
-  tap,
   throttleTime,
 } from 'rxjs';
 
@@ -52,9 +54,7 @@ import {
 })
 export class TableComponent<T extends object> extends OnDestroyMixin(class {}) implements OnInit, OnChanges {
   @Input({ required: true }) criteria!: CriteriaContract;
-  @Input({ required: true }) dataLoadFn!: (
-    criteria: CriteriaContract
-  ) => Observable<{ count: number; transactionList: T[] }>;
+  @Input({ required: true }) dataLoadFn!: (criteria: CriteriaContract) => Observable<Pagination<T>>;
   @Input() pageSize = 5;
   @Input() tableGuardName = '';
   @Input() sortOptions: TableSortOption[] = [];
@@ -78,7 +78,7 @@ export class TableComponent<T extends object> extends OnDestroyMixin(class {}) i
   reload$ = new Subject<void>();
   paginate$ = new BehaviorSubject({
     offset: 0,
-    limit: 5,
+    limit: this.pageSize,
   });
 
   sortedData$ = this.data$.asObservable();
@@ -107,6 +107,7 @@ export class TableComponent<T extends object> extends OnDestroyMixin(class {}) i
   }
 
   ngOnInit(): void {
+    this.paginate$.next({ offset: 0, limit: this.pageSize });
     this._listenToTransactionsReloadAndPaginate();
     this._initializeSort();
     this.sortControl.patchValue(this.defaultSortOption?.value);
@@ -147,6 +148,9 @@ export class TableComponent<T extends object> extends OnDestroyMixin(class {}) i
               }
             : this.criteria;
           return this.dataLoadFn(_criteria).pipe(
+            catchError(() => {
+              return of<Pagination<T>>({ count: 0, transactionList: [] });
+            }),
             finalize(() => {
               this.isLoading = false;
               this.isReload = false;

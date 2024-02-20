@@ -42,6 +42,7 @@ import { forkJoin, map, Observable } from 'rxjs';
 import { DialogService } from './dialog.service';
 import { LookupService } from './lookup.service';
 import { TranslationService } from './translation.service';
+import { GeneralSecretariatTransaction } from '@models/general-secretariat-transaction';
 
 @Injectable({
   providedIn: 'root',
@@ -138,8 +139,8 @@ export class DashboardService extends RegisterServiceMixin(class {}) implements 
   }
 
   @CastResponse(() => Pagination<Broker>, { shape: { 'transactionList.*': () => Broker } })
-  loadBrokers(criteria: Partial<CriteriaContract>): Observable<Pagination<Broker[]>> {
-    return this.http.post<Pagination<Broker[]>>(this.urlService.URLS.BROKER_KPI_TRANSACTIONS, criteria);
+  loadBrokers(criteria: Partial<CriteriaContract>): Observable<Pagination<Broker>> {
+    return this.http.post<Pagination<Broker>>(this.urlService.URLS.BROKER_KPI_TRANSACTIONS, criteria);
   }
 
   loadForecastData(url: string, criteria: Partial<ForecastCriteriaContract>) {
@@ -224,6 +225,18 @@ export class DashboardService extends RegisterServiceMixin(class {}) implements 
     }
 
     return url;
+  }
+
+  @CastResponse(() => Pagination<GeneralSecretariatTransaction>, {
+    shape: { 'transactionList.*': () => GeneralSecretariatTransaction },
+  })
+  loadGeneralSecretariatTransactions(
+    criteria: Partial<CriteriaContract>
+  ): Observable<Pagination<GeneralSecretariatTransaction>> {
+    return this.http.post<Pagination<GeneralSecretariatTransaction>>(
+      this.urlService.URLS.GENERAL_SECRETARIAT_RENT,
+      criteria
+    );
   }
 
   openRentStatsChartDialog(

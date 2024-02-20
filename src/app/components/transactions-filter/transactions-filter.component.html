@@ -186,7 +186,7 @@
 
     <ng-container *ngIf="isOpened || isOwner()">
       <app-select-input
-        *ngIf="isOwner() || isRent()"
+        *ngIf="isOwner()"
         [enableFilter]="true"
         bindFilter="getNames"
         formControlName="nationalityCode"
