@@ -1,5 +1,4 @@
-<div
-  class="relative overflow-x-auto overflow-y-hidden py-4 px-8 rounded-xl border border-secondary/50 shadow-gray-100 custom-shadow">
+<div class="max-w-full relative rounded-xl overflow-hidden border border-secondary/50 shadow-gray-100 custom-shadow">
   <mat-progress-bar
     *ngIf="isLoading"
     color="accent"
@@ -21,58 +20,60 @@
   <!--        [options]="sortOptions"></app-select-input>-->
   <!--    </div>-->
   <!--  </div>-->
-  <table mat-table [dataSource]="dataSource" class="w-full" [ngStyle]="{ minWidth}">
-    <!-- columns -->
-    <ng-container
-      *ngFor="let displayedColumn of displayedColumnNames; let index = index"
-      [matColumnDef]="displayedColumn">
-      <th *matHeaderCellDef class="p-2">
-        <ng-container [ngTemplateOutlet]="getColumnTemplate(displayedColumn)!.header.templateRef"></ng-container>
-      </th>
-      <td *matCellDef="let row" class="text-primary py-2 transition-all" [ngClass]="{ 'text-opacity-25': isLoading }">
-        <ng-container
-          [ngTemplateOutlet]="getColumnTemplate(displayedColumn)!.cell.templateRef"
-          [ngTemplateOutletContext]="{
-            $implicit: getColumnTemplate(displayedColumn)!.getBindValue(row)
-          }"></ng-container>
-      </td>
-    </ng-container>
+  <div class="max-w-full overflow-x-auto overflow-y-hidden py-4 px-8">
+    <table mat-table [dataSource]="dataSource" class="w-full" [ngStyle]="{ minWidth}">
+      <!-- columns -->
+      <ng-container
+        *ngFor="let displayedColumn of displayedColumnNames; let index = index"
+        [matColumnDef]="displayedColumn">
+        <th *matHeaderCellDef class="p-2">
+          <ng-container [ngTemplateOutlet]="getColumnTemplate(displayedColumn)!.header.templateRef"></ng-container>
+        </th>
+        <td *matCellDef="let row" class="text-primary py-2 transition-all" [ngClass]="{ 'text-opacity-25': isLoading }">
+          <ng-container
+            [ngTemplateOutlet]="getColumnTemplate(displayedColumn)!.cell.templateRef"
+            [ngTemplateOutletContext]="{
+              $implicit: getColumnTemplate(displayedColumn)!.getBindValue(row)
+            }"></ng-container>
+        </td>
+      </ng-container>
 
-    <!-- rows -->
-    <tr
-      mat-header-row
-      *matHeaderRowDef="displayedColumnNames"
-      [ngClass]="{ 'opacity-25': isLoading }"
-      class="{{ headerBgColor }} !text-white {{ textSize }} font-bold transition-all"></tr>
-    <tr
-      mat-row
-      *matRowDef="let row; columns: displayedColumnNames"
-      class="text-center {{ textSize }} border-b border-gray-200"></tr>
-    <tr *matNoDataRow [ngClass]="{ 'opacity-25': isLoading }">
-      <td class="p-4" colspan="100">{{ lang.map.no_records_to_display }}</td>
-    </tr>
-  </table>
+      <!-- rows -->
+      <tr
+        mat-header-row
+        *matHeaderRowDef="displayedColumnNames"
+        [ngClass]="{ 'opacity-25': isLoading }"
+        class="{{ headerBgColor }} !text-white {{ textSize }} font-bold transition-all"></tr>
+      <tr
+        mat-row
+        *matRowDef="let row; columns: displayedColumnNames"
+        class="text-center {{ textSize }} border-b border-gray-200"></tr>
+      <tr *matNoDataRow [ngClass]="{ 'opacity-25': isLoading }">
+        <td class="p-4" colspan="100">{{ lang.map.no_records_to_display }}</td>
+      </tr>
+    </table>
 
-  <!-- paginator -->
-  <div *ngIf="length && enablePagination" class="flex justify-between items-center" [ngStyle]="{ minWidth}">
-    <span class="text-primary/70">
-      {{ lang.map.paginator_showing_label }} {{ length ? offset + 1 : 0 }}
-      {{ lang.map.paginator_to_label }}
-      {{ offset + pageSize > length ? length : offset + pageSize }}
-      {{ lang.map.paginator_from_label }}
-      {{ length }}
-      {{ lang.map.paginator_entry_label }}
-    </span>
-    <div class="flex justify-between items-center gap-4">
-      <mat-paginator
-        #paginator
-        (page)="_paginate($event)"
-        [pageSize]="pageSize"
-        [showFirstLastButtons]="showFirstLastButtons"
-        [hidePageSize]="true"
-        [length]="length"
-        [disabled]="isReload">
-      </mat-paginator>
+    <!-- paginator -->
+    <div *ngIf="length && enablePagination" class="flex justify-between items-center" [ngStyle]="{ minWidth}">
+      <span class="text-primary/70">
+        {{ lang.map.paginator_showing_label }} {{ length ? offset + 1 : 0 }}
+        {{ lang.map.paginator_to_label }}
+        {{ offset + pageSize > length ? length : offset + pageSize }}
+        {{ lang.map.paginator_from_label }}
+        {{ length }}
+        {{ lang.map.paginator_entry_label }}
+      </span>
+      <div class="flex justify-between items-center gap-4">
+        <mat-paginator
+          #paginator
+          (page)="_paginate($event)"
+          [pageSize]="pageSize"
+          [showFirstLastButtons]="showFirstLastButtons"
+          [hidePageSize]="true"
+          [length]="length"
+          [disabled]="isReload">
+        </mat-paginator>
+      </div>
     </div>
   </div>
 </div>

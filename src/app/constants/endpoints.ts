@@ -194,6 +194,8 @@ const flyerEndpoints = {
 
   FLYER_MORT_KPI1: 'FLYER|mortgage/kpi1',
   FLYER_MORT_KPI2: 'FLYER|mortgage/kpi2',
+
+  GENERAL_SECRETARIAT_RENT: 'FLYER|rent/general-secretee',
 };
 
 export const cmsEndpoints = {

@@ -448,4 +448,20 @@ export interface LangKeysContract {
   transactions_count: string;
   transactions_cost: string;
   sell_statistics_by_municipality: string;
+
+  general_secretariat_report: string;
+  transaction_code: string;
+  property_type_and_purpose: string;
+  property_description: string;
+  square_feet: string;
+  property_details: string;
+  the_area: string;
+  rent_details: string;
+  total_rent_value: string;
+  months_count: string;
+  download_report: string;
+  bed_rooms: string;
+  sub_unit_count: string;
+  transaction_details: string;
+  pin_no: string;
 }

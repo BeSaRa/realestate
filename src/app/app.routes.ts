@@ -94,6 +94,11 @@ export const routes: Routes = [
     loadComponent: () => import('@pages/flyers-page/flyers-page.component'),
   },
   {
+    path: 'general-secretariat',
+    canActivate: [authGuard('/general-secretariat')],
+    loadComponent: () => import('@pages/general-secretariat-page/general-secretariat-page.component'),
+  },
+  {
     path: 'inputs',
     loadComponent: () => import('@pages/inputs-page/inputs-page.component'),
   },
