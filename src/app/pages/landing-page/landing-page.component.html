@@ -3,11 +3,11 @@
     <div class="py-10" *appSliderTemplate="let item">
       <div class="bg-black/50 gap-1 lg:gap-3 py-2 lg:py-5 my-2 px-5 rounded-xl flex flex-col items-center">
         <p class="text-base">{{ item.getCountTitle() }}</p>
-        <p class="text-3xl text-secondary">{{ item.kpiCount }}</p>
+        <p class="text-3xl text-secondary">{{ item.kpiCount | number }}</p>
       </div>
       <div class="bg-black/50 gap-1 lg:gap-3 py-2 lg:py-5 my-2 px-5 rounded-xl flex flex-col items-center">
         <p class="text-base">{{ item.getValueTitle() }}</p>
-        <p class="text-3xl text-secondary">{{ item.kpiVal }} {{ lang.map.qr }}</p>
+        <p class="text-3xl text-secondary">{{ getSliderValue(item.kpiVal) }} ({{ lang.map.qr }})</p>
       </div>
     </div>
   </app-slider>
