@@ -1,11 +1,10 @@
 import { Injectable, inject } from '@angular/core';
-import { TranslationService } from './translation.service';
 import { NavigationEnd, Router } from '@angular/router';
-import { combineLatest, filter, tap } from 'rxjs';
 import { IndicatorsRoutes } from '@enums/indicators-routes';
-import { LookupService } from './lookup.service';
 import { Lookup } from '@models/lookup';
-import { LangContract } from '@contracts/lang-contract';
+import { filter, tap } from 'rxjs';
+import { LookupService } from './lookup.service';
+import { TranslationService } from './translation.service';
 
 @Injectable({
   providedIn: 'root',
@@ -34,7 +33,7 @@ export class DistrictSortService {
       if (this._currentUrl === IndicatorsRoutes.SELL) {
         this.lookupService.sellLookups?.districtList?.sort(this._enCompare);
       }
-      if (this._currentUrl === IndicatorsRoutes.RENTAL) {
+      if (this._currentUrl === IndicatorsRoutes.RENTAL || this._currentUrl === IndicatorsRoutes.GENERAL_SECRETARIAT) {
         this.lookupService.rentLookups?.zoneList?.sort(this._enCompare);
       }
       if (this._currentUrl === IndicatorsRoutes.MORTGAGE) {
@@ -54,7 +53,7 @@ export class DistrictSortService {
       if (this._currentUrl === IndicatorsRoutes.SELL) {
         this.lookupService.sellLookups?.districtList?.sort(this._arCompare);
       }
-      if (this._currentUrl === IndicatorsRoutes.RENTAL) {
+      if (this._currentUrl === IndicatorsRoutes.RENTAL || this._currentUrl === IndicatorsRoutes.GENERAL_SECRETARIAT) {
         this.lookupService.rentLookups?.zoneList?.sort(this._arCompare);
       }
       if (this._currentUrl === IndicatorsRoutes.MORTGAGE) {

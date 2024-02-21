@@ -6,4 +6,5 @@ export enum IndicatorsRoutes {
   OCCUPIED_AND_VACANT = '/occupied-and-vacant-indicators',
   FORECASTING = '/forecasting-indicators',
   BROKERS = '/broker-indicators',
+  GENERAL_SECRETARIAT = '/general-secretariat',
 }
