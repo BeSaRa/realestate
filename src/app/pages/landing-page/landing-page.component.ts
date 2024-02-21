@@ -16,6 +16,7 @@ import { DashboardService } from '@services/dashboard.service';
 import { NewsService } from '@services/news.service';
 import { TranslationService } from '@services/translation.service';
 import { UrlService } from '@services/url.service';
+import { formatNumberWithSuffix } from '@utils/utils';
 
 @Component({
   selector: 'app-landing-page',
@@ -48,4 +49,9 @@ export default class LandingPageComponent extends OnDestroyMixin(class {}) {
   sliderContent$ = this.dashboardService.loadHomeSliderData(this.urlService.URLS.HOME_SLIDER);
 
   newsData = this.newsService.load({ limit: 4 });
+
+  getSliderValue(value: number) {
+    const _value = formatNumberWithSuffix(value);
+    return _value.num + ' ' + (this.lang.isLtr ? _value.enSuffix : _value.arSuffix);
+  }
 }
