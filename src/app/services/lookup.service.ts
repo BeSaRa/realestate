@@ -222,6 +222,7 @@ export class LookupService extends RegisterServiceMixin(class {}) implements Ser
         }),
         tap((res) => {
           this.rentFurnitureMap = this._initializeFurnitureStatusMap(res[0]);
+          this.rentRoomsMap = this._initializeRoomsMap(res[0]);
         }),
 
         tap((res) => {
@@ -299,6 +300,12 @@ export class LookupService extends RegisterServiceMixin(class {}) implements Ser
 
   private _initializeDistrictMap(lookups: LookupsMap) {
     return lookups.districtList.reduce((acc, i) => {
+      return { ...acc, [i.lookupKey]: i };
+    }, {});
+  }
+
+  private _initializeRoomsMap(lookups: LookupsMap) {
+    return lookups.rooms.reduce((acc, i) => {
       return { ...acc, [i.lookupKey]: i };
     }, {});
   }

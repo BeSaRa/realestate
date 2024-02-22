@@ -326,10 +326,10 @@ export default class RentalIndicatorsPageComponent extends OnDestroyMixin(class 
 
   roomLabel = (item: { kpiVal: number; bedRoomsCount: number }) => {
     return (
-      this.lookupService.rentRoomsMap[item.bedRoomsCount || 0]?.getNames() ||
+      this.lookupService.rentRoomsMap[item.bedRoomsCount]?.getNames() ||
       new Lookup()
         .clone<Lookup>({
-          arName: ` غرف${item.bedRoomsCount || 'N/A'}`,
+          arName: `  غرفة ${item.bedRoomsCount || 'N/A'}`,
           enName: `${item.bedRoomsCount || 'N/A'} Rooms`,
         })
         .getNames()
