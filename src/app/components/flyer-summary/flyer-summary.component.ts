@@ -9,11 +9,12 @@ import { NGX_COUNTUP_OPTIONS } from '@constants/injection-tokens';
 import { CountUpOptionsContract } from '@contracts/countup-options-contract';
 import { CountUpModule } from 'ngx-countup';
 import { FlyerCriteriaContract } from '@contracts/flyer-criteria-contract';
+import { ChangeIndicatorComponent } from '@components/change-indicator/change-indicator.component';
 
 @Component({
   selector: 'app-flyer-summary',
   standalone: true,
-  imports: [CommonModule, MatProgressSpinnerModule, CountUpModule],
+  imports: [CommonModule, MatProgressSpinnerModule, CountUpModule, ChangeIndicatorComponent],
   templateUrl: './flyer-summary.component.html',
   styleUrls: ['./flyer-summary.component.scss'],
 })
@@ -26,8 +27,9 @@ export class FlyerSummaryComponent extends OnDestroyMixin(class {}) implements O
   dashboardService = inject(DashboardService);
   countUpOptions: CountUpOptionsContract = inject(NGX_COUNTUP_OPTIONS);
 
-  data = { value: 0, count: 0 };
+  data = { value: 0, valueYoy: 0, count: 0, countYoy: 0 };
   isLoading = false;
+  isHovered = false;
 
   private _titles = {
     sell: () => this.lang.map.sell,
@@ -63,7 +65,12 @@ export class FlyerSummaryComponent extends OnDestroyMixin(class {}) implements O
         finalize(() => (this.isLoading = false))
       )
       .subscribe(([count, value]) => {
-        this.data = { count: count.getKpiVal(), value: value.getKpiVal() };
+        this.data = {
+          count: count.getKpiVal(),
+          countYoy: count.getKpiYoYVal(),
+          value: value.getKpiVal(),
+          valueYoy: value.getKpiYoYVal(),
+        };
       });
   }
 
@@ -75,7 +82,12 @@ export class FlyerSummaryComponent extends OnDestroyMixin(class {}) implements O
         finalize(() => (this.isLoading = false))
       )
       .subscribe(([count, value]) => {
-        this.data = { count: count.getKpiVal(), value: value.getKpiVal() };
+        this.data = {
+          count: count.getKpiVal(),
+          countYoy: count.getKpiP2PYoY(),
+          value: value.getKpiVal(),
+          valueYoy: value.getKpiP2PYoY(),
+        };
       });
   }
 }

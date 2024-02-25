@@ -49,12 +49,12 @@ export class FlyerPropertyComponent {
   }
 
   getAvgValue() {
-    const _value = formatNumberWithSuffix(this.item.kpiValAvg);
+    const _value = formatNumberWithSuffix(this.item.kpiValAvg ?? 0);
     return _value.num + ' ' + (this.lang.isLtr ? _value.enSuffix : _value.arSuffix);
   }
 
   getTotalValue() {
-    const _value = formatNumberWithSuffix(this.item.kpiVal);
+    const _value = formatNumberWithSuffix(this.item.kpiVal ?? 0);
     return _value.num + ' ' + (this.lang.isLtr ? _value.enSuffix : _value.arSuffix);
   }
 }

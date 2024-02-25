@@ -91,6 +91,7 @@ export default class FlyersPageComponent extends OnDestroyMixin(class {}) implem
   }
 
   updateDuration(type: DurationEndpoints) {
+    if (this.selectedDurationType === type) return;
     this.selectedDurationType = type;
 
     if (type === DurationEndpoints.YEARLY) {
