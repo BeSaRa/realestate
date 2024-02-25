@@ -19,6 +19,13 @@ export class KpiModel extends KpiBaseModel {
     return this.kpiYoYVal;
   }
 
+  override setAllValues(kpiVal: number, yoy: number, previousYearKpi: number, yoyDifferenceKpi: number): void {
+    this.kpiVal = kpiVal;
+    this.kpiPreviousYear = previousYearKpi;
+    this.kpiYoYDifference = yoyDifferenceKpi;
+    this.kpiYoYVal = yoy;
+  }
+
   override resetAllValues(): void {
     this.kpiVal = this.kpiPreviousYear = this.kpiYoYVal = this.kpiYoYDifference = 0;
   }

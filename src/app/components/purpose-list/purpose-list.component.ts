@@ -59,10 +59,10 @@ export class PurposeListComponent implements OnChanges {
         }, {} as Record<number, KpiBaseModel>);
 
         this.purposeKpiList.forEach((item) => item.kpiData.resetAllValues());
-        this.updateAllPurpose();
         this.purposeKpiList.forEach((item) => {
           Object.prototype.hasOwnProperty.call(_purposeKpiData, item.id) && (item.kpiData = _purposeKpiData[item.id]);
         });
+        this.updateAllPurpose();
         this.selectPurpose(this.selectedPurpose);
       });
   }
@@ -78,6 +78,22 @@ export class PurposeListComponent implements OnChanges {
 
   updateAllPurpose(): void {
     const _purpose = this.purposeKpiList.find((i) => i.id === -1);
-    _purpose && (_purpose.kpiData = KpiBase.kpiFactory(this.kpiRoot.hasSqUnit).clone(this.kpiRoot.kpiData));
+    const _list = this.purposeKpiList.filter((i) => i.id !== -1);
+
+    let _kpi = 0;
+    let _previous = 0;
+    let _yoy = 0;
+
+    _list.forEach((item) => {
+      _kpi += item.kpiData.getKpiVal();
+      _previous += item.kpiData.getKpiPreviousYear();
+    });
+
+    _yoy = ((_kpi - _previous) / _previous) * 100;
+
+    if (_purpose) {
+      _purpose.kpiData = KpiBase.kpiFactory(this.kpiRoot.hasSqUnit);
+      _purpose.kpiData.setAllValues(_kpi, _yoy, 0, 0);
+    }
   }
 }
