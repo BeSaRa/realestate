@@ -9,5 +9,6 @@ export abstract class KpiBaseDurationModel extends ClonerMixin(class {}) {
   abstract getKpiP2PDifference(): number;
   abstract getKpiP2PYoY(): number;
 
+  abstract setAllValues(kpiVal: number, p2PYoY: number, previousPeriodKpi: number, p2pDifferenceKpi: number): void;
   abstract resetAllValues(): void;
 }

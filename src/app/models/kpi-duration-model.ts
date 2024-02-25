@@ -19,6 +19,13 @@ export class KpiDurationModel extends KpiBaseDurationModel {
     return this.kpiP2PYoY;
   }
 
+  override setAllValues(kpiVal: number, p2PYoY: number, previousPeriodKpi: number, p2pDifferenceKpi: number): void {
+    this.kpiVal = kpiVal;
+    this.kpiPreviousPeriod = previousPeriodKpi;
+    this.kpiP2PDifference = p2pDifferenceKpi;
+    this.kpiP2PYoY = p2PYoY;
+  }
+
   override resetAllValues(): void {
     this.kpiVal = this.kpiPreviousPeriod = this.kpiP2PYoY = this.kpiP2PDifference = 0;
   }

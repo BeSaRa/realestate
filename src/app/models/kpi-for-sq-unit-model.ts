@@ -32,6 +32,26 @@ export class KpiForSqUnitModel extends KpiBaseModel {
     return this._unitsService.isMeterSelected() ? this.kpiSqmtYoYVal : this.kpiSqftYoYVal;
   }
 
+  override setAllValues(kpiVal: number, yoy: number, previousYearKpi: number, yoyDifferenceKpi: number): void {
+    if (this._unitsService.isMeterSelected()) {
+      this.kpiSqmt = kpiVal;
+      this.kpiSqft = kpiVal * 10.8;
+      this.kpiSqmtPreviousYear = previousYearKpi;
+      this.kpiSqftPreviousYear = previousYearKpi * 10.8;
+      this.kpiSqmtYoYDifference = yoyDifferenceKpi;
+      this.kpiSqftYoYDifference = yoyDifferenceKpi * 10.8;
+    } else {
+      this.kpiSqmt = kpiVal / 10.8;
+      this.kpiSqft = kpiVal;
+      this.kpiSqmtPreviousYear = previousYearKpi / 10.8;
+      this.kpiSqftPreviousYear = previousYearKpi;
+      this.kpiSqmtYoYDifference = yoyDifferenceKpi / 10.8;
+      this.kpiSqftYoYDifference = yoyDifferenceKpi;
+    }
+
+    this.kpiSqmtYoYVal = this.kpiSqftYoYVal = yoy;
+  }
+
   override resetAllValues(): void {
     this.kpiSqft =
       this.kpiSqftPreviousYear =

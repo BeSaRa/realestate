@@ -8,5 +8,6 @@ export abstract class KpiBaseModel extends ClonerMixin(class {}) {
   abstract getKpiYoYDifference(): number;
   abstract getKpiYoYVal(): number;
 
+  abstract setAllValues(kpiVal: number, yoy: number, previousYearKpi: number, yoyDifferenceKpi: number): void;
   abstract resetAllValues(): void;
 }
