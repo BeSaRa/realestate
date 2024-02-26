@@ -34,13 +34,35 @@
       <g class="count">
         <text
           *ngFor="let key of pricesKeys; let index = index"
-          class="fill-primary font-bold text-[3px]"
+          class="fill-primary font-bold text-[3px] transition-all hover:brightness-[0.25]"
           [attr.x]="getCountX(index)"
           [attr.y]="7"
-          text-anchor="middle">
+          text-anchor="middle"
+          appCustomTooltip
+          [tooltipContent]="tooltipTemplate"
+          [tooltipContentContext]="key"
+          [tooltipPosition]="{
+            originX: 'center',
+            originY: 'top',
+            overlayX: 'center',
+            overlayY: 'bottom',
+          }">
           {{ pricesMap[key] | number }}
         </text>
       </g>
     </svg>
   </div>
 </div>
+
+<ng-template #tooltipTemplate let-key>
+  <div class="border border-primary rounded-md">
+    <div class="bg-primary text-white font-bold px-2 py-1 transition-all">
+      {{ getTooltipTitle(key) }}
+    </div>
+    <div class="px-2 py-1 text-center">
+      <span class="font-bold"
+        >{{ pricesMap[key] | number }} ({{ pricesMap[key] / totalCount | percent : "1.1-1" }})</span
+      >
+    </div>
+  </div>
+</ng-template>

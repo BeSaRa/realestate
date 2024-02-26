@@ -464,4 +464,8 @@ export interface LangKeysContract {
   sub_unit_count: string;
   transaction_details: string;
   pin_no: string;
+  from: string;
+  to: string;
+  more_than: string;
+  less_than: string;
 }
