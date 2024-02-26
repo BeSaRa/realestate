@@ -1,6 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, Input, OnChanges, SimpleChanges, inject } from '@angular/core';
 import { FlyerCriteriaContract } from '@contracts/flyer-criteria-contract';
+import { CustomTooltipDirective } from '@directives/custom-tooltip.directive';
 import { DashboardService } from '@services/dashboard.service';
 import { TranslationService } from '@services/translation.service';
 import { finalize, take } from 'rxjs';
@@ -8,7 +9,7 @@ import { finalize, take } from 'rxjs';
 @Component({
   selector: 'app-price-range',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, CustomTooltipDirective],
   templateUrl: './price-range.component.html',
   styleUrls: ['./price-range.component.scss'],
 })
@@ -22,6 +23,7 @@ export class PriceRangeComponent implements OnChanges {
   prices = [5, 10, 15, 20, 25, 30];
   pricesMap: Record<string, number> = { '0': 0, '5': 0, '10': 0, '15': 0, '20': 0, '25': 0, '30': 0 };
   pricesKeys = ['0', '5', '10', '15', '20', '25', '30', '35'];
+  totalCount = 1;
 
   isLoading = false;
 
@@ -51,6 +53,7 @@ export class PriceRangeComponent implements OnChanges {
           } else {
             this.pricesMap['30'] = item.kpiValCount;
           }
+          this.totalCount += item.kpiValCount;
         });
       });
   }
@@ -66,5 +69,25 @@ export class PriceRangeComponent implements OnChanges {
         this.getX(this.prices[this.prices.length - 1]) - (this.getX(this.prices[0]) - this.getX(this.prices[1])) / 2
       );
     return (this.getX(this.prices[index]) + this.getX(this.prices[index - 1])) / 2;
+  }
+
+  getTooltipTitle(key: string) {
+    if (key === '0') {
+      return this.lang.map.less_than + ' 5 ' + this.lang.map.million;
+    }
+    if (key === '30') {
+      return this.lang.map.more_than + ' 30 ' + this.lang.map.million;
+    }
+    return (
+      this.lang.map.from +
+      ' ' +
+      key +
+      ' ' +
+      this.lang.map.to +
+      ' ' +
+      (Number.parseInt(key) + 5).toString() +
+      ' ' +
+      this.lang.map.million
+    );
   }
 }
