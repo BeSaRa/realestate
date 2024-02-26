@@ -45,16 +45,18 @@ export class FlyerPropertyComponent {
   }
 
   getCount() {
-    return this.item.kpiCount;
+    return this.item.kpiCount ?? '---';
   }
 
   getAvgValue() {
-    const _value = formatNumberWithSuffix(this.item.kpiValAvg ?? 0);
+    if (!this.item.kpiValAvg) return '---';
+    const _value = formatNumberWithSuffix(this.item.kpiValAvg);
     return _value.num + ' ' + (this.lang.isLtr ? _value.enSuffix : _value.arSuffix);
   }
 
   getTotalValue() {
-    const _value = formatNumberWithSuffix(this.item.kpiVal ?? 0);
+    if (!this.item.kpiVal) return '---';
+    const _value = formatNumberWithSuffix(this.item.kpiVal);
     return _value.num + ' ' + (this.lang.isLtr ? _value.enSuffix : _value.arSuffix);
   }
 }
