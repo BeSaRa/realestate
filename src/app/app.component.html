@@ -29,6 +29,8 @@
       <app-button buttonStyle="secondary" (click)="onLogOut()">{{ lang.map.log_out }}</app-button>
     </div>
   </app-side-bar>
-  <app-scroll-to-top></app-scroll-to-top>
+  <app-actions-portal />
   <app-data-info />
 </div>
+
+<app-scroll-to-top *appAction="null; actionOrder: 100"></app-scroll-to-top>

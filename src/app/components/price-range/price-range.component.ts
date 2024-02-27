@@ -59,7 +59,7 @@ export class PriceRangeComponent implements OnChanges {
   }
 
   getX(value: number) {
-    return 110 - (value / this.prices[this.prices.length - 1]) * 90;
+    return 110 - ((value ?? 0) / this.prices[this.prices.length - 1]) * 90;
   }
 
   getCountX(index: number) {

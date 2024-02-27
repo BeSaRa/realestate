@@ -1,20 +1,17 @@
-import { Component, Input, OnChanges, SimpleChanges, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { TranslationService } from '@services/translation.service';
-import { DashboardService } from '@services/dashboard.service';
-import { OnDestroyMixin } from '@mixins/on-destroy-mixin';
-import { finalize, take } from 'rxjs';
+import { Component, Input, OnChanges, SimpleChanges, inject } from '@angular/core';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { NGX_COUNTUP_OPTIONS } from '@constants/injection-tokens';
-import { CountUpOptionsContract } from '@contracts/countup-options-contract';
-import { CountUpModule } from 'ngx-countup';
-import { FlyerCriteriaContract } from '@contracts/flyer-criteria-contract';
 import { ChangeIndicatorComponent } from '@components/change-indicator/change-indicator.component';
+import { FlyerCriteriaContract } from '@contracts/flyer-criteria-contract';
+import { OnDestroyMixin } from '@mixins/on-destroy-mixin';
+import { DashboardService } from '@services/dashboard.service';
+import { TranslationService } from '@services/translation.service';
+import { finalize, take } from 'rxjs';
 
 @Component({
   selector: 'app-flyer-summary',
   standalone: true,
-  imports: [CommonModule, MatProgressSpinnerModule, CountUpModule, ChangeIndicatorComponent],
+  imports: [CommonModule, MatProgressSpinnerModule, ChangeIndicatorComponent],
   templateUrl: './flyer-summary.component.html',
   styleUrls: ['./flyer-summary.component.scss'],
 })
@@ -25,7 +22,6 @@ export class FlyerSummaryComponent extends OnDestroyMixin(class {}) implements O
 
   lang = inject(TranslationService);
   dashboardService = inject(DashboardService);
-  countUpOptions: CountUpOptionsContract = inject(NGX_COUNTUP_OPTIONS);
 
   data = { value: 0, valueYoy: 0, count: 0, countYoy: 0 };
   isLoading = false;

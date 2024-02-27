@@ -1,0 +1,8 @@
+::ng-deep .download .mat-mdc-icon-button {
+  @apply bg-primary text-white;
+}
+
+.mat-mdc-progress-spinner {
+  --mdc-circular-progress-active-indicator-color: #ffffff;
+}
+
