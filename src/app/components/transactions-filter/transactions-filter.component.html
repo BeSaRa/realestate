@@ -262,8 +262,11 @@
             [maxlength]="rentPaymentMaxLength" />
         </app-input>
       </ng-container>
-      <ng-container *ngIf="isSell()">
-        <app-input formControlName="realEstateValueFrom" [label]="lang.map.real_estate_value_from" [isSecondary]="true">
+      <ng-container *ngIf="isSell() || isMort()">
+        <app-input
+          formControlName="realEstateValueFrom"
+          [label]="isSell() ? lang.map.real_estate_value_from : lang.map.mortgage_value_from"
+          [isSecondary]="true">
           <input
             appControl
             formControlName="realEstateValueFrom"
@@ -272,7 +275,10 @@
             thousandSeparator=","
             [maxlength]="realEstateMaxLength" />
         </app-input>
-        <app-input formControlName="realEstateValueTo" [label]="lang.map.real_estate_value_to" [isSecondary]="true">
+        <app-input
+          formControlName="realEstateValueTo"
+          [label]="isSell() ? lang.map.real_estate_value_to : lang.map.mortgage_value_to"
+          [isSecondary]="true">
           <input
             appControl
             formControlName="realEstateValueTo"
