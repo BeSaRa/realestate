@@ -52,6 +52,8 @@ export const AppIcons = {
   CHECK_OUTLINE: 'check-circle-outline',
   CHECK: 'check-circle',
   INFO: 'information',
+  PDF: 'file-pdf-box',
+  FILE_DOWNLOAD: 'file-download',
 };
 
 export type AppIconsType = typeof AppIcons;

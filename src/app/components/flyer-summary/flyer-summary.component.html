@@ -28,11 +28,9 @@
         alt="" />
       <div class="flex flex-col items-center justify-center gap-2 text-center font-bold">
         @if (isLoading) {<mat-spinner diameter="30" strokeWidth="3"></mat-spinner>} @else {
-        <p
-          class="text-3xl text-primary transition-all"
-          [ngClass]="{ 'text-white': isHovered }"
-          [countUp]="data.count"
-          [options]="countUpOptions"></p>
+        <p class="text-3xl text-primary transition-all" [ngClass]="{ 'text-white': isHovered }">
+          {{ data.count | number }}
+        </p>
         <app-change-indicator class="-mt-1" [value]="data.countYoy" [isHovered]="isHovered"></app-change-indicator>
         }
         <p class="text-xl transition-all" [ngClass]="{ 'text-white': isHovered }">
@@ -57,7 +55,7 @@
       <div class="flex flex-col items-center justify-center gap-2 text-center font-bold">
         @if (isLoading) {<mat-spinner diameter="30" strokeWidth="3"></mat-spinner>} @else {
         <p class="text-3xl text-primary transition-all" [ngClass]="{ 'text-white': isHovered }">
-          <span [countUp]="data.value" [options]="countUpOptions"></span> {{ lang.map.qr }}
+          <span>{{ data.value | number }}</span> {{ lang.map.qr }}
         </p>
         <app-change-indicator class="-mt-1" [value]="data.valueYoy" [isHovered]="isHovered"></app-change-indicator>
 

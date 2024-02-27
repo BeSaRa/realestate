@@ -1,0 +1,7 @@
+@if(actionsService.actions$ | async; as actions){
+<div class="fixed bottom-3 start-3 z-10 flex flex-col-reverse gap-3">
+  @for(action of actions; track false) {
+  <ng-container [ngTemplateOutlet]="action.template"></ng-container>
+  }
+</div>
+}

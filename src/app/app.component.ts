@@ -1,14 +1,16 @@
 import { BidiModule } from '@angular/cdk/bidi';
 import { CommonModule, registerLocaleData } from '@angular/common';
 import localeAr from '@angular/common/locales/ar';
-import { AfterViewInit, Component, HostListener, inject } from '@angular/core';
+import { Component, HostListener, inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
 import { Router, RouterModule, RouterOutlet } from '@angular/router';
+import { ActionDirective, ActionsPortalComponent } from '@components/actions-portal/actions-portal.component';
 import { ButtonComponent } from '@components/button/button.component';
 import { ChatGptComponent } from '@components/chat-gpt/chat-gpt.component';
 import { DataInfoComponent } from '@components/data-info/data-info.component';
+import { ExtraHeaderComponent } from '@components/extra-header/extra-header.component';
 import { FooterComponent } from '@components/footer/footer.component';
 import { HeaderComponent } from '@components/header/header.component';
 import { ScrollToTopComponent } from '@components/scroll-to-top/scroll-to-top.component';
@@ -28,7 +30,6 @@ import { UrlService } from '@services/url.service';
 import { UserService } from '@services/user.service';
 import '@utils/prototypes/custom-prototypes';
 import { filter, map, startWith, switchMap } from 'rxjs';
-import { ExtraHeaderComponent } from '@components/extra-header/extra-header.component';
 
 @Component({
   selector: 'app-root',
@@ -50,6 +51,8 @@ import { ExtraHeaderComponent } from '@components/extra-header/extra-header.comp
     MatMenuModule,
     SliderMenuComponent,
     DataInfoComponent,
+    ActionsPortalComponent,
+    ActionDirective,
   ],
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss'],

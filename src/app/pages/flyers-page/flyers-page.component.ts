@@ -1,12 +1,15 @@
-import { CommonModule } from '@angular/common';
-import { Component, OnInit, inject } from '@angular/core';
+import { CommonModule, DOCUMENT } from '@angular/common';
+import { Component, ElementRef, OnInit, ViewChild, inject } from '@angular/core';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { DateAdapter, MatNativeDateModule } from '@angular/material/core';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { ActionDirective } from '@components/actions-portal/actions-portal.component';
 import { ButtonComponent } from '@components/button/button.component';
 import { FlyerCompositeTableComponent } from '@components/flyer-composite-table/flyer-composite-table.component';
 import { FlyerPropertyListComponent } from '@components/flyer-property-list/flyer-property-list.component';
 import { FlyerSummaryComponent } from '@components/flyer-summary/flyer-summary.component';
 import { FlyerTopTenComponent } from '@components/flyer-top-ten/flyer-top-ten.component';
+import { IconButtonComponent } from '@components/icon-button/icon-button.component';
 import { PriceRangeComponent } from '@components/price-range/price-range.component';
 import { SelectInputComponent } from '@components/select-input/select-input.component';
 import { FlyerCriteriaContract } from '@contracts/flyer-criteria-contract';
@@ -17,6 +20,8 @@ import { Lookup } from '@models/lookup';
 import { LookupService } from '@services/lookup.service';
 import { TranslationService } from '@services/translation.service';
 import { UrlService } from '@services/url.service';
+import html2canvas from 'html2canvas';
+import jsPDF from 'jspdf';
 import { takeUntil } from 'rxjs';
 
 @Component({
@@ -35,15 +40,21 @@ import { takeUntil } from 'rxjs';
     MatNativeDateModule,
     SelectInputComponent,
     FlyerCompositeTableComponent,
+    ActionDirective,
+    IconButtonComponent,
+    MatProgressSpinnerModule,
   ],
   templateUrl: './flyers-page.component.html',
   styleUrls: ['./flyers-page.component.scss'],
 })
 export default class FlyersPageComponent extends OnDestroyMixin(class {}) implements OnInit {
+  @ViewChild('pdfContent') pdfContent!: ElementRef;
+
   lang = inject(TranslationService);
   urlService = inject(UrlService);
   lookupService = inject(LookupService);
   adapter = inject(DateAdapter);
+  document = inject(DOCUMENT);
 
   months: { label: string; value: number }[] = [];
   quarterYearDurations = this.lookupService.rentLookups.quarterYearDurations;
@@ -59,6 +70,7 @@ export default class FlyersPageComponent extends OnDestroyMixin(class {}) implem
   selectedDurationType = DurationEndpoints.YEARLY;
 
   isLoading = false;
+  isExportingToPdf = false;
 
   propertyTypes = [
     new Lookup().clone<Lookup>({
@@ -141,5 +153,51 @@ export default class FlyersPageComponent extends OnDestroyMixin(class {}) implem
     if (this.criteria.issueDateQuarter)
       _suffix += ' (' + this.quarterYearDurations[this.criteria.issueDateQuarter - 1].getNames() + ')';
     return _suffix;
+  }
+
+  exportToPDF() {
+    this.isExportingToPdf = true;
+    const _content = this.pdfContent.nativeElement as HTMLDivElement;
+
+    const pdfTitle = this.document.getElementById('pdf-title');
+    pdfTitle?.classList.remove('hidden');
+
+    const htmlWidth = _content.clientWidth;
+    const htmlHeight = _content.clientHeight;
+
+    const topLeftMargin = 15;
+
+    const pdfWidth = htmlWidth + topLeftMargin * 2;
+    const pdfHeight = htmlHeight + topLeftMargin * 2;
+
+    const canvasImageWidth = htmlWidth;
+    const canvasImageHeight = htmlHeight;
+
+    const totalPDFPages = Math.ceil(htmlHeight / pdfHeight) - 1;
+
+    html2canvas(_content, { allowTaint: true }).then((canvas) => {
+      canvas.getContext('2d');
+      const imgData = canvas.toDataURL('image/jpeg', 1.0);
+      const pdf = new jsPDF('p', 'pt', [pdfWidth, pdfHeight]);
+      pdf.addImage(imgData, 'png', topLeftMargin, topLeftMargin, canvasImageWidth, canvasImageHeight);
+
+      for (let i = 1; i <= totalPDFPages; i++) {
+        pdf.addPage([pdfWidth, pdfHeight], 'p');
+        pdf.addImage(
+          imgData,
+          'png',
+          topLeftMargin,
+          -(pdfHeight * i) + topLeftMargin * 4,
+          canvasImageWidth,
+          canvasImageHeight
+        );
+      }
+
+      pdf.save(this.lang.map.real_estate_flyer + ' ' + this.getTitleSuffix());
+
+      this.isExportingToPdf = false;
+    });
+
+    pdfTitle?.classList.add('hidden');
   }
 }
