@@ -468,4 +468,6 @@ export interface LangKeysContract {
   to: string;
   more_than: string;
   less_than: string;
+  mortgage_value_from: string;
+  mortgage_value_to: string;
 }
