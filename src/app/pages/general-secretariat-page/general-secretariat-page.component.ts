@@ -13,6 +13,7 @@ import { TableColumnHeaderTemplateDirective } from '@directives/table-column-hea
 import { TableColumnTemplateDirective } from '@directives/table-column-template.directive';
 import { CriteriaType } from '@enums/criteria-type';
 import { GeneralSecretariatTransaction } from '@models/general-secretariat-transaction';
+import { Lookup } from '@models/lookup';
 import { CsvService } from '@services/csv.service';
 import { DashboardService } from '@services/dashboard.service';
 import { DialogService } from '@services/dialog.service';
@@ -64,6 +65,25 @@ export default class GeneralSecretariatPageComponent {
   };
 
   isLoadingDownloadList = false;
+
+  readonly _occupationMap: Record<number, Lookup> = {
+    1: new Lookup().clone<Lookup>({
+      arName: 'مشغول',
+      enName: 'Occupied',
+    }),
+    2: new Lookup().clone<Lookup>({
+      arName: 'شاغر',
+      enName: 'Vacant',
+    }),
+    3: new Lookup().clone<Lookup>({
+      arName: 'ليس في كهرماء',
+      enName: 'Not in Kahramaa',
+    }),
+    4: new Lookup().clone<Lookup>({
+      arName: 'لابوجد رقم كهرباء',
+      enName: 'No Electricity_NO',
+    }),
+  };
 
   filterChange({ criteria, type }: { criteria: CriteriaContract; type: CriteriaType }) {
     this.criteria = { criteria: { ...criteria, limit: 5 }, type };
