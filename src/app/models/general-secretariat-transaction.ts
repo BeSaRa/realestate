@@ -16,7 +16,7 @@ export class GeneralSecretariatTransaction {
   issueDate!: string;
   municipalityid!: number;
   zoneNo!: number;
-  occupancyStatus!: string;
+  occupancyStatus!: number;
   pinNo!: number; //
   propertyDescription!: string;
   propertyTypeId!: number;
