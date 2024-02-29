@@ -21,7 +21,7 @@ export class CsvService {
         } else {
           cellData = row[c.key] as string;
         }
-        csvContent += '"' + (cellData ?? '') + '"' + (i === columns.length - 1 ? '\r\n' : ',');
+        csvContent += (cellData ? '"' + cellData + '"' : '') + (i === columns.length - 1 ? '\r\n' : ',');
       });
     });
 
