@@ -136,7 +136,7 @@ export default class GeneralSecretariatPageComponent {
           { key: 'bedRoomsCount', mapTo: this.lang.map.bed_rooms },
           { key: 'furnitureInfo', mapTo: this.lang.map.furniture_status, isLookup: true },
           { key: 'rentPaymentAmount', mapTo: this.lang.map.total_rent_value },
-          { key: 'rentPaymentFrequency', mapTo: this.lang.map.months_count },
+          { key: 'rentPaymentFrequency', mapTo: this.lang.map.payment_frequency + ' (' + this.lang.map.a_month + ')' },
           { key: 'certificateCode', mapTo: this.lang.map.transaction_code },
           { key: 'issueDate', mapTo: this.lang.map.documentation_date },
           { key: 'startDate', mapTo: this.lang.map.contract_start_date },

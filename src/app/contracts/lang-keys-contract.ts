@@ -470,4 +470,6 @@ export interface LangKeysContract {
   less_than: string;
   mortgage_value_from: string;
   mortgage_value_to: string;
+  payment_frequency: string;
+  a_month: string;
 }
