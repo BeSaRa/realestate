@@ -29,7 +29,12 @@
               "as-table",
               "rulyotano.math.interpolation.bezier",
               "qs",
-              "file-saver"
+              "file-saver",
+              "@utils/prototypes/custom-prototypes",
+              "jspdf",
+              "html2canvas",
+              "raf",
+              "rgbcolor"
             ],
             "outputPath": "dist/real-estate",
             "index": "src/index.html",
