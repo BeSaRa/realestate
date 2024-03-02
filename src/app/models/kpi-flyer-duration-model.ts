@@ -14,10 +14,10 @@ export class KpiFlyerDurationModel extends KpiBaseDurationModel {
     return this.prevYearSamePeriodCount;
   }
   override getKpiP2PDifference(): number {
-    return this.percentageDiffPeriod;
+    return this.percentageDiffPreviousPeriod;
   }
   override getKpiP2PYoY(): number {
-    return this.percentageDiffPreviousPeriod;
+    return this.percentageDiffPeriod;
   }
 
   override setAllValues(kpiVal: number, p2PYoY: number, previousPeriodKpi: number, p2pDifferenceKpi: number): void {
