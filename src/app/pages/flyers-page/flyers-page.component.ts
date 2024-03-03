@@ -84,7 +84,7 @@ export default class FlyersPageComponent extends OnDestroyMixin(class {}) implem
       lookupKey: 4,
     }),
     new Lookup().clone<Lookup>({
-      enName: 'Residental Complex',
+      enName: 'Residential Complex',
       arName: 'مجمع سكني',
       lookupKey: 5,
     }),
