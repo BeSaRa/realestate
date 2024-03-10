@@ -126,7 +126,12 @@ export class NationalitiesChartComponent extends OnDestroyMixin(class {}) implem
           },
         ],
         colors: [this.appChartTypesService.chartColorsFormatter(_minMaxAvg)],
-        ...this.appChartTypesService.getRangeOptions(this.screenSize, BarChartTypes.SINGLE_BAR, this.seriesDataLength),
+        ...this.appChartTypesService.getRangeOptions(
+          this.screenSize,
+          BarChartTypes.SINGLE_BAR,
+          this.seriesDataLength,
+          true
+        ),
       })
       .then();
   }
@@ -150,7 +155,7 @@ export class NationalitiesChartComponent extends OnDestroyMixin(class {}) implem
       this.screenSize = size;
       this.chart.first
         ?.updateOptions(
-          this.appChartTypesService.getRangeOptions(size, BarChartTypes.SINGLE_BAR, this.seriesDataLength)
+          this.appChartTypesService.getRangeOptions(size, BarChartTypes.SINGLE_BAR, this.seriesDataLength, true)
         )
         .then(() => {
           this.cdr.detectChanges();
