@@ -99,6 +99,7 @@ export class DurationChartComponent extends OnDestroyMixin(class {}) implements 
   selectedBarChartType = BarChartTypes.SINGLE_BAR;
 
   chartSeriesData: DurationSeriesDataContract[] = [];
+  filteredChartSeriesData: DurationSeriesDataContract[] = [];
   minMaxAvgChartData!: MinMaxAvgContract;
   durationDataLength = 0;
 
@@ -316,7 +317,7 @@ export class DurationChartComponent extends OnDestroyMixin(class {}) implements 
       }
     }
 
-    const _data: DurationSeriesDataContract[] = [];
+    this.filteredChartSeriesData = [];
 
     this.chartSeriesData.forEach((s) => {
       const _newSeries = structuredClone(s) as DurationSeriesDataContract;
@@ -329,14 +330,16 @@ export class DurationChartComponent extends OnDestroyMixin(class {}) implements 
           return parseInt(item.x.toString()) >= (this.fromYearControl.value ?? 0);
         });
       }
-      _data.push(_newSeries);
+      this.filteredChartSeriesData.push(_newSeries);
     });
 
-    this.durationDataLength = _data[0].data.length;
+    this.durationDataLength = this.filteredChartSeriesData[0].data.length;
 
     const _seriesData = this.isMinMaxAvgBar
-      ? this.appChartTypesService.getSplittedSeriesChartOptions(_data ?? [], [this.minMaxAvgChartData])
-      : { series: _data ?? [] };
+      ? this.appChartTypesService.getSplittedSeriesChartOptions(this.filteredChartSeriesData ?? [], [
+          this.minMaxAvgChartData,
+        ])
+      : { series: this.filteredChartSeriesData ?? [] };
 
     setTimeout(() => {
       this.chart.first
@@ -357,7 +360,8 @@ export class DurationChartComponent extends OnDestroyMixin(class {}) implements 
             this.screenSize,
             this.selectedBarChartType,
             this.durationDataLength,
-            this.isMinMaxAvgBar
+            // this.isMinMaxAvgBar
+            true
           ),
         })
         .then(() => {
@@ -387,7 +391,8 @@ export class DurationChartComponent extends OnDestroyMixin(class {}) implements 
             size,
             this.selectedBarChartType,
             this.durationDataLength,
-            this.isMinMaxAvgBar
+            // this.isMinMaxAvgBar
+            true
           )
         )
         .then(() => {
@@ -476,8 +481,8 @@ export class DurationChartComponent extends OnDestroyMixin(class {}) implements 
   private _durationCustomTooltip = (opts: { seriesIndex: number; dataPointIndex: number }) => {
     const _series =
       this.selectedDurationType === DurationEndpoints.HALFY || this.selectedDurationType === DurationEndpoints.QUARTERLY
-        ? this.chartSeriesData[opts.seriesIndex]
-        : this.chartSeriesData[0];
+        ? this.filteredChartSeriesData[opts.seriesIndex]
+        : this.filteredChartSeriesData[0];
     const _dataPoint = _series?.data[opts.dataPointIndex];
     if (
       // this.selectedDurationType === DurationEndpoints.MONTHLY ||
@@ -513,13 +518,13 @@ export class DurationChartComponent extends OnDestroyMixin(class {}) implements 
       <div dir="${
         this.lang.isLtr ? 'ltr' : 'rtl'
       }" class="apexcharts-tooltip-title" style="font-family: Helvetica, Arial, sans-serif; font-size: 12px">${
-      this.chartSeriesData[0].data[dataPointIndex].x
+      this.filteredChartSeriesData[0].data[dataPointIndex].x
     }</div>
       <div dir="${
         this.lang.isLtr ? 'ltr' : 'rtl'
       }" class="apexcharts-tooltip-series-group apexcharts-active" style="order: 1; display: flex">
         <div class="apexcharts-tooltip-text" style="font-family: Helvetica, Arial, sans-serif; font-size: 12px">
-          ${this.chartSeriesData
+          ${this.filteredChartSeriesData
             .map(
               (series, index) => `
           <div class="apexcharts-tooltip-y-group flex justify-between items-center gap-2">

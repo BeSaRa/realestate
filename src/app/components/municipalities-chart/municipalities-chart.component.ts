@@ -225,7 +225,8 @@ export class MunicipalitiesChartComponent extends OnDestroyMixin(class {}) imple
           this.screenSize,
           BarChartTypes.SINGLE_BAR,
           this.seriesDataLength,
-          Object.keys(this.seriesNames).length !== 1
+          // Object.keys(this.seriesNames).length !== 1
+          true
         ),
       })
       .then();
@@ -287,7 +288,8 @@ export class MunicipalitiesChartComponent extends OnDestroyMixin(class {}) imple
             size,
             BarChartTypes.SINGLE_BAR,
             this.seriesDataLength,
-            Object.keys(this.seriesNames).length !== 1
+            // Object.keys(this.seriesNames).length !== 1
+            true
           )
         )
         .then(() => {
