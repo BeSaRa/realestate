@@ -355,7 +355,7 @@ export class TransactionsFilterComponent implements OnInit, OnDestroy {
       purposeList: [-1],
       zoneId: -1,
       durationType: 1,
-      issueDateYear: 2023,
+      issueDateYear: new Date().getFullYear(),
       issueDateStartMonth: 1,
       issueDateEndMonth: 12,
       areaCode: -1,
