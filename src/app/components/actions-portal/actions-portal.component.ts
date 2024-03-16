@@ -23,7 +23,7 @@ class ActionsService {
 }
 
 @Directive({
-  selector: '[appAction]',
+  selector: 'ng-template[appAction]',
   standalone: true,
 })
 export class ActionDirective implements AfterViewInit, OnDestroy {
