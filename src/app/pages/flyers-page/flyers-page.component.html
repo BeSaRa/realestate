@@ -1,6 +1,6 @@
 <ng-container appExtraHeaderPortal [extraHeaderSubTitle]="lang.map.real_estate_flyers"> </ng-container>
 
-<ng-container *appAction="null; actionOrder: 1">
+<ng-template appAction [appActionActionOrder]="1">
   @if(!isExportingToPdf){
   <app-icon-button
     (clicked)="exportToPDF()"
@@ -12,7 +12,7 @@
     <mat-spinner diameter="30" strokeWidth="3"></mat-spinner>
   </div>
   }
-</ng-container>
+</ng-template>
 
 <div class="relative">
   <img class="absolute left-0 top-20" src="assets/images/flyer-images/arrows.png" alt="" />

@@ -80,7 +80,7 @@ export default class GeneralSecretariatPageComponent {
       enName: 'Not in Kahramaa',
     }),
     4: new Lookup().clone<Lookup>({
-      arName: 'لابوجد رقم كهرباء',
+      arName: 'لايوجد رقم كهرباء',
       enName: 'No Electricity_NO',
     }),
   };

@@ -5,21 +5,31 @@
   </h3>
 
   <div class="flex-auto overflow-hidden mt-2 pt-1" dir="ltr">
-    <apx-chart
-      #chart
-      class="custom-toolbar [&>div]:ml-[-22px]"
-      [series]="chartOptions.series!"
-      [chart]="chartOptions.chart!"
-      [xaxis]="chartOptions.xaxis!"
-      [stroke]="chartOptions.stroke!"
-      [colors]="chartOptions.colors!"
-      [dataLabels]="chartOptions.dataLabels!"
-      [legend]="chartOptions.legend!"
-      [markers]="chartOptions.markers!"
-      [grid]="chartOptions.grid!"
-      [yaxis]="chartOptions.yaxis!"
-      [tooltip]="chartOptions.tooltip!"
-      [plotOptions]="chartOptions.plotOptions!"
-      [title]="chartOptions.title!" />
+    <div class="relative">
+      @if(!isCriteriaValid) {
+      <div class="absolute top-0 left-0 h-full w-full p-4 bg-white/80 z-[1] transition-all">
+        <div
+          class="h-full w-full flex flex-col justify-center items-center text-center gap-2 text-primary [&>p]:text-base sm:[&>p]:text-lg md:[&>p]:text-2xl">
+          <p class="font-bold">{{ lang.map.a_value_other_than_all_must_be_specified_for_the_municipality }}</p>
+        </div>
+      </div>
+      }
+      <apx-chart
+        #chart
+        class="custom-toolbar [&>div]:ml-[-22px]"
+        [series]="chartOptions.series!"
+        [chart]="chartOptions.chart!"
+        [xaxis]="chartOptions.xaxis!"
+        [stroke]="chartOptions.stroke!"
+        [colors]="chartOptions.colors!"
+        [dataLabels]="chartOptions.dataLabels!"
+        [legend]="chartOptions.legend!"
+        [markers]="chartOptions.markers!"
+        [grid]="chartOptions.grid!"
+        [yaxis]="chartOptions.yaxis!"
+        [tooltip]="chartOptions.tooltip!"
+        [plotOptions]="chartOptions.plotOptions!"
+        [title]="chartOptions.title!" />
+    </div>
   </div>
 </div>

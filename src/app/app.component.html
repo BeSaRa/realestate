@@ -33,4 +33,6 @@
   <app-data-info />
 </div>
 
-<app-scroll-to-top *appAction="null; actionOrder: 100"></app-scroll-to-top>
+<ng-template appAction [appActionActionOrder]="100">
+  <app-scroll-to-top></app-scroll-to-top>
+</ng-template>
