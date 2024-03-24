@@ -100,30 +100,21 @@
           chartDataUrl: urlService.URLS.OWNER_KPI26,
           hasPrice: false
         }"
-        [criteria]="ownerMunicipalityCriteria"
+        [criteria]="ownerNationalityCategoryCriteria"
+        [criteriaType]="criteria.type"
         [bindLabel]="municipalityLabel"
-        [unit]="lang.map.owner"
-        [initialMunicipalityId]="selectedOwnerMunicipalityId"
-        (selectedMunicipalityChanged)="updateOwnerAreasChartCriteria($event.municipalityId)" />
+        [unit]="lang.map.owner" />
     </div>
 
     <div *appSectionGuard="pageSections.OWNER_AREA_CHART" class="py-5 px-3 lg:px-16">
       <app-areas-chart
-        [title]="
-          selectedOwnerRoot.getNames() +
-          ' ' +
-          lang.map.per_area +
-          ' (' +
-          lookupService.ownerMunicipalitiesMap[selectedOwnerMunicipalityId].getNames() +
-          ') ' +
-          getStringSelectedCriteria(false, false, true)
-        "
+        [title]="selectedOwnerRoot.getNames() + ' ' + getStringSelectedCriteria(true, false, true)"
         [seriesNames]="ownerAreaSeriesNames"
         [rootData]="{
           chartDataUrl: urlService.URLS.OWNER_KPI27,
           hasPrice: false
         }"
-        [criteria]="ownerAreaCriteria"
+        [criteria]="ownerNationalityCategoryCriteria"
         [bindLabel]="areaLabel" />
     </div>
   </div>
@@ -169,11 +160,10 @@
         "
         [seriesNames]="ownershipMunicipalitySeriesNames"
         [rootData]="ownershipMunicipalityRootData"
-        [criteria]="ownershipMunicipalityCriteria"
+        [criteria]="nationalityCriteria"
+        [criteriaType]="criteria.type"
         [bindLabel]="municipalityLabel"
-        [unit]="lang.map.ownership"
-        [initialMunicipalityId]="selectedOwnershipMunicipalityId"
-        (selectedMunicipalityChanged)="updateOwnershipAreasChartCriteria($event.municipalityId)" />
+        [unit]="lang.map.ownership" />
     </div>
 
     <div *appSectionGuard="pageSections.OWNERSHIP_AREA_CHART" class="py-5 px-3 lg:px-16">
@@ -184,14 +174,12 @@
           getNationalityNames(selectedNationalityId) +
           ') ' +
           lang.map.and_municipality +
-          ' (' +
-          lookupService.ownerMunicipalitiesMap[selectedOwnershipMunicipalityId].getNames() +
-          ') ' +
-          getStringSelectedCriteria(false, false, false)
+          ' ' +
+          getStringSelectedCriteria(true, false, false)
         "
         [seriesNames]="ownershipAreaSeriesNames"
         [rootData]="ownershipAreaRootData"
-        [criteria]="ownershipAreaCriteria"
+        [criteria]="nationalityCriteria"
         [bindLabel]="areaLabel" />
     </div>
 

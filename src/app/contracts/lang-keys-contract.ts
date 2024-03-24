@@ -472,4 +472,6 @@ export interface LangKeysContract {
   mortgage_value_to: string;
   payment_frequency: string;
   a_month: string;
+
+  a_value_other_than_all_must_be_specified_for_the_municipality: string;
 }

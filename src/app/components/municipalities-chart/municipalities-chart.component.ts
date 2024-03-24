@@ -4,11 +4,8 @@ import {
   AfterViewInit,
   ChangeDetectorRef,
   Component,
-  EventEmitter,
   Input,
   OnChanges,
-  OnInit,
-  Output,
   QueryList,
   SimpleChanges,
   ViewChildren,
@@ -21,10 +18,12 @@ import { CriteriaContract } from '@contracts/criteria-contract';
 import { BarChartTypes } from '@enums/bar-chart-type';
 import { Breakpoints } from '@enums/breakpoints';
 import { ChartType } from '@enums/chart-type';
+import { CriteriaType } from '@enums/criteria-type';
 import { OnDestroyMixin } from '@mixins/on-destroy-mixin';
 import { ChartConfig, ChartContext, ChartOptionsModel, DataPointSelectionConfig } from '@models/chart-options-model';
 import { AppChartTypesService } from '@services/app-chart-types.service';
 import { DashboardService } from '@services/dashboard.service';
+import { MunicipalityService } from '@services/municipality.service';
 import { ScreenBreakpointsService } from '@services/screen-breakpoints.service';
 import { TranslationService } from '@services/translation.service';
 import { minMaxAvg, objectHasOwnProperty } from '@utils/utils';
@@ -39,19 +38,18 @@ import { QatarInteractiveMapComponent } from 'src/app/components/qatar-interacti
   templateUrl: './municipalities-chart.component.html',
   styleUrls: ['./municipalities-chart.component.scss'],
 })
-export class MunicipalitiesChartComponent extends OnDestroyMixin(class {}) implements OnChanges, OnInit, AfterViewInit {
+export class MunicipalitiesChartComponent extends OnDestroyMixin(class {}) implements OnChanges, AfterViewInit {
   @Input({ required: true }) title!: string;
   @Input({ required: true }) seriesNames!: Record<number, () => string>;
   @Input({ required: true }) criteria!: CriteriaContract;
+  @Input({ required: true }) criteriaType!: CriteriaType;
   @Input({ required: true }) rootData!: { chartDataUrl: string; hasPrice: boolean };
   @Input({ required: true }) bindLabel!: string | ((item: any) => string);
   @Input({ required: true }) unit!: string;
-  @Input({ required: true }) initialMunicipalityId!: number;
   @Input() bindDataSplitProp!: string;
   @Input() useOVMunicipalityLookups = false;
   @Input() enableAllChoiceOnMap = false;
-
-  @Output() selectedMunicipalityChanged = new EventEmitter<{ municipalityId: number }>();
+  @Input() defaultAllValue: number | null = -1;
 
   @ViewChildren('chart') chart!: QueryList<ChartComponent>;
 
@@ -60,11 +58,13 @@ export class MunicipalitiesChartComponent extends OnDestroyMixin(class {}) imple
   appChartTypesService = inject(AppChartTypesService);
   screenService = inject(ScreenBreakpointsService);
   cdr = inject(ChangeDetectorRef);
+  municipalityService = inject(MunicipalityService);
 
   screenSize = Breakpoints.LG;
 
   isChartFirstUpdate = true;
   isUpdatingChartData = false;
+  isCriteriaMunicipalityChanged = false;
   seriesData: Record<number, (KpiBaseModel & { municipalityId: number })[]> = {};
   seriesDataLength = 0;
   selectedMunicipality = { id: 0, seriesIndex: 0, dataPointIndex: 0 };
@@ -86,14 +86,18 @@ export class MunicipalitiesChartComponent extends OnDestroyMixin(class {}) imple
       (changes['criteria'] && changes['criteria'].currentValue !== changes['criteria'].previousValue)
     ) {
       if (!this.rootData || !this.criteria) return;
+      if (this.criteriaType === CriteriaType.FROM_MUNICIPALITY_CHART) return;
       setTimeout(() => {
-        this.updateChartData();
+        if (this.selectedMunicipality.id !== this.criteria.municipalityId && this.seriesData[0]?.length) {
+          this.selectedMunicipality.id = this.criteria.municipalityId;
+          this.isCriteriaMunicipalityChanged = true;
+          this.updateChartOptions();
+        } else {
+          this.selectedMunicipality.id = this.criteria.municipalityId;
+          this.updateChartData();
+        }
       }, 0);
     }
-  }
-
-  ngOnInit(): void {
-    this.selectedMunicipality.id = this.initialMunicipalityId;
   }
 
   ngAfterViewInit(): void {
@@ -109,8 +113,10 @@ export class MunicipalitiesChartComponent extends OnDestroyMixin(class {}) imple
     this.isUpdatingChartData = true;
     this.isLoading = true;
 
-    const _criteria = { ...this.criteria };
+    const _criteria = { ...this.criteria, municipalityId: this.defaultAllValue as unknown as number };
     if (this.bindDataSplitProp) delete _criteria[this.bindDataSplitProp as keyof CriteriaContract];
+    if (_criteria.areaCode) _criteria.areaCode = -1;
+    if (_criteria.zoneId) _criteria.zoneId = -1;
 
     this.dashboardService
       .loadChartKpiData(this.rootData, _criteria)
@@ -230,11 +236,6 @@ export class MunicipalitiesChartComponent extends OnDestroyMixin(class {}) imple
         ),
       })
       .then();
-
-    setTimeout(() => {
-      if (this.selectedChartType === ChartType.MAP)
-        this.selectedMunicipalityChanged.emit({ municipalityId: this.selectedMunicipality.id });
-    }, 0);
   }
 
   updateMapSeriesData() {
@@ -248,16 +249,12 @@ export class MunicipalitiesChartComponent extends OnDestroyMixin(class {}) imple
   }
 
   onMapSelectedMunicipalityChanged(event: KpiBaseModel & { municipalityId: number }) {
-    const _pointIndex = (this.selectedMunicipality.dataPointIndex = this.seriesData[
-      Object.keys(this.seriesNames)[0] as unknown as number
-    ].findIndex((m) => m.municipalityId === event.municipalityId));
-
-    this.isUpdatingChartData = true;
-
     this.selectedMunicipality.id = event.municipalityId;
-    this.selectedMunicipality.dataPointIndex = _pointIndex;
+    this.isCriteriaMunicipalityChanged = true;
 
-    this.selectedMunicipalityChanged.emit({ municipalityId: this.selectedMunicipality.id });
+    this.updateChartOptions();
+
+    this.municipalityService.emitMunicipalityChangeFromChart(this.selectedMunicipality.id);
   }
 
   private _getLabel(item: unknown): string {
@@ -318,24 +315,43 @@ export class MunicipalitiesChartComponent extends OnDestroyMixin(class {}) imple
       return;
     }
     if (this.isChartFirstUpdate) {
+      // doing this because of strange apexchart behaviour when it's display is none
+      setTimeout(() => {
+        this.selectedChartType = ChartType.MAP;
+      }, 500);
+      this.isChartFirstUpdate = false;
+
+      if (this.selectedMunicipality.id === -1) return;
       this.chart.first?.toggleDataPointSelection(
         0,
         (chartContext.w.config.series[0].data as unknown as { index: number; id: number }[]).filter(
           (item) => item.id === this.selectedMunicipality.id
-        )[0].index
+        )[0]?.index ?? -1
       );
     } else {
-      if (!this.isUpdatingChartData) return;
-      if (this.selectedMunicipality.dataPointIndex < (chartContext.w.config.series[0].data as unknown[]).length) {
+      if (!this.isUpdatingChartData && !this.isCriteriaMunicipalityChanged) return;
+      if (
+        this.selectedMunicipality.dataPointIndex < (chartContext.w.config.series[0].data as unknown[]).length &&
+        config.globals.selectedDataPoints.some((s) => s.length)
+      ) {
         this.chart.first?.toggleDataPointSelection(
           this.selectedMunicipality.seriesIndex,
           this.selectedMunicipality.dataPointIndex
         );
       }
-      this.chart.first?.toggleDataPointSelection(
-        0,
-        (chartContext.w.config.series[0].data as unknown as { index: number; id: number }[]).length - 1
-      );
+
+      if (
+        this.seriesData[Object.keys(this.seriesNames)[0] as unknown as number].find(
+          (d) => d.municipalityId === this.selectedMunicipality.id
+        ) !== undefined
+      ) {
+        this.chart.first?.toggleDataPointSelection(
+          0,
+          (chartContext.w.config.series[0].data as unknown as { index: number; id: number }[]).filter(
+            (item) => item.id === this.selectedMunicipality.id
+          )[0]?.index ?? -1
+        );
+      }
     }
   };
 
@@ -344,32 +360,36 @@ export class MunicipalitiesChartComponent extends OnDestroyMixin(class {}) imple
     chartContext: ChartContext,
     config: DataPointSelectionConfig
   ) => {
+    this.chart.first?.clearAnnotations();
+
     if (config.selectedDataPoints[config.seriesIndex].length === 0) return;
-    if (!event && !this.isChartFirstUpdate && !this.isUpdatingChartData) return;
+    if (!event && !this.isChartFirstUpdate && !this.isUpdatingChartData && !this.isCriteriaMunicipalityChanged) return;
     this.isUpdatingChartData = false;
+    this.isCriteriaMunicipalityChanged = false;
 
     this.selectedMunicipality = {
-      id: (chartContext.w.config.series[config.seriesIndex].data[config.dataPointIndex] as unknown as { id: number })
-        .id,
+      id: event
+        ? (chartContext.w.config.series[config.seriesIndex].data[config.dataPointIndex] as unknown as { id: number }).id
+        : this.selectedMunicipality.id,
       seriesIndex: config.seriesIndex,
       dataPointIndex: config.dataPointIndex,
     };
-    const _municipalityName = this._getLabel({ municipalityId: this.selectedMunicipality.id });
-    this.chart.first?.clearAnnotations();
-    this.chart.first?.addXaxisAnnotation(
-      this.appChartTypesService.getXAnnotaionForSelectedBar(_municipalityName),
-      true
-    );
 
-    // doing this because of strange apexchart behaviour when it's display is none
-    if (this.isChartFirstUpdate) {
-      this.isChartFirstUpdate = false;
-      setTimeout(() => {
-        this.selectedChartType = ChartType.MAP;
-      }, 500);
+    const _municipalityName = this._getLabel({ municipalityId: this.selectedMunicipality.id });
+    if (
+      this.seriesData[Object.keys(this.seriesNames)[0] as unknown as number].find(
+        (d) => d.municipalityId === this.selectedMunicipality.id
+      ) !== undefined
+    ) {
+      this.chart.first?.addXaxisAnnotation(
+        this.appChartTypesService.getXAnnotaionForSelectedBar(_municipalityName),
+        true
+      );
     }
 
-    this.selectedMunicipalityChanged.emit({ municipalityId: this.selectedMunicipality.id });
+    if (event) {
+      this.municipalityService.emitMunicipalityChangeFromChart(this.selectedMunicipality.id);
+    }
   };
 
   private _getCustomTooltipTemplate = (opts: { seriesIndex: number; dataPointIndex: number }) => {
