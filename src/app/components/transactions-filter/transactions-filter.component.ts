@@ -27,6 +27,7 @@ import { Lookup } from '@models/lookup';
 import { ParamRange } from '@models/param-range';
 import { FilterMessagesService } from '@services/filter-messages.service';
 import { LookupService } from '@services/lookup.service';
+import { MunicipalityService } from '@services/municipality.service';
 import { StickyService } from '@services/sticky.service';
 import { TranslationService } from '@services/translation.service';
 import { UnitsService } from '@services/units.service';
@@ -107,6 +108,7 @@ export class TransactionsFilterComponent implements OnInit, OnDestroy {
   unitsService = inject(UnitsService);
   filterMessageService = inject(FilterMessagesService);
   resize$ = inject(NgResizeObserver);
+  municipalityService = inject(MunicipalityService);
 
   private destroy$: Subject<void> = new Subject();
 
@@ -335,6 +337,8 @@ export class TransactionsFilterComponent implements OnInit, OnDestroy {
     this.setParamsRange();
     this.initializeUnitAccordingToPage();
 
+    this.listenToMunicipalityChangeFromChartOrMap();
+
     this.isMort() && this.unitsService.setUnit(SqUnit.SQUARE_METER);
   }
 
@@ -424,6 +428,13 @@ export class TransactionsFilterComponent implements OnInit, OnDestroy {
             lookupKey: -1,
           })
         );
+    });
+  }
+
+  listenToMunicipalityChangeFromChartOrMap() {
+    this.municipalityService.municipalityChanged$.pipe(takeUntil(this.destroy$)).subscribe((municipalityId) => {
+      this.municipalityId.patchValue(municipalityId, { emitEvent: false });
+      this.sendFilter(CriteriaType.FROM_MUNICIPALITY_CHART);
     });
   }
 

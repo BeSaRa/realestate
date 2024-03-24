@@ -17,6 +17,7 @@ import { BarChartTypes } from '@enums/bar-chart-type';
 import { Breakpoints } from '@enums/breakpoints';
 import { OnDestroyMixin } from '@mixins/on-destroy-mixin';
 import { ChartOptionsModel } from '@models/chart-options-model';
+import { CriteriaSpecificTerms, CriteriaTerms } from '@models/criteria-specific-terms';
 import { AppChartTypesService } from '@services/app-chart-types.service';
 import { DashboardService } from '@services/dashboard.service';
 import { ScreenBreakpointsService } from '@services/screen-breakpoints.service';
@@ -57,6 +58,9 @@ export class AreasChartComponent extends OnDestroyMixin(class {}) implements OnC
 
   chartOptions = new ChartOptionsModel().clone<ChartOptionsModel>(this.appChartTypesService.mainChartOptions);
 
+  criteriaTerms = new CriteriaSpecificTerms([{ criteriaKey: 'municipalityId', term: CriteriaTerms.NOT_ALL }]);
+  isCriteriaValid = true;
+
   ngOnChanges(changes: SimpleChanges): void {
     if (
       (changes['rootData'] && changes['rootData'].currentValue !== changes['rootData'].previousValue) ||
@@ -79,6 +83,17 @@ export class AreasChartComponent extends OnDestroyMixin(class {}) implements OnC
   }
 
   updateChartData() {
+    if (!this.criteriaTerms.validate(this.criteria)) {
+      this.isCriteriaValid = false;
+      Object.keys(this.seriesNames).forEach((key) => {
+        this.seriesData[key as unknown as number] = [];
+      });
+      this.updateChartOptions();
+      return;
+    }
+
+    this.isCriteriaValid = true;
+
     this.dashboardService
       .loadChartKpiData(
         {

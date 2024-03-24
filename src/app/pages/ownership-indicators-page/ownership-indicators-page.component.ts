@@ -95,24 +95,9 @@ export default class OwnershipIndicatorsPageComponent extends OnDestroyMixin(cla
 
   nationalityCriteria!: CriteriaContract;
 
-  ownerMunicipalityCriteria: CriteriaContract & { nationalityCategoryId: number | null } = {
+  ownerNationalityCategoryCriteria: CriteriaContract & { nationalityCategoryId: number | null } = {
     ...this.criteria.criteria,
     nationalityCategoryId: null,
-  };
-
-  ownerAreaCriteria: CriteriaContract & { nationalityCategoryId: number | null } = {
-    ...this.criteria.criteria,
-    nationalityCategoryId: null,
-  };
-
-  ownershipMunicipalityCriteria: CriteriaContract & { nationalityCode: number } = {
-    ...this.criteria.criteria,
-    nationalityCode: -1,
-  };
-
-  ownershipAreaCriteria: CriteriaContract & { nationalityCode: number } = {
-    ...this.criteria.criteria,
-    nationalityCode: -1,
   };
 
   ownerRootKpis = [
@@ -207,8 +192,6 @@ export default class OwnershipIndicatorsPageComponent extends OnDestroyMixin(cla
   municipalityLabel = (item: { municipalityId: number }) =>
     this.lookupService.ownerMunicipalitiesMap[item.municipalityId]?.getNames() ?? '';
 
-  selectedOwnerMunicipalityId = 4;
-
   ownerAreaSeriesNames: Record<number, () => string> = {
     0: () => this.lang.map.owners_count,
   };
@@ -228,8 +211,6 @@ export default class OwnershipIndicatorsPageComponent extends OnDestroyMixin(cla
   ownershipMunicipalitySeriesNames: Record<number, () => string> = {
     0: () => this.lang.map.ownerships_count,
   };
-
-  selectedOwnershipMunicipalityId = 4;
 
   ownershipAreaRootData = {
     chartDataUrl: this.urlService.URLS.OWNER_KPI15,
@@ -294,11 +275,13 @@ export default class OwnershipIndicatorsPageComponent extends OnDestroyMixin(cla
       item !== i ? (i.selected = false) : (item.selected = true);
     });
 
-    this.ownerMunicipalityCriteria = {
+    this.ownerNationalityCategoryCriteria = {
       ...this.criteria.criteria,
-      municipalityId: -1,
       nationalityCategoryId: this.selectedOwnerRoot.nationalityCategoryId,
     };
+    setTimeout(() => {
+      this.criteria.type = CriteriaType.USER;
+    }, 0);
   }
 
   ownershipRootItemSelected(item?: KpiRoot) {
@@ -309,38 +292,17 @@ export default class OwnershipIndicatorsPageComponent extends OnDestroyMixin(cla
     });
   }
 
-  updateOwnerAreasChartCriteria(municipalityId: number) {
-    this.selectedOwnerMunicipalityId = municipalityId;
-
-    this.ownerAreaCriteria = {
-      ...this.criteria.criteria,
-      nationalityCategoryId: this.selectedOwnerRoot.nationalityCategoryId,
-      municipalityId,
-    };
-  }
-
   onSelectedNationalityChanged(nationalityId: number) {
     this.selectedNationalityId = nationalityId;
     this.durationRootData.chartDataUrl = this.urlService.URLS[this._getChartDataUrl('OWNER_KPI16')];
     this.nationalityCriteria = { ...this.criteria.criteria, nationalityCode: nationalityId };
 
     this.ownershipMunicipalityRootData.chartDataUrl = this.urlService.URLS[this._getChartDataUrl('OWNER_KPI14')];
-    this.ownershipMunicipalityCriteria = {
-      ...this.nationalityCriteria,
-      municipalityId: -1,
-    };
-  }
-
-  updateOwnershipAreasChartCriteria(municipalityId: number) {
     this.ownershipAreaRootData.chartDataUrl = this.urlService.URLS[this._getChartDataUrl('OWNER_KPI15')];
 
-    this.ownershipAreaCriteria = {
-      ...this.criteria.criteria,
-      nationalityCode: this.selectedNationalityId,
-      municipalityId,
-    };
-
-    this.selectedOwnershipMunicipalityId = municipalityId;
+    setTimeout(() => {
+      this.criteria.type = CriteriaType.USER;
+    }, 0);
   }
 
   getOwnershipTransactionType = () => OwnershipTransaction;

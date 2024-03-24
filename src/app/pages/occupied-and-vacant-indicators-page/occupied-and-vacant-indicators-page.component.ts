@@ -82,8 +82,6 @@ export default class OccupiedAndVacantIndicatorsPageComponent extends OnDestroyM
 
   occupationCriteria = this.criteria.criteria;
 
-  municipalityCriteria = this.criteria.criteria;
-
   durationsCriteria = { ...this.criteria.criteria, occupancyStatus: null } as typeof this.criteria.criteria;
 
   areasCriteria = { ...this.criteria.criteria, occupancyStatus: null } as typeof this.criteria.criteria;
@@ -154,8 +152,6 @@ export default class OccupiedAndVacantIndicatorsPageComponent extends OnDestroyM
     return this.lookupService.ovMunicipalitiesMap[item.municipalityId].getNames();
   };
 
-  selectedMunicipalityId = 1;
-
   areaSeriesNames: Record<number, () => string> = {
     [OccupationStatus.VACANT]: () => this.lang.map.vacant,
     [OccupationStatus.OCCUPIED]: () => this.lang.map.occupied,
@@ -180,7 +176,7 @@ export default class OccupiedAndVacantIndicatorsPageComponent extends OnDestroyM
 
   filterChange({ criteria, type }: { criteria: CriteriaContract; type: CriteriaType }) {
     this.criteria = { criteria: criteria as CriteriaContract & { occupancyStatus: number | null }, type };
-    this.municipalityCriteria = { ...this.criteria.criteria, municipalityId: null as unknown as number };
+    this.areasCriteria = { ...this.criteria.criteria };
     this.durationsCriteria = { ...this.criteria.criteria, occupancyStatus: null };
     if (type === CriteriaType.DEFAULT) return;
 
@@ -254,11 +250,6 @@ export default class OccupiedAndVacantIndicatorsPageComponent extends OnDestroyM
       minWidth: '95vw',
       maxHeight: '95vh',
     });
-  }
-
-  updateAreasChartCriteria(municipalityId: number) {
-    this.selectedMunicipalityId = municipalityId;
-    this.areasCriteria = { ...this.criteria.criteria, occupancyStatus: null, municipalityId };
   }
 
   updateTransactionTableCriteria() {

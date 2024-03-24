@@ -98,25 +98,18 @@
         chartDataUrl: urlService.URLS.OV_KPI5,
         hasPrice: false
       }"
-      [criteria]="municipalityCriteria"
+      [criteria]="criteria.criteria"
+      [criteriaType]="criteria.type"
       [bindLabel]="municipalityLabel"
       [bindDataSplitProp]="'occupancyStatus'"
       [unit]="lang.map.unit"
-      [initialMunicipalityId]="selectedMunicipalityId"
       [useOVMunicipalityLookups]="true"
       [enableAllChoiceOnMap]="true"
-      (selectedMunicipalityChanged)="updateAreasChartCriteria($event.municipalityId)" />
+      [defaultAllValue]="null" />
   </div>
   <div *appSectionGuard="pageSections.OCCUPATION_AREA_CHART" class="py-5 px-3 lg:px-16">
     <app-areas-chart
-      [title]="
-        lang.map.occupied_and_vacant_units_count_per_zone +
-        ' (' +
-        lookupService.ovMunicipalitiesMap[selectedMunicipalityId].getNames() +
-        ')' +
-        ' ' +
-        getStringSelectedCriteria(false, false)
-      "
+      [title]="lang.map.occupied_and_vacant_units_count_per_zone + ' ' + getStringSelectedCriteria(true, false)"
       [seriesNames]="areaSeriesNames"
       [rootData]="{
         chartDataUrl: urlService.URLS.OV_KPI6,
