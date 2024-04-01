@@ -40,7 +40,3 @@
 .side-bar-collapsed {
   visibility: collapse !important;
 }
-
-::ng-deep body:has(.side-bar-opened) {
-  @apply overflow-hidden h-full m-0;
-}

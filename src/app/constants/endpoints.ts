@@ -198,6 +198,10 @@ const flyerEndpoints = {
   GENERAL_SECRETARIAT_RENT: 'FLYER|rent/general-secretee',
 };
 
+const chatBotEndpoints = {
+  CHAT_BOT: 'BE|openai/chat/completion',
+};
+
 export const cmsEndpoints = {
   TRANSLATION: 'translations',
   ADMIN: 'admin/login',
@@ -228,6 +232,7 @@ export const EndPoints = {
   ...brokerEndpoints,
   ...configEndpoints,
   ...flyerEndpoints,
+  ...chatBotEndpoints,
 };
 
 export type EndpointsType = typeof EndPoints;

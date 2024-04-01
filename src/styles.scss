@@ -9,13 +9,6 @@
   filter: invert(1);
 }
 
-* {
-  //noinspection CssUnknownProperty
-  scrollbar-color: rgba(138, 21, 56, 0.5) rgba(162, 148, 117, 0.2);
-  //noinspection CssUnknownProperty
-  scrollbar-width: thin;
-}
-
 ::-webkit-scrollbar {
   width: 6px !important;
   height: 6px !important;

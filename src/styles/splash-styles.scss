@@ -1,7 +1,3 @@
-body:has(> .splash-screen) {
-  @apply overflow-hidden h-full m-0;
-}
-
 .splash-screen {
   @apply fixed inset-0 z-[10000] bg-primary flex flex-col items-center justify-center opacity-100;
 }
