@@ -1,22 +1,36 @@
-<div [class.has-full-screen]="isFullScreen" class="fixed bottom-10 right-10 z-50">
+<div class="relative">
   <div
     (@openClose.done)="done($event)"
     (@openClose.start)="start()"
-    [@openClose]="isOpened"
+    [@openClose]="isOpened ? 'open' : 'close'"
     [class.hidden]="isHidden"
+    [class.opened]="isOpened && !isFullScreen"
     [class.full-screen]="isFullScreen"
-    class="rounded-xl bg-white [&.full-screen]:bg-sand border border-primary/20 shadow-xl w-96 h-96 overflow-hidden flex group flex-col">
-    <div class="bg-primary h-12 flex items-center justify-between rounded-tr-xl rounded-tl-xl text-white">
-      <div class="px-5">المساعد الآلي</div>
+    class="bg-sand rounded-xl border border-primary/20 shadow-xl w-[90vw] sm:w-96 h-[500px] overflow-hidden flex group flex-col transition-all">
+    <div class="absolute inset-0 top-12 bg-pattern opacity-10"></div>
+    <div
+      class="relative bg-primary h-12 flex items-center justify-between rounded-tr-xl rounded-tl-xl text-white"
+      [ngClass]="{ '!rounded-tr-none !rounded-tl-none': isFullScreen }">
+      <div class="px-5">
+        {{ lang.map.bot_assisstant }}
+      </div>
       <div>
         <button (click)="toggleFullScreen()" class="!-ml-3" mat-icon-button>
+          @if (isFullScreen) {
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
             <path
               fill="currentColor"
               fill-rule="evenodd"
-              d="M2 12c0-4.714 0-7.071 1.464-8.536C4.93 2 7.286 2 12 2c4.714 0 7.071 0 8.535 1.464C22 4.93 22 7.286 22 12c0 4.714 0 7.071-1.465 8.535C19.072 22 16.714 22 12 22s-7.071 0-8.536-1.465C2 19.072 2 16.714 2 12Zm4.47 5.53a.75.75 0 0 1 0-1.06l2.22-2.22H7.5a.75.75 0 0 1 0-1.5h3a.75.75 0 0 1 .75.75v3a.75.75 0 0 1-1.5 0v-1.19l-2.22 2.22a.75.75 0 0 1-1.06 0Zm10.03-6.28a.75.75 0 0 0 0-1.5h-1.19l2.22-2.22a.75.75 0 0 0-1.06-1.06l-2.22 2.22V7.5a.75.75 0 0 0-1.5 0v3c0 .414.336.75.75.75h3Z"
-              clip-rule="evenodd" />
-          </svg>
+              clip-rule="evenodd"
+              d="M19.5,3.09L15,7.59V4H13V11H20V9H16.41L20.91,4.5L19.5,3.09M4,13V15H7.59L3.09,19.5L4.5,20.91L9,16.41V20H11V13H4Z" /></svg
+          >} @else {
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path
+              fill="currentColor"
+              fill-rule="evenodd"
+              clip-rule="evenodd"
+              d="M10,21V19H6.41L10.91,14.5L9.5,13.09L5,17.59V14H3V21H10M14.5,10.91L19,6.41V10H21V3H14V5H17.59L13.09,9.5L14.5,10.91Z" /></svg
+          >}
         </button>
         <button (click)="closeChat()" mat-icon-button>
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
@@ -27,36 +41,67 @@
         </button>
       </div>
     </div>
-    <div
-      #messagesContainer
-      class="flex-auto min-h-96 overflow-y-scroll flex flex-col bg-sand relative px-4 pb-6 pt-4 space-y-2">
-      <div
-        @slideMessage
-        *ngFor="let message of messages"
-        [class.me]="isMe(message)"
-        [class.boot]="isBoot(message)"
-        class="me">
-        <span *ngIf="isMe(message)">{{ getMessage(message) }}</span>
-        <span *ngIf="isBoot(message)">
-          <pre dir="ltr">{{ getMessage(message) }}</pre>
-        </span>
+    <div #messagesContainer class="messages-container relative flex-1 overflow-y-auto">
+      <div class="min-h-full flex flex-col relative px-4 pb-6 pt-4 space-y-2">
+        <span class="self-center text-primary text-sm">{{
+          startChatDate | date : "EEEE, d MMM, h:mm a" : undefined : lang.getCurrent().code
+        }}</span>
+        <div @slideMessage class="boot" [ngClass]="{ ltr: lang.isLtr, rtl: !lang.isLtr }">
+          <span>{{
+            lang.map
+              .welcome_to_the_smart_assistant_of_the_real_estate_platform_you_can_inquire_about_all_the_real_estate_data_of_the_platform
+          }}</span>
+        </div>
+        @for (message of messages; track message) { @if (isMe(message)) {
+        <div @slideMessage [ngClass]="{ ltr: lang.isLtr, rtl: !lang.isLtr }" class="me">
+          <span>{{ getMessage(message) }}</span>
+        </div>
+        }@else { @if (message.responseFormat === responseFormat.ERROR || message.responseFormat ===
+        responseFormat.INVALID ) {
+        <div @slideMessage class="error">
+          <span
+            ><svg class="w-6 h-6" viewBox="0 0 24 24">
+              <path fill="currentColor" d="M13 14H11V9H13M13 18H11V16H13M1 21H23L12 2L1 21Z" /></svg
+          ></span>
+          <div [ngClass]="{ ltr: lang.isLtr, rtl: !lang.isLtr }">
+            <span>{{
+              message.responseFormat === responseFormat.ERROR
+                ? lang.map.a_network_error_occured_please_try_again
+                : lang.map.your_question_is_not_clear_please_make_your_inquiry_about_the_data_more_clear
+            }}</span>
+          </div>
+        </div>
+        } @else {
+        <div @slideMessage [ngClass]="{ ltr: lang.isLtr, rtl: !lang.isLtr }" class="boot-data-view">
+          <app-chat-gpt-data-view [data]="message" [question]="lastMessage" />
+        </div>
+        } } }
+
+        <span class="text-primary text-xs self-start" [class.self-end]="isLastMessageFromBot()">{{
+          getPassedTime(lastMessageDate)
+        }}</span>
+
+        @if(isTyping){
+        <div class="boot"><ng-container [ngTemplateOutlet]="typing"></ng-container></div>
+        }
       </div>
-      <span *ngIf="isTyping" dir="ltr" class="boot-typing self-end absolute bottom-0">typing...</span>
     </div>
-    <div
-      class="h-14 group-[.full-screen]:h-28 border-t border-primary justify-center group-[.full-screen]:border-transparent flex group-[.full-screen]:w-[80%] group-[.full-screen]:self-center">
-      <div class="bg-white mb-10 h-14 w-full flex rounded-xl">
+    <div class="relative px-2 mb-2 justify-center flex">
+      <div
+        class="ps-2 bg-white overflow-hidden border border-primary rounded-full w-full flex items-center justify-center">
         <textarea
+          #messageBox
+          appOnlyCurrentLangLetters
           (keydown.enter)="sendMessage()"
           [formControl]="message"
-          placeholder="أسأل عن شىء"
-          class="w-full h-full text-primary group-[.full-screen]: placeholder-gray-300 outline-none resize-none px-4 flex items-center py-2"></textarea>
+          [placeholder]="lang.map.type_a_message"
+          class="w-full h-8 text-primary bg-transparent outline-none resize-none py-1 px-2 break-words overflow-y-hidden"></textarea>
         <button
-          [disabled]="message.invalid"
+          [disabled]="!isMessageValid || isTyping"
           (click)="sendMessage()"
-          class="!text-secondary self-center"
+          class="!text-primary disabled:!text-primary/50"
           mat-icon-button>
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1792 1792">
+          <svg class="ltr:-scale-x-100 transition-all" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1792 1792">
             <path
               fill="currentColor"
               d="M1764 11q33 24 27 64l-256 1536q-5 29-32 45q-14 8-31 8q-11 0-24-5l-453-185l-242 295q-18 23-49 23q-13 0-22-4q-19-7-30.5-23.5T640 1728v-349l864-1059l-1069 925l-395-162q-37-14-40-55q-2-40 32-59L1696 9q15-9 32-9q20 0 36 11z" />
@@ -65,14 +110,23 @@
       </div>
     </div>
   </div>
-  <button (click)="toggleChat()" mat-fab>
-    <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 48 48">
+  <button
+    (click)="toggleChat()"
+    class="!w-12 !h-12 flex items-center justify-center bg-secondary/80 rounded-full transition-all hover:bg-secondary">
+    <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 48 48">
       <path
-        fill="none"
-        stroke="currentColor"
+        class="fill-white stroke-white"
         stroke-linecap="round"
         stroke-linejoin="round"
         d="M8.86 28.36v5.936a5.148 5.148 0 0 0 5.148 5.148h0m0-30.888h0a5.148 5.148 0 0 0-5.148 5.148v5.936m0 0A4.36 4.36 0 0 1 4.5 24m0 0a4.36 4.36 0 0 1 4.36 4.36m30.28-8.72v-5.936a5.148 5.148 0 0 0-5.148-5.148h0m0 30.888h0a5.148 5.148 0 0 0 5.148-5.148V28.36m0 0A4.36 4.36 0 0 1 43.5 24m0 0a4.36 4.36 0 0 1-4.36-4.36m-7.365.783l1.341-1.327a1.563 1.563 0 0 0 .002-2.21l-.002-.001h0a1.563 1.563 0 0 0-2.21-.011l-.01.01l-1.337 1.327a9.532 9.532 0 0 0-11.144 0l-1.288-1.307a1.572 1.572 0 0 0-2.223-.002l-.002.002h0a1.567 1.567 0 0 0 0 2.212l1.336 1.316a9.552 9.552 0 0 0-1.813 5.582v4.565a1.007 1.007 0 0 0 1.007 1.007h17.149a1.007 1.007 0 0 0 .982-1.007v-4.565a9.537 9.537 0 0 0-1.788-5.591Zm-11.793 7.12a1.769 1.769 0 1 1 1.764-1.774v.01a1.764 1.764 0 0 1-1.763 1.764h0Zm8.068 0a1.769 1.769 0 1 1 1.755-1.784v.02a1.764 1.764 0 0 1-1.764 1.764h.01Z" />
     </svg>
   </button>
 </div>
+
+<ng-template #typing>
+  <span class="relative p-1 flex items-center justify-center gap-1">
+    <span class="ball"></span>
+    <span class="ball" [ngStyle]="{ 'animation-delay': '.15s' }"></span>
+    <span class="ball" [ngStyle]="{ 'animation-delay': '.3s' }"></span>
+  </span>
+</ng-template>

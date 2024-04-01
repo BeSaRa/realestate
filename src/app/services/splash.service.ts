@@ -1,3 +1,4 @@
+import { DOCUMENT } from '@angular/common';
 import { Injectable, inject } from '@angular/core';
 import { NavigationEnd, Router } from '@angular/router';
 import { takeWhile } from 'rxjs';
@@ -7,12 +8,14 @@ import { takeWhile } from 'rxjs';
 })
 export class SplashService {
   router = inject(Router);
+  document = inject(DOCUMENT);
 
   private _isShown = true;
 
   private _splashScreen = document.getElementById('splash-screen');
 
   constructor() {
+    this.document.body.classList.add('overflow-hidden', 'h-full', 'm-0');
     this._listenToFirstRouteEnd();
   }
 
@@ -29,7 +32,8 @@ export class SplashService {
     this._isShown = true;
     if (this._splashScreen) {
       this._splashScreen?.classList.remove('removed');
-      document.body.appendChild(this._splashScreen);
+      this.document.body.appendChild(this._splashScreen);
+      this.document.body.classList.add('overflow-hidden', 'h-full', 'm-0');
     }
   }
 
@@ -39,7 +43,8 @@ export class SplashService {
     if (this._splashScreen) {
       this._splashScreen.classList.add('removed');
       setTimeout(() => {
-        document.body.removeChild(this._splashScreen!);
+        this.document.body.removeChild(this._splashScreen!);
+        this.document.body.classList.remove('overflow-hidden', 'h-full', 'm-0');
       }, 500);
     }
   }

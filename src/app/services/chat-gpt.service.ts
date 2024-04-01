@@ -1,19 +1,34 @@
+import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
-import { HttpClient, HttpParams } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { ChatResponseContract, ChatResponseFormat } from '@contracts/chat-message-contract';
+import { catchError, map, Observable, of } from 'rxjs';
+import { TranslationService } from './translation.service';
+import { UrlService } from './url.service';
 
 @Injectable({
   providedIn: 'root',
 })
 export class ChatGptService {
-  API = 'http://eblaepm.no-ip.org:333';
   http = inject(HttpClient);
+  lang = inject(TranslationService);
+  urlService = inject(UrlService);
 
-  ask(message: string): Observable<never[]> {
-    return this.http.get<never[]>(this.API, {
-      params: new HttpParams({
-        fromObject: { message: message },
-      }),
-    });
+  ask(message: string): Observable<ChatResponseContract> {
+    return this.http
+      .post<ChatResponseContract>(this.urlService.URLS.CHAT_BOT, {
+        lang: this.lang.isLtr ? 2 : 1,
+        question: message,
+      })
+      .pipe(
+        map((res) => {
+          if (!res.response.length) {
+            res.responseFormat = ChatResponseFormat.INVALID;
+          }
+          return res;
+        }),
+        catchError((err) => {
+          return of({ responseFormat: ChatResponseFormat.ERROR, response: [] });
+        })
+      );
   }
 }

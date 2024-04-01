@@ -24,7 +24,7 @@ export class OnlyCurrentLangLettersDirective implements ControlValueAccessor {
 
   @HostListener('input', ['$event.target.value'])
   onInputChange(value: string) {
-    const filteredValue: string = this._checkValue(value) ? value : '';
+    const filteredValue: string = this._checkValue(value) ? value : value.slice(0, value.length - 1);
     this._updateTextInput(filteredValue, this.value !== filteredValue);
   }
 
@@ -48,7 +48,7 @@ export class OnlyCurrentLangLettersDirective implements ControlValueAccessor {
   }
 
   private _checkValue(val: string) {
-    return this.lang.isLtr ? /^[a-zA-Z ]+$/.test(val) : /^[\u0621-\u064A ]+$/.test(val);
+    return !this.lang.isLtr ? /^[^a-zA-Z]+$/.test(val) : /^[^\u0621-\u064A]+$/.test(val);
   }
 
   private _updateTextInput(value: string, propagateChange: boolean) {

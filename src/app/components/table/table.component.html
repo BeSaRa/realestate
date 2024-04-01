@@ -1,4 +1,6 @@
-<div class="max-w-full relative rounded-xl overflow-hidden border border-secondary/50 shadow-gray-100 custom-shadow">
+<div
+  [dir]="lang.isLtr ? 'ltr' : 'rtl'"
+  class="max-w-full relative rounded-xl overflow-hidden border border-secondary/50 shadow-gray-100 custom-shadow">
   <mat-progress-bar
     *ngIf="isLoading"
     color="accent"

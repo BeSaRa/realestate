@@ -1,0 +1,34 @@
+@if(isDataAvailable) {
+<!-- <div class="notice-message" [ngClass]="{ ltr: lang.isLtr, rtl: !lang.isLtr }">
+  <span>{{
+    lang.map
+      .welcome_to_the_smart_assistant_of_the_real_estate_platform_you_can_inquire_about_all_the_real_estate_data_of_the_platform
+  }}</span>
+</div> -->
+<div class="flex items-center justify-end gap-1">
+  <button class="!text-secondary" mat-icon-button (click)="downloadCsvFile()">
+    <svg class="w-4 h-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+      <path fill="currentColor" d="M5,20H19V18H5M19,9H15V3H9V9H5L12,16L19,9Z" />
+    </svg>
+  </button>
+  <div class="max-w-full overflow-x-auto !rounded-xl !border !border-secondary/70">
+    <table mat-table [dataSource]="dataSource" class="!bg-transparent" style="min-width: {{ getMinWidth() }};">
+      @for (column of columnNames; track column) {
+      <ng-container [matColumnDef]="column">
+        <th *matHeaderCellDef class="p-2">
+          {{ column }}
+        </th>
+        <td *matCellDef="let row" class="py-2 transition-all text-center">
+          {{ row[column] }}
+        </td>
+      </ng-container>
+      }
+      <tr mat-header-row *matHeaderRowDef="columnNames" class="!bg-secondary/70 !text-white rounded-xl"></tr>
+      <tr
+        mat-row
+        *matRowDef="let row; columns: columnNames"
+        class="!bg-white/90 !text-primary border-b last:border-b-0 border-b-secondary/70"></tr>
+    </table>
+  </div>
+</div>
+}
