@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { ChatResponseContract, ChatResponseFormat } from '@contracts/chat-message-contract';
-import { catchError, map, Observable, of } from 'rxjs';
+import { catchError, map, Observable, of, timeout } from 'rxjs';
 import { TranslationService } from './translation.service';
 import { UrlService } from './url.service';
 
@@ -20,6 +20,7 @@ export class ChatGptService {
         question: message,
       })
       .pipe(
+        timeout(5000),
         map((res) => {
           if (!res.response.length) {
             res.responseFormat = ChatResponseFormat.INVALID;

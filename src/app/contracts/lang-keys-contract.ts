@@ -480,4 +480,6 @@ export interface LangKeysContract {
   welcome_to_the_smart_assistant_of_the_real_estate_platform_you_can_inquire_about_all_the_real_estate_data_of_the_platform: string;
   a_network_error_occured_please_try_again: string;
   your_question_is_not_clear_please_make_your_inquiry_about_the_data_more_clear: string;
+  a_table_was_used_to_display_chart_data_because_the_number_of_columns_is_more_than_2: string;
+  data_cannot_be_displayed_using_a_chart: string;
 }

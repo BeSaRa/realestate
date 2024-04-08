@@ -1,6 +1,7 @@
 export enum ChatResponseFormat {
   TABLE = 'TABLE',
   CHART = 'CHART',
+  LAW = 'LAW',
   OTHER = 'OTHER',
   ERROR = 'ERROR',
   INVALID = 'INVALID',

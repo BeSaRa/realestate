@@ -6,7 +6,8 @@
     [class.hidden]="isHidden"
     [class.opened]="isOpened && !isFullScreen"
     [class.full-screen]="isFullScreen"
-    class="bg-sand rounded-xl border border-primary/20 shadow-xl w-[90vw] sm:w-96 h-[500px] overflow-hidden flex group flex-col transition-all">
+    class="rounded-xl border border-primary/20 shadow-xl w-[90vw] sm:w-96 h-[500px] overflow-hidden flex group flex-col transition-all">
+    <div class="absolute inset-0 top-12 bg-sand"></div>
     <div class="absolute inset-0 top-12 bg-pattern opacity-10"></div>
     <div
       class="relative bg-primary h-12 flex items-center justify-between rounded-tr-xl rounded-tl-xl text-white"

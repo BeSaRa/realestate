@@ -1,10 +1,33 @@
-@if(isDataAvailable) {
-<!-- <div class="notice-message" [ngClass]="{ ltr: lang.isLtr, rtl: !lang.isLtr }">
-  <span>{{
-    lang.map
-      .welcome_to_the_smart_assistant_of_the_real_estate_platform_you_can_inquire_about_all_the_real_estate_data_of_the_platform
-  }}</span>
-</div> -->
+@if(isDataAvailable) { @if(data.responseFormat === Format.LAW) {
+<div class="flex items-center justify-end gap-1">
+  <button class="!text-secondary" mat-icon-button (click)="downloadCsvFile()">
+    <svg class="w-4 h-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+      <path fill="currentColor" d="M5,20H19V18H5M19,9H15V3H9V9H5L12,16L19,9Z" />
+    </svg>
+  </button>
+  <div class="max-w-full bg-white border-2 border-secondary/70 rounded-xl overflow-hidden">
+    <p class="p-2 text-xl text-center bg-secondary/70 text-white font-bold">{{ columnNames[0] }}</p>
+    <div class="overflow-x-auto px-8 py-4">
+      @for (item of data.response; track item) {
+      <p>- {{ item[columnNames[0]] }}</p>
+      <br />
+      }
+    </div>
+  </div>
+</div>
+} @else { @if (isColumnsCountLarge || isAxisUnknown) {
+<div class="notice-message" [ngClass]="{ ltr: lang.isLtr, rtl: !lang.isLtr }">
+  <span
+    ><span class="font-bold">{{ lang.map.note }}:</span>
+    {{
+      isColumnsCountLarge
+        ? lang.map.a_table_was_used_to_display_chart_data_because_the_number_of_columns_is_more_than_2
+        : lang.map.data_cannot_be_displayed_using_a_chart
+    }}</span
+  >
+</div>
+} @if(isTableView) {
+<!-- Table response -->
 <div class="flex items-center justify-end gap-1">
   <button class="!text-secondary" mat-icon-button (click)="downloadCsvFile()">
     <svg class="w-4 h-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
@@ -12,14 +35,14 @@
     </svg>
   </button>
   <div class="max-w-full overflow-x-auto !rounded-xl !border !border-secondary/70">
-    <table mat-table [dataSource]="dataSource" class="!bg-transparent" style="min-width: {{ getMinWidth() }};">
+    <table mat-table [dataSource]="dataSource" class="!bg-transparent" style="min-width: {{ getTableMinWidth() }};">
       @for (column of columnNames; track column) {
       <ng-container [matColumnDef]="column">
         <th *matHeaderCellDef class="p-2">
           {{ column }}
         </th>
         <td *matCellDef="let row" class="py-2 transition-all text-center">
-          {{ row[column] }}
+          {{ getCellValue(row[column], column) }}
         </td>
       </ng-container>
       }
@@ -31,4 +54,40 @@
     </table>
   </div>
 </div>
-}
+
+} @else {
+<!-- Chart response -->
+<div class="flex items-center justify-end gap-1">
+  <button class="!text-secondary" mat-icon-button (click)="downloadCsvFile()">
+    <svg class="w-4 h-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+      <path fill="currentColor" d="M5,20H19V18H5M19,9H15V3H9V9H5L12,16L19,9Z" />
+    </svg>
+  </button>
+  <div class="max-w-full bg-white border-2 border-secondary/70 rounded-xl overflow-hidden">
+    <p class="p-2 text-xl text-center bg-secondary/70 text-white font-bold">{{ getChartYAxis() ?? "---" }}</p>
+    <div class="overflow-x-auto px-8 pt-12 mb-2">
+      <div class="flex justify-center items-stretch gap-6" dir="ltr" style="min-width: {{ getChartMinWidth() }};">
+        @for (item of data.response; track item; let i = $index) {
+        <div class="flex-1 flex flex-col justify-start items-stretch">
+          <div class="flex flex-col justify-end h-[200px]">
+            <div
+              class="group relative bg-secondary/70 rounded-t-md text-center py-2 transition-all duration-300 hover:bg-secondary"
+              [ngStyle]="{
+                height: ((getYValue(i) / (minMaxAvg.max === 0 ? 1 : minMaxAvg.max)) * 200).toFixed(0) + 'px'
+              }">
+              <span class="relative -top-8 text-primary text-sm transition-all">{{
+                getFormattedValue(getYValue(i))
+              }}</span>
+            </div>
+          </div>
+          <p class="flex-1 mt-3 text-xs text-center text-primary break-words">
+            {{ getXValue(i) || "---" }}
+          </p>
+        </div>
+        }
+      </div>
+    </div>
+    <p class="text-lg text-center text-primary mb-2">{{ getChartXAxis() ?? "---" }}</p>
+  </div>
+</div>
+}}}
