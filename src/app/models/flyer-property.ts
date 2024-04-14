@@ -6,4 +6,7 @@ export class FlyerProperty {
   kpiValAvg!: number;
   propertyTypeId!: number;
   purposeId!: number;
+  yoyDifference!: number;
+  qoqDifference!: number;
+  momDifference!: number;
 }

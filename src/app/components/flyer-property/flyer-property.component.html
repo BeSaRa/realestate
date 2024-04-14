@@ -6,7 +6,12 @@
     <span>{{ getNames() }}</span>
   </div>
   <div class="py-2 col-span-3 text-center text-lg ltr:text-base">
-    <p class="text-secondary font-bold">{{ getCount() | number }} {{ lang.map.transaction }}</p>
+    <div class="flex items-center justify-center gap-2 text-secondary">
+      <span class="font-bold"> {{ getCount() | number }} {{ lang.map.transaction }} </span>
+      <div class="flex justify-center items-center">
+        (<span>{{ getPercent().toFixed(0) }} %</span>)
+      </div>
+    </div>
     <p class="text-primary transition-all group-hover:text-white">
       {{ lang.map.value_average }} <span class="text-2xl ltr:text-xl font-bold">{{ getAvgValue() }}</span>
     </p>
