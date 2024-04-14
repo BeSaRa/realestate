@@ -1,5 +1,5 @@
 <div
-  class="group relative w-[300px] h-[160px] bg-sand rounded-lg p-4 transition-all duration-300 cursor-pointer flex flex-col justify-between hover:bg-primary hover:pt-3 hover:pb-5">
+  class="group relative w-[300px] h-[160px] ltr:h-[200px] bg-sand rounded-lg p-4 ltr:pt-10 transition-all duration-300 cursor-pointer flex flex-col justify-between hover:bg-primary hover:pt-3 ltr:hover:pt-9 hover:pb-5">
   <div
     class="absolute bg-secondary top-4 px-4 text-white"
     [ngClass]="{
@@ -13,9 +13,9 @@
     [ngClass]="{ 'left-0 ': !lang.isLtr, 'right-0 -scale-x-100': lang.isLtr }"
     src="assets/icons/broker/card-icon.svg"
     alt="" />
-  <div class="grid grid-cols-3">
+  <div class="rtl:grid rtl:grid-cols-3">
     <span
-      class="col-span-2 text-primary text-xl font-bold transition-all group-hover:text-white"
+      class="rtl:col-span-2 text-primary text-xl font-bold transition-all group-hover:text-white"
       [innerHTML]="broker.getCompanyName() | highlight : filterText"></span>
   </div>
   <div>
