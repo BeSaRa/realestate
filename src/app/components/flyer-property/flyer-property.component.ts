@@ -1,7 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component, Input, inject } from '@angular/core';
 import { FlyerProperty } from '@models/flyer-property';
-import { Lookup } from '@models/lookup';
 import { LookupService } from '@services/lookup.service';
 import { TranslationService } from '@services/translation.service';
 import { formatNumberWithSuffix } from '@utils/utils';
@@ -58,5 +57,9 @@ export class FlyerPropertyComponent {
     if (!this.item.kpiVal) return '---';
     const _value = formatNumberWithSuffix(this.item.kpiVal);
     return _value.num + ' ' + (this.lang.isLtr ? _value.enSuffix : _value.arSuffix);
+  }
+
+  getPercent() {
+    return this.item.yoyDifference ?? this.item.qoqDifference ?? this.item.momDifference ?? 0;
   }
 }
