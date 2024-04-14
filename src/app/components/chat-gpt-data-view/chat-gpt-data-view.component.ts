@@ -131,13 +131,13 @@ export class ChatGptDataViewComponent implements OnInit {
     return false;
   }
 
-  getChartYAxis() {
-    return Object.keys(this.dataColumnTypes).find((k) => this.dataColumnTypes[k] === 'value');
+  getChartXAxis() {
+    return Object.keys(this.dataColumnTypes).find((k) => this.dataColumnTypes[k] === 'number');
   }
 
-  getChartXAxis() {
-    if (!this.getChartYAxis()) return undefined;
-    return Object.keys(this.dataColumnTypes).find((k) => k !== this.getChartYAxis());
+  getChartYAxis() {
+    if (!this.getChartXAxis()) return undefined;
+    return Object.keys(this.dataColumnTypes).find((k) => k !== this.getChartXAxis());
   }
 
   getYValue(index: number) {
