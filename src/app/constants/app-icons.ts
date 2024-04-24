@@ -52,6 +52,7 @@ export const AppIcons = {
   CHECK_OUTLINE: 'check-circle-outline',
   CHECK: 'check-circle',
   INFO: 'information',
+  INFO_OUTLINE: 'information-outline',
   PDF: 'file-pdf-box',
   FILE_DOWNLOAD: 'file-download',
 };

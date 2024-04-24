@@ -482,4 +482,5 @@ export interface LangKeysContract {
   your_question_is_not_clear_please_make_your_inquiry_about_the_data_more_clear: string;
   a_table_was_used_to_display_chart_data_because_the_number_of_columns_is_more_than_2: string;
   data_cannot_be_displayed_using_a_chart: string;
+  forecasting_method_info: string;
 }
