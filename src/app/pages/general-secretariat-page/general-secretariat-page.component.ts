@@ -14,9 +14,9 @@ import { TableColumnTemplateDirective } from '@directives/table-column-template.
 import { CriteriaType } from '@enums/criteria-type';
 import { GeneralSecretariatTransaction } from '@models/general-secretariat-transaction';
 import { Lookup } from '@models/lookup';
-import { CsvService } from '@services/csv.service';
 import { DashboardService } from '@services/dashboard.service';
 import { DialogService } from '@services/dialog.service';
+import { ExcelService } from '@services/excel.service';
 import { LookupService } from '@services/lookup.service';
 import { SectionTitleService } from '@services/section-title.service';
 import { TranslationService } from '@services/translation.service';
@@ -49,7 +49,7 @@ export default class GeneralSecretariatPageComponent {
   dashboardService = inject(DashboardService);
   dialog = inject(DialogService);
   sectionTitle = inject(SectionTitleService);
-  csvService = inject(CsvService);
+  excelService = inject(ExcelService);
 
   municipalities = this.lookupService.rentLookups.municipalityList;
   propertyTypes = this.lookupService.rentLookups.propertyTypeList;
@@ -119,34 +119,36 @@ export default class GeneralSecretariatPageComponent {
       .pipe(take(1))
       .pipe(finalize(() => (this.isLoadingDownloadList = false)))
       .subscribe((data) => {
-        const report = data.transactionList;
-        const csvData = this.csvService.arrayToCsv(report, [
-          { key: 'municipalityInfo', mapTo: this.lang.map.municipal, isLookup: true },
-          { key: 'zoneInfo', mapTo: this.lang.map.zone, isLookup: true },
-          { key: 'streetNo', mapTo: this.lang.map.street },
-          { key: 'buildingNo', mapTo: this.lang.map.building_number },
-          { key: 'purposeInfo', mapTo: this.lang.map.purpose, isLookup: true },
-          { key: 'propertyTypeInfo', mapTo: this.lang.map.property_type, isLookup: true },
-          { key: 'pinNo', mapTo: this.lang.map.pin_no },
-          { key: 'electricityNo', mapTo: this.lang.map.electricity_number },
-          { key: 'waterNo', mapTo: this.lang.map.water_number },
-          { key: 'propertyDescription', mapTo: this.lang.map.property_description },
-          { key: 'subUnitCount', mapTo: this.lang.map.sub_unit_count },
-          { key: 'area', mapTo: this.lang.map.area_in_square_foot },
-          { key: 'bedRoomsCount', mapTo: this.lang.map.bed_rooms },
-          { key: 'furnitureInfo', mapTo: this.lang.map.furniture_status, isLookup: true },
-          { key: 'rentPaymentAmount', mapTo: this.lang.map.total_rent_value },
-          { key: 'rentPaymentFrequency', mapTo: this.lang.map.payment_frequency + ' (' + this.lang.map.a_month + ')' },
-          { key: 'certificateCode', mapTo: this.lang.map.transaction_code },
-          { key: 'issueDate', mapTo: this.lang.map.documentation_date },
-          { key: 'startDate', mapTo: this.lang.map.contract_start_date },
-          { key: 'endDate', mapTo: this.lang.map.contract_end_date },
-          { key: 'occupancyStatus', mapTo: this.lang.map.occupancy_status },
-        ]);
-
-        this.csvService.downloadCsvFile(
-          this.lang.map.general_secretariat_report + ' ' + this.getCriteriaSectionTitle(),
-          csvData
+        this.excelService.downloadExcelFile(
+          data.transactionList,
+          this.lang.map.general_secretariat_report,
+          this.getCriteriaSectionTitle(),
+          [
+            { key: 'municipalityInfo', mapTo: this.lang.map.municipal, isLookup: true },
+            { key: 'zoneInfo', mapTo: this.lang.map.zone, isLookup: true },
+            { key: 'streetNo', mapTo: this.lang.map.street },
+            { key: 'buildingNo', mapTo: this.lang.map.building_number },
+            { key: 'purposeInfo', mapTo: this.lang.map.purpose, isLookup: true },
+            { key: 'propertyTypeInfo', mapTo: this.lang.map.property_type, isLookup: true },
+            { key: 'pinNo', mapTo: this.lang.map.pin_no },
+            { key: 'electricityNo', mapTo: this.lang.map.electricity_number },
+            { key: 'waterNo', mapTo: this.lang.map.water_number },
+            { key: 'propertyDescription', mapTo: this.lang.map.property_description, columnWidth: 50 },
+            { key: 'subUnitCount', mapTo: this.lang.map.sub_unit_count },
+            { key: 'area', mapTo: this.lang.map.area_in_square_foot },
+            { key: 'bedRoomsCount', mapTo: this.lang.map.bed_rooms },
+            { key: 'furnitureInfo', mapTo: this.lang.map.furniture_status, isLookup: true },
+            { key: 'rentPaymentAmount', mapTo: this.lang.map.total_rent_value },
+            {
+              key: 'rentPaymentFrequency',
+              mapTo: this.lang.map.payment_frequency + ' (' + this.lang.map.a_month + ')',
+            },
+            { key: 'certificateCode', mapTo: this.lang.map.transaction_code },
+            { key: 'issueDate', mapTo: this.lang.map.documentation_date },
+            { key: 'startDate', mapTo: this.lang.map.contract_start_date },
+            { key: 'endDate', mapTo: this.lang.map.contract_end_date },
+            { key: 'occupancyStatus', mapTo: this.lang.map.occupancy_status },
+          ]
         );
       });
   };

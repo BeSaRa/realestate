@@ -45,6 +45,16 @@
         [rootData]="isSelectedTab('sell') ? sellRootData : rentRootData"
         [filterCriteria]="criteria"
         [criteriaTerms]="citeriaTerms" />
+      <div class="mt-6 flex justify-center">
+        <app-button
+          (click)="openForecastingMethodInfo()"
+          buttonStyle="secondary"
+          size="lg"
+          [isRounded]="true"
+          icon="INFO_OUTLINE"
+          ><p class="me-2">{{ lang.map.forecasting_method_info }}</p></app-button
+        >
+      </div>
     </div>
   </div>
 </div>
@@ -94,4 +104,110 @@
       [label]="lang.map.property_type"
       [options]="isSelectedTab('sell') ? sellPropertyTypes : rentPropertyTypes"
   /></ng-container>
+</ng-template>
+
+<ng-template #forecastingMethod>
+  <div class="max-h-[90vh] flex flex-col">
+    <div class="dialog-header flex-1">
+      <span>{{ lang.map.forecasting_method_info }}</span>
+      <app-icon-button mat-dialog-close="" class="close-btn" icon="CLOSE" />
+    </div>
+    <div class="dialog-content overflow-y-scroll">
+      <div class="p-4 w-full">
+        <p>
+          تم استخدام خوارزمية التنعيم التراجعي exponential smoothing algorithm. وهو أسلوب تنبؤ لسلاسل الزمن يعمل عن طريق
+          تخصيص أوزان للمشاهدات السابقة، حيث يتم منح المشاهدات الأحدث وزنًا أكبر. وهذا يسمح للخوارزمية بالتعلم من
+          الاتجاهات والأنماط الأخيرة في البيانات وإجراء تنبؤات أكثر دقة.
+        </p>
+        <p>
+          اخترنا خوارزمية التنعيم التراجعي exponential smoothing algorithm لأنها طريقة تنبؤ بسيطة وفعالة تصلح تمامًا
+          لمجموعة متنوعة من بيانات السلاسل الزمنية. كما أنها سهلة نسبيًا في التنفيذ والتفسير.
+        </p>
+        <p>
+          لتحديد أفضل نموذج خوارزمية لاحتياجات المنصة العقارية، استخدمنا درجة معيارية normalized score. الدرجة المعيارية
+          normalized score هي قياس لأداء النموذج على مجموعة اختبار مستقلة. يتم تدريب وتقييم عدة نماذج مختلفة للتنعيم
+          التراجعي exponential smoothing models اختيار النموذج الذي حصل على أعلى درجة معيارية.
+        </p>
+        <p>
+          نعتقد أن استخدام Azure Machine Learning وخوارزمية التنعيم التراجعي exponential smoothing algorithm سيسمح
+          بتقديم تنبؤات أكثر دقة وموثوقية.
+        </p>
+        <p>
+          التنعيم التراجعي هو أسلوب تنبؤ يستخدم المتوسطات المرجحة للمشاهدات السابقة لتوقع القيم المستقبلية. يتم تخصيص
+          الأوزان بطريقة تعطي الأولوية للمشاهدات الأحدث. وهذا يسمح للخوارزمية بالتعلم من الاتجاهات والأنماط الأخيرة في
+          البيانات.
+        </p>
+        <p>وفيما يلي شرح مبسط لكيفية عمل خوارزمية التنعيم التراجعي exponential smoothing algorithm:</p>
+        <br />
+        <div dir="ltr" class="text-start">
+          <p>
+            - <span class="font-bold">Initialize the forecast:</span> The forecast for the next period is initialized to
+            the average of the past few observations.
+          </p>
+          <br />
+          <p>
+            - <span class="font-bold">Calculate the error:</span> The error for the current period is calculated as the
+            difference between the actual value and the forecast.
+          </p>
+          <br />
+          <p>
+            - <span class="font-bold">Update the forecast:</span> The forecast for the next period is updated by adding
+            a weighted average of the error to the previous forecast.
+          </p>
+          <br />
+          <p>
+            The weight that is applied to the error is called the smoothing factor. The smoothing factor controls how
+            much emphasis is placed on recent observations. A higher smoothing factor will place more emphasis on recent
+            observations, while a lower smoothing factor will place more emphasis on past observations.
+          </p>
+          <p>The following is the formula for updating the forecast:</p>
+          <p class="text-center">forecast_t+1 = forecast_t + alpha * (actual_t - forecast_t)</p>
+          <p>where:</p>
+          <p>forecast_t is the forecast for period t.</p>
+          <p>forecast_t+1 is the forecast for period t+1.</p>
+          <p>actual_t is the actual value for period t.</p>
+          <p>alpha is the smoothing factor.</p>
+          <br />
+          <p>
+            The smoothing factor can be chosen between 0 and 1. A value of 0 will result in a simple moving average,
+            while a value of 1 will result in a naive forecast.
+          </p>
+          <p>
+            Exponential smoothing can be used to forecast a variety of time series data, including sales, inventory, and
+            customer demand. It is a simple and effective forecasting method that is relatively easy to implement and
+            interpret.
+          </p>
+          <p>Here is an example of how to use exponential smoothing to forecast sales data:</p>
+          <code>
+            <br />
+            <p># Initialize the forecast</p>
+            <p>forecast = average of the past few sales observations</p>
+            <br />
+            <p># Calculate the error</p>
+            <p>error = actual sales - forecast</p>
+            <br />
+            <p># Update the forecast</p>
+            <p>forecast = forecast + alpha * error</p>
+            <br />
+            <p># Repeat steps 2 and 3 for each period</p>
+            <br
+          /></code>
+          <p>
+            The smoothing factor can be adjusted to improve the accuracy of the forecasts. A higher smoothing factor
+            will give more weight to recent observations, which can be helpful if the sales data is trending. A lower
+            smoothing factor will give more weight to past observations, which can be helpful if the sales data is
+            seasonal.
+          </p>
+        </div>
+        <br />
+        <p>
+          التنعيم التراجعي هو أسلوب قوي للتنبؤ يمكن استخدامه لتحسين دقة التنبؤات لمجموعة متنوعة من بيانات السلاسل
+          الزمنية.
+        </p>
+      </div>
+    </div>
+    <div class="dialog-footer flex-1">
+      <app-button mat-dialog-close buttonStyle="primary">{{ lang.map.close }}</app-button>
+    </div>
+  </div>
 </ng-template>

@@ -1,14 +1,17 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit, TemplateRef, ViewChild, inject } from '@angular/core';
 import { AbstractControl, ReactiveFormsModule, UntypedFormBuilder } from '@angular/forms';
+import { MatDialogModule } from '@angular/material/dialog';
 import { ButtonComponent } from '@components/button/button.component';
 import { ForecastingChartComponent } from '@components/forecasting-chart/forecasting-chart.component';
+import { IconButtonComponent } from '@components/icon-button/icon-button.component';
 import { SelectInputComponent } from '@components/select-input/select-input.component';
 import { CriteriaContract } from '@contracts/criteria-contract';
 import { ExtraHeaderPortalBridgeDirective } from '@directives/extra-header-portal-bridge.directive';
 import { OnDestroyMixin } from '@mixins/on-destroy-mixin';
 import { CriteriaSpecificTerms } from '@models/criteria-specific-terms';
 import { Lookup } from '@models/lookup';
+import { DialogService } from '@services/dialog.service';
 import { LookupService } from '@services/lookup.service';
 import { TranslationService } from '@services/translation.service';
 import { UrlService } from '@services/url.service';
@@ -24,15 +27,20 @@ import { takeUntil } from 'rxjs';
     ReactiveFormsModule,
     ForecastingChartComponent,
     ButtonComponent,
+    IconButtonComponent,
+    MatDialogModule,
   ],
   templateUrl: './forecasting-indicators-page.component.html',
   styleUrls: ['./forecasting-indicators-page.component.scss'],
 })
 export default class ForecastingIndicatorsPageComponent extends OnDestroyMixin(class {}) implements OnInit {
+  @ViewChild('forecastingMethod') forecastingMethodPopupTemplate!: TemplateRef<any>;
+
   lang = inject(TranslationService);
   fb = inject(UntypedFormBuilder);
   lookupService = inject(LookupService);
   urlService = inject(UrlService);
+  dialog = inject(DialogService);
 
   sellMunicipalities = this.lookupService.sellLookups.municipalityList.filter(
     (item) => item.lookupKey !== -1 && item.lookupKey
@@ -133,5 +141,9 @@ export default class ForecastingIndicatorsPageComponent extends OnDestroyMixin(c
 
   updateCriteria() {
     this.criteria = this.selectedTab === 'sell' ? this.sellFilter.value : this.rentFilter.value;
+  }
+
+  openForecastingMethodInfo() {
+    this.dialog.open(this.forecastingMethodPopupTemplate, { maxWidth: '90vw', maxHeight: '90vh' });
   }
 }

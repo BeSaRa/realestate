@@ -118,6 +118,11 @@ export class ChatGptComponent extends OnDestroyMixin(class {}) implements OnInit
     this._togglePageScroll();
   }
 
+  deleteChat() {
+    this.messages = [];
+    this.lastMessageDate = new Date(Date.now());
+  }
+
   toggleFullScreen() {
     this.isFullScreen = !this.isFullScreen;
     this._togglePageScroll();
