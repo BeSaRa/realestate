@@ -71,7 +71,7 @@ export class ExcelService {
 
     topHeader.height = 90;
     topHeader.font = { bold: true, color: { argb: AppColors.PRIMARY.slice(1) }, size: 25 };
-    topHeader.alignment = { horizontal: 'center', vertical: 'middle' };
+    topHeader.alignment = { horizontal: 'center', vertical: 'middle', wrapText: true };
 
     const logo = wb.addImage({
       base64: logoBase64,
