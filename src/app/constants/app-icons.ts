@@ -55,6 +55,7 @@ export const AppIcons = {
   INFO_OUTLINE: 'information-outline',
   PDF: 'file-pdf-box',
   FILE_DOWNLOAD: 'file-download',
+  EXCEL_DOWNLOAD: 'microsoft-excel',
 };
 
 export type AppIconsType = typeof AppIcons;

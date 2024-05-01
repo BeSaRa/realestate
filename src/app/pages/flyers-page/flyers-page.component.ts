@@ -1,5 +1,5 @@
 import { CommonModule, DOCUMENT } from '@angular/common';
-import { Component, ElementRef, OnInit, ViewChild, inject } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild, ViewChildren, inject } from '@angular/core';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { DateAdapter, MatNativeDateModule } from '@angular/material/core';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
@@ -17,6 +17,8 @@ import { ExtraHeaderPortalBridgeDirective } from '@directives/extra-header-porta
 import { DurationEndpoints } from '@enums/durations';
 import { OnDestroyMixin } from '@mixins/on-destroy-mixin';
 import { Lookup } from '@models/lookup';
+import { ExcelSheetSectionsRegisterService } from '@services/excel-sheet-sections-register.service';
+import { ExcelService } from '@services/excel.service';
 import { LookupService } from '@services/lookup.service';
 import { TranslationService } from '@services/translation.service';
 import { UrlService } from '@services/url.service';
@@ -27,7 +29,7 @@ import { takeUntil } from 'rxjs';
 @Component({
   selector: 'app-flyers-page',
   standalone: true,
-  providers: [],
+  providers: [{ provide: ExcelSheetSectionsRegisterService, useClass: ExcelSheetSectionsRegisterService }],
   imports: [
     CommonModule,
     ExtraHeaderPortalBridgeDirective,
@@ -55,6 +57,8 @@ export default class FlyersPageComponent extends OnDestroyMixin(class {}) implem
   lookupService = inject(LookupService);
   adapter = inject(DateAdapter);
   document = inject(DOCUMENT);
+  excelService = inject(ExcelService);
+  excelSectionsRegisterService = inject(ExcelSheetSectionsRegisterService);
 
   months: { label: string; value: number }[] = [];
   quarterYearDurations = this.lookupService.rentLookups.quarterYearDurations;
@@ -199,5 +203,13 @@ export default class FlyersPageComponent extends OnDestroyMixin(class {}) implem
     });
 
     pdfTitle?.classList.add('hidden');
+  }
+
+  exportToExcel() {
+    this.excelService.downloadExcelWithSectionsFile(
+      this.excelSectionsRegisterService.sections,
+      this.lang.map.real_estate_flyer,
+      this.getTitleSuffix()
+    );
   }
 }

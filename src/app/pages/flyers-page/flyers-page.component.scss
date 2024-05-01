@@ -2,7 +2,10 @@
   @apply bg-primary text-white;
 }
 
+::ng-deep .download-excel .mat-mdc-icon-button {
+  @apply bg-secondary text-white;
+}
+
 .mat-mdc-progress-spinner {
   --mdc-circular-progress-active-indicator-color: #ffffff;
 }
-

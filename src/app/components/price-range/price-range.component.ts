@@ -1,9 +1,11 @@
+import { AddSectionToExcelSheet } from '@abstracts/add-section-to-excel-sheet';
 import { CommonModule } from '@angular/common';
 import { Component, Input, OnChanges, SimpleChanges, inject } from '@angular/core';
 import { FlyerCriteriaContract } from '@contracts/flyer-criteria-contract';
 import { CustomTooltipDirective } from '@directives/custom-tooltip.directive';
 import { DashboardService } from '@services/dashboard.service';
 import { TranslationService } from '@services/translation.service';
+import { Workbook, Worksheet } from 'exceljs';
 import { finalize, take } from 'rxjs';
 
 @Component({
@@ -13,7 +15,7 @@ import { finalize, take } from 'rxjs';
   templateUrl: './price-range.component.html',
   styleUrls: ['./price-range.component.scss'],
 })
-export class PriceRangeComponent implements OnChanges {
+export class PriceRangeComponent extends AddSectionToExcelSheet implements OnChanges {
   @Input({ required: true }) dataUrl!: string;
   @Input({ required: true }) criteria!: FlyerCriteriaContract;
 
@@ -89,5 +91,39 @@ export class PriceRangeComponent implements OnChanges {
       ' ' +
       this.lang.map.million
     );
+  }
+
+  override addToExcelSheet(workbook: Workbook, worksheet: Worksheet): void {
+    this.excelService.addHeaderRow(worksheet, [this.lang.map.number_of_transactions_by_price_range]);
+    worksheet.mergeCells(worksheet.rowCount, 1, worksheet.rowCount, 7);
+
+    const _data: { range: string; value: number; change: number }[] = [];
+    this.pricesKeys.forEach((key, i) => {
+      if (i === this.pricesKeys.length - 1) return;
+      _data.push({
+        range: this.getTooltipTitle(key),
+        value: this.pricesMap[key],
+        change: this.pricesMap[key] / this.totalCount,
+      });
+    });
+
+    this.excelService.addSubHeaderRow(
+      worksheet,
+      _data.map((item) => item.range)
+    );
+
+    this.excelService.addDataRow(
+      worksheet,
+      _data.map((item) => item.value),
+      0
+    ).numFmt = '#,##0';
+
+    this.excelService
+      .addDataRow(
+        worksheet,
+        _data.map((item) => item.change),
+        0
+      )
+      .eachCell((c, i) => this.excelService.stylePercentCell(c, _data[i - 1].change));
   }
 }

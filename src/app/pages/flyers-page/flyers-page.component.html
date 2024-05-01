@@ -1,6 +1,6 @@
 <ng-container appExtraHeaderPortal [extraHeaderSubTitle]="lang.map.real_estate_flyers"> </ng-container>
 
-<ng-template appAction [appActionActionOrder]="1">
+<ng-template appAction [appActionActionOrder]="2">
   @if(!isExportingToPdf){
   <app-icon-button
     (clicked)="exportToPDF()"
@@ -12,6 +12,14 @@
     <mat-spinner diameter="30" strokeWidth="3"></mat-spinner>
   </div>
   }
+</ng-template>
+
+<ng-template appAction [appActionActionOrder]="1">
+  <app-icon-button
+    (clicked)="exportToExcel()"
+    icon="EXCEL_DOWNLOAD"
+    class="download-excel opacity-75 transition-all hover:opacity-100">
+  </app-icon-button>
 </ng-template>
 
 <div class="relative">
@@ -95,12 +103,12 @@
           </div>
           <div class="relative my-4">
             <app-flyer-property-list
-              [title]="lang.map.depending_on_use + ' - ' + lang.map.residential"
+              [title]="lang.map.sell_contracts + ' ' + lang.map.depending_on_type + ' - ' + lang.map.residential"
               [criteria]="criteria"
               [useAssetsFrom]="'sell'"
               [dataUrl]="urlService.URLS.FLYER_SELL_KPI5_RES" />
             <app-flyer-property-list
-              [title]="lang.map.depending_on_use + ' - ' + lang.map.commercial"
+              [title]="lang.map.sell_contracts + ' ' + lang.map.depending_on_type + ' - ' + lang.map.commercial"
               [criteria]="criteria"
               [useAssetsFrom]="'sell'"
               [dataUrl]="urlService.URLS.FLYER_SELL_KPI5_COM" />
@@ -135,12 +143,12 @@
             [criteria]="criteria"></app-flyer-summary>
           <div class="relative my-4">
             <app-flyer-property-list
-              [title]="lang.map.depending_on_use + ' - ' + lang.map.residential"
+              [title]="lang.map.rent_contracts + ' ' + lang.map.depending_on_type + ' - ' + lang.map.residential"
               [criteria]="criteria"
               [useAssetsFrom]="'rent'"
               [dataUrl]="urlService.URLS.FLYER_RENT_KPI5_RES" />
             <app-flyer-property-list
-              [title]="lang.map.depending_on_use + ' - ' + lang.map.commercial"
+              [title]="lang.map.rent_contracts + ' ' + lang.map.depending_on_type + ' - ' + lang.map.commercial"
               [criteria]="criteria"
               [useAssetsFrom]="'rent'"
               [dataUrl]="urlService.URLS.FLYER_RENT_KPI5_COM" />

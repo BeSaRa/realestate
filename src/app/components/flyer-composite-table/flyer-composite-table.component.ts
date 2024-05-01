@@ -1,3 +1,4 @@
+import { AddSectionToExcelSheet } from '@abstracts/add-section-to-excel-sheet';
 import { CommonModule } from '@angular/common';
 import { Component, Input, OnChanges, SimpleChanges, inject } from '@angular/core';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
@@ -11,6 +12,7 @@ import { DashboardService } from '@services/dashboard.service';
 import { LookupService } from '@services/lookup.service';
 import { TranslationService } from '@services/translation.service';
 import { groupBy } from '@utils/utils';
+import { Workbook, Worksheet } from 'exceljs';
 import { NgxMaskPipe } from 'ngx-mask';
 import { Observable, finalize, map, take } from 'rxjs';
 
@@ -21,7 +23,7 @@ import { Observable, finalize, map, take } from 'rxjs';
   templateUrl: './flyer-composite-table.component.html',
   styleUrl: './flyer-composite-table.component.scss',
 })
-export class FlyerCompositeTableComponent implements OnChanges {
+export class FlyerCompositeTableComponent extends AddSectionToExcelSheet implements OnChanges {
   @Input({ required: true }) dataUrl!: string;
   @Input({ required: true }) criteria!: FlyerCriteriaContract;
 
@@ -122,4 +124,51 @@ export class FlyerCompositeTableComponent implements OnChanges {
         })
       );
   };
+
+  override addToExcelSheet(workbook: Workbook, worksheet: Worksheet): void {
+    this.excelService.addHeaderRow(worksheet, [this.lang.map.sell_statistics_by_municipality]);
+    worksheet.mergeCells(worksheet.rowCount, 1, worksheet.rowCount, 7);
+
+    this.excelService.addSubHeaderRow(worksheet, [
+      this.lang.map.municipal,
+      this.lang.map.transactions_count,
+      '',
+      '',
+      this.lang.map.transactions_cost,
+    ]);
+
+    this.excelService.addSubHeaderRow(worksheet, [
+      '',
+      this.compositeYears?.previousYear,
+      this.compositeYears?.selectedYear,
+      this.lang.map.change + '(YOY)',
+      this.compositeYears?.previousYear,
+      this.compositeYears?.selectedYear,
+      this.lang.map.change + '(YOY)',
+    ]);
+
+    worksheet.mergeCells(worksheet.rowCount - 1, 1, worksheet.rowCount, 1);
+    worksheet.mergeCells(worksheet.rowCount - 1, 2, worksheet.rowCount - 1, 4);
+    worksheet.mergeCells(worksheet.rowCount - 1, 5, worksheet.rowCount - 1, 7);
+
+    this.compositeTransactions.forEach((_, i) => {
+      const _row = this.excelService.addDataRow(
+        worksheet,
+        [
+          this.getMuniciplaityNames(this.compositeTransactions[i][0].municipalityId),
+          this.compositeTransactions[i][0].kpi1Val,
+          this.compositeTransactions[i][1].kpi1Val,
+          (this.compositeTransactions[i][1].kpi1YoYVal ?? 0) / 100,
+          this.compositeTransactions[i][0].kpi2Val,
+          this.compositeTransactions[i][1].kpi2Val,
+          (this.compositeTransactions[i][1].kpi2YoYVal ?? 0) / 100,
+        ],
+        i
+      );
+
+      [_row.getCell(2), _row.getCell(3), _row.getCell(5), _row.getCell(6)].forEach((c) => (c.numFmt = '#,##0'));
+      this.excelService.stylePercentCell(_row.getCell(4), this.compositeTransactions[i][1].kpi1YoYVal ?? 0);
+      this.excelService.stylePercentCell(_row.getCell(7), this.compositeTransactions[i][1].kpi2YoYVal ?? 0);
+    });
+  }
 }
