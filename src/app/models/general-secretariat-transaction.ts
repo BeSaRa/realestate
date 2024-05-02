@@ -6,6 +6,29 @@ const { receive, send } = new GeneralSecretariatTransactionInterceptor();
 
 @InterceptModel({ receive, send })
 export class GeneralSecretariatTransaction {
+  readonly occupationMap: Record<number, Lookup> = {
+    0: new Lookup().clone<Lookup>({
+      arName: '---',
+      enName: '---',
+    }),
+    1: new Lookup().clone<Lookup>({
+      arName: 'مشغول',
+      enName: 'Occupied',
+    }),
+    2: new Lookup().clone<Lookup>({
+      arName: 'شاغر',
+      enName: 'Vacant',
+    }),
+    3: new Lookup().clone<Lookup>({
+      arName: 'ليس في كهرماء',
+      enName: 'Not in Kahramaa',
+    }),
+    4: new Lookup().clone<Lookup>({
+      arName: 'لايوجد رقم كهرباء',
+      enName: 'No Electricity_NO',
+    }),
+  };
+
   area!: number;
   bedRoomsCount!: number;
   buildingNo!: number;
@@ -33,4 +56,5 @@ export class GeneralSecretariatTransaction {
   furnitureInfo!: Lookup;
   purposeInfo!: Lookup;
   propertyTypeInfo!: Lookup;
+  occupancyStatusInfo!: Lookup;
 }
