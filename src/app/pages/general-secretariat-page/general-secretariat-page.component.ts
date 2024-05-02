@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+import { CommonModule, DatePipe } from '@angular/common';
 import { Component, TemplateRef, ViewChild, inject } from '@angular/core';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
@@ -13,14 +13,13 @@ import { TableColumnHeaderTemplateDirective } from '@directives/table-column-hea
 import { TableColumnTemplateDirective } from '@directives/table-column-template.directive';
 import { CriteriaType } from '@enums/criteria-type';
 import { GeneralSecretariatTransaction } from '@models/general-secretariat-transaction';
-import { Lookup } from '@models/lookup';
 import { DashboardService } from '@services/dashboard.service';
 import { DialogService } from '@services/dialog.service';
 import { ExcelService } from '@services/excel.service';
 import { LookupService } from '@services/lookup.service';
 import { SectionTitleService } from '@services/section-title.service';
 import { TranslationService } from '@services/translation.service';
-import { finalize, switchMap, take } from 'rxjs';
+import { finalize, switchMap, take, tap } from 'rxjs';
 
 @Component({
   selector: 'app-general-secretariat-page',
@@ -38,6 +37,7 @@ import { finalize, switchMap, take } from 'rxjs';
     MatDialogModule,
     MatProgressSpinnerModule,
   ],
+  providers: [DatePipe],
   templateUrl: './general-secretariat-page.component.html',
   styleUrl: './general-secretariat-page.component.scss',
 })
@@ -50,6 +50,7 @@ export default class GeneralSecretariatPageComponent {
   dialog = inject(DialogService);
   sectionTitle = inject(SectionTitleService);
   excelService = inject(ExcelService);
+  datePipe = inject(DatePipe);
 
   municipalities = this.lookupService.rentLookups.municipalityList;
   propertyTypes = this.lookupService.rentLookups.propertyTypeList;
@@ -65,25 +66,6 @@ export default class GeneralSecretariatPageComponent {
   };
 
   isLoadingDownloadList = false;
-
-  readonly _occupationMap: Record<number, Lookup> = {
-    1: new Lookup().clone<Lookup>({
-      arName: 'مشغول',
-      enName: 'Occupied',
-    }),
-    2: new Lookup().clone<Lookup>({
-      arName: 'شاغر',
-      enName: 'Vacant',
-    }),
-    3: new Lookup().clone<Lookup>({
-      arName: 'ليس في كهرماء',
-      enName: 'Not in Kahramaa',
-    }),
-    4: new Lookup().clone<Lookup>({
-      arName: 'لايوجد رقم كهرباء',
-      enName: 'No Electricity_NO',
-    }),
-  };
 
   filterChange({ criteria, type }: { criteria: CriteriaContract; type: CriteriaType }) {
     this.criteria = { criteria: { ...criteria, limit: 5 }, type };
@@ -118,6 +100,18 @@ export default class GeneralSecretariatPageComponent {
       )
       .pipe(take(1))
       .pipe(finalize(() => (this.isLoadingDownloadList = false)))
+      .pipe(
+        tap((data) => {
+          data.transactionList.forEach((item) => {
+            item.startDate =
+              this.datePipe.transform(item.startDate, 'YYY-MM-dd', undefined, this.lang.getCurrent().code) ?? '';
+            item.endDate =
+              this.datePipe.transform(item.endDate, 'YYY-MM-dd', undefined, this.lang.getCurrent().code) ?? '';
+            item.issueDate =
+              this.datePipe.transform(item.issueDate, 'YYY-MM-dd', undefined, this.lang.getCurrent().code) ?? '';
+          });
+        })
+      )
       .subscribe((data) => {
         this.excelService.downloadExcelFile(
           data.transactionList,
@@ -135,7 +129,7 @@ export default class GeneralSecretariatPageComponent {
             { key: 'waterNo', mapTo: this.lang.map.water_number },
             { key: 'propertyDescription', mapTo: this.lang.map.property_description, columnWidth: 50 },
             { key: 'subUnitCount', mapTo: this.lang.map.sub_unit_count },
-            { key: 'area', mapTo: this.lang.map.area_in_square_foot },
+            { key: 'area', mapTo: this.lang.map.area_in_square_meter },
             { key: 'bedRoomsCount', mapTo: this.lang.map.bed_rooms },
             { key: 'furnitureInfo', mapTo: this.lang.map.furniture_status, isLookup: true },
             { key: 'rentPaymentAmount', mapTo: this.lang.map.total_rent_value },
@@ -147,7 +141,7 @@ export default class GeneralSecretariatPageComponent {
             { key: 'issueDate', mapTo: this.lang.map.documentation_date },
             { key: 'startDate', mapTo: this.lang.map.contract_start_date },
             { key: 'endDate', mapTo: this.lang.map.contract_end_date },
-            { key: 'occupancyStatus', mapTo: this.lang.map.occupancy_status },
+            { key: 'occupancyStatusInfo', mapTo: this.lang.map.occupancy_status, isLookup: true },
           ]
         );
       });

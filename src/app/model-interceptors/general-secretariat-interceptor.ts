@@ -13,6 +13,7 @@ export class GeneralSecretariatTransactionInterceptor
     model.purposeInfo = lookupService.rentPurposeMap[model.purposeId];
     model.propertyTypeInfo = lookupService.rentPropertyTypeMap[model.propertyTypeId];
     model.furnitureInfo = lookupService.rentFurnitureMap[model.furnitureStatusId];
+    model.occupancyStatusInfo = model.occupationMap[model.occupancyStatus] ?? model.occupationMap[0];
     return model;
   }
 

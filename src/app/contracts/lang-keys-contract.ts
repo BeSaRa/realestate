@@ -454,6 +454,7 @@ export interface LangKeysContract {
   property_type_and_purpose: string;
   property_description: string;
   square_feet: string;
+  square_meter: string;
   property_details: string;
   the_area: string;
   rent_details: string;
