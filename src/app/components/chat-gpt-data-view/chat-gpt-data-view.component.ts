@@ -9,6 +9,15 @@ import { TranslationService } from '@services/translation.service';
 import { formatNumber, minMaxAvg } from '@utils/utils';
 import { BehaviorSubject } from 'rxjs';
 
+interface LawResponseContract {
+  id: number;
+  Lawnumber: number;
+  title: string;
+  article_number: number;
+  article: string;
+  Content: string;
+}
+
 @Component({
   selector: 'app-chat-gpt-data-view',
   standalone: true,
@@ -160,5 +169,9 @@ export class ChatGptDataViewComponent implements OnInit {
     minWidth -= 24;
     minWidth = Math.max(minWidth, 400);
     return minWidth + 'px';
+  }
+
+  getLawData() {
+    return this.data as unknown as { responseFormat: ChatResponseFormat; response: LawResponseContract[] };
   }
 }

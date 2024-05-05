@@ -6,10 +6,12 @@
     </svg>
   </button>
   <div class="max-w-full bg-white border-2 border-secondary/70 rounded-xl overflow-hidden">
-    <p class="p-2 text-xl text-center bg-secondary/70 text-white font-bold">{{ columnNames[0] }}</p>
+    <p class="p-2 text-xl text-center bg-secondary/70 text-white font-bold">{{ getLawData().response[0].title }}</p>
     <div class="overflow-x-auto px-8 py-4">
-      @for (item of data.response; track item) {
-      <p>- {{ item[columnNames[0]] }}</p>
+      @for (item of getLawData().response; track item) {
+      <p>
+        - <span class="font-bold">{{ item.article }}: </span>{{ item.Content }}
+      </p>
       <br />
       }
     </div>
