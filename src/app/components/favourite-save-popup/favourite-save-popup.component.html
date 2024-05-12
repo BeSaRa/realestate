@@ -1,0 +1,19 @@
+<div class="login-dialog-container">
+  <div class="dialog-header bg-primary">
+    <h1>{{ getTitle() }}</h1>
+    <app-icon-button tabindex="-1" mat-dialog-close class="close-btn" icon="CLOSE"></app-icon-button>
+  </div>
+  <div class="dialog-content">
+    <app-input [formControl]="name" (keydown.enter)="saveCriteria()" [label]="lang.map.save_name"></app-input>
+  </div>
+  <div class="dialog-footer justify-end">
+    <app-button
+      (click)="saveCriteria()"
+      [disabled]="name.invalid || !name.dirty || this.isLoading"
+      buttonStyle="primary"
+      ><ng-container *ngIf="!isLoading"> {{ lang.map.save }}</ng-container
+      ><mat-spinner *ngIf="isLoading" diameter="20" strokeWidth="2"></mat-spinner
+    ></app-button>
+    <app-button mat-dialog-close buttonStyle="primary-outline">{{ lang.map.close }}</app-button>
+  </div>
+</div>

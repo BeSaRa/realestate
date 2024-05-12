@@ -262,7 +262,9 @@ export class LookupService extends RegisterServiceMixin(class {}) implements Ser
   loadOVLookups() {
     return this._loadOVLookups().pipe(
       tap((ov) => {
-        this.ovLookups = this._addAllToMunicipalities(this._addAllToPremiseCategories(this._addAllToPremiseTypes(ov)));
+        this.ovLookups = this._addAllToMunicipalities(
+          this._addAllToZone(this._addAllToPremiseCategories(this._addAllToPremiseTypes(ov)))
+        );
 
         this.ovMunicipalitiesMap = this._initializeMunicipalitiesMap(ov);
         this.ovZonesMap = this._initializeZonesMap(ov);
@@ -390,6 +392,19 @@ export class LookupService extends RegisterServiceMixin(class {}) implements Ser
         lookupKey: -1,
       }),
       ...lookups.districtList,
+    ];
+    return lookups;
+  }
+
+  private _addAllToZone(lookups: LookupsContract) {
+    if (lookups.zoneList.find((p) => p.lookupKey === -1)) return lookups;
+    lookups.zoneList = [
+      new Lookup().clone<Lookup>({
+        arName: 'الكل',
+        enName: 'All',
+        lookupKey: -1,
+      }),
+      ...lookups.zoneList,
     ];
     return lookups;
   }

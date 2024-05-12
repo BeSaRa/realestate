@@ -36,17 +36,6 @@
   </div>
   <!-- search header-->
   <ul id="top-header-menu" class="flex items-center gap-x-3 divide-items">
-    <!-- <li>
-      <button mat-icon-button>
-        <mat-icon>text_increase</mat-icon>
-      </button>
-    </li>
-    <li>
-      <button mat-icon-button>
-        <mat-icon>text_decrease</mat-icon>
-      </button>
-    </li> -->
-
     <button *ngIf="!authService.isAuthenticated()" mat-button [matMenuTriggerFor]="beforeMenu">
       {{ lang.map.login }}
     </button>
@@ -74,7 +63,10 @@
       <button class="text-white" (click)="onLogOut()" mat-button>{{ lang.map.log_out }}</button>
     </li>
     <li>
-      <app-icon-button [icon]="'VIEW'" (click)="toggleFilter()"></app-icon-button>
+      <app-icon-button [icon]="'VIEW'" (clicked)="toggleFilter()"></app-icon-button>
+    </li>
+    <li *ngIf="authService.isAuthenticated()">
+      <app-icon-button [icon]="'FAVOURITE'" (clicked)="openFavouritesPopup()"></app-icon-button>
     </li>
     <li>
       <app-button (click)="changeLang($event)" buttonStyle="none">{{

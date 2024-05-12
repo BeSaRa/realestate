@@ -56,6 +56,11 @@ export const AppIcons = {
   PDF: 'file-pdf-box',
   FILE_DOWNLOAD: 'file-download',
   EXCEL_DOWNLOAD: 'microsoft-excel',
+  FAVOURITE: 'star',
+  FAVOURITE_OUTLINE: 'star-outline',
+  SAVE: 'plus',
+  ACTION: 'lightning-bolt',
+  DOTS_MENU: 'dots-vertical',
 };
 
 export type AppIconsType = typeof AppIcons;

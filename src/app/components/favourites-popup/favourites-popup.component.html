@@ -1,0 +1,105 @@
+<!-- eslint-disable @angular-eslint/template/interactive-supports-focus -->
+<!-- eslint-disable @angular-eslint/template/click-events-have-key-events -->
+
+<div class="login-dialog-container">
+  <div class="dialog-header bg-primary">
+    <h1>{{ lang.map.user_preferences }}</h1>
+    <app-icon-button tabindex="-1" mat-dialog-close class="close-btn" icon="CLOSE"></app-icon-button>
+  </div>
+  @if(isLoading) {<mat-progress-bar mode="indeterminate"></mat-progress-bar>}
+
+  <div class="dialog-content">
+    <div class="transition-all" [ngClass]="{ 'opacity-35': isLoading }">
+      <div class="pt-2 pb-4">
+        <h3 class="text-primary text-2xl font-bold">{{ lang.map.saved_filters }}</h3>
+
+        @if (!wishlist.filters.length) {
+        <div class="mt-2 py-5 border rounded-md border-primary/30">
+          <p class="text-primary text-center">{{ lang.map.there_are_no_saved_filters }}</p>
+        </div>
+        }@else {
+        <div class="max-h-[400px] overflow-y-auto mt-2 p-2 border border-primary/30 rounded-md">
+          @for (item of wishlist.filters; track item.id) {
+
+          <div
+            (click)="openItemDetails(item)"
+            class="w-full mt-2 first-of-type:mt-0 py-2 ps-3 pe-1 flex justify-between items-center border bg-primary/5 hover:bg-primary/10 transition-all cursor-pointer border-primary/30 rounded-md">
+            <div class="overflow-hidden">
+              <p class="text-2xl text-nowrap overflow-hidden font-bold text-primary">{{ item.pageDescription }}</p>
+              <p class="text-sm text-gray-400 flex flex-col sm:flex-row items-start justify-start sm:gap-6 text-nowrap">
+                <span
+                  ><span class="font-bold">{{ lang.map.page }}: </span> {{ getPageName(item) }}</span
+                >
+
+                {{ item.creationTime | date : "longDate" : undefined : lang.getCurrent().code }}
+              </p>
+            </div>
+            <div class="hidden sm:flex items-center justify-center">
+              <app-icon-button
+                [matTooltip]="lang.map.apply"
+                [disabled]="isLoading"
+                icon="ACTION"
+                class="text-secondary"
+                (clicked)="applyItem(item, $event)"></app-icon-button>
+              <app-icon-button
+                [matTooltip]="lang.map.edit_name"
+                [disabled]="isLoading"
+                icon="EDIT"
+                class="text-gray-500"
+                (clicked)="updateItem(item, $event)"></app-icon-button>
+              <app-icon-button
+                [matTooltip]="lang.map.delete"
+                [disabled]="isLoading"
+                icon="DELETE"
+                class="text-primary"
+                (clicked)="deleteItem(item, $event)"></app-icon-button>
+            </div>
+            <div (click)="$event.stopPropagation()" class="block sm:hidden">
+              <app-icon-button
+                [matMenuTriggerFor]="actions"
+                [matMenuTriggerData]="{item}"
+                icon="DOTS_MENU"
+                [disabled]="isLoading"
+                class="text-gray-600"></app-icon-button>
+            </div>
+          </div>
+          }
+        </div>
+        }
+      </div>
+      <!-- <div class="pt-4 pb-2">
+        <h3 class="text-primary text-2xl font-bold">{{ lang.map.user_followups }}</h3>
+        @if (!wishlist.kpis.length) {
+        <div class="mt-2 py-2 px-3 border rounded-md border-primary/40">
+          <p class="text-primary text-center">{{ lang.map.there_are_no_saved_followups }}</p>
+        </div>
+        }@else {
+        <div class="flex flex-col gap-2 items-center justify-center">@for (item of wishlist.kpis; track null) { }</div>
+        }
+      </div> -->
+    </div>
+  </div>
+  <div class="dialog-footer justify-end">
+    <app-button mat-dialog-close buttonStyle="primary-outline">{{ lang.map.close }}</app-button>
+  </div>
+</div>
+
+<mat-menu #actions="matMenu" xPosition="before"
+  ><ng-template matMenuContent let-item="item"
+    ><button mat-menu-item (click)="applyItem(item, $event)">
+      <mat-icon class="icon !h-8 !w-8 !text-xs !text-secondary" svgIcon="lightning-bolt"></mat-icon>
+      <span>
+        {{ lang.map.apply }}
+      </span>
+    </button>
+    <button mat-menu-item (click)="updateItem(item, $event)">
+      <mat-icon class="icon !h-8 !w-8 !text-xs !text-gray-500" svgIcon="pencil"></mat-icon>
+      <span>
+        {{ lang.map.edit_name }}
+      </span>
+    </button>
+    <button mat-menu-item (click)="deleteItem(item, $event)">
+      <span> {{ lang.map.delete }} </span
+      ><mat-icon class="icon !h-8 !w-8 !text-xs !text-primary" svgIcon="delete"></mat-icon></button
+  ></ng-template>
+</mat-menu>

@@ -116,7 +116,7 @@ const TermToLangKey: Record<CriteriaTerms, keyof LangKeysContract> = {
   [CriteriaTerms.SINGLE_NOT_ALL]: 'single_value_other_than_all',
 };
 
-const CriteriaToLangKey = {
+export const CriteriaToLangKey = {
   municipalityId: 'municipal',
   areaCode: 'district',
   zoneId: 'zone',
@@ -128,13 +128,23 @@ const CriteriaToLangKey = {
 
   ['ownerCategoryCode' as keyof CriteriaContract]: 'owner_type',
   nationalityCode: 'nationality',
+
+  ['durationType' as keyof CriteriaContract]: 'duration',
+  ['issueDateYear' as keyof CriteriaContract]: 'year',
+  ['halfYearDuration' as keyof CriteriaContract]: 'half',
+  ['issueDateQuarterList' as keyof CriteriaContract]: 'quarter',
+  ['issueDateMonth' as keyof CriteriaContract]: 'month',
+
   ['bedRoomsCount' as keyof CriteriaContract]: 'number_of_rooms',
   ['furnitureStatus' as keyof CriteriaContract]: 'furniture_status',
   streetNo: 'street',
   ['rentPaymentMonthlyPerUnitFrom' as keyof CriteriaContract]: 'rental_value_per_month_from',
-  ['rental_value_per_month_to' as keyof CriteriaContract]: 'rental_value_per_month_to',
+  ['rentPaymentMonthlyPerUnitTo' as keyof CriteriaContract]: 'rental_value_per_month_to',
   ['realEstateValueFrom' as keyof CriteriaContract]: 'real_estate_value_from',
   ['realEstateValueTo' as keyof CriteriaContract]: 'real_estate_value_to',
+  ['unit' as keyof CriteriaContract]: 'measuring_unit',
   ['areaFrom' as keyof CriteriaContract]: 'area_from',
   ['areaTo' as keyof CriteriaContract]: 'area_to',
+  ['brokerCategoryId' as keyof CriteriaContract]: 'broker_category',
+  ['brokerName' as keyof CriteriaContract]: 'broker_name',
 } as Record<keyof CriteriaContract, keyof LangKeysContract>;

@@ -220,6 +220,12 @@ export const cmsEndpoints = {
   AUTH_GUEST: '/flows/trigger/412A3B92-16F9-437D-AAFC-BBE5E25ED9F5',
 };
 
+export const wishlistEndpoints = {
+  WISHLIST: 'BE|user-wish-list',
+  USER_WISHLIST: 'WISHLIST|user-id',
+  KPI_WISHLIST: 'WISHLIST|apply-kpi',
+};
+
 export const EndPoints = {
   BASE_URL: '',
   BE: 'http://192.168.52.4:9080/mme-services/',
@@ -232,6 +238,7 @@ export const EndPoints = {
   ...brokerEndpoints,
   ...configEndpoints,
   ...flyerEndpoints,
+  ...wishlistEndpoints,
   ...chatBotEndpoints,
 };
 

@@ -8,6 +8,7 @@ import { SideBarService } from '@services/side-bar.service';
 import { StickyService } from '@services/sticky.service';
 import { TranslationService } from '@services/translation.service';
 import { MainMenuComponent } from '@components/main-menu/main-menu.component';
+import { FavouritesService } from '@services/favourites.service';
 
 @Component({
   selector: 'app-main-header',
@@ -20,9 +21,15 @@ export class MainHeaderComponent {
   lang = inject(TranslationService);
   sticky = inject(StickyService);
   sideBarService = inject(SideBarService);
+  authService = inject(AuthService);
+  favouritesService = inject(FavouritesService);
 
   changeLang(event: Event) {
     event.preventDefault();
     this.lang.toggleLang();
+  }
+
+  openFavouritesPopup() {
+    this.favouritesService.openFavouritesPopup();
   }
 }

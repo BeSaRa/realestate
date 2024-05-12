@@ -31,7 +31,8 @@
         (blur)="inputTouch()"
         [name]="name"
         [placeholder]="placeholder"
-        [formControl]="control" />
+        [formControl]="control"
+        [readOnly]="readonly" />
     </ng-container>
     <ng-container *ngIf="hasCustomControl">
       <ng-content select="[appControl]"></ng-content>

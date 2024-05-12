@@ -90,4 +90,8 @@ export class DialogService implements DialogContract {
       direction: this.lang.getCurrent().direction,
     });
   }
+
+  closeAll() {
+    this.dialog.closeAll();
+  }
 }

@@ -206,9 +206,10 @@ export class StackedDurationChartComponent
         this.chartSeriesData = Object.keys(this.seriesNames).map((type) => ({
           name: this.seriesNames[type as unknown as number](),
           group: '0',
-          data: _data[type as unknown as number].map((i) => {
-            return { y: i.getKpiVal(), x: i.issueYear.toString() };
-          }),
+          data:
+            _data[type as unknown as number]?.map((i) => {
+              return { y: i.getKpiVal(), x: i.issueYear.toString() };
+            }) ?? [],
         }));
 
         this.chartOptions = this.yearlyOrMonthlyChartOptions;
