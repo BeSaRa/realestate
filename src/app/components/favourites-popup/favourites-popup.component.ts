@@ -1,6 +1,7 @@
 import { DialogRef } from '@angular/cdk/dialog';
 import { CommonModule } from '@angular/common';
 import { Component, inject, OnInit } from '@angular/core';
+import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
@@ -10,10 +11,15 @@ import { ButtonComponent } from '@components/button/button.component';
 import { FavoriteDetailsPopupComponent } from '@components/favorite-details-popup/favorite-details-popup.component';
 import { FavouriteSavePopupComponent } from '@components/favourite-save-popup/favourite-save-popup.component';
 import { IconButtonComponent } from '@components/icon-button/icon-button.component';
+import { InputComponent } from '@components/input/input.component';
+import { SelectInputComponent } from '@components/select-input/select-input.component';
+import { AppIcons } from '@constants/app-icons';
+import { InputSuffixDirective } from '@directives/input-suffix.directive';
 import { IndicatorsRoutes, IndicatorsRoutesToLangKey } from '@enums/indicators-routes';
 import { UserClick } from '@enums/user-click';
 import { OnDestroyMixin } from '@mixins/on-destroy-mixin';
 import { OperationType, UserWishList, UserWishListResponse } from '@models/user-wish-list';
+import { HighlightPipe } from '@pipes/highlight.pipe';
 import { DialogService } from '@services/dialog.service';
 import { FavouritesService } from '@services/favourites.service';
 import { ToastService } from '@services/toast.service';
@@ -32,6 +38,12 @@ import { catchError, finalize, of, switchMap, take, takeUntil, throwError } from
     MatMenuModule,
     MatIconModule,
     MatTooltipModule,
+    InputComponent,
+    SelectInputComponent,
+    MatIconModule,
+    InputSuffixDirective,
+    HighlightPipe,
+    ReactiveFormsModule,
   ],
   templateUrl: './favourites-popup.component.html',
   styleUrl: './favourites-popup.component.scss',
@@ -43,15 +55,29 @@ export class FavouritesPopupComponent extends OnDestroyMixin(class {}) implement
   dialog = inject(DialogService);
   dialogRef = inject(DialogRef);
 
-  wishlist: { filters: UserWishList[]; kpis: UserWishList[] } = { filters: [], kpis: [] };
+  wishlist: UserWishList[] = [];
+  filteredWishlist = this.wishlist;
 
-  isLoading = true;
+  isLoading = false;
+
+  search = inject(FormBuilder).group({
+    name: '',
+    page: undefined,
+  });
+
+  searchName = '';
+
+  pagesOptions = this._initPagesOptions();
+
+  readonly AppIcons = AppIcons;
 
   ngOnInit(): void {
     this.loadUserWishlist();
+    this._listenToSearchChange();
   }
 
   loadUserWishlist() {
+    this.isLoading = true;
     this.favouriteService
       .loadUserWishlist()
       .pipe(
@@ -62,7 +88,32 @@ export class FavouritesPopupComponent extends OnDestroyMixin(class {}) implement
         }),
         finalize(() => (this.isLoading = false))
       )
-      .subscribe((wishlist) => (this.wishlist = wishlist));
+      .subscribe((wishlist) => {
+        this.wishlist = wishlist;
+        this.setFilteredWishlist();
+      });
+  }
+
+  private _listenToSearchChange() {
+    this.search.valueChanges.pipe(takeUntil(this.destroy$)).subscribe((value) => {
+      this.searchName = value.name ?? '';
+      this.setFilteredWishlist();
+    });
+  }
+
+  setFilteredWishlist() {
+    this.filteredWishlist = this.wishlist
+      .filter((item) => !this.search.value.name || item.pageDescription.includes(this.search.value.name))
+      .filter((item) => !this.search.value.page || item.pageName === this.search.value.page);
+  }
+
+  private _initPagesOptions() {
+    const _pages = Object.keys(IndicatorsRoutesToLangKey).map((key) => ({
+      key,
+      pageName: this.lang.map[IndicatorsRoutesToLangKey[key as unknown as IndicatorsRoutes]],
+    }));
+    _pages.unshift({ key: undefined as unknown as string, pageName: this.lang.map.all });
+    return _pages;
   }
 
   getPageName(item: UserWishList) {
@@ -107,8 +158,7 @@ export class FavouritesPopupComponent extends OnDestroyMixin(class {}) implement
       )
       .subscribe((isDeleted) => {
         if (isDeleted) {
-          this.wishlist.filters = this.wishlist.filters.filter((_item) => _item.id !== item.id);
-          this.wishlist.kpis = this.wishlist.kpis.filter((_item) => _item.id !== item.id);
+          this.wishlist = this.wishlist.filter((_item) => _item.id !== item.id);
         }
       });
   }

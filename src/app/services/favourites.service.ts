@@ -82,13 +82,7 @@ export class FavouritesService {
             criteria: JSON.parse(item.criteria) as CriteriaContract,
           })
         )
-      ),
-      map((wishlists) => {
-        return {
-          filters: wishlists.filter((item) => !item.criteriaKPIRoute),
-          kpis: wishlists.filter((item) => item.criteriaKPIRoute),
-        };
-      })
+      )
     );
   }
 

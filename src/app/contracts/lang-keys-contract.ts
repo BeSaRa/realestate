@@ -511,4 +511,5 @@ export interface LangKeysContract {
   apply: string;
   edit: string;
   delete: string;
+  favourite_name: string;
 }
