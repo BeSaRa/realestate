@@ -1,0 +1,29 @@
+<div class="flex flex-col">
+  <div class="flex-1 dialog-header bg-primary">
+    <h1>{{ item.pageDescription }}</h1>
+    <app-icon-button tabindex="-1" mat-dialog-close class="close-btn" icon="CLOSE"></app-icon-button>
+  </div>
+
+  <div class="dialog-content overflow-y-auto">
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+      @for (key of allCriteriaKeys; track null) { @if (hasKey(key)) { @if (hasLookup(key)) {
+      <app-select-input
+        [label]="getLabel(key)"
+        [placeholder]="getValue(key) ?? ''"
+        placeholderColor="placeholder-primary"
+        [options]="[]"></app-select-input>
+      }@else {
+      <app-input
+        [label]="getLabel(key)"
+        [readonly]="true"
+        [placeholder]="getValue(key) ?? ''"
+        placeholderColor="placeholder-primary">
+      </app-input
+      >} }}
+    </div>
+  </div>
+  <div class="flex-1 dialog-footer justify-end">
+    <app-button buttonStyle="primary" (click)="applyItem()">{{ lang.map.apply }}</app-button>
+    <app-button mat-dialog-close buttonStyle="primary-outline">{{ lang.map.close }}</app-button>
+  </div>
+</div>

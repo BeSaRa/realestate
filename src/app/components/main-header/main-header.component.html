@@ -24,6 +24,12 @@
             lang.getCurrent().toggleTo.substring(0, 2).toUpperCase()
           }}</app-button>
         </li>
+        <li *ngIf="authService.isAuthenticated()">
+          <app-icon-button
+            class="{{ sticky.isSticky() ? 'text-primary' : 'text-white' }}"
+            [icon]="'FAVOURITE'"
+            (click)="openFavouritesPopup()"></app-icon-button>
+        </li>
         <li>
           <app-icon-button
             icon="MENU"

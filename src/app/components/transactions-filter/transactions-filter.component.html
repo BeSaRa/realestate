@@ -333,7 +333,7 @@
     {{ message.getMessage() }}
   </p>
 </div>
-<div class="flex justify-center xl:justify-end gap-3 mt-5 xl:mt-0">
+<div class="flex flex-wrap justify-center xl:justify-end gap-3 mt-5 xl:mt-0">
   <app-button
     *ngIf="!isOV() && !isBroker()"
     size="md"
@@ -346,6 +346,15 @@
   <app-button size="md" (click)="resetForm()" buttonStyle="secondary" [isRounded]="true" icon="CLOSE">{{
     lang.map.clear_options
   }}</app-button>
+  @if (authService.isAuthenticated()) {
+  <app-button
+    size="md"
+    (click)="openOptionsSavePopup()"
+    buttonStyle="secondary"
+    [isRounded]="true"
+    icon="FAVOURITE_OUTLINE"
+    >{{ lang.map.save_options }}</app-button
+  >}
   <app-button size="md" (click)="search()" buttonStyle="secondary" [isRounded]="true" icon="SEARCH">{{
     lang.map.search
   }}</app-button>

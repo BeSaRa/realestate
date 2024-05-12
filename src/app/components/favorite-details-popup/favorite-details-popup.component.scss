@@ -1,0 +1,7 @@
+:host {
+  @apply block overflow-hidden max-h-[95vh] #{!important};
+}
+
+.dialog-content {
+  max-height: calc(95vh - 56px - 72px) !important;
+}

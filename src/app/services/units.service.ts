@@ -23,7 +23,7 @@ export class UnitsService extends RegisterServiceMixin(class {}) implements Serv
     }),
   ];
 
-  private _units = this.units.reduce(
+  unitsMap = this.units.reduce(
     (acc, cur) => ({ ...acc, [cur.lookupKey]: cur as Lookup }),
     {} as Record<SqUnit, Lookup>
   );
@@ -31,7 +31,7 @@ export class UnitsService extends RegisterServiceMixin(class {}) implements Serv
   private _selectedUnitSignal = signal(SqUnit.SQUARE_FEET);
 
   selectedUnit = computed(() => this._selectedUnitSignal());
-  selectedUnitInfo = computed(() => this._units[this._selectedUnitSignal()]);
+  selectedUnitInfo = computed(() => this.unitsMap[this._selectedUnitSignal()]);
 
   setUnit(lookupKey: SqUnit) {
     this._selectedUnitSignal.set(lookupKey);

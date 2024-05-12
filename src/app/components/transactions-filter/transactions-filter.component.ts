@@ -1,6 +1,18 @@
 import { animate, state, style, transition, trigger } from '@angular/animations';
 import { CommonModule, DatePipe } from '@angular/common';
-import { Component, EventEmitter, HostListener, Input, OnDestroy, OnInit, Output, inject } from '@angular/core';
+import {
+  Component,
+  EventEmitter,
+  HostListener,
+  Injector,
+  Input,
+  OnDestroy,
+  OnInit,
+  Output,
+  effect,
+  inject,
+  runInInjectionContext,
+} from '@angular/core';
 import { AbstractControl, FormControl, ReactiveFormsModule, UntypedFormBuilder } from '@angular/forms';
 import { DateAdapter, MatNativeDateModule, MatRippleModule } from '@angular/material/core';
 import { MatDatepickerModule } from '@angular/material/datepicker';
@@ -8,6 +20,10 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { ButtonComponent } from '@components/button/button.component';
+import {
+  CriteriaSaveDataContract,
+  FavouriteSavePopupComponent,
+} from '@components/favourite-save-popup/favourite-save-popup.component';
 import { IconButtonComponent } from '@components/icon-button/icon-button.component';
 import { InputComponent } from '@components/input/input.component';
 import { SelectInputComponent } from '@components/select-input/select-input.component';
@@ -25,6 +41,9 @@ import { SqUnit } from '@enums/sq-unit';
 import { FilterMessage } from '@models/filter-message';
 import { Lookup } from '@models/lookup';
 import { ParamRange } from '@models/param-range';
+import { AuthService } from '@services/auth.service';
+import { DialogService } from '@services/dialog.service';
+import { FavouritesService } from '@services/favourites.service';
 import { FilterMessagesService } from '@services/filter-messages.service';
 import { LookupService } from '@services/lookup.service';
 import { MunicipalityService } from '@services/municipality.service';
@@ -37,6 +56,7 @@ import { NgResizeObserver, ngResizeObserverProviders } from 'ng-resize-observer'
 import { NgxMaskDirective } from 'ngx-mask';
 import { Subject, debounceTime, filter, map, take, takeUntil, tap } from 'rxjs';
 
+export type IndicatorType = 'sell' | 'rent' | 'mortgage' | 'owner' | 'ov' | 'broker';
 @Component({
   selector: 'app-transactions-filter',
   standalone: true,
@@ -81,7 +101,7 @@ import { Subject, debounceTime, filter, map, take, takeUntil, tap } from 'rxjs';
   ],
 })
 export class TransactionsFilterComponent implements OnInit, OnDestroy {
-  @Input() indicatorType: 'sell' | 'rent' | 'mortgage' | 'owner' | 'ov' | 'broker' = 'rent';
+  @Input() indicatorType: IndicatorType = 'rent';
   @Input() municipalities: Lookup[] = [];
   @Input() propertyTypes: Lookup[] = [];
   @Input() propertyUsages: Lookup[] = [];
@@ -109,6 +129,10 @@ export class TransactionsFilterComponent implements OnInit, OnDestroy {
   filterMessageService = inject(FilterMessagesService);
   resize$ = inject(NgResizeObserver);
   municipalityService = inject(MunicipalityService);
+  dialogService = inject(DialogService);
+  authService = inject(AuthService);
+  favouritesService = inject(FavouritesService);
+  injector = inject(Injector);
 
   private destroy$: Subject<void> = new Subject();
 
@@ -233,6 +257,8 @@ export class TransactionsFilterComponent implements OnInit, OnDestroy {
     }
   );
 
+  emitFormChanges = true;
+
   unitsControl = new FormControl(this.unitsService.selectedUnit());
 
   protected readonly AppIcons = AppIcons;
@@ -321,6 +347,7 @@ export class TransactionsFilterComponent implements OnInit, OnDestroy {
     this.streetNo.disable();
 
     this.years = range(this.isSell() || this.isMort() ? 2006 : 2019, new Date().getFullYear());
+    this._listenToAppliedCriteriaChange();
     this.listenToMunicipalityChange();
     this.listenToLangChange();
     this.listenToPropertyTypeListChange();
@@ -373,6 +400,24 @@ export class TransactionsFilterComponent implements OnInit, OnDestroy {
       brokerCategoryId: 2,
     });
     this.sendFilter(CriteriaType.DEFAULT);
+  }
+
+  private _listenToAppliedCriteriaChange() {
+    runInInjectionContext(this.injector, () =>
+      effect(() => {
+        this.emitFormChanges = false;
+        const _cirteria = this.favouritesService.appliedCriteria();
+        if (_cirteria) {
+          if (_cirteria['unit' as keyof CriteriaContract])
+            this.unitsControl.patchValue(_cirteria['unit' as keyof CriteriaContract] as SqUnit);
+          this.form.patchValue(_cirteria!);
+          setTimeout(() => {
+            this.emitFormChanges = true;
+            this.form.patchValue({ areaCode: _cirteria.areaCode ?? -1, zoneId: _cirteria.zoneId ?? -1 });
+          }, 0);
+        }
+      })
+    );
   }
 
   listenToMunicipalityChange(): void {
@@ -721,15 +766,60 @@ export class TransactionsFilterComponent implements OnInit, OnDestroy {
       .pipe(
         takeUntil(this.destroy$),
         debounceTime(250),
-        filter(() => this.form.valid)
+        filter(() => this.form.valid && this.emitFormChanges)
       )
       .subscribe(() => {
         this.sendFilter(CriteriaType.USER);
       });
   }
 
-  _removeUnusedProps(value: any) {
-    delete value.durationType;
+  _removeUnusedProps(value: any, isSavingCriteria?: boolean) {
+    if (!isSavingCriteria) {
+      delete value.issueDateMonth;
+      delete value.durationType;
+      delete value.halfYearDuration;
+    }
+
+    if (isSavingCriteria) {
+      delete value.issueDateStartMonth;
+      delete value.issueDateEndMonth;
+      if (this.isOwner()) {
+        delete value.zoneId;
+        delete value.ownerCategoryCode;
+
+        delete value.issueDateYear;
+        delete value.halfYearDuration;
+        delete value.issueDateQuarterList;
+        delete value.issueDateMonth;
+      } else {
+        if (value.durationType === Durations.YEARLY) {
+          delete value.halfYearDuration;
+          delete value.issueDateQuarterList;
+          delete value.issueDateMonth;
+        }
+        if (value.durationType === Durations.HALF_YEARLY) {
+          delete value.issueDateQuarterList;
+          delete value.issueDateMonth;
+        }
+        if (value.durationType === Durations.QUARTER_YEARLY) {
+          delete value.halfYearDuration;
+          delete value.issueDateMonth;
+        }
+        if (value.durationType === Durations.MONTHLY) {
+          delete value.halfYearDuration;
+          delete value.issueDateQuarterList;
+        }
+      }
+
+      if (this.isSell()) {
+        value.unit = this.unitsControl.value;
+      }
+
+      if (this.isOV()) {
+        delete value.premiseTypeList;
+      }
+    }
+
     if (this.isSell()) {
       delete value.rentPaymentMonthlyPerUnitFrom;
       delete value.rentPaymentMonthlyPerUnitTo;
@@ -754,6 +844,8 @@ export class TransactionsFilterComponent implements OnInit, OnDestroy {
       delete value.zoneId;
     }
     if (this.isOwner()) {
+      delete value.durationType;
+      delete value.halfYearDuration;
       delete value.issueDateQuarterList;
       delete value.issueDateStartMonth;
       delete value.issueDateEndMonth;
@@ -876,5 +968,16 @@ export class TransactionsFilterComponent implements OnInit, OnDestroy {
       .loadMessages(criteria, this.indicatorType)
       .pipe(take(1))
       .subscribe((messages) => (this.filterMessages = messages));
+  }
+
+  openOptionsSavePopup() {
+    this.dialogService.open(FavouriteSavePopupComponent, {
+      data: {
+        criteria: this._removeUnusedProps(structuredClone(this.form.value), true),
+        type: 'criteria',
+      } as CriteriaSaveDataContract,
+      maxWidth: '95vw',
+      maxHeight: '95vh',
+    });
   }
 }

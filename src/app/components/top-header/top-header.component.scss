@@ -1,27 +1,26 @@
+/* Style menu items */
+::ng-deep .mat-mdc-menu-item {
+  color: #333;
+}
 
-  
-  /* Style menu items */
-  ::ng-deep .mat-mdc-menu-item {
-    color: #333;
+/* Style menu container */
+::ng-deep .mat-mdc-menu-panel {
+  // border: 1px solid #3498db;
+  padding: 0 10px 0 10px;
+}
+// .icon{
+//   font-size: 24;
+//   height: 50px ;
+//   width: 50px ;
+// }
+/* Hover and focus styles */
+::ng-deep .mat-mdc-menu-item {
+  @apply rounded-sm overflow-hidden;
+}
+::ng-deep .mat-mdc-menu-item:hover {
+  .icon {
+    color: white !important;
   }
-  
-
-  
-  /* Style menu container */
-  ::ng-deep .mat-mdc-menu-panel {
-    border: 1px solid #3498db;
-    padding: 0 10px 0 10px;
-  }
-  // .icon{
-  //   font-size: 24;
-  //   height: 50px ;
-  //   width: 50px ;
-  // }
-  /* Hover and focus styles */
-  ::ng-deep .mat-mdc-menu-item:hover {
-    .icon{
-      color: white;
-    }
-    background-color: #A29475 !important;
-    color: #fff;
-  }
+  background-color: #a29475 !important;
+  color: #fff;
+}

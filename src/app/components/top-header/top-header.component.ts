@@ -1,25 +1,25 @@
 import { CommonModule } from '@angular/common';
-import { Component, inject, Input, OnDestroy, OnInit } from '@angular/core';
+import { Component, inject, OnDestroy, OnInit } from '@angular/core';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
+import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
+import { MatMenuModule, MenuPositionX } from '@angular/material/menu';
+import { Router } from '@angular/router';
 import { ButtonComponent } from '@components/button/button.component';
 import { IconButtonComponent } from '@components/icon-button/icon-button.component';
 import { NewsItemComponent } from '@components/news-item/news-item.component';
-import { News } from '@models/news';
-import { NewsService } from '@services/news.service';
-import { TranslationService } from '@services/translation.service';
-import { debounceTime, filter, Subject, switchMap, takeUntil, tap } from 'rxjs';
-import { MatMenuModule, MenuPositionX } from '@angular/material/menu';
-import { AuthService } from '@services/auth.service';
-import { UrlService } from '@services/url.service';
-import { UserInfo } from '@models/user-info';
-import { UserService } from '@services/user.service';
-import { DialogService } from '@services/dialog.service';
 import { UserClick } from '@enums/user-click';
-import { Router } from '@angular/router';
+import { News } from '@models/news';
+import { AuthService } from '@services/auth.service';
+import { DialogService } from '@services/dialog.service';
+import { FavouritesService } from '@services/favourites.service';
+import { NewsService } from '@services/news.service';
 import { ToastService } from '@services/toast.service';
-import { MatButtonModule } from '@angular/material/button';
+import { TranslationService } from '@services/translation.service';
+import { UrlService } from '@services/url.service';
+import { UserService } from '@services/user.service';
+import { debounceTime, filter, Subject, switchMap, takeUntil, tap } from 'rxjs';
 
 @Component({
   selector: 'app-top-header',
@@ -46,6 +46,7 @@ export class TopHeaderComponent implements OnInit, OnDestroy {
   toast = inject(ToastService);
   dialog = inject(DialogService);
   router = inject(Router);
+  favouritesService = inject(FavouritesService);
 
   news: News[] = [];
   filteredNews: News[] = [];
@@ -130,6 +131,10 @@ export class TopHeaderComponent implements OnInit, OnDestroy {
         });
         this.router.navigate(['home']).then();
       });
+  }
+
+  openFavouritesPopup() {
+    this.favouritesService.openFavouritesPopup();
   }
 
   ngOnDestroy(): void {
