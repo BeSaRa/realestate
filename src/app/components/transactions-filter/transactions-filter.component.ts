@@ -412,10 +412,10 @@ export class TransactionsFilterComponent implements OnInit, OnDestroy {
             this.unitsControl.patchValue(_cirteria['unit' as keyof CriteriaContract] as SqUnit);
           this.form.patchValue(_cirteria!);
           setTimeout(() => {
-            this.emitFormChanges = true;
             this.form.patchValue({ areaCode: _cirteria.areaCode ?? -1, zoneId: _cirteria.zoneId ?? -1 });
           }, 0);
         }
+        this.emitFormChanges = true;
       })
     );
   }
