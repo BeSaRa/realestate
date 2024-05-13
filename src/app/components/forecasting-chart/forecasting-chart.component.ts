@@ -1,6 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, Input, OnChanges, SimpleChanges, inject } from '@angular/core';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { IndicatorType } from '@components/transactions-filter/transactions-filter.component';
 import { CriteriaContract } from '@contracts/criteria-contract';
 import { CriteriaSpecificTerms } from '@models/criteria-specific-terms';
 import { ForecastData } from '@models/forecast-data';
@@ -24,6 +25,7 @@ export class ForecastingChartComponent implements OnChanges {
   @Input({ required: true }) rootData!: { chartDataUrl: string; hasPrice: boolean };
   @Input({ required: true }) filterCriteria!: CriteriaContract;
   @Input({ required: true }) criteriaTerms!: CriteriaSpecificTerms;
+  @Input({ required: true }) indicatorType!: IndicatorType;
 
   lang = inject(TranslationService);
   dashboardService = inject(DashboardService);
@@ -97,12 +99,17 @@ export class ForecastingChartComponent implements OnChanges {
   }
 
   private _getInitialPoints() {
-    return [new Point(2019, 0), new Point(2022, 0), new Point(2023, 0), new Point(2028, 0)];
+    return [
+      new Point(this.indicatorType === 'sell' ? 2013 : 2019, 0),
+      new Point(2022, 0),
+      new Point(2023, 0),
+      new Point(2028, 0),
+    ];
   }
 
   private _getPredictedPoints(data: ForecastData) {
     return [
-      new Point(2019, data.kpiPast ?? 0),
+      new Point(this.indicatorType === 'sell' ? 2013 : 2019, data.kpiPast ?? 0),
       new Point(2022, data.kpiPreviousYear ?? 0),
       new Point(2023, data.kpiCurrent ?? 0),
       new Point(2028, data.kpiPredicated ?? 0),
