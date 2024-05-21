@@ -278,8 +278,8 @@ export class AreasChartComponent extends OnDestroyMixin(class {}) implements OnC
               },
               this.rootData
             )} (${(
-                (this.seriesData[key as unknown as number][opts.dataPointIndex]?.getKpiVal() /
-                  this.seriesSumData[key as unknown as number]) *
+                ((this.seriesData[key as unknown as number][opts.dataPointIndex]?.getKpiVal() ?? 0) /
+                  (this.seriesSumData[key as unknown as number] || 1)) *
                 100
               ).toFixed(0)}%)</span>
           </div>

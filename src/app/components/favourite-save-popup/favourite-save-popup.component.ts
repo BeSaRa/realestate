@@ -44,13 +44,13 @@ export class FavouriteSavePopupComponent implements OnInit {
   toast = inject(ToastService);
   private dialogRef = inject(DialogRef);
 
-  name = new FormControl('', [CustomValidators.required]);
+  name = new FormControl('', [CustomValidators.required, CustomValidators.maxLength(100)]);
 
   isLoading = false;
 
   ngOnInit(): void {
-    if (this.data.opType === OperationType.EDIT && this.data.wishlist?.pageDescription)
-      this.name.setValue(this.data.wishlist.pageDescription, { emitEvent: false });
+    if (this.data.opType === OperationType.EDIT && this.data.wishlist?.name)
+      this.name.setValue(this.data.wishlist.name, { emitEvent: false });
   }
 
   saveCriteria() {
@@ -63,13 +63,13 @@ export class FavouriteSavePopupComponent implements OnInit {
           new UserWishListResponse().clone<UserWishListResponse>({
             criteria: JSON.stringify(this.data.criteria),
             pageName: this.router.url,
-            pageDescription: this.name.value ?? '',
+            name: this.name.value ?? '',
           })
         )
       : this.favourites.updateCriteria({
           ...this.data.wishlist,
           criteria: JSON.stringify(this.data.wishlist.criteria),
-          pageDescription: this.name.value ?? '',
+          name: this.name.value ?? '',
         })
     )
       .pipe(

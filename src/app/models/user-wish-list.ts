@@ -4,13 +4,8 @@ import { ClonerMixin } from '@mixins/cloner-mixin';
 class UserWishListBase extends ClonerMixin(class {}) {
   id!: number;
   userId!: string;
-  criteriaKPIRoute = '';
-  parentCriteria = '';
-  parentCriteriaKPIRoute = '';
-  grandParentCriteria = '';
-  grandParentCriteriaKPIRoute = '';
   pageName = '';
-  pageDescription = '';
+  name = '';
   creationTime = '';
   lastModifiedTime = '';
 }
@@ -21,12 +16,6 @@ export class UserWishListResponse extends UserWishListBase {
 
 export class UserWishList extends UserWishListBase {
   criteria!: CriteriaContract;
-}
-
-export class UserWishListApplyResponse extends ClonerMixin(class {}) {
-  criteriaResponse!: CriteriaContract;
-  parentCriteriaResponse!: CriteriaContract;
-  grandParentCriteriaResponse!: CriteriaContract;
 }
 
 export enum OperationType {
