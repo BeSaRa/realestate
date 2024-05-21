@@ -103,15 +103,17 @@ export class FavouritesPopupComponent extends OnDestroyMixin(class {}) implement
 
   setFilteredWishlist() {
     this.filteredWishlist = this.wishlist
-      .filter((item) => !this.search.value.name || item.pageDescription.includes(this.search.value.name))
+      .filter((item) => !this.search.value.name || item.name.includes(this.search.value.name))
       .filter((item) => !this.search.value.page || item.pageName === this.search.value.page);
   }
 
   private _initPagesOptions() {
-    const _pages = Object.keys(IndicatorsRoutesToLangKey).map((key) => ({
-      key,
-      pageName: this.lang.map[IndicatorsRoutesToLangKey[key as unknown as IndicatorsRoutes]],
-    }));
+    const _pages = Object.keys(IndicatorsRoutesToLangKey)
+      .filter((key) => key !== IndicatorsRoutes.FORECASTING)
+      .map((key) => ({
+        key,
+        pageName: this.lang.map[IndicatorsRoutesToLangKey[key as unknown as IndicatorsRoutes]],
+      }));
     _pages.unshift({ key: undefined as unknown as string, pageName: this.lang.map.all });
     return _pages;
   }
@@ -159,6 +161,7 @@ export class FavouritesPopupComponent extends OnDestroyMixin(class {}) implement
       .subscribe((isDeleted) => {
         if (isDeleted) {
           this.wishlist = this.wishlist.filter((_item) => _item.id !== item.id);
+          this.setFilteredWishlist();
         }
       });
   }

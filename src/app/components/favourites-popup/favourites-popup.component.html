@@ -44,7 +44,7 @@
             <div class="overflow-hidden">
               <p
                 class="text-2xl text-nowrap overflow-hidden font-bold text-primary"
-                [innerHTML]="item.pageDescription | highlight : searchName"></p>
+                [innerHTML]="item.name | highlight : searchName"></p>
               <p class="text-sm text-gray-400 flex flex-col sm:flex-row items-start justify-start sm:gap-6 text-nowrap">
                 <span
                   ><span class="font-bold">{{ lang.map.page }}: </span> {{ getPageName(item) }}</span
