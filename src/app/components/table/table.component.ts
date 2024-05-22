@@ -34,7 +34,6 @@ import {
   of,
   switchMap,
   takeUntil,
-  throttleTime,
 } from 'rxjs';
 
 @Component({
@@ -136,7 +135,6 @@ export class TableComponent<T extends object> extends OnDestroyMixin(class {}) i
     this.reload$.pipe(takeUntil(this.destroy$)).subscribe(() => (this.isReload = true));
     combineLatest([this.reload$, this.paginate$])
       .pipe(
-        throttleTime(500),
         takeUntil(this.destroy$),
         switchMap(([, paginationOptions]) => {
           this.isLoading = true;
