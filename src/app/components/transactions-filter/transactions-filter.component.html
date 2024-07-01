@@ -298,7 +298,11 @@
          </app-input>
       </ng-container> -->
 
-      <app-input *ngIf="!isRent()" formControlName="areaFrom" [label]="lang.map.area_from" [isSecondary]="true">
+      <app-input
+        *ngIf="!isRent() && !isBroker() && !isOV()"
+        formControlName="areaFrom"
+        [label]="lang.map.area_from"
+        [isSecondary]="true">
         <input
           appControl
           [placeholder]="
@@ -310,7 +314,11 @@
           thousandSeparator=","
           [maxlength]="areaMaxLength" />
       </app-input>
-      <app-input *ngIf="!isRent()" formControlName="areaTo" [label]="lang.map.area_to" [isSecondary]="true">
+      <app-input
+        *ngIf="!isRent() && !isBroker() && !isOV()"
+        formControlName="areaTo"
+        [label]="lang.map.area_to"
+        [isSecondary]="true">
         <input
           appControl
           [placeholder]="

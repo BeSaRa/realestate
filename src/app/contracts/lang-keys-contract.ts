@@ -512,4 +512,5 @@ export interface LangKeysContract {
   edit: string;
   delete: string;
   favourite_name: string;
+  there_is_not_enough_data_to_display_comparisons_according_to_the_selected_period: string;
 }

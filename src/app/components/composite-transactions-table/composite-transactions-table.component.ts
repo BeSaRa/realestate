@@ -41,6 +41,7 @@ export class CompositeTransactionsTableComponent implements OnChanges {
   lookupService = inject(LookupService);
 
   isLoading = false;
+  isPreviousYearDataAvailable = true;
 
   compositeTransactions: CompositeTransaction[][] = [];
   compositeYears!: { selectedYear: number; previousYear: number };
@@ -120,7 +121,7 @@ export class CompositeTransactionsTableComponent implements OnChanges {
           // get the distinct years values instead of using first item, since
           // it may have only one transaction
           const years = [...new Set(values.flat().map((x) => x.issueYear))].sort();
-
+          this.isPreviousYearDataAvailable = years.length === 2;
           // if some item has only one transaction fill another one with
           // appropriate values i.e., zeros for kpi values and 100 or -100 to YoY values
           values.forEach((item) => {
