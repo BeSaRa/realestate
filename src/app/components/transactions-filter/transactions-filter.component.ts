@@ -305,6 +305,10 @@ export class TransactionsFilterComponent implements OnInit, OnDestroy {
     return this.form.get('issueDateYear') as AbstractControl;
   }
 
+  get issueDateMonth(): AbstractControl {
+    return this.form.get('issueDateMonth') as AbstractControl;
+  }
+
   get issueDateFrom(): AbstractControl {
     return this.form.get('issueDateFrom') as AbstractControl;
   }
@@ -637,7 +641,7 @@ export class TransactionsFilterComponent implements OnInit, OnDestroy {
         issueDateFrom: null,
         issueDateTo: null,
         issueDateMonth: null,
-        halfYearDuration: HalfYearDurations.FIRST_HALF,
+        halfYearDuration: this.form.value.halfYearDuration || HalfYearDurations.FIRST_HALF,
       },
       { emitEvent: false }
     );
@@ -654,7 +658,7 @@ export class TransactionsFilterComponent implements OnInit, OnDestroy {
         issueDateFrom: null,
         issueDateTo: null,
         issueDateMonth: null,
-        issueDateQuarterList: [1],
+        issueDateQuarterList: this.issueDateQuarterList.value || [1],
       },
       { emitEvent: false }
     );
@@ -673,7 +677,7 @@ export class TransactionsFilterComponent implements OnInit, OnDestroy {
       {
         issueDateFrom: null,
         issueDateTo: null,
-        issueDateMonth: 1,
+        issueDateMonth: this.issueDateMonth.value || 1,
       },
       { emitEvent: false }
     );
