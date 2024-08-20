@@ -57,7 +57,7 @@ export class InputComponent implements ControlValueAccessor, OnInit, OnDestroy, 
   @Input() borderColor = 'border-black';
   @Input() placeholderColor = 'placeholder-black/50';
   @Input() caretColor = 'caret-black';
-  @Input() type = 'text';
+  @Input() type: 'text' | 'number' | 'password' = 'text';
   @Input() marginBottom = 'mb-5';
   @Input() noMargin = false;
   @Input() name = generateUUID();
@@ -98,7 +98,9 @@ export class InputComponent implements ControlValueAccessor, OnInit, OnDestroy, 
     });
     this.control.valueChanges
       .pipe(takeUntil(this.destroy$))
-      .subscribe((value) => this.onChange && this.onChange(value));
+      .subscribe(
+        (value) => this.onChange && this.onChange(this.type == 'number' ? (+(value ?? 0) as unknown as string) : value)
+      );
   }
 
   ngOnChanges(changes: SimpleChanges): void {

@@ -60,10 +60,13 @@
           [svgIcon]="AppIcons.DATE"></mat-icon>
         <mat-datepicker [touchUi]="true" #datepicker2 />
       </app-input>
-      <app-input formControlName="shareCapital" [label]="lang.map.share_capital"></app-input>
-      <app-input formControlName="employeesNo" [label]="lang.map.total_number_of_employees"></app-input>
-      <app-input formControlName="engineersNo" [label]="lang.map.number_of_classified_engineers"></app-input>
-      <app-input formControlName="workersNo" [label]="lang.map.number_of_skilled_workers"></app-input>
+      <app-input formControlName="shareCapital" type="number" [label]="lang.map.share_capital"></app-input>
+      <app-input formControlName="employeesNo" type="number" [label]="lang.map.total_number_of_employees"></app-input>
+      <app-input
+        formControlName="engineersNo"
+        type="number"
+        [label]="lang.map.number_of_classified_engineers"></app-input>
+      <app-input formControlName="workersNo" type="number" [label]="lang.map.number_of_skilled_workers"></app-input>
     </div>
     <div formGroupName="contact" class="info-section">
       <h3 class="info-section-title">
@@ -109,9 +112,16 @@
       </h3>
       <app-input
         formControlName="implementedProjects"
+        type="number"
         [label]="lang.map.total_number_of_implemented_projects"></app-input>
-      <app-input formControlName="currentProjects" [label]="lang.map.number_of_projects_under_construction"></app-input>
-      <app-input formControlName="futureProjects" [label]="lang.map.number_of_future_projects"></app-input>
+      <app-input
+        formControlName="currentProjects"
+        type="number"
+        [label]="lang.map.number_of_projects_under_construction"></app-input>
+      <app-input
+        formControlName="futureProjects"
+        type="number"
+        [label]="lang.map.number_of_future_projects"></app-input>
       <div class="res-col-span flex flex-col md:flex-row items-center justify-center md:justify-start gap-2 md:gap-6">
         <span
           [ngClass]="{ 'text-amber-700': hasOffPlanProjects.invalid && hasOffPlanProjects.touched }"
@@ -130,14 +140,17 @@
       <app-input
         [ngClass]="{ '!hidden': !hasOffPlanProjects.value }"
         formControlName="implementedOffPlan"
+        type="number"
         [label]="lang.map.number_of_implemented_off_plan_sales_projects"></app-input>
       <app-input
         [ngClass]="{ '!hidden': !hasOffPlanProjects.value }"
         formControlName="currentOffPlan"
+        type="number"
         [label]="lang.map.number_of_current_off_plan_sales_projects"></app-input>
       <app-input
         [ngClass]="{ '!hidden': !hasOffPlanProjects.value }"
         formControlName="futureOffPlan"
+        type="number"
         [label]="lang.map.number_of_future_off_plan_sales_projects"></app-input>
     </div>
 
@@ -145,10 +158,10 @@
       <h3 class="info-section-title">
         {{ lang.map.units_sold_off_plan }}
       </h3>
-      <app-input formControlName="villasNo" [label]="lang.map.villas"></app-input>
-      <app-input formControlName="apartmentsNo" [label]="lang.map.apartments"></app-input>
-      <app-input formControlName="commercialNo" [label]="lang.map.commercial"></app-input>
-      <app-input formControlName="otherNo" [label]="lang.map.other"></app-input>
+      <app-input formControlName="villasNo" type="number" [label]="lang.map.villas"></app-input>
+      <app-input formControlName="apartmentsNo" type="number" [label]="lang.map.apartments"></app-input>
+      <app-input formControlName="commercialNo" type="number" [label]="lang.map.commercial"></app-input>
+      <app-input formControlName="otherNo" type="number" [label]="lang.map.other"></app-input>
     </div>
 
     <ng-container formGroupName="outsideQatar">
@@ -178,21 +191,27 @@
             <app-input [formControl]="item.controls.country" [label]="lang.map.country"></app-input>
             <app-input
               [formControl]="item.controls.implementedProjects"
+              type="number"
               [label]="lang.map.total_number_of_implemented_projects"></app-input>
             <app-input
               [formControl]="item.controls.currentProjects"
+              type="number"
               [label]="lang.map.number_of_projects_under_construction"></app-input>
             <app-input
               [formControl]="item.controls.futureProjects"
+              type="number"
               [label]="lang.map.number_of_future_projects"></app-input>
             <app-input
               [formControl]="item.controls.implementedOffPlan"
+              type="number"
               [label]="lang.map.number_of_implemented_off_plan_sales_projects"></app-input>
             <app-input
               [formControl]="item.controls.currentOffPlan"
+              type="number"
               [label]="lang.map.number_of_current_off_plan_sales_projects"></app-input>
             <app-input
               [formControl]="item.controls.futureOffPlan"
+              type="number"
               [label]="lang.map.number_of_future_off_plan_sales_projects"></app-input>
             <app-icon-button
               (clicked)="deleteOutsideProjects(i)"
@@ -216,8 +235,11 @@
       <h3 class="info-section-title">
         {{ lang.map.data_on_lands_owned_by_company }}
       </h3>
-      <app-input formControlName="landsNo" [label]="lang.map.total_number_of_lands"></app-input>
-      <app-input formControlName="mortgagedLandsNo" [label]="lang.map.number_of_mortgaged_lands"></app-input>
+      <app-input formControlName="landsNo" type="number" [label]="lang.map.total_number_of_lands"></app-input>
+      <app-input
+        formControlName="mortgagedLandsNo"
+        type="number"
+        [label]="lang.map.number_of_mortgaged_lands"></app-input>
       <h4 class="res-col-span text-center text-2xl text-primary font-semibold">
         {{ lang.map.lands_data }}
       </h4>
