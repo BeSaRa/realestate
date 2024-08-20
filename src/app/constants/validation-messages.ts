@@ -2,6 +2,7 @@ import { ValidationMessageContract } from '@contracts/validation-message-contrac
 
 export const ValidationMessages: Record<string, ValidationMessageContract> = {
   required: { key: 'required_field' },
+  number: { key: 'numeric_field' },
   AR_NUM: { key: 'only_arabic_letters_and_numbers' },
   ENG_NUM: { key: 'only_english_letters_and_numbers' },
   smallerThanFromValue: { key: 'smaller_than_from_value' },
@@ -11,6 +12,8 @@ export const ValidationMessages: Record<string, ValidationMessageContract> = {
   maxLength: { key: 'max_length' },
   LDAP_USERNAME: { key: 'only_english_letters_numbers_underscores_and_hyphens' },
   password_and_password_confirm_should_be_equal: { key: 'password_and_password_confirm_should_be_equal' },
+  EMAIL: { key: 'email_format' },
+  PHONE_NUMBER: { key: 'phone_format' },
 };
 
 export type ValidationMessagesType = typeof ValidationMessages;

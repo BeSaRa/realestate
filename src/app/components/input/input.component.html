@@ -10,7 +10,11 @@
 
   }"
   class="group block relative {{ !noMargin ? marginBottom : '' }}">
-  <span [ngClass]="labelColor" class="block font-bold">{{ label }}</span>
+  <span [ngClass]="labelColor" class="block font-bold"
+    >{{ label }} @if (isRequired) {
+    <span class="text-amber-700">*</span>
+    }</span
+  >
   <div
     [ngClass]="{ disabled: disabled }"
     class="{{ size }} group/input-wrapper input-form {{ inputColor }} {{ bgColor }} {{

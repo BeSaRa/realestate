@@ -36,6 +36,7 @@ import { generateUUID, objectHasOwnProperty } from '@utils/utils';
 import { debounceTime, map, Observable, of, Subject, takeUntil } from 'rxjs';
 import { InputComponent } from '../input/input.component';
 import { Overlay } from '@angular/cdk/overlay';
+import { requiredValidator } from '@validators/validation-utils';
 
 @Component({
   selector: 'app-select-input',
@@ -115,6 +116,10 @@ export class SelectInputComponent implements ControlValueAccessor, OnInit, OnCha
 
   get filterTxt$() {
     return this.filterControl.valueChanges;
+  }
+
+  get isRequired(): boolean {
+    return this.ctrl?.control?.hasValidator(requiredValidator) || false;
   }
 
   get errors(): Observable<ValidationErrors | null | undefined> {
