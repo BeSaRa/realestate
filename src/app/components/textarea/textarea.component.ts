@@ -24,6 +24,7 @@ import { OnDestroyMixin } from '@mixins/on-destroy-mixin';
 import { ControlDirective } from '@directives/control.directive';
 import { generateUUID, isNgModel } from '@utils/utils';
 import { ValidationErrorsComponent } from '@components/validation-errors/validation-errors.component';
+import { requiredValidator } from '@validators/validation-utils';
 
 @Component({
   selector: 'app-textarea',
@@ -78,6 +79,10 @@ export class TextareaComponent
      group-[.md]/text-area-wrapper:px-2 group-[.md]/text-area-wrapper:py-1.5
      group-[.lg]/text-area-wrapper:px-3 group-[.lg]/text-area-wrapper:py-2
      group-[.xl]/text-area-wrapper:px-4 group-[.xl]/text-area-wrapper:py-2.5`;
+
+  get isRequired(): boolean {
+    return this.ctrl?.control?.hasValidator(requiredValidator) || false;
+  }
 
   get errors(): Observable<ValidationErrors | null | undefined> {
     return of(null).pipe(

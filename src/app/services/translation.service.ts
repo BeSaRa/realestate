@@ -63,7 +63,7 @@ export class TranslationService extends RegisterServiceMixin(class {}) implement
   load(): Observable<TranslationContract[]> {
     return this.http
       .get<{ data: TranslationContract[] }>(this.urlService.URLS.TRANSLATION, {
-        params: new HttpParams({ fromObject: { limit: 1000 } }),
+        params: new HttpParams({ fromObject: { limit: 2000 } }),
       })
       .pipe(
         map((res) => res.data),

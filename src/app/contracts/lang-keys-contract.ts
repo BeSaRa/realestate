@@ -513,4 +513,57 @@ export interface LangKeysContract {
   delete: string;
   favourite_name: string;
   there_is_not_enough_data_to_display_comparisons_according_to_the_selected_period: string;
+
+  // Developer registration related keys: string
+  public_authority_for_regulating_real_estate: string;
+  real_estate_developer_data_registration_form: string;
+
+  main_information: string;
+  main_address: string;
+  commercial_license_number: string;
+  date_of_first_license: string;
+  commercial_record_number: string;
+  establishment_registration_number: string;
+  expiration_date_of_establishment_registration: string;
+  share_capital: string;
+  total_number_of_employees: string;
+  number_of_classified_engineers: string;
+  number_of_skilled_workers: string;
+
+  contact_information: string;
+  position: string;
+  name: string;
+  chairman: string;
+  ceo: string;
+  relations_coordinator: string;
+
+  company_projects_inside_qatar: string;
+  total_number_of_implemented_projects: string;
+  number_of_projects_under_construction: string;
+  number_of_future_projects: string;
+  has_the_company_implemented_off_plan_sales_projects: string;
+  number_of_implemented_off_plan_sales_projects: string;
+  number_of_current_off_plan_sales_projects: string;
+  number_of_future_off_plan_sales_projects: string;
+
+  units_sold_off_plan: string;
+  villas: string;
+  apartments: string;
+  other: string;
+  has_the_company_implemented_projects_outside_qatar: string;
+  projects_implemented_by_company_outside_qatar: string;
+  country: string;
+
+  data_on_lands_owned_by_company: string;
+  total_number_of_lands: string;
+  number_of_mortgaged_lands: string;
+  lands_data: string;
+  title_deed_number: string;
+  cadastral_number: string;
+  is_the_land_mortgaged: string;
+
+  register: string;
+  numeric_field: string;
+  email_format: string;
+  phone_format: string;
 }

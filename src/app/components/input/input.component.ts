@@ -27,6 +27,7 @@ import { InputPrefixDirective } from '@directives/input-prefix.directive';
 import { InputSuffixDirective } from '@directives/input-suffix.directive';
 import { generateUUID } from '@utils/utils';
 import { MatDatepickerModule } from '@angular/material/datepicker';
+import { requiredValidator } from '@validators/validation-utils';
 
 @Component({
   selector: 'app-input',
@@ -76,6 +77,10 @@ export class InputComponent implements ControlValueAccessor, OnInit, OnDestroy, 
   hasCustomControl = false;
 
   tailwindClass = `flex-auto rounded-md max-w-full outline-none ltr:peer-[.suffix]:pr-0 rtl:peer-[.suffix]:pl-0 ltr:peer-[.prefix]:pl-0 rtl:peer-[.prefix]:pr-0 group-[.xl]/input-wrapper:!text-xl group-[.lg]/input-wrapper:!text-lg group-[.md]/input-wrapper:!text-base group-[.sm]/input-wrapper:!text-sm group-[.sm]/input-wrapper:px-1.5 group-[.sm]/input-wrapper:py-1 group-[.md]/input-wrapper:px-2 group-[.md]/input-wrapper:py-1.5 group-[.lg]/input-wrapper:px-3 group-[.lg]/input-wrapper:py-2 group-[.xl]/input-wrapper:px-4 group-[.xl]/input-wrapper:py-2.5`;
+
+  get isRequired(): boolean {
+    return this.ctrl?.control?.hasValidator(requiredValidator) || false;
+  }
 
   get errors(): Observable<ValidationErrors | null | undefined> {
     return of(null).pipe(

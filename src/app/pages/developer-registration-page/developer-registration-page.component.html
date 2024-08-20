@@ -1,0 +1,267 @@
+<div class="px-8 flex items-center justify-between gap-4 border-b border-b-primary/40 shadow">
+  <img class="w-[250px]" src="assets/images/mm-logo-colored.png" alt="mm-logo-colored" />
+  <app-button (click)="changeLang($event)" buttonStyle="primary">{{
+    lang.getCurrent().toggleTo.substring(0, 2).toUpperCase()
+  }}</app-button>
+</div>
+<div [formGroup]="form" class="py-4 px-8">
+  <div class="flex justify-center">
+    <h2
+      class="mt-6 heading text-2xl sm:text-3xl md:text-4xl self-center md:self-start text-center text-primary border-primary font-semibold">
+      {{ lang.map.real_estate_developer_data_registration_form }}
+    </h2>
+  </div>
+  <div class="mt-4">
+    <div formGroupName="main" class="info-section !items-end">
+      <h3 class="info-section-title">
+        {{ lang.map.main_information }}
+      </h3>
+      <app-input formControlName="companyName" [label]="lang.map.company_name"></app-input>
+      <app-input formControlName="address" [label]="lang.map.main_address"></app-input>
+      <app-input formControlName="licenseNo" [label]="lang.map.commercial_license_number"></app-input>
+      <app-input
+        formControlName="licenseDate"
+        [label]="lang.map.date_of_first_license"
+        (keydown)="$event.preventDefault()">
+        <input
+          appControl
+          formControlName="licenseDate"
+          (keydown)="$event.preventDefault()"
+          [max]="todayDate"
+          (click)="datepicker.open()"
+          (dateChange)="onLicenseDateChange()"
+          [matDatepicker]="datepicker" />
+        <mat-icon
+          mat-ripple
+          appInputSuffix
+          (click)="datepicker.open()"
+          class="cursor-pointer mx-2"
+          [svgIcon]="AppIcons.DATE"></mat-icon>
+        <mat-datepicker [touchUi]="true" #datepicker />
+      </app-input>
+      <app-input formControlName="recordNo" [label]="lang.map.commercial_record_number"></app-input>
+      <app-input formControlName="establishmentNo" [label]="lang.map.establishment_registration_number"></app-input>
+      <app-input
+        formControlName="establishmentExpirationDate"
+        (keydown)="$event.preventDefault()"
+        [label]="lang.map.expiration_date_of_establishment_registration">
+        <input
+          appControl
+          formControlName="establishmentExpirationDate"
+          (click)="datepicker2.open()"
+          (keydown)="$event.preventDefault()"
+          (dateChange)="onEstablishmentExpirationDateChange()"
+          [matDatepicker]="datepicker2" />
+        <mat-icon
+          mat-ripple
+          appInputSuffix
+          (click)="datepicker2.open()"
+          class="cursor-pointer mx-2"
+          [svgIcon]="AppIcons.DATE"></mat-icon>
+        <mat-datepicker [touchUi]="true" #datepicker2 />
+      </app-input>
+      <app-input formControlName="shareCapital" [label]="lang.map.share_capital"></app-input>
+      <app-input formControlName="employeesNo" [label]="lang.map.total_number_of_employees"></app-input>
+      <app-input formControlName="engineersNo" [label]="lang.map.number_of_classified_engineers"></app-input>
+      <app-input formControlName="workersNo" [label]="lang.map.number_of_skilled_workers"></app-input>
+    </div>
+    <div formGroupName="contact" class="info-section">
+      <h3 class="info-section-title">
+        {{ lang.map.contact_information }}
+      </h3>
+      <div
+        formGroupName="chairman"
+        class="res-col-span grid grid-cols-1 sm:grid-cols-3 lg:grid-cols-4 gap-2 items-center justify-center">
+        <span
+          class="col-span-1 sm:col-span-3 lg:col-span-1 text-center lg:text-start font-semibold text-2xl text-primary"
+          >{{ lang.map.chairman }}</span
+        >
+        <app-input formControlName="name" [label]="lang.map.name"></app-input>
+        <app-input formControlName="phone" [label]="lang.map.phone"></app-input>
+        <app-input formControlName="email" [label]="lang.map.email"></app-input>
+      </div>
+      <div
+        formGroupName="ceo"
+        class="res-col-span grid grid-cols-1 sm:grid-cols-3 lg:grid-cols-4 gap-2 items-center justify-center">
+        <span
+          class="col-span-1 sm:col-span-3 lg:col-span-1 text-center lg:text-start font-semibold text-2xl text-primary"
+          >{{ lang.map.ceo }}</span
+        >
+        <app-input formControlName="name" [label]="lang.map.name"></app-input>
+        <app-input formControlName="phone" [label]="lang.map.phone"></app-input>
+        <app-input formControlName="email" [label]="lang.map.email"></app-input>
+      </div>
+      <div
+        formGroupName="relationsCoordinator"
+        class="res-col-span grid grid-cols-1 sm:grid-cols-3 lg:grid-cols-4 gap-2 items-center justify-center">
+        <span
+          class="col-span-1 sm:col-span-3 lg:col-span-1 text-center lg:text-start font-semibold text-2xl text-primary"
+          >{{ lang.map.relations_coordinator }}</span
+        >
+        <app-input formControlName="name" [label]="lang.map.name"></app-input>
+        <app-input formControlName="phone" [label]="lang.map.phone"></app-input>
+        <app-input formControlName="email" [label]="lang.map.email"></app-input>
+      </div>
+    </div>
+    <div formGroupName="insideQatar" class="info-section !items-end">
+      <h3 class="info-section-title">
+        {{ lang.map.company_projects_inside_qatar }}
+      </h3>
+      <app-input
+        formControlName="implementedProjects"
+        [label]="lang.map.total_number_of_implemented_projects"></app-input>
+      <app-input formControlName="currentProjects" [label]="lang.map.number_of_projects_under_construction"></app-input>
+      <app-input formControlName="futureProjects" [label]="lang.map.number_of_future_projects"></app-input>
+      <div class="res-col-span flex flex-col md:flex-row items-center justify-center md:justify-start gap-2 md:gap-6">
+        <span
+          [ngClass]="{ 'text-amber-700': hasOffPlanProjects.invalid && hasOffPlanProjects.touched }"
+          class="font-semibold text-xl"
+          >{{ lang.map.has_the_company_implemented_off_plan_sales_projects }}
+          <span class="text-amber-700">*</span></span
+        >
+        <mat-radio-group
+          formControlName="hasOffPlanProjects"
+          class="flex justify-start gap-4"
+          aria-label="Select an option">
+          <mat-radio-button class="font-semibold text-primary" [value]="true">{{ lang.map.yes }}</mat-radio-button>
+          <mat-radio-button class="font-semibold text-primary" [value]="false">{{ lang.map.no }}</mat-radio-button>
+        </mat-radio-group>
+      </div>
+      <app-input
+        [ngClass]="{ '!hidden': !hasOffPlanProjects.value }"
+        formControlName="implementedOffPlan"
+        [label]="lang.map.number_of_implemented_off_plan_sales_projects"></app-input>
+      <app-input
+        [ngClass]="{ '!hidden': !hasOffPlanProjects.value }"
+        formControlName="currentOffPlan"
+        [label]="lang.map.number_of_current_off_plan_sales_projects"></app-input>
+      <app-input
+        [ngClass]="{ '!hidden': !hasOffPlanProjects.value }"
+        formControlName="futureOffPlan"
+        [label]="lang.map.number_of_future_off_plan_sales_projects"></app-input>
+    </div>
+
+    <div formGroupName="soldOffPlan" class="info-section">
+      <h3 class="info-section-title">
+        {{ lang.map.units_sold_off_plan }}
+      </h3>
+      <app-input formControlName="villasNo" [label]="lang.map.villas"></app-input>
+      <app-input formControlName="apartmentsNo" [label]="lang.map.apartments"></app-input>
+      <app-input formControlName="commercialNo" [label]="lang.map.commercial"></app-input>
+      <app-input formControlName="otherNo" [label]="lang.map.other"></app-input>
+    </div>
+
+    <ng-container formGroupName="outsideQatar">
+      <div class="mt-6 flex flex-col md:flex-row items-center justify-center md:justify-start gap-2 md:gap-6">
+        <span
+          [ngClass]="{ 'text-amber-700': outsideProjects.invalid && outsideProjects.touched }"
+          class="font-semibold text-xl"
+          >{{ lang.map.has_the_company_implemented_projects_outside_qatar }} <span class="text-amber-700">*</span></span
+        >
+        <mat-radio-group
+          formControlName="hasProjectsOutsideQatar"
+          class="flex justify-start gap-4"
+          aria-label="Select an option">
+          <mat-radio-button class="font-semibold text-primary" [value]="true">{{ lang.map.yes }}</mat-radio-button>
+          <mat-radio-button class="font-semibold text-primary" [value]="false">{{ lang.map.no }}</mat-radio-button>
+        </mat-radio-group>
+      </div>
+
+      <ng-container formArrayName="projectsOutsideQatar">
+        <div class="info-section" [ngClass]="{ '!hidden': !hasProjectsOutsideQatar.value }">
+          <h3 class="info-section-title">
+            {{ lang.map.projects_implemented_by_company_outside_qatar }}
+          </h3>
+          @for (item of outsideProjects.controls; let i = $index; track i) {
+          <div
+            class="relative mt-4 mb-6 res-col-span flex-1 p-4 pb-8 res-grid-cols items-end gap-2 border border-primary/40 rounded-md">
+            <app-input [formControl]="item.controls.country" [label]="lang.map.country"></app-input>
+            <app-input
+              [formControl]="item.controls.implementedProjects"
+              [label]="lang.map.total_number_of_implemented_projects"></app-input>
+            <app-input
+              [formControl]="item.controls.currentProjects"
+              [label]="lang.map.number_of_projects_under_construction"></app-input>
+            <app-input
+              [formControl]="item.controls.futureProjects"
+              [label]="lang.map.number_of_future_projects"></app-input>
+            <app-input
+              [formControl]="item.controls.implementedOffPlan"
+              [label]="lang.map.number_of_implemented_off_plan_sales_projects"></app-input>
+            <app-input
+              [formControl]="item.controls.currentOffPlan"
+              [label]="lang.map.number_of_current_off_plan_sales_projects"></app-input>
+            <app-input
+              [formControl]="item.controls.futureOffPlan"
+              [label]="lang.map.number_of_future_off_plan_sales_projects"></app-input>
+            <app-icon-button
+              (clicked)="deleteOutsideProjects(i)"
+              class="absolute start-1/2 bottom-0 translate-y-[40%] ltr:translate-x-[-50%] rtl:translate-x-[50%] text-primary border-2 rounded-full border-primary"
+              backgroundColor="!bg-white"
+              icon="DELETE"></app-icon-button>
+          </div>
+          }
+
+          <div class="res-col-span relative flex items-center justify-center">
+            <span class="w-full absolute top-1/2 border border-primary"></span>
+            <app-icon-button
+              (clicked)="addOutsideProjects()"
+              icon="PLUS"
+              class="text-white"
+              backgroundColor="!bg-primary"></app-icon-button>
+          </div></div
+      ></ng-container>
+    </ng-container>
+    <div formGroupName="lands" class="info-section">
+      <h3 class="info-section-title">
+        {{ lang.map.data_on_lands_owned_by_company }}
+      </h3>
+      <app-input formControlName="landsNo" [label]="lang.map.total_number_of_lands"></app-input>
+      <app-input formControlName="mortgagedLandsNo" [label]="lang.map.number_of_mortgaged_lands"></app-input>
+      <h4 class="res-col-span text-center text-2xl text-primary font-semibold">
+        {{ lang.map.lands_data }}
+      </h4>
+
+      <ng-container formGroupName="landsData">
+        @for (item of lands.controls; let i = $index; track i) {
+        <div
+          class="relative mt-4 mb-6 res-col-span flex-1 p-4 pb-8 res-grid-cols items-center gap-2 border border-primary/40 rounded-md">
+          <app-input [formControl]="item.controls.titleDeedNo" [label]="lang.map.title_deed_number"></app-input>
+          <app-input [formControl]="item.controls.cadastralNo" [label]="lang.map.cadastral_number"></app-input>
+          <div class="res-col-span-2 flex flex-col md:flex-row items-center justify-center gap-2 md:gap-6">
+            <span
+              [ngClass]="{ 'text-amber-700': item.controls.isMortgaged.invalid && item.controls.isMortgaged.touched }"
+              class="font-semibold text-xl"
+              >{{ lang.map.is_the_land_mortgaged }} <span class="text-amber-700">*</span></span
+            >
+            <mat-radio-group
+              [formControl]="item.controls.isMortgaged"
+              class="flex justify-center gap-4"
+              aria-label="Select an option">
+              <mat-radio-button class="font-semibold text-primary" [value]="true">{{ lang.map.yes }}</mat-radio-button>
+              <mat-radio-button class="font-semibold text-primary" [value]="false">{{ lang.map.no }}</mat-radio-button>
+            </mat-radio-group>
+          </div>
+          <app-icon-button
+            (clicked)="deleteLandData(i)"
+            class="absolute start-1/2 bottom-0 translate-y-[40%] ltr:translate-x-[-50%] rtl:translate-x-[50%] text-primary border-2 rounded-full border-primary"
+            backgroundColor="!bg-white"
+            icon="DELETE"></app-icon-button>
+        </div>
+        }
+      </ng-container>
+
+      <div class="res-col-span relative flex items-center justify-center">
+        <span class="w-full absolute top-1/2 border border-primary"></span>
+        <app-icon-button
+          (clicked)="addlandData()"
+          icon="PLUS"
+          class="text-white"
+          backgroundColor="!bg-primary"></app-icon-button>
+      </div>
+    </div>
+  </div>
+  <div class="my-4 flex justify-end">
+    <app-button buttonStyle="primary" size="lg" (click)="register()">{{ lang.map.register }}</app-button>
+  </div>
+</div>

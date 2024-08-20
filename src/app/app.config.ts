@@ -16,6 +16,7 @@ import { TokenInterceptor } from './interceptors/token.interceptor';
 import { PagesSections } from '@constants/pages-sections';
 import { applicationInit } from './init/init';
 import { MatNativeDateModule } from '@angular/material/core';
+import { DatePipe } from '@angular/common';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -71,5 +72,6 @@ export const appConfig: ApplicationConfig = {
       useClass: PaginatorLocal,
     },
     NgxMaskPipe,
+    DatePipe,
   ],
 };

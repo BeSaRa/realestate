@@ -14,7 +14,11 @@
     'cursor-not-allowed': disabled,
   }"
   class="group block relative {{ !noMargin ? marginBottom : '' }}">
-  <span [ngClass]="labelColor" class="block font-bold">{{ label }}</span>
+  <span [ngClass]="labelColor" class="block font-bold"
+    >{{ label }} @if (isRequired) {
+    <span class="text-amber-700">*</span>
+    }</span
+  >
   <div
     [ngClass]="{ disabled: disabled }"
     class="group/input-wrapper input-form {{ size }}  {{ bgColor }} {{ borderColor }}  flex items-center justify-start">
