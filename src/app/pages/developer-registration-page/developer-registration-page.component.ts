@@ -5,6 +5,7 @@ import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatRadioModule } from '@angular/material/radio';
+import { ActivatedRoute, Router } from '@angular/router';
 import { ButtonComponent } from '@components/button/button.component';
 import { IconButtonComponent } from '@components/icon-button/icon-button.component';
 import { InputComponent } from '@components/input/input.component';
@@ -39,6 +40,8 @@ export default class DeveloperRegistrationPageComponent extends OnDestroyMixin(c
   fb = inject(FormBuilder);
   datePipe = inject(DatePipe);
   toast = inject(ToastService);
+  router = inject(Router);
+  route = inject(ActivatedRoute);
   developerRegistrationService = inject(DeveloperRegistrationService);
 
   form = this.fb.group({
@@ -225,11 +228,6 @@ export default class DeveloperRegistrationPageComponent extends OnDestroyMixin(c
     this.lands.removeAt(index);
   }
 
-  changeLang(event: Event) {
-    event.preventDefault();
-    this.lang.toggleLang();
-  }
-
   onLicenseDateChange() {
     this.licenseDate.patchValue(
       this.licenseDate.value ? this.datePipe.transform(this.licenseDate.value, 'YYY-MM-dd') : '',
@@ -265,10 +263,7 @@ export default class DeveloperRegistrationPageComponent extends OnDestroyMixin(c
         })
       )
       .subscribe(() => {
-        this.toast.success(this.lang.map.developer_data_saved_successfully);
-        this.outsideProjects.clear();
-        this.lands.clear();
-        this.form.reset();
+        this.router.navigate(['../developer-registration-success'], { relativeTo: this.route });
       });
   }
 

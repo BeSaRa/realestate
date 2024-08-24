@@ -17,6 +17,11 @@ export const routes: Routes = [
         path: 'developer-registration',
         loadComponent: () => import('./pages/developer-registration-page/developer-registration-page.component'),
       },
+      {
+        path: 'developer-registration-success',
+        loadComponent: () =>
+          import('./pages/developer-registration-success-page/developer-registration-success-page.component'),
+      },
     ],
   },
   {

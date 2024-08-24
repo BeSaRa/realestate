@@ -568,4 +568,5 @@ export interface LangKeysContract {
   phone_format: string;
   developer_data_saved_successfully: string;
   an_error_occured_while_saving_developer_data_please_try_again: string;
+  register_another_developer: string;
 }
