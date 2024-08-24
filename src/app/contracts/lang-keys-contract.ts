@@ -566,4 +566,6 @@ export interface LangKeysContract {
   numeric_field: string;
   email_format: string;
   phone_format: string;
+  developer_data_saved_successfully: string;
+  an_error_occured_while_saving_developer_data_please_try_again: string;
 }

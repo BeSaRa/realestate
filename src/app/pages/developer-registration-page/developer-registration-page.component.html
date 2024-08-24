@@ -284,6 +284,13 @@
     </div>
   </div>
   <div class="my-4 flex justify-end">
-    <app-button buttonStyle="primary" size="lg" (click)="register()">{{ lang.map.register }}</app-button>
+    <app-button buttonStyle="primary" size="lg" (click)="register()"
+      >@if(isSaving){<mat-spinner diameter="30" strokeWidth="3"></mat-spinner>} @else{{{ lang.map.register
+
+
+
+
+      }}}</app-button
+    >
   </div>
 </div>

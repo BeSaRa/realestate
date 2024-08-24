@@ -34,4 +34,8 @@ export abstract class CmsService<T, PrimaryType = number>
   loadFile(fileId: string): string {
     return this.urlService.URLS.BASE_URL + '/assets/' + fileId;
   }
+
+  saveItem(item: T) {
+    return this.http.post(this.urlService.URLS.BASE_URL + '/items/' + this.collectionName, item);
+  }
 }

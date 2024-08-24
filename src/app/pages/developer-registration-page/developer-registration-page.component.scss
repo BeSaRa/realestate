@@ -17,3 +17,7 @@
 .res-col-span-2 {
   @apply col-span-1 sm:col-span-2;
 }
+
+.mat-mdc-progress-spinner {
+  --mdc-circular-progress-active-indicator-color: #ffffff;
+}
