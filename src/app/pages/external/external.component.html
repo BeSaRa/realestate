@@ -1,5 +1,11 @@
 <div [dir]="(lang.change$ | async)!.direction">
   <div class="flex-auto flex flex-col">
+    <div class="px-8 flex items-center justify-between gap-4 border-b border-b-primary/40 shadow">
+      <img class="w-[250px]" src="assets/images/mm-logo-colored.png" alt="mm-logo-colored" />
+      <app-button (click)="changeLang($event)" buttonStyle="primary">{{
+        lang.getCurrent().toggleTo.substring(0, 2).toUpperCase()
+      }}</app-button>
+    </div>
     <router-outlet></router-outlet>
   </div>
 </div>
