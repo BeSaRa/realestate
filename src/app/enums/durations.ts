@@ -11,4 +11,5 @@ export enum DurationEndpoints {
   HALFY = 'halfy',
   QUARTERLY = 'quarterly',
   MONTHLY = 'monthly',
+  DURATION = 'duration',
 }

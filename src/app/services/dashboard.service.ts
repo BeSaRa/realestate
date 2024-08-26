@@ -158,9 +158,6 @@ export class DashboardService extends RegisterServiceMixin(class {}) implements 
   }
 
   loadFlyerSummaryData(urls: { valueUrl: string; countUrl: string }, criteria: FlyerCriteriaContract) {
-    delete criteria.issueDateMonth;
-    delete criteria.issueDateQuarter;
-
     return forkJoin([
       this.http.post<KpiModel[]>(urls.countUrl, criteria),
       this.http.post<KpiModel[]>(urls.valueUrl, criteria),
@@ -169,62 +166,24 @@ export class DashboardService extends RegisterServiceMixin(class {}) implements 
     );
   }
 
-  loadFlyerDurationSummaryData(urls: { valueUrl: string; countUrl: string }, criteria: FlyerCriteriaContract) {
-    const _urls = { ...urls };
-    if (criteria.issueDateMonth) {
-      _urls.valueUrl += '/' + DurationEndpoints.MONTHLY;
-      _urls.countUrl += '/' + DurationEndpoints.MONTHLY;
-      delete criteria.issueDateQuarter;
-    } else {
-      _urls.valueUrl += '/' + DurationEndpoints.QUARTERLY;
-      _urls.countUrl += '/' + DurationEndpoints.QUARTERLY;
-      delete criteria.issueDateMonth;
-    }
-
-    return forkJoin([
-      this.http.post<KpiFlyerDurationModel[]>(_urls.countUrl, criteria),
-      this.http.post<KpiFlyerDurationModel[]>(_urls.valueUrl, criteria),
-    ]).pipe(
-      map(([count, value]) => [
-        new KpiFlyerDurationModel().clone<KpiFlyerDurationModel>(count[0]),
-        new KpiFlyerDurationModel().clone<KpiFlyerDurationModel>(value[0]),
-      ])
-    );
-  }
-
   @CastResponse(() => FlyerProperty)
   loadFlyerPropertiesData(url: string, criteria: FlyerCriteriaContract) {
-    return this.http.post<FlyerProperty[]>(this._prepareFlyerUrl(url, criteria), criteria);
+    return this.http.post<FlyerProperty[]>(url, criteria);
   }
 
   @CastResponse(() => FlyerPriceRange)
   loadFlyerPriceRangeData(url: string, criteria: FlyerCriteriaContract) {
-    return this.http.post<FlyerPriceRange[]>(this._prepareFlyerUrl(url, criteria), criteria);
+    return this.http.post<FlyerPriceRange[]>(url, criteria);
   }
 
   @CastResponse(() => FlyerAreaKpi)
   loadFlyerTop10AreaData(url: string, criteria: FlyerCriteriaContract) {
-    return this.http.post<FlyerAreaKpi[]>(this._prepareFlyerUrl(url, criteria), criteria);
+    return this.http.post<FlyerAreaKpi[]>(url, criteria);
   }
 
   @CastResponse(() => FlyerCompositeTransaction)
   loadFlyerComponsiteTransacitons(url: string, criteria: FlyerCriteriaContract) {
     return this.http.post<FlyerCompositeTransaction[]>(url, criteria);
-  }
-
-  private _prepareFlyerUrl(url: string, criteria: FlyerCriteriaContract) {
-    if (criteria.issueDateMonth) {
-      url += '/' + DurationEndpoints.MONTHLY;
-      delete criteria.issueDateQuarter;
-    } else if (criteria.issueDateQuarter) {
-      url += '/' + DurationEndpoints.QUARTERLY;
-      delete criteria.issueDateMonth;
-    } else {
-      delete criteria.issueDateMonth;
-      delete criteria.issueDateQuarter;
-    }
-
-    return url;
   }
 
   @CastResponse(() => Pagination<GeneralSecretariatTransaction>, {

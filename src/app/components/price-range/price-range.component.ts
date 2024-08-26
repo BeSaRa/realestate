@@ -17,7 +17,7 @@ import { finalize, take } from 'rxjs';
 })
 export class PriceRangeComponent extends AddSectionToExcelSheet implements OnChanges {
   @Input({ required: true }) dataUrl!: string;
-  @Input({ required: true }) criteria!: FlyerCriteriaContract;
+  @Input({ required: true }) criteria?: FlyerCriteriaContract;
 
   lang = inject(TranslationService);
   dashboardService = inject(DashboardService);
@@ -43,7 +43,7 @@ export class PriceRangeComponent extends AddSectionToExcelSheet implements OnCha
     this.isLoading = true;
 
     this.dashboardService
-      .loadFlyerPriceRangeData(this.dataUrl, this.criteria)
+      .loadFlyerPriceRangeData(this.dataUrl, this.criteria!)
       .pipe(
         take(1),
         finalize(() => (this.isLoading = false))

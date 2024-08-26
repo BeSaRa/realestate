@@ -28,51 +28,81 @@
 
   <div class="relative content-wrapper">
     <div class="flex flex-col gap-8">
-      <div class="p-3 lg:px-16 flex flex-col rtl:lg:flex-row ltr:xl:flex-row gap-4 items-center justify-between">
+      <div class="p-3 lg:px-16 flex flex-col xl:flex-row gap-4 items-center justify-between">
         <h3
-          class="heading text-xl sm:text-2xl md:text-3xl self-center rtl:lg:self-start ltr:xl:self-start text-center text-primary border-secondary font-semibold">
+          class="heading text-xl sm:text-2xl md:text-3xl self-center xl:self-start text-center text-primary border-secondary font-semibold">
           {{ lang.map.real_estate_flyer }} {{ getTitleSuffix() }}
         </h3>
-        <div class="flex flex-col sm:flex-row justify-center items-center gap-3">
-          <div class="grid grid-cols-3 gap-2">
-            <app-button
-              (click)="updateDuration(DurationTypes.YEARLY)"
-              [buttonStyle]="selectedDurationType === DurationTypes.YEARLY ? 'secondary' : 'secondary-outline'"
-              [isRounded]="true"
-              >{{ lang.map.yearly }}</app-button
-            >
-            <app-button
-              (click)="updateDuration(DurationTypes.QUARTERLY)"
-              [buttonStyle]="selectedDurationType === DurationTypes.QUARTERLY ? 'secondary' : 'secondary-outline'"
-              [isRounded]="true"
-              >{{ lang.map.quarterly }}</app-button
-            >
-            <app-button
-              (click)="updateDuration(DurationTypes.MONTHLY)"
-              [buttonStyle]="selectedDurationType === DurationTypes.MONTHLY ? 'secondary' : 'secondary-outline'"
-              [isRounded]="true"
-              >{{ lang.map.monthly }}</app-button
-            >
-          </div>
-          @if(selectedDurationType === DurationTypes.MONTHLY) {
+        <div [formGroup]="form" class="flex flex-col sm:flex-row justify-center items-center gap-3">
+          <app-select-input
+            formControlName="duration"
+            class="w-full sm:w-[150px]"
+            bindLabel="getNames"
+            bindValue="lookupKey"
+            label=""
+            [noMargin]="true"
+            [options]="durations" />
+          @if (displayYear) {
           <app-select-input
             class="w-full sm:w-[150px]"
-            [formControl]="monthControl"
+            formControlName="year"
+            label=""
+            [noMargin]="true"
+            [placeholder]="lang.map.year"
+            [options]="years" />} @if(displayMonth) {
+          <app-select-input
+            class="w-full sm:w-[150px]"
+            formControlName="month"
             bindLabel="label"
             bindValue="value"
             label=""
             [noMargin]="true"
             [placeholder]="lang.map.select_month"
-            [options]="months" />} @if(selectedDurationType === DurationTypes.QUARTERLY) {
+            [options]="months" />} @if(displayQuarter) {
           <app-select-input
             class="w-full sm:w-[150px]"
-            [formControl]="quarterControl"
+            formControlName="quarter"
             bindLabel="getNames"
             bindValue="lookupKey"
             label=""
             [noMargin]="true"
+            [isMultiple]="true"
             [placeholder]="lang.map.select_quarter"
-            [options]="quarterYearDurations" />}
+            [options]="quarterYearDurations" />} @if(displayRange) {
+          <app-input
+            formControlName="rangeDate"
+            caretColor="caret-transparent"
+            (click)="dateRange.open()"
+            (keydown)="$event.preventDefault()"
+            label=""
+            [noMargin]="true"
+            [placeholder]="lang.map.date_from_to">
+            <mat-icon
+              mat-ripple
+              appInputSuffix
+              (click)="dateRange.open()"
+              class="cursor-pointer mx-2"
+              [svgIcon]="AppIcons.DATE"></mat-icon>
+            <mat-datepicker-toggle matIconSuffix [for]="dateRange">
+              <mat-icon matDatepickerToggleIcon>keyboard_arrow_down</mat-icon>
+            </mat-datepicker-toggle>
+            <mat-date-range-input [max]="maxDate" [min]="minDate" class="!w-0 !h-0" [rangePicker]="dateRange">
+              <input
+                matStartDate
+                class="text-gray-500"
+                formControlName="issueDateFrom"
+                (dateChange)="rangeChange()"
+                placeholder="Start date" />
+              <input
+                matEndDate
+                class="text-gray-500"
+                formControlName="issueDateTo"
+                (dateChange)="rangeChange()"
+                placeholder="here is end date" />
+            </mat-date-range-input>
+            <mat-date-range-picker touchUi class="hidden" #dateRange></mat-date-range-picker>
+          </app-input>
+          }
         </div>
       </div>
       <div #pdfContent>

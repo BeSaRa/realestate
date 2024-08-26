@@ -9,6 +9,7 @@ export interface LookupsContract {
   rooms: Lookup[];
   furnitureStatusList: Lookup[];
   durations: Lookup[];
+  durationsWithDuration: Lookup[];
   halfYearDurations: Lookup[];
   quarterYearDurations: Lookup[];
   spaces: Lookup[];

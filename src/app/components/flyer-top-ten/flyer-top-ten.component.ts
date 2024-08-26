@@ -22,7 +22,7 @@ import { finalize, take } from 'rxjs';
 })
 export class FlyerTopTenComponent extends AddSectionToExcelSheet implements OnChanges {
   @Input({ required: true }) title!: string;
-  @Input({ required: true }) criteria!: FlyerCriteriaContract;
+  @Input({ required: true }) criteria?: FlyerCriteriaContract;
   @Input({ required: true }) dataUrl!: string;
   @Input() type: 'price' | 'count' = 'count';
 
@@ -52,7 +52,7 @@ export class FlyerTopTenComponent extends AddSectionToExcelSheet implements OnCh
     this.isLoading = true;
 
     this.dashboardService
-      .loadFlyerTop10AreaData(this.dataUrl, this.criteria)
+      .loadFlyerTop10AreaData(this.dataUrl, this.criteria!)
       .pipe(
         take(1),
         finalize(() => (this.isLoading = false))
