@@ -21,7 +21,7 @@ import { finalize, take } from 'rxjs';
 export class FlyerSummaryComponent extends OnDestroyMixin(AddSectionToExcelSheet) implements OnChanges {
   @Input() indicatorType: 'sell' | 'rent' | 'mort' = 'sell';
   @Input({ required: true }) dataUrls!: { valueUrl: string; countUrl: string };
-  @Input({ required: true }) criteria!: FlyerCriteriaContract;
+  @Input({ required: true }) criteria?: FlyerCriteriaContract;
 
   lang = inject(TranslationService);
   dashboardService = inject(DashboardService);
@@ -52,13 +52,8 @@ export class FlyerSummaryComponent extends OnDestroyMixin(AddSectionToExcelSheet
 
   loadData() {
     this.isLoading = true;
-    if (this.criteria.issueDateMonth || this.criteria.issueDateQuarter) this.loadMonthlyOrQuarterlyData();
-    else this.loadYearlyData();
-  }
-
-  loadYearlyData() {
     this.dashboardService
-      .loadFlyerSummaryData(this.dataUrls, this.criteria)
+      .loadFlyerSummaryData(this.dataUrls, this.criteria!)
       .pipe(
         take(1),
         finalize(() => (this.isLoading = false))
@@ -69,23 +64,6 @@ export class FlyerSummaryComponent extends OnDestroyMixin(AddSectionToExcelSheet
           countYoy: count.getKpiYoYVal(),
           value: value.getKpiVal(),
           valueYoy: value.getKpiYoYVal(),
-        };
-      });
-  }
-
-  loadMonthlyOrQuarterlyData() {
-    this.dashboardService
-      .loadFlyerDurationSummaryData(this.dataUrls, this.criteria)
-      .pipe(
-        take(1),
-        finalize(() => (this.isLoading = false))
-      )
-      .subscribe(([count, value]) => {
-        this.data = {
-          count: count.getKpiVal(),
-          countYoy: count.getKpiP2PYoY(),
-          value: value.getKpiVal(),
-          valueYoy: value.getKpiP2PYoY(),
         };
       });
   }

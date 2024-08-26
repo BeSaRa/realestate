@@ -114,6 +114,34 @@ export class LookupsMap implements LookupsContract {
     // }),
   ];
 
+  durationsWithDuration = [
+    new Lookup().clone<Lookup>({
+      arName: 'سنوي',
+      enName: 'Yearly',
+      lookupKey: Durations.YEARLY,
+    }),
+    new Lookup().clone<Lookup>({
+      arName: 'نصف سنوى',
+      enName: 'Half Yearly',
+      lookupKey: Durations.HALF_YEARLY,
+    }),
+    new Lookup().clone<Lookup>({
+      arName: 'ربع سنوي',
+      enName: 'Quarter Yearly',
+      lookupKey: Durations.QUARTER_YEARLY,
+    }),
+    new Lookup().clone<Lookup>({
+      arName: 'شهري',
+      enName: 'Monthly',
+      lookupKey: Durations.MONTHLY,
+    }),
+    new Lookup().clone<Lookup>({
+      arName: 'مدة زمنية',
+      enName: 'Duration',
+      lookupKey: Durations.DURATION,
+    }),
+  ];
+
   halfYearDurations = [
     new Lookup().clone<Lookup>({
       arName: 'النصف الاول',

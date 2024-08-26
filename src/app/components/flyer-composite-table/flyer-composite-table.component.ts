@@ -25,7 +25,7 @@ import { Observable, finalize, map, take } from 'rxjs';
 })
 export class FlyerCompositeTableComponent extends AddSectionToExcelSheet implements OnChanges {
   @Input({ required: true }) dataUrl!: string;
-  @Input({ required: true }) criteria!: FlyerCriteriaContract;
+  @Input({ required: true }) criteria?: FlyerCriteriaContract;
 
   lang = inject(TranslationService);
   dashboardService = inject(DashboardService);
@@ -60,7 +60,7 @@ export class FlyerCompositeTableComponent extends AddSectionToExcelSheet impleme
   loadCompositeTransactions(): void {
     this.isLoading = true;
     this.dashboardService
-      .loadComponsiteTransacitons(this.dataUrl, this.criteria)
+      .loadComponsiteTransacitons(this.dataUrl, this.criteria!)
       .pipe(
         take(1),
         finalize(() => (this.isLoading = false))
