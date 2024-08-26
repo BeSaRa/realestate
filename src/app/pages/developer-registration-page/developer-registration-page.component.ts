@@ -1,5 +1,5 @@
 import { CommonModule, DatePipe } from '@angular/common';
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatIconModule } from '@angular/material/icon';
@@ -16,6 +16,7 @@ import { DeveloperRegistrationService } from '@services/developer-registration.s
 import { ToastService } from '@services/toast.service';
 import { TranslationService } from '@services/translation.service';
 import { CustomValidators } from '@validators/custom-validators';
+import { RECAPTCHA_SETTINGS, RecaptchaComponent, RecaptchaModule } from 'ng-recaptcha';
 import { catchError, finalize, takeUntil, throwError } from 'rxjs';
 
 @Component({
@@ -31,11 +32,14 @@ import { catchError, finalize, takeUntil, throwError } from 'rxjs';
     MatDatepickerModule,
     MatIconModule,
     MatProgressSpinnerModule,
+    RecaptchaModule,
   ],
   templateUrl: './developer-registration-page.component.html',
   styleUrl: './developer-registration-page.component.scss',
 })
 export default class DeveloperRegistrationPageComponent extends OnDestroyMixin(class {}) implements OnInit {
+  @ViewChild('recaptcha') recaptcha!: RecaptchaComponent;
+
   lang = inject(TranslationService);
   fb = inject(FormBuilder);
   datePipe = inject(DatePipe);
@@ -43,6 +47,7 @@ export default class DeveloperRegistrationPageComponent extends OnDestroyMixin(c
   router = inject(Router);
   route = inject(ActivatedRoute);
   developerRegistrationService = inject(DeveloperRegistrationService);
+  recaptchaSettings = inject(RECAPTCHA_SETTINGS);
 
   form = this.fb.group({
     main: this.fb.group({
@@ -126,6 +131,9 @@ export default class DeveloperRegistrationPageComponent extends OnDestroyMixin(c
   readonly AppIcons = AppIcons;
 
   isSaving = false;
+  isRecaptchaVisible = false;
+  isRecaptchaResolved = false;
+  isWaitingForRecaptchaResolve = false;
 
   get main() {
     return this.form.controls.main;
@@ -244,27 +252,43 @@ export default class DeveloperRegistrationPageComponent extends OnDestroyMixin(c
     );
   }
 
+  onRecaptchaResolved(token: string) {
+    if (!token) return;
+    this.isRecaptchaResolved = true;
+    this.isWaitingForRecaptchaResolve = false;
+  }
+
   register() {
-    if (!this.form.valid) {
-      this.form.markAllAsTouched();
-      return;
+    if (!this.isRecaptchaResolved) {
+      this.isRecaptchaVisible = true;
+      this.isWaitingForRecaptchaResolve = true;
+    } else {
+      if (!this.form.valid) {
+        this.form.markAllAsTouched();
+        return;
+      }
+
+      if (this.isSaving) return;
+
+      this.isSaving = true;
+      this.developerRegistrationService
+        .saveItem(this._toModel())
+        .pipe(
+          finalize(() => {
+            this.isSaving = false;
+            this.isRecaptchaResolved = false;
+            this.isRecaptchaVisible = false;
+            this.recaptcha.reset();
+          }),
+          catchError((err) => {
+            this.toast.error(this.lang.map.an_error_occured_while_saving_developer_data_please_try_again);
+            return throwError(() => err);
+          })
+        )
+        .subscribe(() => {
+          this.router.navigate(['../developer-registration-success'], { relativeTo: this.route });
+        });
     }
-
-    if (this.isSaving) return;
-
-    this.isSaving = true;
-    this.developerRegistrationService
-      .saveItem(this._toModel())
-      .pipe(
-        finalize(() => (this.isSaving = false)),
-        catchError((err) => {
-          this.toast.error(this.lang.map.an_error_occured_while_saving_developer_data_please_try_again);
-          return throwError(() => err);
-        })
-      )
-      .subscribe(() => {
-        this.router.navigate(['../developer-registration-success'], { relativeTo: this.route });
-      });
   }
 
   private _toModel() {
