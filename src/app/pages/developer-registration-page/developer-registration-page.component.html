@@ -277,8 +277,15 @@
       </div>
     </div>
   </div>
-  <div class="my-4 flex justify-end">
-    <app-button buttonStyle="primary" size="lg" (click)="register()"
+  <div class="my-4 flex gap-4 items-start justify-end">
+    <re-captcha
+      class="transition-all"
+      [ngClass]="{ hidden: !isRecaptchaVisible }"
+      #recaptcha
+      size="normal"
+      [siteKey]="recaptchaSettings.siteKey!"
+      (resolved)="onRecaptchaResolved($event)"></re-captcha
+    ><app-button buttonStyle="primary" size="lg" (click)="register()"
       >@if(isSaving){<mat-spinner diameter="30" strokeWidth="3"></mat-spinner>} @else{
       {{ lang.map.register }} }</app-button
     >
