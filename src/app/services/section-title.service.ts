@@ -28,7 +28,8 @@ export class SectionTitleService {
     isYearRequired = true,
     isMunicipalityRequired = true,
     isNationalityRequired = false,
-    showMonthOrQuarter = false
+    showMonthOrQuarter = false,
+    showServiceType = false
   ): string {
     const generatedTitle: string[] = [];
 
@@ -45,6 +46,11 @@ export class SectionTitleService {
     if (isZoneRequired) {
       const zone = this.getSelectedZone(indicatorPrefix, criteria);
       zone.length && generatedTitle.push(zone);
+    }
+
+    if (indicatorPrefix === 'rent' && showServiceType && criteria['serviceType' as keyof CriteriaContract] !== -1) {
+      const serviceType = this.getSelectedServiceType(criteria['serviceType' as keyof CriteriaContract] as number);
+      serviceType && generatedTitle.push(serviceType);
     }
 
     const propertyType =
@@ -113,6 +119,11 @@ export class SectionTitleService {
       ? lookupMap[criteria.propertyTypeList[0]]?.getNames()
       : '';
   }
+
+  private getSelectedServiceType(serviceTypeId: number) {
+    return this.lookupService.rentServiceTypeMap[serviceTypeId]?.getNames();
+  }
+
   private getSelectedYear(criteria: CriteriaContract): string {
     return criteria.issueDateYear!.toString();
   }

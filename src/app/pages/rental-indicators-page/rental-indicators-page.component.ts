@@ -93,6 +93,7 @@ export default class RentalIndicatorsPageComponent extends OnDestroyMixin(class 
   rooms = this.lookupService.rentLookups.rooms;
   furnitureStatusList = this.lookupService.rentLookups.furnitureStatusList;
   paramsRange = this.lookupService.rentLookups.maxParams;
+  serviceTypes = this.lookupService.rentLookups.serviceTypeList;
 
   isMonthlyDuration = true;
 
@@ -425,13 +426,17 @@ export default class RentalIndicatorsPageComponent extends OnDestroyMixin(class 
     this.isMonthlyDuration = value;
   }
 
-  getStringSelectedCriteria(isZoneRequired = true, showYearInTitle = true): string {
+  getStringSelectedCriteria(isZoneRequired = true, showYearInTitle = true, showServiceType = true): string {
     return this.sectionTitle.getSelectedCriteria(
       'rent',
       this.criteria.criteria,
       isZoneRequired,
       false,
-      showYearInTitle
+      showYearInTitle,
+      true,
+      false,
+      false,
+      showServiceType
     );
   }
 }

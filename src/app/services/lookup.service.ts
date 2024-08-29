@@ -40,6 +40,8 @@ export class LookupService extends RegisterServiceMixin(class {}) implements Ser
 
   rentRoomsMap: Record<number, Lookup> = {};
 
+  rentServiceTypeMap: Record<number, Lookup> = {};
+
   rentFurnitureMap: Record<number, Lookup> = {};
 
   rentPurposeMap: Record<number, Lookup> = {};
@@ -81,6 +83,7 @@ export class LookupService extends RegisterServiceMixin(class {}) implements Ser
       'districtList.*': () => Lookup,
       'propertyTypeList.*': () => Lookup,
       'rentPurposeList.*': () => Lookup,
+      'serviceTypeList.*': () => Lookup,
       'zoneList.*': () => Lookup,
       'municipalityList.*': () => Lookup,
       'furnitureStatusList.*': () => Lookup,
@@ -187,7 +190,7 @@ export class LookupService extends RegisterServiceMixin(class {}) implements Ser
           mort.districtList = mort.districtList.filter((i) => i.lookupKey !== -1 && i.lookupKey !== 0); // remove the all from zones
         }),
         tap(([rent, sell, mort, broker]) => {
-          this.rentLookups = this._addAllToMunicipalities(rent);
+          this.rentLookups = this._addAllToServiceTypes(this._addAllToMunicipalities(rent));
           this.sellLookups = this._addAllToMunicipalities(this._addAllToDistrict(this._addAllToPropertyType(sell)));
           this.mortLookups = this._addAllToMunicipalities(this._addAllToDistrict(this._addAllToPropertyType(mort)));
           this.brokerLookups = this._addAllToMunicipalities(broker);
@@ -221,6 +224,7 @@ export class LookupService extends RegisterServiceMixin(class {}) implements Ser
           this.mortDistrictMap = this._initializeDistrictMap(res[2]);
         }),
         tap((res) => {
+          this.rentServiceTypeMap = this._initializeServiceTypeMap(res[0]);
           this.rentFurnitureMap = this._initializeFurnitureStatusMap(res[0]);
           this.rentRoomsMap = this._initializeRoomsMap(res[0]);
         }),
@@ -308,6 +312,12 @@ export class LookupService extends RegisterServiceMixin(class {}) implements Ser
 
   private _initializeRoomsMap(lookups: LookupsMap) {
     return lookups.rooms.reduce((acc, i) => {
+      return { ...acc, [i.lookupKey]: i };
+    }, {});
+  }
+
+  private _initializeServiceTypeMap(lookups: LookupsMap) {
+    return lookups.serviceTypeList.reduce((acc, i) => {
       return { ...acc, [i.lookupKey]: i };
     }, {});
   }
@@ -418,6 +428,19 @@ export class LookupService extends RegisterServiceMixin(class {}) implements Ser
         lookupKey: -1,
       }),
       ...lookups.municipalityList,
+    ];
+    return lookups;
+  }
+
+  private _addAllToServiceTypes(lookups: LookupsContract) {
+    if (lookups.serviceTypeList.find((p) => p.lookupKey === -1)) return lookups;
+    lookups.serviceTypeList = [
+      new Lookup().clone<Lookup>({
+        arName: 'الكل',
+        enName: 'All',
+        lookupKey: -1,
+      }),
+      ...lookups.serviceTypeList,
     ];
     return lookups;
   }
