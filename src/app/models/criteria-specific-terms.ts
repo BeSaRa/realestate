@@ -122,6 +122,7 @@ export const CriteriaToLangKey = {
   zoneId: 'zone',
   propertyTypeList: 'property_type',
   purposeList: 'property_usage',
+  ['serviceType' as keyof CriteriaContract]: 'contract_status',
   ['occupancyStatus' as keyof CriteriaContract]: 'occupancy_status',
   ['premiseCategoryList' as keyof CriteriaContract]: 'premise_category',
   ['premiseTypeList' as keyof CriteriaContract]: 'premise_type',

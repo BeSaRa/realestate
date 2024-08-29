@@ -129,6 +129,7 @@ export const CriteriaToLookup = {
   zoneId: 'zoneList',
   propertyTypeList: 'propertyTypeList',
   purposeList: 'rentPurposeList',
+  ['serviceType' as keyof CriteriaContract]: 'serviceTypeList',
   ['occupancyStatus' as keyof CriteriaContract]: 'occupancyStatusList',
   ['premiseCategoryList' as keyof CriteriaContract]: 'premiseCategoryList',
   ['premiseTypeList' as keyof CriteriaContract]: 'premiseTypeList',

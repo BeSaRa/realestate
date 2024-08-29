@@ -569,4 +569,7 @@ export interface LangKeysContract {
   developer_data_saved_successfully: string;
   an_error_occured_while_saving_developer_data_please_try_again: string;
   register_another_developer: string;
+  contract_status: string;
+  new_contracts: string;
+  renewed_contracts: string;
 }

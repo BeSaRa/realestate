@@ -24,5 +24,6 @@ export interface LookupsContract {
   premiseTypeList: Lookup[];
   brokerCategoryList: Lookup[];
   brokerTypeList: Lookup[];
+  serviceTypeList: Lookup[];
   maxParams: ParamRange[];
 }

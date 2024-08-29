@@ -60,6 +60,15 @@
       [options]="propertyUsages" />
 
     <app-select-input
+      *ngIf="isRent()"
+      bindFilter="getNames"
+      formControlName="serviceType"
+      bindValue="lookupKey"
+      [label]="lang.map.contract_status"
+      bindLabel="getNames"
+      [options]="serviceTypeList" />
+
+    <app-select-input
       *ngIf="isOV()"
       [enableFilter]="true"
       bindFilter="getNames"

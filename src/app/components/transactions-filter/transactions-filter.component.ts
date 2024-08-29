@@ -115,6 +115,7 @@ export class TransactionsFilterComponent implements OnInit, OnDestroy {
   @Input() premiseTypes: Lookup[] = [];
   @Input() brokerCategoryList: Lookup[] = [];
   @Input() brokerTypeList: Lookup[] = [];
+  @Input() serviceTypeList: Lookup[] = [];
   @Input() paramsRange: ParamRange[] = [];
 
   @Output() fromChanged = new EventEmitter<{ criteria: CriteriaContract; type: CriteriaType }>();
@@ -233,6 +234,7 @@ export class TransactionsFilterComponent implements OnInit, OnDestroy {
         ],
       ],
       baseYear: [],
+      serviceType: [],
       zoneId: [],
       streetNo: [],
       nationalityCode: [],
@@ -388,6 +390,7 @@ export class TransactionsFilterComponent implements OnInit, OnDestroy {
       municipalityId: -1,
       propertyTypeList: [-1],
       purposeList: [-1],
+      serviceType: -1,
       zoneId: -1,
       durationType: 1,
       issueDateYear: new Date().getFullYear(),
@@ -880,6 +883,10 @@ export class TransactionsFilterComponent implements OnInit, OnDestroy {
         brokerCategoryId: value.brokerCategoryId,
         brokerName: value.brokerName,
       };
+    }
+
+    if (!this.isRent()) {
+      delete value.serviceType;
     }
 
     if (!this.isOwner()) {

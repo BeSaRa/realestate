@@ -6,6 +6,7 @@
       [municipalities]="municipalities"
       [propertyTypes]="propertyTypes"
       [propertyUsages]="propertyUsages"
+      [serviceTypeList]="serviceTypes"
       [zones]="zones"
       [rooms]="rooms"
       [furnitureStatus]="furnitureStatusList"
@@ -133,6 +134,12 @@
             {{ item.rentPaymentMonthly ? item.rentPaymentMonthly : "---" }}</span
           >
         </ng-container>
+        <ng-container appTableColumnTemplate [columnName]="pageSections.RENT_TRANSACTIONS_TABLE.columns.CONTRACT_STATUS"
+          ><span *appTableColumnHeaderTemplate>{{ lang.map.contract_status }}</span
+          ><span *appTableColumnCellTemplate="let item; dataType: getTransactionType()">{{
+            (item.serviceTypeInfo && item.serviceTypeInfo.getNames()) || "---"
+          }}</span></ng-container
+        >
         <ng-container appTableColumnTemplate [columnName]="pageSections.RENT_TRANSACTIONS_TABLE.columns.ISSUE_DATE"
           ><span *appTableColumnHeaderTemplate>{{ lang.map.documentation_date }}</span>
           <span *appTableColumnCellTemplate="let item; dataType: getTransactionType()">{{
@@ -171,7 +178,7 @@
       class="px-3 lg:px-16 py-8 flex bg-sand mt-8 flex-col">
       <h3
         class="heading text-xl sm:text-2xl md:text-3xl self-center md:self-start text-center text-primary border-secondary font-semibold">
-        {{ lang.map.rental_indicators }} {{ getStringSelectedCriteria() }}
+        {{ lang.map.rental_indicators }} {{ getStringSelectedCriteria(true, true, false) }}
       </h3>
       <div class="mt-4 flex justify-center md:justify-end">
         <div class="grid grid-cols-2 gap-2">
@@ -192,7 +199,7 @@
         [dataLoadFn]="transactionsStatsLoadFn"
         [sortOptions]="[]"
         [enablePagination]="false"
-        minWidth="900px"
+        minWidth="1400px"
         headerBgColor="!bg-secondary"
         textSize="!text-sm"
         class="mt-4"
@@ -211,9 +218,10 @@
                   lookupService.rentPropertyTypeMap[item.propertyTypeId].getNames()
             }}
           </div> </ng-container
-        ><ng-container appTableColumnTemplate columnName="average">
-          <div *appTableColumnHeaderTemplate class="flex justify-center">
-            {{ lang.map.average_rental_price_per_unit_property }}
+        ><ng-container appTableColumnTemplate columnName="average-new">
+          <div *appTableColumnHeaderTemplate class="flex flex-col justify-center items-center">
+            <span>{{ lang.map.average_rental_price_per_unit_property }}</span>
+            <span>({{ lang.map.new_contracts }})</span>
           </div>
           <div
             *appTableColumnCellTemplate="let item; dataType: getTransactionStatsType()"
@@ -222,21 +230,50 @@
             [tooltipContent]="isPurposeOrTypeStatsTermsValid ? null : tooltipTemplate"
             [tooltipContentContext]="purposeOrTypeStatsTermsText">
             <ng-container *ngIf="isPurposeOrTypeStatsTermsValid">{{
-              item.rentPaymentMonthly || 0 | formatNumbers
+              item.rentPaymentMonthlyNew || 0 | formatNumbers
             }}</ng-container>
             <ng-container *ngIf="!isPurposeOrTypeStatsTermsValid"
               >"{{ lang.map.filter_values_must_be_modified_to_display_data }}"</ng-container
             >
           </div>
         </ng-container>
-        <ng-container appTableColumnTemplate columnName="certificates-count">
-          <div *appTableColumnHeaderTemplate class="flex justify-center">
-            {{ lang.map.rent_contracts_count }}
+        <ng-container appTableColumnTemplate columnName="average-renew">
+          <div *appTableColumnHeaderTemplate class="flex flex-col justify-center items-center">
+            <span>{{ lang.map.average_rental_price_per_unit_property }}</span>
+            <span>({{ lang.map.renewed_contracts }})</span>
+          </div>
+          <div
+            *appTableColumnCellTemplate="let item; dataType: getTransactionStatsType()"
+            class="flex justify-center font-bold"
+            appCustomTooltip
+            [tooltipContent]="isPurposeOrTypeStatsTermsValid ? null : tooltipTemplate"
+            [tooltipContentContext]="purposeOrTypeStatsTermsText">
+            <ng-container *ngIf="isPurposeOrTypeStatsTermsValid">{{
+              item.rentPaymentMonthlyRenewal || 0 | formatNumbers
+            }}</ng-container>
+            <ng-container *ngIf="!isPurposeOrTypeStatsTermsValid"
+              >"{{ lang.map.filter_values_must_be_modified_to_display_data }}"</ng-container
+            >
+          </div>
+        </ng-container>
+        <ng-container appTableColumnTemplate columnName="certificates-count-new">
+          <div *appTableColumnHeaderTemplate class="flex flex-col justify-center items-center">
+            <span>{{ lang.map.rent_contracts_count }}</span> <span>({{ lang.map.new_contracts }})</span>
           </div>
           <div
             *appTableColumnCellTemplate="let item; dataType: getTransactionStatsType()"
             class="flex justify-center font-bold">
-            {{ item.certificateCount | formatNumbers : 0 }}
+            {{ item.certificateCountNew | formatNumbers : 0 }}
+          </div>
+        </ng-container>
+        <ng-container appTableColumnTemplate columnName="certificates-count-renew">
+          <div *appTableColumnHeaderTemplate class="flex flex-col justify-center items-center">
+            <span>{{ lang.map.rent_contracts_count }}</span> <span>({{ lang.map.renewed_contracts }})</span>
+          </div>
+          <div
+            *appTableColumnCellTemplate="let item; dataType: getTransactionStatsType()"
+            class="flex justify-center font-bold">
+            {{ item.certificateCountRenewal | formatNumbers : 0 }}
           </div>
         </ng-container>
         <!-- <ng-container appTableColumnTemplate columnName="area">
@@ -251,14 +288,26 @@
             {{ lang.map.data_is_being_collected_and_audited }}
           </div>
         </ng-container> -->
-        <ng-container appTableColumnTemplate columnName="units-count">
-          <div *appTableColumnHeaderTemplate class="flex justify-center">
-            {{ lang.map.the_total_number_of_properties_units_rented }}
+        <ng-container appTableColumnTemplate columnName="units-count-new">
+          <div *appTableColumnHeaderTemplate class="flex flex-col justify-center items-center">
+            <span>{{ lang.map.the_total_number_of_properties_units_rented }}</span>
+            <span>({{ lang.map.new_contracts }})</span>
           </div>
           <div
             *appTableColumnCellTemplate="let item; dataType: getTransactionStatsType()"
             class="flex justify-center font-bold">
-            {{ item.certificateCount | formatNumbers : 0 }}
+            {{ item.certificateCountNew | formatNumbers : 0 }}
+          </div>
+        </ng-container>
+        <ng-container appTableColumnTemplate columnName="units-count-renew">
+          <div *appTableColumnHeaderTemplate class="flex flex-col justify-center items-center">
+            <span>{{ lang.map.the_total_number_of_properties_units_rented }}</span>
+            <span>({{ lang.map.renewed_contracts }})</span>
+          </div>
+          <div
+            *appTableColumnCellTemplate="let item; dataType: getTransactionStatsType()"
+            class="flex justify-center font-bold">
+            {{ item.certificateCountRenewal | formatNumbers : 0 }}
           </div>
         </ng-container>
         <!-- <ng-container appTableColumnTemplate columnName="average-square">

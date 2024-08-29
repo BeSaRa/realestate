@@ -32,6 +32,7 @@ export const PagesSections = {
         MUNICIPALITY: 'rent-municipality',
         UNIT_DETAILS: 'rent-unit-details',
         RENTAL_VALUE: 'rent-rental-value',
+        CONTRACT_STATUS: 'contract-status',
         ISSUE_DATE: 'rent-issue-date',
         CONTRACT_START_DATE: 'rent-contract-start-date',
         CONTRACT_END_DATE: 'rent-contract-end-date',
