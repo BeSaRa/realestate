@@ -25,7 +25,7 @@ export class PriceRangeComponent extends AddSectionToExcelSheet implements OnCha
   prices = [5, 10, 15, 20, 25, 30];
   pricesMap: Record<string, number> = { '0': 0, '5': 0, '10': 0, '15': 0, '20': 0, '25': 0, '30': 0 };
   pricesKeys = ['0', '5', '10', '15', '20', '25', '30', '35'];
-  totalCount = 1;
+  totalCount = 0;
 
   isLoading = false;
 
@@ -49,6 +49,7 @@ export class PriceRangeComponent extends AddSectionToExcelSheet implements OnCha
         finalize(() => (this.isLoading = false))
       )
       .subscribe((data) => {
+        this.totalCount = 0;
         data.forEach((item) => {
           if (item.range.indexOf('to') > 0) {
             this.pricesMap[item.range.slice(0, item.range.indexOf('to') - 1)] = item.kpiValCount;
@@ -57,6 +58,7 @@ export class PriceRangeComponent extends AddSectionToExcelSheet implements OnCha
           }
           this.totalCount += item.kpiValCount;
         });
+        this.totalCount = this.totalCount ? this.totalCount : 1;
       });
   }
 
