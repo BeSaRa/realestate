@@ -1,15 +1,15 @@
-import { inject, Injectable } from '@angular/core';
-import { delay, exhaustMap, map, Observable, ReplaySubject, Subject, tap } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
-import { UrlService } from '@services/url.service';
-import { CastResponse } from 'cast-response';
-import { Menus } from '@models/menus';
+import { inject, Injectable } from '@angular/core';
+import { ServiceContract } from '@contracts/service-contract';
+import { RegisterServiceMixin } from '@mixins/register-service-mixin';
 import { Menu } from '@models/menu';
 import { MenuItem } from '@models/menu-item';
-import { RegisterServiceMixin } from '@mixins/register-service-mixin';
-import { ServiceContract } from '@contracts/service-contract';
-import { UserService } from '@services/user.service';
+import { Menus } from '@models/menus';
 import { AuthService } from '@services/auth.service';
+import { UrlService } from '@services/url.service';
+import { UserService } from '@services/user.service';
+import { CastResponse } from 'cast-response';
+import { BehaviorSubject, delay, exhaustMap, map, Observable, ReplaySubject, Subject, tap } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
@@ -25,7 +25,7 @@ export class MenuService extends RegisterServiceMixin(class {}) implements Servi
   menus$ = new ReplaySubject<Menus>(1);
   filteredMenus$ = new ReplaySubject<Menus>(1);
   reload$ = new Subject<void>();
-  menuMap$ = new ReplaySubject<Record<string, MenuItem>>(0);
+  menuMap$ = new BehaviorSubject<Record<string, MenuItem>>({});
 
   constructor() {
     super();
@@ -62,6 +62,10 @@ export class MenuService extends RegisterServiceMixin(class {}) implements Servi
   private _waitIfThereIsLoadingInProgress(): Observable<Menus> {
     this.reload$.next();
     return this.filteredMenus$;
+  }
+
+  initLoad() {
+    return this._loadMenus().pipe(tap((menus) => this.menus$.next(menus)));
   }
 
   loadMenus(): Observable<Menus> {
@@ -111,20 +115,7 @@ export class MenuService extends RegisterServiceMixin(class {}) implements Servi
   private listenToMenuReload() {
     this.menus$
       .pipe(
-        map((menus) => {
-          return {
-            ...menus,
-            main_menu: {
-              ...menus.main_menu,
-              links: [
-                ...menus.main_menu.links.filter((link) => {
-                  return this.userCanAccessLink(link);
-                }),
-              ],
-            },
-            recent: [...menus.recent.filter((link) => this.userCanAccessLink(link))],
-          };
-        }),
+        map(this._filterMenu),
         tap((value) => {
           this.filteredMenus$.next(value);
         }),
@@ -138,4 +129,19 @@ export class MenuService extends RegisterServiceMixin(class {}) implements Servi
       )
       .subscribe();
   }
+
+  private _filterMenu = (menus: Menus) => {
+    return {
+      ...menus,
+      main_menu: {
+        ...menus.main_menu,
+        links: [
+          ...menus.main_menu.links.filter((link) => {
+            return this.userCanAccessLink(link);
+          }),
+        ],
+      },
+      recent: [...menus.recent.filter((link) => this.userCanAccessLink(link))],
+    };
+  };
 }
