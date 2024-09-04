@@ -1,4 +1,4 @@
-import { APP_INITIALIZER } from '@angular/core';
+import { APP_INITIALIZER, Injector } from '@angular/core';
 import { MatIconRegistry } from '@angular/material/icon';
 import { DomSanitizer } from '@angular/platform-browser';
 import { ConfigService } from '@services/config.service';
@@ -14,6 +14,7 @@ import { SplashService } from '@services/splash.service';
 import { UnitsService } from '@services/units.service';
 import { GoogleAnalyticsService } from '@services/google-analytics.service';
 import { DistrictSortService } from '@services/district-sort.service';
+import { MenuService } from '@services/menu.service';
 
 export const applicationInit = [
   {
@@ -31,11 +32,10 @@ export const applicationInit = [
       url: UrlService,
       translation: TranslationService,
       lookups: LookupService,
-
       tokenService: TokenService,
       userService: UserService,
       authService: AuthService,
-      sectionGuardService: SectionGuardService
+      injector: Injector
     ) => {
       return () =>
         forkJoin([config.load()])
@@ -48,7 +48,8 @@ export const applicationInit = [
           .pipe(tap(() => authService.refresh$.next('json')))
           .pipe(delay(0))
           .pipe(switchMap(() => (tokenService.getToken() ? userService.loadCurrentUserProfile() : of(true))))
-          .pipe(switchMap(() => sectionGuardService.load()));
+          .pipe(switchMap(() => injector.get(MenuService).initLoad()))
+          .pipe(switchMap(() => injector.get(SectionGuardService).load()));
     },
     deps: [
       ConfigService,
@@ -58,7 +59,7 @@ export const applicationInit = [
       TokenService,
       UserService,
       AuthService,
-      SectionGuardService,
+      Injector,
     ],
     multi: true,
   },
