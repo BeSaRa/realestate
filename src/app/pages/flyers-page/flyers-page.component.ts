@@ -167,6 +167,7 @@ export default class FlyersPageComponent extends OnDestroyMixin(class {}) implem
     this.listenToLangChange();
     this.listenToDurationTypeChange();
     this.listenToFormValueChange();
+    this.listenToIssueYearChange();
     this.duration.setValue(Durations.YEARLY);
   }
 
@@ -183,6 +184,7 @@ export default class FlyersPageComponent extends OnDestroyMixin(class {}) implem
         this.issueDateFrom.setValue(null, { emitEvent: false });
         this.issueDateTo.setValue(null, { emitEvent: false });
       } else if (d === Durations.MONTHLY) {
+        this._setMonths();
         this.quarter.setValue(null, { emitEvent: false });
         this.month.setValue(1, { emitEvent: false });
         this.issueDateFrom.setValue(null, { emitEvent: false });
@@ -199,6 +201,14 @@ export default class FlyersPageComponent extends OnDestroyMixin(class {}) implem
     this.form.valueChanges.pipe(takeUntil(this.destroy$), delay(150), debounceTime(150)).subscribe(() => {
       if (this.displayRange && (!this.issueDateFrom.value || !this.issueDateTo.value)) return;
       this.updateCriteria();
+    });
+  }
+
+  listenToIssueYearChange() {
+    this.year.valueChanges.pipe(takeUntil(this.destroy$)).subscribe((_) => {
+      if (this.duration.value === Durations.MONTHLY) {
+        this._setMonths();
+      }
     });
   }
 
