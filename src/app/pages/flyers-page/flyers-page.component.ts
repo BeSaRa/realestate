@@ -237,7 +237,11 @@ export default class FlyersPageComponent extends OnDestroyMixin(class {}) implem
         const _m = this.month.value;
         _criteria = { ..._criteria, issueDateMonth: _m, issueDateStartMonth: _m, issueDateEndMonth: _m };
       } else {
-        _criteria = { ..._criteria, issueDateStartMonth: 1, issueDateEndMonth: 12 };
+        _criteria = {
+          ..._criteria,
+          issueDateStartMonth: 1,
+          issueDateEndMonth: this.year.value === new Date().getFullYear() ? new Date().getMonth() + 1 : 12,
+        };
       }
     }
 
