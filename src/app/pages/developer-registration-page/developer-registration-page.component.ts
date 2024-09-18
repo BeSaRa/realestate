@@ -11,13 +11,18 @@ import { IconButtonComponent } from '@components/icon-button/icon-button.compone
 import { InputComponent } from '@components/input/input.component';
 import { AppIcons } from '@constants/app-icons';
 import { OnDestroyMixin } from '@mixins/on-destroy-mixin';
-import { DeveloperRegistration, LandDetails, OutsideProjects } from '@models/developer-registration';
+import {
+  CurrentOffPlanData,
+  DeveloperRegistration,
+  LandDetails,
+  OutsideProjects,
+} from '@models/developer-registration';
 import { DeveloperRegistrationService } from '@services/developer-registration.service';
 import { ToastService } from '@services/toast.service';
 import { TranslationService } from '@services/translation.service';
 import { CustomValidators } from '@validators/custom-validators';
 import { RECAPTCHA_SETTINGS, RecaptchaComponent, RecaptchaModule } from 'ng-recaptcha';
-import { catchError, finalize, takeUntil, throwError } from 'rxjs';
+import { catchError, combineLatest, finalize, takeUntil, throwError } from 'rxjs';
 
 @Component({
   selector: 'app-developer-registration-page',
@@ -90,6 +95,16 @@ export default class DeveloperRegistrationPageComponent extends OnDestroyMixin(c
       implementedOffPlan: ['', []],
       currentOffPlan: ['', []],
       futureOffPlan: ['', []],
+
+      currentOffPlanData: this.fb.array<
+        FormGroup<{
+          projectName: FormControl<string | null>;
+          buildingLicenseNo: FormControl<number | null>;
+          projectStartDate: FormControl<string | null>;
+          projectExpectedEndDate: FormControl<string | null>;
+          projectCompletionPercentage: FormControl<number | null>;
+        }>
+      >([]),
     }),
 
     soldOffPlan: this.fb.group({
@@ -147,6 +162,14 @@ export default class DeveloperRegistrationPageComponent extends OnDestroyMixin(c
     return this.form.controls.insideQatar;
   }
 
+  get currentOffPlan() {
+    return this.form.controls.insideQatar.controls.currentOffPlan;
+  }
+
+  get currentOffPlanData() {
+    return this.form.controls.insideQatar.controls.currentOffPlanData;
+  }
+
   get soldOffPlan() {
     return this.form.controls.soldOffPlan;
   }
@@ -186,6 +209,7 @@ export default class DeveloperRegistrationPageComponent extends OnDestroyMixin(c
   ngOnInit(): void {
     this.listenToHasProjectsOutsideQatarChange();
     this.listenToHasOffPlanChange();
+    this.listenToHasOffPlanAndCurrentChange();
   }
 
   listenToHasProjectsOutsideQatarChange() {
@@ -202,6 +226,34 @@ export default class DeveloperRegistrationPageComponent extends OnDestroyMixin(c
         c.updateValueAndValidity({ emitEvent: false });
       });
     });
+  }
+
+  listenToHasOffPlanAndCurrentChange() {
+    combineLatest([this.hasOffPlanProjects.valueChanges, this.currentOffPlan.valueChanges])
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(([hasOffplan, currentOfPlan]) => {
+        if (!hasOffplan || !currentOfPlan) this.currentOffPlanData.clear();
+      });
+  }
+
+  hasCurrentOffPlanProjects() {
+    return this.hasOffPlanProjects.value && this.currentOffPlan.value;
+  }
+
+  addCurrentOffPlanProjects() {
+    const group = this.fb.group({
+      projectName: ['' as string | null, [CustomValidators.required]],
+      buildingLicenseNo: [null as number | null, [CustomValidators.required, CustomValidators.number]],
+      projectStartDate: ['' as string | null, [CustomValidators.required]],
+      projectExpectedEndDate: ['' as string | null, [CustomValidators.required]],
+      projectCompletionPercentage: [null as number | null, [CustomValidators.required, CustomValidators.number]],
+    });
+
+    this.currentOffPlanData.push(group);
+  }
+
+  deleteCurrentProjects(index: number) {
+    this.currentOffPlanData.removeAt(index);
   }
 
   addOutsideProjects() {
@@ -252,6 +304,20 @@ export default class DeveloperRegistrationPageComponent extends OnDestroyMixin(c
     );
   }
 
+  onCurrentProjectStartDateChange(projectIndex: number) {
+    const _control = this.currentOffPlanData.at(projectIndex).controls.projectStartDate;
+    _control.patchValue(_control.value ? this.datePipe.transform(_control.value, 'YYY-MM-dd') : '', {
+      emitEvent: false,
+    });
+  }
+
+  onCurrentProjectExpectedEndDateChange(projectIndex: number) {
+    const _control = this.currentOffPlanData.at(projectIndex).controls.projectExpectedEndDate;
+    _control.patchValue(_control.value ? this.datePipe.transform(_control.value, 'YYY-MM-dd') : '', {
+      emitEvent: false,
+    });
+  }
+
   onSubmit() {
     if (!this.form.valid) {
       this.form.markAllAsTouched();
@@ -295,6 +361,16 @@ export default class DeveloperRegistrationPageComponent extends OnDestroyMixin(c
   }
 
   private _toModel() {
+    const _currentOffPlanData = this.currentOffPlanData.value.map((v) =>
+      new CurrentOffPlanData().clone<CurrentOffPlanData>({
+        projectName: v.projectName as string,
+        buildingLicenseNo: v.buildingLicenseNo as unknown as number,
+        projectStartDate: v.projectStartDate as string,
+        projectExpectedEndDate: v.projectExpectedEndDate as string,
+        projectCompletionPercentage: v.projectCompletionPercentage as unknown as number,
+      })
+    );
+
     const _outsideProjects = this.outsideProjects.value.map((v) =>
       new OutsideProjects().clone<OutsideProjects>({
         country: v.country as string,
@@ -344,6 +420,7 @@ export default class DeveloperRegistrationPageComponent extends OnDestroyMixin(c
       hasOffPlanProjects: this.insideProjects.value.hasOffPlanProjects as unknown as boolean,
       implementedOffPlan: this.insideProjects.value.implementedOffPlan as unknown as number,
       currentOffPlan: this.insideProjects.value.currentOffPlan as unknown as number,
+      currentOffPlanData: _currentOffPlanData,
       futureOffPlan: this.insideProjects.value.futureOffPlan as unknown as number,
 
       soldVillasNo: this.soldOffPlan.value.villasNo as unknown as number,

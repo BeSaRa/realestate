@@ -30,6 +30,7 @@ export class DeveloperRegistration extends ClonerMixin(class {}) {
   hasOffPlanProjects!: boolean;
   implementedOffPlan!: number;
   currentOffPlan!: number;
+  currentOffPlanData!: CurrentOffPlanData[];
   futureOffPlan!: number;
 
   soldVillasNo!: number;
@@ -43,6 +44,16 @@ export class DeveloperRegistration extends ClonerMixin(class {}) {
   landsNo!: number;
   mortgagedLandsNo!: number;
   lands!: LandDetails[];
+}
+
+export class CurrentOffPlanData extends ClonerMixin(class {}) {
+  id!: number;
+  projectName!: string;
+  buildingLicenseNo!: number;
+  projectStartDate!: string;
+  projectExpectedEndDate!: string;
+  projectCompletionPercentage!: number;
+  registration_id!: number;
 }
 
 export class OutsideProjects extends ClonerMixin(class {}) {
