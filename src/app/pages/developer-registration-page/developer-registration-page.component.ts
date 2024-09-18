@@ -252,43 +252,46 @@ export default class DeveloperRegistrationPageComponent extends OnDestroyMixin(c
     );
   }
 
-  onRecaptchaResolved(token: string) {
-    if (!token) return;
-    this.isRecaptchaResolved = true;
-    this.isWaitingForRecaptchaResolve = false;
-  }
-
-  register() {
+  onSubmit() {
+    if (!this.form.valid) {
+      this.form.markAllAsTouched();
+      return;
+    }
+    if (this.isSaving) return;
     if (!this.isRecaptchaResolved) {
       this.isRecaptchaVisible = true;
       this.isWaitingForRecaptchaResolve = true;
     } else {
-      if (!this.form.valid) {
-        this.form.markAllAsTouched();
-        return;
-      }
-
-      if (this.isSaving) return;
-
-      this.isSaving = true;
-      this.developerRegistrationService
-        .saveItem(this._toModel())
-        .pipe(
-          finalize(() => {
-            this.isSaving = false;
-            this.isRecaptchaResolved = false;
-            this.isRecaptchaVisible = false;
-            this.recaptcha.reset();
-          }),
-          catchError((err) => {
-            this.toast.error(this.lang.map.an_error_occured_while_saving_developer_data_please_try_again);
-            return throwError(() => err);
-          })
-        )
-        .subscribe(() => {
-          this.router.navigate(['../developer-registration-success'], { relativeTo: this.route });
-        });
+      this.register();
     }
+  }
+
+  onRecaptchaResolved(token: string) {
+    if (!token) return;
+    this.isRecaptchaResolved = true;
+    this.isWaitingForRecaptchaResolve = false;
+    this.register();
+  }
+
+  register() {
+    this.isSaving = true;
+    this.developerRegistrationService
+      .saveItem(this._toModel())
+      .pipe(
+        finalize(() => {
+          this.isSaving = false;
+          this.isRecaptchaResolved = false;
+          this.isRecaptchaVisible = false;
+          this.recaptcha.reset();
+        }),
+        catchError((err) => {
+          this.toast.error(this.lang.map.an_error_occured_while_saving_developer_data_please_try_again);
+          return throwError(() => err);
+        })
+      )
+      .subscribe(() => {
+        this.router.navigate(['../developer-registration-success'], { relativeTo: this.route });
+      });
   }
 
   private _toModel() {
