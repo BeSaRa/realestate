@@ -285,7 +285,7 @@
       size="normal"
       [siteKey]="recaptchaSettings.siteKey!"
       (resolved)="onRecaptchaResolved($event)"></re-captcha
-    ><app-button buttonStyle="primary" size="lg" (click)="register()"
+    ><app-button [disabled]="isWaitingForRecaptchaResolve" buttonStyle="primary" size="lg" (click)="onSubmit()"
       >@if(isSaving){<mat-spinner diameter="30" strokeWidth="3"></mat-spinner>} @else{
       {{ lang.map.register }} }</app-button
     >
