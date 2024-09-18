@@ -90,8 +90,11 @@ export class InputComponent implements ControlValueAccessor, OnInit, OnDestroy, 
   }
 
   ngOnInit(): void {
-    this.labelColor = this.isSecondary ? 'text-gray-500' : 'text-black';
-    this.borderColor = this.isSecondary ? 'border-gray-500' : 'border-black';
+    if (this.isSecondary) {
+      this.labelColor = 'text-gray-500';
+      this.borderColor = 'border-gray-500';
+    }
+
     this.ctrl = this.injector.get(NgControl, null, {
       self: true,
       optional: true,
