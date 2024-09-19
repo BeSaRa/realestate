@@ -10,6 +10,7 @@ import { ButtonComponent } from '@components/button/button.component';
 import { IconButtonComponent } from '@components/icon-button/icon-button.component';
 import { InputComponent } from '@components/input/input.component';
 import { AppIcons } from '@constants/app-icons';
+import { CustomTooltipDirective } from '@directives/custom-tooltip.directive';
 import { OnDestroyMixin } from '@mixins/on-destroy-mixin';
 import {
   CurrentOffPlanData,
@@ -22,7 +23,7 @@ import { ToastService } from '@services/toast.service';
 import { TranslationService } from '@services/translation.service';
 import { CustomValidators } from '@validators/custom-validators';
 import { RECAPTCHA_SETTINGS, RecaptchaComponent, RecaptchaModule } from 'ng-recaptcha';
-import { catchError, combineLatest, finalize, takeUntil, throwError } from 'rxjs';
+import { catchError, combineLatest, debounceTime, finalize, merge, takeUntil, throwError } from 'rxjs';
 
 @Component({
   selector: 'app-developer-registration-page',
@@ -38,6 +39,7 @@ import { catchError, combineLatest, finalize, takeUntil, throwError } from 'rxjs
     MatIconModule,
     MatProgressSpinnerModule,
     RecaptchaModule,
+    CustomTooltipDirective,
   ],
   templateUrl: './developer-registration-page.component.html',
   styleUrl: './developer-registration-page.component.scss',
@@ -166,6 +168,14 @@ export default class DeveloperRegistrationPageComponent extends OnDestroyMixin(c
     return this.form.controls.insideQatar.controls.currentOffPlan;
   }
 
+  get implementedOffPlan() {
+    return this.form.controls.insideQatar.controls.implementedOffPlan;
+  }
+
+  get futureOffPlan() {
+    return this.form.controls.insideQatar.controls.futureOffPlan;
+  }
+
   get currentOffPlanData() {
     return this.form.controls.insideQatar.controls.currentOffPlanData;
   }
@@ -209,7 +219,7 @@ export default class DeveloperRegistrationPageComponent extends OnDestroyMixin(c
   ngOnInit(): void {
     this.listenToHasProjectsOutsideQatarChange();
     this.listenToHasOffPlanChange();
-    this.listenToHasOffPlanAndCurrentChange();
+    this.listenToOffPlanChange();
   }
 
   listenToHasProjectsOutsideQatarChange() {
@@ -228,16 +238,25 @@ export default class DeveloperRegistrationPageComponent extends OnDestroyMixin(c
     });
   }
 
-  listenToHasOffPlanAndCurrentChange() {
-    combineLatest([this.hasOffPlanProjects.valueChanges, this.currentOffPlan.valueChanges])
+  listenToOffPlanChange() {
+    merge(
+      this.hasOffPlanProjects.valueChanges,
+      this.implementedOffPlan.valueChanges,
+      this.currentOffPlan.valueChanges,
+      this.futureOffPlan.valueChanges
+    )
       .pipe(takeUntil(this.destroy$))
-      .subscribe(([hasOffplan, currentOfPlan]) => {
-        if (!hasOffplan || !currentOfPlan) this.currentOffPlanData.clear();
+      .subscribe(() => {
+        if (
+          !this.hasOffPlanProjects.value ||
+          (!this.implementedOffPlan.value && !this.currentOffPlan.value && !this.futureOffPlan.value)
+        )
+          this.currentOffPlanData.clear();
       });
   }
 
-  hasCurrentOffPlanProjects() {
-    return this.hasOffPlanProjects.value && this.currentOffPlan.value;
+  hasOffPlanProjectsValues() {
+    return this.implementedOffPlan.value || this.currentOffPlan.value || this.futureOffPlan.value;
   }
 
   addCurrentOffPlanProjects() {
