@@ -134,17 +134,15 @@
 
       <app-input
         [ngClass]="{ '!hidden ': !hasOffPlanProjects.value }"
-        formControlName="currentOffPlan"
-        type="number"
-        labelColor="!text-primary"
-        bgColor="!bg-secondary/5"
-        [label]="lang.map.number_of_current_off_plan_sales_projects"></app-input>
-
-      <app-input
-        [ngClass]="{ '!hidden ': !hasOffPlanProjects.value }"
         formControlName="implementedOffPlan"
         type="number"
         [label]="lang.map.number_of_implemented_off_plan_sales_projects"></app-input>
+
+      <app-input
+        [ngClass]="{ '!hidden ': !hasOffPlanProjects.value }"
+        formControlName="currentOffPlan"
+        type="number"
+        [label]="lang.map.number_of_current_off_plan_sales_projects"></app-input>
 
       <app-input
         [ngClass]="{ '!hidden': !hasOffPlanProjects.value }"
@@ -152,86 +150,88 @@
         type="number"
         [label]="lang.map.number_of_future_off_plan_sales_projects"></app-input>
 
-      @if (hasCurrentOffPlanProjects()) {
-      <h4 class="res-col-span text-center text-2xl text-primary font-semibold">
-        {{ lang.map.current_off_plan_sales_projects_data }}
-      </h4>
-      }
+      <div class="res-col-span" [ngClass]="{ '!hidden': !hasOffPlanProjects.value }">
+        <h4 class="text-center text-2xl text-primary font-semibold">
+          {{ lang.map.off_plan_sales_projects_data }}
+        </h4>
 
-      <ng-container formGroupName="currentOffPlanData">
-        @for (item of currentOffPlanData.controls; let i = $index; track i) {
-        <div
-          class="relative mt-4 mb-6 res-col-span flex-1 p-4 pb-8 res-grid-cols items-center gap-2 border border-primary/40 rounded-md">
-          <app-input [formControl]="item.controls.projectName" [label]="lang.map.project_name"></app-input>
-          <app-input
-            [formControl]="item.controls.buildingLicenseNo"
-            [label]="lang.map.building_license_number"></app-input>
+        <ng-container formGroupName="currentOffPlanData">
+          @for (item of currentOffPlanData.controls; let i = $index; track i) {
+          <div
+            class="relative mt-4 mb-6 res-col-span flex-1 p-4 pb-8 res-grid-cols items-center gap-2 border border-primary/40 rounded-md">
+            <app-input [formControl]="item.controls.projectName" [label]="lang.map.project_name"></app-input>
+            <app-input
+              [formControl]="item.controls.buildingLicenseNo"
+              [label]="lang.map.building_license_number"></app-input>
 
-          <app-input
-            [formControl]="item.controls.projectStartDate"
-            [label]="lang.map.project_start_date"
-            (keydown)="$event.preventDefault()">
-            <input
-              appControl
+            <app-input
               [formControl]="item.controls.projectStartDate"
-              (keydown)="$event.preventDefault()"
-              [max]="todayDate"
-              (click)="startDatepicker.open()"
-              (dateChange)="onCurrentProjectStartDateChange(i)"
-              [matDatepicker]="startDatepicker" />
-            <mat-icon
-              mat-ripple
-              appInputSuffix
-              (click)="startDatepicker.open()"
-              class="cursor-pointer mx-2"
-              [svgIcon]="AppIcons.DATE"></mat-icon>
-            <mat-datepicker [touchUi]="true" #startDatepicker />
-          </app-input>
+              [label]="lang.map.project_start_date"
+              (keydown)="$event.preventDefault()">
+              <input
+                appControl
+                [formControl]="item.controls.projectStartDate"
+                (keydown)="$event.preventDefault()"
+                [max]="todayDate"
+                (click)="startDatepicker.open()"
+                (dateChange)="onCurrentProjectStartDateChange(i)"
+                [matDatepicker]="startDatepicker" />
+              <mat-icon
+                mat-ripple
+                appInputSuffix
+                (click)="startDatepicker.open()"
+                class="cursor-pointer mx-2"
+                [svgIcon]="AppIcons.DATE"></mat-icon>
+              <mat-datepicker [touchUi]="true" #startDatepicker />
+            </app-input>
 
-          <app-input
-            [formControl]="item.controls.projectExpectedEndDate"
-            [label]="lang.map.project_expected_end_date"
-            (keydown)="$event.preventDefault()">
-            <input
-              appControl
+            <app-input
               [formControl]="item.controls.projectExpectedEndDate"
-              (keydown)="$event.preventDefault()"
-              [min]="todayDate"
-              (click)="endDatepicker.open()"
-              (dateChange)="onCurrentProjectExpectedEndDateChange(i)"
-              [matDatepicker]="endDatepicker" />
-            <mat-icon
-              mat-ripple
-              appInputSuffix
-              (click)="endDatepicker.open()"
-              class="cursor-pointer mx-2"
-              [svgIcon]="AppIcons.DATE"></mat-icon>
-            <mat-datepicker [touchUi]="true" #endDatepicker />
-          </app-input>
+              [label]="lang.map.project_expected_end_date"
+              (keydown)="$event.preventDefault()">
+              <input
+                appControl
+                [formControl]="item.controls.projectExpectedEndDate"
+                (keydown)="$event.preventDefault()"
+                [min]="todayDate"
+                (click)="endDatepicker.open()"
+                (dateChange)="onCurrentProjectExpectedEndDateChange(i)"
+                [matDatepicker]="endDatepicker" />
+              <mat-icon
+                mat-ripple
+                appInputSuffix
+                (click)="endDatepicker.open()"
+                class="cursor-pointer mx-2"
+                [svgIcon]="AppIcons.DATE"></mat-icon>
+              <mat-datepicker [touchUi]="true" #endDatepicker />
+            </app-input>
 
-          <app-input
-            [formControl]="item.controls.projectCompletionPercentage"
-            type="number"
-            [label]="lang.map.project_current_completion_percentage"></app-input>
+            <app-input
+              [formControl]="item.controls.projectCompletionPercentage"
+              type="number"
+              [label]="lang.map.project_current_completion_percentage"></app-input>
+            <app-icon-button
+              (clicked)="deleteCurrentProjects(i)"
+              class="absolute start-1/2 bottom-0 translate-y-[40%] ltr:translate-x-[-50%] rtl:translate-x-[50%] text-primary border-2 rounded-full border-primary"
+              backgroundColor="!bg-white"
+              icon="DELETE"></app-icon-button>
+          </div>
+          }
+        </ng-container>
+
+        <div class="res-col-span relative flex items-center justify-center">
+          <span class="w-full absolute top-1/2 border border-primary"></span>
           <app-icon-button
-            (clicked)="deleteCurrentProjects(i)"
-            class="absolute start-1/2 bottom-0 translate-y-[40%] ltr:translate-x-[-50%] rtl:translate-x-[50%] text-primary border-2 rounded-full border-primary"
-            backgroundColor="!bg-white"
-            icon="DELETE"></app-icon-button>
+            appCustomTooltip
+            [tooltipContent]="hasOffPlanProjectsValues() ? null : offPlanTooltip"
+            [tooltipContentContext]="null"
+            [tooltipPosition]="{ originX: 'center', overlayX: 'center', originY: 'bottom', overlayY: 'top' }"
+            (clicked)="hasOffPlanProjectsValues() ? addCurrentOffPlanProjects() : null"
+            icon="PLUS"
+            class="text-white"
+            backgroundColor="!bg-primary"></app-icon-button>
         </div>
-        }
-      </ng-container>
-
-      @if (hasCurrentOffPlanProjects()) {
-      <div class="res-col-span relative flex items-center justify-center">
-        <span class="w-full absolute top-1/2 border border-primary"></span>
-        <app-icon-button
-          (clicked)="addCurrentOffPlanProjects()"
-          icon="PLUS"
-          class="text-white"
-          backgroundColor="!bg-primary"></app-icon-button>
       </div>
-      }
     </div>
 
     <div formGroupName="soldOffPlan" class="info-section">
@@ -377,3 +377,9 @@
     >
   </div>
 </div>
+
+<ng-template #offPlanTooltip>
+  <div class="text-white font-bold p-1 bg-black/75">
+    {{ lang.map.off_plan_projects_count_should_be_added_to_add_data }}
+  </div>
+</ng-template>
