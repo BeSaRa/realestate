@@ -1,6 +1,6 @@
 import { CommonModule, DatePipe } from '@angular/common';
 import { Component, inject, OnInit, ViewChild } from '@angular/core';
-import { FormBuilder, FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { AbstractControl, FormArray, FormBuilder, FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
@@ -23,7 +23,7 @@ import { ToastService } from '@services/toast.service';
 import { TranslationService } from '@services/translation.service';
 import { CustomValidators } from '@validators/custom-validators';
 import { RECAPTCHA_SETTINGS, RecaptchaComponent, RecaptchaModule } from 'ng-recaptcha';
-import { catchError, combineLatest, debounceTime, finalize, merge, takeUntil, throwError } from 'rxjs';
+import { catchError, finalize, merge, takeUntil, throwError } from 'rxjs';
 
 @Component({
   selector: 'app-developer-registration-page',
@@ -97,6 +97,10 @@ export default class DeveloperRegistrationPageComponent extends OnDestroyMixin(c
       implementedOffPlan: ['', []],
       currentOffPlan: ['', []],
       futureOffPlan: ['', []],
+      villasNo: ['', []],
+      apartmentsNo: ['', []],
+      commercialNo: ['', []],
+      otherNo: ['', []],
 
       currentOffPlanData: this.fb.array<
         FormGroup<{
@@ -105,15 +109,12 @@ export default class DeveloperRegistrationPageComponent extends OnDestroyMixin(c
           projectStartDate: FormControl<string | null>;
           projectExpectedEndDate: FormControl<string | null>;
           projectCompletionPercentage: FormControl<number | null>;
+          villasNo: FormControl<number | null>;
+          apartmentsNo: FormControl<number | null>;
+          commercialNo: FormControl<number | null>;
+          otherNo: FormControl<number | null>;
         }>
       >([]),
-    }),
-
-    soldOffPlan: this.fb.group({
-      villasNo: ['', [CustomValidators.required, CustomValidators.number]],
-      apartmentsNo: ['', [CustomValidators.required, CustomValidators.number]],
-      commercialNo: ['', [CustomValidators.required, CustomValidators.number]],
-      otherNo: ['', [CustomValidators.required, CustomValidators.number]],
     }),
 
     outsideQatar: this.fb.group({
@@ -132,8 +133,8 @@ export default class DeveloperRegistrationPageComponent extends OnDestroyMixin(c
     }),
 
     lands: this.fb.group({
-      landsNo: ['', [CustomValidators.required, CustomValidators.number]],
-      mortgagedLandsNo: ['', [CustomValidators.required, CustomValidators.number]],
+      // landsNo: ['', [CustomValidators.required, CustomValidators.number]],
+      // mortgagedLandsNo: ['', [CustomValidators.required, CustomValidators.number]],
       landsData: this.fb.array<
         FormGroup<{
           titleDeedNo: FormControl<string | null>;
@@ -180,10 +181,6 @@ export default class DeveloperRegistrationPageComponent extends OnDestroyMixin(c
     return this.form.controls.insideQatar.controls.currentOffPlanData;
   }
 
-  get soldOffPlan() {
-    return this.form.controls.soldOffPlan;
-  }
-
   get outsideProjects() {
     return this.form.controls.outsideQatar.controls.projectsOutsideQatar;
   }
@@ -209,6 +206,9 @@ export default class DeveloperRegistrationPageComponent extends OnDestroyMixin(c
       this.form.controls.insideQatar.controls.implementedOffPlan,
       this.form.controls.insideQatar.controls.currentOffPlan,
       this.form.controls.insideQatar.controls.futureOffPlan,
+      this.form.controls.insideQatar.controls.apartmentsNo,
+      this.form.controls.insideQatar.controls.commercialNo,
+      this.form.controls.insideQatar.controls.villasNo,
     ];
   }
 
@@ -217,6 +217,17 @@ export default class DeveloperRegistrationPageComponent extends OnDestroyMixin(c
   }
 
   ngOnInit(): void {
+    this.form.controls.insideQatar.addValidators([
+      (group: AbstractControl) => {
+        return (group as FormGroup).controls['hasOffPlanProjects'].value &&
+          (group as FormGroup).controls['currentOffPlan'].value &&
+          (group as FormGroup).controls['currentOffPlan'].value !==
+            ((group as FormGroup).controls['currentOffPlanData'] as FormArray).length
+          ? { error: 'CURRENT_OFF_PLAN_ERROR' }
+          : null;
+      },
+    ]);
+
     this.listenToHasProjectsOutsideQatarChange();
     this.listenToHasOffPlanChange();
     this.listenToOffPlanChange();
@@ -239,24 +250,21 @@ export default class DeveloperRegistrationPageComponent extends OnDestroyMixin(c
   }
 
   listenToOffPlanChange() {
-    merge(
-      this.hasOffPlanProjects.valueChanges,
-      this.implementedOffPlan.valueChanges,
-      this.currentOffPlan.valueChanges,
-      this.futureOffPlan.valueChanges
-    )
+    merge(this.hasOffPlanProjects.valueChanges, this.currentOffPlan.valueChanges)
       .pipe(takeUntil(this.destroy$))
       .subscribe(() => {
-        if (
-          !this.hasOffPlanProjects.value ||
-          (!this.implementedOffPlan.value && !this.currentOffPlan.value && !this.futureOffPlan.value)
-        )
-          this.currentOffPlanData.clear();
+        if (!this.hasOffPlanProjects.value || !this.currentOffPlan.value) this.currentOffPlanData.clear();
       });
   }
 
-  hasOffPlanProjectsValues() {
-    return this.implementedOffPlan.value || this.currentOffPlan.value || this.futureOffPlan.value;
+  canAddOffPlanProjectsData() {
+    return (
+      this.currentOffPlan.value && (this.currentOffPlan.value as unknown as number) > this.currentOffPlanData.length
+    );
+  }
+
+  hasCorrectCountOfOffplanCurrentProjects() {
+    return (this.currentOffPlan.value as unknown as number) === this.currentOffPlanData.length;
   }
 
   addCurrentOffPlanProjects() {
@@ -266,6 +274,10 @@ export default class DeveloperRegistrationPageComponent extends OnDestroyMixin(c
       projectStartDate: ['' as string | null, [CustomValidators.required]],
       projectExpectedEndDate: ['' as string | null, [CustomValidators.required]],
       projectCompletionPercentage: [null as number | null, [CustomValidators.required, CustomValidators.number]],
+      villasNo: [null as number | null, [CustomValidators.required, CustomValidators.number]],
+      apartmentsNo: [null as number | null, [CustomValidators.required, CustomValidators.number]],
+      commercialNo: [null as number | null, [CustomValidators.required, CustomValidators.number]],
+      otherNo: [null as number | null, [CustomValidators.number]],
     });
 
     this.currentOffPlanData.push(group);
@@ -338,6 +350,7 @@ export default class DeveloperRegistrationPageComponent extends OnDestroyMixin(c
   }
 
   onSubmit() {
+    console.log(this.form.value);
     if (!this.form.valid) {
       this.form.markAllAsTouched();
       return;
@@ -387,6 +400,10 @@ export default class DeveloperRegistrationPageComponent extends OnDestroyMixin(c
         projectStartDate: v.projectStartDate as string,
         projectExpectedEndDate: v.projectExpectedEndDate as string,
         projectCompletionPercentage: v.projectCompletionPercentage as unknown as number,
+        villasNo: v.projectCompletionPercentage as unknown as number,
+        apartmentsNo: v.projectCompletionPercentage as unknown as number,
+        commercialNo: v.projectCompletionPercentage as unknown as number,
+        otherNo: v.projectCompletionPercentage as unknown as number,
       })
     );
 
@@ -442,17 +459,17 @@ export default class DeveloperRegistrationPageComponent extends OnDestroyMixin(c
       currentOffPlanData: _currentOffPlanData,
       futureOffPlan: this.insideProjects.value.futureOffPlan as unknown as number,
 
-      soldVillasNo: this.soldOffPlan.value.villasNo as unknown as number,
-      soldApartmentsNo: this.soldOffPlan.value.apartmentsNo as unknown as number,
-      soldCommercialNo: this.soldOffPlan.value.commercialNo as unknown as number,
-      otherNo: this.soldOffPlan.value.otherNo as unknown as number,
+      soldVillasNo: this.insideProjects.value.villasNo as unknown as number,
+      soldApartmentsNo: this.insideProjects.value.apartmentsNo as unknown as number,
+      soldCommercialNo: this.insideProjects.value.commercialNo as unknown as number,
+      otherNo: this.insideProjects.value.otherNo as unknown as number,
 
       hasProjectsOutsideQatar: this.hasProjectsOutsideQatar.value as unknown as boolean,
       outside_projects: _outsideProjects,
 
-      landsNo: this.form.controls.lands.value.landsNo as unknown as number,
-      mortgagedLandsNo: this.form.controls.lands.value.mortgagedLandsNo as unknown as number,
-      lands: _lands,
+      // landsNo: this.form.controls.lands.value.landsNo as unknown as number,
+      // mortgagedLandsNo: this.form.controls.lands.value.mortgagedLandsNo as unknown as number,
+      // lands: _lands,
     });
   }
 }

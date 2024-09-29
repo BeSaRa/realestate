@@ -53,6 +53,10 @@ export class CurrentOffPlanData extends ClonerMixin(class {}) {
   projectStartDate!: string;
   projectExpectedEndDate!: string;
   projectCompletionPercentage!: number;
+  villasNo!: number;
+  apartmentsNo!: number;
+  commercialNo!: number;
+  otherNo!: number;
   registration_id!: number;
 }
 
