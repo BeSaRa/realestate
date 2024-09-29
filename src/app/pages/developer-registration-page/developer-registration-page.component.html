@@ -139,6 +139,8 @@
         [label]="lang.map.number_of_implemented_off_plan_sales_projects"></app-input>
 
       <app-input
+        labelColor="text-primary"
+        bgColor="bg-secondary/5"
         [ngClass]="{ '!hidden ': !hasOffPlanProjects.value }"
         formControlName="currentOffPlan"
         type="number"
@@ -150,9 +152,36 @@
         type="number"
         [label]="lang.map.number_of_future_off_plan_sales_projects"></app-input>
 
+      @if(hasOffPlanProjects.value) {
+      <h4 class="res-col-span text-center text-2xl text-primary font-semibold mb-2">
+        {{ lang.map.units_sold_off_plan }}
+      </h4>
+      }
+
+      <app-input
+        [ngClass]="{ '!hidden': !hasOffPlanProjects.value }"
+        formControlName="villasNo"
+        type="number"
+        [label]="lang.map.total_villas"></app-input>
+      <app-input
+        [ngClass]="{ '!hidden': !hasOffPlanProjects.value }"
+        formControlName="apartmentsNo"
+        type="number"
+        [label]="lang.map.total_apartments"></app-input>
+      <app-input
+        [ngClass]="{ '!hidden': !hasOffPlanProjects.value }"
+        formControlName="commercialNo"
+        type="number"
+        [label]="lang.map.total_commercial"></app-input>
+      <app-input
+        [ngClass]="{ '!hidden': !hasOffPlanProjects.value }"
+        formControlName="otherNo"
+        type="number"
+        [label]="lang.map.other"></app-input>
+
       <div class="res-col-span" [ngClass]="{ '!hidden': !hasOffPlanProjects.value }">
         <h4 class="text-center text-2xl text-primary font-semibold">
-          {{ lang.map.off_plan_sales_projects_data }}
+          {{ lang.map.current_off_plan_sales_projects_data }}
         </h4>
 
         <ng-container formGroupName="currentOffPlanData">
@@ -210,6 +239,18 @@
               [formControl]="item.controls.projectCompletionPercentage"
               type="number"
               [label]="lang.map.project_current_completion_percentage"></app-input>
+
+            <app-input [formControl]="item.controls.villasNo" type="number" [label]="lang.map.villas"></app-input>
+            <app-input
+              [formControl]="item.controls.apartmentsNo"
+              type="number"
+              [label]="lang.map.apartments"></app-input>
+            <app-input
+              [formControl]="item.controls.commercialNo"
+              type="number"
+              [label]="lang.map.commercial"></app-input>
+            <app-input [formControl]="item.controls.otherNo" type="number" [label]="lang.map.other"></app-input>
+
             <app-icon-button
               (clicked)="deleteCurrentProjects(i)"
               class="absolute start-1/2 bottom-0 translate-y-[40%] ltr:translate-x-[-50%] rtl:translate-x-[50%] text-primary border-2 rounded-full border-primary"
@@ -219,29 +260,23 @@
           }
         </ng-container>
 
+        @if (currentOffPlan.value && !hasCorrectCountOfOffplanCurrentProjects()) {
+        <p class="text-amber-700">* {{ lang.map.data_for_all_current_off_plan_projects_must_be_added }}</p>
+        }
+
         <div class="res-col-span relative flex items-center justify-center">
           <span class="w-full absolute top-1/2 border border-primary"></span>
           <app-icon-button
             appCustomTooltip
-            [tooltipContent]="hasOffPlanProjectsValues() ? null : offPlanTooltip"
+            [tooltipContent]="canAddOffPlanProjectsData() ? null : offPlanTooltip"
             [tooltipContentContext]="null"
             [tooltipPosition]="{ originX: 'center', overlayX: 'center', originY: 'bottom', overlayY: 'top' }"
-            (clicked)="hasOffPlanProjectsValues() ? addCurrentOffPlanProjects() : null"
+            (clicked)="canAddOffPlanProjectsData() ? addCurrentOffPlanProjects() : null"
             icon="PLUS"
             class="text-white"
             backgroundColor="!bg-primary"></app-icon-button>
         </div>
       </div>
-    </div>
-
-    <div formGroupName="soldOffPlan" class="info-section">
-      <h3 class="info-section-title">
-        {{ lang.map.units_sold_off_plan }}
-      </h3>
-      <app-input formControlName="villasNo" type="number" [label]="lang.map.villas"></app-input>
-      <app-input formControlName="apartmentsNo" type="number" [label]="lang.map.apartments"></app-input>
-      <app-input formControlName="commercialNo" type="number" [label]="lang.map.commercial"></app-input>
-      <app-input formControlName="otherNo" type="number" [label]="lang.map.other"></app-input>
     </div>
 
     <ng-container formGroupName="outsideQatar">
@@ -311,7 +346,7 @@
           </div></div
       ></ng-container>
     </ng-container>
-    <div formGroupName="lands" class="info-section">
+    <!-- <div formGroupName="lands" class="info-section">
       <h3 class="info-section-title">
         {{ lang.map.data_on_lands_owned_by_company }}
       </h3>
@@ -361,7 +396,7 @@
           class="text-white"
           backgroundColor="!bg-primary"></app-icon-button>
       </div>
-    </div>
+    </div> -->
   </div>
   <div class="my-4 flex gap-4 items-start justify-end">
     <re-captcha
@@ -379,7 +414,11 @@
 </div>
 
 <ng-template #offPlanTooltip>
-  <div class="text-white font-bold p-1 bg-black/75">
-    {{ lang.map.off_plan_projects_count_should_be_added_to_add_data }}
+  <div class="text-white text-center font-bold p-1 bg-black/75 max-w-[300px]">
+    {{
+      hasCorrectCountOfOffplanCurrentProjects()
+        ? lang.map.it_is_not_possible_to_add_data_for_more_projects_than_the_actual_number_of_current_projects
+        : lang.map.off_plan_projects_count_should_be_added_to_add_data
+    }}
   </div>
 </ng-template>

@@ -545,15 +545,20 @@ export interface LangKeysContract {
   number_of_implemented_off_plan_sales_projects: string;
   number_of_current_off_plan_sales_projects: string;
   number_of_future_off_plan_sales_projects: string;
-  off_plan_sales_projects_data: string;
+  current_off_plan_sales_projects_data: string;
   project_name: string;
   building_license_number: string;
   project_start_date: string;
   project_expected_end_date: string;
   project_current_completion_percentage: string;
   off_plan_projects_count_should_be_added_to_add_data: string;
+  it_is_not_possible_to_add_data_for_more_projects_than_the_actual_number_of_current_projects: string;
+  data_for_all_current_off_plan_projects_must_be_added: string;
 
   units_sold_off_plan: string;
+  total_villas: string;
+  total_apartments: string;
+  total_commercial: string;
   villas: string;
   apartments: string;
   other: string;
