@@ -1,6 +1,6 @@
 import { CommonModule, DatePipe } from '@angular/common';
 import { Component, inject, OnInit, ViewChild } from '@angular/core';
-import { AbstractControl, FormArray, FormBuilder, FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { FormBuilder, FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
@@ -217,17 +217,6 @@ export default class DeveloperRegistrationPageComponent extends OnDestroyMixin(c
   }
 
   ngOnInit(): void {
-    this.form.controls.insideQatar.addValidators([
-      (group: AbstractControl) => {
-        return (group as FormGroup).controls['hasOffPlanProjects'].value &&
-          (group as FormGroup).controls['currentOffPlan'].value &&
-          (group as FormGroup).controls['currentOffPlan'].value !==
-            ((group as FormGroup).controls['currentOffPlanData'] as FormArray).length
-          ? { error: 'CURRENT_OFF_PLAN_ERROR' }
-          : null;
-      },
-    ]);
-
     this.listenToHasProjectsOutsideQatarChange();
     this.listenToHasOffPlanChange();
     this.listenToOffPlanChange();
@@ -253,38 +242,27 @@ export default class DeveloperRegistrationPageComponent extends OnDestroyMixin(c
     merge(this.hasOffPlanProjects.valueChanges, this.currentOffPlan.valueChanges)
       .pipe(takeUntil(this.destroy$))
       .subscribe(() => {
-        if (!this.hasOffPlanProjects.value || !this.currentOffPlan.value) this.currentOffPlanData.clear();
+        this.currentOffPlanData.clear();
+        if (this.hasOffPlanProjects.value && this.currentOffPlan.value) this.addCurrentOffPlanProjects();
       });
   }
 
-  canAddOffPlanProjectsData() {
-    return (
-      this.currentOffPlan.value && (this.currentOffPlan.value as unknown as number) > this.currentOffPlanData.length
-    );
-  }
-
-  hasCorrectCountOfOffplanCurrentProjects() {
-    return (this.currentOffPlan.value as unknown as number) === this.currentOffPlanData.length;
-  }
-
   addCurrentOffPlanProjects() {
-    const group = this.fb.group({
-      projectName: ['' as string | null, [CustomValidators.required]],
-      buildingLicenseNo: [null as number | null, [CustomValidators.required, CustomValidators.number]],
-      projectStartDate: ['' as string | null, [CustomValidators.required]],
-      projectExpectedEndDate: ['' as string | null, [CustomValidators.required]],
-      projectCompletionPercentage: [null as number | null, [CustomValidators.required, CustomValidators.number]],
-      villasNo: [null as number | null, [CustomValidators.required, CustomValidators.number]],
-      apartmentsNo: [null as number | null, [CustomValidators.required, CustomValidators.number]],
-      commercialNo: [null as number | null, [CustomValidators.required, CustomValidators.number]],
-      otherNo: [null as number | null, [CustomValidators.number]],
-    });
-
-    this.currentOffPlanData.push(group);
-  }
-
-  deleteCurrentProjects(index: number) {
-    this.currentOffPlanData.removeAt(index);
+    for (let i = 0; i < (this.currentOffPlan.value as unknown as number); i++) {
+      this.currentOffPlanData.push(
+        this.fb.group({
+          projectName: ['' as string | null, [CustomValidators.required]],
+          buildingLicenseNo: [null as number | null, [CustomValidators.required, CustomValidators.number]],
+          projectStartDate: ['' as string | null, [CustomValidators.required]],
+          projectExpectedEndDate: ['' as string | null, [CustomValidators.required]],
+          projectCompletionPercentage: [null as number | null, [CustomValidators.required, CustomValidators.number]],
+          villasNo: [null as number | null, [CustomValidators.required, CustomValidators.number]],
+          apartmentsNo: [null as number | null, [CustomValidators.required, CustomValidators.number]],
+          commercialNo: [null as number | null, [CustomValidators.required, CustomValidators.number]],
+          otherNo: [null as number | null, [CustomValidators.number]],
+        })
+      );
+    }
   }
 
   addOutsideProjects() {
@@ -320,37 +298,33 @@ export default class DeveloperRegistrationPageComponent extends OnDestroyMixin(c
   }
 
   onLicenseDateChange() {
-    this.licenseDate.patchValue(
-      this.licenseDate.value ? this.datePipe.transform(this.licenseDate.value, 'YYY-MM-dd') : '',
-      { emitEvent: false }
-    );
+    this.licenseDate.patchValue(this.licenseDate.value ? this._transformDate(this.licenseDate.value) : '', {
+      emitEvent: false,
+    });
   }
 
   onEstablishmentExpirationDateChange() {
     this.establishmentExpirationDate.patchValue(
-      this.establishmentExpirationDate.value
-        ? this.datePipe.transform(this.establishmentExpirationDate.value, 'YYY-MM-dd')
-        : '',
+      this.establishmentExpirationDate.value ? this._transformDate(this.establishmentExpirationDate.value) : '',
       { emitEvent: false }
     );
   }
 
   onCurrentProjectStartDateChange(projectIndex: number) {
     const _control = this.currentOffPlanData.at(projectIndex).controls.projectStartDate;
-    _control.patchValue(_control.value ? this.datePipe.transform(_control.value, 'YYY-MM-dd') : '', {
+    _control.patchValue(_control.value ? this._transformDate(_control.value) : '', {
       emitEvent: false,
     });
   }
 
   onCurrentProjectExpectedEndDateChange(projectIndex: number) {
     const _control = this.currentOffPlanData.at(projectIndex).controls.projectExpectedEndDate;
-    _control.patchValue(_control.value ? this.datePipe.transform(_control.value, 'YYY-MM-dd') : '', {
+    _control.patchValue(_control.value ? this._transformDate(_control.value) : '', {
       emitEvent: false,
     });
   }
 
   onSubmit() {
-    console.log(this.form.value);
     if (!this.form.valid) {
       this.form.markAllAsTouched();
       return;
@@ -471,5 +445,9 @@ export default class DeveloperRegistrationPageComponent extends OnDestroyMixin(c
       // mortgagedLandsNo: this.form.controls.lands.value.mortgagedLandsNo as unknown as number,
       // lands: _lands,
     });
+  }
+
+  private _transformDate(date: any) {
+    return this.datePipe.transform(date, 'yyyy-MM-dd', undefined);
   }
 }
