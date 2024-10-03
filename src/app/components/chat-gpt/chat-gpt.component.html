@@ -59,6 +59,10 @@
             lang.map
               .welcome_to_the_smart_assistant_of_the_real_estate_platform_you_can_inquire_about_all_the_real_estate_data_of_the_platform
           }}</span>
+          <p>
+            <span class="font-bold">- {{ lang.map.notice }}: </span
+            >{{ lang.map.answers_are_based_on_ai_technology_and_may_be_subject_to_error }}
+          </p>
         </div>
         @for (message of messages; track message) { @if (isMe(message)) {
         <div @slideMessage [ngClass]="{ ltr: lang.isLtr, rtl: !lang.isLtr }" class="me">
