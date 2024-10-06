@@ -374,10 +374,10 @@ export default class DeveloperRegistrationPageComponent extends OnDestroyMixin(c
         projectStartDate: v.projectStartDate as string,
         projectExpectedEndDate: v.projectExpectedEndDate as string,
         projectCompletionPercentage: v.projectCompletionPercentage as unknown as number,
-        villasNo: v.projectCompletionPercentage as unknown as number,
-        apartmentsNo: v.projectCompletionPercentage as unknown as number,
-        commercialNo: v.projectCompletionPercentage as unknown as number,
-        otherNo: v.projectCompletionPercentage as unknown as number,
+        villasNo: v.villasNo as unknown as number,
+        apartmentsNo: v.apartmentsNo as unknown as number,
+        commercialNo: v.commercialNo as unknown as number,
+        otherNo: v.otherNo as unknown as number,
       })
     );
 
