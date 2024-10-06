@@ -24,10 +24,7 @@
     <div
       [ngClass]="{ 'clipped-header': !lang.isLtr, 'clipped-header-ltr': lang.isLtr }"
       class="bg-gradient-to-l ltr:bg-gradient-to-r from-primary/90 to-gray-800/90 absolute inset-0 bg-cover bg-center h-[450px] w-full pt-32 px-3 lg:px-10">
-      <div
-        *ngIf="(portalService.portal$ | async) === undefined"
-        class="h-60 flex flex-col justify-center"
-        id="logo-side">
+      <div *ngIf="(portalService.portal$ | async) === undefined" class="flex flex-col justify-center" id="logo-side">
         <h1 class="text-3xl sm:text-4xl md:text-5xl font-semibold">{{ lang.map.qatar_real_estate_platform }}</h1>
         <h2 class="text-xl sm:text-2xl md:text-3xl font-semibold">
           {{ lang.toggleMap.qatar_real_estate_platform }} -
@@ -42,8 +39,8 @@
       </div>
       <div
         *ngIf="portalService.portal$ | async as portal"
-        class="flex flex-col justify-start -mt-4 lg:mt-0 lg:flex-row lg:justify-between items-center h-60">
-        <div class="h-60 flex flex-col justify-center items-center lg:items-start" id="logo-side">
+        class="flex flex-col justify-start lg:flex-row lg:justify-between items-center">
+        <div class="flex flex-col justify-center items-center lg:items-start" id="logo-side">
           <h1 class="text-3xl sm:text-4xl md:text-5xl font-semibold">{{ lang.map.qatar_real_estate_platform }}</h1>
           <h2 class="text-xl sm:text-2xl md:text-3xl font-semibold">
             {{ lang.toggleMap.qatar_real_estate_platform }} -
@@ -55,7 +52,7 @@
             {{ subTitle }}
           </h2>
         </div>
-        <div id="slider-side" class="flex flex-col gap-2 text-sm md:text-base -mt-10 lg:mt-0">
+        <div id="slider-side" class="flex flex-col gap-2 text-sm md:text-base">
           <ng-container [cdkPortalOutlet]="portal"></ng-container>
         </div>
       </div>
