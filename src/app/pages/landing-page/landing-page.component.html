@@ -1,6 +1,6 @@
 <ng-container *appExtraHeaderPortal>
   <app-slider [list]="(sliderContent$ | async)!">
-    <div class="py-10" *appSliderTemplate="let item">
+    <div *appSliderTemplate="let item">
       <div class="bg-black/50 gap-1 lg:gap-3 pt-1 lg:py-5 my-2 px-5 rounded-xl flex flex-col items-center">
         <p class="text-sm sm:text-base">{{ item.getCountTitle() }}</p>
         <p class="text-xl sm:text-3xl text-secondary font-bold">{{ item.kpiCount | number }}</p>
