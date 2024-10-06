@@ -255,7 +255,10 @@ export default class DeveloperRegistrationPageComponent extends OnDestroyMixin(c
           buildingLicenseNo: [null as number | null, [CustomValidators.required, CustomValidators.number]],
           projectStartDate: ['' as string | null, [CustomValidators.required]],
           projectExpectedEndDate: ['' as string | null, [CustomValidators.required]],
-          projectCompletionPercentage: [null as number | null, [CustomValidators.required, CustomValidators.number]],
+          projectCompletionPercentage: [
+            null as number | null,
+            [CustomValidators.required, CustomValidators.number, CustomValidators.maxValue(100)],
+          ],
           villasNo: [null as number | null, [CustomValidators.required, CustomValidators.number]],
           apartmentsNo: [null as number | null, [CustomValidators.required, CustomValidators.number]],
           commercialNo: [null as number | null, [CustomValidators.required, CustomValidators.number]],
