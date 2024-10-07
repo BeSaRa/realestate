@@ -8,7 +8,7 @@
         <span class="news-date mb-2 flex items-center text-xl text-white py-1 px-2 bg-primary rounded-xl gap-x-4">
           <mat-icon [svgIcon]="icons.CLOCK"></mat-icon>
           <span class="text-xl">{{
-            newsItemData.date_created | date : "longDate" : "UTC" : lang.getCurrent().code
+            newsItemData.date_created | date : "longDate" : undefined : lang.getCurrent().code
           }}</span>
         </span>
         <div class="overflow-hidden mt-10 rounded-2xl">

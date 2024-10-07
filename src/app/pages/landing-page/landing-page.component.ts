@@ -48,7 +48,7 @@ export default class LandingPageComponent extends OnDestroyMixin(class {}) {
 
   sliderContent$ = this.dashboardService.loadHomeSliderData(this.urlService.URLS.HOME_SLIDER);
 
-  newsData = this.newsService.load({ limit: 4 });
+  newsData = this.newsService.load({ limit: 4, sort: '-date_created' });
 
   getSliderValue(value: number) {
     return formatNumber(value);

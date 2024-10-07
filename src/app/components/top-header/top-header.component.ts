@@ -84,7 +84,7 @@ export class TopHeaderComponent implements OnInit, OnDestroy {
 
   onFocus(isInit = false) {
     this.newsService
-      .load()
+      .load({ sort: '-date_created' })
       .pipe(
         takeUntil(this.destroy$),
         tap((news) => (this.news = news)),

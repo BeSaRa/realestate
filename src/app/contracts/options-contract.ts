@@ -1,4 +1,5 @@
 export interface OptionsContract {
-  limit: number;
+  limit?: number;
   filter?: any;
+  sort?: string;
 }
