@@ -17,7 +17,7 @@
           <span class="news-date mb-2 items-center flex text-sm text-white py-1 px-2 bg-primary rounded-xl gap-x-2">
             <mat-icon [svgIcon]="icons.CLOCK"></mat-icon>
             <span class="inline-block align-bottom">{{
-              newsItemData.date_created | date : "longDate" : "UTC" : lang.getCurrent().code
+              newsItemData.date_created | date : "longDate" : undefined : lang.getCurrent().code
             }}</span>
           </span>
         </div>

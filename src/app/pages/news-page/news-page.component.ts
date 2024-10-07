@@ -14,7 +14,7 @@ import { NewsListComponent } from 'src/app/components/news-list/news-list.compon
 })
 export default class NewsPageComponent {
   newsService = inject(NewsService);
-  newsData = this.newsService.load();
+  newsData = this.newsService.load({ sort: '-date_created' });
 
   lang = inject(TranslationService);
 }
