@@ -35,6 +35,11 @@ export abstract class CmsService<T, PrimaryType = number>
     return this.urlService.URLS.BASE_URL + '/assets/' + fileId;
   }
 
+  // noinspection JSUnusedGlobalSymbols
+  loadThumbnail(fileId: string): string {
+    return this.loadFile(fileId + '?key=thumbnail');
+  }
+
   saveItem(item: T) {
     return this.http.post(this.urlService.URLS.BASE_URL + '/items/' + this.collectionName, item);
   }
