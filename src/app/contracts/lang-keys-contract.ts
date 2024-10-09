@@ -588,4 +588,5 @@ export interface LangKeysContract {
   number_of_project_units: string;
 
   answers_are_based_on_ai_technology_and_may_be_subject_to_error: string;
+  authority_news: string;
 }

@@ -13,4 +13,5 @@ import { NewsItemComponent } from '@components/news-item/news-item.component';
 export class RelatedNewsListComponent {
   @Input({ required: true }) title!: string;
   @Input({ required: true }) newsData!: News[];
+  @Input() panelClass!: string;
 }

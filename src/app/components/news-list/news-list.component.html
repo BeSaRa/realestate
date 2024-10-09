@@ -1,7 +1,7 @@
 <div class="flex justify-center">
-  <div class="w-full lg:w-3/4 flex flex-col gap-y-10" id="news-wrapper">
+  <div class="w-full flex flex-col gap-y-10" id="news-wrapper">
     <h1 class="heading text-3xl self-start text-primary border-secondary font-semibold inline-block">{{ title }}</h1>
-    <div class="news-list grid grid-cols-1 lg:grid-cols-2 gap-10">
+    <div class="news-list grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10 items-stretch">
       <app-news-item *ngFor="let newsItem of newsData" [newsItemData]="newsItem" />
     </div>
     <!-- news list-->
