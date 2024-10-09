@@ -1,35 +1,29 @@
 <ng-container *ngIf="type === 'full'">
-  <div class="news-item flex flex-col md:flex-row h-fit lg:h-72">
-    <div class="h-72 shadow-xl rounded-xl group w-full lg:w-2/6">
-      <a
-        [routerLink]="['/news', newsItemData.id]"
-        href="#"
-        class="news-background overflow-hidden inline-flex w-full h-full bg-primary relative rounded-xl">
+  <a [routerLink]="['/news', newsItemData.id]" href="#" class="flex flex-col">
+    <div class="h-[250px] group w-full">
+      <span class="news-background overflow-hidden inline-flex w-full h-full bg-primary relative">
         <div
           style="background-image: url('{{ newsItemData.imageUrl }}');"
-          class="w-full h-full bg-cover group-hover:scale-125 transition-transform"></div>
-        <div class="bg-gradient-to-t w-full h-full from-black/80 absolute bottom-0 right-0 left-0"></div>
-        <div class="news-title flex flex-col items-start absolute bottom-0 right-0 left-0 px-2">
-          <span class="flex flex-auto"></span>
-          <h2 class="text-lg text-white text-ellipsis line-clamp-3">
-            {{ newsItemData.title }}
-          </h2>
-          <span class="news-date mb-2 items-center flex text-sm text-white py-1 px-2 bg-primary rounded-xl gap-x-2">
-            <mat-icon [svgIcon]="icons.CLOCK"></mat-icon>
-            <span class="inline-block align-bottom">{{
-              newsItemData.date_created | date : "longDate" : undefined : lang.getCurrent().code
-            }}</span>
-          </span>
-        </div>
-      </a>
+          class="w-full h-full bg-cover bg-center group-hover:scale-125 transition-transform"></div>
+
+        <span class="absolute top-0 start-0 items-center flex text-sm text-white p-3 bg-primary">
+          {{ newsItemData.date_created | date : "longDate" : undefined : lang.getCurrent().code }}
+        </span>
+      </span>
     </div>
-    <div class="news-content w-full lg:w-4/6 px-2 flex flex-col justify-between">
-      <div>
+    <div class="w-full px-4 py-5">
+      <div class="flex flex-col justify-between">
         <div
           class="news-tags flex gap-x-2 [&>a]:bg-gray-200 [&>a]:px-1 [&>a]:text-sm [&>a]:py-1 [&>a:hover]:bg-gray-400 [&>a]:rounded">
           <a *ngFor="let tag of newsItemData.tags" (click)="$event.preventDefault()" href="#">{{ tag }}</a>
         </div>
-        <p class="news-excerpt text-lg overflow-hidden flex-auto text-ellipsis line-clamp-[7] mt-5">
+        <span class="text-sm text-gray-400 font-bold">{{ lang.map.authority_news }}</span>
+        <h2 class="mt-2 text-lg text-primary font-bold text-ellipsis line-clamp-3">
+          {{ newsItemData.title }}
+        </h2>
+
+        <div class="my-1 w-full h-0 border-b border-b-primary/20"></div>
+        <p class="mt-4 overflow-hidden flex-auto text-ellipsis line-clamp-[7]">
           {{ newsItemData.excerpt }}
         </p>
       </div>
@@ -39,7 +33,7 @@
       <!--        <app-icon-button icon="TWITTER"></app-icon-button>-->
       <!--      </div>-->
     </div>
-  </div>
+  </a>
 </ng-container>
 
 <ng-container *ngIf="type === 'concise'">

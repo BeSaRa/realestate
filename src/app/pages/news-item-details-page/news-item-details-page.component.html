@@ -1,8 +1,9 @@
-<div class="content-wrapper p-10">
+<div class="content-wrapper p-2 lg:p-10">
   <div class="flex justify-center">
-    <div class="w-5/6 grid grid-cols-4 gap-5">
-      <div class="col-span-3 p-10 shadow-sm rounded-xl border">
-        <h1 class="heading text-3xl self-start text-primary border-secondary font-semibold inline-block mb-5">
+    <div class="xl:w-5/6 grid grid-cols-1 lg:grid-cols-4 gap-5">
+      <div class="lg:col-span-3 p-4 sm:p-10 shadow-sm rounded-xl border">
+        <h1
+          class="heading text-3xl text-center lg:text-start text-primary border-secondary font-semibold inline-block mb-5">
           {{ newsItemData.title }}
         </h1>
         <span class="news-date mb-2 flex items-center text-xl text-white py-1 px-2 bg-primary rounded-xl gap-x-4">
@@ -11,10 +12,10 @@
             newsItemData.date_created | date : "longDate" : undefined : lang.getCurrent().code
           }}</span>
         </span>
-        <div class="overflow-hidden mt-10 rounded-2xl">
+        <div class="overflow-hidden lg:mt-5 rounded-2xl">
           <img class="w-full" [src]="newsItemData.imageUrl" [alt]="newsItemData.title" />
         </div>
-        <div class="mt-10 mb-5 w-full h-0 border-b border-b-primary"></div>
+        <div class="mt-5 mb-5 w-full h-0 border-b border-b-primary"></div>
         <div
           class="news-tags flex gap-x-2 [&>a]:bg-gray-200 [&>a]:px-2 [&>a]:text-xl [&>a]:py-1 [&>a:hover]:bg-gray-400 [&>a]:rounded-lg">
           <a *ngFor="let tag of newsItemData.tags" (click)="$event.preventDefault()" href="#">{{ tag }}</a>
@@ -30,7 +31,10 @@
       </div>
       <ng-container *ngIf="relatedNews.length">
         <div class="col-span-1 self-baseline py-4 px-2 shadow-sm rounded-xl border">
-          <app-related-news-list [title]="lang.map.related_news" [newsData]="relatedNews"></app-related-news-list></div
+          <app-related-news-list
+            panelClass="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-1 justify-center items-center gap-2"
+            [title]="lang.map.related_news"
+            [newsData]="relatedNews"></app-related-news-list></div
       ></ng-container>
     </div>
   </div>
