@@ -1,4 +1,5 @@
-<div class="h-[500px] xl:h-80 relative text-white">
+<!-- h-[500px] xl:h-80 -->
+<div class="h-80 relative text-white">
   <div class="absolute inset-0 bg-pattern">
     <div class="absolute inset-0 bg-gradient-to-t from-transparent to-white to-100%"></div>
   </div>
@@ -18,11 +19,12 @@
   </svg>
   <div
     [ngClass]="{ 'clipped-footer': !lang.isLtr, 'clipped-footer-ltr': lang.isLtr }"
-    class="clipped-footer px-10 h-[420px] md:h-[420px] xl:h-60 w-full bg-footer ltr:bg-footer-ltr bg-cover absolute top-8 right-0 left-0"></div>
+    class="clipped-footer px-10 h-60 w-full bg-footer ltr:bg-footer-ltr bg-cover absolute top-8 right-0 left-0"></div>
+  <!-- h-[420px] md:h-[420px] xl:h-60 pt-32 xl:pt-16 -->
   <div
     id="top-footer"
     [ngClass]="{ 'clipped-footer': !lang.isLtr, 'clipped-footer-ltr': lang.isLtr }"
-    class="px-0 sm:px-10 pt-32 xl:pt-16 h-[420px] md:h-[420px] xl:h-60 w-full bg-gradient-to-r ltr:bg-gradient-to-l from-primary/90 to-gray-800/90 absolute top-8 right-0 left-0 xl:flex grid auto-rows-min gap-8 grid-cols-12 items-center md:justify-between">
+    class="px-0 sm:px-10 pt-16 h-60 w-full bg-gradient-to-r ltr:bg-gradient-to-l from-primary/90 to-gray-800/90 absolute top-8 right-0 left-0 xl:flex grid auto-rows-min gap-8 grid-cols-12 items-center md:justify-between">
     <div class="col-span-5 md:col-span-6 flex xl:block justify-end md:justify-center xl:justify-start">
       <ul id="top-footer-menu" class="flex flex-col items-start">
         <li *ngFor="let link of footerMenu?.links ?? []">
@@ -71,8 +73,9 @@
     <!--      </ul>-->
     <!--    </div>-->
     <!-- top-footer-app-downloads -->
-    <div id="useful-links" class="col-span-12 md:col-span-6">
-      <ul id="useful-links-menu" class="flex justify-center gap-x-3">
+    <div id="useful-links" class="hidden md:block col-span-6">
+      <!-- <div id="useful-links" class="col-span-12 md:col-span-6"> -->
+      <!-- <ul id="useful-links-menu" class="flex justify-center gap-x-3">
         <li class="bg-gradient-to-b from-white via-gray-300 to-white rounded-2xl p-2">
           <a
             class="w-20 sm:w-32 md:w-24 xl:w-32 h-full flex items-center justify-center"
@@ -97,7 +100,7 @@
             <img class="h-auto w-auto" ngSrc="assets/images/expo.png" height="40" width="71" alt="expo site" />
           </a>
         </li>
-      </ul>
+      </ul> -->
     </div>
     <!-- useful-links-->
   </div>

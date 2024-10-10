@@ -5,6 +5,7 @@ export enum ChatResponseFormat {
   OTHER = 'OTHER',
   ERROR = 'ERROR',
   INVALID = 'INVALID',
+  AVG = 'AVG',
 }
 export interface ChatResponseContract {
   responseFormat: ChatResponseFormat;

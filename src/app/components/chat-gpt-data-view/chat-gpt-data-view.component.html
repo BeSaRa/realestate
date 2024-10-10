@@ -17,7 +17,17 @@
     </div>
   </div>
 </div>
-} @else { @if (isColumnsCountLarge || isAxisUnknown) {
+} @else { @if (isAvg) {
+<div class="notice-message" [ngClass]="{ ltr: lang.isLtr, rtl: !lang.isLtr }">
+  <span
+    ><span class="font-bold">{{ lang.map.note }}:</span>
+    {{
+      lang.map
+        .to_obtain_accurate_average_results_please_specify_the_municipality_district_property_type_and_property_use
+    }}</span
+  >
+</div>
+} @if (isColumnsCountLarge || isAxisUnknown) {
 <div class="notice-message" [ngClass]="{ ltr: lang.isLtr, rtl: !lang.isLtr }">
   <span
     ><span class="font-bold">{{ lang.map.note }}:</span>
