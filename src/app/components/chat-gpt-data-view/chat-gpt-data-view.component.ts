@@ -58,6 +58,10 @@ export class ChatGptDataViewComponent implements OnInit {
     return this.data.responseFormat === ChatResponseFormat.CHART && (!this.getChartYAxis() || !this.getChartXAxis());
   }
 
+  get isAvg() {
+    return this.data.responseFormat === ChatResponseFormat.AVG;
+  }
+
   ngOnInit(): void {
     if (!this.data) return;
     if (this.data.response.length) {
@@ -94,7 +98,7 @@ export class ChatGptDataViewComponent implements OnInit {
     )
       return cell;
 
-    return this.decimalPipe.transform(cell);
+    return this.decimalPipe.transform(cell, '1.0-0');
   }
 
   private _setDataColumnsTypes() {
@@ -150,7 +154,7 @@ export class ChatGptDataViewComponent implements OnInit {
   }
 
   getYValue(index: number) {
-    return (this.getChartYAxis() ? this.data.response[index][this.getChartYAxis()!] : 0) as number;
+    return Math.round((this.getChartYAxis() ? this.data.response[index][this.getChartYAxis()!] : 0) as number);
   }
 
   getXValue(index: number) {
