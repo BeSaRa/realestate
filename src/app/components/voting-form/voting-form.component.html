@@ -12,20 +12,19 @@
   <div class="flex flex-col w-full lg:w-3/4 gap-y-5">
     <h2 class="text-xl text-primary">{{ vote && vote.title }}</h2>
     <div class="border rounded-xl p-5 border-secondary/50">
-      <mat-radio-group
-        *ngIf="!vote?.voted"
-        class="flex flex-col"
-        [formControl]="voteControl"
-        aria-label="Select an option">
+      <!-- @if (!vote?.voted) { -->
+      <mat-radio-group class="flex flex-col" [formControl]="voteControl" aria-label="Select an option">
+        <!-- || (vote && vote.voted) -->
         <mat-radio-button
-          [disabled]="isLoading || (vote && vote.voted)"
+          [disabled]="isLoading"
           *ngFor="let item of vote?.vote_items ?? []"
           class="font-semibold text-primary"
           [value]="item.id"
           >{{ item.title }}</mat-radio-button
         >
       </mat-radio-group>
-      <div *ngIf="vote?.voted" class="flex flex-col gap-4">
+      <!-- } -->
+      <!-- <div *ngIf="vote?.voted" class="flex flex-col gap-4">
         <div
           *ngFor="let item of vote?.vote_items"
           class="relative w-full px-2 py-1 flex justify-between items-center border border-secondary rounded-full overflow-hidden">
@@ -38,11 +37,11 @@
           </div>
           <span class="relative text-primary">{{ item.counts / getTotalVotes() | percent }}</span>
         </div>
-      </div>
+      </div> -->
     </div>
 
+    <!-- @if (!vote?.voted) { -->
     <app-button
-      *ngIf="!vote?.voted"
       [disabled]="isLoading || !this.voteControl.valid || isWaitingForRecaptchaResolve"
       (click)="onSubmit()"
       class="self-center"
@@ -50,6 +49,7 @@
       ><span *ngIf="!isLoading">{{ lang.map.send }}</span>
       <mat-spinner diameter="20" strokeWidth="2" *ngIf="isLoading"></mat-spinner
     ></app-button>
+    <!-- } -->
     <span *ngIf="vote?.voted" class="text-primary flex items-center gap-2">
       <mat-icon class="text-secondary" [svgIcon]="appIcons.CHECK_OUTLINE"></mat-icon>
       {{ lang.map.you_have_successfully_voted_on_this_poll }}</span
