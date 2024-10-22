@@ -119,7 +119,7 @@ export const indicatorRouteToType = {
   [IndicatorsRoutes.MORTGAGE]: 'mortgage',
   [IndicatorsRoutes.OWNERSHIP]: 'owner',
   [IndicatorsRoutes.OCCUPIED_AND_VACANT]: 'ov',
-  [IndicatorsRoutes.BROKERS]: 'broker',
+  // [IndicatorsRoutes.BROKERS]: 'broker',
   [IndicatorsRoutes.GENERAL_SECRETARIAT]: 'rent',
 } as Record<IndicatorsRoutes, IndicatorType>;
 

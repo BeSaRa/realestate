@@ -123,10 +123,10 @@ export const routes: Routes = [
         path: 'inputs',
         loadComponent: () => import('@pages/inputs-page/inputs-page.component'),
       },
-      {
-        path: 'broker-indicators',
-        loadComponent: () => import('@pages/broker-indicators-page/broker-indicators-page.component'),
-      },
+      // {
+      //   path: 'broker-indicators',
+      //   loadComponent: () => import('@pages/broker-indicators-page/broker-indicators-page.component'),
+      // },
       {
         path: 'not-found',
         loadComponent: () => import('@pages/not-found-page/not-found-page.component'),

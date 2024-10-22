@@ -7,7 +7,7 @@ export enum IndicatorsRoutes {
   OWNERSHIP = '/ownership-indicators',
   OCCUPIED_AND_VACANT = '/occupied-and-vacant-indicators',
   FORECASTING = '/forecasting-indicators',
-  BROKERS = '/broker-indicators',
+  // BROKERS = '/broker-indicators',
   GENERAL_SECRETARIAT = '/general-secretariat',
 }
 
@@ -18,6 +18,6 @@ export const IndicatorsRoutesToLangKey: Record<IndicatorsRoutes, keyof LangKeysC
   [IndicatorsRoutes.OWNERSHIP]: 'ownership_indicator',
   [IndicatorsRoutes.OCCUPIED_AND_VACANT]: 'occupied_and_vacant_indicator',
   [IndicatorsRoutes.FORECASTING]: 'forecasting_indicator',
-  [IndicatorsRoutes.BROKERS]: 'brokers',
+  // [IndicatorsRoutes.BROKERS]: 'brokers',
   [IndicatorsRoutes.GENERAL_SECRETARIAT]: 'general_secretariat_report',
 };
