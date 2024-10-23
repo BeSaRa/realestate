@@ -50,10 +50,10 @@
       <mat-spinner diameter="20" strokeWidth="2" *ngIf="isLoading"></mat-spinner
     ></app-button>
     <!-- } -->
-    <span *ngIf="vote?.voted" class="text-primary flex items-center gap-2">
+    <!-- <span *ngIf="vote?.voted" class="text-primary flex items-center gap-2">
       <mat-icon class="text-secondary" [svgIcon]="appIcons.CHECK_OUTLINE"></mat-icon>
       {{ lang.map.you_have_successfully_voted_on_this_poll }}</span
-    >
+    > -->
     <div class="flex justify-center">
       <re-captcha
         #recaptcha

@@ -60,6 +60,7 @@ export class NewsletterFormComponent extends OnDestroyMixin(class {}) {
     if (!token) return;
     this.isRecaptchaResolved = true;
     this.isWaitingForRecaptchaResolve = false;
+    this._subscribe();
   }
 
   private _subscribe() {
