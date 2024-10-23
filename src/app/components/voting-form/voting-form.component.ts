@@ -11,6 +11,7 @@ import { createItem } from '@directus/sdk';
 import { OnDestroyMixin } from '@mixins/on-destroy-mixin';
 import { Vote } from '@models/vote';
 import { DirectusClientService } from '@services/directus-client.service';
+import { ToastService } from '@services/toast.service';
 import { TranslationService } from '@services/translation.service';
 import { UrlService } from '@services/url.service';
 import { RECAPTCHA_SETTINGS, RecaptchaComponent, RecaptchaModule } from 'ng-recaptcha';
@@ -39,6 +40,7 @@ export class VotingFormComponent extends OnDestroyMixin(class {}) implements OnI
   urlService = inject(UrlService);
   directusClient = inject(DirectusClientService);
   lang = inject(TranslationService);
+  toast = inject(ToastService);
   recaptchaSettings = inject(RECAPTCHA_SETTINGS);
 
   voteControl = new FormControl<number | undefined>(undefined, [Validators.required]);
@@ -81,6 +83,7 @@ export class VotingFormComponent extends OnDestroyMixin(class {}) implements OnI
     if (!token) return;
     this.isRecaptchaResolved = true;
     this.isWaitingForRecaptchaResolve = false;
+    this._vote();
   }
 
   private _vote() {
@@ -94,6 +97,7 @@ export class VotingFormComponent extends OnDestroyMixin(class {}) implements OnI
       .pipe(
         takeUntil(this.destroy$),
         switchMap(() => this.http.get<Vote>(this.urlService.URLS.MAIN_VOTE)),
+        tap(() => this.toast.success(this.lang.map.you_have_successfully_voted_on_this_poll)),
         tap((_vote) => (this.vote = _vote)),
         tap(() => (this.isLoading = false)),
         finalize(() => {
