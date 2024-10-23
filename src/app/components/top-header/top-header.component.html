@@ -36,9 +36,16 @@
   </div>
   <!-- search header-->
   <ul id="top-header-menu" class="flex items-center gap-x-3 divide-items">
-    <button *ngIf="!authService.isAuthenticated()" mat-button [matMenuTriggerFor]="beforeMenu">
-      {{ lang.map.login }}
-    </button>
+    <li>
+      <a [href]="config.CONFIG.MAIN_AUTHORITY_WEBSITE_URL" mat-button>
+        {{ lang.map.authority_main_website }}
+      </a>
+    </li>
+    <li *ngIf="!authService.isAuthenticated()">
+      <button mat-button [matMenuTriggerFor]="beforeMenu">
+        {{ lang.map.login }}
+      </button>
+    </li>
     <mat-menu #beforeMenu="matMenu" [xPosition]="xPosition">
       <button mat-menu-item (click)="openLoginPopup()">
         <mat-icon class="icon !h-8 !w-12 !text-xs" svgIcon="account"></mat-icon>
@@ -55,8 +62,7 @@
     </mat-menu>
     <li *ngIf="authService.isAuthenticated()">
       <button class="text-white" (click)="showUserPreference()" mat-button>
-        <a class="text-white">{{ lang.map.welcome }}</a
-        ><a class="text-xl text-secondary underline"> {{ userService.currentUser?.first_name }}</a>
+        <a class="text-xl text-secondary underline"> {{ userService.currentUser?.first_name }}</a>
       </button>
     </li>
     <li *ngIf="authService.isAuthenticated()">

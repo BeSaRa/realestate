@@ -8,5 +8,6 @@
     "RECAPTCHA_TOKEN_VALIDATION_URL": "https://www.google.com/recaptcha/api/siteverify",
     "SITE_KEY": "6LdCzaYoAAAAAM5TiiaGOBBWZSaApQvQwnUgO87x",
     "SECRET_KEY": "6LdCzaYoAAAAAGoZrAynPhj1o93D9cXnKzrBn7Ve"
-  }
+  },
+  "MAIN_AUTHORITY_WEBSITE_URL": "https://www.aqarat.gov.qa/"
 }
