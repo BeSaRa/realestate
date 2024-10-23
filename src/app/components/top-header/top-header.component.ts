@@ -12,6 +12,7 @@ import { NewsItemComponent } from '@components/news-item/news-item.component';
 import { UserClick } from '@enums/user-click';
 import { News } from '@models/news';
 import { AuthService } from '@services/auth.service';
+import { ConfigService } from '@services/config.service';
 import { DialogService } from '@services/dialog.service';
 import { FavouritesService } from '@services/favourites.service';
 import { NewsService } from '@services/news.service';
@@ -55,6 +56,7 @@ export class TopHeaderComponent implements OnInit, OnDestroy {
 
   newsService = inject(NewsService);
   lang = inject(TranslationService);
+  config = inject(ConfigService);
   isLtr = false;
   xPosition: MenuPositionX = 'before';
 

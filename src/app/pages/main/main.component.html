@@ -13,8 +13,7 @@
     <ul class="flex flex-col gap-y-1">
       <li *ngIf="authService.isAuthenticated()">
         <button class="text-white" (click)="showUserPreference()" mat-button>
-          <a class="text-white">{{ lang.map.welcome }}</a
-          ><a class="text-xl text-secondary underline"> {{ userService.currentUser?.first_name }}</a>
+          <a class="text-xl text-secondary underline"> {{ userService.currentUser?.first_name }}</a>
         </button>
       </li>
       <app-slider-menu />

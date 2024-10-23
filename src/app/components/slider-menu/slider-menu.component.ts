@@ -8,6 +8,7 @@ import { StickyService } from '@services/sticky.service';
 import { TranslationService } from '@services/translation.service';
 import { UrlService } from '@services/url.service';
 import { MenuService } from '@services/menu.service';
+import { ConfigService } from '@services/config.service';
 
 @Component({
   selector: 'app-slider-menu',
@@ -22,6 +23,7 @@ export class SliderMenuComponent extends OnDestroyMixin(class {}) implements OnI
   lang = inject(TranslationService);
   sticky = inject(StickyService);
   menuService = inject(MenuService);
+  config = inject(ConfigService);
 
   mainMenu!: Menu;
 

@@ -16,6 +16,7 @@ export const Config = {
   },
   REFRESH_TOKEN_BEFORE_MS: 120000, // refresh token before 2 minutes from expiration
   LOCAL_STORAGE_KEY: '$$_S__$$',
+  MAIN_AUTHORITY_WEBSITE_URL: '',
 };
 
 export type ConfigType = typeof Config;

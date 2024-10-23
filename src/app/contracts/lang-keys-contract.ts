@@ -590,4 +590,6 @@ export interface LangKeysContract {
   answers_are_based_on_ai_technology_and_may_be_subject_to_error: string;
   authority_news: string;
   to_obtain_accurate_average_results_please_specify_the_municipality_district_property_type_and_property_use: string;
+
+  authority_main_website: string;
 }
