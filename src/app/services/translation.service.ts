@@ -1,5 +1,6 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
+import { LangCodesMapper } from '@constants/lang-codes-mapper';
 import { LangContract } from '@contracts/lang-contract';
 import { LangKeysContract } from '@contracts/lang-keys-contract';
 import { ServiceContract } from '@contracts/service-contract';
@@ -120,6 +121,11 @@ export class TranslationService extends RegisterServiceMixin(class {}) implement
 
   getTranslate(langKey: keyof LangKeysContract): string {
     return this.map[langKey] || `messing Lang Key ${langKey}`;
+  }
+
+  getLang(code: string) {
+    const _code = code.slice(0, 2).toLowerCase();
+    return this.langMap[LangCodesMapper[_code]] ?? this.langMap[LangCodes.AR];
   }
 
   private _addLangClassToBody() {

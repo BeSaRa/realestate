@@ -5,12 +5,10 @@ import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatRadioModule } from '@angular/material/radio';
-import { ActivatedRoute, Router } from '@angular/router';
 import { ButtonComponent } from '@components/button/button.component';
 import { IconButtonComponent } from '@components/icon-button/icon-button.component';
 import { InputComponent } from '@components/input/input.component';
 import { AppIcons } from '@constants/app-icons';
-import { CustomTooltipDirective } from '@directives/custom-tooltip.directive';
 import { OnDestroyMixin } from '@mixins/on-destroy-mixin';
 import {
   CurrentOffPlanData,
@@ -39,7 +37,6 @@ import { catchError, finalize, merge, takeUntil, throwError } from 'rxjs';
     MatIconModule,
     MatProgressSpinnerModule,
     RecaptchaModule,
-    CustomTooltipDirective,
   ],
   templateUrl: './developer-registration-page.component.html',
   styleUrl: './developer-registration-page.component.scss',
@@ -51,10 +48,10 @@ export default class DeveloperRegistrationPageComponent extends OnDestroyMixin(c
   fb = inject(FormBuilder);
   datePipe = inject(DatePipe);
   toast = inject(ToastService);
-  router = inject(Router);
-  route = inject(ActivatedRoute);
   developerRegistrationService = inject(DeveloperRegistrationService);
   recaptchaSettings = inject(RECAPTCHA_SETTINGS);
+
+  registered = false;
 
   form = this.fb.group({
     main: this.fb.group({
@@ -365,8 +362,13 @@ export default class DeveloperRegistrationPageComponent extends OnDestroyMixin(c
         })
       )
       .subscribe(() => {
-        this.router.navigate(['../developer-registration-success'], { relativeTo: this.route });
+        this.registered = true;
+        this.form.reset();
       });
+  }
+
+  registerNew() {
+    this.registered = false;
   }
 
   private _toModel() {

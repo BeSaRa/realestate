@@ -592,4 +592,24 @@ export interface LangKeysContract {
   to_obtain_accurate_average_results_please_specify_the_municipality_district_property_type_and_property_use: string;
 
   authority_main_website: string;
+
+  interest_registration_form: string;
+  personal_information: string;
+  full_name: string;
+  passport_number: string;
+  interested_category: string;
+  investor: string;
+  real_estate_developer: string;
+  other_information: string;
+  are_you_considering_buying_an_apartment_in_qatar: string;
+  preferred_apartment_type: string;
+  area_range_of_interest: string;
+  price_range_of_interest: string;
+  have_you_visited_qatar_before: string;
+  are_you_interested_in_moving_to_or_investing_in_qatar: string;
+  would_you_like_more_information: string;
+  exhibit_name: string;
+  an_error_occured_while_saving_interested_data_please_try_again: string;
+  interested_data_saved_successfully: string;
+  register_another_interested: string;
 }
