@@ -10,8 +10,16 @@
   @apply grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4;
 }
 
+.res-half-grid-cols {
+  @apply grid grid-cols-2;
+}
+
 .res-col-span {
   @apply col-span-1 sm:col-span-2 md:col-span-3 lg:col-span-4;
+}
+
+.res-half-col-span {
+  @apply col-span-1 lg:col-span-2;
 }
 
 .res-col-span-2 {

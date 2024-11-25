@@ -14,8 +14,8 @@ export abstract class CmsService<T, PrimaryType = number>
   abstract serviceName: string;
   abstract collectionName: string;
 
-  private urlService = inject(UrlService);
-  private http = inject(HttpClient);
+  urlService = inject(UrlService);
+  http = inject(HttpClient);
 
   @CastResponse(undefined, { unwrap: 'data', fallback: '$default' })
   load(options: OptionsContract = { limit: 50 }): Observable<T[]> {

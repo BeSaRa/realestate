@@ -1,7 +1,8 @@
 import { CommonModule } from '@angular/common';
-import { Component, inject } from '@angular/core';
-import { RouterModule, RouterOutlet } from '@angular/router';
+import { Component, inject, OnInit } from '@angular/core';
+import { ActivatedRoute, RouterModule, RouterOutlet } from '@angular/router';
 import { ButtonComponent } from '@components/button/button.component';
+import { LangCodes } from '@enums/lang-codes';
 import { TranslationService } from '@services/translation.service';
 
 @Component({
@@ -11,8 +12,14 @@ import { TranslationService } from '@services/translation.service';
   templateUrl: './external.component.html',
   styleUrl: './external.component.scss',
 })
-export class ExternalComponent {
+export class ExternalComponent implements OnInit {
   lang = inject(TranslationService);
+  route = inject(ActivatedRoute);
+
+  ngOnInit(): void {
+    const _langCode = this.route.snapshot.queryParamMap.get('lang') ?? LangCodes.AR;
+    this.lang.setCurrent(this.lang.getLang(_langCode));
+  }
 
   changeLang(event: Event) {
     event.preventDefault();
