@@ -165,6 +165,13 @@ export default class InterestRegistrationPageComponent extends OnDestroyMixin(cl
         this.price.controls.from.removeValidators([CustomValidators.required]);
         this.price.controls.to.removeValidators([CustomValidators.required]);
       }
+      this.preferedAppartmentType.updateValueAndValidity();
+      this.area.updateValueAndValidity();
+      this.price.updateValueAndValidity();
+      this.area.controls.from.updateValueAndValidity();
+      this.area.controls.to.updateValueAndValidity();
+      this.price.controls.from.updateValueAndValidity();
+      this.price.controls.to.updateValueAndValidity();
     });
   }
 
