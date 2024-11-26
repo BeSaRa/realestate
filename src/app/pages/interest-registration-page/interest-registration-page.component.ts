@@ -145,7 +145,11 @@ export default class InterestRegistrationPageComponent extends OnDestroyMixin(cl
 
   private _listenToIsInterestedApartmentChange() {
     this.isInterestedApartment.valueChanges.pipe(takeUntil(this.destroy$)).subscribe((_isInterested) => {
+      this.preferedAppartmentType.reset();
+      this.area.reset();
+      this.price.reset();
       if (_isInterested) {
+        this.preferedAppartmentType.addValidators([CustomValidators.required]);
         this.area.addValidators([CustomValidators.compareFromTo('from', 'to') as ValidatorFn]);
         this.price.addValidators([CustomValidators.compareFromTo('from', 'to') as ValidatorFn]);
         this.area.controls.from.addValidators([CustomValidators.required]);
@@ -153,6 +157,7 @@ export default class InterestRegistrationPageComponent extends OnDestroyMixin(cl
         this.price.controls.from.addValidators([CustomValidators.required]);
         this.price.controls.to.addValidators([CustomValidators.required]);
       } else {
+        this.preferedAppartmentType.removeValidators([CustomValidators.required]);
         this.area.removeValidators([CustomValidators.compareFromTo('from', 'to') as ValidatorFn]);
         this.price.removeValidators([CustomValidators.compareFromTo('from', 'to') as ValidatorFn]);
         this.area.controls.from.removeValidators([CustomValidators.required]);
