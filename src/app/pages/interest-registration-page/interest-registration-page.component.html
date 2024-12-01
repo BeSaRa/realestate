@@ -37,7 +37,8 @@
       <h3 class="info-section-title">
         {{ lang.map.interested_category }}
       </h3>
-      <div class="res-col-span flex flex-col md:flex-row items-center justify-center md:justify-start gap-2 md:gap-6">
+      <div
+        class="res-col-span flex flex-col md:flex-row items-start md:items-center justify-center md:justify-start gap-2 md:gap-6">
         <span
           [ngClass]="{ 'text-amber-700': category.invalid && category.touched }"
           class="text-nowrap font-semibold text-xl"
@@ -57,7 +58,8 @@
       <h3 class="info-section-title">
         {{ lang.map.other_information }}
       </h3>
-      <div class="res-col-span flex flex-col md:flex-row items-center justify-center md:justify-start gap-2 md:gap-6">
+      <div
+        class="res-col-span flex flex-col md:flex-row items-start md:items-center justify-center md:justify-start gap-2 md:gap-6">
         <span
           [ngClass]="{ 'text-amber-700': isInterestedApartment.invalid && isInterestedApartment.touched }"
           class="font-semibold text-xl"
@@ -72,7 +74,8 @@
         </mat-radio-group>
       </div>
       @if (isInterestedApartment.value) {
-      <div class="res-col-span flex flex-col md:flex-row items-center justify-center md:justify-start gap-2 md:gap-6">
+      <div
+        class="res-col-span flex flex-col md:flex-row items-start md:items-center justify-center md:justify-start gap-2 md:gap-6">
         <span
           [ngClass]="{ 'text-amber-700': preferedAppartmentType.invalid && preferedAppartmentType.touched }"
           class="text-nowrap font-semibold text-xl"
@@ -106,7 +109,8 @@
         <app-input type="number" formControlName="to" [label]="lang.map.to"></app-input>
       </div>
       }
-      <div class="res-col-span flex flex-col md:flex-row items-center justify-center md:justify-start gap-2 md:gap-6">
+      <div
+        class="res-col-span flex flex-col md:flex-row items-start md:items-center justify-center md:justify-start gap-2 md:gap-6">
         <span [ngClass]="{ 'text-amber-700': hadVisited.invalid && hadVisited.touched }" class="font-semibold text-xl"
           >{{ lang.map.have_you_visited_qatar_before }} <span class="text-amber-700">*</span></span
         >
@@ -115,7 +119,8 @@
           <mat-radio-button class="font-semibold text-primary" [value]="false">{{ lang.map.no }}</mat-radio-button>
         </mat-radio-group>
       </div>
-      <div class="res-col-span flex flex-col md:flex-row items-center justify-center md:justify-start gap-2 md:gap-6">
+      <div
+        class="res-col-span flex flex-col md:flex-row items-start md:items-center justify-center md:justify-start gap-2 md:gap-6">
         <span
           [ngClass]="{
             'text-amber-700': interestedInMovingOrInvesting.invalid && interestedInMovingOrInvesting.touched
@@ -132,7 +137,8 @@
           <mat-radio-button class="font-semibold text-primary" [value]="false">{{ lang.map.no }}</mat-radio-button>
         </mat-radio-group>
       </div>
-      <div class="res-col-span flex flex-col md:flex-row items-center justify-center md:justify-start gap-2 md:gap-6">
+      <div
+        class="res-col-span flex flex-col md:flex-row items-start md:items-center justify-center md:justify-start gap-2 md:gap-6">
         <span
           [ngClass]="{ 'text-amber-700': haveMoreQuestions.invalid && haveMoreQuestions.touched }"
           class="font-semibold text-xl"
@@ -146,7 +152,8 @@
           <mat-radio-button class="font-semibold text-primary" [value]="false">{{ lang.map.no }}</mat-radio-button>
         </mat-radio-group>
       </div>
-      <div class="res-col-span flex flex-col md:flex-row items-center justify-center md:justify-start gap-2 md:gap-6">
+      <div
+        class="res-col-span flex flex-col md:flex-row items-start md:items-center justify-center md:justify-start gap-2 md:gap-6">
         <span
           [ngClass]="{ 'text-amber-700': exhibitName.invalid && exhibitName.touched }"
           class="text-nowrap font-semibold text-xl"
