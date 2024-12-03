@@ -612,4 +612,29 @@ export interface LangKeysContract {
   an_error_occured_while_saving_interested_data_please_try_again: string;
   interested_data_saved_successfully: string;
   register_another_interested: string;
+  /******** latest **********/
+  number_of_family_members: string;
+  profession: string;
+  country_of_residence: string;
+  villa: string;
+  apartment: string;
+  building: string;
+  land: string;
+  which_property: string;
+  estimated_budget: string;
+  is_your_purchase_intended_for_residence: string;
+  residence: string;
+  investment: string;
+  do_you_intend_to_reside_in_qatar: string;
+  has_more_info: string;
+  more_info: string;
+  register_under_category: string;
+  attachments: string;
+  filename: string;
+  actions: string;
+  confirm_delete: string;
+  view: string;
+  are_you_sole_developer: string;
+  are_you_seeking_a_partnership: string;
+  tab_change_data_lose_confirmation: string;
 }

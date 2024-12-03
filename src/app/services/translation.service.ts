@@ -131,5 +131,6 @@ export class TranslationService extends RegisterServiceMixin(class {}) implement
   private _addLangClassToBody() {
     document.body.classList.remove('rtl', 'ltr');
     document.body.classList.add(this.current.direction);
+    document.dir = this.current.direction;
   }
 }

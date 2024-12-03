@@ -55,6 +55,7 @@ export const AppIcons = {
   INFO_OUTLINE: 'information-outline',
   PDF: 'file-pdf-box',
   FILE_DOWNLOAD: 'file-download',
+  FILE_UPLOAD: 'file-upload',
   EXCEL_DOWNLOAD: 'microsoft-excel',
   FAVOURITE: 'star',
   FAVOURITE_OUTLINE: 'star-outline',

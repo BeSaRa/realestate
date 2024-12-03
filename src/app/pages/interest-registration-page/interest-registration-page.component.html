@@ -5,176 +5,198 @@
       {{ lang.map.interested_data_saved_successfully }}
     </p>
     <!-- <img class="w-40 h-40" src="assets/icons/success.png" alt="success" /> -->
-    <app-button buttonStyle="primary" size="xl" (click)="registerNew()">
+    <app-button (click)="registered = false" buttonStyle="primary" size="xl">
       {{ lang.map.register_another_interested }}
     </app-button>
   </div>
 </div>
 } @else {
-<div [formGroup]="form" class="py-4 px-8">
+
+<div class="container m-auto">
   <div class="flex justify-center">
     <h2
       class="mt-6 heading text-2xl sm:text-3xl md:text-4xl self-center md:self-start text-center text-primary border-primary font-semibold">
       {{ lang.map.interest_registration_form }}
     </h2>
   </div>
+
   <div class="mt-4">
-    <div formGroupName="personal" class="info-section !items-end">
-      <h3 class="info-section-title">
-        {{ lang.map.personal_information }}
-      </h3>
-      <app-input formControlName="fullName" [label]="lang.map.full_name"></app-input>
-      <app-input formControlName="passportNo" [label]="lang.map.passport_number"></app-input>
-    </div>
-    <div formGroupName="contact" class="info-section">
-      <h3 class="info-section-title">
-        {{ lang.map.contact_information }}
-      </h3>
-      <app-input formControlName="email" [label]="lang.map.email"></app-input>
-      <app-input formControlName="phone" [label]="lang.map.phone"></app-input>
-    </div>
     <div class="info-section">
-      <h3 class="info-section-title">
-        {{ lang.map.interested_category }}
-      </h3>
-      <div class="res-col-span flex flex-col md:flex-row items-center justify-center md:justify-start gap-2 md:gap-6">
-        <span
-          [ngClass]="{ 'text-amber-700': category.invalid && category.touched }"
-          class="text-nowrap font-semibold text-xl"
-          >{{ lang.map.interested_category }} <span class="text-amber-700">*</span></span
-        >
-        <mat-radio-group
-          formControlName="category"
-          class="flex justify-start gap-4 flex-wrap"
-          aria-label="Select an option">
-          @for (c of categories; track c) {
-          <mat-radio-button class="font-semibold text-primary" [value]="c.id">{{ c.getNames() }}</mat-radio-button>
-          }
-        </mat-radio-group>
-      </div>
-    </div>
-    <div formGroupName="questions" class="info-section">
-      <h3 class="info-section-title">
-        {{ lang.map.other_information }}
-      </h3>
-      <div class="res-col-span flex flex-col md:flex-row items-center justify-center md:justify-start gap-2 md:gap-6">
-        <span
-          [ngClass]="{ 'text-amber-700': isInterestedApartment.invalid && isInterestedApartment.touched }"
-          class="font-semibold text-xl"
-          >{{ lang.map.are_you_considering_buying_an_apartment_in_qatar }} <span class="text-amber-700">*</span></span
-        >
-        <mat-radio-group
-          formControlName="isInterestedApartment"
-          class="flex justify-start gap-4"
-          aria-label="Select an option">
-          <mat-radio-button class="font-semibold text-primary" [value]="true">{{ lang.map.yes }}</mat-radio-button>
-          <mat-radio-button class="font-semibold text-primary" [value]="false">{{ lang.map.no }}</mat-radio-button>
-        </mat-radio-group>
-      </div>
-      @if (isInterestedApartment.value) {
-      <div class="res-col-span flex flex-col md:flex-row items-center justify-center md:justify-start gap-2 md:gap-6">
-        <span
-          [ngClass]="{ 'text-amber-700': preferedAppartmentType.invalid && preferedAppartmentType.touched }"
-          class="text-nowrap font-semibold text-xl"
-          >{{ lang.map.preferred_apartment_type }} <span class="text-amber-700">*</span></span
-        >
-        <mat-radio-group
-          formControlName="preferedAppartmentType"
-          class="flex justify-start gap-4 flex-wrap"
-          aria-label="Select an option">
-          @for (a of apartments; track a) {
-          <mat-radio-button class="font-semibold text-primary" [value]="a.id">{{ a.getNames() }}</mat-radio-button>
-          }
-        </mat-radio-group>
-      </div>
-      <div
-        formGroupName="area"
-        class="relative mt-4 mb-6 res-half-col-span flex-1 p-4 res-half-grid-cols items-center gap-2 border border-primary/40 rounded-md">
-        <p class="res-col-span text-center font-bold text-primary text-xl">
-          {{ lang.map.area_range_of_interest }} <span class="font-normal"> ({{ lang.map.square_feet }})</span>
-        </p>
-        <app-input type="number" formControlName="from" [label]="lang.map.from"></app-input>
-        <app-input type="number" formControlName="to" [label]="lang.map.to"></app-input>
-      </div>
-      <div
-        formGroupName="price"
-        class="relative mt-4 mb-6 res-half-col-span flex-1 p-4 res-half-grid-cols items-center gap-2 border border-primary/40 rounded-md">
-        <p class="res-col-span text-center font-bold text-primary text-xl">
-          {{ lang.map.price_range_of_interest }} <span class="font-normal"> ($) </span>
-        </p>
-        <app-input type="number" formControlName="from" [label]="lang.map.from"></app-input>
-        <app-input type="number" formControlName="to" [label]="lang.map.to"></app-input>
-      </div>
-      }
-      <div class="res-col-span flex flex-col md:flex-row items-center justify-center md:justify-start gap-2 md:gap-6">
-        <span [ngClass]="{ 'text-amber-700': hadVisited.invalid && hadVisited.touched }" class="font-semibold text-xl"
-          >{{ lang.map.have_you_visited_qatar_before }} <span class="text-amber-700">*</span></span
-        >
-        <mat-radio-group formControlName="hadVisited" class="flex justify-start gap-4" aria-label="Select an option">
-          <mat-radio-button class="font-semibold text-primary" [value]="true">{{ lang.map.yes }}</mat-radio-button>
-          <mat-radio-button class="font-semibold text-primary" [value]="false">{{ lang.map.no }}</mat-radio-button>
-        </mat-radio-group>
-      </div>
-      <div class="res-col-span flex flex-col md:flex-row items-center justify-center md:justify-start gap-2 md:gap-6">
-        <span
-          [ngClass]="{
-            'text-amber-700': interestedInMovingOrInvesting.invalid && interestedInMovingOrInvesting.touched
-          }"
-          class="font-semibold text-xl"
-          >{{ lang.map.are_you_interested_in_moving_to_or_investing_in_qatar }}
-          <span class="text-amber-700">*</span></span
-        >
-        <mat-radio-group
-          formControlName="interestedInMovingOrInvesting"
-          class="flex justify-start gap-4"
-          aria-label="Select an option">
-          <mat-radio-button class="font-semibold text-primary" [value]="true">{{ lang.map.yes }}</mat-radio-button>
-          <mat-radio-button class="font-semibold text-primary" [value]="false">{{ lang.map.no }}</mat-radio-button>
-        </mat-radio-group>
-      </div>
-      <div class="res-col-span flex flex-col md:flex-row items-center justify-center md:justify-start gap-2 md:gap-6">
-        <span
-          [ngClass]="{ 'text-amber-700': haveMoreQuestions.invalid && haveMoreQuestions.touched }"
-          class="font-semibold text-xl"
-          >{{ lang.map.would_you_like_more_information }} <span class="text-amber-700">*</span></span
-        >
-        <mat-radio-group
-          formControlName="haveMoreQuestions"
-          class="flex justify-start gap-4"
-          aria-label="Select an option">
-          <mat-radio-button class="font-semibold text-primary" [value]="true">{{ lang.map.yes }}</mat-radio-button>
-          <mat-radio-button class="font-semibold text-primary" [value]="false">{{ lang.map.no }}</mat-radio-button>
-        </mat-radio-group>
-      </div>
-      <div class="res-col-span flex flex-col md:flex-row items-center justify-center md:justify-start gap-2 md:gap-6">
-        <span
-          [ngClass]="{ 'text-amber-700': exhibitName.invalid && exhibitName.touched }"
-          class="text-nowrap font-semibold text-xl"
-          >{{ lang.map.exhibit_name }} <span class="text-amber-700">*</span></span
-        >
-        <mat-radio-group
-          formControlName="exhibitName"
-          class="flex justify-start gap-4 flex-wrap"
-          aria-label="Select an option">
-          @for (e of exhibits; track e) {
-          <mat-radio-button class="font-semibold text-primary" [value]="e.id">{{ e.getNames() }}</mat-radio-button>
-          }
-        </mat-radio-group>
+      <h3 class="info-section-title">{{ lang.map.register_under_category }}</h3>
+      <div class="col-span-3 flex justify-center items-center gap-4 pb-4">
+        @for (category of interestCategories|async; track category.code) {
+        <button
+          [ngClass]="{ active: isCurrentForm(category.code), disabled: isCurrentForm(category.code) }"
+          class="min-w-64 border [&.active]:bg-primary [&.active]:text-white rounded-xl font-semibold shadow-md p-3"
+          (click)="changeCurrentTab(category.code)">
+          {{ category.getNames() }}
+        </button>
+        }
       </div>
     </div>
   </div>
+
+  @if (isInvestor()) {
+  <div [formGroup]="investorForm" class="mt-4">
+    <div class="info-section">
+      <h3 class="info-section-title">{{ lang.map.personal_information }}</h3>
+      <app-input formControlName="name" [label]="lang.map.full_name" />
+      <app-input formControlName="profession" [label]="lang.map.profession" />
+      <app-input formControlName="passportNumber" [label]="lang.map.passport_number" />
+      <app-input formControlName="numberOfFamilyMembers" [label]="lang.map.number_of_family_members" />
+      <app-select-input
+        formControlName="nationality"
+        [label]="lang.map.nationality"
+        [options]="(countries | async)!"
+        [enableFilter]="true"
+        bindValue="id"
+        bindFilter="getNames"
+        bindLabel="getNames" />
+      <app-select-input
+        formControlName="countryOfResidence"
+        [label]="lang.map.country_of_residence"
+        [options]="(countries | async)!"
+        [enableFilter]="true"
+        bindValue="id"
+        bindFilter="getNames"
+        bindLabel="getNames" />
+    </div>
+
+    <div class="info-section">
+      <h3 class="info-section-title">{{ lang.map.contact_information }}</h3>
+      <app-input formControlName="email" [label]="lang.map.email" />
+      <app-input formControlName="phoneNumber" [label]="lang.map.phone" />
+    </div>
+
+    <div class="info-section">
+      <h3 class="info-section-title">{{ lang.map.other_information }}</h3>
+      <app-select-input
+        formControlName="interestPurchasing"
+        [options]="interestService.types"
+        [label]="lang.map.which_property"
+        bindLabel="getNames"
+        bindValue="value" />
+      <app-select-input
+        formControlName="estimatedBudget"
+        [options]="(budgetRange | async)!"
+        [label]="lang.map.estimated_budget"
+        bindLabel="getNames"
+        bindValue="id" />
+      <app-select-input
+        formControlName="investmentIntend"
+        [options]="interestService.investmentTypes"
+        [label]="lang.map.is_your_purchase_intended_for_residence"
+        bindLabel="getNames"
+        bindValue="value" />
+
+      <mat-slide-toggle class="font-bold col-span-2" #slide="matSlideToggle" formControlName="resideInQatar">
+        {{ lang.map.do_you_intend_to_reside_in_qatar }} : {{ slide.checked ? lang.map.yes : lang.map.no }}
+      </mat-slide-toggle>
+
+      <mat-slide-toggle class="font-bold col-span-2" #hasMoreInfo="matSlideToggle" formControlName="hasMoreInfo">
+        {{ lang.map.has_more_info }} : {{ hasMoreInfo.checked ? lang.map.yes : lang.map.no }}
+      </mat-slide-toggle>
+      <br />
+      @if (hasMoreInfo.checked) {
+      <app-textarea class="col-span-3" [label]="lang.map.more_info" formControlName="moreInfo" />
+      }
+    </div>
+  </div>
+  } @if (isDeveloper()) {
+
+  <div [formGroup]="developerForm" class="mt-4">
+    <div class="info-section">
+      <h3 class="info-section-title">{{ lang.map.personal_information }}</h3>
+      <app-input formControlName="name" [label]="lang.map.full_name" />
+      <app-input formControlName="companyName" [label]="lang.map.company_name" />
+    </div>
+
+    <div class="info-section">
+      <h3 class="info-section-title">{{ lang.map.contact_information }}</h3>
+      <app-input formControlName="email" [label]="lang.map.email" />
+      <app-input formControlName="phoneNumber" [label]="lang.map.phone" />
+    </div>
+
+    <div class="info-section">
+      <h3 class="info-section-title">{{ lang.map.other_information }}</h3>
+      <app-input [label]="lang.map.estimated_budget" formControlName="estimatedBudget" />
+      <mat-slide-toggle class="font-bold col-span-3" #slide="matSlideToggle" formControlName="soleDeveloper">
+        {{ lang.map.are_you_sole_developer }} : {{ slide.checked ? lang.map.yes : lang.map.no }}
+      </mat-slide-toggle>
+      <mat-slide-toggle class="font-bold col-span-3" #slide="matSlideToggle" formControlName="wantPartnership">
+        {{ lang.map.are_you_seeking_a_partnership }} : {{ slide.checked ? lang.map.yes : lang.map.no }}
+      </mat-slide-toggle>
+      <mat-slide-toggle class="font-bold col-span-3" #hasMoreInfo="matSlideToggle" formControlName="hasMoreInfo">
+        {{ lang.map.has_more_info }} : {{ hasMoreInfo.checked ? lang.map.yes : lang.map.no }}
+      </mat-slide-toggle>
+      <br />
+      @if (hasMoreInfo.checked) {
+      <app-textarea class="col-span-3" [label]="lang.map.more_info" formControlName="moreInfo" />
+      }
+    </div>
+  </div>
+  }
+  <div class="info-section">
+    <div class="info-section-title">{{ lang.map.attachments }}</div>
+    <div class="col-span-3 flex flex-col">
+      <div class="flex">
+        <input
+          type="file"
+          #uploader
+          (change)="fileUploaderChange(uploader)"
+          class="hidden"
+          id="files"
+          multiple
+          accept="application/pdf,image/png,image/jpeg,image/jpg" />
+        <app-icon-button
+          (click)="openFileBrowse(uploader)"
+          class="bg-primary text-white rounded-full"
+          icon="FILE_UPLOAD"></app-icon-button>
+      </div>
+      <table mat-table class="table-style" [dataSource]="attachments">
+        <!-- fileName -->
+        <ng-container matColumnDef="fileName">
+          <th mat-header-cell *matHeaderCellDef>{{ lang.map.filename }}</th>
+          <td mat-cell *matCellDef="let element">{{ element.title }}</td>
+        </ng-container>
+        <!-- arName -->
+        <ng-container matColumnDef="actions">
+          <th mat-header-cell *matHeaderCellDef>{{ lang.map.actions }}</th>
+          <td mat-cell *matCellDef="let element">
+            <div>
+              <app-icon-button
+                [matTooltip]="lang.map.delete"
+                icon="DELETE"
+                [disabled]="!element.id"
+                (click)="deleteAttachment$.next(element)"></app-icon-button>
+              <app-icon-button
+                [matTooltip]="lang.map.view"
+                icon="VIEW"
+                (click)="viewAttachment$.next(element)"></app-icon-button>
+            </div>
+          </td>
+        </ng-container>
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let element; columns: displayedColumns"></tr>
+        <!-- Row shown when there is no matching data. -->
+        <tr class="mat-row" *matNoDataRow>
+          <td class="p-4" colspan="100">{{ lang.map.no_records_to_display }}</td>
+        </tr>
+      </table>
+    </div>
+  </div>
+
   <div class="my-4 flex gap-4 items-start justify-end">
     <re-captcha
+      [ngClass]="{ hidden: !displayRecaptcha }"
       class="transition-all"
-      [ngClass]="{ hidden: !isRecaptchaVisible }"
       #recaptcha
       size="normal"
-      [siteKey]="recaptchaSettings.siteKey!"
-      (resolved)="onRecaptchaResolved($event)"></re-captcha
-    ><app-button [disabled]="isWaitingForRecaptchaResolve" buttonStyle="primary" size="lg" (click)="onSubmit()"
-      >@if(isSaving){<mat-spinner diameter="30" strokeWidth="3"></mat-spinner>} @else{
-      {{ lang.map.register }} }</app-button
-    >
+      (resolved)="whenRecaptchaResolve($event)"
+      [siteKey]="recaptchaSettings.siteKey!"></re-captcha>
+    <app-button (click)="submitRequest()" buttonStyle="primary" size="lg">
+      {{ lang.map.register }}
+    </app-button>
   </div>
 </div>
 }

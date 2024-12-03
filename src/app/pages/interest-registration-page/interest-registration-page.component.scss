@@ -1,5 +1,5 @@
 .info-section {
-  @apply mt-6 relative grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2 items-center border rounded-md border-primary pb-2 px-4 pt-6;
+  @apply mt-6 relative grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2 items-end border rounded-md border-primary pb-2 px-4 pt-6;
 
   .info-section-title {
     @apply absolute top-0 start-2 translate-y-[-50%] bg-white text-lg sm:text-xl md:text-2xl text-primary font-medium drop-shadow-none;

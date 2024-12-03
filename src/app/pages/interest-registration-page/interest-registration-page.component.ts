@@ -1,19 +1,41 @@
 import { CommonModule } from '@angular/common';
-import { Component, inject, OnInit, ViewChild } from '@angular/core';
-import { FormBuilder, ReactiveFormsModule, ValidatorFn } from '@angular/forms';
+import { Component, computed, inject, OnInit, signal, ViewChild } from '@angular/core';
+import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatRadioModule } from '@angular/material/radio';
 import { ButtonComponent } from '@components/button/button.component';
 import { InputComponent } from '@components/input/input.component';
 import { OnDestroyMixin } from '@mixins/on-destroy-mixin';
-import { InterestRegistration } from '@models/interest-registration';
-import { Lookup } from '@models/lookup';
-import { InterestRegistrationService } from '@services/interest-registration.service';
 import { ToastService } from '@services/toast.service';
 import { TranslationService } from '@services/translation.service';
 import { CustomValidators } from '@validators/custom-validators';
 import { RECAPTCHA_SETTINGS, RecaptchaComponent, RecaptchaModule } from 'ng-recaptcha';
-import { catchError, finalize, forkJoin, takeUntil, throwError } from 'rxjs';
+import { exhaustMap, filter, map, of, shareReplay, Subject, switchMap, tap } from 'rxjs';
+import { CountryService } from '@services/country.service';
+import { InterestService } from '@services/interest.service';
+import { SelectInputComponent } from '@components/select-input/select-input.component';
+import { MatSlideToggle } from '@angular/material/slide-toggle';
+import { TextareaComponent } from '@components/textarea/textarea.component';
+import { InterestedDeveloper } from '@contracts/interested-developer';
+import { InterestedInvestor } from '@contracts/interested-investor';
+import {
+  MatCell,
+  MatCellDef,
+  MatColumnDef,
+  MatHeaderCell,
+  MatHeaderCellDef,
+  MatHeaderRow,
+  MatHeaderRowDef,
+  MatNoDataRow,
+  MatRow,
+  MatRowDef,
+  MatTable,
+} from '@angular/material/table';
+import { IconButtonComponent } from '@components/icon-button/icon-button.component';
+import { Attachment } from '@models/attachment';
+import { DialogService } from '@services/dialog.service';
+import { UserClick } from '@enums/user-click';
+import { MatTooltip } from '@angular/material/tooltip';
 
 @Component({
   selector: 'app-interest-registration-page',
@@ -26,221 +48,258 @@ import { catchError, finalize, forkJoin, takeUntil, throwError } from 'rxjs';
     ReactiveFormsModule,
     MatProgressSpinnerModule,
     RecaptchaModule,
+    SelectInputComponent,
+    MatSlideToggle,
+    TextareaComponent,
+    MatTable,
+    MatColumnDef,
+    MatHeaderCell,
+    MatCell,
+    MatCellDef,
+    MatHeaderCellDef,
+    MatHeaderRow,
+    MatRow,
+    MatRowDef,
+    MatHeaderRowDef,
+    MatNoDataRow,
+    IconButtonComponent,
+    MatTooltip,
   ],
   templateUrl: './interest-registration-page.component.html',
   styleUrl: './interest-registration-page.component.scss',
 })
 export default class InterestRegistrationPageComponent extends OnDestroyMixin(class {}) implements OnInit {
+  countryService = inject(CountryService);
+  interestService = inject(InterestService);
+  dialog = inject(DialogService);
   @ViewChild('recaptcha') recaptcha!: RecaptchaComponent;
-
   lang = inject(TranslationService);
   fb = inject(FormBuilder);
   toast = inject(ToastService);
-  interestRegistrationService = inject(InterestRegistrationService);
   recaptchaSettings = inject(RECAPTCHA_SETTINGS);
-
+  countries = this.countryService.get().pipe(shareReplay({ bufferSize: 1, refCount: true }));
+  budgetRange = this.interestService.loadBudgetRange().pipe(shareReplay({ bufferSize: 1, refCount: true }));
+  interestCategories = this.interestService.loadInterestTypes().pipe(
+    map((res) => res.slice().reverse()),
+    shareReplay({ bufferSize: 1, refCount: true })
+  );
   registered = false;
-
-  form = this.fb.group({
-    personal: this.fb.group({
-      fullName: ['', [CustomValidators.required]],
-      passportNo: ['', []],
-    }),
-    contact: this.fb.group({
-      email: ['', [CustomValidators.required, CustomValidators.pattern('EMAIL')]],
-      phone: ['', [CustomValidators.required, CustomValidators.pattern('PHONE_NUMBER')]],
-    }),
-    category: ['', [CustomValidators.required]],
-    questions: this.fb.group({
-      isInterestedApartment: ['', [CustomValidators.required]],
-      preferedAppartmentType: ['', []],
-      area: this.fb.group({
-        from: ['', [CustomValidators.number]],
-        to: ['', [CustomValidators.number]],
-      }),
-      price: this.fb.group({
-        from: ['', [CustomValidators.number]],
-        to: ['', [CustomValidators.number]],
-      }),
-      hadVisited: ['', [CustomValidators.required]],
-      interestedInMovingOrInvesting: ['', [CustomValidators.required]],
-      haveMoreQuestions: ['', [CustomValidators.required]],
-      exhibitName: ['', [CustomValidators.required]],
-    }),
+  recaptchaResolved = false;
+  waitingRecaptchaToResolve = true;
+  displayRecaptcha = false;
+  save$ = new Subject<void>();
+  attachments: Attachment[] = [];
+  displayedColumns = ['fileName', 'actions'];
+  investorForm = this.fb.nonNullable.group({
+    type: ['INVESTOR', CustomValidators.required],
+    name: ['', CustomValidators.required],
+    profession: ['', CustomValidators.required],
+    email: ['', CustomValidators.required],
+    phoneNumber: ['', CustomValidators.required],
+    nationality: [null, CustomValidators.required],
+    countryOfResidence: [null, CustomValidators.required],
+    passportNumber: [null],
+    numberOfFamilyMembers: [null],
+    interestPurchasing: [null],
+    estimatedBudget: [null],
+    investmentIntend: [null],
+    resideInQatar: [false, CustomValidators.required],
+    hasMoreInfo: [false, CustomValidators.required],
+    moreInfo: [''],
   });
 
-  get personal() {
-    return this.form.controls.personal;
+  developerForm = this.fb.nonNullable.group({
+    type: ['DEVELOPER', CustomValidators.required],
+    name: ['', CustomValidators.required],
+    companyName: ['', CustomValidators.required],
+    email: ['', CustomValidators.required],
+    phoneNumber: ['', CustomValidators.required],
+    soleDeveloper: [false, CustomValidators.required],
+    wantPartnership: [false, CustomValidators.required],
+    estimatedBudget: [null, CustomValidators.required],
+    hasMoreInfo: [false, CustomValidators.required],
+    moreInfo: [''],
+  });
+
+  deleteAttachment$ = new Subject<Attachment>();
+  viewAttachment$ = new Subject<Attachment>();
+
+  currentFormCode = signal<'DEVELOPER' | 'INVESTOR'>('INVESTOR');
+  /********* static folders ids  *********/
+  foldersMap = {
+    DEVELOPER: '923BA9D5-E083-49C5-A1B7-4D5C28CC9A10',
+    INVESTOR: '3062E004-4025-4A0D-B93C-34603D3513A3',
+  };
+
+  isDeveloper = computed(() => {
+    return this.currentFormCode() === 'DEVELOPER';
+  });
+
+  isInvestor = computed(() => {
+    return this.currentFormCode() === 'INVESTOR';
+  });
+
+  isCurrentForm(code: 'INVESTOR' | 'DEVELOPER') {
+    return this.currentFormCode() === code;
   }
 
-  get contact() {
-    return this.form.controls.contact;
-  }
+  currentForm = computed(() => (this.isDeveloper() ? this.developerForm : this.investorForm));
 
-  get category() {
-    return this.form.controls.category;
-  }
+  recaptchaVisible = signal(false);
 
-  get isInterestedApartment() {
-    return this.form.controls.questions.controls.isInterestedApartment;
-  }
-
-  get preferedAppartmentType() {
-    return this.form.controls.questions.controls.preferedAppartmentType;
-  }
-
-  get area() {
-    return this.form.controls.questions.controls.area;
-  }
-
-  get price() {
-    return this.form.controls.questions.controls.price;
-  }
-
-  get hadVisited() {
-    return this.form.controls.questions.controls.hadVisited;
-  }
-
-  get interestedInMovingOrInvesting() {
-    return this.form.controls.questions.controls.interestedInMovingOrInvesting;
-  }
-
-  get haveMoreQuestions() {
-    return this.form.controls.questions.controls.haveMoreQuestions;
-  }
-
-  get exhibitName() {
-    return this.form.controls.questions.controls.exhibitName;
-  }
-
-  isSaving = false;
-  isRecaptchaVisible = false;
-  isRecaptchaResolved = false;
-  isWaitingForRecaptchaResolve = false;
-
-  get questions() {
-    return this.form.controls.questions;
-  }
-
-  categories: Lookup[] = [];
-  apartments: Lookup[] = [];
-  exhibits: Lookup[] = [];
-
+  // eslint-disable-next-line
   ngOnInit(): void {
-    this._loadLookups();
-    this._listenToIsInterestedApartmentChange();
+    this.listenToSave();
+    this.listenToDeleteAttachment();
+    this.listenToViewAttachment();
   }
 
-  private _loadLookups() {
-    forkJoin([
-      this.interestRegistrationService.loadCategories(),
-      this.interestRegistrationService.loadApartments(),
-      this.interestRegistrationService.loadExhibits(),
-    ]).subscribe(([_categories, _apartments, _exhibits]) => {
-      this.categories = _categories;
-      this.apartments = _apartments;
-      this.exhibits = _exhibits;
-    });
+  private markFormDirty() {
+    this.currentForm().markAllAsTouched();
+    this.currentForm().markAsDirty();
   }
 
-  private _listenToIsInterestedApartmentChange() {
-    this.isInterestedApartment.valueChanges.pipe(takeUntil(this.destroy$)).subscribe((_isInterested) => {
-      this.preferedAppartmentType.reset();
-      this.area.reset();
-      this.price.reset();
-      if (_isInterested) {
-        this.preferedAppartmentType.addValidators([CustomValidators.required]);
-        this.area.addValidators([CustomValidators.compareFromTo('from', 'to') as ValidatorFn]);
-        this.price.addValidators([CustomValidators.compareFromTo('from', 'to') as ValidatorFn]);
-        this.area.controls.from.addValidators([CustomValidators.required]);
-        this.area.controls.to.addValidators([CustomValidators.required]);
-        this.price.controls.from.addValidators([CustomValidators.required]);
-        this.price.controls.to.addValidators([CustomValidators.required]);
-      } else {
-        this.preferedAppartmentType.removeValidators([CustomValidators.required]);
-        this.area.removeValidators([CustomValidators.compareFromTo('from', 'to') as ValidatorFn]);
-        this.price.removeValidators([CustomValidators.compareFromTo('from', 'to') as ValidatorFn]);
-        this.area.controls.from.removeValidators([CustomValidators.required]);
-        this.area.controls.to.removeValidators([CustomValidators.required]);
-        this.price.controls.from.removeValidators([CustomValidators.required]);
-        this.price.controls.to.removeValidators([CustomValidators.required]);
-      }
-      this.preferedAppartmentType.updateValueAndValidity();
-      this.area.updateValueAndValidity();
-      this.price.updateValueAndValidity();
-      this.area.controls.from.updateValueAndValidity();
-      this.area.controls.to.updateValueAndValidity();
-      this.price.controls.from.updateValueAndValidity();
-      this.price.controls.to.updateValueAndValidity();
-    });
+  private prepareModel(): Partial<InterestedInvestor | InterestedDeveloper> {
+    return this.currentForm().value as unknown as Partial<InterestedInvestor | InterestedDeveloper>;
   }
 
-  onSubmit() {
-    if (!this.form.valid) {
-      this.form.markAllAsTouched();
-      return;
-    }
-    if (this.isSaving) return;
-    if (!this.isRecaptchaResolved) {
-      this.isRecaptchaVisible = true;
-      this.isWaitingForRecaptchaResolve = true;
+  submitRequest() {
+    this.markFormDirty();
+    if (this.currentForm().invalid) return;
+
+    if (!this.recaptchaResolved) {
+      this.displayRecaptcha = true;
+      this.waitingRecaptchaToResolve = true;
     } else {
-      this.register();
+      this.completeSave();
     }
   }
 
-  onRecaptchaResolved(token: string) {
+  whenRecaptchaResolve(token: string) {
     if (!token) return;
-    this.isRecaptchaResolved = true;
-    this.isWaitingForRecaptchaResolve = false;
-    this.register();
+    this.recaptchaResolved = true;
+    this.waitingRecaptchaToResolve = false;
+    this.completeSave();
   }
 
-  register() {
-    this.isSaving = true;
-    this.interestRegistrationService
-      .saveItem(this._toModel())
+  private completeSave() {
+    this.save$.next();
+  }
+
+  private listenToSave() {
+    this.save$
+      .pipe(map(() => this.prepareModel()))
+      .pipe(filter(() => this.currentForm().valid))
+      .pipe(exhaustMap((model) => this.interestService.saveInterest(model)))
       .pipe(
-        finalize(() => {
-          this.isSaving = false;
-          this.isRecaptchaResolved = false;
-          this.isRecaptchaVisible = false;
-          this.recaptcha.reset();
-        }),
-        catchError((err) => {
-          this.toast.error(this.lang.map.an_error_occured_while_saving_interested_data_please_try_again);
-          return throwError(() => err);
-        })
+        switchMap((model) =>
+          this.attachments.length
+            ? this.interestService
+                .attacheFilesToInterest({ ...this.prepareModel(), id: model.id }, this.attachments)
+                .pipe(
+                  tap(console.log),
+                  map(() => true)
+                )
+            : of(true)
+        )
       )
       .subscribe(() => {
+        this.resetEveryThing();
         this.registered = true;
-        this.form.reset();
       });
   }
 
-  registerNew() {
-    this.registered = false;
+  openFileBrowse(uploader: HTMLInputElement) {
+    uploader.click();
   }
 
-  private _toModel() {
-    return new InterestRegistration().clone<InterestRegistration>({
-      full_name: this.personal.controls.fullName.value!,
-      passport_number: this.personal.controls.passportNo.value!,
-      email: this.contact.controls.email.value!,
-      phone: this.contact.controls.phone.value!,
-      category_id: this.category.value as unknown as number,
-      is_interested_in_buying_apartment: this.isInterestedApartment.value as unknown as boolean,
-      apartment_type_id: this.preferedAppartmentType.value
-        ? (this.preferedAppartmentType.value as unknown as number)
-        : null,
-      area_from: this.area.controls.from.value as unknown as number,
-      area_to: this.area.controls.to.value as unknown as number,
-      price_from: this.price.controls.from.value as unknown as number,
-      price_to: this.price.controls.to.value as unknown as number,
-      visited_qatar_before: this.hadVisited.value as unknown as boolean,
-      interested_moving_investing_in_qatar: this.interestedInMovingOrInvesting.value as unknown as boolean,
-      need_more_information: this.haveMoreQuestions.value as unknown as boolean,
-      exhibit_id: this.exhibitName.value as unknown as number,
+  fileUploaderChange(uploader: HTMLInputElement) {
+    if (uploader.files === null || uploader.files.length === 0) return;
+    const files = structuredClone(uploader.files);
+    uploader.value = '';
+    for (const index in files) {
+      if (isNaN(Number(index))) {
+        continue;
+      }
+
+      this.attachments = this.attachments.concat(
+        new Attachment().clone<Attachment>({
+          folder: this.foldersMap[this.currentFormCode()],
+          title: files[index].name,
+          file: files[index],
+        })
+      );
+    }
+
+    this.interestService.uploadFilesToAttachmentsFolder(this.attachments).subscribe((result) => {
+      this.attachments = this.attachments.map((item, index) => {
+        item.id = result[index].id;
+        return item;
+      });
     });
+  }
+
+  private listenToDeleteAttachment() {
+    this.deleteAttachment$
+      .pipe(
+        exhaustMap((attachment) => {
+          return this.dialog
+            .confirm(this.lang.map.confirm_delete, this.lang.map.deleting_item, {
+              yes: this.lang.map.yes,
+              no: this.lang.map.no,
+            })
+            .afterClosed()
+            .pipe(
+              filter((click) => {
+                return click === UserClick.YES;
+              })
+            )
+            .pipe(map(() => attachment));
+        })
+      )
+      .pipe(exhaustMap((attachment) => this.interestService.deleteFile([attachment.id]).pipe(map(() => attachment))))
+      .subscribe((attachment) => {
+        this.attachments = this.attachments.filter((item) => item.id !== attachment.id);
+      });
+  }
+
+  private listenToViewAttachment() {
+    this.viewAttachment$
+      .pipe(switchMap((attachment) => this.interestService.viewAttachment(attachment).afterClosed()))
+      .subscribe();
+  }
+
+  private resetEveryThing() {
+    this.recaptchaResolved = false;
+    this.displayRecaptcha = false;
+    this.waitingRecaptchaToResolve = false;
+    this.recaptcha.reset();
+    this.investorForm.reset();
+    this.developerForm.reset();
+    this.attachments = [];
+  }
+
+  changeCurrentTab(code: 'INVESTOR' | 'DEVELOPER'): void {
+    if (this.currentForm().dirty || this.attachments.length) {
+      this.dialog
+        .confirm(this.lang.map.tab_change_data_lose_confirmation)
+        .afterClosed()
+        .pipe(
+          filter((click) => {
+            return click === UserClick.YES;
+          }),
+          switchMap(() =>
+            this.attachments.length
+              ? this.interestService.deleteFile(this.attachments.map((item) => item.id))
+              : of(true)
+          )
+        )
+        .subscribe(() => {
+          this.resetEveryThing();
+          this.currentFormCode.set(code);
+        });
+    } else {
+      this.currentFormCode.set(code);
+    }
   }
 }

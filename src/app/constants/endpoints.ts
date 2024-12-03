@@ -218,6 +218,12 @@ export const cmsEndpoints = {
   RENT_FILTER_MESSAGES: '/flows/trigger/F597040F-EAC8-49C2-A1B3-631C249851E9',
   SELL_FILTER_MESSAGES: '/flows/trigger/E3F618C1-89A4-4619-9081-893BF4748CDC',
   AUTH_GUEST: '/flows/trigger/412A3B92-16F9-437D-AAFC-BBE5E25ED9F5',
+  COUNTRIES: '/items/countries',
+  INTEREST_TYPES: '/items/intersted_types',
+  BUDGET_RANGE: '/items/budget_range',
+  INTEREST_REQUEST: '/flows/trigger/D5E48108-CFD1-4624-A117-DFF451CF6968',
+  FILES: '/files',
+  INTEREST_ATTACHMENTS: 'flows/trigger/CBF86957-099A-400D-94E4-AFF2C6310D2E',
 };
 
 export const wishlistEndpoints = {
@@ -229,6 +235,7 @@ export const wishlistEndpoints = {
 export const EndPoints = {
   BASE_URL: '',
   BE: 'http://192.168.52.4:9080/mme-services/',
+
   ...cmsEndpoints,
   ...rentEndPoints,
   ...sellEndPoints,
