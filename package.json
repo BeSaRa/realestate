@@ -49,7 +49,7 @@
     "ng-recaptcha": "^12.0.2",
     "ng-resize-observer": "^1.2.0",
     "ngx-countup": "^13.1.0",
-    "ngx-mask": "^16.2.4",
+    "ngx-mask": "^16.4.2",
     "qs": "^6.11.2",
     "rulyotano.math.interpolation.bezier": "^0.2.0",
     "rxjs": "~7.8.0",

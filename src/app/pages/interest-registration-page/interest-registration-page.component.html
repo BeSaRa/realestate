@@ -23,7 +23,7 @@
   <div class="mt-4">
     <div class="info-section">
       <h3 class="info-section-title">{{ lang.map.register_under_category }}</h3>
-      <div class="col-span-3 flex justify-center items-center gap-4 pb-4">
+      <div class="col-span-3 flex flex-col md:flex-row justify-center items-center gap-4 pb-4">
         @for (category of interestCategories|async; track category.code) {
         <button
           [ngClass]="{ active: isCurrentForm(category.code), disabled: isCurrentForm(category.code) }"
@@ -88,18 +88,27 @@
         [label]="lang.map.is_your_purchase_intended_for_residence"
         bindLabel="getNames"
         bindValue="value" />
+      <div class="grid grid-cols-1">
+        @if ((exhibition$|async)) {
+        <div class="flex -ms-2 justify-start items-center">
+          <mat-radio-group formControlName="exhibitionId" aria-label="Select">
+            <mat-radio-button [value]="(exhibition$ | async)?.id">
+              <span class="font-bold">{{ (exhibition$ | async)?.getNames() }}</span>
+            </mat-radio-button>
+          </mat-radio-group>
+        </div>
+        }
+        <mat-slide-toggle class="font-bold col-span-2" #slide="matSlideToggle" formControlName="resideInQatar">
+          {{ lang.map.do_you_intend_to_reside_in_qatar }} : {{ slide.checked ? lang.map.yes : lang.map.no }}
+        </mat-slide-toggle>
 
-      <mat-slide-toggle class="font-bold col-span-2" #slide="matSlideToggle" formControlName="resideInQatar">
-        {{ lang.map.do_you_intend_to_reside_in_qatar }} : {{ slide.checked ? lang.map.yes : lang.map.no }}
-      </mat-slide-toggle>
-
-      <mat-slide-toggle class="font-bold col-span-2" #hasMoreInfo="matSlideToggle" formControlName="hasMoreInfo">
-        {{ lang.map.has_more_info }} : {{ hasMoreInfo.checked ? lang.map.yes : lang.map.no }}
-      </mat-slide-toggle>
-      <br />
-      @if (hasMoreInfo.checked) {
-      <app-textarea class="col-span-3" [label]="lang.map.more_info" formControlName="moreInfo" />
-      }
+        <mat-slide-toggle class="font-bold col-span-2" #hasMoreInfo="matSlideToggle" formControlName="hasMoreInfo">
+          {{ lang.map.has_more_info }} : {{ hasMoreInfo.checked ? lang.map.yes : lang.map.no }}
+        </mat-slide-toggle>
+        @if (hasMoreInfo.checked) {
+        <app-textarea class="col-span-3" [label]="lang.map.more_info" formControlName="moreInfo" />
+        }
+      </div>
     </div>
   </div>
   } @if (isDeveloper()) {
@@ -119,20 +128,37 @@
 
     <div class="info-section">
       <h3 class="info-section-title">{{ lang.map.other_information }}</h3>
-      <app-input [label]="lang.map.estimated_budget" formControlName="estimatedBudget" />
-      <mat-slide-toggle class="font-bold col-span-3" #slide="matSlideToggle" formControlName="soleDeveloper">
-        {{ lang.map.are_you_sole_developer }} : {{ slide.checked ? lang.map.yes : lang.map.no }}
-      </mat-slide-toggle>
-      <mat-slide-toggle class="font-bold col-span-3" #slide="matSlideToggle" formControlName="wantPartnership">
-        {{ lang.map.are_you_seeking_a_partnership }} : {{ slide.checked ? lang.map.yes : lang.map.no }}
-      </mat-slide-toggle>
-      <mat-slide-toggle class="font-bold col-span-3" #hasMoreInfo="matSlideToggle" formControlName="hasMoreInfo">
-        {{ lang.map.has_more_info }} : {{ hasMoreInfo.checked ? lang.map.yes : lang.map.no }}
-      </mat-slide-toggle>
-      <br />
-      @if (hasMoreInfo.checked) {
-      <app-textarea class="col-span-3" [label]="lang.map.more_info" formControlName="moreInfo" />
-      }
+      <div class="col-span-3">
+        <app-input [label]="lang.map.estimated_budget" formControlName="estimatedBudget">
+          <input formControlName="estimatedBudget" appControl mask="separator.2" suffix=" $" thousandSeparator="," />
+        </app-input>
+      </div>
+      <div class="grid grid-cols-1">
+        @if ((exhibition$|async)) {
+        <div class="flex -ms-2 justify-start items-center md:col-span-2">
+          <mat-radio-group formControlName="exhibitionId" aria-label="Select">
+            <mat-radio-button [value]="(exhibition$ | async)?.id">
+              <span class="font-bold">{{ (exhibition$ | async)?.getNames() }}</span>
+            </mat-radio-button>
+          </mat-radio-group>
+        </div>
+        }
+        <mat-slide-toggle class="font-bold col-span-3" #slide="matSlideToggle" formControlName="soleDeveloper">
+          {{ lang.map.are_you_sole_developer }} : {{ slide.checked ? lang.map.yes : lang.map.no }}
+        </mat-slide-toggle>
+        <mat-slide-toggle
+          class="font-bold col-span-3"
+          #wantPartnership="matSlideToggle"
+          formControlName="wantPartnership">
+          {{ lang.map.are_you_seeking_a_partnership }} : {{ wantPartnership.checked ? lang.map.yes : lang.map.no }}
+        </mat-slide-toggle>
+        <mat-slide-toggle class="font-bold col-span-3" #hasMoreInfo="matSlideToggle" formControlName="hasMoreInfo">
+          {{ lang.map.has_more_info }} : {{ hasMoreInfo.checked ? lang.map.yes : lang.map.no }}
+        </mat-slide-toggle>
+        @if (hasMoreInfo.checked) {
+        <app-textarea class="col-span-3" [label]="lang.map.more_info" formControlName="moreInfo" />
+        }
+      </div>
     </div>
   </div>
   }
@@ -149,6 +175,7 @@
           multiple
           accept="application/pdf,image/png,image/jpeg,image/jpg" />
         <app-icon-button
+          [matTooltip]="lang.map.upload_files"
           (click)="openFileBrowse(uploader)"
           class="bg-primary text-white rounded-full"
           icon="FILE_UPLOAD"></app-icon-button>

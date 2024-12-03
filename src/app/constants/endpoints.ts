@@ -224,6 +224,7 @@ export const cmsEndpoints = {
   INTEREST_REQUEST: '/flows/trigger/D5E48108-CFD1-4624-A117-DFF451CF6968',
   FILES: '/files',
   INTEREST_ATTACHMENTS: 'flows/trigger/CBF86957-099A-400D-94E4-AFF2C6310D2E',
+  EXHIBITION: 'items/exhibitions',
 };
 
 export const wishlistEndpoints = {

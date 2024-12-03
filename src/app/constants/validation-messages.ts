@@ -14,6 +14,7 @@ export const ValidationMessages: Record<string, ValidationMessageContract> = {
   password_and_password_confirm_should_be_equal: { key: 'password_and_password_confirm_should_be_equal' },
   EMAIL: { key: 'email_format' },
   PHONE_NUMBER: { key: 'phone_format' },
+  PASSPORT: { key: 'passport_format' },
 };
 
 export type ValidationMessagesType = typeof ValidationMessages;

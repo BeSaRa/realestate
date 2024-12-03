@@ -637,4 +637,6 @@ export interface LangKeysContract {
   are_you_sole_developer: string;
   are_you_seeking_a_partnership: string;
   tab_change_data_lose_confirmation: string;
+  passport_format: string;
+  upload_files: string;
 }

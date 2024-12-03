@@ -10,7 +10,7 @@ import { ToastService } from '@services/toast.service';
 import { TranslationService } from '@services/translation.service';
 import { CustomValidators } from '@validators/custom-validators';
 import { RECAPTCHA_SETTINGS, RecaptchaComponent, RecaptchaModule } from 'ng-recaptcha';
-import { exhaustMap, filter, map, of, shareReplay, Subject, switchMap, tap } from 'rxjs';
+import { exhaustMap, filter, map, Observable, of, shareReplay, Subject, switchMap, tap } from 'rxjs';
 import { CountryService } from '@services/country.service';
 import { InterestService } from '@services/interest.service';
 import { SelectInputComponent } from '@components/select-input/select-input.component';
@@ -36,6 +36,9 @@ import { Attachment } from '@models/attachment';
 import { DialogService } from '@services/dialog.service';
 import { UserClick } from '@enums/user-click';
 import { MatTooltip } from '@angular/material/tooltip';
+import { NgxMaskDirective } from 'ngx-mask';
+import { ControlDirective } from '@directives/control.directive';
+import { ExhibitionService } from '@services/exhibition.service';
 
 @Component({
   selector: 'app-interest-registration-page',
@@ -64,6 +67,8 @@ import { MatTooltip } from '@angular/material/tooltip';
     MatNoDataRow,
     IconButtonComponent,
     MatTooltip,
+    NgxMaskDirective,
+    ControlDirective,
   ],
   templateUrl: './interest-registration-page.component.html',
   styleUrl: './interest-registration-page.component.scss',
@@ -71,6 +76,7 @@ import { MatTooltip } from '@angular/material/tooltip';
 export default class InterestRegistrationPageComponent extends OnDestroyMixin(class {}) implements OnInit {
   countryService = inject(CountryService);
   interestService = inject(InterestService);
+  exhibitionService = inject(ExhibitionService);
   dialog = inject(DialogService);
   @ViewChild('recaptcha') recaptcha!: RecaptchaComponent;
   lang = inject(TranslationService);
@@ -79,6 +85,7 @@ export default class InterestRegistrationPageComponent extends OnDestroyMixin(cl
   recaptchaSettings = inject(RECAPTCHA_SETTINGS);
   countries = this.countryService.get().pipe(shareReplay({ bufferSize: 1, refCount: true }));
   budgetRange = this.interestService.loadBudgetRange().pipe(shareReplay({ bufferSize: 1, refCount: true }));
+  exhibition$ = this.exhibitionService.loadMain().pipe(shareReplay({ bufferSize: 1, refCount: true }));
   interestCategories = this.interestService.loadInterestTypes().pipe(
     map((res) => res.slice().reverse()),
     shareReplay({ bufferSize: 1, refCount: true })
@@ -90,35 +97,38 @@ export default class InterestRegistrationPageComponent extends OnDestroyMixin(cl
   save$ = new Subject<void>();
   attachments: Attachment[] = [];
   displayedColumns = ['fileName', 'actions'];
+
   investorForm = this.fb.nonNullable.group({
     type: ['INVESTOR', CustomValidators.required],
-    name: ['', CustomValidators.required],
-    profession: ['', CustomValidators.required],
-    email: ['', CustomValidators.required],
-    phoneNumber: ['', CustomValidators.required],
-    nationality: [null, CustomValidators.required],
-    countryOfResidence: [null, CustomValidators.required],
-    passportNumber: [null],
-    numberOfFamilyMembers: [null],
+    name: ['', [CustomValidators.required, CustomValidators.maxLength(255)]],
+    profession: ['', CustomValidators.maxLength(255)],
+    email: ['', [CustomValidators.required, CustomValidators.pattern('EMAIL')]],
+    phoneNumber: ['', [CustomValidators.required, CustomValidators.pattern('PHONE_NUMBER')]],
+    nationality: [null, [CustomValidators.required, CustomValidators.number]],
+    countryOfResidence: [null, [CustomValidators.required, CustomValidators.number]],
+    passportNumber: [null, [CustomValidators.pattern('PASSPORT')]],
+    numberOfFamilyMembers: [null, [CustomValidators.number]],
     interestPurchasing: [null],
     estimatedBudget: [null],
     investmentIntend: [null],
     resideInQatar: [false, CustomValidators.required],
     hasMoreInfo: [false, CustomValidators.required],
     moreInfo: [''],
+    exhibitionId: [],
   });
 
   developerForm = this.fb.nonNullable.group({
     type: ['DEVELOPER', CustomValidators.required],
-    name: ['', CustomValidators.required],
-    companyName: ['', CustomValidators.required],
-    email: ['', CustomValidators.required],
-    phoneNumber: ['', CustomValidators.required],
+    name: ['', [CustomValidators.required, CustomValidators.maxLength(255)]],
+    companyName: ['', [CustomValidators.required, CustomValidators.maxLength(255)]],
+    email: ['', [CustomValidators.required, CustomValidators.pattern('EMAIL')]],
+    phoneNumber: ['', [CustomValidators.required, CustomValidators.pattern('PHONE_NUMBER')]],
     soleDeveloper: [false, CustomValidators.required],
     wantPartnership: [false, CustomValidators.required],
-    estimatedBudget: [null, CustomValidators.required],
+    estimatedBudget: [null],
     hasMoreInfo: [false, CustomValidators.required],
     moreInfo: [''],
+    exhibitionId: [],
   });
 
   deleteAttachment$ = new Subject<Attachment>();
@@ -152,6 +162,7 @@ export default class InterestRegistrationPageComponent extends OnDestroyMixin(cl
     this.listenToSave();
     this.listenToDeleteAttachment();
     this.listenToViewAttachment();
+    this.setDefaults();
   }
 
   private markFormDirty() {
@@ -165,6 +176,8 @@ export default class InterestRegistrationPageComponent extends OnDestroyMixin(cl
 
   submitRequest() {
     this.markFormDirty();
+
+    console.log(this.currentForm().value);
     if (this.currentForm().invalid) return;
 
     if (!this.recaptchaResolved) {
@@ -277,6 +290,7 @@ export default class InterestRegistrationPageComponent extends OnDestroyMixin(cl
     this.investorForm.reset();
     this.developerForm.reset();
     this.attachments = [];
+    this.setDefaults();
   }
 
   changeCurrentTab(code: 'INVESTOR' | 'DEVELOPER'): void {
@@ -301,5 +315,13 @@ export default class InterestRegistrationPageComponent extends OnDestroyMixin(cl
     } else {
       this.currentFormCode.set(code);
     }
+  }
+
+  private setDefaults() {
+    this.exhibition$.subscribe((exhibition) => {
+      if (!exhibition) return;
+      this.developerForm.controls.exhibitionId.patchValue(exhibition.id as unknown as never);
+      this.investorForm.controls.exhibitionId.patchValue(exhibition.id as unknown as never);
+    });
   }
 }
