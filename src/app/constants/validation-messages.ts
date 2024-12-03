@@ -15,6 +15,7 @@ export const ValidationMessages: Record<string, ValidationMessageContract> = {
   EMAIL: { key: 'email_format' },
   PHONE_NUMBER: { key: 'phone_format' },
   PASSPORT: { key: 'passport_format' },
+  ENG_NUM_ONLY: { key: 'english_numbers_only_format' },
 };
 
 export type ValidationMessagesType = typeof ValidationMessages;

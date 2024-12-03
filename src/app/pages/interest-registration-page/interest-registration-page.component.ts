@@ -106,7 +106,7 @@ export default class InterestRegistrationPageComponent extends OnDestroyMixin(cl
     phoneNumber: ['', [CustomValidators.required, CustomValidators.pattern('PHONE_NUMBER')]],
     nationality: [null, [CustomValidators.required, CustomValidators.number]],
     countryOfResidence: [null, [CustomValidators.required, CustomValidators.number]],
-    passportNumber: [null, [CustomValidators.pattern('PASSPORT')]],
+    passportNumber: [null, [CustomValidators.pattern('ENG_NUM_ONLY'), CustomValidators.maxLength(20)]],
     numberOfFamilyMembers: [null, [CustomValidators.number]],
     interestPurchasing: [null],
     estimatedBudget: [null],

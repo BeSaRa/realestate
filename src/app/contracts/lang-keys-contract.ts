@@ -639,4 +639,5 @@ export interface LangKeysContract {
   tab_change_data_lose_confirmation: string;
   passport_format: string;
   upload_files: string;
+  english_numbers_only_format: string;
 }

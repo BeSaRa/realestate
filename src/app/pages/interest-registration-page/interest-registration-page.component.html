@@ -71,24 +71,27 @@
     <div class="info-section">
       <h3 class="info-section-title">{{ lang.map.other_information }}</h3>
       <app-select-input
+        class="col-span-3 md:col-span-1"
         formControlName="interestPurchasing"
         [options]="interestService.types"
         [label]="lang.map.which_property"
         bindLabel="getNames"
         bindValue="value" />
       <app-select-input
+        class="col-span-3 md:col-span-1"
         formControlName="estimatedBudget"
         [options]="(budgetRange | async)!"
         [label]="lang.map.estimated_budget"
         bindLabel="getNames"
         bindValue="id" />
       <app-select-input
+        class="col-span-3 md:col-span-1"
         formControlName="investmentIntend"
         [options]="interestService.investmentTypes"
         [label]="lang.map.is_your_purchase_intended_for_residence"
         bindLabel="getNames"
         bindValue="value" />
-      <div class="grid grid-cols-1">
+      <div class="grid grid-cols-1 col-span-3">
         @if ((exhibition$|async)) {
         <div class="flex -ms-2 justify-start items-center">
           <mat-radio-group formControlName="exhibitionId" aria-label="Select">
@@ -98,15 +101,15 @@
           </mat-radio-group>
         </div>
         }
-        <mat-slide-toggle class="font-bold col-span-2" #slide="matSlideToggle" formControlName="resideInQatar">
+        <mat-slide-toggle class="font-bold" #slide="matSlideToggle" formControlName="resideInQatar">
           {{ lang.map.do_you_intend_to_reside_in_qatar }} : {{ slide.checked ? lang.map.yes : lang.map.no }}
         </mat-slide-toggle>
 
-        <mat-slide-toggle class="font-bold col-span-2" #hasMoreInfo="matSlideToggle" formControlName="hasMoreInfo">
+        <mat-slide-toggle class="font-bold" #hasMoreInfo="matSlideToggle" formControlName="hasMoreInfo">
           {{ lang.map.has_more_info }} : {{ hasMoreInfo.checked ? lang.map.yes : lang.map.no }}
         </mat-slide-toggle>
         @if (hasMoreInfo.checked) {
-        <app-textarea class="col-span-3" [label]="lang.map.more_info" formControlName="moreInfo" />
+        <app-textarea [label]="lang.map.more_info" formControlName="moreInfo" />
         }
       </div>
     </div>
@@ -128,14 +131,14 @@
 
     <div class="info-section">
       <h3 class="info-section-title">{{ lang.map.other_information }}</h3>
-      <div class="col-span-3">
+      <div class="col-span-3 md:max-lg:col-span-2 lg:col-span-1">
         <app-input [label]="lang.map.estimated_budget" formControlName="estimatedBudget">
           <input formControlName="estimatedBudget" appControl mask="separator.2" suffix=" $" thousandSeparator="," />
         </app-input>
       </div>
-      <div class="grid grid-cols-1">
+      <div class="grid grid-cols-1 col-span-3">
         @if ((exhibition$|async)) {
-        <div class="flex -ms-2 justify-start items-center md:col-span-2">
+        <div class="flex -ms-2 justify-start items-center col-span-3">
           <mat-radio-group formControlName="exhibitionId" aria-label="Select">
             <mat-radio-button [value]="(exhibition$ | async)?.id">
               <span class="font-bold">{{ (exhibition$ | async)?.getNames() }}</span>
@@ -156,7 +159,7 @@
           {{ lang.map.has_more_info }} : {{ hasMoreInfo.checked ? lang.map.yes : lang.map.no }}
         </mat-slide-toggle>
         @if (hasMoreInfo.checked) {
-        <app-textarea class="col-span-3" [label]="lang.map.more_info" formControlName="moreInfo" />
+        <app-textarea [label]="lang.map.more_info" class="col-span-3" formControlName="moreInfo" />
         }
       </div>
     </div>
