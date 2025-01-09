@@ -3,12 +3,12 @@
     <img
       class="h-[64px] xl:h-[80px] group-[.fixed]:hidden"
       priority
-      src="assets/images/mm-logo-white.png"
+      [src]="'assets/images/' + (lang.isLtr ? 'en-' : '') + 'mm-logo-white.png'"
       alt="authority-logo" />
     <img
       class="h-[64px] xl:h-[80px] hidden group-[.fixed]:block"
       priority
-      src="assets/images/mm-logo-colored.png"
+      [src]="'assets/images/' + (lang.isLtr ? 'en-' : '') + 'mm-logo-colored.png'"
       alt="authority-logo" />
   </a>
   <div class="flex justify-center items-start flex-col py-3">

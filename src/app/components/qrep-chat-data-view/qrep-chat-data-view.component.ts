@@ -2,7 +2,7 @@ import { CommonModule, DecimalPipe } from '@angular/common';
 import { Component, inject, Input, OnInit } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatTableModule } from '@angular/material/table';
-import { ChatResponseContract, ChatResponseFormat } from '@contracts/chat-message-contract';
+import { QrepChatResponseContract, QrepChatResponseFormat } from '@contracts/qrep-chat-message-contract';
 import { AppTableDataSource } from '@models/app-table-data-source';
 import { CsvService } from '@services/csv.service';
 import { TranslationService } from '@services/translation.service';
@@ -19,15 +19,18 @@ interface LawResponseContract {
 }
 
 @Component({
-  selector: 'app-chat-gpt-data-view',
+  selector: 'app-qrep-chat-data-view',
   standalone: true,
   imports: [CommonModule, MatTableModule, MatButtonModule],
   providers: [DecimalPipe],
-  templateUrl: './chat-gpt-data-view.component.html',
-  styleUrl: './chat-gpt-data-view.component.scss',
+  templateUrl: './qrep-chat-data-view.component.html',
+  styleUrl: './qrep-chat-data-view.component.scss',
 })
-export class ChatGptDataViewComponent implements OnInit {
-  @Input({ required: true }) data: ChatResponseContract = { responseFormat: ChatResponseFormat.TABLE, response: [] };
+export class QrepChatDataViewComponent implements OnInit {
+  @Input({ required: true }) data: QrepChatResponseContract = {
+    responseFormat: QrepChatResponseFormat.TABLE,
+    response: [],
+  };
   @Input({ required: true }) question!: string;
 
   lang = inject(TranslationService);
@@ -44,22 +47,24 @@ export class ChatGptDataViewComponent implements OnInit {
 
   minMaxAvg = minMaxAvg([1]);
 
-  readonly Format = ChatResponseFormat;
+  readonly Format = QrepChatResponseFormat;
 
   get isTableView() {
-    return this.data.responseFormat !== ChatResponseFormat.CHART || this.isColumnsCountLarge || this.isAxisUnknown;
+    return this.data.responseFormat !== QrepChatResponseFormat.CHART || this.isColumnsCountLarge || this.isAxisUnknown;
   }
 
   get isColumnsCountLarge() {
-    return this.data.responseFormat === ChatResponseFormat.CHART && this.columnNames.length > 2;
+    return this.data.responseFormat === QrepChatResponseFormat.CHART && this.columnNames.length > 2;
   }
 
   get isAxisUnknown() {
-    return this.data.responseFormat === ChatResponseFormat.CHART && (!this.getChartYAxis() || !this.getChartXAxis());
+    return (
+      this.data.responseFormat === QrepChatResponseFormat.CHART && (!this.getChartYAxis() || !this.getChartXAxis())
+    );
   }
 
   get isAvg() {
-    return this.data.responseFormat === ChatResponseFormat.AVG;
+    return this.data.responseFormat === QrepChatResponseFormat.AVG;
   }
 
   ngOnInit(): void {
@@ -69,7 +74,7 @@ export class ChatGptDataViewComponent implements OnInit {
       this.columnNames = Object.keys(this.data.response[0]);
       this._data$.next(this.data.response);
       this._setDataColumnsTypes();
-      this.data.responseFormat === ChatResponseFormat.CHART && this._initChart();
+      this.data.responseFormat === QrepChatResponseFormat.CHART && this._initChart();
     }
   }
 
@@ -176,6 +181,6 @@ export class ChatGptDataViewComponent implements OnInit {
   }
 
   getLawData() {
-    return this.data as unknown as { responseFormat: ChatResponseFormat; response: LawResponseContract[] };
+    return this.data as unknown as { responseFormat: QrepChatResponseFormat; response: LawResponseContract[] };
   }
 }

@@ -8,7 +8,7 @@ import { MatMenuModule } from '@angular/material/menu';
 import { Router, RouterModule, RouterOutlet } from '@angular/router';
 import { ActionDirective, ActionsPortalComponent } from '@components/actions-portal/actions-portal.component';
 import { ButtonComponent } from '@components/button/button.component';
-import { ChatGptComponent } from '@components/chat-gpt/chat-gpt.component';
+import { ChatComponent } from '@components/chat/chat.component';
 import { DataInfoComponent } from '@components/data-info/data-info.component';
 import { ExtraHeaderComponent } from '@components/extra-header/extra-header.component';
 import { FooterComponent } from '@components/footer/footer.component';
@@ -42,7 +42,7 @@ import { filter, map, startWith, switchMap } from 'rxjs';
     FooterComponent,
     MatButtonModule,
     MatIconModule,
-    ChatGptComponent,
+    ChatComponent,
     SideBarComponent,
     ButtonComponent,
     BidiModule,

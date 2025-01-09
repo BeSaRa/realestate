@@ -640,4 +640,8 @@ export interface LangKeysContract {
   passport_format: string;
   upload_files: string;
   english_numbers_only_format: string;
+
+  real_estate_regularity_authority: string;
+  welcome_to_the_real_estate_regulatory_authority_smart_assistant_how_can_i_help_you: string;
+  stop: string;
 }

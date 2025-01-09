@@ -1,0 +1,46 @@
+<span class="self-center text-primary text-sm">{{
+  startChatDate() | date : "EEEE, d MMM, h:mm a" : undefined : lang.getCurrent().code
+}}</span>
+<div @slideMessage class="boot" [ngClass]="{ ltr: lang.isLtr, rtl: !lang.isLtr }">
+  <span>{{
+    lang.map
+      .welcome_to_the_smart_assistant_of_the_real_estate_platform_you_can_inquire_about_all_the_real_estate_data_of_the_platform
+  }}</span>
+</div>
+@for (message of messages(); track message) { @if (isMe(message)) {
+<div @slideMessage [ngClass]="{ ltr: lang.isLtr, rtl: !lang.isLtr }" class="me">
+  <span>{{ getUserMessage(message) }}</span>
+</div>
+}@else { @if (message.responseFormat === responseFormat.ERROR || message.responseFormat === responseFormat.INVALID ) {
+<div @slideMessage class="error">
+  <span
+    ><svg class="w-6 h-6" viewBox="0 0 24 24">
+      <path fill="currentColor" d="M13 14H11V9H13M13 18H11V16H13M1 21H23L12 2L1 21Z" /></svg
+  ></span>
+  <div [ngClass]="{ ltr: lang.isLtr, rtl: !lang.isLtr }">
+    <span>{{
+      message.responseFormat === responseFormat.ERROR
+        ? lang.map.a_network_error_occured_please_try_again
+        : lang.map.your_question_is_not_clear_please_make_your_inquiry_about_the_data_more_clear
+    }}</span>
+  </div>
+</div>
+} @else {
+<div @slideMessage [ngClass]="{ ltr: lang.isLtr, rtl: !lang.isLtr }" class="boot-data-view">
+  <app-qrep-chat-data-view [data]="message" [question]="chatService().lastQuestion" />
+</div>
+} } } @if (!isTyping() && lastMessageDate()) {
+<span class="text-primary text-xs self-start" [class.self-end]="isLastMessageFromBot()">{{
+  getPassedTime(lastMessageDate()!)
+}}</span
+>} @if(isTyping()){
+<div class="boot"><ng-container [ngTemplateOutlet]="typing"></ng-container></div>
+}
+
+<ng-template #typing>
+  <span class="relative p-1 flex items-center justify-center gap-1">
+    <span class="ball"></span>
+    <span class="ball" [ngStyle]="{ 'animation-delay': '.15s' }"></span>
+    <span class="ball" [ngStyle]="{ 'animation-delay': '.3s' }"></span>
+  </span>
+</ng-template>

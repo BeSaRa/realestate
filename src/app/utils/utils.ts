@@ -1,5 +1,6 @@
 import { NgModel } from '@angular/forms';
 import { MinMaxAvgContract } from '@contracts/min-max-avg-contract';
+import { CitationsContract } from '@models/authority-base-message';
 
 export function objectHasOwnProperty<O, P extends PropertyKey>(
   object: O,
@@ -125,4 +126,40 @@ export function repeat<T>(value: T, count: number) {
   }
 
   return array;
+}
+
+export function isRTL(str: string) {
+  return /[\u0600-\u06FF]+/.test(str);
+}
+
+export const formatString = (text: string) => {
+  text
+    .split(' ')
+    .map((word) => (isRTL(word) ? '\u202A' : '\u202C') + word)
+    .join(' ');
+  return text;
+};
+
+export function formatText<T extends { context: { citations: CitationsContract[] } }>(
+  text: string,
+  message: T
+): string {
+  let formattedText = text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+
+  // Replace text between [ and ] with <a> tags
+  formattedText = formattedText.replace(/\[(.*?)\]/g, (match, p1) => {
+    const item = message.context.citations[Number(p1.replace(/[^0-9]/g, '')) - 1];
+    if (!item) {
+      return match;
+    }
+    const title = item.title;
+    const url = item.url;
+
+    // eslint-disable-next-line max-len
+    return `<br/><small class="px-1 text-[#cccccc]"><a class="underline" target="_blank" href="${url}">(${title})</a></small>`;
+  });
+  // text = text.replace(/\./g, '.<br>')
+
+  // Return the formatted text
+  return formattedText.trim();
 }

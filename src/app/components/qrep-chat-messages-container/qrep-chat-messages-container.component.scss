@@ -1,0 +1,47 @@
+:host {
+  @apply min-h-full flex flex-col relative px-4 pb-6 pt-4 space-y-2;
+}
+
+.bg-grad {
+  background: linear-gradient(90deg, #3b0011 25%, #7f1f3b 75%);
+}
+
+.chat-shadow {
+  box-shadow: rgba(0, 0, 0, 0.25) 0px 0.0625em 0.0625em,
+    rgba(0, 0, 0, 0.25) 0px 0.125em 0.5em,
+    rgba(255, 255, 255, 0.1) 0px 0px 0px 1px inset;
+}
+
+.me {
+  @apply bg-[#f2f2f2] chat-shadow relative self-start rounded-xl [&.rtl]:rounded-tr-none [&.ltr]:rounded-tl-none text-primary p-2  max-w-[90%] break-words;
+}
+
+.boot {
+  @apply bg-grad chat-shadow relative self-end rounded-xl [&.rtl]:rounded-tl-none [&.ltr]:rounded-tr-none text-white p-2  max-w-[90%] break-words;
+}
+
+.boot-data-view {
+  @apply relative self-end max-w-[90%];
+}
+
+.error {
+  @apply relative self-end flex items-center justify-center gap-2 text-red-800 max-w-[90%];
+
+  & > div {
+    @apply chat-shadow bg-red-800 rounded-xl [&.rtl]:rounded-tl-none [&.ltr]:rounded-tr-none text-white p-2 break-words;
+  }
+}
+
+.ball {
+  @apply block w-1 h-1 rounded-full bg-white z-10 mt-1;
+  animation: ball 0.45s cubic-bezier(0, 0, 0.15, 1) alternate infinite;
+}
+
+@keyframes ball {
+  from {
+    transform: translateY(7px) scaleY(0.8);
+  }
+  to {
+    transform: translateY(-7px);
+  }
+}

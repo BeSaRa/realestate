@@ -1,13 +1,13 @@
 import { TestBed } from '@angular/core/testing';
 
-import { ChatGptService } from './chat-gpt.service';
+import { StreamService } from './stream.service';
 
-describe('ChatGptService', () => {
-  let service: ChatGptService;
+describe('StreamService', () => {
+  let service: StreamService;
 
   beforeEach(() => {
     TestBed.configureTestingModule({});
-    service = TestBed.inject(ChatGptService);
+    service = TestBed.inject(StreamService);
   });
 
   it('should be created', () => {

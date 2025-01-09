@@ -1,0 +1,125 @@
+<div class="relative">
+  <div
+    [dir]="lang.getCurrent().direction"
+    (@openClose.done)="done($event)"
+    (@openClose.start)="start()"
+    [@openClose]="isOpened() ? 'open' : 'close'"
+    [class.hidden]="isHidden"
+    [class.opened]="!isFullScreen"
+    [class.full-screen]="isFullScreen"
+    class="relative rounded-xl bg-transparent shadow-xl w-[90vw] sm:w-[500px] h-[650px] overflow-hidden flex group flex-col transition-all">
+    <div
+      class="bg-grad relative pt-2 pb-4 z-20 flex items-start justify-between rounded-tr-xl rounded-tl-xl text-white"
+      [ngClass]="{
+        '!rounded-tr-none !rounded-tl-none': isFullScreen,
+        'clipped-header-ltr': lang.isLtr,
+        'clipped-header': !lang.isLtr
+      }">
+      <div class="px-2 py-1 flex items-center justify-center gap-3">
+        <img src="assets/icons/chat-bot.png" alt="chat bot" class="mb-1 w-8" />
+        <app-select-input
+          class="min-w-40"
+          size="sm"
+          label=""
+          [formControl]="botType"
+          [options]="botService.botTypes"
+          [noMargin]="true">
+          <mat-option *appOptionTemplate="let option" [value]="option.type">{{
+            lang.getTranslate(option.langKey)
+          }}</mat-option>
+        </app-select-input>
+      </div>
+      <div>
+        <button (click)="toggleFullScreen()" mat-icon-button>
+          @if (isFullScreen) {
+          <svg viewBox="0 0 24 24">
+            <path
+              fill="currentColor"
+              fill-rule="evenodd"
+              clip-rule="evenodd"
+              d="M19.5,3.09L15,7.59V4H13V11H20V9H16.41L20.91,4.5L19.5,3.09M4,13V15H7.59L3.09,19.5L4.5,20.91L9,16.41V20H11V13H4Z" /></svg
+          >} @else {
+          <svg viewBox="0 0 24 24">
+            <path
+              fill="currentColor"
+              fill-rule="evenodd"
+              clip-rule="evenodd"
+              d="M10,21V19H6.41L10.91,14.5L9.5,13.09L5,17.59V14H3V21H10M14.5,10.91L19,6.41V10H21V3H14V5H17.59L13.09,9.5L14.5,10.91Z" /></svg
+          >}
+        </button>
+
+        <button (click)="closeChat()" mat-icon-button>
+          <svg viewBox="0 0 32 32">
+            <path
+              fill="currentColor"
+              d="M16 2C8.2 2 2 8.2 2 16s6.2 14 14 14s14-6.2 14-14S23.8 2 16 2zm5.4 21L16 17.6L10.6 23L9 21.4l5.4-5.4L9 10.6L10.6 9l5.4 5.4L21.4 9l1.6 1.6l-5.4 5.4l5.4 5.4l-1.6 1.6z" />
+          </svg>
+        </button>
+      </div>
+    </div>
+    <div #messagesContainer class="bg-white -mt-5 pt-3 messages-container relative flex-1 overflow-y-auto">
+      <ng-container *ngComponentOutlet="getCurrentBotConfig().component"></ng-container>
+    </div>
+    <div class="h-auto bg-[#f9f9f9] border-t border-t-primary/30 relative px-2 pt-2 items-center flex flex-col">
+      <div class="h-auto w-full flex items-end justify-center gap-2">
+        <div class="chat-shadow ps-2 py-1.5 bg-white overflow-hidden rounded-lg w-full flex items-end justify-center">
+          <textarea
+            #messageBox
+            [appOnlyCurrentLangLetters]="getCurrentBotConfig().allowCurrentLangLettersOnly"
+            rows="1"
+            (keydown.enter)="$event.preventDefault(); sendMessage()"
+            [formControl]="message"
+            [placeholder]="lang.map.type_a_message"
+            class="w-full text-primary bg-transparent outline-none resize-none py-1 pe-2 break-words overflow-y-auto"></textarea>
+
+          <button
+            (click)="deleteChat()"
+            [disabled]="!botService.hasMessages() || isTyping()"
+            class="!w-9 !h-9 !p-1.5 !text-primary disabled:!text-primary/50"
+            mat-icon-button>
+            <svg viewBox="0 0 24 24">
+              <path
+                fill="currentColor"
+                d="M2 12C2 16.97 6.03 21 11 21C13.39 21 15.68 20.06 17.4 18.4L15.9 16.9C14.63 18.25 12.86 19 11 19C4.76 19 1.64 11.46 6.05 7.05C10.46 2.64 18 5.77 18 12H15L19 16H19.1L23 12H20C20 7.03 15.97 3 11 3C6.03 3 2 7.03 2 12Z" />
+            </svg>
+          </button>
+          <button
+            [disabled]="!isMessageValid() || isTyping()"
+            (click)="sendMessage()"
+            class="!w-9 !h-9 !p-1.5 !text-primary disabled:!text-primary/50"
+            mat-icon-button>
+            <svg class="rtl:-scale-x-100 transition-all" viewBox="0 0 24 24">
+              <path fill="currentColor" d="M2,21L23,12L2,3V10L17,12L2,14V21Z" />
+            </svg>
+          </button>
+        </div>
+        @for (action of getCurrentBotConfig().actionComponents; track $index) {
+        <ng-container *ngComponentOutlet="action"></ng-container>
+        }
+      </div>
+      <p class="self-start text-primary text-[10px]">
+        <span class="font-bold">- {{ lang.map.notice }}: </span
+        >{{ lang.map.answers_are_based_on_ai_technology_and_may_be_subject_to_error }}
+      </p>
+    </div>
+  </div>
+  <button
+    (click)="toggleChat()"
+    [ngClass]="{ 'rotate-90': isOpened() }"
+    class="bg-grad !w-12 !h-12 p-1 flex items-center justify-center rounded-full opacity-90 transition-all overflow-hidden hover:opacity-100">
+    @if (isOpened()) {<svg
+      width="30px"
+      height="30px"
+      viewBox="0 0 24 24"
+      fill="#ffffff"
+      xmlns="http://www.w3.org/2000/svg">
+      <path
+        fill="#ffffff"
+        fill-rule="evenodd"
+        clip-rule="evenodd"
+        d="M5.29289 5.29289C5.68342 4.90237 6.31658 4.90237 6.70711 5.29289L12 10.5858L17.2929 5.29289C17.6834 4.90237 18.3166 4.90237 18.7071 5.29289C19.0976 5.68342 19.0976 6.31658 18.7071 6.70711L13.4142 12L18.7071 17.2929C19.0976 17.6834 19.0976 18.3166 18.7071 18.7071C18.3166 19.0976 17.6834 19.0976 17.2929 18.7071L12 13.4142L6.70711 18.7071C6.31658 19.0976 5.68342 19.0976 5.29289 18.7071C4.90237 18.3166 4.90237 17.6834 5.29289 17.2929L10.5858 12L5.29289 6.70711C4.90237 6.31658 4.90237 5.68342 5.29289 5.29289Z"></path></svg
+    >} @else {
+    <img src="assets/icons/chat-bot.png" alt="chat bot" class="w-full h-full" />
+    }
+  </button>
+</div>
