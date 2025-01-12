@@ -136,7 +136,6 @@ export class ChatComponent extends OnDestroyMixin(class {}) implements OnInit {
 
   private _listenToMessageChanged() {
     this.message.valueChanges.pipe(takeUntil(this.destroy$)).subscribe(() => {
-      console.log(this.isMessageValid(), this.isTyping());
       this._adjustMessageBoxHeight();
     });
   }

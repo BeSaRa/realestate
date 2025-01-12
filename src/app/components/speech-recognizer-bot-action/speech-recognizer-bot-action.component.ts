@@ -15,13 +15,13 @@ import {
 import { finalize, of, takeUntil, tap } from 'rxjs';
 
 @Component({
-  selector: 'app-voice-recorder-bot-action',
+  selector: 'app-speech-recognizer-bot-action',
   standalone: true,
   imports: [CommonModule, MatTooltipModule],
-  templateUrl: './voice-recorder-bot-action.component.html',
-  styleUrl: './voice-recorder-bot-action.component.scss',
+  templateUrl: './speech-recognizer-bot-action.component.html',
+  styleUrl: './speech-recognizer-bot-action.component.scss',
 })
-export class VoiceRecorderBotActionComponent
+export class SpeechRecognizerBotActionComponent
   extends OnDestroyMixin(BaseBotActionDirective)
   implements OnInit, OnDestroy
 {

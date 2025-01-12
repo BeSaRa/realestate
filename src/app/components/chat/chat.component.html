@@ -7,7 +7,7 @@
     [class.hidden]="isHidden"
     [class.opened]="!isFullScreen"
     [class.full-screen]="isFullScreen"
-    class="relative rounded-xl bg-transparent shadow-xl w-[90vw] sm:w-[500px] h-[650px] overflow-hidden flex group flex-col transition-all">
+    class="relative rounded-xl bg-transparent shadow-xl w-[90vw] sm:w-[500px] h-[650px] flex group flex-col transition-all">
     <div
       class="bg-grad relative pt-2 pb-4 z-20 flex items-start justify-between rounded-tr-xl rounded-tl-xl text-white"
       [ngClass]="{
@@ -60,7 +60,8 @@
     <div #messagesContainer class="bg-white -mt-5 pt-3 messages-container relative flex-1 overflow-y-auto">
       <ng-container *ngComponentOutlet="getCurrentBotConfig().component"></ng-container>
     </div>
-    <div class="h-auto bg-[#f9f9f9] border-t border-t-primary/30 relative px-2 pt-2 items-center flex flex-col">
+    <div
+      class="h-auto bg-[#f9f9f9] border-t border-t-primary/30 rounded-b-xl relative px-2 pt-2 items-center flex flex-col">
       <div class="h-auto w-full flex items-end justify-center gap-2">
         <div class="chat-shadow ps-2 py-1.5 bg-white overflow-hidden rounded-lg w-full flex items-end justify-center">
           <textarea
@@ -107,16 +108,9 @@
     (click)="toggleChat()"
     [ngClass]="{ 'rotate-90': isOpened() }"
     class="bg-grad !w-12 !h-12 p-1 flex items-center justify-center rounded-full opacity-90 transition-all overflow-hidden hover:opacity-100">
-    @if (isOpened()) {<svg
-      width="30px"
-      height="30px"
-      viewBox="0 0 24 24"
-      fill="#ffffff"
-      xmlns="http://www.w3.org/2000/svg">
+    @if (isOpened()) {<svg width="30px" height="30px" viewBox="0 0 24 24" fill="#ffffff">
       <path
         fill="#ffffff"
-        fill-rule="evenodd"
-        clip-rule="evenodd"
         d="M5.29289 5.29289C5.68342 4.90237 6.31658 4.90237 6.70711 5.29289L12 10.5858L17.2929 5.29289C17.6834 4.90237 18.3166 4.90237 18.7071 5.29289C19.0976 5.68342 19.0976 6.31658 18.7071 6.70711L13.4142 12L18.7071 17.2929C19.0976 17.6834 19.0976 18.3166 18.7071 18.7071C18.3166 19.0976 17.6834 19.0976 17.2929 18.7071L12 13.4142L6.70711 18.7071C6.31658 19.0976 5.68342 19.0976 5.29289 18.7071C4.90237 18.3166 4.90237 17.6834 5.29289 17.2929L10.5858 12L5.29289 6.70711C4.90237 6.31658 4.90237 5.68342 5.29289 5.29289Z"></path></svg
     >} @else {
     <img src="assets/icons/chat-bot.png" alt="chat bot" class="w-full h-full" />
