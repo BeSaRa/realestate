@@ -35,6 +35,7 @@
     "angular-responsive-carousel2": "^0.0.6",
     "apexcharts": "^3.40.0",
     "as-table": "^1.0.55",
+    "assert": "^2.1.0",
     "cast-response": "^1.0.7",
     "crypto-js": "^4.1.1",
     "currency.js": "^2.0.4",
@@ -51,10 +52,13 @@
     "ng-resize-observer": "^1.2.0",
     "ngx-countup": "^13.1.0",
     "ngx-mask": "^16.4.2",
+    "process": "^0.11.10",
     "qs": "^6.11.2",
     "rulyotano.math.interpolation.bezier": "^0.2.0",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0",
+    "url": "^0.11.4",
+    "util": "^0.12.5",
     "zone.js": "~0.14.3"
   },
   "devDependencies": {
