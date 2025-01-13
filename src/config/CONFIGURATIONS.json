@@ -9,5 +9,12 @@
     "SITE_KEY": "6LdCzaYoAAAAAM5TiiaGOBBWZSaApQvQwnUgO87x",
     "SECRET_KEY": "6LdCzaYoAAAAAGoZrAynPhj1o93D9cXnKzrBn7Ve"
   },
-  "MAIN_AUTHORITY_WEBSITE_URL": "https://www.aqarat.gov.qa/"
+  "MAIN_AUTHORITY_WEBSITE_URL": "https://www.aqarat.gov.qa/",
+  "AUTHORITY_AI": {
+    "BASE_URL": "https://ebla-ai-demo-002.azurewebsites.net/api/v1",
+    "SPEECH_LANGUAGES": [
+      "ar-QA",
+      "en-US"
+    ]
+  }
 }

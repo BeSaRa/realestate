@@ -189,7 +189,7 @@
 
     <!-- broker name filter -->
     <app-input *ngIf="isBroker()" formControlName="brokerName" [label]="lang.map.broker_name">
-      <input appControl formControlName="brokerName" appOnlyCurrentLangLetters maxlength="50" />
+      <input appControl formControlName="brokerName" [appOnlyCurrentLangLetters]="true" maxlength="50" />
       <mat-icon class="mx-2 !text-primary" appInputSuffix svgIcon="magnify"></mat-icon>
     </app-input>
 

@@ -1,12 +1,12 @@
 @if(isDataAvailable) { @if(data.responseFormat === Format.LAW) {
 <div class="flex items-center justify-end gap-1">
-  <button class="!text-secondary" mat-icon-button (click)="downloadCsvFile()">
+  <button class="!text-primary" mat-icon-button (click)="downloadCsvFile()">
     <svg class="w-4 h-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
       <path fill="currentColor" d="M5,20H19V18H5M19,9H15V3H9V9H5L12,16L19,9Z" />
     </svg>
   </button>
-  <div class="max-w-full bg-white border-2 border-secondary/70 rounded-xl overflow-hidden">
-    <p class="p-2 text-xl text-center bg-secondary/70 text-white font-bold">{{ getLawData().response[0].title }}</p>
+  <div class="chat-shadow max-w-full bg-white rounded-xl overflow-hidden">
+    <p class="bg-grad p-2 text-xl text-center text-white font-bold">{{ getLawData().response[0].title }}</p>
     <div class="overflow-x-auto px-8 py-4">
       @for (item of getLawData().response; track item) {
       <p>
@@ -41,12 +41,12 @@
 } @if(isTableView) {
 <!-- Table response -->
 <div class="flex items-center justify-end gap-1">
-  <button class="!text-secondary" mat-icon-button (click)="downloadCsvFile()">
+  <button class="!text-primary" mat-icon-button (click)="downloadCsvFile()">
     <svg class="w-4 h-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
       <path fill="currentColor" d="M5,20H19V18H5M19,9H15V3H9V9H5L12,16L19,9Z" />
     </svg>
   </button>
-  <div class="max-w-full overflow-x-auto !rounded-xl !border !border-secondary/70">
+  <div class="chat-shadow max-w-full overflow-x-auto !rounded-xl">
     <table mat-table [dataSource]="dataSource" class="!bg-transparent" style="min-width: {{ getTableMinWidth() }};">
       @for (column of columnNames; track column) {
       <ng-container [matColumnDef]="column">
@@ -58,11 +58,11 @@
         </td>
       </ng-container>
       }
-      <tr mat-header-row *matHeaderRowDef="columnNames" class="!bg-secondary/70 !text-white rounded-xl"></tr>
+      <tr mat-header-row *matHeaderRowDef="columnNames" class="bg-grad !text-white rounded-xl"></tr>
       <tr
         mat-row
         *matRowDef="let row; columns: columnNames"
-        class="!bg-white/90 !text-primary border-b last:border-b-0 border-b-secondary/70"></tr>
+        class="!bg-white/90 !text-primary border-b last:border-b-0 border-b-primary/70"></tr>
     </table>
   </div>
 </div>
@@ -70,20 +70,20 @@
 } @else {
 <!-- Chart response -->
 <div class="flex items-center justify-end gap-1">
-  <button class="!text-secondary" mat-icon-button (click)="downloadCsvFile()">
+  <button class="!text-primary" mat-icon-button (click)="downloadCsvFile()">
     <svg class="w-4 h-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
       <path fill="currentColor" d="M5,20H19V18H5M19,9H15V3H9V9H5L12,16L19,9Z" />
     </svg>
   </button>
-  <div class="max-w-full bg-white border-2 border-secondary/70 rounded-xl overflow-hidden">
-    <p class="p-2 text-xl text-center bg-secondary/70 text-white font-bold">{{ getChartYAxis() ?? "---" }}</p>
+  <div class="chat-shadow bg-white max-w-full rounded-xl overflow-hidden">
+    <p class="p-2 text-xl text-center bg-grad text-white font-bold">{{ getChartYAxis() ?? "---" }}</p>
     <div class="overflow-x-auto px-8 pt-12 mb-2">
       <div class="flex justify-center items-stretch gap-6" dir="ltr" style="min-width: {{ getChartMinWidth() }};">
         @for (item of data.response; track item; let i = $index) {
         <div class="flex-1 flex flex-col justify-start items-stretch">
           <div class="flex flex-col justify-end h-[200px]">
             <div
-              class="group relative bg-secondary/70 rounded-t-md text-center py-2 transition-all duration-300 hover:bg-secondary"
+              class="group relative bg-grad rounded-t-md text-center py-2 transition-all duration-300 hover:bg-opacity-80"
               [ngStyle]="{
                 height: ((getYValue(i) / (minMaxAvg.max === 0 ? 1 : minMaxAvg.max)) * 200).toFixed(0) + 'px'
               }">

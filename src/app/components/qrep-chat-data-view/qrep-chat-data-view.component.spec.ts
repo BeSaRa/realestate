@@ -1,18 +1,17 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { ChatGptDataViewComponent } from './chat-gpt-data-view.component';
+import { QrepChatDataViewComponent } from './qrep-chat-data-view.component';
 
 describe('ChatGptDataViewComponent', () => {
-  let component: ChatGptDataViewComponent;
-  let fixture: ComponentFixture<ChatGptDataViewComponent>;
+  let component: QrepChatDataViewComponent;
+  let fixture: ComponentFixture<QrepChatDataViewComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [ChatGptDataViewComponent]
-    })
-    .compileComponents();
-    
-    fixture = TestBed.createComponent(ChatGptDataViewComponent);
+      imports: [QrepChatDataViewComponent],
+    }).compileComponents();
+
+    fixture = TestBed.createComponent(QrepChatDataViewComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

@@ -1,0 +1,24 @@
+:host {
+  @apply relative;
+}
+
+.bg-grad {
+  background: linear-gradient(310deg, #3b0011 25%, #7f1f3b 75%);
+}
+
+.pulse {
+  animation: pulseAnimation 700ms infinite ease-in-out;
+}
+
+@keyframes pulseAnimation {
+  0%,
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+
+  50% {
+    transform: scale(1.5);
+    opacity: 0;
+  }
+}

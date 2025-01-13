@@ -1,4 +1,4 @@
-import { Directive, ElementRef, HostListener, inject } from '@angular/core';
+import { Directive, ElementRef, HostListener, inject, Input } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { TranslationService } from '@services/translation.service';
 
@@ -14,6 +14,8 @@ import { TranslationService } from '@services/translation.service';
   ],
 })
 export class OnlyCurrentLangLettersDirective implements ControlValueAccessor {
+  @Input('appOnlyCurrentLangLetters') enable = true;
+
   private elementRef = inject(ElementRef);
   private lang = inject(TranslationService);
 
@@ -24,7 +26,7 @@ export class OnlyCurrentLangLettersDirective implements ControlValueAccessor {
 
   @HostListener('input', ['$event.target.value'])
   onInputChange(value: string) {
-    const filteredValue: string = this._checkValue(value) ? value : value.slice(0, value.length - 1);
+    const filteredValue: string = this._checkValue(value) || !this.enable ? value : value.slice(0, value.length - 1);
     this._updateTextInput(filteredValue, this.value !== filteredValue);
   }
 
