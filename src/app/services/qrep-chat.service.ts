@@ -34,4 +34,6 @@ export class QrepChatService extends BaseChatService<QrepChatResponseContract> {
   protected override _prepareAssistantMessage(message: QrepChatResponseContract) {
     return message;
   }
+
+  protected override _onDeleteChat(): void {}
 }

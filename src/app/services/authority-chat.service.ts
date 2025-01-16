@@ -1,5 +1,5 @@
 import { BaseChatService } from '@abstracts/base-chat.service';
-import { inject, Injectable } from '@angular/core';
+import { computed, inject, Injectable, signal } from '@angular/core';
 import { AuthorityChatMessageResultContract, AuthorityMessage } from '@models/authority-message';
 import { formatString, formatText } from '@utils/utils';
 import { catchError, map, of, tap } from 'rxjs';
@@ -10,6 +10,13 @@ import { StreamService } from './stream.service';
 })
 export class AuthorityChatService extends BaseChatService<AuthorityMessage> {
   private readonly _streamService = inject(StreamService);
+
+  private _isConversationRated = signal(false);
+  isConversationRated = computed(() => this._isConversationRated());
+
+  rateConversationDone() {
+    this._isConversationRated.set(true);
+  }
 
   protected override _sendMessage() {
     const url = `${this._configService.CONFIG.AUTHORITY_AI.BASE_URL}/chatbot/chat/website`;
@@ -43,5 +50,9 @@ export class AuthorityChatService extends BaseChatService<AuthorityMessage> {
     message.content = formatString(formatText(message.content, message));
     message = new AuthorityMessage().clone(message);
     return message;
+  }
+
+  protected override _onDeleteChat(): void {
+    this._isConversationRated.set(false);
   }
 }

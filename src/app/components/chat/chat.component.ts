@@ -61,15 +61,11 @@ export class ChatComponent extends OnDestroyMixin(class {}) implements OnInit {
     this._listenToMessageWriteFromExternalSource();
   }
 
-  isMessageValid() {
-    return !!this.message.value.trim();
-  }
-
   getCurrentBotConfig() {
     return this.botService.getCurrentBotConfig();
   }
 
-  toggleChat() {
+  toggleBot() {
     this.botService.toggleBot();
 
     if (this.isOpened()) {
@@ -78,9 +74,17 @@ export class ChatComponent extends OnDestroyMixin(class {}) implements OnInit {
     this._togglePageScroll();
   }
 
+  getBotBindLabel = (bot: unknown) => {
+    return this.lang.getTranslate((bot as any).langKey) as unknown;
+  };
+
   closeChat(): void {
     this.botService.closeBot();
     this._togglePageScroll();
+  }
+
+  isMessageValid() {
+    return !!this.message.value.trim();
   }
 
   deleteChat() {
@@ -175,6 +179,6 @@ export class ChatComponent extends OnDestroyMixin(class {}) implements OnInit {
   private _adjustMessageBoxHeight() {
     this.messageBox.nativeElement.style.height = 'auto';
     this.messageBox.nativeElement.style.height =
-      Math.max(32, Math.min(this.messageBox.nativeElement.scrollHeight, 200)) + 'px';
+      Math.max(34, Math.min(this.messageBox.nativeElement.scrollHeight, 250)) + 'px';
   }
 }
