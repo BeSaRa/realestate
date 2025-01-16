@@ -15,6 +15,9 @@ export abstract class BaseChatService<T = {}> {
   messages = computed(() => this._messages());
 
   protected _conversationId: string | null = null;
+  get conversationId() {
+    return this._conversationId;
+  }
 
   startChatDate: Date | null = null;
   lastMessageDate = signal<Date | null>(null);
@@ -47,6 +50,7 @@ export abstract class BaseChatService<T = {}> {
     this.updateStartChatDate();
     this.updateLastMessageDate();
     this.clearCurrentConversationId();
+    this._onDeleteChat();
   }
 
   updateConversationId(id: string) {
@@ -68,4 +72,6 @@ export abstract class BaseChatService<T = {}> {
   protected abstract _sendMessage(message: string): Observable<T>;
   protected abstract _prepareUserMessage(message: string): string | T;
   protected abstract _prepareAssistantMessage(message: T): T;
+
+  protected abstract _onDeleteChat(): void;
 }

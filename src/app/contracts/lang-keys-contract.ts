@@ -645,4 +645,7 @@ export interface LangKeysContract {
   welcome_to_the_real_estate_regulatory_authority_smart_assistant_how_can_i_help_you: string;
   stop: string;
   avatar: string;
+  liked: string;
+  disliked: string;
+  rate_conversation: string;
 }

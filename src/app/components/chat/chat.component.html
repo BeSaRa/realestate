@@ -23,11 +23,9 @@
           label=""
           [formControl]="botType"
           [options]="botService.botTypes"
-          [noMargin]="true">
-          <mat-option *appOptionTemplate="let option" [value]="option.type">{{
-            lang.getTranslate(option.langKey)
-          }}</mat-option>
-        </app-select-input>
+          bindValue="type"
+          [bindLabel]="getBotBindLabel"
+          [noMargin]="true" />
       </div>
       <div>
         <button (click)="toggleFullScreen()" mat-icon-button>
@@ -105,7 +103,7 @@
     </div>
   </div>
   <button
-    (click)="toggleChat()"
+    (click)="toggleBot()"
     [ngClass]="{ 'rotate-90': isOpened() }"
     class="bg-grad !w-12 !h-12 p-1 flex items-center justify-center rounded-full opacity-90 transition-all overflow-hidden hover:opacity-100">
     @if (isOpened()) {<svg width="30px" height="30px" viewBox="0 0 24 24" fill="#ffffff">
