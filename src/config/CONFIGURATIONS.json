@@ -1,9 +1,9 @@
 {
   "ENVIRONMENTS_URLS": {
-    "CMS": "http://192.168.52.5:8055/"
+    "CMS": "https://aqarat.shad.local/"
   },
   "BASE_ENVIRONMENT": "CMS",
-  "BE": "http://192.168.52.4:9080/mme-services",
+  "BE": "https://aqarat.shad.local:8443/mme-services",
   "RECAPTCHA": {
     "RECAPTCHA_TOKEN_VALIDATION_URL": "https://www.google.com/recaptcha/api/siteverify",
     "SITE_KEY": "6LdCzaYoAAAAAM5TiiaGOBBWZSaApQvQwnUgO87x",
