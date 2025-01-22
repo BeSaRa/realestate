@@ -1,12 +1,11 @@
 import { CommonModule, DatePipe, DOCUMENT } from '@angular/common';
-import { Component, ElementRef, OnInit, ViewChild, inject } from '@angular/core';
+import { Component, ElementRef, inject, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
 import { DateAdapter, MatNativeDateModule } from '@angular/material/core';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { ActionDirective } from '@components/actions-portal/actions-portal.component';
-import { ButtonComponent } from '@components/button/button.component';
 import { FlyerCompositeTableComponent } from '@components/flyer-composite-table/flyer-composite-table.component';
 import { FlyerPropertyListComponent } from '@components/flyer-property-list/flyer-property-list.component';
 import { FlyerSummaryComponent } from '@components/flyer-summary/flyer-summary.component';
@@ -21,6 +20,7 @@ import { ExtraHeaderPortalBridgeDirective } from '@directives/extra-header-porta
 import { Durations } from '@enums/durations';
 import { OnDestroyMixin } from '@mixins/on-destroy-mixin';
 import { Lookup } from '@models/lookup';
+import { ChangeIndicatorService } from '@services/change-indicator.service';
 import { ExcelSheetSectionsRegisterService } from '@services/excel-sheet-sections-register.service';
 import { ExcelService } from '@services/excel.service';
 import { LookupService } from '@services/lookup.service';
@@ -41,7 +41,6 @@ import { debounceTime, delay, takeUntil } from 'rxjs';
     FlyerSummaryComponent,
     FlyerTopTenComponent,
     FlyerPropertyListComponent,
-    ButtonComponent,
     PriceRangeComponent,
     ReactiveFormsModule,
     MatNativeDateModule,
@@ -66,6 +65,7 @@ export default class FlyersPageComponent extends OnDestroyMixin(class {}) implem
   fb = inject(FormBuilder);
   adapter = inject(DateAdapter);
   datePipe = inject(DatePipe);
+  changeIndicatorService = inject(ChangeIndicatorService);
   document = inject(DOCUMENT);
   excelService = inject(ExcelService);
   excelSectionsRegisterService = inject(ExcelSheetSectionsRegisterService);
@@ -227,15 +227,22 @@ export default class FlyersPageComponent extends OnDestroyMixin(class {}) implem
     } else {
       if (this.year.value) {
         _criteria = { ..._criteria, issueDateYear: this.year.value };
+        this.changeIndicatorService.setChangeIndicatorType(Durations.YEARLY, this.year.value, 12);
       }
       if (this.quarter.value?.length) {
         _criteria = { ..._criteria, issueDateQuarterList: this.quarter.value };
+        this.changeIndicatorService.setChangeIndicatorType(
+          Durations.QUARTER_YEARLY,
+          this.year.value!,
+          Math.max(...this.quarter.value)
+        );
       } else {
         _criteria = { ..._criteria, issueDateQuarterList: [1, 2, 3, 4] };
       }
       if (this.month.value) {
         const _m = this.month.value;
         _criteria = { ..._criteria, issueDateMonth: _m, issueDateStartMonth: _m, issueDateEndMonth: _m };
+        this.changeIndicatorService.setChangeIndicatorType(Durations.MONTHLY, this.year.value!, this.month.value);
       } else {
         _criteria = {
           ..._criteria,

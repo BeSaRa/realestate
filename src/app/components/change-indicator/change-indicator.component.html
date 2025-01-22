@@ -3,7 +3,7 @@
     dir="ltr"
     class="text-lg font-bold transition rtl:mt-1"
     [ngClass]="{ 'text-secondary': !isHovered, 'text-white': isHovered }">
-    {{ (value || 0).toFixed(2) }} % YoY
+    {{ (value || 0).toFixed(2) }}% {{ changeIndicatorType() }}
   </span>
   <mat-icon
     class="transition"

@@ -24,13 +24,11 @@ import {
   CriteriaSaveDataContract,
   FavouriteSavePopupComponent,
 } from '@components/favourite-save-popup/favourite-save-popup.component';
-import { IconButtonComponent } from '@components/icon-button/icon-button.component';
 import { InputComponent } from '@components/input/input.component';
 import { SelectInputComponent } from '@components/select-input/select-input.component';
 import { AppIcons } from '@constants/app-icons';
 import { CriteriaContract } from '@contracts/criteria-contract';
 import { ControlDirective } from '@directives/control.directive';
-import { InputPrefixDirective } from '@directives/input-prefix.directive';
 import { InputSuffixDirective } from '@directives/input-suffix.directive';
 import { OnlyCurrentLangLettersDirective } from '@directives/only-current-lang-letters.directive';
 import { CriteriaType } from '@enums/criteria-type';
@@ -42,6 +40,7 @@ import { FilterMessage } from '@models/filter-message';
 import { Lookup } from '@models/lookup';
 import { ParamRange } from '@models/param-range';
 import { AuthService } from '@services/auth.service';
+import { ChangeIndicatorService } from '@services/change-indicator.service';
 import { DialogService } from '@services/dialog.service';
 import { FavouritesService } from '@services/favourites.service';
 import { FilterMessagesService } from '@services/filter-messages.service';
@@ -67,13 +66,11 @@ export type IndicatorType = 'sell' | 'rent' | 'mortgage' | 'owner' | 'ov' | 'bro
     SelectInputComponent,
     InputComponent,
     MatIconModule,
-    IconButtonComponent,
     MatRippleModule,
     MatDatepickerModule,
     MatNativeDateModule,
     MatFormFieldModule,
     MatInputModule,
-    InputPrefixDirective,
     InputSuffixDirective,
     ControlDirective,
     NgxMaskDirective,
@@ -133,6 +130,7 @@ export class TransactionsFilterComponent implements OnInit, OnDestroy {
   dialogService = inject(DialogService);
   authService = inject(AuthService);
   favouritesService = inject(FavouritesService);
+  changeIndicatorService = inject(ChangeIndicatorService);
   injector = inject(Injector);
 
   private destroy$: Subject<void> = new Subject();
@@ -325,6 +323,10 @@ export class TransactionsFilterComponent implements OnInit, OnDestroy {
 
   get issueDateQuarterList(): AbstractControl {
     return this.form.get('issueDateQuarterList') as AbstractControl;
+  }
+
+  get halfYearDuration(): AbstractControl {
+    return this.form.get('halfYearDuration') as AbstractControl;
   }
 
   get nationalityCode(): AbstractControl {
@@ -764,6 +766,7 @@ export class TransactionsFilterComponent implements OnInit, OnDestroy {
       value.issueDateTo = this.datePipe.transform(this.issueDateTo.value, 'YYY-MM-dd');
     }
 
+    this._setChangeIndicatorType();
     value = this._removeUnusedProps(value) as Partial<CriteriaContract>;
     if (criteriaType !== CriteriaType.DEFAULT) this.checkForCurrentCriteriaMessages(value);
     this.fromChanged.emit({ criteria: value as CriteriaContract, type: criteriaType });
@@ -779,6 +782,32 @@ export class TransactionsFilterComponent implements OnInit, OnDestroy {
       .subscribe(() => {
         this.sendFilter(CriteriaType.USER);
       });
+  }
+
+  private _setChangeIndicatorType() {
+    const _year = this.issueDateYear.value;
+    if (this.displayYear) {
+      this.changeIndicatorService.setChangeIndicatorType(this.durationType.value, _year, 12);
+    }
+    if (this.displayHalf) {
+      const _halfToMonth: Record<number, number> = { 1: 6, 2: 12 };
+      this.changeIndicatorService.setChangeIndicatorType(
+        this.durationType.value,
+        _year,
+        _halfToMonth[this.halfYearDuration.value]
+      );
+    }
+    if (this.displayQuarter) {
+      const _quarterToMonth: Record<number, number> = { 1: 3, 2: 6, 3: 9, 4: 12 };
+      this.changeIndicatorService.setChangeIndicatorType(
+        this.durationType.value,
+        _year,
+        _quarterToMonth[Math.max(...(this.issueDateQuarterList.value as Array<number>))]
+      );
+    }
+    if (this.displayMonth) {
+      this.changeIndicatorService.setChangeIndicatorType(this.durationType.value, _year, this.issueDateMonth.value);
+    }
   }
 
   _removeUnusedProps(value: any, isSavingCriteria?: boolean) {

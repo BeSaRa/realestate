@@ -1,7 +1,8 @@
 import { CommonModule } from '@angular/common';
-import { Component, Input } from '@angular/core';
+import { Component, computed, inject, Input } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
 import { AppIcons } from '@constants/app-icons';
+import { ChangeIndicatorService } from '@services/change-indicator.service';
 
 @Component({
   selector: 'app-change-indicator',
@@ -13,6 +14,9 @@ import { AppIcons } from '@constants/app-icons';
 export class ChangeIndicatorComponent {
   @Input({ required: true }) isHovered!: boolean;
   @Input({ required: true }) value!: number;
+
+  changeIndicatorService = inject(ChangeIndicatorService);
+  changeIndicatorType = computed(() => this.changeIndicatorService.changeIndicatorType());
 
   icons = AppIcons;
 }
