@@ -11,7 +11,7 @@
   },
   "MAIN_AUTHORITY_WEBSITE_URL": "https://www.aqarat.gov.qa/",
   "AUTHORITY_AI": {
-    "BASE_URL": "https://ebla-ai-demo-002.azurewebsites.net/api/v1",
+    "BASE_URL": "https://afnqcpcbai01.azurewebsites.net/api/v1",
     "SPEECH_LANGUAGES": [
       "ar-QA",
       "en-US"
