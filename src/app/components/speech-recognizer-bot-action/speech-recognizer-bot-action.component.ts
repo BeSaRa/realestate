@@ -143,6 +143,7 @@ export class SpeechRecognizerBotActionComponent
   }
 
   private _clearText() {
+    this._recognizedText = '';
     this.recognizingText.set('');
     this.botService.writeUserMessageFromExternalSource('');
   }
