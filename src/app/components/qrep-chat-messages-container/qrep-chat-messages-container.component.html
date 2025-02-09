@@ -11,18 +11,25 @@
 <div @slideMessage [ngClass]="{ ltr: lang.isLtr, rtl: !lang.isLtr }" class="me">
   <span>{{ getUserMessage(message) }}</span>
 </div>
-}@else { @if (message.responseFormat === responseFormat.ERROR || message.responseFormat === responseFormat.INVALID ) {
+}@else { @if (isError(message) || isInvalid(message) ) {
 <div @slideMessage class="error">
   <span
     ><svg class="w-6 h-6" viewBox="0 0 24 24">
       <path fill="currentColor" d="M13 14H11V9H13M13 18H11V16H13M1 21H23L12 2L1 21Z" /></svg
   ></span>
-  <div [ngClass]="{ ltr: lang.isLtr, rtl: !lang.isLtr }">
-    <span>{{
-      message.responseFormat === responseFormat.ERROR
-        ? lang.map.a_network_error_occured_please_try_again
-        : lang.map.your_question_is_not_clear_please_make_your_inquiry_about_the_data_more_clear
-    }}</span>
+  <div class="flex flex-col" [ngClass]="{ ltr: lang.isLtr, rtl: !lang.isLtr }">
+    @if (isError(message)) {
+    <span>{{ lang.map.a_network_error_occured_please_try_again }}</span>
+    }@else {
+    <span>{{ lang.map.your_question_is_not_clear_please_make_your_inquiry_about_the_data_more_clear }}</span>
+    <span class="text-sm">
+      <span class="font-bold">{{ lang.map.note }}: </span>
+      {{
+        lang.map
+          .if_you_are_inquiring_about_information_related_to_the_real_Estate_authority_legislation_services_or_investment_within_qatar_you_can_try_the_real_estate_regulatory_authority_smart_assistant
+      }}</span
+    >
+    }
   </div>
 </div>
 } @else {
