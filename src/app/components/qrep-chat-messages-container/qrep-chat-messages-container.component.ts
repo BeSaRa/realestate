@@ -19,13 +19,19 @@ export class QrepChatMessagesContainerComponent extends BaseChatMessagesContaine
   QrepChatResponseContract,
   QrepChatService
 > {
-  readonly responseFormat = QrepChatResponseFormat;
-
   override isMe(message: QrepChatResponseContract): boolean {
     return typeof message === 'string';
   }
 
   override getUserMessage(message: QrepChatResponseContract): string {
     return typeof message === 'string' ? message : '';
+  }
+
+  isError(message: QrepChatResponseContract) {
+    return message.responseFormat === QrepChatResponseFormat.ERROR;
+  }
+
+  isInvalid(message: QrepChatResponseContract) {
+    return message.responseFormat === QrepChatResponseFormat.INVALID;
   }
 }

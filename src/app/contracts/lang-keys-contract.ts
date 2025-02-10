@@ -648,4 +648,13 @@ export interface LangKeysContract {
   liked: string;
   disliked: string;
   rate_conversation: string;
+  if_you_are_inquiring_about_data_related_to_real_estate_indicators_and_statistics_you_can_try_the_real_estate_platform_smart_assistant: string;
+  if_you_are_inquiring_about_information_related_to_the_real_Estate_authority_legislation_services_or_investment_within_qatar_you_can_try_the_real_estate_regulatory_authority_smart_assistant: string;
+  open_avatar: string;
+  close_avatar: string;
+  click_to_speak: string;
+  stop_recording: string;
+  clear_chat: string;
+  maximize: string;
+  minimize: string;
 }
