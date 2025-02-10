@@ -1,6 +1,6 @@
 <div class="relative">
   <button
-    [matTooltip]="''"
+    [matTooltip]="isOpened() ? lang.map.close_avatar : lang.map.open_avatar"
     [disabled]="false"
     [ngClass]="{ 'rotate-90': isOpened() }"
     (click)="toggleAvatar()"
