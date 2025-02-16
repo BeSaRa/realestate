@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { HttpClient, HttpClientModule } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { Component, OnInit, inject } from '@angular/core';
 import { MatMenuModule } from '@angular/material/menu';
 import { RouterModule } from '@angular/router';
@@ -16,7 +16,7 @@ import { takeUntil } from 'rxjs';
 @Component({
   selector: 'app-main-menu',
   standalone: true,
-  imports: [CommonModule, HttpClientModule, ButtonComponent, RouterModule, MatMenuModule],
+  imports: [CommonModule, ButtonComponent, RouterModule, MatMenuModule],
   templateUrl: './main-menu.component.html',
   styleUrls: ['./main-menu.component.scss'],
 })

@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { HttpClient, HttpClientModule } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { Component, OnInit, ViewChild, inject } from '@angular/core';
 import { FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
@@ -22,7 +22,6 @@ import { finalize, from, switchMap, takeUntil, tap } from 'rxjs';
   standalone: true,
   imports: [
     CommonModule,
-    HttpClientModule,
     ButtonComponent,
     MatRadioModule,
     MatProgressSpinnerModule,

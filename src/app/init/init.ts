@@ -1,4 +1,4 @@
-import { APP_INITIALIZER, Injector } from '@angular/core';
+import { Injector, inject, provideAppInitializer } from '@angular/core';
 import { MatIconRegistry } from '@angular/material/icon';
 import { DomSanitizer } from '@angular/platform-browser';
 import { ConfigService } from '@services/config.service';
@@ -17,17 +17,14 @@ import { DistrictSortService } from '@services/district-sort.service';
 import { MenuService } from '@services/menu.service';
 
 export const applicationInit = [
-  {
-    provide: APP_INITIALIZER,
-    useFactory: (registry: MatIconRegistry, domSanitizer: DomSanitizer) => {
-      return () => registry.addSvgIconSet(domSanitizer.bypassSecurityTrustResourceUrl('./assets/mdi/mdi.svg'));
-    },
-    deps: [MatIconRegistry, DomSanitizer],
-    multi: true,
-  },
-  {
-    provide: APP_INITIALIZER,
-    useFactory: (
+  provideAppInitializer(() => {
+    const initializerFn = ((registry: MatIconRegistry, domSanitizer: DomSanitizer) => () => {
+      registry.addSvgIconSet(domSanitizer.bypassSecurityTrustResourceUrl('./assets/mdi/mdi.svg'));
+    })(inject(MatIconRegistry), inject(DomSanitizer));
+    return initializerFn();
+  }),
+  provideAppInitializer(() => {
+    const initializerFn = ((
       config: ConfigService,
       url: UrlService,
       translation: TranslationService,
@@ -50,24 +47,30 @@ export const applicationInit = [
           .pipe(switchMap(() => (tokenService.getToken() ? userService.loadCurrentUserProfile() : of(true))))
           .pipe(switchMap(() => injector.get(MenuService).initLoad()))
           .pipe(switchMap(() => injector.get(SectionGuardService).load()));
-    },
-    deps: [
-      ConfigService,
-      UrlService,
-      TranslationService,
-      LookupService,
-      TokenService,
-      UserService,
-      AuthService,
-      Injector,
-    ],
-    multi: true,
-  },
-  {
-    // UnitsService add to deps to initialize service at app start and be able to register it using ServiceRegister
-    provide: APP_INITIALIZER,
-    deps: [DistrictSortService, SplashService, UnitsService, GoogleAnalyticsService],
-    useFactory: (districtSort: DistrictSortService) => () => districtSort.listenToRouteAndLangChange(),
-    multi: true,
-  },
+    })(
+      inject(ConfigService),
+      inject(UrlService),
+      inject(TranslationService),
+      inject(LookupService),
+      inject(TokenService),
+      inject(UserService),
+      inject(AuthService),
+      inject(Injector)
+    );
+    return initializerFn();
+  }),
+  provideAppInitializer(() => {
+    const initializerFn = (
+      (
+        districtSort: DistrictSortService,
+        // those are only to be injected at app initialization
+        __: SplashService,
+        ___: UnitsService,
+        ____: GoogleAnalyticsService
+      ) =>
+      () =>
+        districtSort.listenToRouteAndLangChange()
+    )(inject(DistrictSortService), inject(SplashService), inject(UnitsService), inject(GoogleAnalyticsService));
+    return initializerFn();
+  }),
 ];
