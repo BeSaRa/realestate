@@ -15,7 +15,7 @@ import {
   inject,
 } from '@angular/core';
 import { CustomTooltipComponent } from '@components/custom-tooltip/custom-tooltip.component';
-import { Subject } from 'rxjs';
+import { BehaviorSubject, delay, of, Subject, switchMap, takeUntil } from 'rxjs';
 
 export interface CustomTooltipDataContract {
   tooltipTemplate: TemplateRef<any>;
@@ -43,7 +43,7 @@ export class CustomTooltipDirective implements OnInit, OnDestroy {
   private _overlayRef!: OverlayRef;
   private _tooltipRef?: ComponentRef<CustomTooltipComponent>;
 
-  private mouseIn = false;
+  private _mouseenter$ = new BehaviorSubject(false);
 
   destroy$ = new Subject<void>();
 
@@ -79,6 +79,12 @@ export class CustomTooltipDirective implements OnInit, OnDestroy {
               overlayX: 'center',
               overlayY: 'bottom',
             },
+            {
+              originX: 'center',
+              originY: 'bottom',
+              overlayX: 'center',
+              overlayY: 'top',
+            },
           ]
     );
     this._overlayRef = this._overlay.create({
@@ -86,42 +92,58 @@ export class CustomTooltipDirective implements OnInit, OnDestroy {
       direction: this._dir,
       scrollStrategy: this._overlay.scrollStrategies.reposition(),
     });
+
+    this._listenToMouseEnter();
   }
 
   @HostListener('mouseenter') show() {
     if (this._tooltipRef || !this.tooltipContent) return;
-    this.mouseIn = true;
-    setTimeout(() => {
-      if (this.mouseIn) {
-        const _injector = Injector.create({
-          parent: this._injector,
-          providers: [
-            {
-              provide: CUSTOM_TOOLTIP_DATA,
-              useValue: {
-                tooltipTemplate: this.tooltipTemplate,
-                tooltipContent: this.tooltipContent,
-              } as CustomTooltipDataContract,
-            },
-          ],
-        });
-
-        this._tooltipRef = this._overlayRef.attach(
-          new ComponentPortal<CustomTooltipComponent>(CustomTooltipComponent, null, _injector)
-        );
-      }
-    }, this.delay);
+    this._mouseenter$.next(true);
   }
 
   @HostListener('mouseleave') hide() {
-    this.mouseIn = false;
-    this._tooltipRef && (this._tooltipRef.instance.tooltipClass = 'custom-tooltip-hide');
-    this._tooltipRef = undefined;
-    this._overlayRef.detach();
+    this._mouseenter$.next(false);
+  }
+
+  private _listenToMouseEnter() {
+    this._mouseenter$
+      .pipe(
+        takeUntil(this.destroy$),
+        switchMap((v) => {
+          if (v) return of(v).pipe(delay(this.delay));
+          return of(v);
+        })
+      )
+      .subscribe((v) => {
+        if (v) {
+          const _injector = Injector.create({
+            parent: this._injector,
+            providers: [
+              {
+                provide: CUSTOM_TOOLTIP_DATA,
+                useValue: {
+                  tooltipTemplate: this.tooltipTemplate,
+                  tooltipContent: this.tooltipContent,
+                } as CustomTooltipDataContract,
+              },
+            ],
+          });
+
+          this._tooltipRef = this._overlayRef.attach(
+            new ComponentPortal<CustomTooltipComponent>(CustomTooltipComponent, null, _injector)
+          );
+        } else {
+          this._tooltipRef && (this._tooltipRef.instance.tooltipClass = 'custom-tooltip-hide');
+          this._tooltipRef?.destroy();
+          this._tooltipRef = undefined;
+          this._overlayRef.detach();
+        }
+      });
   }
 
   ngOnDestroy(): void {
     this._overlayRef.detach();
+    this._overlayRef.dispose();
 
     this.destroy$.next();
     this.destroy$.complete();
