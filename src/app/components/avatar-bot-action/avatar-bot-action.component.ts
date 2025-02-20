@@ -1,9 +1,8 @@
 import { CdkDrag, CdkDragHandle } from '@angular/cdk/drag-drop';
 import { CommonModule } from '@angular/common';
 import { Component, computed, ElementRef, inject, OnDestroy, signal, viewChild } from '@angular/core';
-import { MatTooltipModule } from '@angular/material/tooltip';
-import { StreamResultContract } from '@contracts/stream-result-contract';
 import { BaseBotActionDirective } from '@directives/base-bot-action.directive';
+import { CustomTooltipDirective } from '@directives/custom-tooltip.directive';
 import { OnDestroyMixin } from '@mixins/on-destroy-mixin';
 import { AvatarService } from '@services/avatar.service';
 import { StreamService } from '@services/stream.service';
@@ -12,7 +11,7 @@ import { catchError, finalize, from, map, switchMap, throwError } from 'rxjs';
 @Component({
   selector: 'app-avatar-bot-action',
   standalone: true,
-  imports: [CommonModule, MatTooltipModule, CdkDrag, CdkDragHandle],
+  imports: [CommonModule, CustomTooltipDirective, CdkDrag, CdkDragHandle],
   templateUrl: './avatar-bot-action.component.html',
   styleUrl: './avatar-bot-action.component.scss',
 })

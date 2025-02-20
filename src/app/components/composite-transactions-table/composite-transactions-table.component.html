@@ -123,10 +123,12 @@
             '!text-center !text-gray-400 !bg-slate-50': !compositeAvgCriteriaTerms.validate(criteria) || !isPreviousYearDataAvailable,
           }"
           appCustomTooltip
+          [tooltipTemplate]="tooltipTemplate"
           [tooltipContent]="
-            compositeAvgCriteriaTerms.validate(criteria) || !isPreviousYearDataAvailable ? null : tooltipTemplate
-          "
-          [tooltipContentContext]="compositeAvgCriteriaTerms.getCriteriaTermsText()">
+            compositeAvgCriteriaTerms.validate(criteria) || !isPreviousYearDataAvailable
+              ? undefined
+              : compositeAvgCriteriaTerms.getCriteriaTermsText()
+          ">
           <ng-container *ngIf="compositeAvgCriteriaTerms.validate(criteria)">{{
             element[0].kpi3Val || 0 | formatNumbers
           }}</ng-container>

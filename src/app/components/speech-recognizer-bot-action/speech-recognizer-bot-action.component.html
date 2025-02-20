@@ -11,7 +11,9 @@
   </button>
   }
   <button
-    [matTooltip]="isStarted() ? lang.map.stop_recording : lang.map.click_to_speak"
+    appCustomTooltip
+    [tooltipContent]="isStarted() ? lang.map.stop_recording : lang.map.click_to_speak"
+    [delay]="1000"
     [disabled]="isPaused()"
     (click)="toggleRecording()"
     class="relative size-12 flex items-center justify-center bg-white text-primary rounded-full shadow shadow-primary overflow-hidden border outline-none ring-offset-1 ring-primary/50 transition-all hover:bg-gray-200 focus:ring-2 disabled:bg-gray-200 disabled:text-primary/50">

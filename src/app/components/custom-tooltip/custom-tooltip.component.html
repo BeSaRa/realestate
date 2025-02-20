@@ -1,5 +1,11 @@
 <div class="custom-tooltip" [ngClass]="tooltipClass">
   <ng-container
-    [ngTemplateOutlet]="tooltipData.tooltipContent"
-    [ngTemplateOutletContext]="{ $implicit: tooltipData.tooltipContentContext }"></ng-container>
+    [ngTemplateOutlet]="tooltipData.tooltipTemplate ? tooltipData.tooltipTemplate : default"
+    [ngTemplateOutletContext]="{ $implicit: tooltipData.tooltipContent }"></ng-container>
 </div>
+
+<ng-template #default let-content>
+  <div class="bg-black/90 text-white text-xs font-bold p-1.5 rounded-md">
+    <p class="font-bold">{{ content }}</p>
+  </div>
+</ng-template>

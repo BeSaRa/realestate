@@ -3,7 +3,7 @@
 }
 
 .custom-tooltip {
-  @apply bg-white opacity-70 rounded-md overflow-hidden text-sm w-max;
+  @apply bg-transparent opacity-70 rounded-md overflow-hidden text-sm w-max;
 }
 
 .custom-tooltip-show {

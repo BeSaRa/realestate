@@ -30,7 +30,9 @@
       <div>
         <button
           (click)="toggleFullScreen()"
-          [matTooltip]="isFullScreen ? lang.map.minimize : lang.map.maximize"
+          appCustomTooltip
+          [tooltipContent]="isFullScreen ? lang.map.minimize : lang.map.maximize"
+          [delay]="1000"
           mat-icon-button>
           @if (isFullScreen) {
           <svg viewBox="0 0 24 24">
@@ -49,7 +51,7 @@
           >}
         </button>
 
-        <button (click)="closeChat()" [matTooltip]="lang.map.close" mat-icon-button>
+        <button (click)="closeChat()" appCustomTooltip [tooltipContent]="lang.map.close" [delay]="1000" mat-icon-button>
           <svg viewBox="0 0 32 32">
             <path
               fill="currentColor"
@@ -77,7 +79,9 @@
           <button
             (click)="deleteChat()"
             [disabled]="!botService.hasMessages() || isTyping()"
-            [matTooltip]="lang.map.clear_chat"
+            appCustomTooltip
+            [tooltipContent]="lang.map.clear_chat"
+            [delay]="1000"
             class="!w-9 !h-9 !p-1.5 !text-primary disabled:!text-primary/50"
             mat-icon-button>
             <svg viewBox="0 0 24 24">
@@ -89,7 +93,9 @@
           <button
             [disabled]="!isMessageValid() || isTyping()"
             (click)="sendMessage()"
-            [matTooltip]="lang.map.send"
+            appCustomTooltip
+            [tooltipContent]="lang.map.send"
+            [delay]="1000"
             class="!w-9 !h-9 !p-1.5 !text-primary disabled:!text-primary/50"
             mat-icon-button>
             <svg class="rtl:-scale-x-100 transition-all" viewBox="0 0 24 24">

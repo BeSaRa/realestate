@@ -13,14 +13,10 @@
             [disabled]="item.disabled || !item.criteriaTerms.validate(criteria)"
             [buttonStyle]="item.id === selectedAccordingTo.id ? 'secondary' : 'none-primary'"
             appCustomTooltip
+            [tooltipTemplate]="item.disabled ? disabledTooltipTemplate : criteriaTooltipTemplate"
             [tooltipContent]="
-              item.disabled
-                ? disabledTooltipTemplate
-                : !item.criteriaTerms.validate(criteria)
-                ? criteriaTooltipTemplate
-                : null
-            "
-            [tooltipContentContext]="item.criteriaTerms.getCriteriaTermsText()">
+              !item.criteriaTerms.validate(criteria) ? item.criteriaTerms.getCriteriaTermsText() : undefined
+            ">
             <span [ngClass]="{ 'text-transparent': isLoading && selectedAccordingTo.id === item.id }">{{
               item.getNames()
             }}</span>

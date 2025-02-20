@@ -657,4 +657,5 @@ export interface LangKeysContract {
   clear_chat: string;
   maximize: string;
   minimize: string;
+  stop_talking: string;
 }

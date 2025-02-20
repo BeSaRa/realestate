@@ -1,6 +1,8 @@
 <div class="relative">
   <button
-    [matTooltip]="isOpened() ? lang.map.close_avatar : lang.map.open_avatar"
+    appCustomTooltip
+    [tooltipContent]="isOpened() ? lang.map.close_avatar : lang.map.open_avatar"
+    [delay]="1000"
     [disabled]="false"
     [ngClass]="{ 'rotate-90': isOpened() }"
     (click)="toggleAvatar()"
@@ -57,8 +59,9 @@
   @if (isStarted()) {
   <button
     (click)="interruptAvatar()"
-    [matTooltip]="''"
-    (click)="(null)"
+    appCustomTooltip
+    [tooltipContent]="lang.map.stop_talking"
+    [delay]="1000"
     class="absolute z-10 top-12 w-12 mx-3 transition-all hover:opacity-70">
     <img src="assets/icons/stop-talking.svg" alt="stop-talking" /></button
   >}

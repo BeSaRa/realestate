@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, inject, OnDestroy, OnInit, signal } from '@angular/core';
-import { MatTooltipModule } from '@angular/material/tooltip';
 import { BaseBotActionDirective } from '@directives/base-bot-action.directive';
+import { CustomTooltipDirective } from '@directives/custom-tooltip.directive';
 import { OnDestroyMixin } from '@mixins/on-destroy-mixin';
 import { BotService } from '@services/bot.service';
 import { SpeechService } from '@services/speech.service';
@@ -17,7 +17,7 @@ import { finalize, of, takeUntil, tap } from 'rxjs';
 @Component({
   selector: 'app-speech-recognizer-bot-action',
   standalone: true,
-  imports: [CommonModule, MatTooltipModule],
+  imports: [CommonModule, CustomTooltipDirective],
   templateUrl: './speech-recognizer-bot-action.component.html',
   styleUrl: './speech-recognizer-bot-action.component.scss',
 })

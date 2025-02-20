@@ -5,8 +5,8 @@
   (mouseenter)="item.isDataAvailable && isCriteriaValid ? (isHovered = true) : null"
   (mouseleave)="isHovered = false"
   appCustomTooltip
-  [tooltipContent]="isCriteriaValid || !item.isDataAvailable ? null : tooltipTemplate"
-  [tooltipContentContext]="item.criteriaTerms.getCriteriaTermsText()"
+  [tooltipTemplate]="tooltipTemplate"
+  [tooltipContent]="isCriteriaValid || !item.isDataAvailable ? undefined : item.criteriaTerms.getCriteriaTermsText()"
   [ngClass]="{
     selected: item.selected,
     'opacity-30': isLoading,

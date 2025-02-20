@@ -18,8 +18,8 @@ import { CustomTooltipComponent } from '@components/custom-tooltip/custom-toolti
 import { Subject } from 'rxjs';
 
 export interface CustomTooltipDataContract {
-  tooltipContent: TemplateRef<any>;
-  tooltipContentContext: any;
+  tooltipTemplate: TemplateRef<any>;
+  tooltipContent: any;
 }
 
 export const CUSTOM_TOOLTIP_DATA = new InjectionToken<CustomTooltipDataContract>('CUSTOM_TOOLTIP_DATA');
@@ -29,9 +29,10 @@ export const CUSTOM_TOOLTIP_DATA = new InjectionToken<CustomTooltipDataContract>
   standalone: true,
 })
 export class CustomTooltipDirective implements OnInit, OnDestroy {
-  @Input({ required: true }) tooltipContent!: TemplateRef<any> | null;
-  @Input({ required: true }) tooltipContentContext!: any;
-  @Input({}) tooltipPosition?: ConnectedPosition;
+  @Input() tooltipTemplate?: TemplateRef<any>;
+  @Input() tooltipContent: any;
+  @Input() tooltipPosition?: ConnectedPosition;
+  @Input() delay = 0;
 
   private _elementRef = inject(ElementRef);
   private _overlay = inject(Overlay);
@@ -40,8 +41,9 @@ export class CustomTooltipDirective implements OnInit, OnDestroy {
   private _dir = inject(Directionality);
 
   private _overlayRef!: OverlayRef;
-
   private _tooltipRef?: ComponentRef<CustomTooltipComponent>;
+
+  private mouseIn = false;
 
   destroy$ = new Subject<void>();
 
@@ -49,7 +51,8 @@ export class CustomTooltipDirective implements OnInit, OnDestroy {
     const _postitionStrategy = this._overlayPositionBuilder.flexibleConnectedTo(this._elementRef).withPositions(
       this.tooltipPosition
         ? [this.tooltipPosition]
-        : [
+        : this.tooltipTemplate
+        ? [
             {
               originX: 'center',
               originY: 'center',
@@ -69,6 +72,14 @@ export class CustomTooltipDirective implements OnInit, OnDestroy {
               overlayY: 'top',
             },
           ]
+        : [
+            {
+              originX: 'center',
+              originY: 'top',
+              overlayX: 'center',
+              overlayY: 'bottom',
+            },
+          ]
     );
     this._overlayRef = this._overlay.create({
       positionStrategy: _postitionStrategy,
@@ -79,26 +90,31 @@ export class CustomTooltipDirective implements OnInit, OnDestroy {
 
   @HostListener('mouseenter') show() {
     if (this._tooltipRef || !this.tooltipContent) return;
+    this.mouseIn = true;
+    setTimeout(() => {
+      if (this.mouseIn) {
+        const _injector = Injector.create({
+          parent: this._injector,
+          providers: [
+            {
+              provide: CUSTOM_TOOLTIP_DATA,
+              useValue: {
+                tooltipTemplate: this.tooltipTemplate,
+                tooltipContent: this.tooltipContent,
+              } as CustomTooltipDataContract,
+            },
+          ],
+        });
 
-    const _injector = Injector.create({
-      parent: this._injector,
-      providers: [
-        {
-          provide: CUSTOM_TOOLTIP_DATA,
-          useValue: {
-            tooltipContent: this.tooltipContent,
-            tooltipContentContext: this.tooltipContentContext,
-          } as CustomTooltipDataContract,
-        },
-      ],
-    });
-
-    this._tooltipRef = this._overlayRef.attach(
-      new ComponentPortal<CustomTooltipComponent>(CustomTooltipComponent, null, _injector)
-    );
+        this._tooltipRef = this._overlayRef.attach(
+          new ComponentPortal<CustomTooltipComponent>(CustomTooltipComponent, null, _injector)
+        );
+      }
+    }, this.delay);
   }
 
   @HostListener('mouseleave') hide() {
+    this.mouseIn = false;
     this._tooltipRef && (this._tooltipRef.instance.tooltipClass = 'custom-tooltip-hide');
     this._tooltipRef = undefined;
     this._overlayRef.detach();

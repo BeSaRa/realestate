@@ -227,8 +227,8 @@
             *appTableColumnCellTemplate="let item; dataType: getTransactionStatsType()"
             class="flex justify-center font-bold"
             appCustomTooltip
-            [tooltipContent]="isPurposeOrTypeStatsTermsValid ? null : tooltipTemplate"
-            [tooltipContentContext]="purposeOrTypeStatsTermsText">
+            [tooltipTemplate]="tooltipTemplate"
+            [tooltipContent]="isPurposeOrTypeStatsTermsValid ? undefined : purposeOrTypeStatsTermsText">
             <ng-container *ngIf="isPurposeOrTypeStatsTermsValid">{{
               item.medianPrice || 0 | formatNumbers
             }}</ng-container>
@@ -281,8 +281,8 @@
             *appTableColumnCellTemplate="let item; dataType: getTransactionStatsType()"
             class="flex justify-center font-bold"
             appCustomTooltip
-            [tooltipContent]="isPurposeOrTypeStatsTermsValid ? null : tooltipTemplate"
-            [tooltipContentContext]="purposeOrTypeStatsTermsText">
+            [tooltipTemplate]="tooltipTemplate"
+            [tooltipContent]="isPurposeOrTypeStatsTermsValid ? null : purposeOrTypeStatsTermsText">
             <ng-container *ngIf="isPurposeOrTypeStatsTermsValid">{{
               item.unitSquareMedianPrice || 0 | formatNumbers : 0
             }}</ng-container>
@@ -299,8 +299,8 @@
             *appTableColumnCellTemplate="let item; dataType: getTransactionStatsType()"
             class="flex justify-center font-bold"
             appCustomTooltip
-            [tooltipContent]="isPurposeOrTypeStatsTermsValid ? null : tooltipTemplate"
-            [tooltipContentContext]="purposeOrTypeStatsTermsText">
+            [tooltipTemplate]="tooltipTemplate"
+            [tooltipContent]="isPurposeOrTypeStatsTermsValid ? undefined : purposeOrTypeStatsTermsText">
             <app-icon-button
               [disabled]="!isPurposeOrTypeStatsTermsValid"
               (clicked)="openStatsChart(item)"

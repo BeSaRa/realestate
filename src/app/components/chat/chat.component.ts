@@ -5,9 +5,9 @@ import { FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatOptionModule } from '@angular/material/core';
 import { MatSelectModule } from '@angular/material/select';
-import { MatTooltipModule } from '@angular/material/tooltip';
 import { OpenCloseAnimation } from '@animations/open-close.animation';
 import { SelectInputComponent } from '@components/select-input/select-input.component';
+import { CustomTooltipDirective } from '@directives/custom-tooltip.directive';
 import { OnlyCurrentLangLettersDirective } from '@directives/only-current-lang-letters.directive';
 import { OnDestroyMixin } from '@mixins/on-destroy-mixin';
 import { BotService } from '@services/bot.service';
@@ -27,7 +27,7 @@ import { combineLatest, takeUntil } from 'rxjs';
     MatSelectModule,
     ReactiveFormsModule,
     NgComponentOutlet,
-    MatTooltipModule,
+    CustomTooltipDirective,
   ],
   templateUrl: './chat.component.html',
   styleUrls: ['./chat.component.scss'],
