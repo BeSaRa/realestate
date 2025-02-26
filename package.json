@@ -9,7 +9,8 @@
     "test": "ng test",
     "lint": "ng lint",
     "build:image": "docker build --tag real-estate-front-end",
-    "version": "node bin/version.js"
+    "version": "node bin/version.js",
+    "vite": "vite"
   },
   "private": true,
   "dependencies": {

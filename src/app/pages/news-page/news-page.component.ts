@@ -8,7 +8,7 @@ import { NewsListComponent } from 'src/app/components/news-list/news-list.compon
 @Component({
   selector: 'app-news-page',
   standalone: true,
-  imports: [CommonModule, NgOptimizedImage, MatButtonModule, NewsListComponent],
+  imports: [CommonModule, MatButtonModule, NewsListComponent],
   templateUrl: './news-page.component.html',
   styleUrls: ['./news-page.component.scss'],
 })

@@ -58,7 +58,6 @@ import { map, take } from 'rxjs';
     TableColumnCellTemplateDirective,
     MatTableModule,
     FormatNumbersPipe,
-    NgxMaskPipe,
     MatSortModule,
     MatNativeDateModule,
     DurationChartComponent,

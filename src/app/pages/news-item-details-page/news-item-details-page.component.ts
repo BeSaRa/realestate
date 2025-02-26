@@ -14,7 +14,7 @@ import { Subject, map, switchMap, takeUntil, tap } from 'rxjs';
 @Component({
   selector: 'app-news-item-details-page',
   standalone: true,
-  imports: [CommonModule, NgOptimizedImage, SafeHtmlPipe, IconButtonComponent, MatIconModule, RelatedNewsListComponent],
+  imports: [CommonModule, SafeHtmlPipe, MatIconModule, RelatedNewsListComponent],
   templateUrl: './news-item-details-page.component.html',
   styleUrls: ['./news-item-details-page.component.scss'],
 })

@@ -7,6 +7,7 @@ import { UrlService } from '@services/url.service';
 import { AuthenticationData, AuthenticationMode } from '@directus/sdk';
 import { CastResponse } from 'cast-response';
 import { TokenService } from '@services/token.service';
+import { DOCUMENT } from '@angular/common';
 
 @Injectable({
   providedIn: 'root',
@@ -20,6 +21,7 @@ export class AuthService {
   logout$ = new Subject<void>();
   login$ = new Subject<void>();
   authenticatedStatusChanged$ = merge(this.login$, this.logout$).pipe(map(() => this.authenticated));
+  document = inject(DOCUMENT);
 
   constructor() {
     this.listenToRefreshToken();
@@ -87,9 +89,13 @@ export class AuthService {
    */
   logout(): Observable<void> {
     return this.http
-      .post<void>(this.urlService.URLS.LOGOUT, {
-        refresh_token: this.tokenService.getRefreshToken(),
-      })
+      .post<void>(
+        this.urlService.URLS.LOGOUT,
+        {},
+        {
+          withCredentials: true,
+        }
+      )
       .pipe(
         tap(() => {
           this.authenticated = false;
@@ -131,12 +137,16 @@ export class AuthService {
    */
   @CastResponse(undefined, { unwrap: 'data' })
   private refresh(mode: AuthenticationMode): Observable<AuthenticationData> {
-    return this.http.post<AuthenticationData>(this.urlService.URLS.REFRESH_TOKEN, {
-      mode,
-      refresh_token: this.tokenService.getRefreshToken(),
-    });
+    return this.http.post<AuthenticationData>(
+      this.urlService.URLS.REFRESH_TOKEN,
+      {
+        mode,
+      },
+      {
+        withCredentials: true,
+      }
+    );
   }
-
   /**
    * @description set a new token for token service
    * @param data
@@ -144,7 +154,7 @@ export class AuthService {
    */
   private updateToken(data: AuthenticationData): void {
     this.authenticated = true;
-    this.tokenService.setToken(data.access_token, data.refresh_token, data.expires);
+    this.tokenService.setToken(data.access_token, data.expires);
     this.login$.next();
   }
 
@@ -154,5 +164,11 @@ export class AuthService {
         this.tokenService.setGuestToken(token);
       })
     );
+  }
+
+  loginByQatarPass(): void {
+    const url = this.document.defaultView?.location.href;
+    if (!url) return;
+    location.href = 'https://stgqrepcms.aqarat.gov.qa/auth/login/nas?redirect=' + url;
   }
 }

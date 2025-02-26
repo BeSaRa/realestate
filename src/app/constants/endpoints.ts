@@ -225,6 +225,7 @@ export const cmsEndpoints = {
   FILES: '/files',
   INTEREST_ATTACHMENTS: 'flows/trigger/CBF86957-099A-400D-94E4-AFF2C6310D2E',
   EXHIBITION: 'items/exhibitions',
+  QATAR_PASS: '/auth/login/nas',
 };
 
 export const wishlistEndpoints = {

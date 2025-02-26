@@ -64,7 +64,6 @@ import { map, take } from 'rxjs';
     MatTableModule,
     MatSortModule,
     FormatNumbersPipe,
-    NgxMaskPipe,
     MatNativeDateModule,
     DurationChartComponent,
     PieChartComponent,

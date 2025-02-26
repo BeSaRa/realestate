@@ -2,21 +2,17 @@ import { CommonModule } from '@angular/common';
 import { AfterViewInit, Component, inject } from '@angular/core';
 import { MatNativeDateModule } from '@angular/material/core';
 import { AreasChartComponent } from '@components/areas-chart/areas-chart.component';
-import { ButtonComponent } from '@components/button/button.component';
 import { DurationChartComponent } from '@components/duration-chart/duration-chart.component';
-import { IconButtonComponent } from '@components/icon-button/icon-button.component';
 import { KpiRootComponent } from '@components/kpi-root/kpi-root.component';
 import { MunicipalitiesChartComponent } from '@components/municipalities-chart/municipalities-chart.component';
 import { NationalitiesChartComponent } from '@components/nationalities-chart/nationalities-chart.component';
 import { PieChartComponent } from '@components/pie-chart/pie-chart.component';
 import { PropertyCarouselComponent } from '@components/property-carousel/property-carousel.component';
 import { PurposeListComponent } from '@components/purpose-list/purpose-list.component';
-import { QatarInteractiveMapComponent } from '@components/qatar-interactive-map/qatar-interactive-map.component';
 import { TableComponent } from '@components/table/table.component';
 import { TransactionsFilterComponent } from '@components/transactions-filter/transactions-filter.component';
 import { APP_PAGES_SECTIONS } from '@constants/injection-tokens';
 import { CriteriaContract } from '@contracts/criteria-contract';
-import { ExtraHeaderPortalBridgeDirective } from '@directives/extra-header-portal-bridge.directive';
 import { SectionGuardDirective } from '@directives/section-guard.directive';
 import { TableColumnCellTemplateDirective } from '@directives/table-column-cell-template.directive';
 import { TableColumnHeaderTemplateDirective } from '@directives/table-column-header-template.directive';
@@ -28,29 +24,22 @@ import { KpiPurpose } from '@models/kpi-purpose';
 import { KpiRoot } from '@models/kpi-root';
 import { Lookup } from '@models/lookup';
 import { OwnershipTransaction } from '@models/ownership-transaction';
-import { FormatNumbersPipe } from '@pipes/format-numbers.pipe';
 import { DashboardService } from '@services/dashboard.service';
 import { LookupService } from '@services/lookup.service';
 import { SectionTitleService } from '@services/section-title.service';
 import { TranslationService } from '@services/translation.service';
 import { UrlService } from '@services/url.service';
-import { NgxMaskPipe } from 'ngx-mask';
+import { ExtraHeaderPortalBridgeDirective } from '@directives/extra-header-portal-bridge.directive';
 
 @Component({
   selector: 'app-owner-page',
   standalone: true,
   imports: [
     CommonModule,
-    ExtraHeaderPortalBridgeDirective,
     TransactionsFilterComponent,
     KpiRootComponent,
     PropertyCarouselComponent,
-    ButtonComponent,
-    IconButtonComponent,
-    FormatNumbersPipe,
-    NgxMaskPipe,
     MatNativeDateModule,
-    QatarInteractiveMapComponent,
     DurationChartComponent,
     PieChartComponent,
     MunicipalitiesChartComponent,
@@ -62,6 +51,7 @@ import { NgxMaskPipe } from 'ngx-mask';
     TableColumnCellTemplateDirective,
     SectionGuardDirective,
     PurposeListComponent,
+    ExtraHeaderPortalBridgeDirective,
   ],
   templateUrl: './ownership-indicators-page.component.html',
   styleUrls: ['./ownership-indicators-page.component.scss'],

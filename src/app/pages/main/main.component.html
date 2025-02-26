@@ -23,6 +23,10 @@
       <app-button buttonStyle="secondary" (click)="OnStaffLogin()">{{
         lang.map.login_as_editor_content_manager
       }}</app-button>
+      <app-button buttonStyle="secondary" (click)="authService.loginByQatarPass()">
+        <!--suppress AngularNgOptimizedImage -->
+        <img class="h-6" [alt]="lang.map.login_using_qatar_pass" src="assets/images/qp-logo.svg" />
+      </app-button>
     </div>
     <div *ngIf="authService.isAuthenticated()" class="flex flex-col gap-2 mt-3">
       <app-button buttonStyle="secondary" (click)="onLogOut()">{{ lang.map.log_out }}</app-button>

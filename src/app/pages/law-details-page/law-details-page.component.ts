@@ -1,16 +1,14 @@
 import { CommonModule } from '@angular/common';
-import { Component, Input, inject } from '@angular/core';
+import { Component, inject, Input } from '@angular/core';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { ButtonComponent } from '@components/button/button.component';
-import { ExtraHeaderComponent } from '@components/extra-header/extra-header.component';
 import { Law } from '@models/law';
-import { SafeHtmlPipe } from '@pipes/safe-html.pipe';
 import { TranslationService } from '@services/translation.service';
 
 @Component({
   selector: 'app-law-details-page',
   standalone: true,
-  imports: [CommonModule, ExtraHeaderComponent, ButtonComponent, MatExpansionModule, SafeHtmlPipe],
+  imports: [CommonModule, ButtonComponent, MatExpansionModule],
   templateUrl: './law-details-page.component.html',
   styleUrls: ['./law-details-page.component.scss'],
 })

@@ -20,7 +20,6 @@ import {
   ValidationErrors,
 } from '@angular/forms';
 import { ValidationErrorsComponent } from '@components/validation-errors/validation-errors.component';
-import { NgxMaskDirective } from 'ngx-mask';
 import { debounceTime, map, Observable, of, Subject, takeUntil } from 'rxjs';
 import { ControlDirective } from '@directives/control.directive';
 import { InputPrefixDirective } from '@directives/input-prefix.directive';
@@ -32,7 +31,7 @@ import { requiredValidator } from '@validators/validation-utils';
 @Component({
   selector: 'app-input',
   standalone: true,
-  imports: [CommonModule, ValidationErrorsComponent, NgxMaskDirective, ReactiveFormsModule, MatDatepickerModule],
+  imports: [CommonModule, ValidationErrorsComponent, ReactiveFormsModule, MatDatepickerModule],
   templateUrl: './input.component.html',
   styleUrls: ['./input.component.scss'],
   providers: [

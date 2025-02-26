@@ -7,7 +7,7 @@ import { TranslationService } from '@services/translation.service';
 @Component({
   selector: 'app-page',
   standalone: true,
-  imports: [CommonModule, NgOptimizedImage, SafeHtmlPipe],
+  imports: [CommonModule, SafeHtmlPipe],
   templateUrl: './page.component.html',
   styleUrls: ['./page.component.scss'],
 })

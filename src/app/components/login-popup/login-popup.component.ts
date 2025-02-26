@@ -5,13 +5,12 @@ import { MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { ButtonComponent } from '@components/button/button.component';
 import { IconButtonComponent } from '@components/icon-button/icon-button.component';
 import { InputComponent } from '@components/input/input.component';
-import { TextareaComponent } from '@components/textarea/textarea.component';
 import { TranslationService } from '@services/translation.service';
 import { AuthService } from '@services/auth.service';
 import { CustomValidators } from '@validators/custom-validators';
 import { CredentialsContract } from '@contracts/credentials-contract';
 import { ToastService } from '@services/toast.service';
-import { catchError, startWith, switchMap, throwError } from 'rxjs';
+import { catchError, switchMap, throwError } from 'rxjs';
 import { UserService } from '@services/user.service';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { CmsErrorContract } from '@contracts/cms-error-contract';
@@ -25,7 +24,6 @@ import { CmsErrorStatus } from '@enums/cms-error-status';
     ReactiveFormsModule,
     MatDialogModule,
     InputComponent,
-    TextareaComponent,
     ButtonComponent,
     IconButtonComponent,
     MatProgressSpinnerModule,

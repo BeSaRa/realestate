@@ -3,18 +3,18 @@ import {
   AfterViewInit,
   ChangeDetectorRef,
   Component,
+  effect,
   EventEmitter,
+  inject,
   Injector,
   Input,
   OnChanges,
   OnDestroy,
   Output,
   QueryList,
+  runInInjectionContext,
   SimpleChanges,
   ViewChildren,
-  effect,
-  inject,
-  runInInjectionContext,
 } from '@angular/core';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { DateAdapter } from '@angular/material/core';
@@ -33,7 +33,6 @@ import { ChartType } from '@enums/chart-type';
 import { DurationEndpoints } from '@enums/durations';
 import { OnDestroyMixin } from '@mixins/on-destroy-mixin';
 import { ChartOptionsModel } from '@models/chart-options-model';
-import { FormatNumbersPipe } from '@pipes/format-numbers.pipe';
 import { AppChartTypesService } from '@services/app-chart-types.service';
 import { DashboardService } from '@services/dashboard.service';
 import { LookupService } from '@services/lookup.service';
@@ -43,7 +42,6 @@ import { UnitsService } from '@services/units.service';
 import { UrlService } from '@services/url.service';
 import { minMaxAvg, range } from '@utils/utils';
 import { ChartComponent, NgApexchartsModule } from 'ng-apexcharts';
-import { NgxMaskPipe } from 'ngx-mask';
 import { catchError, map, take, takeUntil, throwError } from 'rxjs';
 
 @Component({
@@ -54,8 +52,6 @@ import { catchError, map, take, takeUntil, throwError } from 'rxjs';
     ButtonComponent,
     IconButtonComponent,
     NgApexchartsModule,
-    FormatNumbersPipe,
-    NgxMaskPipe,
     MatProgressSpinnerModule,
     SelectInputComponent,
     ReactiveFormsModule,

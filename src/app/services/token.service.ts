@@ -9,7 +9,6 @@ import { AuthenticationMode } from '@directus/sdk';
 export class TokenService {
   private config = inject(ConfigService);
   private accessToken: string | null = null;
-  private _refreshToken: string | null = null;
   private expires: number | null = null;
   private expireAt: number | null = null;
   private refresh$ = new Subject<AuthenticationMode>();
@@ -21,16 +20,8 @@ export class TokenService {
     return this.accessToken;
   }
 
-  getRefreshToken(): string | null {
-    return this._refreshToken;
-  }
-
-  setToken(token: string | null, refreshToken: string | null, expire: number | null): void {
+  setToken(token: string | null, expire: number | null): void {
     this.accessToken = token;
-    this._refreshToken = refreshToken;
-    if (!this._refreshToken) {
-      throw Error('Please Change Mode to json while make authentication through authService');
-    }
     this.expires = expire;
     this.calculateExpire();
     this.listenToLatestExpire();
@@ -39,7 +30,6 @@ export class TokenService {
 
   clear(): void {
     this.clearToken();
-    this.clearRefreshToken();
     this.clearTokenFromStorage();
   }
 
@@ -47,16 +37,8 @@ export class TokenService {
     this.accessToken = null;
   }
 
-  private clearRefreshToken(): void {
-    this._refreshToken = null;
-  }
-
   private calculateExpire(): void {
     this.expires ? (this.expireAt = Date.now() + (this.expires - this.config.CONFIG.REFRESH_TOKEN_BEFORE_MS)) : null;
-  }
-
-  isTokenExpired(): boolean {
-    return this.expireAt ? new Date().getMilliseconds() > this.expireAt : true;
   }
 
   refreshToken(): void {
@@ -76,7 +58,6 @@ export class TokenService {
       this.config.CONFIG.LOCAL_STORAGE_KEY,
       JSON.stringify({
         access_token: this.accessToken,
-        refresh_token: this._refreshToken,
         expires: this.expires,
         expireAt: this.expireAt,
       })
@@ -92,8 +73,8 @@ export class TokenService {
     if (!data) {
       return;
     }
-    const { access_token, refresh_token, expires, expireAt } = JSON.parse(data);
-    this._refreshToken = refresh_token;
+    const { access_token, expires, expireAt } = JSON.parse(data);
+
     this.expires = expires;
     this.expireAt = expireAt;
     this.accessToken = access_token;

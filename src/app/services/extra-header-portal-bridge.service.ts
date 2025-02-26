@@ -23,7 +23,7 @@ export class ExtraHeaderPortalBridgeService {
     this.subTitleSubject.next(subTitle);
   }
 
-  setPortal(templateRef: TemplateRef<any> | undefined | null, viewRef: ViewContainerRef) {
+  setPortal(templateRef: TemplateRef<unknown> | undefined | null, viewRef: ViewContainerRef) {
     if (templateRef) this.portalSubject.next(new TemplatePortal(templateRef, viewRef));
     else this.portalSubject.next(undefined);
   }

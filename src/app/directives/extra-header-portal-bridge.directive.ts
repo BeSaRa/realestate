@@ -1,13 +1,4 @@
-import {
-  Directive,
-  Input,
-  OnChanges,
-  OnInit,
-  SimpleChanges,
-  TemplateRef,
-  ViewContainerRef,
-  inject,
-} from '@angular/core';
+import { Directive, Input, OnChanges, OnInit, TemplateRef, ViewContainerRef, inject } from '@angular/core';
 import { ExtraHeaderPortalBridgeService } from '@services/extra-header-portal-bridge.service';
 
 @Directive({

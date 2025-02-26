@@ -1,4 +1,4 @@
-import { Injector, inject, provideAppInitializer } from '@angular/core';
+import { inject, Injector, provideAppInitializer } from '@angular/core';
 import { MatIconRegistry } from '@angular/material/icon';
 import { DomSanitizer } from '@angular/platform-browser';
 import { ConfigService } from '@services/config.service';
@@ -42,7 +42,7 @@ export const applicationInit = [
           .pipe(switchMap(() => lookups.load()))
           .pipe(switchMap(() => translation.load()))
           .pipe(tap(() => tokenService.getTokenFromStorage()))
-          .pipe(tap(() => authService.refresh$.next('json')))
+          .pipe(tap(() => authService.refresh$.next('cookie')))
           .pipe(delay(0))
           .pipe(switchMap(() => (tokenService.getToken() ? userService.loadCurrentUserProfile() : of(true))))
           .pipe(switchMap(() => injector.get(MenuService).initLoad()))
@@ -64,8 +64,11 @@ export const applicationInit = [
       (
         districtSort: DistrictSortService,
         // those are only to be injected at app initialization
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         __: SplashService,
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         ___: UnitsService,
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         ____: GoogleAnalyticsService
       ) =>
       () =>

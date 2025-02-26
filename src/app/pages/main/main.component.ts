@@ -42,7 +42,6 @@ import { filter, map, startWith, switchMap } from 'rxjs';
     FooterComponent,
     MatButtonModule,
     MatIconModule,
-    ChatComponent,
     SideBarComponent,
     ButtonComponent,
     BidiModule,

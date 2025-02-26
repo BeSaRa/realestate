@@ -2,20 +2,19 @@ import { CommonModule } from '@angular/common';
 import {
   Component,
   ContentChildren,
+  inject,
   Input,
   OnChanges,
   OnInit,
   QueryList,
   SimpleChanges,
   ViewChild,
-  inject,
 } from '@angular/core';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { MatPaginator, MatPaginatorModule, PageEvent } from '@angular/material/paginator';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatSortModule } from '@angular/material/sort';
 import { MatTableModule } from '@angular/material/table';
-import { SelectInputComponent } from '@components/select-input/select-input.component';
 import { CriteriaContract } from '@contracts/criteria-contract';
 import { TableColumnTemplateDirective } from '@directives/table-column-template.directive';
 import { OnDestroyMixin } from '@mixins/on-destroy-mixin';
@@ -26,12 +25,12 @@ import { SectionGuardService } from '@services/section-guard.service';
 import { TranslationService } from '@services/translation.service';
 import {
   BehaviorSubject,
-  Observable,
-  Subject,
   catchError,
   combineLatest,
   finalize,
+  Observable,
   of,
+  Subject,
   switchMap,
   takeUntil,
 } from 'rxjs';
@@ -39,15 +38,7 @@ import {
 @Component({
   selector: 'app-table',
   standalone: true,
-  imports: [
-    CommonModule,
-    MatTableModule,
-    MatPaginatorModule,
-    MatSortModule,
-    SelectInputComponent,
-    ReactiveFormsModule,
-    MatProgressBarModule,
-  ],
+  imports: [CommonModule, MatTableModule, MatPaginatorModule, MatSortModule, ReactiveFormsModule, MatProgressBarModule],
   templateUrl: './table.component.html',
   styleUrls: ['./table.component.scss'],
 })

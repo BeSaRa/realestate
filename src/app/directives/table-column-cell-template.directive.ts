@@ -1,4 +1,4 @@
-import { Directive, Input, TemplateRef, Type, inject } from '@angular/core';
+import { Directive, inject, Input, TemplateRef, Type } from '@angular/core';
 
 interface Context<T> {
   $implicit: T;

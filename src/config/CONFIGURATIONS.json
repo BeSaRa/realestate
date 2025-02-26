@@ -1,9 +1,9 @@
 {
   "ENVIRONMENTS_URLS": {
-    "CMS": "https://aqarat.shad.local/"
+    "CMS": "https://stgqrepcms.aqarat.gov.qa/"
   },
   "BASE_ENVIRONMENT": "CMS",
-  "BE": "https://aqarat.shad.local:8443/mme-services",
+  "BE": "https://stgqrepcms.aqarat.gov.qa:8443/mme-services",
   "RECAPTCHA": {
     "RECAPTCHA_TOKEN_VALIDATION_URL": "https://www.google.com/recaptcha/api/siteverify",
     "SITE_KEY": "6LdCzaYoAAAAAM5TiiaGOBBWZSaApQvQwnUgO87x",

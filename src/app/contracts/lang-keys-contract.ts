@@ -658,4 +658,5 @@ export interface LangKeysContract {
   maximize: string;
   minimize: string;
   stop_talking: string;
+  login_using_qatar_pass: string;
 }
