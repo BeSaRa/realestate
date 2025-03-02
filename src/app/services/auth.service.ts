@@ -136,7 +136,7 @@ export class AuthService {
    * @private
    */
   @CastResponse(undefined, { unwrap: 'data' })
-  private refresh(mode: AuthenticationMode): Observable<AuthenticationData> {
+  refresh(mode: AuthenticationMode): Observable<AuthenticationData> {
     return this.http.post<AuthenticationData>(
       this.urlService.URLS.REFRESH_TOKEN,
       {
