@@ -125,9 +125,7 @@ export class AuthService {
             .pipe(filter((value): value is AuthenticationData => !!value))
         )
       )
-      .subscribe((data) => {
-        this.updateToken(data);
-      });
+      .subscribe();
   }
 
   /**
@@ -137,15 +135,17 @@ export class AuthService {
    */
   @CastResponse(undefined, { unwrap: 'data' })
   refresh(mode: AuthenticationMode): Observable<AuthenticationData> {
-    return this.http.post<AuthenticationData>(
-      this.urlService.URLS.REFRESH_TOKEN,
-      {
-        mode,
-      },
-      {
-        withCredentials: true,
-      }
-    );
+    return this.http
+      .post<AuthenticationData>(
+        this.urlService.URLS.REFRESH_TOKEN,
+        {
+          mode,
+        },
+        {
+          withCredentials: true,
+        }
+      )
+      .pipe(tap((data) => this.updateToken(data)));
   }
   /**
    * @description set a new token for token service
