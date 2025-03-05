@@ -51,6 +51,7 @@ import { filter, map, startWith, switchMap } from 'rxjs';
     DataInfoComponent,
     ActionsPortalComponent,
     ActionDirective,
+    ChatComponent,
   ],
   templateUrl: './main.component.html',
   styleUrl: './main.component.scss',
