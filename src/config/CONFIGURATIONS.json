@@ -1,9 +1,9 @@
 {
   "ENVIRONMENTS_URLS": {
-    "CMS": "https://aqarat.shad.local/"
+    "CMS": "http://192.168.52.5:8055/"
   },
   "BASE_ENVIRONMENT": "CMS",
-  "BE": "https://aqarat.shad.local:8443/mme-services",
+  "BE": "http://192.168.52.4:9080/mme-services",
   "RECAPTCHA": {
     "RECAPTCHA_TOKEN_VALIDATION_URL": "https://www.google.com/recaptcha/api/siteverify",
     "SITE_KEY": "6LdCzaYoAAAAAM5TiiaGOBBWZSaApQvQwnUgO87x",
@@ -11,10 +11,11 @@
   },
   "MAIN_AUTHORITY_WEBSITE_URL": "https://www.aqarat.gov.qa/",
   "AUTHORITY_AI": {
-    "BASE_URL": "https://afnqcpcbai01.azurewebsites.net/api/v1",
+    "BASE_URL": "https://ebla-ai-demo-002.azurewebsites.net/api/v1",
     "SPEECH_LANGUAGES": [
       "ar-QA",
-      "en-US"
+      "en-US",
+      "fr-FR"
     ]
   }
 }
