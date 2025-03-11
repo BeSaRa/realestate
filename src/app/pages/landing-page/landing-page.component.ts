@@ -8,9 +8,7 @@ import { InquiriesComponent } from '@components/inquiries/inquiries.component';
 import { InwaniComponent } from '@components/inwani/inwani.component';
 import { NewsListComponent } from '@components/news-list/news-list.component';
 import { NewsletterFormComponent } from '@components/newsletter-form/newsletter-form.component';
-import { SliderComponent, SliderTemplateDirective } from '@components/slider/slider.component';
 import { VotingFormComponent } from '@components/voting-form/voting-form.component';
-import { ExtraHeaderPortalBridgeDirective } from '@directives/extra-header-portal-bridge.directive';
 import { OnDestroyMixin } from '@mixins/on-destroy-mixin';
 import { DashboardService } from '@services/dashboard.service';
 import { NewsService } from '@services/news.service';
@@ -32,9 +30,6 @@ import { formatNumber } from '@utils/utils';
     MatRadioModule,
     InquiriesComponent,
     InwaniComponent,
-    ExtraHeaderPortalBridgeDirective,
-    SliderComponent,
-    SliderTemplateDirective,
   ],
   templateUrl: './landing-page.component.html',
   styleUrls: ['./landing-page.component.scss'],

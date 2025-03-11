@@ -9,7 +9,7 @@ import { TokenService } from '@services/token.service';
 import { UserService } from '@services/user.service';
 import { AuthService } from '@services/auth.service';
 import { SectionGuardService } from '@services/section-guard.service';
-import { delay, forkJoin, of, switchMap, tap } from 'rxjs';
+import { catchError, forkJoin, of, switchMap, tap } from 'rxjs';
 import { SplashService } from '@services/splash.service';
 import { UnitsService } from '@services/units.service';
 import { GoogleAnalyticsService } from '@services/google-analytics.service';
@@ -41,8 +41,7 @@ export const applicationInit = [
           .pipe(switchMap(() => authService.getGuestToken()))
           .pipe(switchMap(() => lookups.load()))
           .pipe(switchMap(() => translation.load()))
-          // .pipe(tap(() => tokenService.getTokenFromStorage()))
-          .pipe(tap(() => authService.refresh('cookie')))
+          .pipe(switchMap(() => authService.refresh('cookie').pipe(catchError(() => of()))))
           .pipe(switchMap(() => (tokenService.getToken() ? userService.loadCurrentUserProfile() : of(true))))
           .pipe(switchMap(() => injector.get(MenuService).initLoad()))
           .pipe(switchMap(() => injector.get(SectionGuardService).load()));

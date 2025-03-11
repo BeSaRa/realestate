@@ -128,24 +128,25 @@ export class AuthService {
       .subscribe();
   }
 
+  @CastResponse(undefined, { unwrap: 'data' })
+  private _refresh(mode: AuthenticationMode): Observable<AuthenticationData> {
+    return this.http.post<AuthenticationData>(
+      this.urlService.URLS.REFRESH_TOKEN,
+      {
+        mode,
+      },
+      {
+        withCredentials: true,
+      }
+    );
+  }
   /**
    * @description method to the API to refresh token and get a new access token
    * @param mode
    * @private
    */
-  @CastResponse(undefined, { unwrap: 'data' })
   refresh(mode: AuthenticationMode): Observable<AuthenticationData> {
-    return this.http
-      .post<AuthenticationData>(
-        this.urlService.URLS.REFRESH_TOKEN,
-        {
-          mode,
-        },
-        {
-          withCredentials: true,
-        }
-      )
-      .pipe(tap((data) => this.updateToken(data)));
+    return this._refresh(mode).pipe(tap((data) => this.updateToken(data)));
   }
   /**
    * @description set a new token for token service
