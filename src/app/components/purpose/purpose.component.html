@@ -7,8 +7,8 @@
   }} ">
   <span
     [ngClass]="{ 'lg:-mb-3': showYoy }"
-    class="flex-1 flex items-center justify-center"
-    [ngClass]="{ 'flex-col-reverse items-center justify-end': !alignHorizontal, 'gap-2': isLoading }">
+    class="flex-1 flex flex-col-reverse items-center justify-end"
+    [ngClass]="{ 'gap-2': isLoading }">
     <span
       *ngIf="enableCountup && !isLoading"
       class="text-2xl me-2 text-primary font-bold group-hover:text-white group-[.selected]:text-white transition"

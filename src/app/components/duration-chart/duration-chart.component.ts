@@ -453,7 +453,7 @@ export class DurationChartComponent extends OnDestroyMixin(class {}) implements 
             AppColors.GRAY,
             AppColors.GRAY_TOO,
             AppColors.BLACK,
-          ],
+          ].map((c) => (this.selectedChartType === ChartType.AREA ? c + '50' : c)),
         };
       }
     } else if (this.selectedChartType !== ChartType.BAR) {

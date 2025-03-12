@@ -4,14 +4,10 @@
   class="p-10 flex flex-col md:flex-row items-center justify-between gap-8 rounded-xl transition-all hover:bg-primary/90 border border-primary/90 md:border-0">
   <div
     class="flex ltr:flex-row-reverse ltr:md:flex-col md:flex-col justify-center items-center md:items-start gap-2 md:gap-0 font-bold">
-    <span
-      class="text-5xl ltr:text-3xl ltr:sm:text-4xl text-silver transition-all"
-      [ngClass]="{ 'text-white': isHovered }">
+    <span class="text-3xl md:text-5xl text-silver transition-all" [ngClass]="{ 'text-white': isHovered }">
       {{ lang.map.indicators }}
     </span>
-    <span
-      class="text-6xl ltr:text-4xl ltr:sm:text-5xl text-primary transition-all"
-      [ngClass]="{ 'text-white': isHovered }">
+    <span class="text-4xl md:text-6xl text-primary transition-all" [ngClass]="{ 'text-white': isHovered }">
       {{ getTitle() }}
     </span>
   </div>

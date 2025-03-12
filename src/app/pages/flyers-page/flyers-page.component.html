@@ -33,7 +33,7 @@
           class="heading text-xl sm:text-2xl md:text-3xl self-center xl:self-start text-center text-primary border-secondary font-semibold">
           {{ lang.map.real_estate_flyer }} {{ getTitleSuffix() }}
         </h3>
-        <div [formGroup]="form" class="flex flex-col sm:flex-row justify-center items-center gap-3">
+        <div [formGroup]="form" class="w-full sm:w-auto flex flex-col sm:flex-row justify-center items-center gap-3">
           <app-select-input
             formControlName="duration"
             class="w-full sm:w-[150px]"
