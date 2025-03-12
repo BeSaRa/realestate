@@ -20,6 +20,8 @@ export const Config = {
   AUTHORITY_AI: {
     BASE_URL: '',
     SPEECH_LANGUAGES: [],
+    AZURE_X_FUNCTION_KEY: '',
+    PUBLIC_ACCESS_TOKEN: '',
   },
 };
 
