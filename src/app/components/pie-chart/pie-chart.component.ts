@@ -51,6 +51,7 @@ export class PieChartComponent extends OnDestroyMixin(class {}) implements OnIni
   injector = inject(Injector);
 
   isLoading = false;
+  dataLength = 0;
 
   pieChartOptions: PieChartOptions = {
     ...this.appChartTypesService.pieChartOptions,
@@ -91,6 +92,7 @@ export class PieChartComponent extends OnDestroyMixin(class {}) implements OnIni
       )
       .subscribe((data) => {
         data.sort((a, b) => b.getKpiVal() - a.getKpiVal());
+        this.dataLength = data.length;
 
         this.isLoading = false;
         this.pieChart.first

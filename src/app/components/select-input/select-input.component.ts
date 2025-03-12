@@ -85,6 +85,7 @@ export class SelectInputComponent implements ControlValueAccessor, OnInit, OnCha
   @Input() bindLabel?: string | ((item: unknown) => unknown);
   @Input() bindFilter?: string | ((item: unknown) => unknown);
   @Input() enableFilter = false;
+  @Input() showCheckTick = true;
 
   @ContentChild(OptionTemplateDirective) optionTemplate?: OptionTemplateDirective;
   @ContentChild(InputPrefixDirective) inputPrefix?: InputPrefixDirective;

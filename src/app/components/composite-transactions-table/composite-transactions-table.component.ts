@@ -1,4 +1,4 @@
-import { Component, Input, OnChanges, SimpleChanges, inject } from '@angular/core';
+import { Component, Input, OnChanges, SimpleChanges, computed, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { TranslationService } from '@services/translation.service';
 import { DashboardService } from '@services/dashboard.service';
@@ -15,6 +15,7 @@ import { FormatNumbersPipe } from '@pipes/format-numbers.pipe';
 import { NgxMaskPipe } from 'ngx-mask';
 import { CustomTooltipDirective } from '@directives/custom-tooltip.directive';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { ChangeIndicatorService } from '@services/change-indicator.service';
 
 @Component({
   selector: 'app-composite-transactions-table',
@@ -39,6 +40,9 @@ export class CompositeTransactionsTableComponent implements OnChanges {
   lang = inject(TranslationService);
   dashboardService = inject(DashboardService);
   lookupService = inject(LookupService);
+  changeIndicatorService = inject(ChangeIndicatorService);
+
+  changeIndicatorType = computed(() => this.changeIndicatorService.changeIndicatorType());
 
   isLoading = false;
   isPreviousYearDataAvailable = true;

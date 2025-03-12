@@ -35,7 +35,8 @@
       [id]="name"
       [ngClass]="tailwindClass"
       [multiple]="isMultiple"
-      [compareWith]="compareOptionsWith">
+      [compareWith]="compareOptionsWith"
+      [hideSingleSelectionIndicator]="showCheckTick">
       <div class="px-2 pb-2 input-select-filter-enabled" *ngIf="enableFilter">
         <app-input
           [formControl]="filterControl"

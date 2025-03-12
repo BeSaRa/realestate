@@ -659,4 +659,7 @@ export interface LangKeysContract {
   minimize: string;
   stop_talking: string;
   login_using_qatar_pass: string;
+
+  release_year: string;
+  law_number: string;
 }

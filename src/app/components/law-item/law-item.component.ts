@@ -1,10 +1,11 @@
 import { CommonModule } from '@angular/common';
-import { Component, Input } from '@angular/core';
+import { Component, inject, Input } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
 import { RouterModule } from '@angular/router';
 import { ButtonComponent } from '@components/button/button.component';
 import { AppIcons } from '@constants/app-icons';
 import { Law } from '@models/law';
+import { TranslationService } from '@services/translation.service';
 
 @Component({
   selector: 'app-law-item',
@@ -15,6 +16,8 @@ import { Law } from '@models/law';
 })
 export class LawItemComponent {
   @Input({ required: true }) lawItemData!: Law;
+
+  lang = inject(TranslationService);
 
   icons = AppIcons;
 

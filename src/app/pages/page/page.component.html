@@ -1,10 +1,12 @@
 <div class="content-wrapper py-10 px-3 lg:px-16">
   <div class="flex justify-center">
-    <div class="min-w-full md:min-w-[600px] lg:min-w-[900px] col-span-3 p-10 shadow-sm rounded-xl border text-center">
-      <h1 class="heading text-5xl self-start text-primary border-secondary font-semibold inline-block mb-5">
+    <div
+      class="min-w-full md:min-w-[600px] lg:min-w-[900px] col-span-3 p-4 md:p-6 lg:p-8 xl:p-10 shadow-sm rounded-xl border text-center">
+      <h1
+        class="heading text-2xl md:text-4xl lg:text-5xl self-start text-primary border-secondary font-semibold inline-block">
         {{ getPageContent().title }}
       </h1>
-      <div class="mt-10 !text-2xl text-start" [innerHtml]="getPageContent().content | safeHtml"></div>
+      <div class="mt-6 md:mt-8 lg:mt-10 !text-2xl text-start" [innerHtml]="getPageContent().content | safeHtml"></div>
     </div>
   </div>
 </div>
