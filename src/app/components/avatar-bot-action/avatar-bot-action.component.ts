@@ -103,7 +103,8 @@ export class AvatarBotActionComponent extends OnDestroyMixin(BaseBotActionDirect
       .pipe(
         switchMap(() => from(this.rtcPC!.createAnswer())),
         switchMap((answer) => from(this.rtcPC!.setLocalDescription(answer)).pipe(map(() => answer))),
-        switchMap((answer) => this.avatarService.sendAnswer(answer))
+        switchMap((answer) => this.avatarService.sendAnswer(answer)),
+        switchMap(() => this.avatarService.greeting('website', !this.lang.isLtr))
       )
       .subscribe();
   }

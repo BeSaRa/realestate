@@ -1,4 +1,4 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { StreamResultContract } from '@contracts/stream-result-contract';
 import { Observable, of, tap } from 'rxjs';
@@ -49,5 +49,11 @@ export class AvatarService {
 
   renderText(): Observable<unknown> {
     return this._http.post(this._avatarUrl + `/render-text/${this._streamService.streamId()}`, {});
+  }
+
+  greeting(botName: string, isArabic: boolean) {
+    const url = `${this._avatarUrl}/greeting/${botName}/${this._streamService.streamId()}`;
+    const params = new HttpParams().append('is_ar', isArabic);
+    return this._http.post<void>(url, null, { params });
   }
 }

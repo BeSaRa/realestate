@@ -38,7 +38,7 @@
 </div>
 <div class="sticky bottom-0 flex-1 flex flex-col justify-end items-end">
   @if (messages().length > 1 && !isConversationRated()) {
-  <div class="sticky bottom-[40px] w-56 flex flex-col justify-end">
+  <div [ngClass]="{ 'bottom-10': faq().length }" class="sticky w-56 flex flex-col justify-end">
     <div
       @slideFromBottom
       class="hover:duration-300 hover:transition-transform bg-[#f2f2f2] p-1 rounded-tl-md rounded-tr-md border border-primary/30 border-b-0 shadow-sm text-primary flex items-center justify-evenly gap-4 mt-auto [&_button]:flex [&_button]:flex-col [&_button]:justify-center [&_button]:items-center [&_button]:text-sm [&_button]:leading-none">
