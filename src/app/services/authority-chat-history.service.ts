@@ -13,7 +13,7 @@ export class AuthorityChatHistoryService {
   private readonly _chatHistoryUrl = this._configService.CONFIG.AUTHORITY_AI.BASE_URL + '/chat-history';
 
   addFeedback(conversationId: string, feedback: ChatFeedback) {
-    const url = `${this._chatHistoryUrl}/add-feedback`;
+    const url = `${this._chatHistoryUrl}/add-conversation-feedback`;
     const params = new HttpParams().set('conv_id', conversationId).set('feedback', feedback);
     return this._http.post<string>(url, null, { params: params });
   }
