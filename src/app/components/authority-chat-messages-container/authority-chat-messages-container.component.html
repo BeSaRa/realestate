@@ -38,7 +38,7 @@
 </div>
 <div class="sticky bottom-0 flex-1 flex flex-col justify-end items-end">
   @if (messages().length > 1 && !isConversationRated()) {
-  <div [ngClass]="{ 'bottom-10': faq().length }" class="sticky w-56 flex flex-col justify-end">
+  <div [ngClass]="{ 'bottom-12': faq().length }" class="sticky w-56 flex flex-col justify-end">
     <div
       @slideFromBottom
       class="hover:duration-300 hover:transition-transform bg-[#f2f2f2] p-1 rounded-tl-md rounded-tr-md border border-primary/30 border-b-0 shadow-sm text-primary flex items-center justify-evenly gap-4 mt-auto [&_button]:flex [&_button]:flex-col [&_button]:justify-center [&_button]:items-center [&_button]:text-sm [&_button]:leading-none">
@@ -66,8 +66,8 @@
     </div>
   </div>
   } @if (faq().length) {
-  <div class="flex w-full bg-[#f9f9f9] border-t border-t-primary/30 overflow-x-scroll scroll-px-4 no-scrollbar">
-    <div class="px-2 py-1 flex flex-nowrap items-center justify-center gap-2 text-white text-sm">
+  <div class="flex w-full bg-[#f9f9f9] border-t border-t-primary/30 overflow-hidden box-border hover:overflow-auto">
+    <div class="px-2 py-2.5 flex flex-nowrap items-center justify-center gap-2 text-white text-xs hover:pb-1">
       @for (item of faq(); track item) {
       <button
         [disabled]="botService.isLoading()"
