@@ -17,6 +17,8 @@ export const Config = {
   REFRESH_TOKEN_BEFORE_MS: 120000, // refresh token before 2 minutes from expiration
   LOCAL_STORAGE_KEY: '$$_S__$$',
   MAIN_AUTHORITY_WEBSITE_URL: '',
+  MAIN_AUTHORITY_NEWS: '',
+  MAIN_AUTHORITY_LAWS: '',
   AUTHORITY_AI: {
     BASE_URL: '',
     SPEECH_LANGUAGES: [],
