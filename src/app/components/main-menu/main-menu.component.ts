@@ -40,4 +40,8 @@ export class MainMenuComponent extends OnDestroyMixin(class {}) implements OnIni
   addClick(item: MenuItem): void {
     item.recent ? item.clicked().pipe(takeUntil(this.destroy$)).subscribe() : null;
   }
+
+  redirect(url: string) {
+    window.location.href = url;
+  }
 }

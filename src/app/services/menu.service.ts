@@ -10,6 +10,7 @@ import { UrlService } from '@services/url.service';
 import { UserService } from '@services/user.service';
 import { CastResponse } from 'cast-response';
 import { BehaviorSubject, delay, exhaustMap, map, Observable, ReplaySubject, Subject, tap } from 'rxjs';
+import { ConfigService } from './config.service';
 
 @Injectable({
   providedIn: 'root',
@@ -20,12 +21,18 @@ export class MenuService extends RegisterServiceMixin(class {}) implements Servi
   urlService = inject(UrlService);
   userService = inject(UserService);
   authService = inject(AuthService);
+  config = inject(ConfigService);
   menus!: Menus;
   loading = false;
   menus$ = new ReplaySubject<Menus>(1);
   filteredMenus$ = new ReplaySubject<Menus>(1);
   reload$ = new Subject<void>();
   menuMap$ = new BehaviorSubject<Record<string, MenuItem>>({});
+
+  private _externalUrlsMap: Record<string, string> = {
+    '/laws': this.config.CONFIG.MAIN_AUTHORITY_WEBSITE_URL + '/' + this.config.CONFIG.MAIN_AUTHORITY_LAWS,
+    '/news': this.config.CONFIG.MAIN_AUTHORITY_WEBSITE_URL + '/' + this.config.CONFIG.MAIN_AUTHORITY_NEWS,
+  };
 
   constructor() {
     super();
@@ -76,6 +83,10 @@ export class MenuService extends RegisterServiceMixin(class {}) implements Servi
     return this.http.patch<void>(this.urlService.URLS.MENU_ITEMS + '/' + model.id, {
       clicks: Number(model.clicks) + 1,
     });
+  }
+
+  getExternalUrl(url: string) {
+    return this._externalUrlsMap[url];
   }
 
   private userCanAccessLink(link: MenuItem): boolean {

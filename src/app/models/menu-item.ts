@@ -21,4 +21,12 @@ export class MenuItem extends HasServiceMixin(ClonerMixin(GetNamesMixin(class {}
   clicked() {
     return this.$$getService$$<MenuService>().updateClicks(this);
   }
+
+  isExternal() {
+    return this.url === '/laws' || this.url === '/news';
+  }
+
+  getExternalUrl() {
+    return this.$$getService$$<MenuService>().getExternalUrl(this.url);
+  }
 }

@@ -3,9 +3,7 @@ import { Pages } from '@enums/pages';
 import { authGuard } from '@guards/auth.guard';
 import { ExternalComponent } from '@pages/external/external.component';
 import { MainComponent } from '@pages/main/main.component';
-import { lawResolver } from '@resolvers/law.resolver';
 import { lookupsResolver } from '@resolvers/lookups.resolver';
-import { newsItemResolver } from '@resolvers/news-item.resolver';
 import { pageResolver } from '@resolvers/page.resolver';
 
 export const routes: Routes = [
@@ -29,15 +27,15 @@ export const routes: Routes = [
     children: [
       { path: '', pathMatch: 'full', redirectTo: 'home' },
       { path: 'home', loadComponent: () => import('./pages/landing-page/landing-page.component') },
-      {
-        path: 'news',
-        loadComponent: () => import('./pages/news-page/news-page.component'),
-      },
-      {
-        path: 'news/:id',
-        loadComponent: () => import('./pages/news-item-details-page/news-item-details-page.component'),
-        resolve: { newsItemData: newsItemResolver },
-      },
+      // {
+      //   path: 'news',
+      //   loadComponent: () => import('./pages/news-page/news-page.component'),
+      // },
+      // {
+      //   path: 'news/:id',
+      //   loadComponent: () => import('./pages/news-item-details-page/news-item-details-page.component'),
+      //   resolve: { newsItemData: newsItemResolver },
+      // },
       {
         path: Pages.ABOUT_US,
         loadComponent: () => import('./pages/page/page.component'),
@@ -62,19 +60,19 @@ export const routes: Routes = [
         data: { page: Pages.DISCLAIMER },
         resolve: { pageData: pageResolver },
       },
-      {
-        path: 'laws',
-        loadComponent: () => import('./pages/law-page/law-page.component'),
-      },
+      // {
+      //   path: 'laws',
+      //   loadComponent: () => import('./pages/law-page/law-page.component'),
+      // },
       {
         path: 'faq',
         loadComponent: () => import('./pages/faq-page/faq-page.component'),
       },
-      {
-        path: 'laws/:id',
-        loadComponent: () => import('./pages/law-details-page/law-details-page.component'),
-        resolve: { lawData: lawResolver },
-      },
+      // {
+      //   path: 'laws/:id',
+      //   loadComponent: () => import('./pages/law-details-page/law-details-page.component'),
+      //   resolve: { lawData: lawResolver },
+      // },
       {
         path: 'sell-indicators',
         canActivate: [authGuard('/sell-indicators')],
@@ -118,10 +116,10 @@ export const routes: Routes = [
         canActivate: [authGuard('/general-secretariat')],
         loadComponent: () => import('@pages/general-secretariat-page/general-secretariat-page.component'),
       },
-      {
-        path: 'inputs',
-        loadComponent: () => import('@pages/inputs-page/inputs-page.component'),
-      },
+      // {
+      //   path: 'inputs',
+      //   loadComponent: () => import('@pages/inputs-page/inputs-page.component'),
+      // },
       // {
       //   path: 'broker-indicators',
       //   loadComponent: () => import('@pages/broker-indicators-page/broker-indicators-page.component'),

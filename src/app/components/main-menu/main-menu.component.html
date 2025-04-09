@@ -1,6 +1,15 @@
 <div class="hidden lg:block">
   <ul id="main-menu" class="flex gap-x-3">
     <ng-container *ngFor="let menuItem of mainMenu?.links ?? []; let i = index">
+      @if (menuItem.isExternal()) {
+      <li>
+        <app-button
+          (click)="redirect(menuItem.getExternalUrl())"
+          [buttonStyle]="sticky.isSticky() ? 'none-primary' : 'none'">
+          <span class="ltr:text-sm">{{ menuItem.getNames() }}</span>
+        </app-button>
+      </li>
+      } @else {
       <li *ngIf="i === 1">
         <app-button
           [buttonStyle]="sticky.isSticky() ? 'none-primary' : 'none'"
@@ -19,7 +28,8 @@
           routerLinkActive="active">
           <span class="ltr:text-sm">{{ menuItem.getNames() }}</span>
         </app-button>
-      </li></ng-container
+      </li>
+      }</ng-container
     >
   </ul>
 </div>

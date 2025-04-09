@@ -9,7 +9,9 @@
     "SITE_KEY": "6LdCzaYoAAAAAM5TiiaGOBBWZSaApQvQwnUgO87x",
     "SECRET_KEY": "6LdCzaYoAAAAAGoZrAynPhj1o93D9cXnKzrBn7Ve"
   },
-  "MAIN_AUTHORITY_WEBSITE_URL": "https://www.aqarat.gov.qa/",
+  "MAIN_AUTHORITY_WEBSITE_URL": "https://www.aqarat.gov.qa",
+  "MAIN_AUTHORITY_NEWS": "%d8%a3%d8%ae%d8%a8%d8%a7%d8%b1-%d8%a7%d9%84%d9%87%d9%8a%d8%a6%d8%a9",
+  "MAIN_AUTHORITY_LAWS": "%d8%a7%d9%84%d8%aa%d8%b4%d8%b1%d9%8a%d8%b9%d8%a7%d8%aa",
   "AUTHORITY_AI": {
     "BASE_URL": "https://rera-api.azurewebsites.net/api/v1",
     "SPEECH_LANGUAGES": [
