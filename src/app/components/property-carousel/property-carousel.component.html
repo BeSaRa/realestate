@@ -23,10 +23,10 @@
           [value]="item.kpiData.getKpiYoYVal()"
           [isHovered]="item.selected"></app-change-indicator>
         <span *ngIf="showYoy" class="my-2 h-0 w-full border-t border-primary/50 group-hover:border-white"></span>
-        <span class="flex-1 text-3xl text-black font-bold group-hover:text-white transition">{{
+        <span class="flex-1 text-2xl text-black font-bold group-hover:text-white transition">{{
           item.getNames()
         }}</span>
-        <span *ngIf="!isLoading" class="mt-2 text-4xl text-primary font-bold group-hover:text-white transition">
+        <span *ngIf="!isLoading" class="mt-2 text-2xl text-primary font-bold group-hover:text-white transition">
           <span [countUp]="item.kpiData.getKpiVal()" [options]="countUpOptions"></span>
           <!--      {{ !item.hasPrice ? lang.map.qr : "" }}-->
         </span>
