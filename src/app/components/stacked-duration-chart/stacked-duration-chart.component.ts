@@ -236,20 +236,22 @@ export class StackedDurationChartComponent
           KpiBaseDurationModel[]
         >;
 
-        Object.keys(this.seriesNames).forEach((type) => {
-          months.forEach((m, i) => {
-            const _currentDate = new Date();
-            if (this.criteria.issueDateYear === _currentDate.getFullYear()) {
-              if (i >= _currentDate.getMonth()) return;
-            }
-            if (!_data[type as unknown as number].find((item) => item.issuePeriod === i + 1)) {
-              _data[type as unknown as number].push(
-                KpiBase.kpiDurationFactory(false).clone<KpiBaseDurationModel>({ issuePeriod: i + 1 })
-              );
-            }
+        if (data.length) {
+          Object.keys(this.seriesNames).forEach((type) => {
+            months.forEach((m, i) => {
+              const _currentDate = new Date();
+              if (this.criteria.issueDateYear === _currentDate.getFullYear()) {
+                if (i >= _currentDate.getMonth()) return;
+              }
+              if (!_data[type as unknown as number].find((item) => item.issuePeriod === i + 1)) {
+                _data[type as unknown as number].push(
+                  KpiBase.kpiDurationFactory(false).clone<KpiBaseDurationModel>({ issuePeriod: i + 1 })
+                );
+              }
+            });
+            _data[type as unknown as number].sort((a, b) => a.issuePeriod - b.issuePeriod);
           });
-          _data[type as unknown as number].sort((a, b) => a.issuePeriod - b.issuePeriod);
-        });
+        }
 
         this.chartSeriesData = Object.keys(this.seriesNames).map((type) => ({
           name: this.seriesNames[type as unknown as number](),
@@ -402,12 +404,14 @@ export class StackedDurationChartComponent
   }
 
   private _splitAccordingToDataSplitProp(data: KpiBaseModel[]) {
-    return data.reduce((acc, cur) => {
-      if (!acc[cur[this.bindDataSplitProp as keyof KpiBaseModel] as number])
-        acc[cur[this.bindDataSplitProp as keyof KpiBaseModel] as number] = [];
-      acc[cur[this.bindDataSplitProp as keyof KpiBaseModel] as number].push(cur);
+    const _data: Record<number, KpiBaseModel[]> = Object.keys(this.seriesNames).reduce((acc, cur) => {
+      acc[cur as unknown as number] = [];
       return acc;
     }, {} as Record<number, KpiBaseModel[]>);
+    data.forEach((d) => {
+      _data[d[this.bindDataSplitProp as keyof KpiBaseModel] as number].push(d);
+    });
+    return _data;
   }
 
   private _initializeStackedSeriesOptions() {
@@ -515,7 +519,9 @@ export class StackedDurationChartComponent
         };
       } else if (this.selectedDurationType === DurationEndpoints.HALFY) {
         return {
-          colors: [AppColors.PRIMARY, AppColors.PRIMARY_80, AppColors.SECONDARY, AppColors.SECONDARY_80],
+          colors: [AppColors.PRIMARY, AppColors.PRIMARY_80, AppColors.SECONDARY, AppColors.SECONDARY_80].map((c) =>
+            this.selectedChartType === ChartType.AREA ? c + '50' : c
+          ),
         };
       } else {
         return {
@@ -528,11 +534,15 @@ export class StackedDurationChartComponent
             AppColors.SECONDARY_80,
             AppColors.SECONDARY_60,
             AppColors.SECONDARY_40,
-          ],
+          ].map((c) => (this.selectedChartType === ChartType.AREA ? c + '50' : c)),
         };
       }
     } else {
-      return { colors: [AppColors.PRIMARY, AppColors.SECONDARY] };
+      return {
+        colors: [AppColors.PRIMARY, AppColors.SECONDARY].map((c) =>
+          this.selectedChartType === ChartType.AREA ? c + '50' : c
+        ),
+      };
     }
   };
 
