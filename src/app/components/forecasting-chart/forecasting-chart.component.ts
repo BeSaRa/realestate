@@ -101,7 +101,7 @@ export class ForecastingChartComponent implements OnChanges {
   private _getInitialPoints() {
     const _currentYear = new Date(Date.now()).getFullYear();
     return [
-      new Point(this.indicatorType === 'sell' ? _currentYear - 11 : _currentYear - 5, 0),
+      new Point(this.indicatorType === 'sell' ? 2013 : 2019, 0),
       new Point(_currentYear - 2, 0),
       new Point(_currentYear - 1, 0),
       new Point(_currentYear + 4, 0),
@@ -112,7 +112,7 @@ export class ForecastingChartComponent implements OnChanges {
     const _currentYear = new Date(Date.now()).getFullYear();
 
     return [
-      new Point(this.indicatorType === 'sell' ? _currentYear - 11 : _currentYear - 5, data.kpiPast ?? 0),
+      new Point(this.indicatorType === 'sell' ? 2013 : 2019, data.kpiPast ?? 0),
       new Point(_currentYear - 2, data.kpiPreviousYear ?? 0),
       new Point(_currentYear - 1, data.kpiCurrent ?? 0),
       new Point(_currentYear + 4, data.kpiPredicated ?? 0),
