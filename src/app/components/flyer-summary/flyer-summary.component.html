@@ -4,10 +4,10 @@
   class="p-10 flex flex-col md:flex-row items-center justify-between gap-8 rounded-xl transition-all hover:bg-primary/90 border border-primary/90 md:border-0">
   <div
     class="flex ltr:flex-row-reverse ltr:md:flex-col md:flex-col justify-center items-center md:items-start gap-2 md:gap-0 font-bold">
-    <span class="text-3xl md:text-5xl text-silver transition-all" [ngClass]="{ 'text-white': isHovered }">
+    <span class="text-2xl md:text-4xl lg:text-5xl text-silver transition-all" [ngClass]="{ 'text-white': isHovered }">
       {{ lang.map.indicators }}
     </span>
-    <span class="text-4xl md:text-6xl text-primary transition-all" [ngClass]="{ 'text-white': isHovered }">
+    <span class="text-3xl md:text-5xl lg:text-6xl text-primary transition-all" [ngClass]="{ 'text-white': isHovered }">
       {{ getTitle() }}
     </span>
   </div>
@@ -24,12 +24,12 @@
         alt="" />
       <div class="flex flex-col items-center justify-center gap-2 text-center font-bold">
         @if (isLoading) {<mat-spinner diameter="30" strokeWidth="3"></mat-spinner>} @else {
-        <p class="text-3xl text-primary transition-all" [ngClass]="{ 'text-white': isHovered }">
+        <p class="text-xl md:text-2xl lg:text-3xl text-primary transition-all" [ngClass]="{ 'text-white': isHovered }">
           {{ data.count | number }}
         </p>
         <app-change-indicator class="-mt-1" [value]="data.countYoy" [isHovered]="isHovered"></app-change-indicator>
         }
-        <p class="text-xl transition-all" [ngClass]="{ 'text-white': isHovered }">
+        <p class="text-base md:text-lg lg:text-xl transition-all" [ngClass]="{ 'text-white': isHovered }">
           {{ lang.map.total_number_of_contracts }}
         </p>
       </div>
@@ -50,13 +50,13 @@
         alt="" />
       <div class="flex flex-col items-center justify-center gap-2 text-center font-bold">
         @if (isLoading) {<mat-spinner diameter="30" strokeWidth="3"></mat-spinner>} @else {
-        <p class="text-3xl text-primary transition-all" [ngClass]="{ 'text-white': isHovered }">
+        <p class="text-xl md:text-2xl lg:text-3xl text-primary transition-all" [ngClass]="{ 'text-white': isHovered }">
           <span>{{ data.value | number }}</span> {{ lang.map.qr }}
         </p>
         <app-change-indicator class="-mt-1" [value]="data.valueYoy" [isHovered]="isHovered"></app-change-indicator>
 
         }
-        <p class="text-xl transition-all" [ngClass]="{ 'text-white': isHovered }">
+        <p class="text-base md:text-lg lg:text-xl transition-all" [ngClass]="{ 'text-white': isHovered }">
           {{ lang.map.total_value_of_contracts }}
         </p>
       </div>

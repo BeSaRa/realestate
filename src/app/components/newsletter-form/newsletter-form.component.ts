@@ -1,9 +1,11 @@
+import { BreakpointObserver } from '@angular/cdk/layout';
 import { CommonModule } from '@angular/common';
 import { Component, ViewChild, inject } from '@angular/core';
 import { FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { IconButtonComponent } from '@components/icon-button/icon-button.component';
 import { InputComponent } from '@components/input/input.component';
+import { ScreenBreakpoints } from '@constants/screen-breakpoints';
 import { CmsErrorContract } from '@contracts/cms-error-contract';
 import { InputSuffixDirective } from '@directives/input-suffix.directive';
 import { createItem } from '@directus/sdk';
@@ -39,6 +41,7 @@ export class NewsletterFormComponent extends OnDestroyMixin(class {}) {
   toast = inject(ToastService);
   config = inject(ConfigService);
   recaptchaSettings = inject(RECAPTCHA_SETTINGS);
+  breakpointObserverService = inject(BreakpointObserver);
 
   newsletterControl = new FormControl<string | undefined>(undefined, [Validators.required, Validators.email]);
 
@@ -98,5 +101,9 @@ export class NewsletterFormComponent extends OnDestroyMixin(class {}) {
         })
       )
       .subscribe();
+  }
+
+  isScreenSM() {
+    return this.breakpointObserverService.isMatched(ScreenBreakpoints.xs);
   }
 }
