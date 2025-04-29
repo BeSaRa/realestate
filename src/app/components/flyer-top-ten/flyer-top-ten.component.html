@@ -10,7 +10,7 @@
   <img class="absolute top-0 left-0" *ngIf="type === 'price'" src="assets/images/flyer-images/layer-3.png" alt="" />
 
   <div class="relative pb-8 px-5 xl:px-20 transition-all overflow-x-auto" [ngClass]="{ 'opacity-30': isLoading }">
-    <div class="mt-10 flex justify-center items-stretch gap-6 min-w-[900px]">
+    <div class="mt-10 grid grid-cols-10 justify-center items-stretch gap-3 sm:gap-6 min-w-[500px]">
       <div
         class="flex-1 flex flex-col justify-start items-stretch"
         *ngFor="let item of chartData; trackBy: notChangeTrackBy">
@@ -18,18 +18,20 @@
           <div
             class="group relative border-[3px] border-silver text-center py-2 transition-all duration-300 hover:bg-primary hover:border-primary"
             [ngStyle]="{ height: ((item.kpiVal / (minMaxAvg.max === 0 ? 1 : minMaxAvg.max)) * 200).toFixed(0) + 'px' }">
-            <span class="relative -top-10 text-primary text-xl font-bold transition-all">{{
+            <span class="relative -top-10 text-primary text-xs sm:text-xl font-bold transition-all">{{
               getValue(item.kpiVal)
             }}</span>
           </div>
         </div>
-        <p class="flex-1 mt-3 text-center text-primary font-bold">
+        <p class="flex-1 mt-3 text-xs sm:text-base text-center text-primary font-bold">
           {{ getAreaName(item) }}
         </p>
 
         <div class="mt-2 flex flex-col xl:flex-row xl:gap-2 items-center justify-center">
           <app-yoy-indicator [value]="item.kpiYoYDifference" />
-          <div class="-mt-2 xl:mt-0">{{ (item.kpiYoYDifference && item.kpiYoYDifference.toFixed(0)) || 0.0 }} %</div>
+          <div class="-mt-2 xl:mt-0 text-xs sm:text-base">
+            {{ (item.kpiYoYDifference && item.kpiYoYDifference.toFixed(0)) || 0.0 }} %
+          </div>
         </div>
       </div>
     </div>

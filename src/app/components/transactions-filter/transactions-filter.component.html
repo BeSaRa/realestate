@@ -314,9 +314,7 @@
         [isSecondary]="true">
         <input
           appControl
-          [placeholder]="
-            unitsService.isMeterSelected() ? lang.map.value_in_square_meter : lang.map.value_in_square_foot
-          "
+          [placeholder]="getAreaPlaceholder()"
           formControlName="areaFrom"
           class="text-gray-500"
           mask="separator"
@@ -330,9 +328,7 @@
         [isSecondary]="true">
         <input
           appControl
-          [placeholder]="
-            unitsService.isMeterSelected() ? lang.map.value_in_square_meter : lang.map.value_in_square_foot
-          "
+          [placeholder]="getAreaPlaceholder()"
           formControlName="areaTo"
           class="text-gray-500"
           mask="separator"

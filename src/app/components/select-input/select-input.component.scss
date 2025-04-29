@@ -88,3 +88,7 @@
     @apply text-white  #{!important};
   }
 }
+
+::ng-deep .no-tick mat-pseudo-checkbox {
+  display: none !important;
+}

@@ -1,3 +1,4 @@
+import { BreakpointObserver } from '@angular/cdk/layout';
 import { CommonModule } from '@angular/common';
 import { AfterViewInit, Component, OnInit, ViewChild, inject } from '@angular/core';
 import { DateAdapter, MatNativeDateModule } from '@angular/material/core';
@@ -6,6 +7,7 @@ import { PartialChartOptions } from '@app-types/partialChartOptions';
 import { ButtonComponent } from '@components/button/button.component';
 import { IconButtonComponent } from '@components/icon-button/icon-button.component';
 import { AppColors } from '@constants/app-colors';
+import { ScreenBreakpoints } from '@constants/screen-breakpoints';
 import { ChartWithOppositePopupData } from '@contracts/chart-with-opposite-popup-data';
 import { AppChartTypesService } from '@services/app-chart-types.service';
 import { TranslationService } from '@services/translation.service';
@@ -28,6 +30,7 @@ export class ChartWithOppositePopupComponent implements OnInit, AfterViewInit {
   lang = inject(TranslationService);
   adapter = inject(DateAdapter);
   appChartTypesService = inject(AppChartTypesService);
+  breakpointObserverService = inject(BreakpointObserver);
 
   popupData: ChartWithOppositePopupData<{ issueYear: number; issueMonth: number }> = inject(MAT_DIALOG_DATA);
   ref = inject(MatDialogRef);
@@ -41,6 +44,10 @@ export class ChartWithOppositePopupComponent implements OnInit, AfterViewInit {
   ngOnInit(): void {
     this.chartOptions = {
       ...this.chartOptions,
+      chart: {
+        ...this.chartOptions.chart!,
+        width: this._getChartWidth(),
+      },
       dataLabels: {
         ...this.chartOptions.dataLabels,
         enabledOnSeries: [0],
@@ -98,7 +105,7 @@ export class ChartWithOppositePopupComponent implements OnInit, AfterViewInit {
               x: this.months[item.issueMonth - 1] + ' - ' + item.issueYear,
             };
           }),
-           color: AppColors.LEAD_80,
+          color: AppColors.LEAD_80,
         },
       ]);
       const _minMaxAvg = minMaxAvg(this.popupData.list.map((item) => this._getMainChartValue(item)));
@@ -146,5 +153,9 @@ export class ChartWithOppositePopupComponent implements OnInit, AfterViewInit {
     const bindValue = this.popupData.oppositeChart.bindValue;
     if (typeof bindValue === 'function') return bindValue(item);
     else return (item as any)[bindValue] as number;
+  }
+
+  private _getChartWidth() {
+    return this.breakpointObserverService.isMatched(ScreenBreakpoints.xs) ? 350 : 700;
   }
 }

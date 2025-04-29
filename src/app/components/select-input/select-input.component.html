@@ -28,12 +28,12 @@
       class="peer absolute hidden pointer-events-none"></span>
     <mat-select
       #selectInput
-      panelClass="app-select-input {{ size }}"
+      panelClass="app-select-input {{ size }} {{ !showCheckTick ? 'no-tick' : '' }}"
       [placeholder]="placeholder"
       [formControl]="control"
       (blur)="inputTouch()"
       [id]="name"
-      [ngClass]="tailwindClass"
+      [class]="tailwindClass"
       [multiple]="isMultiple"
       [compareWith]="compareOptionsWith"
       [hideSingleSelectionIndicator]="showCheckTick">
