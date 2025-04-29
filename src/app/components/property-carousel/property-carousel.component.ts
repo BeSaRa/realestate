@@ -43,6 +43,7 @@ export class PropertyCarouselComponent extends OnDestroyMixin(class {}) implemen
   dashboardService = inject(DashboardService);
 
   isArrowOutside = true;
+  cellWidth = 300;
   isLoading = false;
 
   images = {
@@ -116,9 +117,11 @@ export class PropertyCarouselComponent extends OnDestroyMixin(class {}) implemen
   private _listenToScreenSizeChange() {
     this.screenService.screenSizeObserver$.pipe(takeUntil(this.destroy$)).subscribe((size) => {
       if (size === Breakpoints.XS) {
-        this.isArrowOutside = false;
+        this.isArrowOutside = true;
+        this.cellWidth = 300;
       } else {
         this.isArrowOutside = true;
+        this.cellWidth = 350;
       }
     });
   }

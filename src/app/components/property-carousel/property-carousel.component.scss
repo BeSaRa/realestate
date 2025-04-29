@@ -1,3 +1,15 @@
+:host {
+  @apply flex justify-center;
+}
+
+:host ::ng-deep .carousel-arrow-prev {
+  left: -40px !important;
+}
+
+:host ::ng-deep .carousel-arrow-next {
+  right: -40px !important;
+}
+
 .gradient:hover {
   background: linear-gradient(270deg, #a3a3a3 23.96%, #a29475 72.67%),
     linear-gradient(0deg, #a29475, #a29475);

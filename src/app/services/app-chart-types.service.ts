@@ -474,7 +474,7 @@ const popupChartOptions: Partial<PartialChartOptions> = {
   chart: {
     type: 'line',
     height: 350,
-    width: 600,
+    width: 400,
   },
   // title: {
   //   text: this.lang.map.year + ' : ' + this.data[0].issueYear.toString(),

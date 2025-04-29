@@ -1,4 +1,5 @@
 import { animate, state, style, transition, trigger } from '@angular/animations';
+import { BreakpointObserver } from '@angular/cdk/layout';
 import { CommonModule, DatePipe } from '@angular/common';
 import {
   Component,
@@ -27,6 +28,7 @@ import {
 import { InputComponent } from '@components/input/input.component';
 import { SelectInputComponent } from '@components/select-input/select-input.component';
 import { AppIcons } from '@constants/app-icons';
+import { ScreenBreakpoints } from '@constants/screen-breakpoints';
 import { CriteriaContract } from '@contracts/criteria-contract';
 import { ControlDirective } from '@directives/control.directive';
 import { InputSuffixDirective } from '@directives/input-suffix.directive';
@@ -132,6 +134,7 @@ export class TransactionsFilterComponent implements OnInit, OnDestroy {
   favouritesService = inject(FavouritesService);
   changeIndicatorService = inject(ChangeIndicatorService);
   injector = inject(Injector);
+  breakpointObserverService = inject(BreakpointObserver);
 
   private destroy$: Subject<void> = new Subject();
 
@@ -1020,5 +1023,15 @@ export class TransactionsFilterComponent implements OnInit, OnDestroy {
       maxWidth: '95vw',
       maxHeight: '95vh',
     });
+  }
+
+  getAreaPlaceholder() {
+    return this.unitsService.isMeterSelected()
+      ? this.breakpointObserverService.isMatched(ScreenBreakpoints.xs)
+        ? this.lang.map.square_meter
+        : this.lang.map.value_in_square_meter
+      : this.breakpointObserverService.isMatched(ScreenBreakpoints.xs)
+      ? this.lang.map.square_feet
+      : this.lang.map.value_in_square_foot;
   }
 }

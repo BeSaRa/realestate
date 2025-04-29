@@ -1,17 +1,17 @@
-<div id="news-letter" class="bg-sand p-10 rounded-xl flex gap-y-10 flex-col items-center">
+<div id="news-letter" class="bg-sand p-4 sm:p-10 rounded-xl flex gap-y-4 sm:gap-y-10 flex-col items-center">
   <div class="flex items-center gap-x-3">
     <svg xmlns="http://www.w3.org/2000/svg" class="w-10 h-10" viewBox="0 0 24 24">
       <path
         fill="currentColor"
         d="M21 3a1 1 0 0 1 1 1v16.007a1 1 0 0 1-.992.993H2.992A.993.993 0 0 1 2 20.007V19h18V7.3l-8 7.2l-10-9V4a1 1 0 0 1 1-1h18ZM8 15v2H0v-2h8Zm-3-5v2H0v-2h5Zm14.566-5H4.434L12 11.81L19.566 5Z" />
     </svg>
-    <h2 class="text-2xl font-semibold heading border-secondary text-primary">
+    <h2 class="text-lg sm:text-2xl font-semibold heading border-secondary text-primary">
       {{ lang.map.subscribe_to_the_newsletter }}
     </h2>
   </div>
   <app-input
     class="w-full"
-    size="xl"
+    [size]="isScreenSM() ? 'sm' : 'xl'"
     label=""
     [formControl]="newsletterControl"
     [displayErrors]="false"
@@ -25,8 +25,10 @@
       [disabled]="!newsletterControl.valid || isWaitingForRecaptchaResolve"
       appInputSuffix
       class="!text-primary"
-      icon="SEND"></app-icon-button
-    ><mat-spinner class="ms-2" appInputSuffix *ngIf="isLoading" diameter="20" strokeWidth="2"></mat-spinner>
+      icon="SEND"></app-icon-button>
+    <div appInputSuffix *ngIf="isLoading" class="w-12 h-12 flex items-center justify-center">
+      <mat-spinner diameter="25" strokeWidth="2"></mat-spinner>
+    </div>
   </app-input>
   <re-captcha
     class="transition-all"
