@@ -2,8 +2,8 @@
   <h1 class="h6 text-2xl text-white">{{ lang.map.view }} : {{ data.model.title }}</h1>
   <app-icon-button tabindex="-1" class="text-white" mat-dialog-close icon="CLOSE" />
 </div>
-<div class="dialog-content flex flex-col" style="width: 600px; height: 700px">
-  <iframe class="w-full h-full" [src]="srcURL"></iframe>
+<div class="overflow-hidden flex-1 flex flex-col w-full">
+  <iframe class="w-full h-full overflow-scroll min-h-[500px]" [src]="srcURL"></iframe>
 </div>
 <div class="dialog-actions flex p-2">
   <div class="flex-grow"></div>

@@ -648,4 +648,35 @@ export interface LangKeysContract {
   liked: string;
   disliked: string;
   rate_conversation: string;
+  if_you_are_inquiring_about_data_related_to_real_estate_indicators_and_statistics_you_can_try_the_real_estate_platform_smart_assistant: string;
+  if_you_are_inquiring_about_information_related_to_the_real_Estate_authority_legislation_services_or_investment_within_qatar_you_can_try_the_real_estate_regulatory_authority_smart_assistant: string;
+  open_avatar: string;
+  close_avatar: string;
+  click_to_speak: string;
+  stop_recording: string;
+  clear_chat: string;
+  maximize: string;
+  minimize: string;
+  stop_talking: string;
+  login_using_qatar_pass: string;
+
+  release_year: string;
+  law_number: string;
+
+  roi: string;
+  does_the_company_have_projects_under_construction: string;
+  current_projects_data: string;
+
+  building_license_attachments: string;
+  license_file_and_plans_attachments: string;
+  project_real_estate_units_attachments: string;
+  technical_report_from_the_project_consultant_attachments: string;
+  financial_report_attachments: string;
+  a_copy_of_the_escrow_account_agreement: string;
+  a_copy_of_the_concluded_sales_contracts: string;
+  models_of_sales_contracts_concluded_with_beneficiaries: string;
+  the_maximum_number_of_projects_to_enter_data_for_is: string;
+  maximum_files_size: string;
+  uploaded_files_size: string;
+  maximum_files_size_exceeded: string;
 }
