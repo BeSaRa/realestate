@@ -12,7 +12,7 @@
     class="absolute top-0 left-0 w-full h-full bg-transparent group-hover/btn:bg-black/25 transition"></div>
   <mat-icon *ngIf="inProgress" class="animate-spin duration-200 size-18">dots-circle</mat-icon>
   <div *ngIf="icon" class="relative with-icon">
-    <div><ng-container [ngTemplateOutlet]="content"></ng-container></div>
+    <ng-container [ngTemplateOutlet]="content"></ng-container>
     <mat-icon class="btn-icon" [svgIcon]="selectedIcon"></mat-icon>
   </div>
   <div class="relative flex items-center"><ng-container *ngIf="!icon" [ngTemplateOutlet]="content"></ng-container></div>

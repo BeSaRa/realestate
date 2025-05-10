@@ -41,7 +41,7 @@ export const applicationInit = [
           .pipe(switchMap(() => authService.getGuestToken()))
           .pipe(switchMap(() => lookups.load()))
           .pipe(switchMap(() => translation.load()))
-          .pipe(switchMap(() => authService.refresh('cookie').pipe(catchError(() => of()))))
+          .pipe(switchMap(() => authService.refresh('cookie').pipe(catchError(() => of(null)))))
           .pipe(switchMap(() => (tokenService.getToken() ? userService.loadCurrentUserProfile() : of(true))))
           .pipe(switchMap(() => injector.get(MenuService).initLoad()))
           .pipe(switchMap(() => injector.get(SectionGuardService).load()));

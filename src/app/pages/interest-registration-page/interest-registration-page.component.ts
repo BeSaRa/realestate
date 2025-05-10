@@ -3,21 +3,7 @@ import { Component, computed, inject, OnInit, signal, ViewChild } from '@angular
 import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatRadioModule } from '@angular/material/radio';
-import { ButtonComponent } from '@components/button/button.component';
-import { InputComponent } from '@components/input/input.component';
-import { OnDestroyMixin } from '@mixins/on-destroy-mixin';
-import { ToastService } from '@services/toast.service';
-import { TranslationService } from '@services/translation.service';
-import { CustomValidators } from '@validators/custom-validators';
-import { RECAPTCHA_SETTINGS, RecaptchaComponent, RecaptchaModule } from 'ng-recaptcha';
-import { exhaustMap, filter, map, Observable, of, shareReplay, Subject, switchMap, tap } from 'rxjs';
-import { CountryService } from '@services/country.service';
-import { InterestService } from '@services/interest.service';
-import { SelectInputComponent } from '@components/select-input/select-input.component';
 import { MatSlideToggle } from '@angular/material/slide-toggle';
-import { TextareaComponent } from '@components/textarea/textarea.component';
-import { InterestedDeveloper } from '@contracts/interested-developer';
-import { InterestedInvestor } from '@contracts/interested-investor';
 import {
   MatCell,
   MatCellDef,
@@ -31,14 +17,28 @@ import {
   MatRowDef,
   MatTable,
 } from '@angular/material/table';
-import { IconButtonComponent } from '@components/icon-button/icon-button.component';
-import { Attachment } from '@models/attachment';
-import { DialogService } from '@services/dialog.service';
-import { UserClick } from '@enums/user-click';
 import { MatTooltip } from '@angular/material/tooltip';
-import { NgxMaskDirective } from 'ngx-mask';
+import { ButtonComponent } from '@components/button/button.component';
+import { IconButtonComponent } from '@components/icon-button/icon-button.component';
+import { InputComponent } from '@components/input/input.component';
+import { SelectInputComponent } from '@components/select-input/select-input.component';
+import { TextareaComponent } from '@components/textarea/textarea.component';
+import { InterestedDeveloper } from '@contracts/interested-developer';
+import { InterestedInvestor } from '@contracts/interested-investor';
 import { ControlDirective } from '@directives/control.directive';
+import { UserClick } from '@enums/user-click';
+import { OnDestroyMixin } from '@mixins/on-destroy-mixin';
+import { Attachment } from '@models/attachment';
+import { CountryService } from '@services/country.service';
+import { DialogService } from '@services/dialog.service';
 import { ExhibitionService } from '@services/exhibition.service';
+import { InterestService } from '@services/interest.service';
+import { ToastService } from '@services/toast.service';
+import { TranslationService } from '@services/translation.service';
+import { CustomValidators } from '@validators/custom-validators';
+import { RECAPTCHA_SETTINGS, RecaptchaComponent, RecaptchaModule } from 'ng-recaptcha';
+import { NgxMaskDirective } from 'ngx-mask';
+import { exhaustMap, filter, map, of, shareReplay, Subject, switchMap, tap } from 'rxjs';
 
 @Component({
   selector: 'app-interest-registration-page',
