@@ -1,0 +1,7 @@
+:host {
+  @apply overflow-hidden flex flex-col w-[95vw] h-[95vh];
+}
+
+::ng-deep .cdk-overlay-pane.mat-mdc-dialog-panel {
+  @apply max-w-[95vw] #{!important};
+}

@@ -1,4 +1,5 @@
 import { ClonerMixin } from '@mixins/cloner-mixin';
+import { Attachment } from './attachment';
 
 export class DeveloperRegistration extends ClonerMixin(class {}) {
   id!: number;
@@ -25,9 +26,13 @@ export class DeveloperRegistration extends ClonerMixin(class {}) {
   re_phone!: string;
 
   implementedProjects!: number;
-  currentProjects!: number;
   futureProjects!: number;
   hasOffPlanProjects!: boolean;
+
+  hasCurrentProjects!: boolean;
+  currentProjects!: number;
+  currentProjectData!: CurrentProjectData[];
+
   implementedOffPlan!: number;
   currentOffPlan!: number;
   currentOffPlanData!: CurrentOffPlanData[];
@@ -44,6 +49,19 @@ export class DeveloperRegistration extends ClonerMixin(class {}) {
   landsNo!: number;
   mortgagedLandsNo!: number;
   lands!: LandDetails[];
+}
+
+export class CurrentProjectData extends ClonerMixin(class {}) {
+  id!: number;
+  projectName!: string;
+  licenseAttachments: string[] = [];
+  licensePlansAttachments: string[] = [];
+  unitsAttachments: string[] = [];
+  technicalReportAttachments: string[] = [];
+  financialReportAttachments: string[] = [];
+  warrantyAgreementAttachments: string[] = [];
+  saleContractsAttachments: string[] = [];
+  sampleSaleContractsAttachments: string[] = [];
 }
 
 export class CurrentOffPlanData extends ClonerMixin(class {}) {
@@ -78,4 +96,15 @@ export class LandDetails extends ClonerMixin(class {}) {
   cadastralNo!: string;
   isMortgaged!: boolean;
   registration_id!: number;
+}
+
+export class CurrentProjectAttachments extends ClonerMixin(class {}) {
+  license: Attachment[] = [];
+  licensePlans: Attachment[] = [];
+  units: Attachment[] = [];
+  technicalReport: Attachment[] = [];
+  financialReport: Attachment[] = [];
+  warrantyAgreement: Attachment[] = [];
+  saleContracts: Attachment[] = [];
+  sampleSaleContracts: Attachment[] = [];
 }

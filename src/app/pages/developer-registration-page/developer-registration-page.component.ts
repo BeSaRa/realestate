@@ -1,17 +1,23 @@
 import { CommonModule, DatePipe } from '@angular/common';
-import { Component, inject, OnInit, ViewChild } from '@angular/core';
+import { Component, computed, inject, OnInit, signal, ViewChild } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatDialog } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatRadioModule } from '@angular/material/radio';
+import { MatTooltipModule } from '@angular/material/tooltip';
 import { ButtonComponent } from '@components/button/button.component';
 import { IconButtonComponent } from '@components/icon-button/icon-button.component';
 import { InputComponent } from '@components/input/input.component';
 import { AppIcons } from '@constants/app-icons';
+import { LangKeysContract } from '@contracts/lang-keys-contract';
 import { OnDestroyMixin } from '@mixins/on-destroy-mixin';
+import { Attachment } from '@models/attachment';
 import {
   CurrentOffPlanData,
+  CurrentProjectAttachments,
+  CurrentProjectData,
   DeveloperRegistration,
   LandDetails,
   OutsideProjects,
@@ -21,7 +27,9 @@ import { ToastService } from '@services/toast.service';
 import { TranslationService } from '@services/translation.service';
 import { CustomValidators } from '@validators/custom-validators';
 import { RECAPTCHA_SETTINGS, RecaptchaComponent, RecaptchaModule } from 'ng-recaptcha';
-import { catchError, finalize, merge, takeUntil, throwError } from 'rxjs';
+import { catchError, finalize, merge, switchMap, takeUntil, tap, throwError } from 'rxjs';
+import { ViewAttachmentComponent } from '../../popups/view-attachment/view-attachment.component';
+import { ControlDirective } from '@directives/control.directive';
 
 @Component({
   selector: 'app-developer-registration-page',
@@ -37,6 +45,8 @@ import { catchError, finalize, merge, takeUntil, throwError } from 'rxjs';
     MatIconModule,
     MatProgressSpinnerModule,
     RecaptchaModule,
+    MatTooltipModule,
+    ControlDirective,
   ],
   templateUrl: './developer-registration-page.component.html',
   styleUrl: './developer-registration-page.component.scss',
@@ -50,6 +60,7 @@ export default class DeveloperRegistrationPageComponent extends OnDestroyMixin(c
   toast = inject(ToastService);
   developerRegistrationService = inject(DeveloperRegistrationService);
   recaptchaSettings = inject(RECAPTCHA_SETTINGS);
+  dialog = inject(MatDialog);
 
   registered = false;
 
@@ -88,9 +99,13 @@ export default class DeveloperRegistrationPageComponent extends OnDestroyMixin(c
 
     insideQatar: this.fb.group({
       implementedProjects: ['', [CustomValidators.required, CustomValidators.number]],
-      currentProjects: ['', [CustomValidators.required, CustomValidators.number]],
       futureProjects: ['', [CustomValidators.required, CustomValidators.number]],
       hasOffPlanProjects: [null, [CustomValidators.required]],
+      hasCurrentProjects: [null, [CustomValidators.required]],
+      currentProjects: [
+        '' as unknown as number,
+        [CustomValidators.required, CustomValidators.number, CustomValidators.minValue(1)],
+      ],
       implementedOffPlan: ['', []],
       currentOffPlan: ['', []],
       futureOffPlan: ['', []],
@@ -98,6 +113,12 @@ export default class DeveloperRegistrationPageComponent extends OnDestroyMixin(c
       apartmentsNo: ['', []],
       commercialNo: ['', []],
       otherNo: ['', []],
+
+      currentProjectsData: this.fb.array<
+        FormGroup<{
+          projectName: FormControl<string | null>;
+        }>
+      >([]),
 
       currentOffPlanData: this.fb.array<
         FormGroup<{
@@ -145,10 +166,50 @@ export default class DeveloperRegistrationPageComponent extends OnDestroyMixin(c
   readonly todayDate: Date = new Date();
   readonly AppIcons = AppIcons;
 
+  currentUploader: keyof Omit<CurrentProjectAttachments, 'clone'> = 'license';
+  currentUploaderProjectNo = 0;
+  currentCollapsed: boolean[] = [];
+
+  offplanCollapsed: boolean[] = [];
+
+  readonly maxProjects = 20;
+  readonly maxFilesSize = 50; // MB
+
+  /********* static folders ids  *********/
+  attachmentsFoldersMap: Record<keyof Omit<CurrentProjectAttachments, 'clone'>, string> = {
+    license: '573403C9-7D05-453F-8E89-1D49E0799195',
+    licensePlans: '096E3312-2A9A-46F9-ACF1-EBE06338F117',
+    units: 'C7956852-D614-474E-9254-1FD5C88D37D0',
+    technicalReport: '69FAB1D4-BCC6-41CA-B8C3-4ECB21EE4854',
+    financialReport: 'FDB7387F-C733-4FFA-93C4-E181D8FA5ED4',
+    warrantyAgreement: '48052007-5D09-46B6-8956-F2B91F549603',
+    saleContracts: 'FB67F7BF-9E8B-4635-8A91-74E7EAA91AC0',
+    sampleSaleContracts: '4E77D823-9A5C-4C56-8736-DDA975172540',
+  };
+
+  attachmentsLabelsMap: Record<keyof Omit<CurrentProjectAttachments, 'clone'>, keyof LangKeysContract> = {
+    license: 'building_license_attachments',
+    licensePlans: 'license_file_and_plans_attachments',
+    units: 'project_real_estate_units_attachments',
+    technicalReport: 'technical_report_from_the_project_consultant_attachments',
+    financialReport: 'financial_report_attachments',
+    warrantyAgreement: 'a_copy_of_the_escrow_account_agreement',
+    saleContracts: 'a_copy_of_the_concluded_sales_contracts',
+    sampleSaleContracts: 'models_of_sales_contracts_concluded_with_beneficiaries',
+  };
+
+  currentProjectsAttachments: CurrentProjectAttachments[] = [];
+  private _attachmentsSize = signal(0);
+  attachmentsSize = computed(() => this._attachmentsSize() / (1024 * 1024));
+
   isSaving = false;
   isRecaptchaVisible = false;
   isRecaptchaResolved = false;
   isWaitingForRecaptchaResolve = false;
+
+  get uploadersTypes() {
+    return Object.keys(this.attachmentsLabelsMap) as unknown as (keyof Omit<CurrentProjectAttachments, 'clone'>)[];
+  }
 
   get main() {
     return this.form.controls.main;
@@ -164,6 +225,18 @@ export default class DeveloperRegistrationPageComponent extends OnDestroyMixin(c
 
   get currentOffPlan() {
     return this.form.controls.insideQatar.controls.currentOffPlan;
+  }
+
+  get hasCurrentProjects() {
+    return this.form.controls.insideQatar.controls.hasCurrentProjects;
+  }
+
+  get currentProjects() {
+    return this.form.controls.insideQatar.controls.currentProjects;
+  }
+
+  get currentProjectsData() {
+    return this.form.controls.insideQatar.controls.currentProjectsData;
   }
 
   get implementedOffPlan() {
@@ -215,6 +288,8 @@ export default class DeveloperRegistrationPageComponent extends OnDestroyMixin(c
 
   ngOnInit(): void {
     this.listenToHasProjectsOutsideQatarChange();
+    this.listenToHasCurrentChange();
+    this.listenToCurrentProjectsChange();
     this.listenToHasOffPlanChange();
     this.listenToOffPlanChange();
   }
@@ -223,6 +298,128 @@ export default class DeveloperRegistrationPageComponent extends OnDestroyMixin(c
     this.hasProjectsOutsideQatar.valueChanges.pipe(takeUntil(this.destroy$)).subscribe((v) => {
       if (!v) this.outsideProjects.clear({ emitEvent: false });
     });
+  }
+
+  listenToHasCurrentChange() {
+    this.hasCurrentProjects.valueChanges.pipe(takeUntil(this.destroy$)).subscribe((v) => {
+      if (v) this.currentProjects.addValidators([CustomValidators.required, CustomValidators.number]);
+      else this.currentProjects.removeValidators([CustomValidators.required, CustomValidators.number]);
+      this.currentProjects.updateValueAndValidity({ emitEvent: false });
+    });
+  }
+
+  listenToCurrentProjectsChange() {
+    merge(this.hasCurrentProjects.valueChanges, this.currentProjects.valueChanges)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(() => {
+        this.currentProjectsData.clear();
+        this.currentProjectsAttachments = [];
+        this.currentCollapsed = [];
+        if (this.hasCurrentProjects.value && this.currentProjects.value) this.addCurrentProjects();
+      });
+  }
+
+  addCurrentProjects() {
+    for (let i = 0; i < Math.min(this.currentProjects.value as unknown as number, this.maxProjects); i++) {
+      this.currentCollapsed.push(true);
+      this.currentProjectsData.push(
+        this.fb.group({
+          projectName: ['' as string | null, [CustomValidators.required]],
+        })
+      );
+      this.currentProjectsAttachments.push(new CurrentProjectAttachments());
+    }
+    this.currentCollapsed[0] = false;
+  }
+
+  openUploader(uploader: HTMLInputElement, projectNo: number, type: keyof Omit<CurrentProjectAttachments, 'clone'>) {
+    uploader.click();
+    this.currentUploader = type;
+    this.currentUploaderProjectNo = projectNo;
+  }
+
+  attachmentUploaderChange(uploader: HTMLInputElement) {
+    if (
+      this.currentUploaderProjectNo >= this.currentProjectsAttachments.length ||
+      uploader.files === null ||
+      uploader.files.length === 0
+    )
+      return;
+    const files = structuredClone(uploader.files);
+    uploader.value = '';
+    for (const index in files) {
+      if (isNaN(Number(index))) {
+        continue;
+      }
+
+      this.currentProjectsAttachments[this.currentUploaderProjectNo][this.currentUploader].push(
+        new Attachment(true).clone<Attachment>({
+          folder: this.attachmentsFoldersMap[this.currentUploader],
+          title: files[index].name,
+          file: files[index],
+        })
+      );
+      this.updateAttachmentsSize();
+    }
+  }
+
+  getAttachments(projectNo: number, type: keyof Omit<CurrentProjectAttachments, 'clone'>) {
+    if (projectNo >= this.currentProjectsAttachments.length) return [];
+    return this.currentProjectsAttachments[projectNo][type];
+  }
+
+  getAttachmentIconUrl(attachmentName: string) {
+    const extension = attachmentName.slice(attachmentName.lastIndexOf('.') + 1);
+    return extension === 'png'
+      ? 'assets/icons/png.svg'
+      : extension === 'pdf'
+      ? 'assets/icons/pdf.svg'
+      : 'assets/icons/jpg.svg';
+  }
+
+  viewAttachment(attachment: Attachment) {
+    this.dialog
+      .open(ViewAttachmentComponent, {
+        direction: this.lang.isLtr ? 'ltr' : 'rtl',
+        data: {
+          model: attachment,
+        },
+      })
+      .afterClosed()
+      .subscribe();
+  }
+
+  deleteAttachment(projectNo: number, type: keyof Omit<CurrentProjectAttachments, 'clone'>, attachment: Attachment) {
+    if (
+      this.currentProjectsAttachments[projectNo][type] &&
+      this.currentProjectsAttachments[projectNo][type].find((att) => att.id === attachment.id)
+    ) {
+      const _attachmentIndex = this.currentProjectsAttachments[projectNo][type].findIndex(
+        (att) => att.id === attachment.id
+      );
+      this.currentProjectsAttachments[projectNo][type] = [
+        ...this.currentProjectsAttachments[projectNo][type].slice(0, _attachmentIndex),
+        ...this.currentProjectsAttachments[projectNo][type].slice(_attachmentIndex + 1),
+      ];
+      this.updateAttachmentsSize();
+    }
+  }
+
+  updateAttachmentsSize() {
+    let _size = 0;
+    for (let i = 0; i < this.currentProjectsAttachments.length; i++) {
+      Object.keys(this.currentProjectsAttachments[i]).forEach((type) => {
+        for (
+          let j = 0;
+          j < this.currentProjectsAttachments[i][type as keyof Omit<CurrentProjectAttachments, 'clone'>].length;
+          j++
+        ) {
+          _size +=
+            this.currentProjectsAttachments[i][type as keyof Omit<CurrentProjectAttachments, 'clone'>][j].file.size;
+        }
+      });
+    }
+    this._attachmentsSize.set(_size);
   }
 
   listenToHasOffPlanChange() {
@@ -239,6 +436,7 @@ export default class DeveloperRegistrationPageComponent extends OnDestroyMixin(c
     merge(this.hasOffPlanProjects.valueChanges, this.currentOffPlan.valueChanges)
       .pipe(takeUntil(this.destroy$))
       .subscribe(() => {
+        this.offplanCollapsed = [];
         this.currentOffPlanData.clear();
         if (this.hasOffPlanProjects.value && this.currentOffPlan.value) this.addCurrentOffPlanProjects();
       });
@@ -246,6 +444,7 @@ export default class DeveloperRegistrationPageComponent extends OnDestroyMixin(c
 
   addCurrentOffPlanProjects() {
     for (let i = 0; i < (this.currentOffPlan.value as unknown as number); i++) {
+      this.offplanCollapsed.push(true);
       this.currentOffPlanData.push(
         this.fb.group({
           projectName: ['' as string | null, [CustomValidators.required]],
@@ -263,6 +462,7 @@ export default class DeveloperRegistrationPageComponent extends OnDestroyMixin(c
         })
       );
     }
+    this.offplanCollapsed[0] = false;
   }
 
   addOutsideProjects() {
@@ -325,7 +525,7 @@ export default class DeveloperRegistrationPageComponent extends OnDestroyMixin(c
   }
 
   onSubmit() {
-    if (!this.form.valid) {
+    if (!this.form.valid || this.attachmentsSize() > this.maxFilesSize) {
       this.form.markAllAsTouched();
       return;
     }
@@ -348,7 +548,22 @@ export default class DeveloperRegistrationPageComponent extends OnDestroyMixin(c
   register() {
     this.isSaving = true;
     this.developerRegistrationService
-      .saveItem(this._toModel())
+      .uploadFiles(this.currentProjectsAttachments)
+      .pipe(
+        tap((res) => {
+          if (res) {
+            res.forEach((attachment) => {
+              const [p, type, i] = attachment.description.split('---');
+              const projectNo = parseInt(p);
+              const idx = parseInt(i);
+              this.currentProjectsAttachments[projectNo - 1][type as keyof Omit<CurrentProjectAttachments, 'clone'>][
+                idx - 1
+              ].id = attachment.id;
+            });
+          }
+        })
+      )
+      .pipe(switchMap(() => this.developerRegistrationService.saveItem(this._toModel())))
       .pipe(
         finalize(() => {
           this.isSaving = false;
@@ -372,6 +587,20 @@ export default class DeveloperRegistrationPageComponent extends OnDestroyMixin(c
   }
 
   private _toModel() {
+    const _currentProjectsData = this.currentProjectsData.value.map((v, i) =>
+      new CurrentProjectData().clone<CurrentProjectData>({
+        projectName: v.projectName as string,
+        licenseAttachments: this.currentProjectsAttachments[i + 1]['license'].map((a) => a.id),
+        licensePlansAttachments: this.currentProjectsAttachments[i + 1]['licensePlans'].map((a) => a.id),
+        unitsAttachments: this.currentProjectsAttachments[i + 1]['units'].map((a) => a.id),
+        technicalReportAttachments: this.currentProjectsAttachments[i + 1]['technicalReport'].map((a) => a.id),
+        financialReportAttachments: this.currentProjectsAttachments[i + 1]['financialReport'].map((a) => a.id),
+        warrantyAgreementAttachments: this.currentProjectsAttachments[i + 1]['warrantyAgreement'].map((a) => a.id),
+        saleContractsAttachments: this.currentProjectsAttachments[i + 1]['saleContracts'].map((a) => a.id),
+        sampleSaleContractsAttachments: this.currentProjectsAttachments[i + 1]['sampleSaleContracts'].map((a) => a.id),
+      })
+    );
+
     const _currentOffPlanData = this.currentOffPlanData.value.map((v) =>
       new CurrentOffPlanData().clone<CurrentOffPlanData>({
         projectName: v.projectName as string,
@@ -430,7 +659,9 @@ export default class DeveloperRegistrationPageComponent extends OnDestroyMixin(c
       re_phone: this.contact.value.relationsCoordinator?.phone as string,
 
       implementedProjects: this.insideProjects.value.implementedProjects as unknown as number,
+      hasCurrentProjects: this.insideProjects.value.hasCurrentProjects as unknown as boolean,
       currentProjects: this.insideProjects.value.currentProjects as unknown as number,
+      currentProjectData: _currentProjectsData,
       futureProjects: this.insideProjects.value.futureProjects as unknown as number,
       hasOffPlanProjects: this.insideProjects.value.hasOffPlanProjects as unknown as boolean,
       implementedOffPlan: this.insideProjects.value.implementedOffPlan as unknown as number,
@@ -450,6 +681,10 @@ export default class DeveloperRegistrationPageComponent extends OnDestroyMixin(c
       // mortgagedLandsNo: this.form.controls.lands.value.mortgagedLandsNo as unknown as number,
       // lands: _lands,
     });
+  }
+
+  testUpload() {
+    this.developerRegistrationService.uploadFiles(this.currentProjectsAttachments).subscribe((res) => console.log(res));
   }
 
   private _transformDate(date: any) {
