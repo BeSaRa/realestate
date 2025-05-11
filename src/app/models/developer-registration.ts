@@ -31,7 +31,7 @@ export class DeveloperRegistration extends ClonerMixin(class {}) {
 
   hasCurrentProjects!: boolean;
   currentProjects!: number;
-  currentProjectData!: CurrentProjectsCreateType;
+  currentProjectsData!: CurrentProjectsCreateType;
 
   implementedOffPlan!: number;
   currentOffPlan!: number;

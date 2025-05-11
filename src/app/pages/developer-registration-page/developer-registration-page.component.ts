@@ -680,7 +680,7 @@ export default class DeveloperRegistrationPageComponent extends OnDestroyMixin(c
       implementedProjects: this.insideProjects.value.implementedProjects as unknown as number,
       hasCurrentProjects: this.insideProjects.value.hasCurrentProjects as unknown as boolean,
       currentProjects: this.insideProjects.value.currentProjects as unknown as number,
-      currentProjectData: _currentProjectsData,
+      currentProjectsData: _currentProjectsData,
       futureProjects: this.insideProjects.value.futureProjects as unknown as number,
       hasOffPlanProjects: this.insideProjects.value.hasOffPlanProjects as unknown as boolean,
       implementedOffPlan: this.insideProjects.value.implementedOffPlan as unknown as number,
