@@ -153,6 +153,8 @@
     <app-table
       [criteria]="transactionsTableCriteria"
       [dataLoadFn]="transactionsLoadFn"
+      [title]="lang.map.occupied_and_vacant_records_list + ' ' + getStringSelectedCriteria()"
+      [showTitle]="false"
       [sortOptions]="[]"
       [tableGuardName]="pageSections.OCCUPATION_TRANSACTIONS_TABLE.name"
       headerBgColor="!bg-secondary"

@@ -1,3 +1,4 @@
+import { BaseTableModel } from '@abstracts/base-table-model';
 import { CommonModule } from '@angular/common';
 import {
   Component,
@@ -15,12 +16,15 @@ import { MatPaginator, MatPaginatorModule, PageEvent } from '@angular/material/p
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatSortModule } from '@angular/material/sort';
 import { MatTableModule } from '@angular/material/table';
+import { MatTooltipModule } from '@angular/material/tooltip';
+import { ButtonComponent } from '@components/button/button.component';
 import { CriteriaContract } from '@contracts/criteria-contract';
 import { TableColumnTemplateDirective } from '@directives/table-column-template.directive';
 import { OnDestroyMixin } from '@mixins/on-destroy-mixin';
 import { AppTableDataSource } from '@models/app-table-data-source';
 import { Pagination } from '@models/pagination';
 import { TableSortOption } from '@models/table-sort-option';
+import { ExcelService } from '@services/excel.service';
 import { SectionGuardService } from '@services/section-guard.service';
 import { TranslationService } from '@services/translation.service';
 import {
@@ -38,13 +42,24 @@ import {
 @Component({
   selector: 'app-table',
   standalone: true,
-  imports: [CommonModule, MatTableModule, MatPaginatorModule, MatSortModule, ReactiveFormsModule, MatProgressBarModule],
+  imports: [
+    CommonModule,
+    MatTableModule,
+    MatPaginatorModule,
+    MatSortModule,
+    ReactiveFormsModule,
+    MatProgressBarModule,
+    ButtonComponent,
+    MatTooltipModule,
+  ],
   templateUrl: './table.component.html',
   styleUrls: ['./table.component.scss'],
 })
 export class TableComponent<T extends object> extends OnDestroyMixin(class {}) implements OnInit, OnChanges {
   @Input({ required: true }) criteria!: CriteriaContract;
   @Input({ required: true }) dataLoadFn!: (criteria: CriteriaContract) => Observable<Pagination<T>>;
+  @Input() title = '';
+  @Input() showTitle = true;
   @Input() pageSize = 5;
   @Input() tableGuardName = '';
   @Input() sortOptions: TableSortOption[] = [];
@@ -59,6 +74,7 @@ export class TableComponent<T extends object> extends OnDestroyMixin(class {}) i
 
   lang = inject(TranslationService);
   sectionGuardService = inject(SectionGuardService);
+  excelService = inject(ExcelService);
 
   sortControl = new FormControl<{ column: string; direction: 'asc' | 'desc' } | undefined>(undefined);
 
@@ -103,6 +119,10 @@ export class TableComponent<T extends object> extends OnDestroyMixin(class {}) i
     this.sortControl.patchValue(this.defaultSortOption?.value);
   }
 
+  downloadEnabled() {
+    return typeof this.data$.value.length && this.data$.value[0] instanceof BaseTableModel;
+  }
+
   getColumnTemplate(columnName: string) {
     return this.columnsTemplates.find((c) => c.columnName === columnName);
   }
@@ -113,6 +133,10 @@ export class TableComponent<T extends object> extends OnDestroyMixin(class {}) i
         ? this.sectionGuardService.currentPageSectionsGuards.sections[this.tableGuardName].isColumnHidden(columnName)
         : false
       : false;
+  }
+
+  downloadReport() {
+    // this.excelService.downloadExcelFile(this.dataSource.data,this.)
   }
 
   _paginate($event: PageEvent) {

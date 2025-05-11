@@ -54,12 +54,9 @@
         [criteria]="criteria.criteria"
         [rootData]="valueRootData"></app-duration-chart>
     </div>
-    <div *appSectionGuard="pageSections.MORT_TRANSACTIONS_TABLE.name" class="px-3 lg:px-16 flex flex-col gap-4">
-      <h3
-        class="heading text-xl sm:text-2xl md:text-3xl self-center md:self-start text-center text-primary border-secondary font-semibold">
-        {{ lang.map.mortgage_transactions_list }} {{ getStringSelectedCriteria() }}
-      </h3>
+    <div *appSectionGuard="pageSections.MORT_TRANSACTIONS_TABLE.name" class="px-3 lg:px-16">
       <app-table
+        [title]="lang.map.mortgage_transactions_list + ' ' + getStringSelectedCriteria()"
         [criteria]="criteria.criteria"
         [dataLoadFn]="transactionsLoadFn"
         [sortOptions]="[]"
@@ -73,6 +70,7 @@
               <!-- <p class="font-normal">{{ lang.map.real_estate_status }}</p> -->
             </div>
           </div>
+
           <div *appTableColumnCellTemplate="let item; dataType: getTransactionType()" class="flex justify-center">
             <div class="text-center">
               <p class="font-bold">{{ (item.municipalityInfo && item.municipalityInfo.getNames()) || "---" }}</p>
