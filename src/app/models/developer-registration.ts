@@ -31,7 +31,7 @@ export class DeveloperRegistration extends ClonerMixin(class {}) {
 
   hasCurrentProjects!: boolean;
   currentProjects!: number;
-  currentProjectData!: CurrentProjectData[];
+  currentProjectData!: CurrentProjectsCreateType;
 
   implementedOffPlan!: number;
   currentOffPlan!: number;
@@ -54,15 +54,43 @@ export class DeveloperRegistration extends ClonerMixin(class {}) {
 export class CurrentProjectData extends ClonerMixin(class {}) {
   id!: number;
   projectName!: string;
-  licenseAttachments: string[] = [];
-  licensePlansAttachments: string[] = [];
-  unitsAttachments: string[] = [];
-  technicalReportAttachments: string[] = [];
-  financialReportAttachments: string[] = [];
-  warrantyAgreementAttachments: string[] = [];
-  saleContractsAttachments: string[] = [];
-  sampleSaleContractsAttachments: string[] = [];
+  licenseAttachments!: CurrentProjectCreateAttachmentType;
+  licensePlansAttachments!: CurrentProjectCreateAttachmentType;
+  unitsAttachments!: CurrentProjectCreateAttachmentType;
+  technicalReportAttachments!: CurrentProjectCreateAttachmentType;
+  financialReportAttachments!: CurrentProjectCreateAttachmentType;
+  warrantyAgreementAttachments!: CurrentProjectCreateAttachmentType;
+  saleContractsAttachments!: CurrentProjectCreateAttachmentType;
+  sampleSaleContractsAttachments!: CurrentProjectCreateAttachmentType;
+
+  static toAttachmentCreateMode(ids: string[]): CurrentProjectCreateAttachmentType {
+    return {
+      create: ids.map((id) => ({ directus_files_id: { id }, qatar_current_projects_id: '+' })),
+      update: [],
+      delete: [],
+    };
+  }
+
+  static toCreateMode(currentProjectsData: CurrentProjectData[]): CurrentProjectsCreateType {
+    return {
+      create: currentProjectsData,
+      update: [],
+      delete: [],
+    };
+  }
 }
+
+export type CurrentProjectsCreateType = {
+  create: CurrentProjectData[];
+  update: [];
+  delete: [];
+};
+
+export type CurrentProjectCreateAttachmentType = {
+  create: { directus_files_id: { id: string }; qatar_current_projects_id: '+' }[];
+  update: [];
+  delete: [];
+};
 
 export class CurrentOffPlanData extends ClonerMixin(class {}) {
   id!: number;

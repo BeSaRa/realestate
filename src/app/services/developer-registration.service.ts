@@ -2,7 +2,8 @@ import { CmsService } from '@abstracts/cms.service';
 import { Injectable } from '@angular/core';
 import { Attachment } from '@models/attachment';
 import { CurrentProjectAttachments, DeveloperRegistration } from '@models/developer-registration';
-import { Observable, of } from 'rxjs';
+import { isArray } from '@utils/utils';
+import { map, Observable, of } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
@@ -28,7 +29,9 @@ export class DeveloperRegistrationService extends CmsService<DeveloperRegistrati
     }
 
     if (hasAttachments) {
-      return this.http.post<Attachment[]>(this.urlService.URLS.FILES, formData);
+      return this.http
+        .post<{ data: Attachment[] }>(this.urlService.URLS.FILES, formData)
+        .pipe(map((res) => (isArray(res.data) ? res.data : [res.data])));
     } else {
       return of(null);
     }
