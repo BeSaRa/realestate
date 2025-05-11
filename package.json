@@ -13,7 +13,8 @@
     "prerender": "ng run realestate:prerender",
     "lint": "ng lint",
     "build:image": "docker build --tag real-estate-front-end",
-    "version": "node bin/version.js"
+    "version": "node bin/version.js",
+    "vite": "vite"
   },
   "private": true,
   "dependencies": {
@@ -52,6 +53,7 @@
     "ng-resize-observer": "^1.2.0",
     "ngx-countup": "^13.1.0",
     "ngx-mask": "^16.4.2",
+    "perfect-scrollbar": "^1.5.6",
     "process": "^0.11.10",
     "qs": "^6.11.2",
     "rulyotano.math.interpolation.bezier": "^0.2.0",
