@@ -4,7 +4,6 @@ import { SlideFromBottom } from '@animations/slide-from-bottom.animation';
 import { SlideMessageAnimation } from '@animations/slide-message.animation';
 import { AuthorityFaqContract } from '@contracts/authority-faq-contract';
 import { BaseChatMessagesContainerDirective } from '@directives/base-chat-messages-container.directive';
-import { PerfectScrollDirective } from '@directives/perfect-scroll.directive';
 import { TextWritingAnimatorDirective } from '@directives/text-writing-animator.directive';
 import { ChatFeedback } from '@enums/chat-feedback';
 import { AuthorityMessage } from '@models/authority-message';
@@ -16,7 +15,7 @@ import { finalize } from 'rxjs';
 @Component({
   selector: 'app-authority-chat-messages-container',
   standalone: true,
-  imports: [CommonModule, TextWritingAnimatorDirective, PerfectScrollDirective],
+  imports: [CommonModule, TextWritingAnimatorDirective],
   templateUrl: './authority-chat-messages-container.component.html',
   styleUrl: './authority-chat-messages-container.component.scss',
   animations: [SlideMessageAnimation, SlideFromBottom],
