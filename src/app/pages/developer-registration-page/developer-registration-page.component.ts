@@ -552,6 +552,7 @@ export default class DeveloperRegistrationPageComponent extends OnDestroyMixin(c
       .pipe(
         tap((res) => {
           if (res) {
+            console.log(res);
             res.forEach((attachment) => {
               const [p, type, i] = attachment.description.split('---');
               const projectNo = parseInt(p);
@@ -587,18 +588,36 @@ export default class DeveloperRegistrationPageComponent extends OnDestroyMixin(c
   }
 
   private _toModel() {
-    const _currentProjectsData = this.currentProjectsData.value.map((v, i) =>
-      new CurrentProjectData().clone<CurrentProjectData>({
-        projectName: v.projectName as string,
-        licenseAttachments: this.currentProjectsAttachments[i + 1]['license'].map((a) => a.id),
-        licensePlansAttachments: this.currentProjectsAttachments[i + 1]['licensePlans'].map((a) => a.id),
-        unitsAttachments: this.currentProjectsAttachments[i + 1]['units'].map((a) => a.id),
-        technicalReportAttachments: this.currentProjectsAttachments[i + 1]['technicalReport'].map((a) => a.id),
-        financialReportAttachments: this.currentProjectsAttachments[i + 1]['financialReport'].map((a) => a.id),
-        warrantyAgreementAttachments: this.currentProjectsAttachments[i + 1]['warrantyAgreement'].map((a) => a.id),
-        saleContractsAttachments: this.currentProjectsAttachments[i + 1]['saleContracts'].map((a) => a.id),
-        sampleSaleContractsAttachments: this.currentProjectsAttachments[i + 1]['sampleSaleContracts'].map((a) => a.id),
-      })
+    const _currentProjectsData = CurrentProjectData.toCreateMode(
+      this.currentProjectsData.value.map((v, i) =>
+        new CurrentProjectData().clone<CurrentProjectData>({
+          projectName: v.projectName as string,
+          licenseAttachments: CurrentProjectData.toAttachmentCreateMode(
+            this.currentProjectsAttachments[i]['license'].map((a) => a.id)
+          ),
+          licensePlansAttachments: CurrentProjectData.toAttachmentCreateMode(
+            this.currentProjectsAttachments[i]['licensePlans'].map((a) => a.id)
+          ),
+          unitsAttachments: CurrentProjectData.toAttachmentCreateMode(
+            this.currentProjectsAttachments[i]['units'].map((a) => a.id)
+          ),
+          technicalReportAttachments: CurrentProjectData.toAttachmentCreateMode(
+            this.currentProjectsAttachments[i]['technicalReport'].map((a) => a.id)
+          ),
+          financialReportAttachments: CurrentProjectData.toAttachmentCreateMode(
+            this.currentProjectsAttachments[i]['financialReport'].map((a) => a.id)
+          ),
+          warrantyAgreementAttachments: CurrentProjectData.toAttachmentCreateMode(
+            this.currentProjectsAttachments[i]['warrantyAgreement'].map((a) => a.id)
+          ),
+          saleContractsAttachments: CurrentProjectData.toAttachmentCreateMode(
+            this.currentProjectsAttachments[i]['saleContracts'].map((a) => a.id)
+          ),
+          sampleSaleContractsAttachments: CurrentProjectData.toAttachmentCreateMode(
+            this.currentProjectsAttachments[i]['sampleSaleContracts'].map((a) => a.id)
+          ),
+        })
+      )
     );
 
     const _currentOffPlanData = this.currentOffPlanData.value.map((v) =>
