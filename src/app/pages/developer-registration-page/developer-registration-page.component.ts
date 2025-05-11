@@ -30,6 +30,7 @@ import { RECAPTCHA_SETTINGS, RecaptchaComponent, RecaptchaModule } from 'ng-reca
 import { catchError, finalize, merge, switchMap, takeUntil, tap, throwError } from 'rxjs';
 import { ViewAttachmentComponent } from '../../popups/view-attachment/view-attachment.component';
 import { ControlDirective } from '@directives/control.directive';
+import { ConfigService } from '@services/config.service';
 
 @Component({
   selector: 'app-developer-registration-page',
@@ -61,6 +62,7 @@ export default class DeveloperRegistrationPageComponent extends OnDestroyMixin(c
   developerRegistrationService = inject(DeveloperRegistrationService);
   recaptchaSettings = inject(RECAPTCHA_SETTINGS);
   dialog = inject(MatDialog);
+  config = inject(ConfigService);
 
   registered = false;
 
@@ -173,7 +175,7 @@ export default class DeveloperRegistrationPageComponent extends OnDestroyMixin(c
   offplanCollapsed: boolean[] = [];
 
   readonly maxProjects = 20;
-  readonly maxFilesSize = 50; // MB
+  readonly maxFilesSize = this.config.CONFIG.MAX_FILES_SIZE_IN_MB; // MB
 
   /********* static folders ids  *********/
   attachmentsFoldersMap: Record<keyof Omit<CurrentProjectAttachments, 'clone'>, string> = {
