@@ -679,4 +679,5 @@ export interface LangKeysContract {
   maximum_files_size: string;
   uploaded_files_size: string;
   maximum_files_size_exceeded: string;
+  allowed_files: string;
 }

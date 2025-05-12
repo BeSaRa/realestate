@@ -176,6 +176,7 @@ export default class DeveloperRegistrationPageComponent extends OnDestroyMixin(c
 
   readonly maxProjects = 20;
   readonly maxFilesSize = this.config.CONFIG.MAX_FILES_SIZE_IN_MB; // MB
+  readonly allowedFiles = '(pdf - png - jpeg - jpg)';
 
   /********* static folders ids  *********/
   attachmentsFoldersMap: Record<keyof Omit<CurrentProjectAttachments, 'clone'>, string> = {

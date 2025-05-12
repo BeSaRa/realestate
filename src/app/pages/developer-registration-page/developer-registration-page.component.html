@@ -226,13 +226,14 @@
               }
             </div>
           </div>
-          <span
-            [ngClass]="{ 'text-red-500': attachmentsSize() > maxFilesSize }"
-            class="inline-block self-center text-center w-full text-primary font-bold">
-            {{ lang.map.maximum_files_size }} {{ maxFilesSize.toFixed(2) }}MB - {{ lang.map.uploaded_files_size }}
-            {{ attachmentsSize().toFixed(2) }}MB @if (attachmentsSize() > maxFilesSize) { (*{{
-              lang.map.maximum_files_size_exceeded
-            }}) }
+          <span class="flex items-center justify-between w-full text-primary font-bold">
+            <span>{{ lang.map.allowed_files }} {{ allowedFiles }}</span>
+            <span [ngClass]="{ 'text-red-500': attachmentsSize() > maxFilesSize }"
+              >{{ lang.map.maximum_files_size }} {{ maxFilesSize.toFixed(2) }}MB - {{ lang.map.uploaded_files_size }}
+              {{ attachmentsSize().toFixed(2) }}MB @if (attachmentsSize() > maxFilesSize) { (*{{
+                lang.map.maximum_files_size_exceeded
+              }}) }</span
+            >
           </span>
           }
           <!-- <app-button (click)="testUpload()">test upload</app-button> -->
