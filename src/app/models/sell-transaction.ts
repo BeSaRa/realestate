@@ -1,11 +1,15 @@
+import { BaseTableRowModel, TableColPrint } from '@abstracts/base-table-row-model';
+import { PagesSections } from '@constants/pages-sections';
 import { SellTransactionInterceptor } from '@model-interceptors/sell-transaction-interceptor';
+import { ServiceRegistry } from '@services/service-registry';
+import { UnitsService } from '@services/units.service';
 import { InterceptModel } from 'cast-response';
 import { Lookup } from './lookup';
 
 const { receive, send } = new SellTransactionInterceptor();
 
 @InterceptModel({ receive, send })
-export class SellTransaction {
+export class SellTransaction extends BaseTableRowModel {
   areaCode!: number;
   issueDate!: string;
   municipalityId!: number;
@@ -22,4 +26,49 @@ export class SellTransaction {
   municipalityInfo!: Lookup;
   areaInfo!: Lookup;
   unitStatusInfo!: Lookup;
+
+  _unitsService = ServiceRegistry.get<UnitsService>('UnitsService');
+
+  private _cols = PagesSections.SELL_PAGE.SELL_TRANSACTIONS_TABLE.columns;
+  protected override getAllPrintCols(): TableColPrint[] {
+    return [
+      {
+        colName: this._cols.LOCATION,
+        header: 'municipal',
+        cellValue: this.municipalityInfo,
+        isLookup: true,
+      },
+      {
+        colName: this._cols.LOCATION,
+        header: 'area',
+        cellValue: this.areaInfo,
+        isLookup: true,
+      },
+      {
+        colName: this._cols.SOLD_FOR,
+        header: 'sold_for',
+        cellValue: this.realEstateValue,
+      },
+      {
+        colName: this._cols.AREA,
+        header: () => (this._unitsService.isMeterSelected() ? 'area_in_square_meter' : 'area_in_square_foot'),
+        cellValue: () => (this._unitsService.isMeterSelected() ? this.realEstateMT : this.realEstateSQT),
+      },
+      {
+        colName: this._cols.SQUARE_PRICE,
+        header: () => (this._unitsService.isMeterSelected() ? 'the_square_meter_price' : 'the_square_foot_price'),
+        cellValue: () => (this._unitsService.isMeterSelected() ? this.priceMT : this.priceSQ),
+      },
+      {
+        colName: this._cols.ISSUE_DATE,
+        header: 'issue_date',
+        cellValue: this.issueDate?.slice(0, 10),
+      },
+      {
+        colName: this._cols.ROI,
+        header: 'roi',
+        cellValue: this.roi ? (this.roi * 100).toPrecision(2) : '---',
+      },
+    ];
+  }
 }

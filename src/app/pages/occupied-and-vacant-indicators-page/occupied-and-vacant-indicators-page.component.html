@@ -120,43 +120,38 @@
       [bindDataSplitProp]="'occupancyStatus'" />
   </div>
   <div *appSectionGuard="pageSections.OCCUPATION_TRANSACTIONS_TABLE.name" class="px-3 lg:px-16 flex flex-col gap-4">
-    <h3
-      class="heading text-xl sm:text-2xl md:text-3xl self-center md:self-start text-center text-primary border-secondary font-semibold">
-      {{ lang.map.occupied_and_vacant_records_list }} {{ getStringSelectedCriteria() }}
-    </h3>
-    <div class="mt-4 flex justify-center md:justify-end">
-      <div class="grid grid-cols-2 gap-2">
-        <app-button
-          (click)="onOccupancyStatusSelect(OccupationStatus.VACANT)"
-          [buttonStyle]="selectedOccupancyStatus === OccupationStatus.VACANT ? 'secondary' : 'secondary-outline'"
-          ><ng-container *ngIf="!isTransactionsLoading || selectedOccupancyStatus !== OccupationStatus.VACANT">{{
-            lang.map.vacant
-          }}</ng-container
-          ><mat-spinner
-            diameter="20"
-            strokeWidth="2"
-            *ngIf="isTransactionsLoading && selectedOccupancyStatus === OccupationStatus.VACANT"></mat-spinner
-        ></app-button>
-        <app-button
-          (click)="onOccupancyStatusSelect(OccupationStatus.OCCUPIED)"
-          [buttonStyle]="selectedOccupancyStatus === OccupationStatus.OCCUPIED ? 'secondary' : 'secondary-outline'"
-          ><ng-container *ngIf="!isTransactionsLoading || selectedOccupancyStatus !== OccupationStatus.OCCUPIED">{{
-            lang.map.occupied
-          }}</ng-container
-          ><mat-spinner
-            diameter="20"
-            strokeWidth="2"
-            *ngIf="isTransactionsLoading && selectedOccupancyStatus === OccupationStatus.OCCUPIED"></mat-spinner
-        ></app-button>
-      </div>
-    </div>
     <app-table
       [criteria]="transactionsTableCriteria"
       [dataLoadFn]="transactionsLoadFn"
+      [title]="lang.map.occupied_and_vacant_records_list + ' ' + getStringSelectedCriteria()"
       [sortOptions]="[]"
       [tableGuardName]="pageSections.OCCUPATION_TRANSACTIONS_TABLE.name"
       headerBgColor="!bg-secondary"
       minWidth="1200px">
+      <app-button
+        *appTableAction
+        (click)="onOccupancyStatusSelect(OccupationStatus.VACANT)"
+        [buttonStyle]="selectedOccupancyStatus === OccupationStatus.VACANT ? 'secondary' : 'secondary-outline'"
+        ><ng-container *ngIf="!isTransactionsLoading || selectedOccupancyStatus !== OccupationStatus.VACANT">{{
+          lang.map.vacant
+        }}</ng-container
+        ><mat-spinner
+          diameter="20"
+          strokeWidth="2"
+          *ngIf="isTransactionsLoading && selectedOccupancyStatus === OccupationStatus.VACANT"></mat-spinner
+      ></app-button>
+      <app-button
+        *appTableAction
+        (click)="onOccupancyStatusSelect(OccupationStatus.OCCUPIED)"
+        [buttonStyle]="selectedOccupancyStatus === OccupationStatus.OCCUPIED ? 'secondary' : 'secondary-outline'"
+        ><ng-container *ngIf="!isTransactionsLoading || selectedOccupancyStatus !== OccupationStatus.OCCUPIED">{{
+          lang.map.occupied
+        }}</ng-container
+        ><mat-spinner
+          diameter="20"
+          strokeWidth="2"
+          *ngIf="isTransactionsLoading && selectedOccupancyStatus === OccupationStatus.OCCUPIED"></mat-spinner
+      ></app-button>
       <ng-container appTableColumnTemplate [columnName]="pageSections.OCCUPATION_TRANSACTIONS_TABLE.columns.LOCATION">
         <div *appTableColumnHeaderTemplate class="flex justify-center">
           <div class="text-start">

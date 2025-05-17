@@ -340,8 +340,7 @@ export default class FlyersPageComponent extends OnDestroyMixin(class {}) implem
   exportToExcel() {
     this.excelService.downloadExcelWithSectionsFile(
       this.excelSectionsRegisterService.sections,
-      this.lang.map.real_estate_flyer,
-      this.getTitleSuffix()
+      this.lang.map.real_estate_flyer + ' ' + this.getTitleSuffix()
     );
   }
 }
