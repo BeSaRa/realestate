@@ -1,3 +1,4 @@
+import { CommonModule } from '@angular/common';
 import {
   AfterContentInit,
   Component,
@@ -10,7 +11,6 @@ import {
   OnInit,
   SimpleChanges,
 } from '@angular/core';
-import { CommonModule } from '@angular/common';
 import {
   ControlValueAccessor,
   FormControl,
@@ -19,14 +19,14 @@ import {
   ReactiveFormsModule,
   ValidationErrors,
 } from '@angular/forms';
+import { MatDatepickerModule } from '@angular/material/datepicker';
 import { ValidationErrorsComponent } from '@components/validation-errors/validation-errors.component';
-import { debounceTime, map, Observable, of, Subject, takeUntil } from 'rxjs';
 import { ControlDirective } from '@directives/control.directive';
 import { InputPrefixDirective } from '@directives/input-prefix.directive';
 import { InputSuffixDirective } from '@directives/input-suffix.directive';
 import { generateUUID } from '@utils/utils';
-import { MatDatepickerModule } from '@angular/material/datepicker';
 import { requiredValidator } from '@validators/validation-utils';
+import { debounceTime, map, Observable, of, Subject, takeUntil } from 'rxjs';
 
 @Component({
   selector: 'app-input',

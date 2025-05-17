@@ -67,6 +67,7 @@ export class DurationChartComponent extends OnDestroyMixin(class {}) implements 
   @Input() showSelectChartType = true;
   @Input() changeBarColorsAccordingToValue = false;
   @Input() showStartYearFilter = false;
+  @Input() hasMinMaxAvg = false;
 
   @Output() isMonthltyDurationTypeEvent = new EventEmitter<boolean>();
 
@@ -304,7 +305,7 @@ export class DurationChartComponent extends OnDestroyMixin(class {}) implements 
       this.isMinMaxAvgBar = false;
       this.chartOptions = this.nonMinMaxAvgBarChartOptions;
     } else {
-      if (this.selectedChartType === ChartType.BAR) {
+      if (this.selectedChartType === ChartType.BAR && this.hasMinMaxAvg) {
         this.isMinMaxAvgBar = true;
         this.chartOptions = this.minMaxAvgBarChartOptions;
       } else {
@@ -432,7 +433,8 @@ export class DurationChartComponent extends OnDestroyMixin(class {}) implements 
   private _getColorsOptions = () => {
     if (
       this.selectedDurationType === DurationEndpoints.HALFY ||
-      this.selectedDurationType === DurationEndpoints.QUARTERLY
+      this.selectedDurationType === DurationEndpoints.QUARTERLY ||
+      !this.hasMinMaxAvg
     ) {
       if (this.changeBarColorsAccordingToValue && this.selectedChartType === ChartType.BAR) {
         return {

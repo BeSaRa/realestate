@@ -13,6 +13,7 @@
   <mat-icon *ngIf="inProgress" class="animate-spin duration-200 size-18">dots-circle</mat-icon>
   <div *ngIf="icon" class="relative with-icon">
     <ng-container [ngTemplateOutlet]="content"></ng-container>
+    @if (icon) {<span class="inline-block w-[2px]"></span>}
     <mat-icon class="btn-icon" [svgIcon]="selectedIcon"></mat-icon>
   </div>
   <div class="relative flex items-center"><ng-container *ngIf="!icon" [ngTemplateOutlet]="content"></ng-container></div>

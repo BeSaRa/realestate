@@ -1,11 +1,12 @@
-import { inject, Injectable } from '@angular/core';
-import { Cell, Column, Workbook, Worksheet } from 'exceljs';
-import { TranslationService } from './translation.service';
-import { saveAs } from 'file-saver';
-import { AppColors } from '@constants/app-colors';
-import { logoBase64 } from 'src/assets/images/mme-base64';
-import { Lookup } from '@models/lookup';
 import { AddSectionToExcelSheet } from '@abstracts/add-section-to-excel-sheet';
+import { BaseTableRowModel, TableColPrint } from '@abstracts/base-table-row-model';
+import { inject, Injectable } from '@angular/core';
+import { AppColors } from '@constants/app-colors';
+import { Lookup } from '@models/lookup';
+import { Cell, Column, Workbook, Worksheet } from 'exceljs';
+import { saveAs } from 'file-saver';
+import { logoBase64 } from 'src/assets/images/mme-base64';
+import { TranslationService } from './translation.service';
 
 @Injectable({
   providedIn: 'root',
@@ -13,35 +14,30 @@ import { AddSectionToExcelSheet } from '@abstracts/add-section-to-excel-sheet';
 export class ExcelService {
   lang = inject(TranslationService);
 
-  downloadExcelFile<T>(
-    data: T[],
-    fileName: string,
-    criteria: string,
-    columns: { key: keyof T; mapTo: string; isLookup?: boolean; columnWidth?: number }[]
-  ) {
+  downloadExcelFile(data: BaseTableRowModel[], fileName: string) {
     const workbook = new Workbook();
     const worksheet = workbook.addWorksheet(this.lang.map.general_secretariat_report);
     worksheet.views = [{ rightToLeft: !this.lang.isLtr, state: 'frozen', ySplit: 2 }];
 
-    this._initHeader(worksheet, columns);
-    this._initTopHeader(fileName + ' ' + criteria, workbook, worksheet);
+    this._initHeader(worksheet, data[0].getPrintCols());
+    this._initTopHeader(fileName, workbook, worksheet);
 
     data.forEach((r, i) => {
-      this._addingDataRow(r, i, columns, worksheet);
+      this._addingDataRow(r, i, worksheet);
     });
 
     workbook.xlsx.writeBuffer().then((data) => {
       const blob = new Blob([data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
-      saveAs(blob, fileName + ' ' + criteria);
+      saveAs(blob, fileName);
     });
   }
 
-  downloadExcelWithSectionsFile(sections: AddSectionToExcelSheet[], fileName: string, criteria: string) {
+  downloadExcelWithSectionsFile(sections: AddSectionToExcelSheet[], fileName: string) {
     const workbook = new Workbook();
     const worksheet = workbook.addWorksheet(this.lang.map.general_secretariat_report);
     worksheet.views = [{ rightToLeft: !this.lang.isLtr, state: 'frozen', ySplit: 1 }];
 
-    this._initTopHeader(fileName + ' ' + criteria, workbook, worksheet);
+    this._initTopHeader(fileName, workbook, worksheet);
 
     sections.forEach((section) => {
       section.addToExcelSheet(workbook, worksheet);
@@ -50,7 +46,7 @@ export class ExcelService {
 
     workbook.xlsx.writeBuffer().then((data) => {
       const blob = new Blob([data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
-      saveAs(blob, fileName + ' ' + criteria);
+      saveAs(blob, fileName);
     });
   }
 
@@ -116,15 +112,12 @@ export class ExcelService {
     };
   }
 
-  private _initHeader<T>(
-    ws: Worksheet,
-    columns: { key: keyof T; mapTo: string; isLookup?: boolean; columnWidth?: number }[]
-  ) {
+  private _initHeader(ws: Worksheet, columns: TableColPrint[]) {
     const _columns: Partial<Column>[] = [];
 
     columns.forEach((c) => {
       _columns.push({
-        key: c.key.toString(),
+        key: this._getHeader(c),
         width: c.columnWidth ?? 20,
       });
     });
@@ -133,7 +126,7 @@ export class ExcelService {
 
     const _header: Record<string, string> = {};
     columns.forEach((c) => {
-      _header[c.key.toString()] = c.mapTo;
+      _header[this._getHeader(c)] = this.lang.map[this._getHeader(c)];
     });
 
     this.addHeaderRow(ws, _header);
@@ -156,18 +149,13 @@ export class ExcelService {
     ws.addImage(logo, 'A1:C1');
   }
 
-  private _addingDataRow<T>(
-    row: T,
-    index: number,
-    columns: { key: keyof T; mapTo: string; isLookup?: boolean; columnWidth?: number }[],
-    ws: Worksheet
-  ) {
+  private _addingDataRow(row: BaseTableRowModel, index: number, ws: Worksheet) {
     const _rowData: Record<string, string> = {};
-    columns.forEach((c, i) => {
+    row.getPrintCols().forEach((c, i) => {
       if (c.isLookup) {
-        _rowData[c.key.toString()] = (row[c.key] as unknown as Lookup)?.getNames() ?? '---';
+        _rowData[this._getHeader(c)] = (this._getCellValue(c) as unknown as Lookup)?.getNames() ?? '---';
       } else {
-        _rowData[c.key.toString()] = (row[c.key] as string) ?? '---';
+        _rowData[this._getHeader(c)] = (this._getCellValue(c) as string) ?? '---';
       }
     });
 
@@ -176,7 +164,7 @@ export class ExcelService {
     r.font = { bold: true, color: { argb: AppColors.PRIMARY.slice(1) } };
     if (index % 2)
       r.eachCell({ includeEmpty: true }, (cell, col) => {
-        if (col <= columns.length) {
+        if (col <= row.getPrintCols().length) {
           cell.fill = { fgColor: { argb: AppColors.SECONDARY_40.slice(1) }, type: 'pattern', pattern: 'solid' };
           cell.border = {
             left: { style: 'thin', color: { argb: AppColors.SECONDARY.slice(1) } },
@@ -184,5 +172,13 @@ export class ExcelService {
           };
         }
       });
+  }
+
+  private _getHeader(item: TableColPrint) {
+    return typeof item.header === 'function' ? item.header() : item.header;
+  }
+
+  private _getCellValue(item: TableColPrint) {
+    return typeof item.cellValue === 'function' ? item.cellValue() : item.cellValue;
   }
 }

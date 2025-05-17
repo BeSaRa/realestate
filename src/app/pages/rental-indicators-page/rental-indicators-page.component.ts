@@ -43,8 +43,8 @@ import { SectionTitleService } from '@services/section-title.service';
 import { TranslationService } from '@services/translation.service';
 import { UnitsService } from '@services/units.service';
 import { UrlService } from '@services/url.service';
-import { NgxMaskPipe } from 'ngx-mask';
 import { map, take } from 'rxjs';
+import { TableActionDirective } from '@directives/table-action.directive';
 
 @Component({
   selector: 'app-rental-indicators-page',
@@ -72,6 +72,7 @@ import { map, take } from 'rxjs';
     SectionGuardDirective,
     PurposeListComponent,
     CompositeTransactionsTableComponent,
+    TableActionDirective,
   ],
   templateUrl: './rental-indicators-page.component.html',
   styleUrls: ['./rental-indicators-page.component.scss'],

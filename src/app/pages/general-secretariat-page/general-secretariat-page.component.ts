@@ -19,7 +19,6 @@ import { ExcelService } from '@services/excel.service';
 import { LookupService } from '@services/lookup.service';
 import { SectionTitleService } from '@services/section-title.service';
 import { TranslationService } from '@services/translation.service';
-import { finalize, switchMap, take, tap } from 'rxjs';
 
 @Component({
   selector: 'app-general-secretariat-page',
@@ -76,76 +75,49 @@ export default class GeneralSecretariatPageComponent {
   transactionsLoadFn = (criteria: CriteriaContract) =>
     this.dashboardService.loadGeneralSecretariatTransactions(criteria);
 
-  downloadReport = () => {
-    if (this.isLoadingDownloadList) return;
+  // downloadReport = () => {
+  //   if (this.isLoadingDownloadList) return;
 
-    this.isLoadingDownloadList = true;
+  //   this.isLoadingDownloadList = true;
 
-    let _downloadCriteria: CriteriaContract = {
-      ...this.criteria.criteria,
-      limit: 1,
-      offset: 0,
-      issueDateEndMonth: 12,
-      issueDateQuarterList: [1, 2, 3, 4],
-      issueDateStartMonth: 1,
-    };
+  //   let _downloadCriteria: CriteriaContract = {
+  //     ...this.criteria.criteria,
+  //     limit: 1,
+  //     offset: 0,
+  //     issueDateEndMonth: 12,
+  //     issueDateQuarterList: [1, 2, 3, 4],
+  //     issueDateStartMonth: 1,
+  //   };
 
-    this.dashboardService
-      .loadGeneralSecretariatTransactions(_downloadCriteria)
-      .pipe(
-        switchMap((data) => {
-          _downloadCriteria = { ..._downloadCriteria, limit: data.count };
-          return this.dashboardService.loadGeneralSecretariatTransactions(_downloadCriteria);
-        })
-      )
-      .pipe(take(1))
-      .pipe(finalize(() => (this.isLoadingDownloadList = false)))
-      .pipe(
-        tap((data) => {
-          data.transactionList.forEach((item) => {
-            item.startDate =
-              this.datePipe.transform(item.startDate, 'YYY-MM-dd', undefined, this.lang.getCurrent().code) ?? '';
-            item.endDate =
-              this.datePipe.transform(item.endDate, 'YYY-MM-dd', undefined, this.lang.getCurrent().code) ?? '';
-            item.issueDate =
-              this.datePipe.transform(item.issueDate, 'YYY-MM-dd', undefined, this.lang.getCurrent().code) ?? '';
-          });
-        })
-      )
-      .subscribe((data) => {
-        this.excelService.downloadExcelFile(
-          data.transactionList,
-          this.lang.map.general_secretariat_report,
-          this.getCriteriaSectionTitle(),
-          [
-            { key: 'municipalityInfo', mapTo: this.lang.map.municipal, isLookup: true },
-            { key: 'zoneInfo', mapTo: this.lang.map.zone, isLookup: true },
-            { key: 'streetNo', mapTo: this.lang.map.street },
-            { key: 'buildingNo', mapTo: this.lang.map.building_number },
-            { key: 'purposeInfo', mapTo: this.lang.map.purpose, isLookup: true },
-            { key: 'propertyTypeInfo', mapTo: this.lang.map.property_type, isLookup: true },
-            { key: 'pinNo', mapTo: this.lang.map.pin_no },
-            { key: 'electricityNo', mapTo: this.lang.map.electricity_number },
-            { key: 'waterNo', mapTo: this.lang.map.water_number },
-            { key: 'propertyDescription', mapTo: this.lang.map.property_description, columnWidth: 50 },
-            { key: 'subUnitCount', mapTo: this.lang.map.sub_unit_count },
-            { key: 'area', mapTo: this.lang.map.area_in_square_meter },
-            { key: 'bedRoomsCount', mapTo: this.lang.map.bed_rooms },
-            { key: 'furnitureInfo', mapTo: this.lang.map.furniture_status, isLookup: true },
-            { key: 'rentPaymentAmount', mapTo: this.lang.map.total_rent_value },
-            {
-              key: 'rentPaymentFrequency',
-              mapTo: this.lang.map.payment_frequency + ' (' + this.lang.map.a_month + ')',
-            },
-            { key: 'certificateCode', mapTo: this.lang.map.transaction_code },
-            { key: 'issueDate', mapTo: this.lang.map.documentation_date },
-            { key: 'startDate', mapTo: this.lang.map.contract_start_date },
-            { key: 'endDate', mapTo: this.lang.map.contract_end_date },
-            { key: 'occupancyStatusInfo', mapTo: this.lang.map.occupancy_status, isLookup: true },
-          ]
-        );
-      });
-  };
+  //   this.dashboardService
+  //     .loadGeneralSecretariatTransactions(_downloadCriteria)
+  //     .pipe(
+  //       switchMap((data) => {
+  //         _downloadCriteria = { ..._downloadCriteria, limit: data.count };
+  //         return this.dashboardService.loadGeneralSecretariatTransactions(_downloadCriteria);
+  //       })
+  //     )
+  //     .pipe(take(1))
+  //     .pipe(finalize(() => (this.isLoadingDownloadList = false)))
+  //     .pipe(
+  //       tap((data) => {
+  //         data.transactionList.forEach((item) => {
+  //           item.startDate =
+  //             this.datePipe.transform(item.startDate, 'YYY-MM-dd', undefined, this.lang.getCurrent().code) ?? '';
+  //           item.endDate =
+  //             this.datePipe.transform(item.endDate, 'YYY-MM-dd', undefined, this.lang.getCurrent().code) ?? '';
+  //           item.issueDate =
+  //             this.datePipe.transform(item.issueDate, 'YYY-MM-dd', undefined, this.lang.getCurrent().code) ?? '';
+  //         });
+  //       })
+  //     )
+  //     .subscribe((data) => {
+  //       this.excelService.downloadExcelFile(
+  //         data.transactionList,
+  //         this.lang.map.general_secretariat_report + ' ' + this.getCriteriaSectionTitle()
+  //       );
+  //     });
+  // };
 
   openPropertyDescription(description: string) {
     this.dialog.open(this.descriptionTemplate, { data: { description } });

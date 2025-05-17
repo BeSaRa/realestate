@@ -4,6 +4,7 @@ import { CriteriaContract } from '@contracts/criteria-contract';
 import { Lookup } from '@models/lookup';
 import { DateAdapter } from '@angular/material/core';
 import { TranslationService } from './translation.service';
+import { L } from '@directus/sdk/dist/index-e2e3c31a';
 @Injectable({
   providedIn: 'root',
 })
@@ -115,9 +116,7 @@ export class SectionTitleService {
 
   private getSelectedPropertyType(prefix: string, criteria: CriteriaContract): string {
     const lookupMap = this.lookupService[(prefix + 'PropertyTypeMap') as keyof LookupService] as Record<number, Lookup>;
-    return criteria.propertyTypeList && criteria.propertyTypeList[0] !== -1
-      ? lookupMap[criteria.propertyTypeList[0]]?.getNames()
-      : '';
+    return this._mapMultiple(lookupMap, criteria.propertyTypeList);
   }
 
   private getSelectedServiceType(serviceTypeId: number) {
@@ -129,7 +128,7 @@ export class SectionTitleService {
   }
   private getSelectedPurpose(prefix: string, criteria: CriteriaContract): string {
     const lookupMap = this.lookupService[(prefix + 'PurposeMap') as keyof LookupService] as Record<number, Lookup>;
-    return criteria.purposeList && criteria.purposeList[0] !== -1 ? lookupMap[criteria.purposeList[0]]?.getNames() : '';
+    return this._mapMultiple(lookupMap, criteria.purposeList);
   }
 
   private getSelectedZone(prefix: string, criteria: CriteriaContract): string {
@@ -154,16 +153,12 @@ export class SectionTitleService {
       number,
       Lookup
     >;
-    return criteria.premiseCategoryList && criteria.premiseCategoryList[0] !== -1
-      ? lookupMap[criteria.premiseCategoryList[0]]?.getNames()
-      : '';
+    return this._mapMultiple(lookupMap, criteria.premiseCategoryList);
   }
 
   private getSelectedPremiseType(prefix: string, criteria: CriteriaContract & { premiseTypeList: number[] }): string {
     const lookupMap = this.lookupService[(prefix + 'PremiseTypeMap') as keyof LookupService] as Record<number, Lookup>;
-    return criteria.premiseTypeList && criteria.premiseTypeList[0] !== -1
-      ? lookupMap[criteria.premiseTypeList[0]]?.getNames()
-      : '';
+    return this._mapMultiple(lookupMap, criteria.premiseTypeList);
   }
 
   private _listenToLangChange() {
@@ -177,5 +172,16 @@ export class SectionTitleService {
       label: month,
       value: index + 1,
     }));
+  }
+
+  private _mapMultiple(lookupMap: Record<number, Lookup>, list: number[]) {
+    return list && list[0] !== -1
+      ? list.length === 1
+        ? lookupMap[list[0]]?.getNames()
+        : `[${list
+            .map((l) => lookupMap[l]?.getNames())
+            .filter((l) => l)
+            .join(' - ')}]`
+      : '';
   }
 }
