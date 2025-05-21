@@ -18,7 +18,7 @@
       [options]="municipalities" />
 
     <app-select-input
-      *ngIf="isSell() || isMort() || isOwner()"
+      *ngIf="isSell() || isRent() || isMort() || isOwner()"
       [enableFilter]="true"
       bindFilter="getNames"
       formControlName="areaCode"
@@ -28,7 +28,7 @@
       [options]="filteredAreas" />
 
     <app-select-input
-      *ngIf="isRent() || isOV()"
+      *ngIf="isOV()"
       [enableFilter]="true"
       bindFilter="getNames"
       formControlName="zoneId"

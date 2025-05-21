@@ -90,6 +90,7 @@ export default class RentalIndicatorsPageComponent extends OnDestroyMixin(class 
   propertyTypes = this.lookupService.rentLookups.propertyTypeList;
   propertyUsages = this.lookupService.rentLookups.rentPurposeList.slice().sort((a, b) => a.lookupKey - b.lookupKey);
   zones = this.lookupService.rentLookups.zoneList;
+  areas = this.lookupService.rentLookups.districtList;
   rooms = this.lookupService.rentLookups.rooms;
   furnitureStatusList = this.lookupService.rentLookups.furnitureStatusList;
   paramsRange = this.lookupService.rentLookups.maxParams;

@@ -435,7 +435,7 @@ export class TransactionsFilterComponent implements OnInit, OnDestroy {
 
   listenToMunicipalityChange(): void {
     this.municipalityId.valueChanges.pipe(takeUntil(this.destroy$)).subscribe((value) => {
-      if (this.isSell() || this.isMort() || this.isOwner()) {
+      if (this.isSell() || this.isRent() || this.isMort() || this.isOwner()) {
         this.filteredAreas = this.areas.filter((item) => item.municipalityId === value);
         !this.filteredAreas.find((i) => i.lookupKey === -1) &&
           this.filteredAreas.unshift(
@@ -465,7 +465,7 @@ export class TransactionsFilterComponent implements OnInit, OnDestroy {
 
   listenToLangChange() {
     this.lang.change$.pipe(takeUntil(this.destroy$)).subscribe(() => {
-      if (this.isSell() || this.isMort() || this.isOwner()) {
+      if (this.isSell() || this.isRent() || this.isMort() || this.isOwner()) {
         this.filteredAreas = this.areas.filter((item) => item.municipalityId === this.municipalityId.value);
         !this.filteredAreas.find((i) => i.lookupKey === -1) &&
           this.filteredAreas.unshift(
@@ -873,11 +873,11 @@ export class TransactionsFilterComponent implements OnInit, OnDestroy {
     if (this.isRent()) {
       delete value.realEstateValueFrom;
       delete value.realEstateValueTo;
-      delete value.areaCode;
+      delete value.zoneId;
 
-      if (!this.filteredZones.find((i) => i.lookupKey === this.zoneId.value)) {
-        this.zoneId.patchValue(-1, { emitEvent: false });
-        value.zoneId = -1;
+      if (!this.filteredAreas.find((i) => i.lookupKey === this.areaCode.value)) {
+        this.areaCode.patchValue(-1, { emitEvent: false });
+        value.areaCode = -1;
       }
     }
     if (this.isMort()) {

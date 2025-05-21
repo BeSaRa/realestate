@@ -75,50 +75,6 @@ export default class GeneralSecretariatPageComponent {
   transactionsLoadFn = (criteria: CriteriaContract) =>
     this.dashboardService.loadGeneralSecretariatTransactions(criteria);
 
-  // downloadReport = () => {
-  //   if (this.isLoadingDownloadList) return;
-
-  //   this.isLoadingDownloadList = true;
-
-  //   let _downloadCriteria: CriteriaContract = {
-  //     ...this.criteria.criteria,
-  //     limit: 1,
-  //     offset: 0,
-  //     issueDateEndMonth: 12,
-  //     issueDateQuarterList: [1, 2, 3, 4],
-  //     issueDateStartMonth: 1,
-  //   };
-
-  //   this.dashboardService
-  //     .loadGeneralSecretariatTransactions(_downloadCriteria)
-  //     .pipe(
-  //       switchMap((data) => {
-  //         _downloadCriteria = { ..._downloadCriteria, limit: data.count };
-  //         return this.dashboardService.loadGeneralSecretariatTransactions(_downloadCriteria);
-  //       })
-  //     )
-  //     .pipe(take(1))
-  //     .pipe(finalize(() => (this.isLoadingDownloadList = false)))
-  //     .pipe(
-  //       tap((data) => {
-  //         data.transactionList.forEach((item) => {
-  //           item.startDate =
-  //             this.datePipe.transform(item.startDate, 'YYY-MM-dd', undefined, this.lang.getCurrent().code) ?? '';
-  //           item.endDate =
-  //             this.datePipe.transform(item.endDate, 'YYY-MM-dd', undefined, this.lang.getCurrent().code) ?? '';
-  //           item.issueDate =
-  //             this.datePipe.transform(item.issueDate, 'YYY-MM-dd', undefined, this.lang.getCurrent().code) ?? '';
-  //         });
-  //       })
-  //     )
-  //     .subscribe((data) => {
-  //       this.excelService.downloadExcelFile(
-  //         data.transactionList,
-  //         this.lang.map.general_secretariat_report + ' ' + this.getCriteriaSectionTitle()
-  //       );
-  //     });
-  // };
-
   openPropertyDescription(description: string) {
     this.dialog.open(this.descriptionTemplate, { data: { description } });
   }

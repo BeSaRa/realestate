@@ -14,9 +14,9 @@ import { TranslationService } from './translation.service';
 export class ExcelService {
   lang = inject(TranslationService);
 
-  downloadExcelFile(data: BaseTableRowModel[], fileName: string) {
+  downloadExcelFile(data: BaseTableRowModel[], fileName: string, worksheetName?: string) {
     const workbook = new Workbook();
-    const worksheet = workbook.addWorksheet(this.lang.map.general_secretariat_report);
+    const worksheet = workbook.addWorksheet(worksheetName);
     worksheet.views = [{ rightToLeft: !this.lang.isLtr, state: 'frozen', ySplit: 2 }];
 
     this._initHeader(worksheet, data[0].getPrintCols());
@@ -32,9 +32,9 @@ export class ExcelService {
     });
   }
 
-  downloadExcelWithSectionsFile(sections: AddSectionToExcelSheet[], fileName: string) {
+  downloadExcelWithSectionsFile(sections: AddSectionToExcelSheet[], fileName: string, worksheetName?: string) {
     const workbook = new Workbook();
-    const worksheet = workbook.addWorksheet(this.lang.map.general_secretariat_report);
+    const worksheet = workbook.addWorksheet(worksheetName);
     worksheet.views = [{ rightToLeft: !this.lang.isLtr, state: 'frozen', ySplit: 1 }];
 
     this._initTopHeader(fileName, workbook, worksheet);

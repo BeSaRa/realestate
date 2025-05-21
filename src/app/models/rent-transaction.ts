@@ -49,6 +49,11 @@ export class RentTransaction extends BaseTableRowModel {
       },
       {
         colName: this._cols.RENTAL_VALUE,
+        header: 'rental_value',
+        cellValue: this.rentPaymentMonthly,
+      },
+      {
+        colName: this._cols.CONTRACT_STATUS,
         header: 'contract_status',
         cellValue: this.serviceTypeInfo,
         isLookup: true,

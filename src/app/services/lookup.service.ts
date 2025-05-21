@@ -190,7 +190,7 @@ export class LookupService extends RegisterServiceMixin(class {}) implements Ser
           mort.districtList = mort.districtList.filter((i) => i.lookupKey !== -1 && i.lookupKey !== 0); // remove the all from zones
         }),
         tap(([rent, sell, mort, broker]) => {
-          this.rentLookups = this._addAllToServiceTypes(this._addAllToMunicipalities(rent));
+          this.rentLookups = this._addAllToServiceTypes(this._addAllToDistrict(this._addAllToMunicipalities(rent)));
           this.sellLookups = this._addAllToMunicipalities(this._addAllToDistrict(this._addAllToPropertyType(sell)));
           this.mortLookups = this._addAllToMunicipalities(this._addAllToDistrict(this._addAllToPropertyType(mort)));
           this.brokerLookups = this._addAllToMunicipalities(broker);
