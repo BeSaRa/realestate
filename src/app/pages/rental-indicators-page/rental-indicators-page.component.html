@@ -40,7 +40,7 @@
         </h3>
         <div class="flex flex-col gap-4 xl:flex-row">
           <div
-            class="flex-1 my-4 p-4 border border-secondary rounded-lg flex items-center justify-center gap-4 [&>*]:flex-1 [&>*]:self-stretch">
+            class="flex-1 my-4 p-4 border border-secondary rounded-lg grid grid-cols-1 md:grid-cols-2 justify-center gap-4">
             <ng-container *ngFor="let item of nonePriceList">
               <app-kpi-root
                 *ngIf="item.isDataAvailable"
@@ -50,7 +50,7 @@
             /></ng-container>
           </div>
           <div
-            class="flex-1 my-4 p-4 border border-secondary rounded-lg flex items-center justify-center gap-4 [&>*]:flex-1 [&>*]:self-stretch">
+            class="flex-1 my-4 p-4 border border-secondary rounded-lg grid grid-cols-1 md:grid-cols-2 justify-center gap-4">
             <ng-container *ngFor="let item of priceList">
               <app-kpi-root
                 *ngIf="item.isDataAvailable"

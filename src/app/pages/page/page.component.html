@@ -6,7 +6,9 @@
         class="heading text-2xl md:text-4xl lg:text-5xl self-start text-primary border-secondary font-semibold inline-block">
         {{ getPageContent().title }}
       </h1>
-      <div class="mt-6 md:mt-8 lg:mt-10 !text-2xl text-start" [innerHtml]="getPageContent().content | safeHtml"></div>
+      <div
+        class="mt-6 md:mt-8 lg:mt-10 !text-base sm:!text-lg md:!text-xl lg:!text-2xl text-start"
+        [innerHtml]="getPageContent().content | safeHtml"></div>
     </div>
   </div>
 </div>
