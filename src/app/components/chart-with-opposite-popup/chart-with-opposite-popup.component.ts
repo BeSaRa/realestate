@@ -105,12 +105,13 @@ export class ChartWithOppositePopupComponent implements OnInit, AfterViewInit {
               x: this.months[item.issueMonth - 1] + ' - ' + item.issueYear,
             };
           }),
-          color: AppColors.LEAD_80,
+          color: AppColors.SECONDARY,
         },
       ]);
-      const _minMaxAvg = minMaxAvg(this.popupData.list.map((item) => this._getMainChartValue(item)));
+      // const _minMaxAvg = minMaxAvg(this.popupData.list.map((item) => this._getMainChartValue(item)));
       this.chart.updateOptions({
-        colors: [this.appChartTypesService.chartColorsFormatter(_minMaxAvg)],
+        // colors: [this.appChartTypesService.chartColorsFormatter(_minMaxAvg)],
+        colors: [AppColors.PRIMARY],
         tooltip: {
           shared: true,
           intersect: false,

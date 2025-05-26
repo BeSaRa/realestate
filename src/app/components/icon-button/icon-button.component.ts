@@ -35,6 +35,7 @@ export class IconButtonComponent {
 
   onClick($event: MouseEvent) {
     if (this.disabled) return;
+    $event.stopPropagation();
     this.clicked.emit($event);
   }
 
