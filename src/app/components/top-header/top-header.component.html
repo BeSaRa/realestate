@@ -59,12 +59,12 @@
           {{ lang.map.login_as_editor_content_manager }}
         </span>
       </button>
-      <button (click)="authService.loginByQatarPass()" mat-menu-item>
-        <!--suppress AngularNgOptimizedImage -->
+
+      <!-- <button (click)="authService.loginByQatarPass()" mat-menu-item>
         <div class="flex w-full items-center justify-center">
           <img class="h-6" [alt]="lang.map.login_using_qatar_pass" src="assets/images/qp-logo.svg" />
         </div>
-      </button>
+      </button> -->
     </mat-menu>
     <li *ngIf="authService.isAuthenticated()">
       <button class="text-white" (click)="showUserPreference()" mat-button>
@@ -75,10 +75,10 @@
       <button class="text-white" (click)="onLogOut()" mat-button>{{ lang.map.log_out }}</button>
     </li>
     <li>
-      <app-icon-button [icon]="'VIEW'" (clicked)="toggleFilter()"></app-icon-button>
+      <app-icon-button [icon]="'VIEW'" (click)="toggleFilter()"></app-icon-button>
     </li>
     <li *ngIf="authService.isAuthenticated()">
-      <app-icon-button [icon]="'FAVOURITE'" (clicked)="openFavouritesPopup()"></app-icon-button>
+      <app-icon-button [icon]="'FAVOURITE'" (click)="openFavouritesPopup()"></app-icon-button>
     </li>
     <li>
       <app-button (click)="changeLang($event)" buttonStyle="none">{{

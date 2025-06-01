@@ -11,11 +11,11 @@
       [dir]="lang.isLtr ? 'ltr' : 'rtl'"
       (mouseenter)="item.selected = true"
       (mouseleave)="item.selected = false"
-      class="carousel-cell m-0 group  px-4 py-6 h-[200px] grid  w-[300px] sm:w-[350px] grid-cols-2 gap-2 justify-between items-center text-center rounded-lg bg-white custom-shadow shadow-slate-200 transition {{
+      class="carousel-cell m-0 group  px-4 py-6 h-[200px] grid  w-[300px] sm:w-[350px] grid-cols-5 justify-between items-center text-center rounded-lg bg-white custom-shadow shadow-slate-200 transition {{
         lang.isLtr ? 'ltr-gradient' : 'gradient'
       }}">
-      <img class="!h-[100px]" [src]="getItemImage(item)" [alt]="item.getNames()" />
-      <div class="flex flex-col items-center">
+      <img class="!h-[100px] col-span-2" [src]="getItemImage(item)" [alt]="item.getNames()" />
+      <div class="col-span-3 flex flex-col items-center">
         <app-change-indicator
           class="transition-all"
           [ngClass]="{ 'opacity-50': isLoading }"

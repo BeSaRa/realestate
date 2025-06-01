@@ -1,7 +1,7 @@
 <div class="px-2 flex ltr:flex-row-reverse gap-1 items-center">
   <span
     dir="ltr"
-    class="text-lg font-bold transition rtl:mt-1"
+    class="font-bold transition rtl:mt-1"
     [ngClass]="{ 'text-secondary': !isHovered, 'text-white': isHovered }">
     {{ (value || 0).toFixed(2) }}% {{ changeIndicatorType() }}
   </span>

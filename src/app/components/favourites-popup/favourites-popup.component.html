@@ -9,7 +9,7 @@
       icon="RELOAD"
       class="absolute rtl:left-14 ltr:right-14"
       [disabled]="isLoading"
-      (clicked)="loadUserWishlist()"></app-icon-button>
+      (click)="loadUserWishlist()"></app-icon-button>
     <app-icon-button tabindex="-1" mat-dialog-close class="close-btn" icon="CLOSE"></app-icon-button>
   </div>
   @if(isLoading) {<mat-progress-bar mode="indeterminate"></mat-progress-bar>}
@@ -59,19 +59,19 @@
                 [disabled]="isLoading"
                 icon="ACTION"
                 class="text-secondary"
-                (clicked)="applyItem(item, $event)"></app-icon-button>
+                (click)="applyItem(item, $event)"></app-icon-button>
               <app-icon-button
                 [matTooltip]="lang.map.edit_name"
                 [disabled]="isLoading"
                 icon="EDIT"
                 class="text-gray-500"
-                (clicked)="updateItem(item, $event)"></app-icon-button>
+                (click)="updateItem(item, $event)"></app-icon-button>
               <app-icon-button
                 [matTooltip]="lang.map.delete"
                 [disabled]="isLoading"
                 icon="DELETE"
                 class="text-primary"
-                (clicked)="deleteItem(item, $event)"></app-icon-button>
+                (click)="deleteItem(item, $event)"></app-icon-button>
             </div>
             <div (click)="$event.stopPropagation()" class="block sm:hidden">
               <app-icon-button

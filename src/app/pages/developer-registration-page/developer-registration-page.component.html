@@ -448,7 +448,7 @@
               type="number"
               [label]="lang.map.number_of_future_off_plan_sales_projects"></app-input>
             <app-icon-button
-              (clicked)="deleteOutsideProjects(i)"
+              (click)="deleteOutsideProjects(i)"
               class="absolute start-1/2 bottom-0 translate-y-[40%] ltr:translate-x-[-50%] rtl:translate-x-[50%] text-primary border-2 rounded-full border-primary"
               backgroundColor="!bg-white"
               icon="DELETE"></app-icon-button>
@@ -458,7 +458,7 @@
           <div class="res-col-span relative flex items-center justify-center">
             <span class="w-full absolute top-1/2 border border-primary"></span>
             <app-icon-button
-              (clicked)="addOutsideProjects()"
+              (click)="addOutsideProjects()"
               icon="PLUS"
               class="text-white"
               backgroundColor="!bg-primary"></app-icon-button>
@@ -499,7 +499,7 @@
             </mat-radio-group>
           </div>
           <app-icon-button
-            (clicked)="deleteLandData(i)"
+            (click)="deleteLandData(i)"
             class="absolute start-1/2 bottom-0 translate-y-[40%] ltr:translate-x-[-50%] rtl:translate-x-[50%] text-primary border-2 rounded-full border-primary"
             backgroundColor="!bg-white"
             icon="DELETE"></app-icon-button>
@@ -510,7 +510,7 @@
       <div class="res-col-span relative flex items-center justify-center">
         <span class="w-full absolute top-1/2 border border-primary"></span>
         <app-icon-button
-          (clicked)="addlandData()"
+          (click)="addlandData()"
           icon="PLUS"
           class="text-white"
           backgroundColor="!bg-primary"></app-icon-button>

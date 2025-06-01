@@ -1,9 +1,9 @@
-import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { AppIcons, AppIconsType } from '@constants/app-icons';
-import { MatIconModule } from '@angular/material/icon';
-import { MatButtonModule } from '@angular/material/button';
 import { coerceBooleanProperty } from '@angular/cdk/coercion';
+import { CommonModule } from '@angular/common';
+import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from '@angular/core';
+import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
+import { AppIcons, AppIconsType } from '@constants/app-icons';
 
 @Component({
   selector: 'app-icon-button',
@@ -31,12 +31,10 @@ export class IconButtonComponent {
     return this._disabled;
   }
 
-  @Output() clicked = new EventEmitter<MouseEvent>();
-
   onClick($event: MouseEvent) {
-    if (this.disabled) return;
-    $event.stopPropagation();
-    this.clicked.emit($event);
+    if (this.disabled) {
+      $event.stopPropagation();
+    }
   }
 
   get selectedIcon() {

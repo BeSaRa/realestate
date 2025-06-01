@@ -3,7 +3,7 @@
 <ng-template appAction [appActionActionOrder]="2">
   @if(!isExportingToPdf){
   <app-icon-button
-    (clicked)="exportToPDF()"
+    (click)="exportToPDF()"
     icon="FILE_DOWNLOAD"
     class="hidden xl:block download opacity-75 transition-all hover:opacity-100">
   </app-icon-button
@@ -16,7 +16,7 @@
 
 <ng-template appAction [appActionActionOrder]="1">
   <app-icon-button
-    (clicked)="exportToExcel()"
+    (click)="exportToExcel()"
     icon="EXCEL_DOWNLOAD"
     class="download-excel opacity-75 transition-all hover:opacity-100">
   </app-icon-button>

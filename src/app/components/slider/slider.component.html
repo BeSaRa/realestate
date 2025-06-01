@@ -1,6 +1,6 @@
 <div *ngIf="list?.length" class="flex items-center justify-center gap-1">
   <app-icon-button
-    (clicked)="showPreviousSlide()"
+    (click)="showPreviousSlide()"
     [disabled]="!this.hasPrev()"
     [icon]="lang.isLtr ? 'CHEVRON_LEFT' : 'CHEVRON_RIGHT'"></app-icon-button>
   <div class="overflow-hidden">
@@ -15,7 +15,7 @@
     </ng-container>
   </div>
   <app-icon-button
-    (clicked)="showNextSlide()"
+    (click)="showNextSlide()"
     [disabled]="!this.hasNext()"
     [icon]="lang.isLtr ? 'CHEVRON_RIGHT' : 'CHEVRON_LEFT'"></app-icon-button>
 </div>
