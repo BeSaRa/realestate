@@ -19,13 +19,13 @@
   <app-banner />
   <br />
   <br />
-  <!-- <app-news-list [title]="lang.map.latest_news" [newsData]="(newsData | async) ?? []" />
+  <app-news-list [title]="lang.map.latest_news" [newsData]="(newsData | async) ?? []" />
   <div class="flex justify-center mt-10">
     <app-button buttonStyle="secondary" routerLink="/news"> {{ lang.map.more }}...</app-button>
-  </div> -->
+  </div>
   <br />
   <br />
-  <div *appSectionGuard="pageSections.SELL_PAGE.SELL_ROOT_KPIS" class="py-4 px-3 lg:px-16">
+  <!-- <div *appSectionGuard="pageSections.SELL_PAGE.SELL_ROOT_KPIS" class="py-4 px-3 lg:px-16">
     <div class="flex flex-col">
       <h3
         class="heading text-xl sm:text-2xl md:text-3xl self-center md:self-start text-center text-primary border-secondary font-semibold">
@@ -52,19 +52,19 @@
         }
       </div>
     </div>
-  </div>
+  </div> -->
 
   <div class="flex justify-center items-center">
     <div
       class="shadow-gray-200 custom-shadow flex flex-col items-center lg:flex-row w-full rounded-xl border gap-y-5 p-5 lg:w-3/4 lg:p-20 lg:gap-x-10">
-      <div class="w-full flex flex-col gap-y-5 lg:gap-y-10 items-stretch">
+      <div class="w-full lg:w-3/5 flex flex-col gap-y-5 lg:gap-y-10 items-stretch">
         <app-newsletter-form />
         <app-voting-form />
       </div>
-      <!-- <div class="w-full lg:w-2/5 flex flex-col gap-y-5 lg:gap-y-10 items-stretch">
+      <div class="w-full lg:w-2/5 flex flex-col gap-y-5 lg:gap-y-10 items-stretch">
         <app-inwani />
         <app-inquiries />
-      </div> -->
+      </div>
     </div>
   </div>
 </div>

@@ -3,7 +3,11 @@ import { Component, inject } from '@angular/core';
 import { MatRadioModule } from '@angular/material/radio';
 import { RouterModule } from '@angular/router';
 import { BannerComponent } from '@components/banner/banner.component';
+import { ButtonComponent } from '@components/button/button.component';
+import { InquiriesComponent } from '@components/inquiries/inquiries.component';
+import { InwaniComponent } from '@components/inwani/inwani.component';
 import { KpiRootComponent } from '@components/kpi-root/kpi-root.component';
+import { NewsListComponent } from '@components/news-list/news-list.component';
 import { NewsletterFormComponent } from '@components/newsletter-form/newsletter-form.component';
 import { VotingFormComponent } from '@components/voting-form/voting-form.component';
 import { APP_PAGES_SECTIONS } from '@constants/injection-tokens';
@@ -27,8 +31,12 @@ import { formatNumber } from '@utils/utils';
     NewsletterFormComponent,
     VotingFormComponent,
     MatRadioModule,
-    SectionGuardDirective,
-    KpiRootComponent,
+    // SectionGuardDirective,
+    // KpiRootComponent,
+    InwaniComponent,
+    InquiriesComponent,
+    NewsListComponent,
+    ButtonComponent,
   ],
   templateUrl: './landing-page.component.html',
   styleUrls: ['./landing-page.component.scss'],
