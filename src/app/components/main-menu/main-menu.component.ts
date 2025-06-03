@@ -42,6 +42,7 @@ export class MainMenuComponent extends OnDestroyMixin(class {}) implements OnIni
   }
 
   redirect(url: string) {
-    window.location.href = url;
+    console.log(url);
+    window.open(url, '_blank');
   }
 }

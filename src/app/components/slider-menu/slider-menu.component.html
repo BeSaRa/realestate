@@ -1,6 +1,6 @@
 <li class="pb-1 border-b border-secondary/20">
   <a
-    [href]="config.CONFIG.MAIN_AUTHORITY_WEBSITE_URL"
+    [href]="config.CONFIG.MAIN_AUTHORITY.BASE_URL"
     class="block w-full text-xl font-bold px-3 py-2 text-white rounded-md transition hover:bg-white/20 [&.active]:bg-white/20">
     {{ lang.map.authority_main_website }}
   </a>
@@ -10,7 +10,8 @@
     @if (menuItem.isExternal()) {
     <a
       class="block w-full text-xl px-3 py-2 text-white rounded-md transition hover:bg-white/20 [&.active]:bg-white/20"
-      [href]="menuItem.getExternalUrl()">
+      [href]="menuItem.getExternalUrl()"
+      target="_blank">
       {{ menuItem.getNames() }}
     </a>
     } @else {

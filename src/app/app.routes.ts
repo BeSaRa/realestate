@@ -4,6 +4,7 @@ import { authGuard } from '@guards/auth.guard';
 import { ExternalComponent } from '@pages/external/external.component';
 import { MainComponent } from '@pages/main/main.component';
 import { lookupsResolver } from '@resolvers/lookups.resolver';
+import { newsItemResolver } from '@resolvers/news-item.resolver';
 import { pageResolver } from '@resolvers/page.resolver';
 
 export const routes: Routes = [
@@ -27,15 +28,15 @@ export const routes: Routes = [
     children: [
       { path: '', pathMatch: 'full', redirectTo: 'home' },
       { path: 'home', loadComponent: () => import('./pages/landing-page/landing-page.component') },
-      // {
-      //   path: 'news',
-      //   loadComponent: () => import('./pages/news-page/news-page.component'),
-      // },
-      // {
-      //   path: 'news/:id',
-      //   loadComponent: () => import('./pages/news-item-details-page/news-item-details-page.component'),
-      //   resolve: { newsItemData: newsItemResolver },
-      // },
+      {
+        path: 'news',
+        loadComponent: () => import('./pages/news-page/news-page.component'),
+      },
+      {
+        path: 'news/:id',
+        loadComponent: () => import('./pages/news-item-details-page/news-item-details-page.component'),
+        resolve: { newsItemData: newsItemResolver },
+      },
       {
         path: Pages.ABOUT_US,
         loadComponent: () => import('./pages/page/page.component'),

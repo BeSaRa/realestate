@@ -11,6 +11,7 @@ import { UserService } from '@services/user.service';
 import { CastResponse } from 'cast-response';
 import { BehaviorSubject, delay, exhaustMap, map, Observable, ReplaySubject, Subject, tap } from 'rxjs';
 import { ConfigService } from './config.service';
+import { TranslationService } from './translation.service';
 
 @Injectable({
   providedIn: 'root',
@@ -22,6 +23,8 @@ export class MenuService extends RegisterServiceMixin(class {}) implements Servi
   userService = inject(UserService);
   authService = inject(AuthService);
   config = inject(ConfigService);
+  lang = inject(TranslationService);
+
   menus!: Menus;
   loading = false;
   menus$ = new ReplaySubject<Menus>(1);
@@ -29,9 +32,15 @@ export class MenuService extends RegisterServiceMixin(class {}) implements Servi
   reload$ = new Subject<void>();
   menuMap$ = new BehaviorSubject<Record<string, MenuItem>>({});
 
-  private _externalUrlsMap: Record<string, string> = {
-    '/laws': this.config.CONFIG.MAIN_AUTHORITY_WEBSITE_URL + '/' + this.config.CONFIG.MAIN_AUTHORITY_LAWS,
-    '/news': this.config.CONFIG.MAIN_AUTHORITY_WEBSITE_URL + '/' + this.config.CONFIG.MAIN_AUTHORITY_NEWS,
+  private _externalUrlsMap: Record<string, () => string> = {
+    '/laws': () =>
+      this.config.CONFIG.MAIN_AUTHORITY.BASE_URL +
+      '/' +
+      (this.lang.isLtr ? this.config.CONFIG.MAIN_AUTHORITY.LAWS.EN : this.config.CONFIG.MAIN_AUTHORITY.LAWS.AR),
+    // '/news': () =>
+    //   this.config.CONFIG.MAIN_AUTHORITY.BASE_URL +
+    //   '/' +
+    //   (this.lang.isLtr ? this.config.CONFIG.MAIN_AUTHORITY.NEWS.EN : this.config.CONFIG.MAIN_AUTHORITY.NEWS.AR),
   };
 
   constructor() {
@@ -85,8 +94,12 @@ export class MenuService extends RegisterServiceMixin(class {}) implements Servi
     });
   }
 
+  isExternalUrl(url: string) {
+    return Object.keys(this._externalUrlsMap).includes(url);
+  }
+
   getExternalUrl(url: string) {
-    return this._externalUrlsMap[url];
+    return this._externalUrlsMap[url]();
   }
 
   private userCanAccessLink(link: MenuItem): boolean {
