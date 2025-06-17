@@ -55,6 +55,7 @@ export class ChartWithOppositePopupComponent implements OnInit, AfterViewInit {
       },
       yaxis: [
         {
+          tickAmount: this._getChartUniqueLength(this._getMainChartValue),
           ...(this.chartOptions.yaxis as ApexYAxis[])[0],
           title: { ...(this.chartOptions.yaxis as ApexYAxis[])[0].title, text: this.popupData.mainChart.title },
           labels: {
@@ -63,6 +64,7 @@ export class ChartWithOppositePopupComponent implements OnInit, AfterViewInit {
           },
         },
         {
+          tickAmount: this._getChartUniqueLength(this._getOppositeChartValue),
           ...(this.chartOptions.yaxis as ApexYAxis[])[1],
           title: { ...(this.chartOptions.yaxis as ApexYAxis[])[1].title, text: this.popupData.oppositeChart.title },
           labels: {
@@ -144,16 +146,27 @@ export class ChartWithOppositePopupComponent implements OnInit, AfterViewInit {
       .sort((a, b) => (a.title as unknown as number) - (b.title as unknown as number));
   }
 
-  private _getMainChartValue(item: { issueYear: number; issueMonth: number }) {
+  private _getMainChartValue = (item: { issueYear: number; issueMonth: number }) => {
     const bindValue = this.popupData.mainChart.bindValue;
     if (typeof bindValue === 'function') return bindValue(item);
     else return (item as any)[bindValue] as number;
-  }
+  };
 
-  private _getOppositeChartValue(item: { issueYear: number; issueMonth: number }) {
+  private _getOppositeChartValue = (item: { issueYear: number; issueMonth: number }) => {
     const bindValue = this.popupData.oppositeChart.bindValue;
     if (typeof bindValue === 'function') return bindValue(item);
     else return (item as any)[bindValue] as number;
+  };
+
+  private _getChartUniqueLength(mapFn: (item: { issueYear: number; issueMonth: number }) => number) {
+    return Object.keys(
+      this.popupData.list
+        .map((item) => mapFn(item))
+        .reduce((acc, cur) => {
+          acc[cur] = true;
+          return acc;
+        }, {} as Record<number, boolean>)
+    ).length;
   }
 
   private _getChartWidth() {

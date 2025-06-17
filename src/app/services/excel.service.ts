@@ -133,20 +133,21 @@ export class ExcelService {
   }
 
   private _initTopHeader(title: string, wb: Workbook, ws: Worksheet) {
-    const topHeader = ws.insertRow(1, ['', '', '', '', title, '', '', '', '']);
+    const topHeader = ws.insertRow(1, [title, '', '', '', '']);
     ws.columns.forEach((c) => (c.width = c.width ?? 20));
-    ws.mergeCells('A1:D1');
-    ws.mergeCells('E1:I1');
+    // ws.mergeCells('A1:D1');
+    // ws.mergeCells('E1:I1');
+    ws.mergeCells('A1:I1');
 
     topHeader.height = 90;
     topHeader.font = { bold: true, color: { argb: AppColors.PRIMARY.slice(1) }, size: 25 };
     topHeader.alignment = { horizontal: 'center', vertical: 'middle', wrapText: true };
 
-    const logo = wb.addImage({
-      base64: logoBase64,
-      extension: 'png',
-    });
-    ws.addImage(logo, 'A1:C1');
+    // const logo = wb.addImage({
+    //   base64: logoBase64,
+    //   extension: 'png',
+    // });
+    // ws.addImage(logo, 'A1:C1');
   }
 
   private _addingDataRow(row: BaseTableRowModel, index: number, ws: Worksheet) {
