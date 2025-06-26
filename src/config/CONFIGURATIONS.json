@@ -20,7 +20,7 @@
       "EN": ""
     }
   },
-  "MAX_FILES_SIZE_IN_MB": 50,
+  "MAX_FILES_SIZE_IN_MB": 3000,
   "AUTHORITY_AI": {
     "BASE_URL": "https://rera-api.azurewebsites.net/api/v1",
     "SPEECH_LANGUAGES": [

@@ -6,6 +6,7 @@ import { MainComponent } from '@pages/main/main.component';
 import { lookupsResolver } from '@resolvers/lookups.resolver';
 import { newsItemResolver } from '@resolvers/news-item.resolver';
 import { pageResolver } from '@resolvers/page.resolver';
+import * as path from 'path';
 
 export const routes: Routes = [
   {
@@ -13,12 +14,27 @@ export const routes: Routes = [
     component: ExternalComponent,
     children: [
       {
+        path: '',
+        loadComponent: () => import('./pages/external-landing/external-landing.component'),
+      },
+      {
         path: 'developer-registration',
         loadComponent: () => import('./pages/developer-registration-page/developer-registration-page.component'),
       },
       {
+        path: 'under-construction-project-registration',
+        loadComponent: () =>
+          import(
+            './pages/under-construction-project-registration-page/under-construction-project-registration-page.component'
+          ),
+      },
+      {
         path: 'interest-registration',
         loadComponent: () => import('./pages/interest-registration-page/interest-registration-page.component'),
+      },
+      {
+        path: '**',
+        redirectTo: '',
       },
     ],
   },

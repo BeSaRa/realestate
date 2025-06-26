@@ -681,4 +681,13 @@ export interface LangKeysContract {
   maximum_files_size_exceeded: string;
   allowed_files: string;
   download_full_report: string;
+
+  register_developer: string;
+  register_interest: string;
+  register_current_project: string;
+  current_project_data_registration_form: string;
+  developer_name: string;
+  error_with_developer_name: string;
+  current_project_data_registered_successfully: string;
+  register_another_project: string;
 }

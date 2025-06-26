@@ -1,0 +1,147 @@
+<!-- eslint-disable @angular-eslint/template/interactive-supports-focus -->
+<!-- eslint-disable @angular-eslint/template/click-events-have-key-events -->
+@if (registered) {
+<div class="success">
+  <div class="h-full w-full flex flex-col justify-center items-center gap-2 sm:gap-4 md:gap-6">
+    <p class="text-3xl sm:text-5xl md:text-7xl text-center text-primary">
+      {{ lang.map.current_project_data_registered_successfully }}
+    </p>
+    <!-- <img class="w-40 h-40" src="assets/icons/success.png" alt="success" /> -->
+    <app-button buttonStyle="primary" size="xl" (click)="registered = false">
+      {{ lang.map.register_another_project }}
+    </app-button>
+  </div>
+</div>
+} @else {
+<div [formGroup]="form" class="py-4 px-8">
+  <div class="flex justify-center">
+    <h2
+      class="mt-6 heading text-2xl sm:text-3xl md:text-4xl self-center md:self-start text-center text-primary border-primary font-semibold">
+      {{ lang.map.current_project_data_registration_form }}
+    </h2>
+  </div>
+  <div class="mt-4">
+    <div class="info-section !items-end">
+      <h3 class="info-section-title">
+        {{ lang.map.main_information }}
+      </h3>
+      <app-input formControlName="developerName" [label]="lang.map.developer_name"></app-input>
+      <app-input formControlName="projectName" [label]="lang.map.project_name"></app-input>
+      <app-input formControlName="location" [label]="lang.map.location"></app-input>
+      <app-input formControlName="startDate" [label]="lang.map.project_start_date" (keydown)="$event.preventDefault()">
+        <input
+          appControl
+          formControlName="startDate"
+          (keydown)="$event.preventDefault()"
+          [max]="todayDate"
+          (click)="datepicker.open()"
+          (dateChange)="onStartDateChange()"
+          [matDatepicker]="datepicker" />
+        <mat-icon
+          mat-ripple
+          appInputSuffix
+          (click)="datepicker.open()"
+          class="cursor-pointer mx-2"
+          [svgIcon]="AppIcons.DATE"></mat-icon>
+        <mat-datepicker [touchUi]="true" #datepicker />
+      </app-input>
+      <app-input
+        formControlName="endDate"
+        [label]="lang.map.project_expected_end_date"
+        (keydown)="$event.preventDefault()">
+        <input
+          appControl
+          formControlName="endDate"
+          (keydown)="$event.preventDefault()"
+          [min]="todayDate"
+          (click)="datepicker2.open()"
+          (dateChange)="onEndDateChange()"
+          [matDatepicker]="datepicker2" />
+        <mat-icon
+          mat-ripple
+          appInputSuffix
+          (click)="datepicker2.open()"
+          class="cursor-pointer mx-2"
+          [svgIcon]="AppIcons.DATE"></mat-icon>
+        <mat-datepicker [touchUi]="true" #datepicker2 />
+      </app-input>
+      <div class="res-col-span">
+        <input
+          type="file"
+          #uploader
+          (change)="attachmentUploaderChange(uploader)"
+          class="hidden"
+          id="files"
+          multiple
+          accept="application/pdf,image/png,image/jpeg,image/jpg" />
+        <div
+          class="relative mt-4 mb-6 res-col-span flex-1 p-4 pb-8 res-grid-cols items-center gap-2 border border-primary/40 rounded-md transition-all duration-300">
+          <div class="res-col-span grid grid-cols-1 lg:grid-cols-2 gap-2">
+            @for (type of uploadersTypes; track $index) {
+            <div class="bg-gray-100 rounded-md overflow-hidden">
+              <div class="flex flex-col justify-between">
+                <div class="p-1 flex items-center justify-between bg-primary rounded-md">
+                  <span class="text-white font-bold text-lg">{{ lang.map[attachmentsLabelsMap[type]] }}</span>
+                  <app-icon-button
+                    class="text-white rounded-full"
+                    [matTooltip]="lang.map.upload_files"
+                    matTooltipPosition="above"
+                    (click)="openUploader(uploader, type)"
+                    icon="PLUS"></app-icon-button>
+                </div>
+              </div>
+              @if (getAttachments(type)) {
+              <div class="p-2 pt-3 flex flex-wrap justify-start items-center gap-2">
+                @for (attachment of getAttachments(type); track $index) {
+                <div class="relative max-w-[72px]">
+                  <div
+                    (click)="viewAttachment(attachment)"
+                    [matTooltip]="attachment.title"
+                    matTooltipPosition="above"
+                    class="pt-1 px-1 flex flex-col gap-1 items-center justify-center cursor-pointer transition-all rounded-md bg-primary/[0.03] hover:bg-primary/25">
+                    <img class="w-12 h-12" [src]="getAttachmentIconUrl(attachment.title)" alt="extension" />
+                    <span class="max-w-16 inline-block truncate text-primary">{{ attachment.title }}</span>
+                  </div>
+                  <button
+                    (click)="deleteAttachment(type, attachment)"
+                    class="absolute p-0.5 -top-2 -end-2 bg-primary transition-all text-white rounded-full hover:bg-primary/80">
+                    <svg class="w-4 h-4" fill="currentColor" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                      <path
+                        d="M19,6.41L17.59,5L12,10.59L6.41,5L5,6.41L10.59,12L5,17.59L6.41,19L12,13.41L17.59,19L19,17.59L13.41,12L19,6.41Z" />
+                    </svg>
+                  </button>
+                </div>
+                }
+              </div>
+              }
+            </div>
+            }
+          </div>
+        </div>
+        <span class="flex items-center justify-between w-full text-primary font-bold">
+          <span>{{ lang.map.allowed_files }} {{ allowedFiles }}</span>
+          <span [ngClass]="{ 'text-red-500': attachmentsSize() > maxFilesSize }"
+            >{{ lang.map.maximum_files_size }} {{ maxFilesSize.toFixed(2) }}MB - {{ lang.map.uploaded_files_size }}
+            {{ attachmentsSize().toFixed(2) }}MB @if (attachmentsSize() > maxFilesSize) { (*{{
+              lang.map.maximum_files_size_exceeded
+            }}) }</span
+          >
+        </span>
+      </div>
+    </div>
+  </div>
+  <div class="my-4 flex gap-4 items-start justify-end">
+    <re-captcha
+      class="transition-all"
+      [ngClass]="{ hidden: !isRecaptchaVisible || isSaving }"
+      #recaptcha
+      size="normal"
+      [siteKey]="recaptchaSettings.siteKey!"
+      (resolved)="onRecaptchaResolved($event)"></re-captcha
+    ><app-button [disabled]="isWaitingForRecaptchaResolve" buttonStyle="primary" size="lg" (click)="onSubmit()"
+      >@if(isSaving){<mat-spinner diameter="30" strokeWidth="3"></mat-spinner>} @else{
+      {{ lang.map.register }} }</app-button
+    >
+  </div>
+</div>
+}

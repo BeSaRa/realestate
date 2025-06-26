@@ -1,8 +1,9 @@
 import { CmsService } from '@abstracts/cms.service';
 import { Injectable } from '@angular/core';
 import { Attachment } from '@models/attachment';
-import { CurrentProjectAttachments, DeveloperRegistration } from '@models/developer-registration';
+import { CurrentProjectAttachments, CurrentProjectData, DeveloperRegistration } from '@models/developer-registration';
 import { isArray } from '@utils/utils';
+import { CastResponse } from 'cast-response';
 import { map, Observable, of } from 'rxjs';
 
 @Injectable({
@@ -12,21 +13,32 @@ export class DeveloperRegistrationService extends CmsService<DeveloperRegistrati
   serviceName = 'DeveloperRegistrationService';
   collectionName = 'real_estate_developers';
 
-  uploadFiles(attachments: CurrentProjectAttachments[]): Observable<null | Attachment[]> {
+  @CastResponse(undefined, { unwrap: 'data', fallback: '$default' })
+  checkDeveloperName(developer_name: string) {
+    return this.http.get<DeveloperRegistration[]>(this.urlService.URLS.BASE_URL + '/items/' + this.collectionName, {
+      params: {
+        'filter[companyName][_eq]': developer_name,
+      },
+    });
+  }
+
+  registerCurrentProject(project: CurrentProjectData) {
+    return this.http.post(this.urlService.URLS.BASE_URL + '/items/qatar_current_projects', project);
+  }
+
+  uploadFiles(attachments: CurrentProjectAttachments): Observable<null | Attachment[]> {
     let hasAttachments = false;
     const formData = new FormData();
-    for (let i = 0; i < attachments.length; i++) {
-      Object.keys(attachments[i]).forEach((type) => {
-        for (let j = 0; j < attachments[i][type as keyof Omit<CurrentProjectAttachments, 'clone'>].length; j++) {
-          hasAttachments = true;
-          const attachment = attachments[i][type as keyof Omit<CurrentProjectAttachments, 'clone'>][j];
-          formData.append(`folder`, attachment.folder!);
-          formData.append(`title`, attachment.title);
-          formData.append(`description`, `${i + 1}---${type}---${j + 1}`);
-          formData.append(`files`, attachment.file);
-        }
-      });
-    }
+    Object.keys(attachments).forEach((type) => {
+      for (let j = 0; j < attachments[type as keyof Omit<CurrentProjectAttachments, 'clone'>].length; j++) {
+        hasAttachments = true;
+        const attachment = attachments[type as keyof Omit<CurrentProjectAttachments, 'clone'>][j];
+        formData.append(`folder`, attachment.folder!);
+        formData.append(`title`, attachment.title);
+        formData.append(`description`, `${type}---${j + 1}`);
+        formData.append(`files`, attachment.file);
+      }
+    });
 
     if (hasAttachments) {
       return this.http

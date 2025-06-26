@@ -29,10 +29,6 @@ export class DeveloperRegistration extends ClonerMixin(class {}) {
   futureProjects!: number;
   hasOffPlanProjects!: boolean;
 
-  hasCurrentProjects!: boolean;
-  currentProjects!: number;
-  currentProjectsData!: CurrentProjectsCreateType;
-
   implementedOffPlan!: number;
   currentOffPlan!: number;
   currentOffPlanData!: CurrentOffPlanData[];
@@ -53,44 +49,24 @@ export class DeveloperRegistration extends ClonerMixin(class {}) {
 
 export class CurrentProjectData extends ClonerMixin(class {}) {
   id!: number;
+  developer_id!: number;
   projectName!: string;
-  licenseAttachments!: CurrentProjectCreateAttachmentType;
-  licensePlansAttachments!: CurrentProjectCreateAttachmentType;
-  unitsAttachments!: CurrentProjectCreateAttachmentType;
-  technicalReportAttachments!: CurrentProjectCreateAttachmentType;
-  financialReportAttachments!: CurrentProjectCreateAttachmentType;
-  warrantyAgreementAttachments!: CurrentProjectCreateAttachmentType;
-  saleContractsAttachments!: CurrentProjectCreateAttachmentType;
-  sampleSaleContractsAttachments!: CurrentProjectCreateAttachmentType;
+  location!: string;
+  startDate!: string;
+  endDate!: string;
+  licenseAttachments!: AttachmentFileType[];
+  licensePlansAttachments!: AttachmentFileType[];
+  unitsAttachments!: AttachmentFileType[];
+  technicalReportAttachments!: AttachmentFileType[];
+  financialReportAttachments!: AttachmentFileType[];
+  warrantyAgreementAttachments!: AttachmentFileType[];
+  saleContractsAttachments!: AttachmentFileType[];
+  sampleSaleContractsAttachments!: AttachmentFileType[];
 
-  static toAttachmentCreateMode(ids: string[]): CurrentProjectCreateAttachmentType {
-    return {
-      create: ids.map((id) => ({ directus_files_id: { id }, qatar_current_projects_id: '+' })),
-      update: [],
-      delete: [],
-    };
-  }
-
-  static toCreateMode(currentProjectsData: CurrentProjectData[]): CurrentProjectsCreateType {
-    return {
-      create: currentProjectsData,
-      update: [],
-      delete: [],
-    };
-  }
+  static toFileId = (id: string) => ({ directus_files_id: { id } });
 }
 
-export type CurrentProjectsCreateType = {
-  create: CurrentProjectData[];
-  update: [];
-  delete: [];
-};
-
-export type CurrentProjectCreateAttachmentType = {
-  create: { directus_files_id: { id: string }; qatar_current_projects_id: '+' }[];
-  update: [];
-  delete: [];
-};
+type AttachmentFileType = { directus_files_id: { id: string } };
 
 export class CurrentOffPlanData extends ClonerMixin(class {}) {
   id!: number;

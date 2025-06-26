@@ -7,9 +7,14 @@
       {{ lang.map.developer_data_saved_successfully }}
     </p>
     <!-- <img class="w-40 h-40" src="assets/icons/success.png" alt="success" /> -->
-    <app-button buttonStyle="primary" size="xl" (click)="registerNew()">
-      {{ lang.map.register_another_developer }}
-    </app-button>
+    <div class="grid grid-cols-2 gap-2">
+      <app-button buttonStyle="primary" size="xl" (click)="registerNew()">
+        {{ lang.map.register_another_developer }}
+      </app-button>
+      <app-button buttonStyle="primary" size="xl" routerLink="../under-construction-project-registration">
+        {{ lang.map.register_current_project }}
+      </app-button>
+    </div>
   </div>
 </div>
 } @else {
@@ -27,7 +32,6 @@
       </h3>
       <app-input formControlName="companyName" [label]="lang.map.company_name"></app-input>
       <app-input formControlName="address" [label]="lang.map.main_address"></app-input>
-      <app-input formControlName="licenseNo" [label]="lang.map.commercial_license_number"></app-input>
       <app-input
         formControlName="licenseDate"
         [label]="lang.map.date_of_first_license"
@@ -127,118 +131,6 @@
         formControlName="futureProjects"
         type="number"
         [label]="lang.map.number_of_future_projects"></app-input>
-
-      <div class="res-col-span flex flex-col md:flex-row items-center justify-center md:justify-start gap-2 md:gap-6">
-        <span
-          [ngClass]="{ 'text-amber-700': hasCurrentProjects.invalid && hasCurrentProjects.touched }"
-          class="font-semibold text-xl"
-          >{{ lang.map.does_the_company_have_projects_under_construction }} <span class="text-amber-700">*</span></span
-        >
-        <mat-radio-group
-          formControlName="hasCurrentProjects"
-          class="flex justify-start gap-4"
-          aria-label="Select an option">
-          <mat-radio-button class="font-semibold text-primary" [value]="true">{{ lang.map.yes }}</mat-radio-button>
-          <mat-radio-button class="font-semibold text-primary" [value]="false">{{ lang.map.no }}</mat-radio-button>
-        </mat-radio-group>
-      </div>
-
-      <app-input
-        formControlName="currentProjects"
-        [ngClass]="{ '!hidden ': !hasCurrentProjects.value }"
-        [label]="lang.map.number_of_projects_under_construction">
-        <input appControl formControlName="currentProjects" type="number" />
-      </app-input>
-
-      <div class="res-col-span -mt-6" [ngClass]="{ '!hidden': !hasCurrentProjects.value }">
-        @if (currentProjects.value && currentProjects.value > maxProjects) {
-        <span class="text-xs text-red-500 font-semibold"
-          >*{{ lang.map.the_maximum_number_of_projects_to_enter_data_for_is }} 20</span
-        >
-        } @if(currentProjects.value){
-        <h4 class="text-center text-2xl text-primary font-semibold">
-          {{ lang.map.current_projects_data }}
-        </h4>
-        }
-
-        <ng-container formGroupName="currentProjectsData">
-          <input
-            type="file"
-            #uploader
-            (change)="attachmentUploaderChange(uploader)"
-            class="hidden"
-            id="files"
-            multiple
-            accept="application/pdf,image/png,image/jpeg,image/jpg" />
-          @for (item of currentProjectsData.controls; let i = $index; track i) {
-          <div
-            [ngClass]="{ 'h-14 overflow-hidden': currentCollapsed[i] }"
-            class="relative mt-4 mb-6 res-col-span flex-1 p-4 pb-8 res-grid-cols items-center gap-2 border border-primary/40 rounded-md transition-all duration-300">
-            <app-icon-button
-              (click)="currentCollapsed[i] = !currentCollapsed[i]"
-              class="absolute end-1 top-1"
-              buttonStyle="none-primary"
-              [icon]="currentCollapsed[i] ? 'CHEVRON_DOWN' : 'CHEVRON_UP'" />
-            <p class="res-col-span text-center font-bold text-primary text-xl">
-              {{ lang.map.project_no }} ({{ i + 1 }})
-            </p>
-            <app-input [formControl]="item.controls.projectName" [label]="lang.map.project_name"></app-input>
-
-            <div class="res-col-span grid grid-cols-1 lg:grid-cols-2 gap-2">
-              @for (type of uploadersTypes; track $index) {
-              <div class="bg-gray-100 rounded-md overflow-hidden">
-                <div class="flex flex-col justify-between">
-                  <div class="p-1 flex items-center justify-between bg-primary rounded-md">
-                    <span class="text-white font-bold text-lg">{{ lang.map[attachmentsLabelsMap[type]] }}</span>
-                    <app-icon-button
-                      class="text-white rounded-full"
-                      [matTooltip]="lang.map.upload_files"
-                      matTooltipPosition="above"
-                      (click)="openUploader(uploader, i, type)"
-                      icon="PLUS"></app-icon-button>
-                  </div>
-                </div>
-                @if (getAttachments(i,type)) {
-                <div class="p-2 pt-3 flex flex-wrap justify-start items-center gap-2">
-                  @for (attachment of getAttachments(i,type); track $index) {
-                  <div class="relative max-w-[72px]">
-                    <div
-                      (click)="viewAttachment(attachment)"
-                      [matTooltip]="attachment.title"
-                      matTooltipPosition="above"
-                      class="pt-1 px-1 flex flex-col gap-1 items-center justify-center cursor-pointer transition-all rounded-md bg-primary/[0.03] hover:bg-primary/25">
-                      <img class="w-12 h-12" [src]="getAttachmentIconUrl(attachment.title)" alt="extension" />
-                      <span class="max-w-16 inline-block truncate text-primary">{{ attachment.title }}</span>
-                    </div>
-                    <button
-                      (click)="deleteAttachment(i, type, attachment)"
-                      class="absolute p-0.5 -top-2 -end-2 bg-primary transition-all text-white rounded-full hover:bg-primary/80">
-                      <svg class="w-4 h-4" fill="currentColor" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-                        <path
-                          d="M19,6.41L17.59,5L12,10.59L6.41,5L5,6.41L10.59,12L5,17.59L6.41,19L12,13.41L17.59,19L19,17.59L13.41,12L19,6.41Z" />
-                      </svg>
-                    </button>
-                  </div>
-                  }
-                </div>
-                }
-              </div>
-              }
-            </div>
-          </div>
-          <span class="flex items-center justify-between w-full text-primary font-bold">
-            <span>{{ lang.map.allowed_files }} {{ allowedFiles }}</span>
-            <span [ngClass]="{ 'text-red-500': attachmentsSize() > maxFilesSize }"
-              >{{ lang.map.maximum_files_size }} {{ maxFilesSize.toFixed(2) }}MB - {{ lang.map.uploaded_files_size }}
-              {{ attachmentsSize().toFixed(2) }}MB @if (attachmentsSize() > maxFilesSize) { (*{{
-                lang.map.maximum_files_size_exceeded
-              }}) }</span
-            >
-          </span>
-          }
-          <!-- <app-button (click)="testUpload()">test upload</app-button> -->
-        </ng-container>
-      </div>
 
       <div class="res-col-span flex flex-col md:flex-row items-center justify-center md:justify-start gap-2 md:gap-6">
         <span
