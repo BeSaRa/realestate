@@ -141,7 +141,7 @@ export class TopTenChartComponent extends OnDestroyMixin(class {}) implements On
           },
           series: [
             {
-              name: this.selectedAccordingTo.getNames(),
+              name: this.selectedAccordingTo?.getNames(),
               data: this.chartData.map((item) => {
                 return {
                   x: this._getLabel(item) ?? this.appChartTypesService.getUndefinedLabel(),
