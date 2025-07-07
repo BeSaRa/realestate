@@ -274,7 +274,7 @@ export default class RentalIndicatorsPageComponent extends OnDestroyMixin(class 
   ];
 
   top10Label = (item: { kpiVal: number; areaCode: number }) =>
-    this.lookupService.rentDistrictMap[item.areaCode].getNames();
+    this.lookupService.rentDistrictMap[item.areaCode]?.getNames();
 
   purposeKPIS = this.lookupService.rentLookups.rentPurposeList.map((item) =>
     new KpiPurpose().clone<KpiPurpose>({ id: item.lookupKey, arName: item.arName, enName: item.enName })
