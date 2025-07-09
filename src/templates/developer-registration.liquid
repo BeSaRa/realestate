@@ -34,6 +34,10 @@
       font-weight: bold;
       font-size: 20px;
     }
+    .note {
+      color: #1e9539;
+      font-size: 14px;
+    }
   </style>
 </head>
 <body>
@@ -44,8 +48,13 @@
   </div>
   <div class="message">
     <p class="success-message">تم تسجيل بيانات المطور العقاري بنجاح</p>
-    <p class="success-message">رقم الطلب : {{ requestNumber }}</p>
+    <p class="success-message">رقم الطلب: {{ requestNumber }}</p>
+    <p class="success-message">اسم المطور: "{{ developerName }}"</p>
     <p class="success-message">The real estate developer's data has been successfully registered.</p>
+    <p class="success-message">Request number: {{ requestNumber }}</p>
+    <p class="success-message">Developer Name: "{{ developerName }}"</p>
+    <p class="note">ملاحظة: استخدم اسم المطور المرفق عند تسجيل مشاريع قيد التنفيذ</p>
+    <p class="note">Note: Use attached developer name when registering Under construction projects</p>
   </div>
 
 </div>
