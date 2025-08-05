@@ -15,6 +15,7 @@ import {
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { ButtonComponent } from '@components/button/button.component';
 import { IconButtonComponent } from '@components/icon-button/icon-button.component';
+import { AppColors } from '@constants/app-colors';
 import { CriteriaContract } from '@contracts/criteria-contract';
 import { CustomTooltipDirective } from '@directives/custom-tooltip.directive';
 import { ChartType } from '@enums/chart-type';
@@ -195,7 +196,8 @@ export class TopTenChartComponent extends OnDestroyMixin(class {}) implements On
         )
         .addAxisXFormatter((val, opts) =>
           this.appChartTypesService.axisXFormatter({ val, opts }, this.selectedAccordingTo)
-        );
+        )
+        .addCustomTooltip(this._getCustomTooltipTemplate, false);
     });
   }
 
@@ -211,4 +213,31 @@ export class TopTenChartComponent extends OnDestroyMixin(class {}) implements On
   private _listenToLangChange() {
     this.lang.change$.pipe(takeUntil(this.destroy$)).subscribe(() => this._updateOptions());
   }
+
+  private _getCustomTooltipTemplate = (opts: { seriesIndex: number; dataPointIndex: number }) => {
+    const _color = AppColors.PRIMARY;
+    return `
+        <div dir="${
+          this.lang.isLtr ? 'ltr' : 'rtl'
+        }" class="apexcharts-tooltip-title" style="font-family: Helvetica, Arial, sans-serif; font-size: 12px">${this.selectedAccordingTo?.getNames()}</div>
+        <div dir="${
+          this.lang.isLtr ? 'ltr' : 'rtl'
+        }" class="apexcharts-tooltip-series-group apexcharts-active" style="order: 1; display: flex">
+          <div class="apexcharts-tooltip-text" style="font-family: Helvetica, Arial, sans-serif; font-size: 12px">
+            <div class="apexcharts-tooltip-y-group flex justify-start items-center gap-2">
+              <span class="apexcharts-tooltip-marker" style="background-color: ${_color};"></span>
+              <span class="apexcharts-tooltip-text-y-label">${this._getLabel(
+                this.chartData[opts.dataPointIndex]
+              )}: </span>
+              <span class="apexcharts-tooltip-text-y-value">${this.appChartTypesService.axisYFormatter(
+                {
+                  val: this.chartData[opts.dataPointIndex]?.getKpiVal() ?? 0,
+                },
+                { hasPrice: false }
+              )}</span>
+            </div>
+          </div>
+        </div>
+      `;
+  };
 }

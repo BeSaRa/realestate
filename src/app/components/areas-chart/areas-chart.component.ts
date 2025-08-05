@@ -56,7 +56,18 @@ export class AreasChartComponent extends OnDestroyMixin(class {}) implements OnC
 
   seriesSumData: number[] = [];
 
-  chartOptions = new ChartOptionsModel().clone<ChartOptionsModel>(this.appChartTypesService.mainChartOptions);
+  chartOptions = new ChartOptionsModel().clone<ChartOptionsModel>({
+    ...this.appChartTypesService.mainChartOptions,
+    xaxis: {
+      labels: {
+        trim: false,
+        rotate: -45,
+        rotateAlways: true,
+        hideOverlappingLabels: false,
+        showDuplicates: true,
+      },
+    },
+  });
 
   criteriaTerms = new CriteriaSpecificTerms([{ criteriaKey: 'municipalityId', term: CriteriaTerms.NOT_ALL }]);
   isCriteriaValid = true;
@@ -196,6 +207,7 @@ export class AreasChartComponent extends OnDestroyMixin(class {}) implements OnC
             },
           },
         },
+
         ...this.appChartTypesService.getRangeOptions(
           this.screenSize,
           BarChartTypes.SINGLE_BAR,
