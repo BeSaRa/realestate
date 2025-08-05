@@ -30,6 +30,8 @@ export const Config = {
   MAX_FILES_SIZE_IN_MB: 50,
   AUTHORITY_AI: {
     BASE_URL: '',
+    IS_OCP: false,
+    OCP_APIM_KEY: '',
     SPEECH_LANGUAGES: [],
     AZURE_X_FUNCTION_KEY: '',
     PUBLIC_ACCESS_TOKEN: '',
