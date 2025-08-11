@@ -244,7 +244,8 @@ export default class SellIndicatorsPageComponent extends OnDestroyMixin(class {}
     }),
   ];
 
-  top10Label = (item: { kpiVal: number; zoneId: number }) => this.lookupService.sellDistrictMap[item.zoneId].getNames();
+  top10Label = (item: { kpiVal: number; areaCode: number }) =>
+    this.lookupService.sellDistrictMap[item.areaCode].getNames();
 
   transactionsSortOptions: TableSortOption[] = [
     new TableSortOption().clone<TableSortOption>({

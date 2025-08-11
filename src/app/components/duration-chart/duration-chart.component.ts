@@ -348,7 +348,13 @@ export class DurationChartComponent extends OnDestroyMixin(class {}) implements 
               this.selectedDurationType === DurationEndpoints.MONTHLY ? this.lang.map.month : this.lang.map.year
             ),
           },
-          dataLabels: { enabled: this.selectedDurationType != this.DurationTypes.QUARTERLY && !this.isMinMaxAvgBar },
+          dataLabels: {
+            enabled:
+              this.selectedDurationType != this.DurationTypes.QUARTERLY &&
+              (this.selectedDurationType != this.DurationTypes.HALFY ||
+                (this.selectedDurationType === this.DurationTypes.HALFY && this.selectedChartType === ChartType.BAR)) &&
+              !this.isMinMaxAvgBar,
+          },
           stroke: { width: this.selectedChartType === ChartType.BAR ? 0 : 4 },
           ..._seriesData,
           ...this._getLegendOptions(),
